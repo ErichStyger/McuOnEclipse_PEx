@@ -102,9 +102,9 @@
 #define %'ModuleName'%.BUF_SIZE    %BufferSize   /* number of elements in the buffer */
 #define %'ModuleName'%.ELEM_SIZE   %ElementSize  /* size of a single element in bytes */
 %if %isReentrant='yes'
-  #define %'ModuleName'%.IS_REENTRANT   1  /* 1: Critical section used for accessing shared data, 0 otherwise */
+#define %'ModuleName'%.IS_REENTRANT   1  /* 1: Critical section used for accessing shared data, 0 otherwise */
 %else
-  #define %'ModuleName'%.IS_REENTRANT   0  /* 0: Critical section NOT used for accessing shared data, 1 otherwise  */
+#define %'ModuleName'%.IS_REENTRANT   0  /* 0: Critical section NOT used for accessing shared data, 1 otherwise  */
 %endif
 #if %'ModuleName'%.ELEM_SIZE==1
   typedef uint8_t %'ModuleName'_ElementType; /* type of single element */
@@ -115,10 +115,10 @@
 #else
   #error "illegal element type size in properties"
 #endif
-#if %'ModuleName'%.BUF_SIZE<=256
-  typedef uint8_t %'ModuleName'_BufSizeType; /* up to 256 elements (index 0x00..0xff) */
+#if %'ModuleName'%.BUF_SIZE<256
+  typedef uint8_t %'ModuleName'_BufSizeType; /* up to 255 elements (index 0x00..0xff) */
 #else
-  typedef uint16_t %'ModuleName'_BufSizeType; /* more than 256 elements, up to 2^16 */
+  typedef uint16_t %'ModuleName'_BufSizeType; /* more than 255 elements, up to 2^16 */
 #endif
 
 %-
@@ -287,11 +287,11 @@ byte %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
     res = ERR_TXFULL;
   } else {
     %'ModuleName'%.buffer[%'ModuleName'%.inIdx] = elem;
-    %'ModuleName'%.inSize++;
     %'ModuleName'%.inIdx++;
     if (%'ModuleName'%.inIdx==%'ModuleName'%.BUF_SIZE) {
       %'ModuleName'%.inIdx = 0;
     }
+    %'ModuleName'%.inSize++;
   }
   %'ModuleName'%.EXIT_CRITICAL();
 %if defined(OnBufferFull)
