@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.022</Version>
+    <Version>01.028</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -64,6 +64,25 @@
       </TInhrLinkItem>
     </Property>
     <Property>
+      <TBoolItem>
+        <Name>Scheduling only</Name>
+        <Symbol>TraceSchedulingOnly</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This defines TRACE_SCHEDULING_ONLY in trcConfig.h\n
+When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
       <TStrgItem>
         <Name>Description string</Name>
         <Symbol>TraceDescriptionString</Symbol>
@@ -93,6 +112,84 @@ This string is stored in the trace and displayed in FreeRTOS+Trace. Can be used 
         <ChangeValueIntoRange>false</ChangeValueIntoRange>
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Events</Name>
+        <Symbol>EventsGroup</Symbol>
+        <Hint>Used to configure which events are created</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TGrupItem>
+              <Name>Kernel Service Calls</Name>
+              <Symbol>KernelServiceCalls</Symbol>
+              <Hint>Group which kernel service calls are generated</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description/>
+              <Expanded>Yes</Expanded>
+              <Children>
+                <GrupItem>
+                  <TGrupItem>
+                    <Name>Task</Name>
+                    <Symbol>TaskGroup</Symbol>
+                    <Hint>Configuration which Task events are generated</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <BoldName>true</BoldName>
+                    <EditLine>false</EditLine>
+                    <Description/>
+                    <Expanded>Yes</Expanded>
+                    <Children>
+                      <GrupItem>
+                        <TBoolItem>
+                          <Name>vTaskDelay</Name>
+                          <Symbol>vTaskDelayEventGenerated</Symbol>
+                          <TypeSpec>typeYesNo</TypeSpec>
+                          <Hint>If event for vTaskDelay() shall be generated.</Hint>
+                          <ItemLevel>BASIC</ItemLevel>
+                          <EditLine>false</EditLine>
+                          <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                          <DefaultIndex>0</DefaultIndex>
+                          <TextValueIndex>false</TextValueIndex>
+                          <RuntimeProperty>false</RuntimeProperty>
+                          <CanDelete>false</CanDelete>
+                          <IconPopup>false</IconPopup>
+                          <DefaultValue>true</DefaultValue>
+                          <Popup>false</Popup>
+                        </TBoolItem>
+                      </GrupItem>
+                      <GrupItem>
+                        <TBoolItem>
+                          <Name>vTaskDelayUntil</Name>
+                          <Symbol>vTaskDelayUntilEventGenerated</Symbol>
+                          <TypeSpec>typeYesNo</TypeSpec>
+                          <Hint>If event for vTaskDelayUntil() shall be generated.</Hint>
+                          <ItemLevel>BASIC</ItemLevel>
+                          <EditLine>false</EditLine>
+                          <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                          <DefaultIndex>0</DefaultIndex>
+                          <TextValueIndex>false</TextValueIndex>
+                          <RuntimeProperty>false</RuntimeProperty>
+                          <CanDelete>false</CanDelete>
+                          <IconPopup>false</IconPopup>
+                          <DefaultValue>true</DefaultValue>
+                          <Popup>false</Popup>
+                        </TBoolItem>
+                      </GrupItem>
+                    </Children>
+                  </TGrupItem>
+                </GrupItem>
+              </Children>
+            </TGrupItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TBoolItem>
@@ -151,6 +248,41 @@ If this is zero (0), the code for recording Interrupt Service Routines is exclud
     </Property>
     <Property>
       <TBoolItem>
+        <Name>Use PRIMASK Critical Section</Name>
+        <Symbol>UsePrimaskCS</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This sets USE_PRIMASK_CS in trcConfig.h\n
+* USE_PRIMASK_CS (for Cortex M devices only)\n
+*\n
+* An integer constant that selects between two options for the critical\n
+* sections of the recorder library.\n
+ *\n
+*   0: The default FreeRTOS critical section (BASEPRI) - default setting\n
+*   1: Always disable ALL interrupts (using PRIMASK)\n
+ *\n
+* Option 0 uses the standard FreeRTOS macros for critical sections.\n
+* However, on Cortex-M devices they only disable interrupts with priorities \n
+* below a certain configurable level, while higher priority ISRs remain active.\n
+* Such high-priority ISRs may not use the recorder functions in this mode.\n
+*\n
+* Option 1 allows you to safely call the recorder from any ISR, independent of \n
+* the interrupt priority. This mode may however cause higher IRQ latencies\n
+* (some microseconds) since ALL configurable interrupts are disabled during \n
+* the recorder's critical sections in this mode, using the PRIMASK register.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
         <Name>Include object delete events</Name>
         <Symbol>IncludeObjectDelete</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
@@ -189,11 +321,54 @@ This must be enabled (1) if it shall be recorded whenever the os clock is increa
     </Property>
     <Property>
       <TBoolItem>
+        <Name>Include ready events</Name>
+        <Symbol>IncludeReadyEvents</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This sets INCLUDE_READY_EVENTS in trcConfig.h\n
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
         <Name>Include memory manager events</Name>
         <Symbol>IncludeMemManageEvents</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>This sets INCLUDE_MEMMANG_EVENTS in trcConfig.h\n
 This must be enabled (1) if memory allocation and deallocatinon have to be traced.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Heap Size below 16M</Name>
+        <Symbol>HeapSizeBelow16M</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This sets HEAP_SIZE_BELOW_16M in trcConfig.h\n
+* HEAP_SIZE_BELOW_16M\n
+*\n
+* An integer constant that can be used to reduce the buffer usage of memory\n
+* allocation events (malloc/free). This value should be 1 if the heap size is \n
+* below 16 MB (2^24 byte), and you can live with addresses truncated to the \n
+* lower 24 bit. Otherwise set it to 0 to get the full 32-bit addresses.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -304,6 +479,43 @@ By setting USE_IMPLICIT_IFE_RULES to zero (0), the implicit IFEs are disabled fo
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Use 16bit Object Handles</Name>
+        <Symbol>Use16bitObjectHandles</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This sets USE_16BIT_OBJECT_HANDLES in trcConfig.h\n
+ * Macro which should be defined as either zero (0) or one (1).\n
+ * Default is 0.\n
+ *\n
+ * If set to 0 (zero), the recorder uses 8-bit handles to identify kernel \n
+ * objects such as tasks and queues. This limits the supported number of\n
+ * concurrently active objects to 255 of each type (object class).\n
+ *\n
+ * If set to 1 (one), the recorder uses 16-bit handles to identify kernel \n
+ * objects such as tasks and queues. This limits the supported number of\n
+ * concurrent objects to 65535 of each type (object class). However, since the\n
+ * object property table is limited to 64 KB, the practical limit is about\n
+ * 3000 objects in total. \n
+ * \n
+ * NOTE: An object with a high ID (&gt; 255) will generate an extra event \n
+ * (= 4 byte) in the event buffer. \n
+ * \n
+ * NOTE: Some internal tables in the recorder gets larger when using 16-bit \n
+ * handles. The additional RAM usage is 5-10 byte plus 1 byte per kernel object\n
+ *, i.e., task, queue, semaphore, mutex, etc.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>

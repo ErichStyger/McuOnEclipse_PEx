@@ -229,6 +229,11 @@ LI.EXP {
 <b>Utility</b></a> - Interface to utility functions
 </li>
 <li>
+<a name="TraceSchedulingOnly">
+<b>Scheduling only</b></a> - This defines TRACE_SCHEDULING_ONLY in trcConfig.h<br />
+When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.
+</li>
+<li>
 <a name="TraceDescriptionString">
 <b>Description string</b></a> - This sets TRACE_DESCRIPTION in trcConfig.h<br />
 This string is stored in the trace and displayed in FreeRTOS+Trace. Can be used to store, e.g., system version or build date.
@@ -236,6 +241,32 @@ This string is stored in the trace and displayed in FreeRTOS+Trace. Can be used 
 <li>
 <a name="TraceDescriptionMaxLength">
 <b>Description max length</b></a> - Sets the TRACE_DESCRIPTION_MAX_LENGTH macro. Generic system information string, presented in the tool. Note that this is also used for storing any internal error messages from the recorder, so do not make TRACE_DESCRIPTION_MAX_LENGTH too small. 80 is recommended.
+</li>
+<li>
+<a name="EventsGroup">
+<b>Events</b></a> - Used to configure which events are created
+<ul>
+  <li>
+  <a name="KernelServiceCalls">
+  <b>Kernel Service Calls</b></a> - Group which kernel service calls are generated
+  <ul>
+    <li>
+    <a name="TaskGroup">
+    <b>Task</b></a> - Configuration which Task events are generated
+    <ul>
+      <li>
+      <a name="vTaskDelayEventGenerated">
+      <b>vTaskDelay</b></a> - If event for vTaskDelay() shall be generated.
+      </li>
+      <li>
+      <a name="vTaskDelayUntilEventGenerated">
+      <b>vTaskDelayUntil</b></a> - If event for vTaskDelayUntil() shall be generated.
+      </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
 </li>
 <li>
 <a name="IncludeUserEvents">
@@ -252,6 +283,27 @@ If this is zero (0), the code for recording Interrupt Service Routines is exclud
 <b>Max ISR Nesting</b></a> - Defines the maxium level of ISR nesting
 </li>
 <li>
+<a name="UsePrimaskCS">
+<b>Use PRIMASK Critical Section</b></a> - This sets USE_PRIMASK_CS in trcConfig.h<br />
+* USE_PRIMASK_CS (for Cortex M devices only)<br />
+*<br />
+* An integer constant that selects between two options for the critical<br />
+* sections of the recorder library.<br />
+ *<br />
+*   0: The default FreeRTOS critical section (BASEPRI) - default setting<br />
+*   1: Always disable ALL interrupts (using PRIMASK)<br />
+ *<br />
+* Option 0 uses the standard FreeRTOS macros for critical sections.<br />
+* However, on Cortex-M devices they only disable interrupts with priorities <br />
+* below a certain configurable level, while higher priority ISRs remain active.<br />
+* Such high-priority ISRs may not use the recorder functions in this mode.<br />
+*<br />
+* Option 1 allows you to safely call the recorder from any ISR, independent of <br />
+* the interrupt priority. This mode may however cause higher IRQ latencies<br />
+* (some microseconds) since ALL configurable interrupts are disabled during <br />
+* the recorder's critical sections in this mode, using the PRIMASK register.
+</li>
+<li>
 <a name="IncludeObjectDelete">
 <b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
 This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
@@ -262,9 +314,24 @@ This must be enabled (1) if tasks, queues or other traced kernel objects are del
 This must be enabled (1) if it shall be recorded whenever the os clock is increased.
 </li>
 <li>
+<a name="IncludeReadyEvents">
+<b>Include ready events</b></a> - This sets INCLUDE_READY_EVENTS in trcConfig.h<br />
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.
+</li>
+<li>
 <a name="IncludeMemManageEvents">
 <b>Include memory manager events</b></a> - This sets INCLUDE_MEMMANG_EVENTS in trcConfig.h<br />
 This must be enabled (1) if memory allocation and deallocatinon have to be traced.
+</li>
+<li>
+<a name="HeapSizeBelow16M">
+<b>Heap Size below 16M</b></a> - This sets HEAP_SIZE_BELOW_16M in trcConfig.h<br />
+* HEAP_SIZE_BELOW_16M<br />
+*<br />
+* An integer constant that can be used to reduce the buffer usage of memory<br />
+* allocation events (malloc/free). This value should be 1 if the heap size is <br />
+* below 16 MB (2^24 byte), and you can live with addresses truncated to the <br />
+* lower 24 bit. Otherwise set it to 0 to get the full 32-bit addresses.
 </li>
 <li>
 <a name="TraceDataAllocation">
@@ -317,6 +384,29 @@ If using Explicit IFEs and the task also calls an Implicit IFE like vTaskDelay, 
 in the very beginning of that task. This allows you to combine Explicit IFEs for some tasks with Implicit IFEs for the rest of the tasks, if USE_IMPLICIT_IFE_RULES is 1.<br />
 <br />
 By setting USE_IMPLICIT_IFE_RULES to zero (0), the implicit IFEs are disabled for all tasks. Tasks will then be considered to have a single instance only, covering all execution fragments, unless you define an explicit IFE in the task.
+</li>
+<li>
+<a name="Use16bitObjectHandles">
+<b>Use 16bit Object Handles</b></a> - This sets USE_16BIT_OBJECT_HANDLES in trcConfig.h<br />
+ * Macro which should be defined as either zero (0) or one (1).<br />
+ * Default is 0.<br />
+ *<br />
+ * If set to 0 (zero), the recorder uses 8-bit handles to identify kernel <br />
+ * objects such as tasks and queues. This limits the supported number of<br />
+ * concurrently active objects to 255 of each type (object class).<br />
+ *<br />
+ * If set to 1 (one), the recorder uses 16-bit handles to identify kernel <br />
+ * objects such as tasks and queues. This limits the supported number of<br />
+ * concurrent objects to 65535 of each type (object class). However, since the<br />
+ * object property table is limited to 64 KB, the practical limit is about<br />
+ * 3000 objects in total. <br />
+ * <br />
+ * NOTE: An object with a high ID (&gt; 255) will generate an extra event <br />
+ * (= 4 byte) in the event buffer. <br />
+ * <br />
+ * NOTE: Some internal tables in the recorder gets larger when using 16-bit <br />
+ * handles. The additional RAM usage is 5-10 byte plus 1 byte per kernel object<br />
+ *, i.e., task, queue, semaphore, mutex, etc.
 </li>
 <li>
 <a name="IncludeEventStats">

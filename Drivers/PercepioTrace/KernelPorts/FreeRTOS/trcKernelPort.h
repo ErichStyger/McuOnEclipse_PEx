@@ -504,15 +504,25 @@ void* prvTraceGetCurrentTaskHandle(void);
 
 /* Called on vTaskDelay - note the use of FreeRTOS variable xTicksToDelay */
 #undef traceTASK_DELAY
+%if defined(vTaskDelayEventGenerated) & %vTaskDelayEventGenerated='no'
+#define traceTASK_DELAY() \
+	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();	
+%else
 #define traceTASK_DELAY() \
 	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY, pxCurrentTCB, xTicksToDelay); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();	
+%endif
 
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
+%if defined(vTaskDelayUntilEventGenerated) & %vTaskDelayUntilEventGenerated='no'
+#define traceTASK_DELAY_UNTIL() \
+	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
+%else
 #define traceTASK_DELAY_UNTIL() \
 	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, pxCurrentTCB, xTimeToWake); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
+%endif
 
 #if (INCLUDE_OBJECT_DELETE == 1)
 /* Called on vTaskDelete */

@@ -53,8 +53,15 @@
  * When defined disables all events except scheduling.
  * Useful for Free Edition users.
  ******************************************************************************/
-
+#if 1 /* << EST */
+%if defined(TraceSchedulingOnly) & %TraceSchedulingOnly='yes'
+#define TRACE_SCHEDULING_ONLY
+%else
+// #define TRACE_SCHEDULING_ONLY
+%endif
+#else
 //#define TRACE_SCHEDULING_ONLY
+#endif
 
 /*******************************************************************************
  * EVENT_BUFFER_SIZE
@@ -352,7 +359,15 @@
  * excluded. Note, this will make it impossible to calculate the correct
  * response times.
  *****************************************************************************/
+#if 1 /* << EST */
+%if defined(IncludeReadyEvents) & %IncludeReadyEvents='yes'
 #define INCLUDE_READY_EVENTS 1
+%else
+#define INCLUDE_READY_EVENTS 0
+%endif
+#else
+#define INCLUDE_READY_EVENTS 1
+#endif
 
 /*****************************************************************************
  * INCLUDE_NEW_TIME_EVENTS
@@ -546,8 +561,15 @@
  * covering all execution fragments, unless you define an explicit IFE in each
  * task by calling vTraceTaskInstanceIsFinished before the blocking call.
  *****************************************************************************/
+#if 1 /* << EST */
+%if defined(UseImplicitIFErules) & %UseImplicitIFErules='yes'
 #define USE_IMPLICIT_IFE_RULES 1
-
+%else
+#define USE_IMPLICIT_IFE_RULES 0
+%endif
+#else
+#define USE_IMPLICIT_IFE_RULES 1
+#endif
 
 /******************************************************************************
  * USE_16BIT_OBJECT_HANDLES
@@ -572,7 +594,15 @@
  * handles. The additional RAM usage is 5-10 byte plus 1 byte per kernel object
  *, i.e., task, queue, semaphore, mutex, etc.
  *****************************************************************************/
+#if 1 /* << EST */
+%if defined(Use16bitObjectHandles) & %Use16bitObjectHandles='yes'
+#define USE_16BIT_OBJECT_HANDLES 1
+%else
 #define USE_16BIT_OBJECT_HANDLES 0
+%endif
+#else
+#define USE_16BIT_OBJECT_HANDLES 0
+#endif
 
 /****** Port Name ******************** Code ** Official ** OS Platform ******
 * PORT_APPLICATION_DEFINED               -2     -           -                 
@@ -607,7 +637,6 @@
 #endif
 /*****************************************************************************/
 
-
 #if (SELECTED_PORT == PORT_NOT_SET)
 #error "You need to define SELECTED_PORT here!"
 #endif
@@ -631,7 +660,15 @@
 * (some microseconds) since ALL configurable interrupts are disabled during 
 * the recorder's critical sections in this mode, using the PRIMASK register.
  ******************************************************************************/
+#if 1 /* << EST */
+%if defined(UsePrimaskCS) & %UsePrimaskCS='yes'
+#define USE_PRIMASK_CS 1
+%else
 #define USE_PRIMASK_CS 0
+%endif
+#else
+#define USE_PRIMASK_CS 0
+#endif
 
 /******************************************************************************
 * HEAP_SIZE_BELOW_16M
@@ -641,7 +678,15 @@
 * below 16 MB (2^24 byte), and you can live with addresses truncated to the 
 * lower 24 bit. Otherwise set it to 0 to get the full 32-bit addresses.
 ******************************************************************************/
+#if 1 /* << EST */
+%if defined(HeapSizeBelow16M) & %HeapSizeBelow16M='yes'
+#define HEAP_SIZE_BELOW_16M 1
+%else
 #define HEAP_SIZE_BELOW_16M 0
+%endif
+#else
+#define HEAP_SIZE_BELOW_16M 0
+#endif
 
 #endif
 
