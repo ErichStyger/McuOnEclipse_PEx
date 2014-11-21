@@ -362,6 +362,11 @@
 #define configMAX_PRIORITIES                                     %>50 ((unsigned portBASE_TYPE)%MaxPriority)
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities
 
+%if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
+#define configTASK_RETURN_ADDRESS   0  /* return address of task is zero */
+%else
+/* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwritt task return address for port.c */
+%endif
 /* Software timer definitions. */
 %if %TimersEnabled='yes'
 #define configUSE_TIMERS                                         %>50 1

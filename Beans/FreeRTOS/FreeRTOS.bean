@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.371</Version>
+    <Version>01.372</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -299,7 +299,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -934,6 +934,24 @@ To use this method in combination with method 1 set configCHECK_FOR_STACK_OVERFL
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>TaskExitError Handler</Name>
+              <Symbol>TaskExitErrorHandler</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>A function that implements a task must not exit or attempt to return to its caller as there is nothing to return to. If this setting is enabled, then the function prvTaskExitError() will be called if the task returns. Note that if enabled, it might confuse the GDB debugger and not properly show the task stack frames.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
