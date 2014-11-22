@@ -1442,6 +1442,9 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
   %if defined(OnCreateSyncObject)
   %OnCreateSyncObject(*sobj);
   %endif
+  if (*sobj!=NULL) {
+    vQueueAddToRegistry(*sobj, "%'ModuleName'%.Sem");
+  }
   return (*sobj != NULL) ? TRUE : FALSE;
 %- *sobj = OSMutexCreate(0, &err);                         /* uC/OS-II */
 %- ret = (err == OS_NO_ERR) ? TRUE : FALSE;
@@ -1476,7 +1479,8 @@ int ff_del_syncobj(_SYNC_t sobj) {
 %else
 int ff_del_syncobj(_SYNC_t sobj) {
 %if defined(RTOS)
-  %@RTOS@'ModuleName'%.vQueueDelete(sobj); /* FreeRTOS: free up memory for semaphore */
+  vQueueUnregisterQueue(sobj);
+  %@RTOS@'ModuleName'%.vSemaphoreDelete(sobj); /* FreeRTOS: free up memory for semaphore */
   return TRUE; /* everything ok */
 %-      OSMutexDel(sobj, OS_DEL_ALWAYS, &err);          /* uC/OS-II */
 %-      ret = (err == OS_NO_ERR) ? TRUE : FALSE;
