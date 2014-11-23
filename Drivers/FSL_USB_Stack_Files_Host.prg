@@ -142,6 +142,11 @@
   %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_k21\derivative.h
   %FILE? %'DirRel_Code'khci_kinetis.c
   %include FSL_USB_Stack\Host\source\driver\kinetis\khci_kinetis.c
+%elif (CPUDevice="Kinetis K22F120")
+  %FILE? %'DirRel_Code'derivative.h
+  %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_k22f120\derivative.h
+  %FILE? %'DirRel_Code'khci_kinetis.c
+  %include FSL_USB_Stack\Host\source\driver\kinetis\khci_kinetis.c
 %elif CPUDevice="Kinetis K60"
   %FILE? %'DirRel_Code'derivative.h
   %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_k60\derivative.h
@@ -153,5 +158,5 @@
   %FILE? %'DirRel_Code'khci_kinetis.c
   %include FSL_USB_Stack\Host\source\driver\kinetis\khci_kinetis.c
 %else
-  %error No or unknow (%CPUDevice) device selected in component?
+  %error No or unknow (%CPUDevice) device selected in component in file FSL_USB_Stack_Files_Host.prg?
 %endif
