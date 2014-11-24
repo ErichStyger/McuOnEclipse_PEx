@@ -11,7 +11,7 @@
 #include "RPHY.h"
 #include "RMAC.h"
 #include "RNWK.h"
-#include "RAPP.h"
+#include "RApp.h"
 #include "%@Utility@'ModuleName'.h"
 
 static RNWK_ShortAddrType RNWK_ThisNodeAddr = RNWK_ADDR_BROADCAST; /* address of this network node */
