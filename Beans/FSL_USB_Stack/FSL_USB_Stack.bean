@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.030</Version>
+    <Version>01.032</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Freescale, all rights reserved, 2013-2014.\nPorted as Processor Expert component: Erich Styger\nhttp: www.mcuoneclipse.com</Copyright>
@@ -412,12 +412,12 @@ For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -454,13 +454,13 @@ For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>error</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Error code</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte error)</ANSIC>
+          <ANSIC>void #C#(uint8_t error)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

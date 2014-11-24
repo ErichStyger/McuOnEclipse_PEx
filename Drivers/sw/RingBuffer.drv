@@ -81,6 +81,9 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
+#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
+%endif
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
@@ -127,7 +130,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Put
 %ifdef Put
-byte %'ModuleName'%.%Put(%'ModuleName'_ElementType elem);
+uint8_t %'ModuleName'%.%Put(%'ModuleName'_ElementType elem);
 %define! Parelem
 %define! RetVal
 %include Common\RingBufferPut.Inc
@@ -137,7 +140,7 @@ byte %'ModuleName'%.%Put(%'ModuleName'_ElementType elem);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Get
 %ifdef Get
-byte %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP);
+uint8_t %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP);
 %define! ParelemP
 %define! RetVal
 %include Common\RingBufferGet.Inc
@@ -277,9 +280,9 @@ static %'ModuleName'_BufSizeType %'ModuleName'%.inSize; /* size data in buffer *
 %define! Parelem
 %define! RetVal
 %include Common\RingBufferPut.Inc
-byte %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
+uint8_t %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
   %'ModuleName'%.DEFINE_CRITICAL();
 
   %'ModuleName'%.ENTER_CRITICAL();
@@ -313,9 +316,9 @@ byte %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
 %define! ParelemP
 %define! RetVal
 %include Common\RingBufferGet.Inc
-byte %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP)
+uint8_t %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
   %'ModuleName'%.DEFINE_CRITICAL();
 
   %'ModuleName'%.ENTER_CRITICAL();

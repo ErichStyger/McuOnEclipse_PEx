@@ -105,6 +105,9 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
+#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
+%endif
 #include <stddef.h> /* for size_t */
 %if defined(CDCDevice)
 
@@ -126,7 +129,7 @@
 
 #ifndef __BWUserType_%'ModuleName'_TComData
 #define __BWUserType_%'ModuleName'_TComData
-  typedef byte %'ModuleName'_TComData ;                          %>40/* User type for communication data type. */
+  typedef uint8_t %'ModuleName'_TComData ;                       %>40/* User type for communication data type. */
 #endif
 
 %-ENDUSRTYPES
@@ -168,7 +171,7 @@ extern volatile uint8_t %'ModuleName'%.usb_int_en_copy;
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-byte %'ModuleName'%.%Init(void);
+uint8_t %'ModuleName'%.%Init(void);
 %define! RetVal
 %include Common\FSL_USB_StackInit.Inc
 
@@ -204,7 +207,7 @@ void %@MSDHost@OnError(byte error);
 %-BW_METHOD_BEGIN OnError
 %ifdef OnError
 %INTERFACE OnError
-void %OnError(byte error);
+void %OnError(uint8_t error);
 %define! Parerror
 %include Common\FSL_USB_StackOnError.Inc
 
@@ -284,6 +287,8 @@ void %'ModuleName'%.usb_int_dis(void)
   NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
 %elif (CPUDevice="Kinetis K22F120")
   NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
+%elif (CPUDevice="Kinetis K22FN120")
+  NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
 %else
   /* functionality not needed for %CPUDevice */
 %endif
@@ -350,6 +355,9 @@ void %'ModuleName'%.usb_int_en(void)
 %elif (CPUDevice="Kinetis K22F120")
   NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
   NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
+%elif (CPUDevice="Kinetis K22FN120")
+  NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
+  NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
 %else
   /* functionality not needed for %CPUDevice */
 %endif
@@ -361,9 +369,9 @@ void %'ModuleName'%.usb_int_en(void)
 %ifdef Init
 %define! RetVal
 %include Common\FSL_USB_StackInit.Inc
-byte %'ModuleName'%.%Init(void)
+uint8_t %'ModuleName'%.%Init(void)
 {
-  byte err;
+  uint8_t err;
 
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
   %'ModuleName'%.usb_int_dis();
@@ -373,6 +381,8 @@ byte %'ModuleName'%.%Init(void)
 %endif
 %if (CPUDevice="Kinetis K64F")
   MPU_CESR = 0; /* K64F has memory protection unit, disable it! */
+%elif (CPUDevice="Kinetis K22FN120")
+  MPU_CESR = 0; /* K22FN (Kinetis K2) has memory protection unit, disable it! */
 %endif
   /* Initialize the USB interface */
 %if USBDeviceClass="CDC Device"
@@ -424,7 +434,7 @@ void %@MSDHost@OnError(byte error)
 %IMPLEMENTATION OnError
 %define! Parerror
 %include Common\FSL_USB_StackOnError.Inc
-void %OnError(byte error)
+void %OnError(uint8_t error)
 {
   /* Write your code here ... */
 }

@@ -15,7 +15,6 @@
   #define  TRUE   0x01u
 #endif
 
-
 #define ERR_OK                          0x00U /*!< OK */
 #define ERR_SPEED                       0x01U /*!< This device does not work in the active speed mode. */
 #define ERR_RANGE                       0x02U /*!< Parameter out of range. */
@@ -70,6 +69,15 @@
 #define ERR_PARAM_SAMPLE_COUNT          0x96U /*!< Invalid sample count. */
 #define ERR_PARAM_CONDITION             0x97U /*!< Invalid condition. */
 #define ERR_PARAM_TICKS                 0x98U /*!< Invalid ticks parameter. */
+
+/* Other basic data types */
+typedef signed char             int8;
+typedef signed short int        int16;
+typedef signed long int         int32;
+
+typedef unsigned char           uint8;
+typedef unsigned short int      uint16;
+typedef unsigned long int       uint32;
 
 #endif /* PE_KSDK_TYPES_H_*/
 

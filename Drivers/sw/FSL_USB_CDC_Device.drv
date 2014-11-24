@@ -85,6 +85,9 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
+#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
+%endif
 #include <stddef.h> /* for size_t */
 %-
 %-BW_CUSTOM_INCLUDE_END_H
@@ -98,7 +101,7 @@
 
 #ifndef __BWUserType_%'ModuleName'_TComData
 #define __BWUserType_%'ModuleName'_TComData
-  typedef byte %'ModuleName'_TComData ;                          %>40/* User type for communication data type. */
+  typedef uint8_t %'ModuleName'_TComData ;                       %>40/* User type for communication data type. */
 #endif
 
 %-ENDUSRTYPES
@@ -154,7 +157,7 @@ extern volatile uint8_t %'ModuleName'%.usb_int_en_copy;
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvChar
 %ifdef RecvChar
-byte %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr);
+uint8_t %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr);
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceRecvChar.Inc
@@ -164,7 +167,7 @@ byte %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendChar
 %ifdef SendChar
-byte %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr);
+uint8_t %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr);
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendChar.Inc
@@ -184,7 +187,7 @@ byte %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetCharsInRxBuf
 %ifdef GetCharsInRxBuf
-word %'ModuleName'%.%GetCharsInRxBuf(void);
+uint16_t %'ModuleName'%.%GetCharsInRxBuf(void);
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceGetCharsInRxBuf.Inc
 
@@ -193,7 +196,7 @@ word %'ModuleName'%.%GetCharsInRxBuf(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-byte %'ModuleName'%.%Init(void);
+uint8_t %'ModuleName'%.%Init(void);
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceInit.Inc
 
@@ -202,7 +205,7 @@ byte %'ModuleName'%.%Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN App_Task
 %ifdef App_Task
-byte %'ModuleName'%.%App_Task(byte *txBuf, size_t txBufSize);
+uint8_t %'ModuleName'%.%App_Task(uint8_t *txBuf, size_t txBufSize);
 %define! PartxBuf
 %define! PartxBufSize
 %define! RetVal
@@ -213,7 +216,7 @@ byte %'ModuleName'%.%App_Task(byte *txBuf, size_t txBufSize);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendString
 %ifdef SendString
-byte %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr);
+uint8_t %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr);
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendString.Inc
@@ -235,7 +238,7 @@ byte %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutBufferChecked
 %ifdef PutBufferChecked
-byte %'ModuleName'%.%PutBufferChecked(byte *buf, size_t bufSize);
+uint8_t %'ModuleName'%.%PutBufferChecked(uint8_t *buf, size_t bufSize);
 %define! Parbuf
 %define! Parbufsize
 %define! RetVal
@@ -246,7 +249,7 @@ byte %'ModuleName'%.%PutBufferChecked(byte *buf, size_t bufSize);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN App_Callback
 %ifdef App_Callback
-void %'ModuleName'%.%App_Callback(byte controller_ID, byte event_type, void *val);
+void %'ModuleName'%.%App_Callback(uint8_t controller_ID, uint8_t event_type, void *val);
 %define! Parcontroller_ID
 %define! Parevent_type
 %define! Parval
@@ -257,7 +260,7 @@ void %'ModuleName'%.%App_Callback(byte controller_ID, byte event_type, void *val
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Notify_Callback
 %ifdef Notify_Callback
-void %'ModuleName'%.%Notify_Callback(byte controller_ID, byte event_type, void *val);
+void %'ModuleName'%.%Notify_Callback(uint8_t controller_ID, uint8_t event_type, void *val);
 %define! Parcontroller_ID
 %define! Parevent_type
 %define! Parval
@@ -292,7 +295,7 @@ void %'ModuleName'%.RunUsbEngine(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendBlock
 %ifdef SendBlock
-byte %'ModuleName'%.%SendBlock(byte *data, word dataSize);
+uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, uint16_t dataSize);
 %define! Pardata
 %define! PardataSize
 %define! RetVal
@@ -302,7 +305,7 @@ byte %'ModuleName'%.%SendBlock(byte *data, word dataSize);
 %-BW_METHOD_END SendBlock
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG SendDataBlock
-byte %'ModuleName'%.SendDataBlock(byte *data, word dataSize);
+uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize);
 %define! Pardata
 %define! PardataSize
 %define! RetVal
@@ -320,7 +323,7 @@ byte %'ModuleName'%.SendDataBlock(byte *data, word dataSize);
 %-BW_METHOD_BEGIN OnError
 %ifdef OnError
 %INTERFACE OnError
-void %OnError(byte error);
+void %OnError(uint8_t error);
 %define! Parerror
 %include Common\FSL_USB_CDC_DeviceOnError.Inc
 
@@ -386,7 +389,7 @@ static volatile boolean transactionOngoing = FALSE;
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceGetFreeInTxBuf.Inc
 /*
-word %'ModuleName'%.%GetFreeInTxBuf(void)
+uint16_t %'ModuleName'%.%GetFreeInTxBuf(void)
 {
   *** Implemented as macro in the header file
 }
@@ -400,10 +403,10 @@ word %'ModuleName'%.%GetFreeInTxBuf(void)
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceGetCharsInTxBuf.Inc
 /*
-word %'ModuleName'%.%GetCharsInTxBuf(void)
+uint16_t %'ModuleName'%.%GetCharsInTxBuf(void)
 {
   *** implemented as macro in the header file
-  return (word)%@TxBuffer@'ModuleName'%.NofElements();
+  return (uint16_t)%@TxBuffer@'ModuleName'%.NofElements();
 }
 */
 
@@ -414,7 +417,7 @@ word %'ModuleName'%.%GetCharsInTxBuf(void)
 %ifdef GetCharsInRxBuf
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceGetCharsInRxBuf.Inc
-word %'ModuleName'%.%GetCharsInRxBuf(void)
+uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 {
   static uint8_t txBuf[%'ModuleName'%.DATA_BUFF_SIZE];
 
@@ -423,7 +426,7 @@ word %'ModuleName'%.%GetCharsInRxBuf(void)
     %OnError(%'ModuleName'%.USB_ERR_TX_CHAR);
 %endif
   }
-  return (word)%@RxBuffer@'ModuleName'%.NofElements();
+  return (uint16_t)%@RxBuffer@'ModuleName'%.NofElements();
 }
 
 %endif %- GetCharsInRxBuf
@@ -435,7 +438,7 @@ word %'ModuleName'%.%GetCharsInRxBuf(void)
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceGetChar.Inc
 /**
-byte %'ModuleName'%.%GetChar(%'ModuleName'_TComData *Chr)
+uint8_t %'ModuleName'%.%GetChar(%'ModuleName'_TComData *Chr)
 {
   *** implemented as macro in the header file
   return %@RxBuffer@'ModuleName'%.Get(Chr);
@@ -449,7 +452,7 @@ byte %'ModuleName'%.%GetChar(%'ModuleName'_TComData *Chr)
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceRecvChar.Inc
-byte %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr)
+uint8_t %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr)
 {
   while(%@RxBuffer@'ModuleName'%.Get(Chr)!=ERR_OK) {
     /* retry receiving until success */
@@ -465,7 +468,7 @@ byte %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr)
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendChar.Inc
-byte %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr)
+uint8_t %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr)
 {
   static uint8_t txBuf[%'ModuleName'%.DATA_BUFF_SIZE];
   uint8_t res;
@@ -498,9 +501,9 @@ byte %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr)
 %define! PardataSize
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendBlock.Inc
-byte %'ModuleName'%.%SendBlock(byte *data, word dataSize)
+uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, uint16_t dataSize)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
   while(dataSize > 0) {
     if (%'ModuleName'%.%SendChar(*data)!=ERR_OK) {
@@ -524,9 +527,9 @@ byte %'ModuleName'%.%SendBlock(byte *data, word dataSize)
 %define! ParChr
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendString.Inc
-byte %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr)
+uint8_t %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
   while(*Chr != '\0') {
     if (%'ModuleName'%.%SendChar(*Chr)!=ERR_OK) {
@@ -551,7 +554,7 @@ byte %'ModuleName'%.%SendString(%'ModuleName'_TComData *Chr)
 %define! Parevent_type
 %define! Parval
 %include Common\FSL_USB_CDC_DeviceApp_Callback.Inc
-void %'ModuleName'%.%App_Callback(byte controller_ID, byte event_type, void *val)
+void %'ModuleName'%.%App_Callback(uint8_t controller_ID, uint8_t event_type, void *val)
 {
   UNUSED(controller_ID);
   UNUSED(val);
@@ -610,7 +613,7 @@ void %'ModuleName'%.%App_Callback(byte controller_ID, byte event_type, void *val
 %define! Parevent_type
 %define! Parval
 %include Common\FSL_USB_CDC_DeviceNotify_Callback.Inc
-void %'ModuleName'%.%Notify_Callback(byte controller_ID, byte event_type, void *val)
+void %'ModuleName'%.%Notify_Callback(uint8_t controller_ID, uint8_t event_type, void *val)
 {
   UNUSED(controller_ID);
   UNUSED(val);
@@ -647,7 +650,7 @@ void %'ModuleName'%.RunUsbEngine(void)
 %define! PardataSize
 %define! RetVal
 %include Common\GeneralInternal.inc (SendDataBlock)
-byte %'ModuleName'%.SendDataBlock(byte *data, word dataSize)
+uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
 {
 %if defined(Timeout) & %AppTaskTimeout >. "0"
   %@Timeout@'ModuleName'%.CounterHandle timeout;
@@ -692,7 +695,7 @@ byte %'ModuleName'%.SendDataBlock(byte *data, word dataSize)
 %define! PartxBufSize
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceApp_Task.Inc
-byte %'ModuleName'%.%App_Task(byte *txBuf, size_t txBufSize)
+uint8_t %'ModuleName'%.%App_Task(uint8_t *txBuf, size_t txBufSize)
 {
   uint8_t i, res;
 
@@ -737,7 +740,7 @@ byte %'ModuleName'%.%App_Task(byte *txBuf, size_t txBufSize)
 %ifdef Init
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceInit.Inc
-byte %'ModuleName'%.%Init(void)
+uint8_t %'ModuleName'%.%Init(void)
 {
   uint_8 err;
 
@@ -761,9 +764,9 @@ byte %'ModuleName'%.%Init(void)
 %define! Parbufsize
 %define! RetVal
 %include Common\FSL_USB_CDC_DevicePutBufferChecked.Inc
-byte %'ModuleName'%.%PutBufferChecked(byte *buf, size_t bufSize)
+uint8_t %'ModuleName'%.%PutBufferChecked(uint8_t *buf, size_t bufSize)
 {
-  byte res;
+  uint8_t res;
 
   if(bufSize>%'ModuleName'%.%GetFreeInTxBuf()) { /* no room at the Inn... */
 %if defined(OnError)
@@ -822,7 +825,7 @@ void %'ModuleName'%.%ClearTxBuffer(void)
 %IMPLEMENTATION OnError
 %define! Parerror
 %include Common\FSL_USB_CDC_DeviceOnError.Inc
-void %OnError(byte error)
+void %OnError(uint8_t error)
 {
   /* Write your code here ... */
 }

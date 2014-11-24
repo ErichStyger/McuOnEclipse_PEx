@@ -4,7 +4,7 @@
     <Name>RingBuffer</Name>
     <Description>Implements a ring buffer for 16bit elements</Description>
     <Author>Erich Styger</Author>
-    <Version>01.031</Version>
+    <Version>01.033</Version>
     <Icon>RingBuffer</Icon>
     <TypesFiles>PE,RingBuffer\RingBuffer</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>2</BW_NeedUst>
+    <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014, all rights reserved.\nWeb: http://www.mcuoneclipse.com\n\nThis an open source software of an embedded component for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -123,7 +123,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -150,7 +150,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -161,7 +161,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_ElementType elem)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType elem)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -184,7 +184,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -195,7 +195,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_ElementType *elemP)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType *elemP)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

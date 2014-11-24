@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.034</Version>
+    <Version>01.043</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Freescale, all rights reserved, 2013\nPorted as Processor Expert component: Erich Styger\nhttp: www.mcuoneclipse.com</Copyright>
@@ -24,6 +24,7 @@
     <DemoDriver>no</DemoDriver>
     <Shortcut>CDC</Shortcut>
     <BeanLevel>High</BeanLevel>
+    <OnlyForInheritanceSharing>true</OnlyForInheritanceSharing>
   </Options>
   <PropertyList>
     <Property>
@@ -358,12 +359,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>16bit unsigned</ReturnType>
+        <ReturnType>uint16_t</ReturnType>
         <RetHint>Number of free character in the receive buffer.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>word #M#_#C#(void)</ANSIC>
+          <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -386,12 +387,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>16bit unsigned</ReturnType>
+        <ReturnType>uint16_t</ReturnType>
         <RetHint>Number of character in the receive buffer.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>word #M#_#C#(void)</ANSIC>
+          <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -414,12 +415,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>16bit unsigned</ReturnType>
+        <ReturnType>uint16_t</ReturnType>
         <RetHint>Number of character in the receive buffer.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>word #M#_#C#(void)</ANSIC>
+          <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -442,7 +443,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, ERR_OK for success, ERR_RXEMPTY if nothing is in RX buffer.</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -453,7 +454,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -476,7 +477,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, ERR_OK for success, ERR_RXEMPTY if nothing is in RX buffer.</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -487,7 +488,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -510,7 +511,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code. ERR_OK for success and ERR_FAILED otherwise.</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -521,7 +522,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_TComData Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TComData Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -544,7 +545,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code. ERR_OK for success and ERR_FAILED otherwise.</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -555,7 +556,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TComData *Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -578,24 +579,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code. ERR_OK for success and ERR_FAILED otherwise.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data to send.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of data in bytes</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -618,25 +619,25 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>buf</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to buffer to be sent</ParHint>
         </Parameter>
         <Parameter>
           <ParName>bufsize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Buffer size in bytes</ParHint>
           <ParUserDeclaration>size_t bufSize</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *buf, size_t bufSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *buf, size_t bufSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -659,24 +660,24 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>data size in bytes</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -704,26 +705,26 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>controller_ID</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>controller ID</ParHint>
         </Parameter>
         <Parameter>
           <ParName>event_type</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>value of the event</ParHint>
         </Parameter>
         <Parameter>
           <ParName>val</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>gives the configuration value</ParHint>
           <ParUserDeclaration>void *val</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte controller_ID, byte event_type, void *val)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t controller_ID, uint8_t event_type, void *val)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -751,26 +752,26 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>controller_ID</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>controller ID</ParHint>
         </Parameter>
         <Parameter>
           <ParName>event_type</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>value of the event</ParHint>
         </Parameter>
         <Parameter>
           <ParName>val</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint/>
           <ParUserDeclaration>void *val</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte controller_ID, byte event_type, void *val)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t controller_ID, uint8_t event_type, void *val)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -821,25 +822,25 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, returns ERR_OK if USB enumeration has been finished, error code otherwise.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>txBuf</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to temporary buffer used to transmit data over USB. Should be equal or greater than the endpoint buffer size. Data will be sent in an asynchronous way, so make sure the buffer is *not* on the stack. This buffer must be available until the next transmission.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>txBufSize</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of the buffer in bytes</ParHint>
           <ParUserDeclaration>size_t txBufSize</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *txBuf, size_t txBufSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *txBuf, size_t txBufSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -862,12 +863,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -904,13 +905,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>error</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Error code</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte error)</ANSIC>
+          <ANSIC>void #C#(uint8_t error)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
