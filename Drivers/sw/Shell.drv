@@ -1179,7 +1179,7 @@ void %'ModuleName'%.%Init(void)
   if (ShellSem==NULL) { /* semaphore creation failed */
     for(;;) {} /* error, not enough memory? */
   }
-  vQueueAddToRegistry(ShellSem, "%'ModuleName'%Sem");
+  vQueueAddToRegistry(ShellSem, "%'ModuleName'%.Sem");
 %endif
 }
 
