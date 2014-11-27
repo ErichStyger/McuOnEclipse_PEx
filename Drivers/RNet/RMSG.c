@@ -130,6 +130,40 @@ uint8_t RMSG_QueueRxMsg(uint8_t *buf, size_t bufSize, uint8_t payloadSize, RPHY_
   return RMSG_QueuePut(buf, bufSize, payloadSize, FALSE, FALSE, TRUE, flags);
 }
 
+%if defined(Shell)
+static uint8_t RMSG_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"rmsg", (unsigned char*)"Group of rmsg commands\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows radio help or status\r\n", io->stdOut);
+}
+
+static uint8_t RMSG_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
+  uint8_t buf[32];
+
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"rmsg", (unsigned char*)"\r\n", io->stdOut);
+
+  %@Utility@'ModuleName'%.Num32uToStr(buf, sizeof(buf), RMSG_RxQueueNofItems());
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" items\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  rx", buf, io->stdOut);
+  %@Utility@'ModuleName'%.Num32uToStr(buf, sizeof(buf), RMSG_TxQueueNofItems());
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" items\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  tx", buf, io->stdOut);
+  return ERR_OK;
+}
+
+uint8_t RMSG_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io) {
+  uint8_t res = ERR_OK;
+
+  if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)%@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"rmsg help")==0) {
+    *handled = TRUE;
+    return RMSG_PrintHelp(io);
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)%@Shell@'ModuleName'%.CMD_STATUS)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"rmsg status")==0) {
+    *handled = TRUE;
+    return RMSG_PrintStatus(io);
+  }
+  return res;
+}
+%endif
+
 void RMSG_Deinit(void) {
 }
 

@@ -242,6 +242,7 @@ void %OnRadioEvent(%'ModuleName'_RadioEvent event);
 #include "RStack.h"
 #include "Radio.h"
 #include "RNWK.h"
+#include "RMSG.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -339,6 +340,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   {
     RADIO_ParseCommand,
     RNWK_ParseCommand,
+    RMSG_ParseCommand,
     NULL /* sentinel */
   };
   return %@Shell@'ModuleName'%.IterateTable(cmd, handled, io, CmdParserTable);

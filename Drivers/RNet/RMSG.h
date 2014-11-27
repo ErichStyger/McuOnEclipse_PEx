@@ -13,6 +13,18 @@
 #include "RNetConf.h"
 #include "RPHY.h"
 
+%if defined(Shell)
+#include "%@Shell@'ModuleName'.h"
+/*!
+ * \brief Parses a command
+ * \param cmd Command string to be parsed
+ * \param handled Sets this variable to TRUE if command was handled
+ * \param io I/O stream to be used for input/output
+ * \return Error code, ERR_OK if everything was fine
+ */
+uint8_t RMSG_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+%endif
+
 /*!
  * \brief Returns the number of messages in the Rx queue
  * \return Number of items in the Rx queue
