@@ -4,7 +4,7 @@
     <Name>RNet</Name>
     <Description>RNet (Radio and Remote Network) Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.081</Version>
+    <Version>01.083</Version>
     <Icon>RNet</Icon>
     <TypesFiles>PE,RNet\RNet</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -74,7 +74,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -142,6 +142,19 @@
                     <ChangeValueIntoRange>false</ChangeValueIntoRange>
                     <RuntimeProperty>false</RuntimeProperty>
                   </TIntgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address</Name>
+                    <Symbol>nRFAddress</Symbol>
+                    <Hint>List of 5 8bit values forming the device address. This is used to for the TX_ADDR and RX_ADDR and must be the same for communicating nodes.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0x11, 0x22, 0x33, 0x44, 0x55</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
                 </GrupItem>
               </Children>
             </TBoolGrupItem>

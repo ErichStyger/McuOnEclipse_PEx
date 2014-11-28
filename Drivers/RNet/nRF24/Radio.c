@@ -27,7 +27,7 @@
 #define POWERDOWN()          %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.CONFIG, %@nRF24L01p@'ModuleName'%.CONFIG_SETTINGS) /* power down */
 
 static bool RADIO_isSniffing = FALSE;
-static const uint8_t RADIO_TADDR[5] = {0x11, 0x22, 0x33, 0x44, 0x55}; /* device address */
+static const uint8_t RADIO_TADDR[5] = {%nRFAddress}; /* device address, as specified in the properties */
 
 #if RNET_CONFIG_SEND_RETRY_CNT>0
 static uint8_t RADIO_RetryCnt;
@@ -168,7 +168,7 @@ static uint8_t CheckRx(void) {
   uint8_t RxDataBuffer[RPHY_BUFFER_SIZE];
   uint8_t status;
   RPHY_PacketDesc packet;
-  bool hasRxData;
+  bool hasRxData, hasRx;
   
   hasRxData = FALSE;
   packet.flags = RPHY_PACKET_FLAGS_NONE;
@@ -180,7 +180,18 @@ static uint8_t CheckRx(void) {
   packet.rxtx = &RPHY_BUF_SIZE(packet.phyData); /* we transmit the data size too */
 #endif
   status = %@nRF24L01p@'ModuleName'%.GetStatusClrIRQ();
-  if (status&%@nRF24L01p@'ModuleName'%.STATUS_RX_DR) { /* data received interrupt */
+  hasRx = (status&%@nRF24L01p@'ModuleName'%.STATUS_RX_DR)!=0;
+#if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
+#if 1 /* experimental */
+  if (!hasRx) { /* interrupt flag not set, check if we have otherwise data */
+    (void)%@nRF24L01p@'ModuleName'%.GetFifoStatus(&status);
+    if (!(status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_EMPTY) || (status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_FULL)) { /* Rx not empty? */
+      hasRx = TRUE;
+    }
+  }
+#endif
+#endif
+  if (hasRx) { /* data received interrupt */
     hasRxData = TRUE;
 #if NRF24_DYNAMIC_PAYLOAD
     uint8_t payloadSize;
@@ -210,6 +221,8 @@ static uint8_t CheckRx(void) {
         Err((unsigned char*)"ERR: Rx Queue full?\r\n");
       }
     }
+  } else {
+    res = ERR_RXEMPTY; /* no data */
   }
   return res;
 }
@@ -233,11 +246,31 @@ static void RADIO_HandleStateMachine(void) {
       case RADIO_READY_FOR_TX_RX_DATA: /* we are ready to receive/send data data */
 #if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
         %@nRF24L01p@'ModuleName'%.PollInterrupt();
+#if 1 /* experimental */
+        if (!RADIO_isrFlag) { /* interrupt flag not set, check if we have otherwise data */
+          (void)%@nRF24L01p@'ModuleName'%.GetFifoStatus(&status);
+          if (!(status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_EMPTY) || (status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_FULL)) { /* Rx not empty? */
+            RADIO_isrFlag = TRUE;
+          }
+        }
+#endif
 #endif
         if (RADIO_isrFlag) { /* Rx interrupt? */
           RADIO_isrFlag = FALSE; /* reset interrupt flag */
-          (void)CheckRx(); /* get message */
+          res = CheckRx(); /* get message */
+#if 1 /* experimental */
+          (void)%@nRF24L01p@'ModuleName'%.GetFifoStatus(&status);
+          if (res==ERR_RXEMPTY && !(status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_EMPTY)) { /* no data, but still flag set? */
+            %@nRF24L01p@'ModuleName'%.Write(RF1_FLUSH_RX); /* flush old data */
+            RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* continue listening */
+          } else if (!(status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_EMPTY) || (status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_FULL)) { /* Rx not empty? */
+            RADIO_isrFlag = TRUE; /* stay in current state */
+          } else {
+            RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* continue listening */
+          }
+#else
           RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* continue listening */
+#endif
           break; /* process switch again */
         }
 #if RNET_CONFIG_SEND_RETRY_CNT>0
@@ -264,6 +297,11 @@ static void RADIO_HandleStateMachine(void) {
       case RADIO_WAITING_DATA_SENT:
 #if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
         %@nRF24L01p@'ModuleName'%.PollInterrupt();
+#endif
+#if 1 /* experimental */
+        if (!RADIO_isrFlag) { /* check if we missed an interrupt? */
+          %@nRF24L01p@'ModuleName'%.PollInterrupt();
+        }
 #endif
         if (RADIO_isrFlag) { /* check if we have received an interrupt: this is either timeout or low level ack */
           RADIO_isrFlag = FALSE; /* reset interrupt flag */
@@ -401,8 +439,8 @@ static const unsigned char *RadioStateStr(RADIO_AppStatusKind state) {
 static void RADIO_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"radio", (unsigned char*)"Group of radio commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows radio help or status\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  channel <number>", (unsigned char*)"Switches to the given channel. Channel must be in the range 0..127\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  power <number>", (unsigned char*)"Changes output power to 0, -10, -12, -18\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  channel <number>", (unsigned char*)"Switches to the given channel (0..127)\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  power <number>", (unsigned char*)"Changes output power (0, -10, -12, -18)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sniff on|off", (unsigned char*)"Turns sniffing on or off\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  writereg 0xReg 0xVal", (unsigned char*)"Write a transceiver register\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  flush", (unsigned char*)"Empty all queues\r\n", io->stdOut);
