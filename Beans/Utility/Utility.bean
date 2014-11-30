@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.105</Version>
+    <Version>01.106</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -2270,6 +2270,54 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(const unsigned char **str, uint8_t *values, uint8_t nofValues, char separator, %'ModuleName'_SeparatedNumberType numberType)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ScanDoubleQuotedString</Name>
+        <Symbol>ScanDoubleQuotedString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Scans a string inside double quotes and returns it without the double quotes.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to pointer to string to parse. This pointer will be advanced as much as parsing is done.</ParHint>
+          <ParUserDeclaration>const uint8_t **cmd</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer where to store the string</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bufSize</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of buffer in bytes</ParHint>
+          <ParUserDeclaration>size_t bufSize</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t **cmd, uint8_t *buf, size_t bufSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

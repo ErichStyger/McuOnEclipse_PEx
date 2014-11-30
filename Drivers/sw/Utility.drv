@@ -712,6 +712,18 @@ uint8_t %'ModuleName'%.%ScanSeparatedNumbers(const unsigned char **str, uint8_t 
 
 %endif %- ScanSeparatedNumbers
 %-BW_METHOD_END ScanSeparatedNumbers
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanDoubleQuotedString
+%ifdef ScanDoubleQuotedString
+uint8_t %'ModuleName'%.%ScanDoubleQuotedString(const uint8_t **cmd, uint8_t *buf, size_t bufSize);
+%define! Parcmd
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\UtilityScanDoubleQuotedString.Inc
+
+%endif %- ScanDoubleQuotedString
+%-BW_METHOD_END ScanDoubleQuotedString
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2514,6 +2526,43 @@ uint8_t %'ModuleName'%.%ScanSeparatedNumbers(const unsigned char **str, uint8_t 
 
 %endif %- ScanSeparatedNumbers
 %-BW_METHOD_END ScanSeparatedNumbers
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanDoubleQuotedString
+%ifdef ScanDoubleQuotedString
+%define! Parcmd
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\UtilityScanDoubleQuotedString.Inc
+uint8_t %'ModuleName'%.%ScanDoubleQuotedString(const uint8_t **cmd, uint8_t *buf, size_t bufSize)
+{
+  const uint8_t *p = *cmd;
+
+  if (bufSize==1) {
+    return ERR_FAILED; /* buffer too small */
+  }
+  buf[bufSize-1] = '\0'; /* terminate buffer */
+  bufSize--;
+  if (*p!='\"') {
+    return ERR_FAILED; /* does not start with double quote */
+  }
+  p++; /* skip double quote */
+  while(*p!='\"' && *p!='\0' && bufSize>0) {
+    *buf++ = *p++;
+    bufSize--;
+  }
+  if (*p!='\"') {
+    return ERR_FAILED; /* no terminating double quote */
+  } else {
+    p++; /* skip double quote */
+    *buf = '\0'; /* terminate buffer */
+  }
+  *cmd = p; /* advance pointer */
+  return ERR_OK;
+}
+
+%endif %- ScanDoubleQuotedString
+%-BW_METHOD_END ScanDoubleQuotedString
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

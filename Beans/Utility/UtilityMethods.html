@@ -791,6 +791,20 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ScanDoubleQuotedString">
+<b>ScanDoubleQuotedString</b></a>
+ - Scans a string inside double quotes and returns it without the double quotes.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ScanDoubleQuotedString(const uint8_t **cmd, uint8_t *buf, size_t bufSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd:uint8_t</i> - Pointer to pointer to string to parse. This pointer will be advanced as much as parsing is done.</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to buffer where to store the string</li>
+<li><i>bufSize:uint16_t</i> - Size of buffer in bytes</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="strcmp">
 <b>strcmp</b></a>
  - Wrapper to the standard strcmp() routine
