@@ -927,7 +927,7 @@ static uint8_t RxResponse(unsigned char *rxBuf, size_t rxBufLength, uint16_t msT
     } else if (isRxError(rxBuf, &%'ModuleName'%.lastErr)) {
       break; /* error */
     } else {
-      %@Wait@'ModuleName'%.Waitms(1);
+      %@Wait@'ModuleName'%.WaitOSms(1);
       msTimeout--;
     }
   } /* for */
