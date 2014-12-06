@@ -59,16 +59,16 @@
 
 %if TransceiverType='RNET_CONFIG_TRANSCEIVER_NRF24'
   %FILE? %'DirRel_Code'Radio.c
-  %include Rnet\nRF24\Radio.c
+  %include RNet\nRF24\Radio.c
   
   %FILE? %'DirRel_Code'RadioNRF24.h
-  %include Rnet\nRF24\RadioNRF24.h
+  %include RNet\nRF24\RadioNRF24.h
 %elif TransceiverType='RNET_CONFIG_TRANSCEIVER_MC13201'
   %FILE? %'DirRel_Code'Radio.c
-  %include Rnet\SMAC\Radio.c
+  %include RNet\SMAC\Radio.c
   
   %FILE? %'DirRel_Code'RadioSMAC.h
-  %include Rnet\SMAC\RadioSMAC.h
+  %include RNet\SMAC\RadioSMAC.h
 %else
  %error unsupported RNet transceiver type '%TransceiverType'
 %endif
