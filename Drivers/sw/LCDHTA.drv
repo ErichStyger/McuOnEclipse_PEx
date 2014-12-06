@@ -52,7 +52,6 @@
 %define! Description_EnablePulse Creates a pulse to transfer data and/or commands
 %define! Description_WaitForLCDReady Waits until the display is ready
 %define! Description_WriteLCDData Writes data to the display
-%define! Description_WriteLCDCommand Writes a command to the display
 %define! Description_Init Display driver initialization routine.
 %-BW_INTERN_COMMENTS_END
 %-
@@ -290,6 +289,31 @@ byte %'ModuleName'%.%UseDisplay(byte display);
 
 %endif %- UseDisplay
 %-BW_METHOD_END UseDisplay
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CursorShiftRight
+%ifdef CursorShiftRight
+void %'ModuleName'%.%CursorShiftRight(void);
+%include Common\LCDHTACursorShiftRight.Inc
+
+%endif %- CursorShiftRight
+%-BW_METHOD_END CursorShiftRight
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CursorShiftLeft
+%ifdef CursorShiftLeft
+void %'ModuleName'%.%CursorShiftLeft(void);
+%include Common\LCDHTACursorShiftLeft.Inc
+
+%endif %- CursorShiftLeft
+%-BW_METHOD_END CursorShiftLeft
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteLCDCommand
+%ifdef WriteLCDCommand
+void %'ModuleName'%.%WriteLCDCommand(byte cmd);
+%define! Parcmd
+%include Common\LCDHTAWriteLCDCommand.Inc
+
+%endif %- WriteLCDCommand
+%-BW_METHOD_END WriteLCDCommand
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -363,8 +387,10 @@ byte %'ModuleName'%.%UseDisplay(byte display);
 #define ThirdLineCmd   (GotoXYCmd|Line3Offset)
 #define FourthLineCmd  (GotoXYCmd|Line4Offset)
 
-#define RightShiftCmd   0x1C
-#define LeftShiftCmd    0x18
+#define RightShiftCmd      0x1C
+#define LeftShiftCmd       0x18
+#define RightShiftCursor   0x14
+#define LeftShiftCursor    0x10
 
 %if defined(CursorOn) | defined(CursorOff) | defined(BlinkingOn) | defined(BlinkingOff) | defined(DisplayOn) | defined(CursorOff)
   %define NeedDisplayStatusVariable
@@ -542,9 +568,6 @@ static void DataPut(uint8_t val) {
 %-INTERNAL_LOC_METHOD_BEG EnablePulse
 static void EnablePulse(void);
 %-INTERNAL_LOC_METHOD_END EnablePulse
-%-INTERNAL_LOC_METHOD_BEG WriteLCDCommand
-static void WriteLCDCommand(byte cmd);
-%-INTERNAL_LOC_METHOD_END WriteLCDCommand
 %-
 
 %-BW_INTERN_METHOD_DECL_END
@@ -554,7 +577,7 @@ static void WriteLCDCommand(byte cmd);
 static void EnablePulse(void)
 {
 %if defined(E2)
-  if(%'ModuleName'%.currDisplay==1) {
+  if (%'ModuleName'%.currDisplay==1) {
     SetEN();
   } else {
     SetEN2();
@@ -568,7 +591,7 @@ static void EnablePulse(void)
   Waitns(Timing_PWeh_ns);
 %endif
 %if defined(E2)
-  if(%'ModuleName'%.currDisplay==1) {
+  if (%'ModuleName'%.currDisplay==1) {
     ClrEN();                                                     %>40 /* set to 0 to finish pulse */
   } else {
     ClrEN2();                                                    %>40 /* set to 0 to finish pulse */
@@ -653,10 +676,11 @@ void %'ModuleName'%.WaitForLCDReady(void)
 %endif /* %CheckBusyFlag = "yes" */
 %-INTERNAL_METHOD_END WaitForLCDReady
 
-%-INTERNAL_METHOD_BEG WriteLCDCommand
+%-BW_METHOD_BEGIN WriteLCDCommand
+%ifdef WriteLCDCommand
 %define! Parcmd
-%include Common\GeneralInternalGlobal.inc (WriteLCDCommand)
-static void WriteLCDCommand(byte cmd)
+%include Common\LCDHTAWriteLCDCommand.Inc
+void %'ModuleName'%.%WriteLCDCommand(byte cmd)
 {
 %if %WaitDisplayUs >. '0'
   %@Wait@'ModuleName'%.Waitus(%WaitDisplayUs);                   %>40 /* wait for some time not to write to the display while he may be busy with previous command */
@@ -679,13 +703,14 @@ static void WriteLCDCommand(byte cmd)
 %endif
 }
 
-%-INTERNAL_METHOD_END WriteLCDCommand
+%endif %- WriteLCDCommand
+%-BW_METHOD_END WriteLCDCommand
 %-BW_METHOD_BEGIN Clear
 %ifdef Clear
 %include Common\LCDHTAClear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-  WriteLCDCommand(ClearDisplayCmd);                              %>40 /* send the clear command to the LCD */
+  %'ModuleName'%.WriteLCDCommand(ClearDisplayCmd);               %>40 /* send the clear command to the LCD */
 }
 
 %endif %- Clear
@@ -695,7 +720,7 @@ void %'ModuleName'%.%Clear(void)
 %include Common\LCDHTAHome.Inc
 void %'ModuleName'%.%Home(void)
 {
-  WriteLCDCommand(ReturnHomeCmd);                                %>40 /* moves the cursor to the beginning of the first line */
+  %'ModuleName'%.WriteLCDCommand(ReturnHomeCmd);                 %>40 /* moves the cursor to the beginning of the first line */
 }
 
 %endif %- Home
@@ -740,9 +765,9 @@ void %'ModuleName'%.%GotoXY(byte line, byte column)
 %if %LCD_Nof_Lines = "1"
   /* only one line in LCD: ignore line argument */
   (void)line;                                                    %>40 /* to avoid compiler warning about unused variable */
-  WriteLCDCommand((byte)(GotoXYCmd + (column-1)));
+  %'ModuleName'%.WriteLCDCommand((byte)(GotoXYCmd + (column-1)));
 %elif %LCD_Nof_Lines = "2"
-  WriteLCDCommand((byte)(GotoXYCmd + (column-1) + (line==1 ? 0x00:Line2Offset)));
+  %'ModuleName'%.WriteLCDCommand((byte)(GotoXYCmd + (column-1) + (line==1 ? 0x00:Line2Offset)));
 %elif %LCD_Nof_Lines = "3"
   byte offset;
 
@@ -753,7 +778,7 @@ void %'ModuleName'%.%GotoXY(byte line, byte column)
   } else { /* line 3 */
     offset = Line3Offset;
   }
-  WriteLCDCommand((byte)(GotoXYCmd + (column-1) + offset));
+  %'ModuleName'%.WriteLCDCommand((byte)(GotoXYCmd + (column-1) + offset));
 %elif %LCD_Nof_Lines = "4"
   byte offset;
 
@@ -766,7 +791,7 @@ void %'ModuleName'%.%GotoXY(byte line, byte column)
   } else { /* line 4 */
     offset = Line4Offset;
   }
-  WriteLCDCommand((byte)(GotoXYCmd + (column-1) + offset));
+  %'ModuleName'%.WriteLCDCommand((byte)(GotoXYCmd + (column-1) + offset));
 %else
   %error "only up to 4 LCD lines are supported!"
 %endif
@@ -779,7 +804,7 @@ void %'ModuleName'%.%GotoXY(byte line, byte column)
 %include Common\LCDHTAShiftLeft.Inc
 void %'ModuleName'%.%ShiftLeft(void)
 {
-  WriteLCDCommand(LeftShiftCmd);
+  %'ModuleName'%.WriteLCDCommand(LeftShiftCmd);
 }
 
 %endif %- ShiftLeft
@@ -798,9 +823,9 @@ void %'ModuleName'%.%WriteLn(void)
 {
 %if %LCD_Nof_Lines = "1"
   /* only one line in LCD: move to beginning of first line */
-  WriteLCDCommand(FirstLineCmd);
+  %'ModuleName'%.WriteLCDCommand(FirstLineCmd);
 %elif %LCD_Nof_Lines = "2"
-  WriteLCDCommand(SecondLineCmd);
+  %'ModuleName'%.WriteLCDCommand(SecondLineCmd);
 %else
   /* more than 2 lines, cannot use WriteLn() */
 %endif
@@ -852,26 +877,26 @@ void %'ModuleName'%.%Line(byte line)
 %if %LCD_Nof_Lines = "1"
   /* we only have one line, so moving to the first line */
   (void)line;                                                    %>40 /* to avoid compiler warning about unused variable */
-  WriteLCDCommand(FirstLineCmd);
+  %'ModuleName'%.WriteLCDCommand(FirstLineCmd);
 %elif %LCD_Nof_Lines = "2"
-  WriteLCDCommand((byte)(line==1?FirstLineCmd:SecondLineCmd));
+  %'ModuleName'%.WriteLCDCommand((byte)(line==1?FirstLineCmd:SecondLineCmd));
 %elif %LCD_Nof_Lines = "3"
   if (line==1) {
-    WriteLCDCommand((byte)(FirstLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(FirstLineCmd));
   } else if (line==2) {
-    WriteLCDCommand((byte)(SecondLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(SecondLineCmd));
   } else { /* line == 3 */
-    WriteLCDCommand((byte)(ThirdLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(ThirdLineCmd));
   }
 %elif %LCD_Nof_Lines = "4"
   if (line==1) {
-    WriteLCDCommand((byte)(FirstLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(FirstLineCmd));
   } else if (line==2) {
-    WriteLCDCommand((byte)(SecondLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(SecondLineCmd));
   } else if (line==3) {
-    WriteLCDCommand((byte)(ThirdLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(ThirdLineCmd));
   } else { /* line == 4 */
-    WriteLCDCommand((byte)(FourthLineCmd));
+    %'ModuleName'%.WriteLCDCommand((byte)(FourthLineCmd));
   }
 %else
   %error "only up to 4 LCD lines are supported!"
@@ -980,7 +1005,7 @@ void %'ModuleName'%.Init(void)
 %if defined(E2)
   %'ModuleName'%.UseDisplay(1);
 %endif
-  WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
+  %'ModuleName'%.WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
 %if %DataBusWidth='4bit'
                  |FunctionSet_4bit                               %>40 /* we are using 4bit data bus */ \
 %else
@@ -994,7 +1019,7 @@ void %'ModuleName'%.Init(void)
                  );
 %if defined(E2)
   %'ModuleName'%.UseDisplay(2);
-  WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
+  %'ModuleName'%.WriteLCDCommand(FunctionSetCmd|FunctionSet_Font5x8
 %if %DataBusWidth='4bit'
                  |FunctionSet_4bit                               %>40 /* we are using 4bit data bus */ \
 %else
@@ -1013,30 +1038,30 @@ void %'ModuleName'%.Init(void)
 %if defined(E2)
   %'ModuleName'%.UseDisplay(1);
 %endif
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 %if defined(E2)
   %'ModuleName'%.UseDisplay(2);
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 %endif
 %else
 %if defined(E2)
   %'ModuleName'%.UseDisplay(1);
 %endif
-  WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
 %if defined(E2)
   %'ModuleName'%.UseDisplay(2);
-  WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
 %endif
 %endif
 %if defined(E2)
   %'ModuleName'%.UseDisplay(1);
 %endif
-  WriteLCDCommand(ClearDisplayCmd); /* Clear display */
-  WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn);     %>40 /* Entry mode set: Increment mode, display shift off */
+  %'ModuleName'%.WriteLCDCommand(ClearDisplayCmd); /* Clear display */
+  %'ModuleName'%.WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn);%>40 /* Entry mode set: Increment mode, display shift off */
 %if defined(E2)
   %'ModuleName'%.UseDisplay(2);
-  WriteLCDCommand(ClearDisplayCmd); /* Clear display */
-  WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn);     %>40 /* Entry mode set: Increment mode, display shift off */
+  %'ModuleName'%.WriteLCDCommand(ClearDisplayCmd); /* Clear display */
+  %'ModuleName'%.WriteLCDCommand(EntryModeSetCmd|EntryModeSet_IncrementOn);%>40 /* Entry mode set: Increment mode, display shift off */
 %endif
 %if defined(E2)
   %'ModuleName'%.UseDisplay(1);
@@ -1057,11 +1082,11 @@ void %'ModuleName'%.%LoadSoftChar(byte charCode, byte *softChar)
   #define DDAddress 0x80                                         %>40 /* To finish the download mode */
   byte i;
 
-  WriteLCDCommand((byte)(CGAddress + (charCode * 0x08)));        %>40 /* Set CG Ram: Character code * 0x08 [size] */
+  %'ModuleName'%.WriteLCDCommand((byte)(CGAddress + (charCode * 0x08)));%>40 /* Set CG Ram: Character code * 0x08 [size] */
   for (i=0; i<=7; i++){
     %'ModuleName'%.Write(softChar[i]);
   }
-  WriteLCDCommand(DDAddress);                                    %>40 /* finish the download */
+  %'ModuleName'%.WriteLCDCommand(DDAddress);                     %>40 /* finish the download */
 }
 
 %endif %- LoadSoftChar
@@ -1071,7 +1096,7 @@ void %'ModuleName'%.%LoadSoftChar(byte charCode, byte *softChar)
 %include Common\LCDHTAShiftRight.Inc
 void %'ModuleName'%.%ShiftRight(void)
 {
-  WriteLCDCommand(RightShiftCmd);
+  %'ModuleName'%.WriteLCDCommand(RightShiftCmd);
 }
 
 %endif %- ShiftRight
@@ -1082,7 +1107,7 @@ void %'ModuleName'%.%ShiftRight(void)
 void %'ModuleName'%.%CursorOn(void)
 {
   DisplayOnOffControlStatus |= DisplayOnOffControl_CursorOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- CursorOn
@@ -1093,7 +1118,7 @@ void %'ModuleName'%.%CursorOn(void)
 void %'ModuleName'%.%CursorOff(void)
 {
   DisplayOnOffControlStatus &= ~DisplayOnOffControl_CursorOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- CursorOff
@@ -1104,7 +1129,7 @@ void %'ModuleName'%.%CursorOff(void)
 void %'ModuleName'%.%DisplayOn(void)
 {
   DisplayOnOffControlStatus |= DisplayOnOffControl_DisplayOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- DisplayOn
@@ -1115,7 +1140,7 @@ void %'ModuleName'%.%DisplayOn(void)
 void %'ModuleName'%.%DisplayOff(void)
 {
   DisplayOnOffControlStatus &= ~DisplayOnOffControl_DisplayOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- DisplayOff
@@ -1126,7 +1151,7 @@ void %'ModuleName'%.%DisplayOff(void)
 void %'ModuleName'%.%BlinkingOn(void)
 {
   DisplayOnOffControlStatus |= DisplayOnOffControl_BlinkOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- BlinkingOn
@@ -1137,7 +1162,7 @@ void %'ModuleName'%.%BlinkingOn(void)
 void %'ModuleName'%.%BlinkingOff(void)
 {
   DisplayOnOffControlStatus &= ~DisplayOnOffControl_BlinkOn;
-  WriteLCDCommand(DisplayOnOffControlStatus);
+  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 }
 
 %endif %- BlinkingOff
@@ -1158,7 +1183,7 @@ void %'ModuleName'%.%SetEntryMode(bool increment, bool shiftLeft)
   if (shiftLeft) {
     flags |= EntryModeSet_ShiftOn;
   }
-  WriteLCDCommand((byte)(EntryModeSetCmd|flags));                %>40 /* Entry mode set: Increment mode, display shift mode */
+  %'ModuleName'%.WriteLCDCommand((byte)(EntryModeSetCmd|flags)); %>40 /* Entry mode set: Increment mode, display shift mode */
 }
 
 %endif %- SetEntryMode
@@ -1184,6 +1209,28 @@ byte %'ModuleName'%.%UseDisplay(byte display)
 
 %endif %- UseDisplay
 %-BW_METHOD_END UseDisplay
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CursorShiftRight
+%ifdef CursorShiftRight
+%include Common\LCDHTACursorShiftRight.Inc
+void %'ModuleName'%.%CursorShiftRight(void)
+{
+  %'ModuleName'%.WriteLCDCommand(RightShiftCursor);
+}
+
+%endif %- CursorShiftRight
+%-BW_METHOD_END CursorShiftRight
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CursorShiftLeft
+%ifdef CursorShiftLeft
+%include Common\LCDHTACursorShiftLeft.Inc
+void %'ModuleName'%.%CursorShiftLeft(void)
+{
+  %'ModuleName'%.WriteLCDCommand(LeftShiftCursor);
+}
+
+%endif %- CursorShiftLeft
+%-BW_METHOD_END CursorShiftLeft
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
