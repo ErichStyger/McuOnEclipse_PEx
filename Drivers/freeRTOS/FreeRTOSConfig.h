@@ -367,6 +367,7 @@
 %else
 /* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwritt task return address for port.c */
 %endif
+
 /* Software timer definitions. */
 %if %TimersEnabled='yes'
 #define configUSE_TIMERS                                         %>50 1
