@@ -218,22 +218,22 @@ LI.EXP {
 </li>
 <li><a name="SendReset">
 <b>SendReset</b></a>
- - no hint
+ - Sends a reset to the bus
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void SendReset(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
-<li><a name="Receive">
-<b>Receive</b></a>
+<li><a name="Receive2">
+<b>Receive2</b></a>
  - Programs a read operation after the master send all in output buffer. Don't use a SendReset while the data is coming.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool Receive(void* numOfBytes, void* count)<br />
+<br /><i>ANSIC prototype:</i> bool Receive2(uint8_t numOfBytes, uint8_t counter)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>numOfBytes:void*</i> - no hint</li>
-<li><i>count:void*</i> - Number of bytes to receive from slave.</li>
+<li><i>numOfBytes:uint8_t</i> - number of bytes</li>
+<li><i>counter:uint8_t</i> - Number of bytes to receive from slave</li>
 <li><i>Return value:bool</i> - Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-
 </li>
 </ul><br />
@@ -254,9 +254,9 @@ LI.EXP {
  - no hint
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ProgramEvent(void* key)<br />
+<br /><i>ANSIC prototype:</i> bool ProgramEvent(uint8_t key)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>key:void*</i> - Key to identificate the event, applies only if OProgramEvent is enabled. (Valid range 0 - 31)</li>
+<li><i>key:uint8_t</i> - Key to identificate the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</li>
 <li><i>Return value:bool</i> - Returns false if the program buffer is full.
 </li>
 </ul><br />
@@ -266,10 +266,10 @@ LI.EXP {
  - Programs a pause between instruccions.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool Waitms(void* key, void* key, void* time_ms)<br />
+<br /><i>ANSIC prototype:</i> bool Waitms(byte keyValue, void* keyPeriodEnd, void* time_ms)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>key:void*</i> - Key to identificate the source of the event.</li>
-<li><i>key:void*</i> - Key to identificate the period end, applies only if OnWaitEnd evet is enabled.  (Valid range 0 - 31)</li>
+<li><i>keyValue:byte</i> - Key to identificate the source of the event.</li>
+<li><i>keyPeriodEnd:void*</i> - Key to identificate the period end, applies only if OnWaitEnd evet is enabled.  (Valid range 0 - 31)</li>
 <li><i>time_ms:void*</i> - Value of time to wait.</li>
 <li><i>Return value:bool</i> - Returns false if the program buffer or the time buffer is full.
 </li>
@@ -277,57 +277,57 @@ LI.EXP {
 </li>
 <li><a name="SendByte">
 <b>SendByte</b></a>
- - no hint
+ - Sends a single byte
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SendByte(void* _byte)<br />
+<br /><i>ANSIC prototype:</i> bool SendByte(byte data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>_byte:void*</i> - Variable to save the byte.</li>
+<li><i>data:byte</i> - Variable to save the byte.</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
 </li>
 <li><a name="SendBytes">
 <b>SendBytes</b></a>
- - no hint
+ - Sends multiple bytes
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SendBytes(void* *_bytes, void* count)<br />
+<br /><i>ANSIC prototype:</i> bool SendBytes(uint8_t *data, uint8_t count)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>_bytes: Pointer to void*</i> - Array of bytes to add to output stream.</li>
-<li><i>count:void*</i> - Number of bytes to add to output stream. (Valid range 0 - 31)</li>
+<li><i>data: Pointer to uint8_t</i> - Array of bytes to add to output stream.</li>
+<li><i>count:uint8_t</i> - Number of bytes to add to output stream. (Valid range 0 - 31)</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
 </li>
 <li><a name="GetBytes">
 <b>GetBytes</b></a>
- - no hint
+ - Gets multiple bytes from the bus
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetBytes(void* *_bytes, void* count)<br />
+<br /><i>ANSIC prototype:</i> bool GetBytes(uint8_t *data, uint8_t count)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>_bytes: Pointer to void*</i> - no hint</li>
-<li><i>count:void*</i> - no hint</li>
+<li><i>data: Pointer to uint8_t</i> - no hint</li>
+<li><i>count:uint8_t</i> - no hint</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
 </li>
 <li><a name="GetByte">
 <b>GetByte</b></a>
- - no hint
+ - Get a single byte from the bus
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetByte(void* *_byte)<br />
+<br /><i>ANSIC prototype:</i> bool GetByte(uint8_t *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>_byte: Pointer to void*</i> - no hint</li>
+<li><i>data: Pointer to uint8_t</i> - no hint</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
 </li>
 <li><a name="GetError">
 <b>GetError</b></a>
- - no hint
+ - Returns the error
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void GetError(void)<br />

@@ -5,9 +5,9 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (GetByte)
 %;**     Description :
-%;**         
+%;**         Get a single byte from the bus
 %include Common\GeneralParameters.inc(27)
-%;**       * _byte%Par_byte %>27 - 
+%;**       * data%Pardata %>27 - 
 %;**     Returns     :
 %;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc

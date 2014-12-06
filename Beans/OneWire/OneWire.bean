@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.009</Version>
+    <Version>01.063</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -357,7 +357,7 @@
         <Name>SendReset</Name>
         <Symbol>SendReset</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Sends a reset to the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -382,8 +382,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Receive</Name>
-        <Symbol>Receive</Symbol>
+        <Name>Receive2</Name>
+        <Symbol>Receive2</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Programs a read operation after the master send all in output buffer. Don't use a SendReset while the data is coming.</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -405,19 +405,19 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>numOfBytes</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>number of bytes</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>count</ParName>
-          <ParType>pointer</ParType>
+          <ParName>counter</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Number of bytes to receive from slave.</ParHint>
+          <ParHint>Number of bytes to receive from slave</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* numOfBytes, void* count)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t numOfBytes, uint8_t counter)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -473,13 +473,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>key</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the event, applies only if OProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
+          <ParHint>Key to identificate the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* key)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t key)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -506,13 +506,13 @@
         <RetHint>Returns false if the program buffer or the time buffer is full.</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
-          <ParName>key</ParName>
-          <ParType>pointer</ParType>
+          <ParName>keyValue</ParName>
+          <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Key to identificate the source of the event.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>key</ParName>
+          <ParName>keyPeriodEnd</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Key to identificate the period end, applies only if OnWaitEnd evet is enabled.  (Valid range 0 - 31)</ParHint>
@@ -525,7 +525,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* key, void* key, void* time_ms)</ANSIC>
+          <ANSIC>bool #M#_#C#(byte keyValue, void* keyPeriodEnd, void* time_ms)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -550,23 +550,17 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
-        <ParamCount>2</ParamCount>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>bit_value</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Bit to add to CRC accumulator.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>bit_value</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParName>bitValue</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to bit to add to CRC accumulator</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(void* bit_value, void* bit_value)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t *bitValue)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -894,7 +888,7 @@
         <Name>SendByte</Name>
         <Symbol>SendByte</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Sends a single byte</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -912,14 +906,14 @@
         <RetHint/>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>_byte</ParName>
-          <ParType>pointer</ParType>
+          <ParName>data</ParName>
+          <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Variable to save the byte.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* _byte)</ANSIC>
+          <ANSIC>bool #M#_#C#(byte data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -928,7 +922,7 @@
         <Name>SendBytes</Name>
         <Symbol>SendBytes</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Sends multiple bytes</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -946,20 +940,20 @@
         <RetHint/>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>_bytes</ParName>
-          <ParType>pointer</ParType>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Array of bytes to add to output stream.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>count</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Number of bytes to add to output stream. (Valid range 0 - 31)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* *_bytes, void* count)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -968,7 +962,7 @@
         <Name>GetBytes</Name>
         <Symbol>GetBytes</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Gets multiple bytes from the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -986,20 +980,20 @@
         <RetHint/>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>_bytes</ParName>
-          <ParType>pointer</ParType>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint/>
         </Parameter>
         <Parameter>
           <ParName>count</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint/>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* *_bytes, void* count)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1008,7 +1002,7 @@
         <Name>GetByte</Name>
         <Symbol>GetByte</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Get a single byte from the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1026,14 +1020,14 @@
         <RetHint/>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>_byte</ParName>
-          <ParType>pointer</ParType>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint/>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* *_byte)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1042,7 +1036,7 @@
         <Name>GetError</Name>
         <Symbol>GetError</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Returns the error</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1097,21 +1091,21 @@
         <IsAssembler>false</IsAssembler>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>key</ParName>
-          <ParType>pointer</ParType>
+          <ParName>key4</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the source of the event.</ParHint>
+          <ParHint>Key to identify the source of the event</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(void* key)</ANSIC>
+          <ANSIC>void #C#(uint8_t key4)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
             <TEvntName>
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
-              <Hint>Event procedure name</Hint>
+              <Hint>OnProgramEvent procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>
@@ -1226,14 +1220,14 @@
         <IsAssembler>false</IsAssembler>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>key</ParName>
-          <ParType>pointer</ParType>
+          <ParName>key2</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Key to identificate the source of the event.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(void* key)</ANSIC>
+          <ANSIC>void #C#(uint8_t key2)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -1363,8 +1357,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2014-11-04</Date>
-      <Version>01.009</Version>
+      <Date>2014-12-06</Date>
+      <Version>01.063</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

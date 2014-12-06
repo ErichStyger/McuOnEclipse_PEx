@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         
 %include Common\GeneralParameters.inc(27)
-%;**       * key%Parkey %>27 - Key to identificate the source of the
+%;**         key2%Parkey2 %>27 - Key to identificate the source of the
 %;** %>29 event.
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================

@@ -5,9 +5,9 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (SendByte)
 %;**     Description :
-%;**         
+%;**         Sends a single byte
 %include Common\GeneralParameters.inc(27)
-%;**       * _byte%Par_byte %>27 - Variable to save the byte.
+%;**         data%Pardata %>27 - Variable to save the byte.
 %;**     Returns     :
 %;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc

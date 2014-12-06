@@ -7,8 +7,8 @@
 %;**     Description :
 %;**         Adds a bit to CRC accumulator.
 %include Common\GeneralParameters.inc(27)
-%;**       * bit_value%Parbit_value %>27 - Bit to add to CRC accumulator.
-%;**       * bit_value%Parbit_value %>27 - 
+%;**       * bitValue%ParbitValue %>27 - Pointer to bit to add to CRC
+%;** %>29 accumulator
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

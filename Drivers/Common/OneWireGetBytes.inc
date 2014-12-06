@@ -5,10 +5,10 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (GetBytes)
 %;**     Description :
-%;**         
+%;**         Gets multiple bytes from the bus
 %include Common\GeneralParameters.inc(27)
-%;**       * _bytes%Par_bytes %>27 - 
-%;**       * count%Parcount %>27 - 
+%;**       * data%Pardata %>27 - 
+%;**         count%Parcount %>27 - 
 %;**     Returns     :
 %;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc

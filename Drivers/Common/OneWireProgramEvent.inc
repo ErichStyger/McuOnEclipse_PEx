@@ -7,8 +7,8 @@
 %;**     Description :
 %;**         
 %include Common\GeneralParameters.inc(27)
-%;**       * key%Parkey %>27 - Key to identificate the event, applies
-%;** %>29 only if OProgramEvent is enabled. (Valid
+%;**         key%Parkey %>27 - Key to identificate the event, applies
+%;** %>29 only if OnProgramEvent is enabled. (Valid
 %;** %>29 range 0 - 31)
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Returns false if the program buffer is
