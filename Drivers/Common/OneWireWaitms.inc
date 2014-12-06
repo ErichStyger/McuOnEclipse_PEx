@@ -7,12 +7,8 @@
 %;**     Description :
 %;**         Programs a pause between instruccions.
 %include Common\GeneralParameters.inc(27)
-%;**         keyValue%ParkeyValue %>27 - Key to identificate the source
-%;** %>29 of the event.
-%;**       * keyPeriodEnd%ParkeyPeriodEnd %>27 - Key to identificate the
-%;** %>29 period end, applies only if OnWaitEnd evet
-%;** %>29 is enabled.  (Valid range 0 - 31)
-%;**       * time_ms%Partime_ms %>27 - Value of time to wait.
+%;**         key%Parkey %>27 - Key to identify the source of the event.
+%;**         time_ms%Partime_ms %>27 - Value of time to wait.
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Returns false if the program buffer or the
 %;** %>29 time buffer is full.

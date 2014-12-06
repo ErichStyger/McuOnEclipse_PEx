@@ -266,11 +266,10 @@ LI.EXP {
  - Programs a pause between instruccions.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool Waitms(byte keyValue, void* keyPeriodEnd, void* time_ms)<br />
+<br /><i>ANSIC prototype:</i> bool Waitms(byte key, uint8_t time_ms)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>keyValue:byte</i> - Key to identificate the source of the event.</li>
-<li><i>keyPeriodEnd:void*</i> - Key to identificate the period end, applies only if OnWaitEnd evet is enabled.  (Valid range 0 - 31)</li>
-<li><i>time_ms:void*</i> - Value of time to wait.</li>
+<li><i>key:byte</i> - Key to identify the source of the event.</li>
+<li><i>time_ms:uint8_t</i> - Value of time to wait.</li>
 <li><i>Return value:bool</i> - Returns false if the program buffer or the time buffer is full.
 </li>
 </ul><br />

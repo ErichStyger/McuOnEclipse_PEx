@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.063</Version>
+    <Version>01.065</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -504,28 +504,22 @@
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
         <RetHint>Returns false if the program buffer or the time buffer is full.</RetHint>
-        <ParamCount>3</ParamCount>
+        <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>keyValue</ParName>
+          <ParName>key</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the source of the event.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>keyPeriodEnd</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the period end, applies only if OnWaitEnd evet is enabled.  (Valid range 0 - 31)</ParHint>
+          <ParHint>Key to identify the source of the event.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>time_ms</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Value of time to wait.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte keyValue, void* keyPeriodEnd, void* time_ms)</ANSIC>
+          <ANSIC>bool #M#_#C#(byte key, uint8_t time_ms)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -555,12 +549,12 @@
         <Parameter>
           <ParName>bitValue</ParName>
           <ParType>uint8_t</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to bit to add to CRC accumulator</ParHint>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Bit to add to CRC accumulator</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint8_t *bitValue)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t bitValue)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1358,7 +1352,7 @@
     </Revision>
     <Revision>
       <Date>2014-12-06</Date>
-      <Version>01.063</Version>
+      <Version>01.065</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>
