@@ -4,7 +4,7 @@
     <Name>Shell</Name>
     <Description>Command Line Shell</Description>
     <Author>Erich Styger</Author>
-    <Version>01.050</Version>
+    <Version>01.051</Version>
     <Icon>Shell</Icon>
     <TypesFiles>PE,Shell\Shell</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1468,6 +1468,113 @@
       </TMthdItem>
     </Method>
   </MethodList>
+  <EventList>
+    <Event>
+      <TStrgItem>
+        <Name>Event module name</Name>
+        <Symbol>EventModule</Symbol>
+        <Hint>Name of the user module (without extension), where the events from this component are placed.</Hint>
+        <ItemLevel>ADVANCED</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>Events</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnBeforeIterateCmd</Name>
+        <Symbol>OnBeforeIterateCmd</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Hook called before parsing a command in IterateTable().</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>command parsed</ParHint>
+          <ParUserDeclaration>const uint8_t *cmd</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(const uint8_t *cmd)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnBeforeIterateCmd procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnAfterIterateCmd</Name>
+        <Symbol>OnAfterIterateCmd</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Hook called after parsing a command in IterateTable().</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>command parsed</ParHint>
+          <ParUserDeclaration>const uint8_t *cmd</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(const uint8_t *cmd)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnAfterIterateCmd procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+  </EventList>
   <Links>
     <EmptySection_DummyValue/>
   </Links>

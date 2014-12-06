@@ -198,7 +198,45 @@ LI.EXP {
      </div>
      <div class="user_text">
 <div class="user_text" style="margin-top:10px">
-<b>There are no events in this component</b>
+<ul>
+<li>
+<a name="EventModule">
+<b>EventModule</b>
+</a>
+ - Name of the user module (without extension), where the events from this component are placed.
+</li>
+<li>
+<a name="OnBeforeIterateCmd">
+<b>OnBeforeIterateCmd</b>
+</a>
+ - Hook called before parsing a command in IterateTable().
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void OnBeforeIterateCmd(const uint8_t *cmd)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd:byte</i> - command parsed</li>
+</ul><br />
+</li>
+<li>
+<a name="OnAfterIterateCmd">
+<b>OnAfterIterateCmd</b>
+</a>
+ - Hook called after parsing a command in IterateTable().
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void OnAfterIterateCmd(const uint8_t *cmd)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd:byte</i> - command parsed</li>
+</ul><br />
+</li>
+</ul>
+<hr />
+<font style="font: 12px Verdana, Geneva, Arial, Helvetica, sans-serif;COLOR: #005ba2;">
+<b><i>For each generated event it is possible to set:</i></b><br />
+</font>
+<ul>
+  <li><b>Procedure Name</b> - name of procedure (written by user) that handles the event.</li>
+</ul>
 
 </div>
 <!---USERBEG DON'T CHANGE THIS LINE-->

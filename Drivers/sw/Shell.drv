@@ -451,6 +451,24 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
+%-BW_METHOD_BEGIN OnBeforeIterateCmd
+%ifdef OnBeforeIterateCmd
+%INTERFACE OnBeforeIterateCmd
+void %OnBeforeIterateCmd(const uint8_t *cmd);
+%define! Parcmd
+%include Common\ShellOnBeforeIterateCmd.Inc
+
+%endif %- OnBeforeIterateCmd
+%-BW_METHOD_END OnBeforeIterateCmd
+%-BW_METHOD_BEGIN OnAfterIterateCmd
+%ifdef OnAfterIterateCmd
+%INTERFACE OnAfterIterateCmd
+void %OnAfterIterateCmd(const uint8_t *cmd);
+%define! Parcmd
+%include Common\ShellOnAfterIterateCmd.Inc
+
+%endif %- OnAfterIterateCmd
+%-BW_METHOD_END OnAfterIterateCmd
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\ShellSettings.Inc
@@ -797,9 +815,15 @@ uint8_t %'ModuleName'%.%IterateTable(const uint8_t *cmd, bool *handled, %'Module
   }
   /* iterate through all parser functions in table */
   while(*parserTable!=NULL) {
+  %if defined(OnBeforeIterateCmd)
+    %OnBeforeIterateCmd(cmd);
+  %endif
     if ((*parserTable)(cmd, handled, io)!=ERR_OK) {
       res = ERR_FAILED;
     }
+  %if defined(OnAfterIterateCmd)
+    %OnAfterIterateCmd(cmd);
+  %endif
     parserTable++;
   }
   return res;
@@ -1229,6 +1253,30 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 %-
 %-
 %-BW_EVENT_IMPLEMENT_START
+%-BW_METHOD_BEGIN OnBeforeIterateCmd
+%ifdef OnBeforeIterateCmd
+%IMPLEMENTATION OnBeforeIterateCmd
+%define! Parcmd
+%include Common\ShellOnBeforeIterateCmd.Inc
+void %OnBeforeIterateCmd(const uint8_t *cmd)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnBeforeIterateCmd
+%-BW_METHOD_END OnBeforeIterateCmd
+%-BW_METHOD_BEGIN OnAfterIterateCmd
+%ifdef OnAfterIterateCmd
+%IMPLEMENTATION OnAfterIterateCmd
+%define! Parcmd
+%include Common\ShellOnAfterIterateCmd.Inc
+void %OnAfterIterateCmd(const uint8_t *cmd)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnAfterIterateCmd
+%-BW_METHOD_END OnAfterIterateCmd
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
