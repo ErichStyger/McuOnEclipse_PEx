@@ -260,13 +260,13 @@ uint8_t %'ModuleName'%.%Count();
 %-BW_METHOD_END Count
 
 %-*****************************************************************************************************
-%ifdef Receive2
+%ifdef Receive
 %define! ParnumOfBytes
-%define! ParcountOf
+%define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(byte numOfBytes, byte countOf);
-%endif %- Receive2
+bool %'ModuleName'%.%Receive(byte numOfBytes, byte counter);
+%endif %- Receive
 
 %-*****************************************************************************************************
 %ifdef SendBytes
@@ -835,28 +835,31 @@ void %'ModuleName'%.%i_recv_get()
 %-BW_METHOD_END i_recv_get
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN Receive2
-%ifdef Receive2
+%-BW_METHOD_BEGIN Receive
+%ifdef Receive
 %define! ParnumOfBytes
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive2(uint8_t numOfBytes, uint8_t counter)
+bool %'ModuleName'%.%Receive(uint8_t numOfBytes, uint8_t counter)
 {
-	PROG pr;
-	if(Program_isFull()) return FALSE;
-	pr.Instr = I_RECV;
-	pr.Count = count;
-	Program_Put(pr);
-	if(!Data.Busy) {
-		%'ModuleName'%.i_action();
-		%'ModuleName'%.i_run();
-		%'ModuleName'%.i_recv_float();
-	}
-	return TRUE;
+  PROG pr;
+
+  if(Program_isFull()) {
+    return FALSE;
+  }
+  pr.Instr = I_RECV;
+  pr.Count = counter;
+  Program_Put(pr);
+  if(!Data.Busy) {
+    %'ModuleName'%.i_action();
+    %'ModuleName'%.i_run();
+    %'ModuleName'%.i_recv_float();
+  }
+  return TRUE;
 }
-%endif %- Receive2
-%-BW_METHOD_END Receive2
+%endif %- Receive
+%-BW_METHOD_END Receive
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ProgramEvent

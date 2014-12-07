@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bean>
+  <Header>
+    <Name>FreeRTOS_Tasks</Name>
+    <Description>Component to create FreeRTOS Tasks</Description>
+    <Author>Omar Isaí Pinales Ayala,</Author>
+    <Version>01.003</Version>
+    <Icon>FreeRTOS_Tasks</Icon>
+    <TypesFiles>PE,FreeRTOS_Tasks\FreeRTOS_Tasks</TypesFiles>
+    <FileVersion>6</FileVersion>
+  </Header>
+  <Options>
+    <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
+    <DemoDriver>no</DemoDriver>
+    <Category>Software-User Components</Category>
+    <BeanLevel>High</BeanLevel>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Omar Isaí Pinales Ayala, 2014, all rights reserved.\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software driver for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <BW_HelpType>&lt;none&gt;</BW_HelpType>
+    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
+    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
+    <BW_DetailedHelp>yes</BW_DetailedHelp>
+    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedCns>0</BW_NeedCns>
+    <BeanStatus>RELEASE</BeanStatus>
+    <Shortcut>TSK</Shortcut>
+  </Options>
+  <PropertyList>
+    <Property>
+      <TCompNameItem>
+        <Name>Component Name</Name>
+        <Symbol>DeviceName</Symbol>
+        <Hint>Name of the component.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue/>
+      </TCompNameItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>FreeRTOS</Name>
+        <Symbol>FreeRTOS</Symbol>
+        <TypeSpec>FreeRTOS_Tasks\FreeRTOS</TypeSpec>
+        <Hint>Link to FreeRTOS Erich Styger component.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TListItemFromFile>
+        <Name>Number of tasks</Name>
+        <Symbol>nof_tasks</Symbol>
+        <Hint>Number of tasks to generate.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <ItemsType>Beans\FreeRTOS_Tasks\taskItem.item</ItemsType>
+        <ItemsTypeChangeAble>false</ItemsTypeChangeAble>
+        <ItemsName/>
+        <ItemsNameFrstIndx>0</ItemsNameFrstIndx>
+        <ItemsHint/>
+        <ItemsSymb/>
+        <ItemsTypeSpec/>
+        <MinItems>0</MinItems>
+        <MaxItems>-1</MaxItems>
+        <MinItemsProtected>false</MinItemsProtected>
+      </TListItemFromFile>
+    </Property>
+  </PropertyList>
+  <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>CreateTasks</Name>
+        <Symbol>CreateTasks</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initilizes the tasks.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint/>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+  </MethodList>
+  <Links>
+    <EmptySection_DummyValue/>
+  </Links>
+  <Revisions>
+    <RevisionVersion>2</RevisionVersion>
+  </Revisions>
+</Bean>

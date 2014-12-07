@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListItem>
+  <TGrupItem>
+    <Name>FreeRTOS task</Name>
+    <Symbol>taskItem</Symbol>
+    <Hint>Properties to configure the task.</Hint>
+    <ItemLevel>BASIC</ItemLevel>
+    <BoldName>true</BoldName>
+    <EditLine>false</EditLine>
+    <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+    <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+    <UI_GroupStyle>GROUP</UI_GroupStyle>
+    <UI_Layout>DEFAULT</UI_Layout>
+    <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+    <Description />
+    <Expanded>Yes</Expanded>
+    <Children>
+      <GrupItem>
+        <TStrgItem>
+          <Name>Task name</Name>
+          <Symbol>taskName</Symbol>
+          <Hint>Sets the task name.</Hint>
+          <ItemLevel>BASIC</ItemLevel>
+          <EditLine>true</EditLine>
+          <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+          <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+          <UI_StringStyle>EDITBOX</UI_StringStyle>
+          <DefaultValue />
+          <StrDefine>nothing</StrDefine>
+          <MinLength>0</MinLength>
+          <MaxLength>-1</MaxLength>
+        </TStrgItem>
+      </GrupItem>
+      <GrupItem>
+        <TIntgItem>
+          <Name>Stack size (plus configMINIMAL_STACK_SIZE)</Name>
+          <Symbol>taskStackSize</Symbol>
+          <Hint>Sets the task stack size.</Hint>
+          <ItemLevel>BASIC</ItemLevel>
+          <EditLine>true</EditLine>
+          <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+          <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+          <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
+          <DefaultValue>0</DefaultValue>
+          <MinValue>0</MinValue>
+          <MaxValue>-1</MaxValue>
+          <Bases>DEC HEX</Bases>
+          <DefaultBase>DEC</DefaultBase>
+          <ExtraHintDisabled>false</ExtraHintDisabled>
+          <ChangeValueIntoRange>false</ChangeValueIntoRange>
+          <RuntimeProperty>false</RuntimeProperty>
+        </TIntgItem>
+      </GrupItem>
+      <GrupItem>
+        <TIntgItem>
+          <Name>Initial Priority</Name>
+          <Symbol>taskPriority</Symbol>
+          <Hint>Sets the task priority.</Hint>
+          <ItemLevel>BASIC</ItemLevel>
+          <EditLine>true</EditLine>
+          <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+          <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+          <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
+          <DefaultValue>0</DefaultValue>
+          <MinValue>0</MinValue>
+          <MaxValue>-1</MaxValue>
+          <Bases>DEC</Bases>
+          <DefaultBase>DEC</DefaultBase>
+          <ExtraHintDisabled>false</ExtraHintDisabled>
+          <ChangeValueIntoRange>false</ChangeValueIntoRange>
+          <RuntimeProperty>false</RuntimeProperty>
+        </TIntgItem>
+      </GrupItem>
+    </Children>
+  </TGrupItem>
+  <Links>
+    <EmptySection_DummyValue />
+  </Links>
+</ListItem>
+

@@ -1,0 +1,248 @@
+%-      Copyright: 1997 - 2014 Freescale Semiconductor, Inc. All Rights Reserved. 
+%-
+%- WARNING !
+%-
+%- Do not make changes to these lines (if you make some changes, you damage this driver)
+%- which begins with:
+%-
+%-  %-STARTUSERTYPES
+%-  %-ENDUSRTYPES
+%-  /* END %ModuleName. */
+%-  /* MODULE %ModuleName. */
+%-  %-INTERNAL_METHOD_BEG
+%-  %-INTERNAL_METHOD_END 
+%-  %-INHERITED_EVENT_BEGIN
+%-  %-INHERITED_EVENT_END
+%-  %-BW_DEFINITION_START
+%-  %-BW_DEFINITION_END
+%-  %-BW_IMPLEMENT_START
+%-  %-BW_IMPLEMENT_END
+%-  %-BW_EVENT_DEFINITION_START
+%-  %-BW_EVENT_DEFINITION_END
+%-  %-BW_EVENT_IMPLEMENT_START
+%-  %-BW_EVENT_IMPLEMENT_END
+%-  %-BW_METHOD_MACROS_START
+%-  %-BW_METHOD_MACROS_END
+%-  %-BW_SECTIONS_INSERT
+%-  %-BW_INTERN_COMMENTS_START
+%-  %-BW_INTERN_COMMENTS_END
+%-  %-BW_BEAN_CONSTANTS_START
+%-  %-BW_BEAN_CONSTANTS_END
+%-
+%-
+%- These lines are not comments, but they are necessary for Component Wizard
+%- If you change these lines, Component Development Environment will not be responsible for loosing or damaging your code!
+%-
+%-
+%- readyCPU ...
+%- readyDEVICE ...
+%-
+%define DriverAuthor  
+%define DriverVersion 01.00
+%define DriverDate    12/06/2014
+%-
+%-
+%-BW_METHOD_MACROS_START
+%-BW_METHOD_MACROS_END
+%-
+%-BW_INTERN_COMMENTS_START
+%- List of descriptions of internal methods
+%-BW_INTERN_COMMENTS_END
+%-
+%define CDEversion Community 
+%-BW_SECTIONS_INSERT
+%if Language='ANSIC'
+  %-
+%-
+%INTERFACE
+%define! Settings Common\FreeRTOS_TasksSettings.inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%include Common\Header.h
+
+#ifndef __%'ModuleName'_H
+#define __%'ModuleName'_H
+
+/* MODULE %ModuleName. */
+
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+#include "%'var'.h"
+  %endfor
+%endif
+/* Include inherited components */
+%ifdef InhrSymbolList
+  %for var from InhrSymbolList
+#include "%@%var@ModuleName.h"
+  %endfor
+%endif
+%-BW_CUSTOM_INCLUDE_START_H
+%- Write your own includes here ...
+%-   Example:
+%-     #include "header_name.h"
+%-
+%-BW_CUSTOM_INCLUDE_END_H
+%-
+%-BW_METHOD_MACROS_START
+%-BW_METHOD_MACROS_END
+
+#include "%ProcessorModule.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+%-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
+%-ENDUSRTYPES
+%-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
+%- No constants defined in the BeanWizard for this bean
+%-BW_BEAN_CONSTANTS_END
+%-BW_CUSTOM_USERTYPE_START
+%- Write your own types here ...
+%-  Example:
+%-    typedef int TMyInteger;
+%-
+%-BW_CUSTOM_USERTYPE_END
+
+%-BW_DEFINITION_START
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN CreateTasks
+%ifdef CreateTasks
+%include Common\FreeRTOS_TasksCreateTasks.inc
+void %'ModuleName'%.%CreateTasks(void);
+%endif  %-CreateTasks
+%-BW_METHOD_END CreateTasks
+
+%-************************************************************************************************************
+%-BW_DEFINITION_END
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+/* END %ModuleName. */
+
+#endif
+/* ifndef __%'ModuleName'_H */
+%include Common\Header.End
+%-
+%-BW_EVENT_DEFINITION_START
+%-BW_EVENT_DEFINITION_END
+%IMPLEMENTATION
+%define! Settings Common\FreeRTOS_TasksSettings.inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%include Common\Header.C
+
+/* MODULE %ModuleName. */
+
+%for var from EventModules
+#include "%var.h"
+%endfor
+#include "%'ModuleName'.h"
+%-BW_CUSTOM_INCLUDE_START_M
+%- Write your own includes here ...
+%-   Example:
+%-     #include "header_name.h"
+%-
+%-BW_CUSTOM_INCLUDE_END_M
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+%-BW_CUSTOM_VARIABLE_START
+%- Write your static variables here
+%-   Example:
+%-     static int counter1;
+%-     int %'ModuleName'%.counter2;
+%-
+%-BW_CUSTOM_VARIABLE_END
+%-BW_INTERN_METHOD_DECL_START
+%- List of internal methods headers
+%-BW_INTERN_METHOD_DECL_END
+%-BW_IMPLEMENT_START
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN CreateTasks
+%ifdef CreateTasks
+%include Common\FreeRTOS_TasksCreateTasks.inc
+void %'ModuleName'%.%CreateTasks(void)
+{
+%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
+  if (%@FreeRTOS@'ModuleName'%.xTaskCreate(
+    %get(taskName%i, Value)Task,  /* pointer to the task */
+    "%get(taskName%i, Value)", /* task name for kernel awareness debugging */
+    configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
+    (void*)NULL, /* optional task startup argument */
+    tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
+    (xTaskHandle*)NULL /* optional task handle to create */
+  ) != pdPASS) {
+    /*lint -e527 */
+    for(;;){}; /* error! probably out of memory */
+    /*lint +e527 */
+  }
+%endfor
+}
+%endif %-CreateTasks
+%-BW_METHOD_END CreateTasks
+
+%-************************************************************************************************************
+%-BW_IMPLEMENT_END
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+/* END %ModuleName. */
+
+%include Common\Header.End
+%-
+%-
+%-BW_EVENT_IMPLEMENT_START
+%-BW_EVENT_IMPLEMENT_END
+%INITIALIZATION
+  /* ### %DeviceType "%DeviceName" init code ... */
+%CODE_BEGIN
+  %'ModuleName'%.%CreateTasks();
+%CODE_END
+%-
+%ENABLE
+%CODE_BEGIN
+%CODE_END
+%-
+%else %- Language (& Compiler)
+  %error^ This component is not implemented in selected language & compiler !
+%endif %- Language (& Compiler)
+%DEBUG
+%ALL_SYMBOLS
+%-
+%FILE Sources\frtos_tasks.c
+
+%include Common\Header.End
+
+#include "frtos_tasks.h"
+
+%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
+static portTASK_FUNCTION(%get(taskName%i, Value)Task, pvParameters) {
+	
+	/* Write your task initialization code here ... */
+	
+	for(;;) {
+		/* Write your task code here ... */
+		
+		/* You can use a task delay like
+		vTaskDelay(1000/portTICK_RATE_MS);
+		*/
+	}
+	/* Destroy the task */
+	vTaskDelete(%get(taskName%i, Value)Task);
+}
+
+%endfor
+
+%FILE Sources\frtos_tasks.h
+
+#ifndef __%'ModuleName'_H
+#define __%'ModuleName'_H
+
+
+
+#endif

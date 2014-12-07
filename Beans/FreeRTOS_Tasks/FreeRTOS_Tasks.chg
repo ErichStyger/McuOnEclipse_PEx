@@ -1,0 +1,3 @@
+%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
+	%set taskItem%i Value %get(taskName%i, Value)Task
+%endfor
