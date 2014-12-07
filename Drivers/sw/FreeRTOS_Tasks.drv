@@ -139,6 +139,7 @@ void %'ModuleName'%.%CreateTasks(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#include "frtos_tasks.h"
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -167,20 +168,7 @@ extern "C" {
 %include Common\FreeRTOS_TasksCreateTasks.inc
 void %'ModuleName'%.%CreateTasks(void)
 {
-%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
-  if (%@FreeRTOS@'ModuleName'%.xTaskCreate(
-    %get(taskName%i, Value)Task,  /* pointer to the task */
-    "%get(taskName%i, Value)", /* task name for kernel awareness debugging */
-    configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
-    (void*)NULL, /* optional task startup argument */
-    tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
-    (xTaskHandle*)NULL /* optional task handle to create */
-  ) != pdPASS) {
-    /*lint -e527 */
-    for(;;){}; /* error! probably out of memory */
-    /*lint +e527 */
-  }
-%endfor
+	CreateTasks();
 }
 %endif %-CreateTasks
 %-BW_METHOD_END CreateTasks
@@ -218,6 +206,8 @@ void %'ModuleName'%.%CreateTasks(void)
 
 %include Common\Header.End
 
+#include "%'ModuleName'.h"
+#include "%@FreeRTOS@'ModuleName'.h"
 #include "frtos_tasks.h"
 
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
@@ -237,12 +227,28 @@ static portTASK_FUNCTION(%get(taskName%i, Value)Task, pvParameters) {
 }
 
 %endfor
+void CreateTasks() {
+%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
+	if(FRTOS1_xTaskCreate(
+	%get(taskName%i, Value)Task,  /* pointer to the task */
+	"%get(taskName%i, Value)", /* task name for kernel awareness debugging */
+	configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
+	(void*)NULL, /* optional task startup argument */
+	tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
+	(xTaskHandle*)NULL /* optional task handle to create */
+	) != pdPASS) {
+		/*lint -e527 */
+		for(;;){}; /* error! probably out of memory */
+		/*lint +e527 */
+	}
+%endfor
+}
 
 %FILE Sources\frtos_tasks.h
 
-#ifndef __%'ModuleName'_H
-#define __%'ModuleName'_H
+#ifndef __frtos_tasks_H
+#define __frtos_tasks_H
 
-
+void CreateTasks();
 
 #endif
