@@ -1,4 +1,4 @@
-%-      Copyright: 1997 - 2014 Freescale Semiconductor, Inc. All Rights Reserved. 
+%-      Copyright: 1997 - 2014 Freescale Semiconductor, Inc. All Rights Reserved.
 %-
 %- WARNING !
 %-
@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_DEFINITION_START
@@ -37,7 +37,7 @@
 %- readyCPU ...
 %- readyDEVICE ...
 %-
-%define DriverAuthor  
+%define DriverAuthor
 %define DriverVersion 01.00
 %define DriverDate    12/06/2014
 %-
@@ -49,7 +49,7 @@
 %- List of descriptions of internal methods
 %-BW_INTERN_COMMENTS_END
 %-
-%define CDEversion Community 
+%define CDEversion Community
 %-BW_SECTIONS_INSERT
 %if Language='ANSIC'
   %-
@@ -156,10 +156,6 @@ extern "C" {
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-/* interface to the tasks */
-%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
-void %get(taskName%i, Value)Task(void *pvParameters);
-%endfor
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -172,7 +168,7 @@ void %get(taskName%i, Value)Task(void *pvParameters);
 %include Common\FreeRTOS_TasksCreateTasks.inc
 void %'ModuleName'%.%CreateTasks(void)
 {
-	CreateTasks();
+  CreateTasks();
 }
 %endif %-CreateTasks
 %-BW_METHOD_END CreateTasks
@@ -216,35 +212,35 @@ void %'ModuleName'%.%CreateTasks(void)
 
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
 static portTASK_FUNCTION(%get(taskName%i, Value)Task, pvParameters) {
-	
-	/* Write your task initialization code here ... */
-	
-	for(;;) {
-		/* Write your task code here ... */
-		
-		/* You can use a task delay like
-		vTaskDelay(1000/portTICK_RATE_MS);
-		*/
-	}
-	/* Destroy the task */
-	vTaskDelete(%get(taskName%i, Value)Task);
+
+  /* Write your task initialization code here ... */
+
+  for(;;) {
+    /* Write your task code here ... */
+
+    /* You can use a task delay like
+       vTaskDelay(1000/portTICK_RATE_MS);
+     */
+  }
+  /* Destroy the task */
+  vTaskDelete(%get(taskName%i, Value)Task);
 }
 
 %endfor
-void CreateTasks() {
+void CreateTasks(void) {
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
-	if(FRTOS1_xTaskCreate(
-	%get(taskName%i, Value)Task,  /* pointer to the task */
-	"%get(taskName%i, Value)", /* task name for kernel awareness debugging */
-	configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
-	(void*)NULL, /* optional task startup argument */
-	tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
-	(xTaskHandle*)NULL /* optional task handle to create */
-	) != pdPASS) {
-		/*lint -e527 */
-		for(;;){}; /* error! probably out of memory */
-		/*lint +e527 */
-	}
+  if (FRTOS1_xTaskCreate(
+     %get(taskName%i, Value)Task,  /* pointer to the task */
+      "%get(taskName%i, Value)", /* task name for kernel awareness debugging */
+      configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
+      (void*)NULL, /* optional task startup argument */
+      tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
+      (xTaskHandle*)NULL /* optional task handle to create */
+    ) != pdPASS) {
+      /*lint -e527 */
+      for(;;){}; /* error! probably out of memory */
+      /*lint +e527 */
+  }
 %endfor
 }
 
@@ -253,6 +249,6 @@ void CreateTasks() {
 #ifndef __frtos_tasks_H
 #define __frtos_tasks_H
 
-void CreateTasks();
+void CreateTasks(void);
 
 #endif
