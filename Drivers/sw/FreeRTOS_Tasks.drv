@@ -55,8 +55,8 @@
   %-
 %-
 %INTERFACE
-%define! Settings Common\FreeRTOS_TasksSettings.inc
-%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%define! Settings Common\FreeRTOS_TasksSettings.Inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.Inc
 %include Common\Header.h
 
 #ifndef __%'ModuleName'_H
@@ -129,8 +129,8 @@ void %'ModuleName'%.%CreateTasks(void);
 %-BW_EVENT_DEFINITION_START
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
-%define! Settings Common\FreeRTOS_TasksSettings.inc
-%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%define! Settings Common\FreeRTOS_TasksSettings.Inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.Inc
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
@@ -155,6 +155,10 @@ extern "C" {
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+/* interface to the tasks */
+%for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
+void %get(taskName%i, Value)Task(void *pvParameters);
+%endfor
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START

@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-FreeRTOS_Tasks documentation - Properties
+Bean  documentation - Properties
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-			<b>FreeRTOS_Tasks</b>
+<b>FreeRTOS_Tasks</b>
             </span>
           </td>
         </tr>
@@ -146,18 +146,15 @@ LI.EXP {
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
 <a href="FreeRTOS_Tasks.html">General Info</a><br />
-<i>Properties</i><br />
 <a href="FreeRTOS_TasksMethods.html">Methods</a><br />
-<a href="FreeRTOS_TasksEvents.html">Events</a><br />
-<a href="FreeRTOS_TasksUser Types.html">Types and constants</a><br />
+<i>Properties</i><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="FreeRTOS_Tasks_b.gif" alt="FreeRTOS_Tasks icon"/>
+<img src="FreeRTOS_Tasks_b.gif" alt="Bean icon"/>
+
 
 </center>
             </div>
@@ -180,18 +177,30 @@ LI.EXP {
           
            <div class="titlebox">
               <div class="beanname">
-                Component              
+                Bean
+                
+                
                 FreeRTOS_Tasks
               </div>
-              <div class="descrtext"></div>
-              <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">Low</a></span></div>
+              <div class="descrtext">Component to create FreeRTOS Tasks</div>
+              <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
                 <a href="../../DOCs/BeanCategoriesInfo.html">Software-User Components</a>
+                
                 </span>
               </div>
             </div>
-                                      
+                      
+<!--
+            </td>
+        </tr>
+
+        <tr>        
+-->  
+            
+<!--            <td align="left"> -->
+<!--                   <br /> -->                  
      <div class="text_title">
           Properties:
 		 </div>		 
@@ -201,20 +210,36 @@ LI.EXP {
                   
 <div class="user_text">
 <ul>
-<!--BEG_CDE_PROPERTIES-->
 <li>
 <a name="DeviceName">
 <b>Component Name</b></a> - Name of the component.
 </li>
 <li>
-<a name="nof_tasks">
-<b>Number of tasks</b></a> - Number of tasks to generate.
+<a name="FreeRTOS">
+<b>FreeRTOS</b></a> - Link to FreeRTOS component.
 </li>
 <li>
-<a name="FreeRTOS">
-<b>FreeRTOS</b></a> - Link to FreeRTOS Erich Styger component.
+<a name="nof_tasks">
+<b>Number of tasks</b></a> - Number of tasks to generate.
+<br />One Item of the list looks like:<br />
+  <a name="taskItem">
+  <b>FreeRTOS task</b></a> - Properties to configure the task.
+  <ul>
+    <li>
+    <a name="taskName">
+    <b>Task name</b></a> - Sets the task name.
+    </li>
+    <li>
+    <a name="taskStackSize">
+    <b>Stack size (plus configMINIMAL_STACK_SIZE)</b></a> - Sets the task stack size.
+    </li>
+    <li>
+    <a name="taskPriority">
+    <b>Initial Priority</b></a> - Sets the task priority.
+    </li>
+  </ul>
 </li>
-<!--END_CDE_PROPERTIES-->
+
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -223,7 +248,7 @@ LI.EXP {
            <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
-            Copyright 1997 - 2014 Freescale Semiconductor, Inc.
+            
            </p>
     </td>
   </tr>
