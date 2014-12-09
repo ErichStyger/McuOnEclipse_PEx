@@ -1,4 +1,4 @@
-%-      Copyright: 1997 - 2014 Freescale Semiconductor, Inc. All Rights Reserved. 
+%-      Copyright: 1997 - 2014 Freescale Semiconductor, Inc. All Rights Reserved.
 %-
 %- WARNING !
 %-
@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_DEFINITION_START
@@ -37,7 +37,7 @@
 %- readyCPU ...
 %- readyDEVICE ...
 %-
-%define DriverAuthor  
+%define DriverAuthor
 %define DriverVersion 01.00
 %define DriverDate    12/06/2014
 %-
@@ -49,14 +49,14 @@
 %- List of descriptions of internal methods
 %-BW_INTERN_COMMENTS_END
 %-
-%define CDEversion Community 
+%define CDEversion Community
 %-BW_SECTIONS_INSERT
 %if Language='ANSIC'
   %-
 %-
 %INTERFACE
-%define! Settings Common\FreeRTOS_TasksSettings.inc
-%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%define! Settings Common\FreeRTOS_TasksSettings.Inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.Inc
 %include Common\Header.h
 
 #ifndef __%'ModuleName'_H
@@ -77,7 +77,7 @@
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
-%- Write your own includes here ... 
+%- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
 %-
@@ -90,7 +90,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -101,7 +101,7 @@ extern "C" {
 %-BW_CUSTOM_USERTYPE_START
 %- Write your own types here ...
 %-  Example:
-%-    typedef int TMyInteger; 
+%-    typedef int TMyInteger;
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -110,7 +110,7 @@ extern "C" {
 %-BW_METHOD_BEGIN CreateTasks
 %ifdef CreateTasks
 %include Common\FreeRTOS_TasksCreateTasks.inc
-void %'ModuleName'%.%CreateTasks();
+void %'ModuleName'%.%CreateTasks(void);
 %endif  %-CreateTasks
 %-BW_METHOD_END CreateTasks
 
@@ -119,18 +119,18 @@ void %'ModuleName'%.%CreateTasks();
 
 #ifdef __cplusplus
 }  /* extern "C" */
-#endif 
+#endif
 /* END %ModuleName. */
 
-#endif 
+#endif
 /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
-%define! Settings Common\FreeRTOS_TasksSettings.inc
-%define! Abstract Common\FreeRTOS_TasksAbstract.inc
+%define! Settings Common\FreeRTOS_TasksSettings.Inc
+%define! Abstract Common\FreeRTOS_TasksAbstract.Inc
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
@@ -146,13 +146,13 @@ void %'ModuleName'%.%CreateTasks();
 %-     #include "header_name.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
-                                                                                                                      
+
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 %-BW_CUSTOM_VARIABLE_START
-%- Write your static variables here 
+%- Write your static variables here
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
@@ -166,11 +166,9 @@ extern "C" {
 %-BW_METHOD_BEGIN CreateTasks
 %ifdef CreateTasks
 %include Common\FreeRTOS_TasksCreateTasks.inc
-void %'ModuleName'%.%CreateTasks()
+void %'ModuleName'%.%CreateTasks(void)
 {
-%CODE_BEGIN
-	CreateTasks();
-%CODE_END
+  CreateTasks();
 }
 %endif %-CreateTasks
 %-BW_METHOD_END CreateTasks
@@ -180,7 +178,7 @@ void %'ModuleName'%.%CreateTasks()
 
 #ifdef __cplusplus
 }  /* extern "C" */
-#endif 
+#endif
 /* END %ModuleName. */
 
 %include Common\Header.End
@@ -191,7 +189,7 @@ void %'ModuleName'%.%CreateTasks()
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-	%'ModuleName'%.%CreateTasks();
+  %'ModuleName'%.%CreateTasks();
 %CODE_END
 %-
 %ENABLE
@@ -204,55 +202,59 @@ void %'ModuleName'%.%CreateTasks()
 %DEBUG
 %ALL_SYMBOLS
 %-
-%FILE Sources\frtos_tasks.c
+%USER_MODULE frtos_tasks.c
 
 %include Common\Header.End
+
+%EMBED_CODE! <includes> initialization
+/* Begin of <includes> initialization, DO NOT MODIFY LINES BELOW */
 
 #include "%'ModuleName'.h"
 #include "%@FreeRTOS@'ModuleName'.h"
 #include "frtos_tasks.h"
 
+/* End <includes> initialization, DO NOT MODIFY LINES ABOVE */
+%EMBED_END <includes> initialization was updated
+
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
 static portTASK_FUNCTION(%get(taskName%i, Value)Task, pvParameters) {
-	
-	/* Write your task initialization code here ... */
-	
-	for(;;) {
-		/* Write your task code here ... */
-		
-		/* You can use a task delay like
-		vTaskDelay(1000/portTICK_RATE_MS);
-		*/
-	}
-	/* Destroy the task */
-	vTaskDelete(%get(taskName%i, Value)Task);
+
+  /* Write your task initialization code here ... */
+
+  for(;;) {
+    /* Write your task code here ... */
+
+    /* You can use a task delay like
+       vTaskDelay(1000/portTICK_RATE_MS);
+     */
+  }
+  /* Destroy the task */
+  vTaskDelete(%get(taskName%i, Value)Task);
 }
 
 %endfor
-void CreateTasks() {
+void CreateTasks(void) {
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
-%if %get(autoCreate%i, Value) = "yes"
-	if(FRTOS1_xTaskCreate(
-	%get(taskName%i, Value)Task,  /* pointer to the task */
-	"%get(taskName%i, Value)", /* task name for kernel awareness debugging */
-	configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
-	(void*)NULL, /* optional task startup argument */
-	tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
-	(xTaskHandle*)NULL /* optional task handle to create */
-	) != pdPASS) {
-		/*lint -e527 */
-		for(;;){}; /* error! probably out of memory */
-		/*lint +e527 */
-	}
-%endif
+  if (FRTOS1_xTaskCreate(
+     %get(taskName%i, Value)Task,  /* pointer to the task */
+      "%get(taskName%i, Value)", /* task name for kernel awareness debugging */
+      configMINIMAL_STACK_SIZE + %get(taskStackSize%i, Value), /* task stack size */
+      (void*)NULL, /* optional task startup argument */
+      tskIDLE_PRIORITY + %get(taskPriority%i, Value),  /* initial priority */
+      (xTaskHandle*)NULL /* optional task handle to create */
+    ) != pdPASS) {
+      /*lint -e527 */
+      for(;;){}; /* error! probably out of memory */
+      /*lint +e527 */
+  }
 %endfor
 }
 
-%FILE Sources\frtos_tasks.h
+%USER_MODULE frtos_tasks.h
 
 #ifndef __frtos_tasks_H
 #define __frtos_tasks_H
 
-void CreateTasks();
+void CreateTasks(void);
 
 #endif
