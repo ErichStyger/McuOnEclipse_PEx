@@ -7,7 +7,6 @@
 %;**     Description :
 %;**         
 %include Common\GeneralParameters.inc(27)
-%;**       * error%Parerror %>27 - 
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -431,7 +431,7 @@ bool %'ModuleName'%.%SetResolution(uint8_t config_bits, uint8_t sensor_index)
 	%@OW@'ModuleName'%.SendByte(Sensor[sensor_index].ConfigByte);
 %else
 	Sensor.ConfigByte = 0x1F;
-	Sensor[sensor_index].Resolution = config;
+	Sensor.Resolution = config_bits;
 	%@OW@'ModuleName'%.SendByte(RC_SKIP_ROM);
 	%@OW@'ModuleName'%.SendByte(FC_WRITE_SCRATCHPAD);
 	%@OW@'ModuleName'%.SendByte(0x01);
@@ -456,10 +456,11 @@ void %'ModuleName'%.%get_data()
 	int16 *val;
 	p = Device.Data;
 	for(i=0;i<9;i++) {
-		*p = Input_Get();
+		OW1_GetByte(p);
+		// *p = Input_Get();
 		p++;
 	}
-	val = Device.Data;
+	val = (int16 *) Device.Data;
 	Device.Value = *val;
 	Device.Value *= 10000;
 	Device.Value /= 16;

@@ -9,8 +9,7 @@
 %;**         output buffer. Don't use a SendReset while the data is
 %;**         coming.
 %include Common\GeneralParameters.inc(27)
-%;**         numOfBytes%ParnumOfBytes %>27 - number of bytes
-%;**         counter%Parcounter %>27 - Number of bytes to receive from
+%;**         numOfBytes%ParnumOfBytes %>27 - number of bytes to receive from
 %;** %>29 slave
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Returns FALSE if the program buffer is

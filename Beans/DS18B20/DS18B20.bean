@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.001</Version>
+    <Version>01.002</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -12,7 +12,7 @@
   <Options>
     <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
     <DemoDriver>no</DemoDriver>
-    <Category>SW-Communication</Category>
+    <Category>Software-Communication</Category>
     <BeanLevel>High</BeanLevel>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Omar Isaí Pinales Ayala, 2014, all rights reserved.\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software driver for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <BW_HelpType>Default</BW_HelpType>
@@ -21,8 +21,6 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
-    <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>RELEASE</BeanStatus>
   </Options>
   <PropertyList>
@@ -33,7 +31,10 @@
         <Hint>Name of the component.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_StringStyle>EDITBOX</UI_StringStyle>
+        <DefaultValue />
       </TCompNameItem>
     </Property>
     <Property>
@@ -41,10 +42,16 @@
         <Name>Connection mode</Name>
         <Symbol>connMultiple</Symbol>
         <TypeSpec>typeConnMode</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>One slave</Description>
         <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
@@ -55,18 +62,26 @@
             <TListItemFromFile>
               <Name>Number of devices to connect</Name>
               <Symbol>deviceCount</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <Description/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_GroupStyle>TABLE</UI_GroupStyle>
+              <UI_DisplayedAtTab>false</UI_DisplayedAtTab>
+              <UI_Layout>DEFAULT</UI_Layout>
+              <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+              <UI_TableRowStartIndex>0</UI_TableRowStartIndex>
+              <UI_TableWidthIsFixed>false</UI_TableWidthIsFixed>
+              <Description />
               <Expanded>Yes</Expanded>
               <ItemsType>Beans\DS18B20\ItemDefinition.item</ItemsType>
               <ItemsTypeChangeAble>false</ItemsTypeChangeAble>
-              <ItemsName/>
+              <ItemsName />
               <ItemsNameFrstIndx>0</ItemsNameFrstIndx>
-              <ItemsHint/>
-              <ItemsSymb/>
-              <ItemsTypeSpec/>
+              <ItemsHint />
+              <ItemsSymb />
+              <ItemsTypeSpec />
               <MinItems>1</MinItems>
               <MaxItems>-1</MaxItems>
               <MinItemsProtected>false</MinItemsProtected>
@@ -84,6 +99,9 @@
         <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_EnumStyle>COMBO</UI_EnumStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>-1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -99,9 +117,12 @@
         <Name>Read the temperature value from de sensor.</Name>
         <Symbol>readAuto</Symbol>
         <TypeSpec>typeReadTemp</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -122,6 +143,9 @@
         <Hint>Initializes the device.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -134,7 +158,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -150,6 +174,9 @@
         <Hint>Starts to read the rom code and saves it in memory.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -168,7 +195,7 @@
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -184,6 +211,9 @@
         <Hint>Gets the rom code from the memory.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -202,7 +232,7 @@
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -218,6 +248,9 @@
         <Hint>Returns TRUE if there are a operation in progress.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -246,6 +279,9 @@
         <Hint>Starts the conversion of temperature in the sensor.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -264,7 +300,7 @@
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -286,6 +322,9 @@
         <Hint>Gets the temperature from memory.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -298,7 +337,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>int32_t</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -320,6 +359,9 @@
         <Hint>Read the temperature value from the sensor and stores it in memory</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -332,13 +374,13 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -351,9 +393,12 @@
         <Name>ConvertAll</Name>
         <Symbol>ConvertAll</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -366,7 +411,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -379,10 +424,13 @@
         <Name>get_data</Name>
         <Symbol>get_data</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -395,7 +443,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -408,9 +456,12 @@
         <Name>SetResolution</Name>
         <Symbol>SetResolution</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -423,7 +474,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>config_bits</ParName>
@@ -449,10 +500,13 @@
       <TStrgItem>
         <Name>Event module name</Name>
         <Symbol>EventModule</Symbol>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_StringStyle>EDITBOX</UI_StringStyle>
+        <DefaultValue />
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -463,10 +517,16 @@
         <Name>OnError</Name>
         <Symbol>OnError</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -478,7 +538,7 @@
           <ParName>error</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -492,7 +552,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -508,10 +571,16 @@
         <Name>OnTemperatureGet</Name>
         <Symbol>OnTemperatureGet</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -523,13 +592,13 @@
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Parameter>
           <ParName>temperature</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -543,7 +612,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -559,10 +631,16 @@
         <Name>OnRomRead</Name>
         <Symbol>OnRomRead</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -574,13 +652,13 @@
           <ParName>sensor_index</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Parameter>
           <ParName>rom_code</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -594,7 +672,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -610,10 +691,16 @@
         <Name>OnAllConverted</Name>
         <Symbol>OnAllConverted</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -633,7 +720,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -646,9 +736,18 @@
     </Event>
   </EventList>
   <Links>
-    <EmptySection_DummyValue/>
+    <EmptySection_DummyValue />
   </Links>
   <Revisions>
     <RevisionVersion>2</RevisionVersion>
+    <Revision>
+      <Date>09-dic-2014</Date>
+      <Version>01.002</Version>
+      <Level />
+      <Author>Auto Generated field</Author>
+      <Verified />
+      <Comment>Auto Generated field</Comment>
+    </Revision>
   </Revisions>
 </Bean>
+

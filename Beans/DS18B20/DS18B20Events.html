@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Component  documentation - Events
+DS18B20 documentation - Events
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-<b>DS18B20</b>
+			<b>DS18B20</b>
             </span>
           </td>
         </tr>
@@ -152,16 +152,12 @@ LI.EXP {
 <a href="DS18B20User Types.html">Types and constants</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br/>
-<a href="../../DOCs/BEANindex.html">Component Index</a><br/>
-<a href="../../DOCs/CPUindex.html">CPU Component Index</a><br/>
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br/>
-<a href="../../DOCs/BeanCategories.html">Components Categories</a><br/>
+<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
+<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="DS18B20_b.gif" alt="Component icon"/>
-
+<img src="DS18B20_b.gif" alt="DS18B20 icon"/>
 
 </center>
             </div>
@@ -180,17 +176,14 @@ LI.EXP {
            <div class="titlebox">
               <div class="beanname">
                 Component
-                
-                
                 DS18B20
               </div>
               <div class="descrtext">Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
-                <a href="../../DOCs/BeanCategoriesInfo.html">SW-Communication</a>
-                
-                </span>
+                <a href="../../DOCs/BeanCategoriesInfo.html">Software-Communication</a>
+				</span>
               </div>
             </div>
 
@@ -203,59 +196,68 @@ LI.EXP {
      </div>
      <div class="user_text">
 <div class="user_text" style="margin-top:10px">
-<ul>
+<!--BEG_CDE_EVENTS--><ul>
 <li>
 <a name="EventModule">
 <b>EventModule</b>
 </a>
- - 
+ - Name of the user module (without extension), where the events from this component are placed.
+</li>
+<li>
+<a name="Event module name">
+<b>Event module name -</b>
+</a>
+
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i>void Event module name</ul><br />
 </li>
 <li>
 <a name="OnError">
-<b>OnError</b>
+<b>OnError -</b>
 </a>
- - no hint
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnError(void* error)<br />
+<br /><i>ANSIC prototype:</i>void OnError(void* error)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>error:void*</i> - no hint</li>
+<li><i>error:void*</i> - </li>
 </ul><br />
 </li>
 <li>
 <a name="OnTemperatureGet">
-<b>OnTemperatureGet</b>
+<b>OnTemperatureGet -</b>
 </a>
- - no hint
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnTemperatureGet(void* sensor_index, void* temperature)<br />
+<br /><i>ANSIC prototype:</i>void OnTemperatureGet(void* sensor_index,void* temperature)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
-<li><i>temperature:void*</i> - no hint</li>
+<li><i>sensor_index:void*</i> - </li>
+<li><i>temperature:void*</i> - </li>
 </ul><br />
 </li>
 <li>
 <a name="OnRomRead">
-<b>OnRomRead</b>
+<b>OnRomRead -</b>
 </a>
- - no hint
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnRomRead(void* sensor_index, void* *rom_code)<br />
+<br /><i>ANSIC prototype:</i>void OnRomRead(void* sensor_index,void* rom_code)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
-<li><i>rom_code:void*</i> - no hint</li>
+<li><i>sensor_index:void*</i> - </li>
+<li><i>rom_code:void*</i> - </li>
 </ul><br />
 </li>
 <li>
 <a name="OnAllConverted">
-<b>OnAllConverted</b>
+<b>OnAllConverted -</b>
 </a>
- - no hint
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnAllConverted(void)<br />
+<br /><i>ANSIC prototype:</i>void OnAllConverted(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
@@ -265,9 +267,9 @@ LI.EXP {
 <b><i>For each generated event it is possible to set:</i></b><br />
 </font>
 <ul>
-  <li><b>Procedure Name</b> - name of procedure (written by user) that handles the event.</li>
+<li><b>Procedure Name</b> - name of procedure (written by user) that handles the event.</li>
 </ul>
-
+<!--END_CDE_EVENTS-->
 </div>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -277,7 +279,7 @@ LI.EXP {
       <p class="footer">
         PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
         <br />
-        
+        Copyright 1997 - 2014 Freescale Semiconductor, Inc.
       </p>
 
     </td>

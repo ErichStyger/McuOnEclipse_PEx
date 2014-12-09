@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Component  documentation - Methods
+DS18B20 documentation - Methods
 </title>
 <STYLE type="text/css">
 body{
@@ -152,16 +152,12 @@ LI.EXP {
 <a href="DS18B20User Types.html">Types and constants</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br/>
-<a href="../../DOCs/BEANindex.html">Component Index</a><br/>
-<a href="../../DOCs/CPUindex.html">CPU Component Index</a><br/>
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br/>
-<a href="../../DOCs/BeanCategories.html">Components Categories</a><br/>
+<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
+<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="DS18B20_b.gif" alt="Component icon"/>
-
+<img src="DS18B20_b.gif" alt="DS18B20 icon"/>
 
 </center>
             </div>
@@ -180,16 +176,13 @@ LI.EXP {
          <div class="titlebox">
             <div class="beanname">
               Component
-              
-              
-              DS18B20
+               DS18B20
             </div>
             <div class="descrtext">Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</div>
-            <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
+             <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
             <div class="info_name">Category: 
               <span class="info_text">
-              <a href="../../DOCs/BeanCategoriesInfo.html">SW-Communication</a>
-              
+              <a href="../../DOCs/BeanCategoriesInfo.html">Software-Communication</a>
               </span>
             </div>
           </div>
@@ -207,112 +200,134 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Init">
-<b>Init</b></a>
- - Initializes the device.
+<!--BEG_CDE_METHODS--><li>
+<a name="Init">
+<b>Init -</b>
+</a>
+Initializes the device.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
+<li><i>Return value:void</i> - 
+</li></ul><br />
 </li>
-<li><a name="ReadRom">
-<b>ReadRom</b></a>
- - Starts to read the rom code and saves it in memory.
+<li>
+<a name="ReadRom">
+<b>ReadRom -</b>
+</a>
+Starts to read the rom code and saves it in memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool ReadRom(void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
+<li><i>sensor_index:void*</i> - </li>
 <li><i>Return value:bool</i> - Returns FALSE if the device is busy in another operation.
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="GetRomCode">
-<b>GetRomCode</b></a>
- - Gets the rom code from the memory.
+<li>
+<a name="GetRomCode">
+<b>GetRomCode -</b>
+</a>
+Gets the rom code from the memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> char* GetRomCode(void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
+<li><i>sensor_index:void*</i> - </li>
 <li><i>Return value:char*</i> - Returns a pointer to the rom code array.
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="isBusy">
-<b>isBusy</b></a>
- - Returns TRUE if there are a operation in progress.
+<li>
+<a name="isBusy">
+<b>isBusy -</b>
+</a>
+Returns TRUE if there are a operation in progress.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool isBusy(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Return value:bool</i> - Returns TRUE if the device is busy, and FALSE if its ready to operate.
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="StartConversion">
-<b>StartConversion</b></a>
- - Starts the conversion of temperature in the sensor.
+<li>
+<a name="StartConversion">
+<b>StartConversion -</b>
+</a>
+Starts the conversion of temperature in the sensor.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool StartConversion(void* sensor_index, void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool StartConversion(void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
 <li><i>sensor_index:void*</i> - Index of the sensor to start to convert the temperature.</li>
 <li><i>Return value:bool</i> - Returns FALSE if the device is busy.
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="GetTemperature">
-<b>GetTemperature</b></a>
- - Gets the temperature from memory.
+<li>
+<a name="GetTemperature">
+<b>GetTemperature -</b>
+</a>
+Gets the temperature from memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> int32_t GetTemperature(void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:void*</i> - Index of the sensor to get the temperature value.</li>
-<li><i>Return Value:int32_t</i> - no hint
+<li><i>Return value:int32_t</i> - 
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="ReadTemperature">
-<b>ReadTemperature</b></a>
- - Read the temperature value from the sensor and stores it in memory
+<li>
+<a name="ReadTemperature">
+<b>ReadTemperature -</b>
+</a>
+Read the temperature value from the sensor and stores it in memory
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool ReadTemperature(void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>sensor_index:void*</i> - </li>
+<li><i>Return value:bool</i> - 
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="ConvertAll">
-<b>ConvertAll</b></a>
- - no hint
+<li>
+<a name="ConvertAll">
+<b>ConvertAll -</b>
+</a>
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool ConvertAll(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:bool</i> - 
+</li></ul><br />
 </li>
-</ul><br />
-</li>
-<li><a name="SetResolution">
-<b>SetResolution</b></a>
- - no hint
+<li>
+<a name="get_data">
+<b>get_data -</b>
+</a>
+
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SetResolution(void* config_bits, void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> void get_data(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>config_bits:void*</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
-<li><i>sensor_index:void*</i> - Index of the sensor to set the resolution.</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:void</i> - 
+</li></ul><br />
 </li>
-</ul><br />
-</li>
+<li>
+<a name="SetResolution">
+<b>SetResolution -</b>
+</a>
 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool SetResolution(void* config_bits,void* sensor_index)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>config_bits:void*</i> - Two bits resolution config value: <br><b>0b00</b> - 9 bits.<br><b>0b01</b> - 10 bits.<br><b>0b10</b> - 11 bits.<br><b>0b11</b> - 12 bits.</li>
+<li><i>sensor_index:void*</i> - Index of the sensor to set the resolution.</li>
+<li><i>Return value:bool</i> - 
+</li></ul><br />
+</li>
+<!--END_CDE_METHODS-->
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -325,7 +340,7 @@ Note: Some methods can be implemented as macros.
           <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
-            
+            Copyright 1997 - 2014 Freescale Semiconductor, Inc.
           </p>
     </td>
   </tr>

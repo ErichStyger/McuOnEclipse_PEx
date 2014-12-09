@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.067</Version>
+    <Version>01.068</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -12,7 +12,7 @@
   <Options>
     <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
     <DemoDriver>no</DemoDriver>
-    <Category>SW-Communication</Category>
+    <Category>Software-Communication</Category>
     <BeanLevel>High</BeanLevel>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Omar Isaí Pinales Ayala, 2014, all rights reserved.\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software driver for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <BW_HelpType>Default</BW_HelpType>
@@ -22,8 +22,6 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
-    <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>RELEASE</BeanStatus>
     <Shortcut>OW</Shortcut>
   </Options>
@@ -35,7 +33,10 @@
         <Hint>Name of the component.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_StringStyle>EDITBOX</UI_StringStyle>
+        <DefaultValue />
       </TCompNameItem>
     </Property>
     <Property>
@@ -46,6 +47,9 @@
         <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_EnumStyle>COMBO</UI_EnumStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>-1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -64,6 +68,9 @@
         <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_EnumStyle>COMBO</UI_EnumStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>-1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -78,11 +85,16 @@
       <TGrupItem>
         <Name>Connection time settings</Name>
         <Symbol>connSettings</Symbol>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_IN_TOOLTIP</UI_DisplayExtraText>
+        <UI_GroupStyle>TAB</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <Description />
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
@@ -90,15 +102,19 @@
               <Name>Connection Mode</Name>
               <Symbol>connMode</Symbol>
               <TypeSpec>typeConnMode</TypeSpec>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_EnumStyle>COMBO</UI_EnumStyle>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
               <DefaultIndex>0</DefaultIndex>
               <TextValueIndex>true</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
+              <TypeAssignment>BEAN_FILE</TypeAssignment>
             </TEnumItem>
           </GrupItem>
           <GrupItem>
@@ -108,6 +124,9 @@
               <Hint>Duration of the reset pulse that the master send to slave devices.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>500</DefaultValue>
               <MinValue>480</MinValue>
               <MaxValue>-1</MaxValue>
@@ -126,6 +145,9 @@
               <Hint>Time that master waits before read, after send the reset pulse.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>100</DefaultValue>
               <MinValue>15</MinValue>
               <MaxValue>300</MaxValue>
@@ -143,6 +165,9 @@
               <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>5</DefaultValue>
               <MinValue>1</MinValue>
               <MaxValue>15</MaxValue>
@@ -160,6 +185,9 @@
               <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>80</DefaultValue>
               <MinValue>60</MinValue>
               <MaxValue>120</MaxValue>
@@ -174,9 +202,12 @@
             <TIntgItem>
               <Name>Output low time to read (us)</Name>
               <Symbol>readTime</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>5</DefaultValue>
               <MinValue>1</MinValue>
               <MaxValue>14</MaxValue>
@@ -194,6 +225,9 @@
               <Hint>Wait time to read after start to send the low signal to read.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>10</DefaultValue>
               <MinValue>2</MinValue>
               <MaxValue>10</MaxValue>
@@ -208,9 +242,12 @@
             <TIntgItem>
               <Name>Total slot time (us)</Name>
               <Symbol>slotTime</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>100</DefaultValue>
               <MinValue>60</MinValue>
               <MaxValue>-1</MaxValue>
@@ -228,11 +265,16 @@
       <TGrupItem>
         <Name>Buffers</Name>
         <Symbol>propBuffers</Symbol>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_IN_TOOLTIP</UI_DisplayExtraText>
+        <UI_GroupStyle>TAB</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <Description />
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
@@ -242,6 +284,9 @@
               <Hint>Determines the output buffer size.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>20</DefaultValue>
               <MinValue>10</MinValue>
               <MaxValue>-1</MaxValue>
@@ -256,9 +301,12 @@
             <TIntgItem>
               <Name>Input buffer size</Name>
               <Symbol>szInput</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>20</DefaultValue>
               <MinValue>10</MinValue>
               <MaxValue>-1</MaxValue>
@@ -273,9 +321,12 @@
             <TIntgItem>
               <Name>Time buffer size</Name>
               <Symbol>szTime</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>2</DefaultValue>
               <MinValue>1</MinValue>
               <MaxValue>-1</MaxValue>
@@ -290,9 +341,12 @@
             <TIntgItem>
               <Name>Program buffer size</Name>
               <Symbol>szProgram</Symbol>
-              <Hint/>
+              <Hint />
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>10</DefaultValue>
               <MinValue>5</MinValue>
               <MaxValue>-1</MaxValue>
@@ -314,11 +368,36 @@
         <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <DefaultValue/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_EnumStyle>COMBO</UI_EnumStyle>
+        <DefaultValue />
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <SortStyle/>
+        <SortStyle />
+        <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
       </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Use pre-charged Timer_Unit configuration</Name>
+        <Symbol>pre_config</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint />
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>CHECKBOX</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
   </PropertyList>
   <MethodList>
@@ -331,6 +410,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -344,7 +426,7 @@
         <InDefinition>true</InDefinition>
         <ReturnTypeANSICUserDeclaration>void %'ModuleName'%.Init(void)</ReturnTypeANSICUserDeclaration>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -360,6 +442,9 @@
         <Hint>Sends a reset to the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -372,7 +457,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -389,6 +474,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -402,15 +490,9 @@
         <InDefinition>false</InDefinition>
         <ReturnType>bool</ReturnType>
         <RetHint>Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-</RetHint>
-        <ParamCount>2</ParamCount>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>numOfBytes</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>number of bytes</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>counter</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Number of bytes to receive from slave</ParHint>
@@ -429,6 +511,9 @@
         <Hint>Returns the number of elements stored on input buffer that are ready to read.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -441,7 +526,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>uint8_t</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -454,9 +539,12 @@
         <Name>ProgramEvent</Name>
         <Symbol>ProgramEvent</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -491,6 +579,9 @@
         <Hint>Programs a pause between instruccions.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -532,6 +623,9 @@
         <ItemLevel>@ HIDDEN @</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -563,10 +657,13 @@
         <Name>i_run</Name>
         <Symbol>i_run</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -579,7 +676,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -592,10 +689,13 @@
         <Name>i_action</Name>
         <Symbol>i_action</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -608,7 +708,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -621,10 +721,13 @@
         <Name>i_reset</Name>
         <Symbol>i_reset</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -637,7 +740,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -650,10 +753,13 @@
         <Name>i_presence</Name>
         <Symbol>i_presence</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -666,7 +772,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -679,10 +785,13 @@
         <Name>i_send_low</Name>
         <Symbol>i_send_low</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -695,7 +804,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -708,10 +817,13 @@
         <Name>i_send_float</Name>
         <Symbol>i_send_float</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -724,7 +836,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -737,10 +849,13 @@
         <Name>i_recv_float</Name>
         <Symbol>i_recv_float</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -753,7 +868,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -766,10 +881,13 @@
         <Name>i_recv_get</Name>
         <Symbol>i_recv_get</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -782,7 +900,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -795,10 +913,13 @@
         <Name>read_Pin</Name>
         <Symbol>read_Pin</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -811,7 +932,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -824,10 +945,13 @@
         <Name>i_recv_low</Name>
         <Symbol>i_recv_low</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -840,7 +964,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -853,10 +977,13 @@
         <Name>i_wait</Name>
         <Symbol>i_wait</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <Visible>false</Visible>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>NOT_DISPLAYED</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -869,7 +996,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -885,6 +1012,9 @@
         <Hint>Sends a single byte</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -897,7 +1027,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
@@ -919,6 +1049,9 @@
         <Hint>Sends multiple bytes</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -931,7 +1064,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
@@ -959,6 +1092,9 @@
         <Hint>Gets multiple bytes from the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -971,19 +1107,19 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Parameter>
           <ParName>count</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -999,6 +1135,9 @@
         <Hint>Get a single byte from the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -1011,13 +1150,13 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1033,6 +1172,9 @@
         <Hint>Returns the error</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
@@ -1045,7 +1187,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1059,10 +1201,13 @@
       <TStrgItem>
         <Name>Event module name</Name>
         <Symbol>EventModule</Symbol>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue/>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_StringStyle>EDITBOX</UI_StringStyle>
+        <DefaultValue />
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -1073,10 +1218,16 @@
         <Name>OnProgramEvent</Name>
         <Symbol>OnProgramEvent</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -1102,7 +1253,10 @@
               <Hint>OnProgramEvent procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1118,10 +1272,16 @@
         <Name>OnError</Name>
         <Symbol>OnError</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>don't generate code</Description>
         <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
@@ -1133,7 +1293,7 @@
           <ParName>error</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint />
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1147,7 +1307,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1163,10 +1326,16 @@
         <Name>OnBlockReceived</Name>
         <Symbol>OnBlockReceived</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -1186,7 +1355,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1202,10 +1374,16 @@
         <Name>OnWaitEnd</Name>
         <Symbol>OnWaitEnd</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -1231,7 +1409,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1247,10 +1428,16 @@
         <Name>OnSendEnd</Name>
         <Symbol>OnSendEnd</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -1270,7 +1457,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1286,10 +1476,16 @@
         <Name>OnSendedReset</Name>
         <Symbol>OnSendedReset</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint />
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>generate code</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -1309,7 +1505,10 @@
               <Hint>Event procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue/>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_StringStyle>EDITBOX</UI_StringStyle>
+              <DefaultValue />
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1322,7 +1521,7 @@
     </Event>
   </EventList>
   <Links>
-    <EmptySection_DummyValue/>
+    <EmptySection_DummyValue />
   </Links>
   <Revisions>
     <RevisionVersion>2</RevisionVersion>
@@ -1331,7 +1530,7 @@
       <Version>01.002</Version>
       <Level>0</Level>
       <Author>Auto Generated field</Author>
-      <Verified/>
+      <Verified />
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
@@ -1339,7 +1538,7 @@
       <Version>01.003</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
-      <Verified/>
+      <Verified />
       <Comment>Receive data code</Comment>
     </Revision>
     <Revision>
@@ -1347,7 +1546,7 @@
       <Version>01.004</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
-      <Verified/>
+      <Verified />
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
@@ -1355,8 +1554,17 @@
       <Version>01.067</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
-      <Verified/>
+      <Verified />
       <Comment>New prespective</Comment>
+    </Revision>
+    <Revision>
+      <Date>09-dic-2014</Date>
+      <Version>01.068</Version>
+      <Level />
+      <Author>Omar Isai Pinales Ayala</Author>
+      <Verified />
+      <Comment>Auto Generated field</Comment>
     </Revision>
   </Revisions>
 </Bean>
+

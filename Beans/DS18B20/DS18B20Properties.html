@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Component  documentation - Properties
+DS18B20 documentation - Properties
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-<b>DS18B20</b>
+			<b>DS18B20</b>
             </span>
           </td>
         </tr>
@@ -152,16 +152,12 @@ LI.EXP {
 <a href="DS18B20User Types.html">Types and constants</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br/>
-<a href="../../DOCs/BEANindex.html">Component Index</a><br/>
-<a href="../../DOCs/CPUindex.html">CPU Component Index</a><br/>
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br/>
-<a href="../../DOCs/BeanCategories.html">Components Categories</a><br/>
+<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
+<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="DS18B20_b.gif" alt="Component icon"/>
-
+<img src="DS18B20_b.gif" alt="DS18B20 icon"/>
 
 </center>
             </div>
@@ -184,30 +180,18 @@ LI.EXP {
           
            <div class="titlebox">
               <div class="beanname">
-                Component
-                
-                
+                Component              
                 DS18B20
               </div>
               <div class="descrtext">Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
-                <a href="../../DOCs/BeanCategoriesInfo.html">SW-Communication</a>
-                
+                <a href="../../DOCs/BeanCategoriesInfo.html">Software-Communication</a>
                 </span>
               </div>
             </div>
-                      
-<!--
-            </td>
-        </tr>
-
-        <tr>        
--->  
-            
-<!--            <td align="left"> -->
-<!--                   <br /> -->                  
+                                      
      <div class="text_title">
           Properties:
 		 </div>		 
@@ -217,57 +201,19 @@ LI.EXP {
                   
 <div class="user_text">
 <ul>
+<!--BEG_CDE_PROPERTIES-->
 <li>
 <a name="DeviceName">
 <b>Component Name</b></a> - Name of the component.
 </li>
 <li>
 <a name="connMultiple">
-<b>Connection mode</b></a> - <br />
-The following items are available only if the group is enabled (the value is "Multiple slaves"):<br />
+<b>Connection mode</b></a> - <ul><li>
+<a name="deviceCount">
+<b>Number of devices to connect</b>
+</a>
 
-<ul>
-  <li>
-  <a name="deviceCount">
-  <b>Number of devices to connect</b></a> - 
-  <br />One Item of the list looks like:<br />
-  <a name="itemSensor">
-  <b>Sensor 64-bit ROM code</b></a> - 
-  <ul>
-    <li>
-    <a name="rom0">
-    <b>Family code</b></a> - 
-    </li>
-    <li>
-    <a name="rom1">
-    <b>Serial number 1</b></a> - 
-    </li>
-    <li>
-    <a name="rom2">
-    <b>Serial number 2</b></a> - 
-    </li>
-    <li>
-    <a name="rom3">
-    <b>Serial number 3</b></a> - 
-    </li>
-    <li>
-    <a name="rom4">
-    <b>Serial number 4</b></a> - 
-    </li>
-    <li>
-    <a name="rom5">
-    <b>Serial number 5</b></a> - 
-    </li>
-    <li>
-    <a name="rom6">
-    <b>Serial number 6</b></a> - 
-    </li>
-    <li>
-    <a name="rom7">
-    <b>CRC</b></a> - 
-    </li>
-  </ul>
-  </li>
+</li>
 </ul>
 </li>
 <li>
@@ -276,9 +222,10 @@ The following items are available only if the group is enabled (the value is "Mu
 </li>
 <li>
 <a name="readAuto">
-<b>Read the temperature value from de sensor.</b></a> - 
+<b>Read the temperature value from de sensor.</b></a> - <br><br>There are 2 options:<br />
+<ul><li><u>Auto</u>: </li><li><u>With ReadTemperature()</u>: </li></ul><br>
 </li>
-
+<!--END_CDE_PROPERTIES-->
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -287,7 +234,7 @@ The following items are available only if the group is enabled (the value is "Mu
            <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
-            
+            Copyright 1997 - 2014 Freescale Semiconductor, Inc.
            </p>
     </td>
   </tr>
