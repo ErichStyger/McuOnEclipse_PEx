@@ -132,7 +132,7 @@
   %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_kl46z48\derivative.h
   %FILE? %'DirRel_Code'khci_kinetis.c
   %include FSL_USB_Stack\Host\source\driver\kinetis\khci_kinetis.c
-%elif CPUDevice="Kinetis K20D50"
+%elif (CPUDevice="Kinetis K20D50") | (CPUDevice="Kinetis K20D72")
   %FILE? %'DirRel_Code'derivative.h
   %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_k20\derivative.h
   %FILE? %'DirRel_Code'khci_kinetis.c
