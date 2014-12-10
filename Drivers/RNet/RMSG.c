@@ -134,6 +134,7 @@ uint8_t RMSG_QueueRxMsg(uint8_t *buf, size_t bufSize, uint8_t payloadSize, RPHY_
 static uint8_t RMSG_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"rmsg", (unsigned char*)"Group of rmsg commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows radio help or status\r\n", io->stdOut);
+  return ERR_OK;
 }
 
 static uint8_t RMSG_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
