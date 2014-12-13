@@ -4,7 +4,7 @@
     <Name>KinetisTools</Name>
     <Description>Component suporting various functions of Kinetis ARM Cortex devices</Description>
     <Author>Erich Styger</Author>
-    <Version>01.004</Version>
+    <Version>01.016</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,KinetisTools\KinetisTools</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014, all rights reserved.\nhttp          : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nMain purpose is for a file system, but useful as well without one.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -34,6 +34,52 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Utility</Name>
+        <Symbol>Utility</Symbol>
+        <TypeSpec>KinetisTools\Utility</TypeSpec>
+        <Hint>Link to Utility functions</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Shell</Name>
+        <Symbol>ShellEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Interface to command line shell</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Shell</Name>
+              <Symbol>Shell</Symbol>
+              <TypeSpec>KinetisTools\Shell</TypeSpec>
+              <Hint>Interface to Shell</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
@@ -62,6 +108,179 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UIDGet</Name>
+        <Symbol>UIDGet</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Return the 80bit UID of the device</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>uid</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to </ParHint>
+          <ParUserDeclaration>%'ModuleName'_UID *uid</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_UID *uid)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UIDSame</Name>
+        <Symbol>UIDSame</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Compares two UID</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>TRUE if the same, FALSE otherwise</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>src</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to </ParHint>
+          <ParUserDeclaration>const %'ModuleName'_UID *src</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Variable_1</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>const %'ModuleName'_UID *dst</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(const %'ModuleName'_UID *src, const %'ModuleName'_UID *dst)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UIDtoString</Name>
+        <Symbol>UIDtoString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the value of the UID as string</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>uid</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>const %'ModuleName'_UID *uid</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to </ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bufSize</ParName>
+          <ParType>16bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>size_t bufSize</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const %'ModuleName'_UID *uid, uint8_t *buf, size_t bufSize)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ParseCommand</Name>
+        <Symbol>ParseCommand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Shell Command Line parser. Method is only available if Shell is enabled in the component properties.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to command string</ParHint>
+          <ParUserDeclaration>const unsigned char* cmd</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>handled</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to variable which tells if the command has been handled or not</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>io</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to I/O structure</ParHint>
+          <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
