@@ -1,3 +1,6 @@
+%if (CPUfamily != "Kinetis")
+  %error "This component only works for Kinetis devices!"
+%endif
 %ifndef Shell
   %set ParseCommand Selection never
 %else

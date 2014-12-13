@@ -2,9 +2,9 @@
 <Bean>
   <Header>
     <Name>KinetisTools</Name>
-    <Description>Component suporting various functions of Kinetis ARM Cortex devices</Description>
+    <Description>Component supporting various functions of Kinetis ARM Cortex devices</Description>
     <Author>Erich Styger</Author>
-    <Version>01.016</Version>
+    <Version>01.025</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,KinetisTools\KinetisTools</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014, all rights reserved.\nhttp          : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nMain purpose is for a file system, but useful as well without one.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -281,6 +281,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetKinetisFamilyString</Name>
+        <Symbol>GetKinetisFamilyString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Determines the Kinetis Familiy based on SIM_SDID register</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>ConstCharPtr</ReturnType>
+        <RetHint>String describing the Kinetis Family</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_ConstCharPtr #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

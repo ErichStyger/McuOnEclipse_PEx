@@ -12,4 +12,16 @@
 </PreparedHint>
     <Type>8bit unsigned</Type>
   </Type>
+  <Type>
+    <UsrType>TUserType</UsrType>
+    <Name>ConstCharPtr</Name>
+    <Hint>Pointer to constant string</Hint>
+    <Generate>yes</Generate>
+    <Unique>yes</Unique>
+    <GenerateHelp>yes</GenerateHelp>
+    <PreparedHint>typedef const uint8_t *%'ModuleName'_ConstCharPtr; /* Pointer to constant string */\n
+</PreparedHint>
+    <Type>typedef const uint8_t *%'ModuleName'_ConstCharPtr;</Type>
+    <HWTestType/>
+  </Type>
 </UserTypes>
