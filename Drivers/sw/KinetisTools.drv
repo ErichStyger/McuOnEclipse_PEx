@@ -91,6 +91,11 @@
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
+#ifndef __BWUserType_%'ModuleName'_ConstCharPtr
+#define __BWUserType_%'ModuleName'_ConstCharPtr
+  typedef const uint8_t *%'ModuleName'_ConstCharPtr;             %>40/* Pointer to constant string */
+#endif
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -100,10 +105,51 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+typedef struct {
+  uint8_t id[10]; /* 80 bit ID */
+} %'ModuleName'%.UID;
+
+typedef enum {
+  %'ModuleName'%.FAMILY_K10_K12,                                 %>40/* K10 or K12 */
+  %'ModuleName'%.FAMILY_K20_K22,                                 %>40/* K10 or K12 */
+  %'ModuleName'%.FAMILY_K30_K11_K61,                             %>40/* K30, K11 or K61 */
+  %'ModuleName'%.FAMILY_K40_K21,                                 %>40/* K40 or K21 */
+  %'ModuleName'%.FAMILY_K70,                                     %>40/* K70 */
+  %'ModuleName'%.FAMILY_UNKONWN,                                 %>40/* Unknown */
+  %'ModuleName'%.FAMILY_LAST                                     %>40/* Must be last one! */
+} %'ModuleName'%.FAMILY;
+
+%ifdef ParseCommand
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
+%else
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
+%endif %- ParseCommand
+%if (CPUfamily = "Kinetis")
+%if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
+#define %'ModuleName'%.CPU_IS_M0_PLUS  1
+#define %'ModuleName'%.CPU_IS_M4       0
+%else
+#define %'ModuleName'%.CPU_IS_M0_PLUS  0
+#define %'ModuleName'%.CPU_IS_M4       1
+%endif
+%else
+#error "Not a Kinetis!"
+%endif
 %-BW_CUSTOM_USERTYPE_END
 
-
 %-BW_DEFINITION_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseCommand
+%ifdef ParseCommand
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+%define! Parcmd
+%define! Parhandled
+%define! Pario
+%define! RetVal
+%include Common\KinetisToolsParseCommand.Inc
+
+%endif %- ParseCommand
+%-BW_METHOD_END ParseCommand
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SoftwareReset
 %ifdef SoftwareReset
@@ -112,6 +158,49 @@ void %'ModuleName'%.%SoftwareReset(void);
 
 %endif %- SoftwareReset
 %-BW_METHOD_END SoftwareReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDGet
+%ifdef UIDGet
+uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid);
+%define! Paruid
+%define! RetVal
+%include Common\KinetisToolsUIDGet.Inc
+
+%endif %- UIDGet
+%-BW_METHOD_END UIDGet
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDSame
+%ifdef UIDSame
+bool %'ModuleName'%.%UIDSame(const %'ModuleName'_UID *src, const %'ModuleName'_UID *dst);
+%define! Parsrc
+%define! ParVariable_1
+%define! RetVal
+%include Common\KinetisToolsUIDSame.Inc
+
+%endif %- UIDSame
+%-BW_METHOD_END UIDSame
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDtoString
+%ifdef UIDtoString
+uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, size_t bufSize);
+%define! Paruid
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\KinetisToolsUIDtoString.Inc
+
+%endif %- UIDtoString
+%-BW_METHOD_END UIDtoString
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetKinetisFamilyString
+%ifdef GetKinetisFamilyString
+%'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void);
+%define! RetVal
+%include Common\KinetisToolsGetKinetisFamilyString.Inc
+
+%endif %- GetKinetisFamilyString
+%-BW_METHOD_END GetKinetisFamilyString
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -136,6 +225,7 @@ void %'ModuleName'%.%SoftwareReset(void);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#include <stddef.h> /* for size_t */
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -149,6 +239,64 @@ void %'ModuleName'%.%SoftwareReset(void);
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
+#if %'ModuleName'%.CPU_IS_M4
+static const unsigned char *KinetisM4FamilyStrings[] =
+{ /* FAMID (3 bits) are used as index */
+  (const unsigned char *)"K10 or K12 Family",          /* 000 */
+  (const unsigned char *)"K20 or K22 Family",          /* 001 */
+  (const unsigned char *)"K30, K11 or K61 Family",     /* 010 */
+  (const unsigned char *)"K40 or K21 Family",          /* 011 */
+  (const unsigned char *)"K60 or K62 Family",          /* 100 */
+  (const unsigned char *)"K70 Family",                 /* 101 */
+  (const unsigned char *)"Reserved",                   /* 110 */
+  (const unsigned char *)"Reserved"                    /* 111 */
+};
+#endif
+#if %'ModuleName'%.CPU_IS_M0_PLUS
+static const unsigned char *KinetisM0FamilyStrings[] =
+{ /* FAMID (3 bits) are used as index */
+  (const unsigned char *)"KL0x",          /* 000 */
+  (const unsigned char *)"KL1x",          /* 001 */
+  (const unsigned char *)"KL2x",          /* 010 */
+  (const unsigned char *)"KL3x",          /* 011 */
+  (const unsigned char *)"KL4x",          /* 100 */
+  (const unsigned char *)"Reserved",      /* 101 */
+  (const unsigned char *)"Reserved",      /* 110 */
+  (const unsigned char *)"Reserved"       /* 111 */
+};
+#endif
+
+
+%if defined(Shell)
+
+static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
+{
+  uint8_t buf[64], res;
+  %'ModuleName'%.UID uid;
+
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  res = %'ModuleName'%.%UIDGet(&uid);
+  if (res==ERR_OK) {
+    res = %'ModuleName'%.%UIDtoString(&uid, buf, sizeof(buf));
+  }
+  if (res!=ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n");
+  }
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  UID", buf, io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Family", (uint8_t*)%'ModuleName'%.%GetKinetisFamilyString(), io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+  return ERR_OK;
+}
+
+static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
+{
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
+  return ERR_OK;
+}
+%endif %- Shell
+
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SoftwareReset
@@ -158,13 +306,154 @@ void %'ModuleName'%.%SoftwareReset(void)
 {
   /* generic way to request a reset from software for ARM Cortex */
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
-  while(1) {
+  for(;;) {
     /* wait until reset */
   }
 }
 
 %endif %- SoftwareReset
 %-BW_METHOD_END SoftwareReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDGet
+%ifdef UIDGet
+%define! Paruid
+%define! RetVal
+%include Common\KinetisToolsUIDGet.Inc
+/*!
+ * \brief Return the 80bit UID of the device
+ * \param uid Pointer to the buffer where to store the UID
+ * \return Error code, ERR_OK if everything is ok.
+ */
+uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
+{
+  uid->id[0] = (SIM_UIDMH>>8)&0xff;
+  uid->id[1] = SIM_UIDMH&0xff;
+  uid->id[2] = (SIM_UIDML>>24)&0xff;
+  uid->id[3] = (SIM_UIDML>>16)&0xff;
+  uid->id[4] = (SIM_UIDML>>8)&0xff;
+  uid->id[5] = SIM_UIDML&0xff;
+  uid->id[6] = (SIM_UIDL>>24)&0xff;
+  uid->id[7] = (SIM_UIDL>>16)&0xff;
+  uid->id[8] = (SIM_UIDL>>8)&0xff;
+  uid->id[9] = SIM_UIDL&0xff;
+  return ERR_OK;
+}
+
+%endif %- UIDGet
+%-BW_METHOD_END UIDGet
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDSame
+%ifdef UIDSame
+%define! Parsrc
+%define! ParVariable_1
+%define! RetVal
+%include Common\KinetisToolsUIDSame.Inc
+/*!
+ * \brief Compares two UID
+ * \param src One UID
+ * \param dst The other UID
+ * \return TRUE if the two UID's are the same
+ */
+bool %'ModuleName'%.%UIDSame(const %'ModuleName'_UID *src, const %'ModuleName'_UID *dst)
+{
+  int i;
+
+  for(i=0; i<sizeof(%'ModuleName'_UID); i++) {
+    if (src->id[i]!=dst->id[i]) {
+      return FALSE; /* no match */
+    }
+  }
+  return TRUE;
+}
+
+%endif %- UIDSame
+%-BW_METHOD_END UIDSame
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UIDtoString
+%ifdef UIDtoString
+%define! Paruid
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\KinetisToolsUIDtoString.Inc
+/*!
+ * \brief Transforms the 80bit UID into a string
+ * \param id Pointer to the buffer where to store the string
+ * \param bufSize Size of buffer in bytes
+ * \return Error code, ERR_OK if everything is ok.
+ */
+uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, size_t bufSize)
+{
+  int i;
+
+  %@Utility@'ModuleName'%.strcpy(buf, bufSize, (unsigned char*)"{");
+  for(i=0;i<sizeof(%'ModuleName'_UID);i++) {
+    %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"0x");
+    %@Utility@'ModuleName'%.strcatNum8Hex(buf, bufSize, uid->id[i]);
+    if (i<sizeof(%'ModuleName'_UID)-1) {
+      %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)", ");
+    }
+  }
+  %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"}");
+  return ERR_OK;
+}
+
+%endif %- UIDtoString
+%-BW_METHOD_END UIDtoString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseCommand
+%ifdef ParseCommand
+%define! Parcmd
+%define! Parhandled
+%define! Pario
+%define! RetVal
+%include Common\KinetisToolsParseCommand.Inc
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
+{
+  byte res = ERR_OK;
+
+  if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP) == 0
+    || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help") == 0) {
+    *handled = TRUE;
+    return PrintHelp(io);
+  } else if (   (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0)
+             || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status") == 0)
+            )
+  {
+    *handled = TRUE;
+    res = PrintStatus(io);
+  }
+  return res;
+}
+
+%endif %- ParseCommand
+%-BW_METHOD_END ParseCommand
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetKinetisFamilyString
+%ifdef GetKinetisFamilyString
+%define! RetVal
+%include Common\KinetisToolsGetKinetisFamilyString.Inc
+%'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void)
+{
+#if %'ModuleName'%.CPU_IS_M0_PLUS
+  int32_t val;
+
+  val = (SIM_SDID>>28)&0x3; /* bits 30..28 */
+  return KinetisM0FamilyStrings[val];
+#elif %'ModuleName'%.CPU_IS_M4
+  int32_t val;
+
+  val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
+  return KinetisM4FamilyStrings[val];
+#else
+  #error "Unknown architecture!"
+  return "ERROR";
+#endif
+}
+
+%endif %- GetKinetisFamilyString
+%-BW_METHOD_END GetKinetisFamilyString
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
