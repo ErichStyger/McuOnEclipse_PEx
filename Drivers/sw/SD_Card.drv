@@ -138,6 +138,10 @@ DRESULT %'ModuleName'%.disk_ioctl (
 %-
 /* User definitions */
 
+/* distinguished modes for bus activation/deactivation */
+#define %'ModuleName'%.ACTIVATE_MODE_SLOW   0
+#define %'ModuleName'%.ACTIVATE_MODE_FAST   1
+
 #define %'ModuleName'%.BLOCK_SIZE   %BlockSize                   %>40 /* user defined block size */
 
 /******************************* SD Card Standard Commands **********************************/
@@ -361,6 +365,14 @@ void %@LDDHWSPI@OnBlockReceived(LDD_TUserData *UserDataPtr);
 
 %endif %- @LDDHWSPI@OnBlockReceived
 %-INHERITED_EVENT_END LDDHWSPI OnBlockReceived
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetSlowMode
+%ifdef SetSlowMode
+void %'ModuleName'%.%SetSlowMode(void);
+%include Common\SD_CardSetSlowMode.Inc
+
+%endif %- SetSlowMode
+%-BW_METHOD_END SetSlowMode
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -388,7 +400,8 @@ void %OnError(void);
 %-BW_METHOD_BEGIN OnActivate
 %ifdef OnActivate
 %INTERFACE OnActivate
-void %OnActivate(void);
+void %OnActivate(byte mode);
+%define! Parmode
 %include Common\SD_CardOnActivate.Inc
 
 %endif %- OnActivate
@@ -396,7 +409,8 @@ void %OnActivate(void);
 %-BW_METHOD_BEGIN OnDeactivate
 %ifdef OnDeactivate
 %INTERFACE OnDeactivate
-void %OnDeactivate(void);
+void %OnDeactivate(byte mode);
+%define! Parmode
 %include Common\SD_CardOnDeactivate.Inc
 
 %endif %- OnDeactivate
@@ -438,6 +452,7 @@ void %OnBlockReceived(LDD_TUserData *UserDataPtr);
 %-
 static volatile DSTATUS Stat = STA_NOINIT;                       %>40 /* Disk status */
 static uint8_t CardType = CT_SD1;                                %>40 /* Card type flags */
+static uint8_t speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;    %>40 /* current speed mode */
 
 enum { /* SD card response codes */
   %'ModuleName'%.OK = 0,
@@ -860,6 +875,8 @@ static byte rxDummy; /* dummy byte if we do not need the result. Needed to read 
 
 #endif
 %endif
+#define %'ModuleName'%.SPI_Enable()                   (void)%@HWSPI@'ModuleName'%.Enable()
+#define %'ModuleName'%.SPI_Disable()                  (void)%@HWSPI@'ModuleName'%.Disable()
 #define %'ModuleName'%.SPI_SetSlowMode()              (void)%@HWSPI@'ModuleName'%.SetBaudRateMode(%HWSlowBaudRateMode) /* max 400kbps */
 #define %'ModuleName'%.SPI_SetFastMode()              (void)%@HWSPI@'ModuleName'%.SetBaudRateMode(%HWFastBaudRateMode) /* max 12Mbps */
 #define %'ModuleName'%.SPI_SetShiftClockPolarity(val) (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(val)
@@ -867,6 +884,8 @@ static byte rxDummy; /* dummy byte if we do not need the result. Needed to read 
 %endif %- HWSPI
 %---------------------------------------------------------------------------------------------------
 %ifdef LDDHWSPI
+#define %'ModuleName'%.SPI_Enable()                   (void)%@LDDHWSPI@'ModuleName'%.Enable(%@LDDHWSPI@'ModuleName'%.DeviceData)
+#define %'ModuleName'%.SPI_Disable()                  (void)%@LDDHWSPI@'ModuleName'%.Disable(%@LDDHWSPI@'ModuleName'%.DeviceData)
 #define %'ModuleName'%.SPI_SetSlowMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWSlowBaudRateMode, %HWSlowBaudRateMode) /* max 400kbps */
 #define %'ModuleName'%.SPI_SetFastMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWFastBaudRateMode, %HWFastBaudRateMode) /* max 12Mbps */
 #define %'ModuleName'%.SPI_SetShiftClockPolarity(val) /* not needed for LDD */
@@ -995,9 +1014,11 @@ void %'ModuleName'%.%Activate(void)
    * typically defined as well as 'Mode 0' (CPHA=0, CPOL=0). See http://elm-chan.org/docs/mmc/mmc_e.html
    */
 %if defined(OnActivate)
-  %OnActivate();
+  %OnActivate(speedMode);
+%else
+  (void)mode; /*  not used */
 %endif
-  //%'ModuleName'%.%InitCommChannel();
+  %'ModuleName'%.%InitCommChannel();
 %if defined(ACT)
   %@ACT@'ModuleName'%.SetVal();                                  %>40 /* enable bus driver (high level) */
 %elif defined(LDDACT)
@@ -1021,7 +1042,9 @@ void %'ModuleName'%.%Deactivate(void)
   %@LDDACT@'ModuleName'%.ClrVal(%@LDDACT@'ModuleName'%.DeviceData);%>40 /* disable bus driver (low level) */
 %endif
 %if defined(OnDeactivate)
-  %OnDeactivate();
+  %OnDeactivate(speedMode);
+%else
+  (void)mode; /* not used */
 %endif
 }
 
@@ -1347,8 +1370,9 @@ byte %'ModuleName'%.%Init(void* unused)
   /* -------------------------------- Init & Slow Mode -------------------------------- */
   /* after voltage reaches 2.2V, need to wait at least 1 ms. Then we need to set Data and CS/Chipselect high for at least 74 clocks */
   %@Wait@'ModuleName'%.Waitms(1);                                %>40 /* wait at least for 1 ms on insertion and power on */
+  speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
   %'ModuleName'%.Activate();                                     %>40 /* select slave */
-  %'ModuleName'%.SPI_SetSlowMode();                              %>40 /* set the SPI clock to 375 kbps. This is required for compatibility across a wide range of SD and MMC cards. */
+  %'ModuleName'%.SetSlowMode();                                  %>40 /* set the SPI clock to 375 kbps. This is required for compatibility across a wide range of SD and MMC cards. */
   %'ModuleName'%.DISABLE_SS();                                   %>40 /* disable slave (CS high) */
   for(cnt=0;cnt<10;cnt++) {                                      %>40 /* send at least 75 SPI clock cycles with the SS signal asserted to ensure that the SD card internal state machine is initialized. */
     %'ModuleName'%.SPI_WRITE(%'ModuleName'%.DUMMY);
@@ -1414,12 +1438,37 @@ bool %'ModuleName'%.%CardPresent(void)
 %endif %- CardPresent
 %-BW_METHOD_END CardPresent
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN SetSlowMode
+%ifdef SetSlowMode
+%include Common\SD_CardSetSlowMode.Inc
+void %'ModuleName'%.%SetSlowMode(void)
+{
+  %'ModuleName'%.SPI_Disable();
+%if defined(HWSPI)
+  (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
+  (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
+%endif
+  %'ModuleName'%.SPI_SetSlowMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
+  speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
+  %'ModuleName'%.SPI_Enable();
+}
+
+%endif %- SetSlowMode
+%-BW_METHOD_END SetSlowMode
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetFastMode
 %ifdef SetFastMode
 %include Common\SD_CardSetFastMode.Inc
 void %'ModuleName'%.%SetFastMode(void)
 {
+  %'ModuleName'%.SPI_Disable();
+%if defined(HWSPI)
+  (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
+  (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
+%endif
   %'ModuleName'%.SPI_SetFastMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
+  speedMode = %'ModuleName'%.ACTIVATE_MODE_FAST;
+  %'ModuleName'%.SPI_Enable();
 }
 
 %endif %- SetFastMode
@@ -1436,14 +1485,11 @@ void %'ModuleName'%.%InitCommChannel(void)
     - Shift clock idle polarity: low
     - Clock edge: falling edge
   */
-%if defined(HWSPI)
-  (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0); /* low idle clock polarity */
-  (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0); /* shift clock polarity: falling edge */
-  %'ModuleName'%.SPI_SetFastMode(); /* use fast baud rate */
-%endif
-%ifdef LDDHWSPI
-  %'ModuleName'%.SPI_SetFastMode(); /* use fast mode. This will use the fast configuration. */
-%endif
+  if (speedMode==%'ModuleName'%.ACTIVATE_MODE_FAST) {
+    %'ModuleName'%.SetFastMode(); /* use fast mode. */
+  } else {
+    %'ModuleName'%.SetSlowMode(); /* use slow mode. */
+  }
 }
 
 %endif %- InitCommChannel
@@ -1510,8 +1556,9 @@ void %OnError(void)
 %-BW_METHOD_BEGIN OnActivate
 %ifdef OnActivate
 %IMPLEMENTATION OnActivate
+%define! Parmode
 %include Common\SD_CardOnActivate.Inc
-void %OnActivate(void)
+void %OnActivate(byte mode)
 {
   /* Write your code here ... */
 }
@@ -1521,8 +1568,9 @@ void %OnActivate(void)
 %-BW_METHOD_BEGIN OnDeactivate
 %ifdef OnDeactivate
 %IMPLEMENTATION OnDeactivate
+%define! Parmode
 %include Common\SD_CardOnDeactivate.Inc
-void %OnDeactivate(void)
+void %OnDeactivate(byte mode)
 {
   /* Write your code here ... */
 }

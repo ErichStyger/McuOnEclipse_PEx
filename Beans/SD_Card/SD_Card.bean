@@ -4,7 +4,7 @@
     <Name>SD_Card</Name>
     <Description>SD Card</Description>
     <Author>Erich Styger</Author>
-    <Version>01.169</Version>
+    <Version>01.175</Version>
     <Icon>SD_Card</Icon>
     <TypesFiles>PE,SD_Card\SD_Card</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -129,12 +129,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
@@ -1284,6 +1284,34 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>SetSlowMode</Name>
+        <Symbol>SetSlowMode</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Switches to slow mode SPI communication speed.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>SetFastMode</Name>
         <Symbol>SetFastMode</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1446,10 +1474,16 @@
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
-        <ParamCount>0</ParamCount>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>mode</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>0: slow mode, 1: fast mode</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(void)</ANSIC>
+          <ANSIC>void #C#(byte mode)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -1485,10 +1519,16 @@
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
-        <ParamCount>0</ParamCount>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>mode</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>0: slow mode, 1: fast mode</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(void)</ANSIC>
+          <ANSIC>void #C#(byte mode)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

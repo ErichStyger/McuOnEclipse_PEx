@@ -3,14 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralEvent.inc (OnActivate)
+%include Common\GeneralMethod.inc (ConfigureSPI)
 %;**     Description :
-%;**         Event called when Activate() method is called. This gives an
-%;**         opportunity to the application to synchronize access to a
-%;**         shared bus.
-%include Common\GeneralParameters.inc(27)
-%;**         mode%Parmode %>27 - 0: slow mode, 1: fast mode
+%;**         Configures the SPI bus
+%include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
+%include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
 %}

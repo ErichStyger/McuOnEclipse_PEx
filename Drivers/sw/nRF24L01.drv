@@ -115,6 +115,15 @@
   /*!< no IRQ pin or not enabled */
 %endif
 
+/* if having multiple users on the SPI bus, enable bus sharing/switching */
+%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
+  #define %'ModuleName'%.SWITCH_BUS   1
+  #define %'ModuleName'%.BAUD_RATE_MODE   %BaudRateMode /* Index of baud rate mode */
+%else
+  #define %'ModuleName'%.SWITCH_BUS   0
+  #define %'ModuleName'%.BAUD_RATE_MODE   0 /* dummy */
+%endif
+
 /* Memory Map - register address defines */
 #define %'ModuleName'%.CONFIG      0x00 /* CONFIG register */
 
@@ -722,6 +731,14 @@ uint8_t %'ModuleName'%.%GetFifoStatus(uint8_t *status);
 
 %endif %- GetFifoStatus
 %-BW_METHOD_END GetFifoStatus
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigureSPI
+%ifdef ConfigureSPI
+void %'ModuleName'%.%ConfigureSPI(void);
+%include Common\nRF24L01ConfigureSPI.Inc
+
+%endif %- ConfigureSPI
+%-BW_METHOD_END ConfigureSPI
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -790,6 +807,8 @@ void %OnDeactivate(void);
 
 %ifdef SWSPI
 /* SW SPI */
+#define %'ModuleName'%.SPI_Enable()                   %@SWSPI@'ModuleName'%.Enable()
+#define %'ModuleName'%.SPI_Disable()                  %@SWSPI@'ModuleName'%.Disable()
 #define %'ModuleName'%.SPI_SetFastMode()              %@SWSPI@'ModuleName'%.SetFastMode()
 #define %'ModuleName'%.SPI_SetSlowMode()              %@SWSPI@'ModuleName'%.SetSlowMode()
 #define %'ModuleName'%.SPI_SetShiftClockPolarity(val) (void)%@SWSPI@'ModuleName'%.SetShiftClockPolarity(val)
@@ -803,6 +822,8 @@ void %OnDeactivate(void);
 %-
 %ifdef SPI
 /* HW SPI */
+#define %'ModuleName'%.SPI_Enable()                   %@SPI@'ModuleName'%.Enable()
+#define %'ModuleName'%.SPI_Disable()                  %@SPI@'ModuleName'%.Disable()
 #define %'ModuleName'%.SPI_SetFastMode()              %@SPI@'ModuleName'%.SetFastMode()
 #define %'ModuleName'%.SPI_SetSlowMode()              %@SPI@'ModuleName'%.SetSlowMode()
 #define %'ModuleName'%.SPI_SetShiftClockPolarity(val) (void)%@SPI@'ModuleName'%.SetShiftClockPolarity(val)
@@ -833,6 +854,23 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize);
 
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigureSPI
+%ifdef ConfigureSPI
+%include Common\nRF24L01ConfigureSPI.Inc
+void %'ModuleName'%.%ConfigureSPI(void)
+{
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.SPI_Disable();
+  (void)%'ModuleName'%.SPI_SetShiftClockPolarity(0); /* falling edge */
+  (void)%'ModuleName'%.SPI_SetIdleClockPolarity(0); /* low idle clock polarity */
+  (void)%'ModuleName'%.SPI_SetBaudRateMode(%'ModuleName'%.BAUD_RATE_MODE); /* set bus speed */
+  %'ModuleName'%.SPI_Enable();
+#endif
+}
+
+%endif %- ConfigureSPI
+%-BW_METHOD_END ConfigureSPI
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG SPIWriteRead
 %define! Parval
@@ -920,6 +958,17 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize)
 
 %-INTERNAL_METHOD_END SPIWriteBuffer
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\nRF24L01Deinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %include Common\nRF24L01Init.Inc
@@ -927,6 +976,7 @@ void %'ModuleName'%.%Init(void)
 {
   %'ModuleName'%.CE_LOW();   /* CE high: do not send or receive data */
   %'ModuleName'%.CSN_HIGH(); /* CSN low: not sending commands to the device */
+  %'ModuleName'%.%ConfigureSPI(); /* set up SPI bus */
 }
 
 %endif %- Init
@@ -963,9 +1013,9 @@ void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW(); /* initiate command sequence */
   (void)SPIWriteRead(%'ModuleName'%.W_REGISTER|reg); /* write register command */
   (void)SPIWriteRead(val); /* write value */
@@ -991,9 +1041,9 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW();
   (void)SPIWriteRead(reg);
   val = SPIWriteRead(0); /* write dummy */
@@ -1019,9 +1069,9 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW();
   (void)SPIWriteRead(%'ModuleName'%.R_REGISTER|reg);
   SPIWriteReadBuffer(buf, buf, bufSize);
@@ -1046,9 +1096,9 @@ void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW();
   (void)SPIWriteRead(%'ModuleName'%.W_REGISTER|reg); /* not masking registers as it would conflict with %'ModuleName'%.W_TX_PAYLOAD */
   SPIWriteBuffer(buf, bufSize);
@@ -1072,9 +1122,9 @@ uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW();
   val = SPIWriteRead(val);
   %'ModuleName'%.CSN_HIGH();
@@ -1097,9 +1147,9 @@ void %'ModuleName'%.%Write(uint8_t val)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW();
   (void)SPIWriteRead(val);
   %'ModuleName'%.CSN_HIGH();
@@ -1147,9 +1197,9 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
-%if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
-  (void)%'ModuleName'%.SPI_SetBaudRateMode(%BaudRateMode); /* change bus speed */
-%endif
+#if %'ModuleName'%.SWITCH_BUS
+  %'ModuleName'%.ConfigureSPI(); /* change bus speed */
+#endif
   %'ModuleName'%.CSN_LOW(); /* initiate command sequence */
   status = SPIWriteRead(%'ModuleName'%.W_REGISTER|%'ModuleName'%.STATUS); /* get status */
   (void)SPIWriteRead(status&(%'ModuleName'%.STATUS_RX_DR|%'ModuleName'%.STATUS_TX_DS|%'ModuleName'%.STATUS_MAX_RT)); /* reset IRQ Bits */
@@ -1547,17 +1597,6 @@ void %'ModuleName'%.%PollInterrupt(void)
 
 %endif %- PollInterrupt
 %-BW_METHOD_END PollInterrupt
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN Deinit
-%ifdef Deinit
-%include Common\nRF24L01Deinit.Inc
-void %'ModuleName'%.%Deinit(void)
-{
-  /* nothing needed */
-}
-
-%endif %- Deinit
-%-BW_METHOD_END Deinit
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetFifoStatus
 %ifdef GetFifoStatus
