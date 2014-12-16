@@ -963,7 +963,7 @@ static uint8_t PrintShortStatus(const %@Shell@'ModuleName'%.StdIOType *io)
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
   if (%'ModuleName'%.%btTestUART()!=ERR_OK) {
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Test UART", (unsigned char*)"FAILED", io->stdOut);
-    res = ERR_FAILED;
+    /* even if it failed, this is most likely because we are in transparent mode, so that would be ok */
   } else {
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Test UART", (unsigned char*)"OK", io->stdOut);
   }
