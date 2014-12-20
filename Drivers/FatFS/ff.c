@@ -193,8 +193,11 @@ FRESULT put_fat (
 
 
 /* Timestamp feature */
-#if _FS_NORTC
-#define GET_FATTIME()	((uint32_t)_NORTC_YEAR << 25 | (uint32_t)_NORTC_MON << 21 | (uint32_t)_NORTC_MDAY << 16)
+#if _FS_NORTC == 1
+#if _NORTC_YEAR < 1980 || _NORTC_YEAR > 2107 || _NORTC_MON < 1 || _NORTC_MON > 12 || _NORTC_MDAY < 1 || _NORTC_MDAY > 31
+#error Invalid _FS_NORTC settings
+#endif
+#define GET_FATTIME()  ((DWORD)(_NORTC_YEAR - 1980) << 25 | (DWORD)_NORTC_MON << 21 | (DWORD)_NORTC_MDAY << 16)
 #else
 #define GET_FATTIME()	get_fattime()
 #endif
