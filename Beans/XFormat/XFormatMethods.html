@@ -227,9 +227,9 @@ LI.EXP {
  - Printf() like function using variable arguments
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> unsigned xformat(void (*myoutchar)(void *,char), void *arg, const char * fmt, ...)<br />
+<br /><i>ANSIC prototype:</i> unsigned xformat(void (*outchar)(void *,char), void *arg, const char * fmt, ...)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>myoutchar:byte</i> - Function pointer to output one new character</li>
+<li><i>outchar:byte</i> - Function pointer to output one new character</li>
 <li><i>arg:byte</i> - Argument for the output function</li>
 <li><i>fmt:byte</i> - Format options for the list of parameters</li>
 <li><i>openArgList:byte</i> - Open argument list</li>

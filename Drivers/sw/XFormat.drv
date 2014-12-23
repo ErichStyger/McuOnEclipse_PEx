@@ -81,6 +81,24 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+/**
+ * @file        xformatc.c
+ *
+ * @brief       Printf C implementation.
+ *
+ * @author      Mario Viara
+ *
+ * @version     1.04
+ *
+ * @copyright   Copyright Mario Viara 2014  - License Open Source (LGPL)
+ * This is a free software and is opened for education, research and commercial
+ * developments under license policy of following terms:
+ * - This is a free software and there is NO WARRANTY.
+ * - No restriction on use. You can use, modify and redistribute it for personal,
+ *   non-profit or commercial product UNDER YOUR RESPONSIBILITY.
+ * - Redistributions of source code must retain the above copyright notice.
+ *
+ */
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
@@ -102,9 +120,9 @@
 #include <stdarg.h> /* open argument list support */
 
 %if defined(FloatingPointEnabled) & %FloatingPointEnabled='yes'
-  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    1 /* enable/disable floting format (component property) */
+  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    1 /* enable/disable floating format (component property) */
 %else
-  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    0 /* enable/disable floting format (component property) */
+  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    0 /* enable/disable floating format (component property) */
 %endif
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -114,11 +132,11 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xformat
 %ifdef xformat
-unsigned %'ModuleName'%.%xformat(void (*myoutchar)(void *,char), void *arg, const char * fmt, ...);
-%define! Parmyoutchar
+unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const char * fmt, ...);
 %define! Pararg
 %define! Parfmt
 %define! ParopenArgList
+%define! Paroutchar
 %define! RetVal
 %include Common\XFormatxformat.Inc
 
@@ -183,6 +201,17 @@ int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...);
 %-     int %'ModuleName'%.counter2;
 %-
 %------------------------------------------------------------------------------------------------------------
+/**
+ * Detect support for va_copy
+ */
+#ifdef        __GNUC__
+#define        VA_COPY        1
+#endif
+
+#ifndef        VA_COPY
+#define        VA_COPY        0
+#endif
+
 /**
  * Define XCFG_FORMAT_FLOAT=0 to avoid floating point support
  */
@@ -263,121 +292,17 @@ enum CharClass
 };
 
 /**
- * Used to convert integer
- */
-static const char ms_digits[] = "0123456789abcdef";
-
-/**
- * String used when %%s as null parameter
- */
-static const char  ms_null[] = "(null)";
-/*
- * String for true value
- */
-static const char  ms_true[] = "true";
-
-/**
- * String for false value
- */
-static const char  ms_false[]= "false";
-
-/*
- * This table contains the next state for all char and it will be
- * generated compiling this file with the option -DXCFG_FORMAT_MAKE
- */
-static const unsigned char formatStates[] =
-{
-  0x06,0x00,0x00,0x00,0x00,0x01,0x00,0x00,
-  0x10,0x00,0x03,0x00,0x00,0x06,0x02,0x10,
-  0x04,0x45,0x45,0x45,0x45,0x05,0x05,0x05,
-  0x05,0x35,0x30,0x00,0x00,0x60,0x00,0x00,
-  0x00,0x20,0x28,0x38,0x50,0x50,0x00,0x00,
-  0x00,0x30,0x30,0x30,0x50,0x50,0x00,0x00,
-  0x08,0x20,0x20,0x28,0x20,0x20,0x20,0x00,
-  0x08,0x60,0x60,0x60,0x60,0x60,0x60,0x00,
-  0x00,0x70,0x78,0x78,0x78,0x70,0x78,0x00,
-  0x07,0x08,0x00,0x00,0x07,0x00,0x00,0x08,
-  0x08,0x00,0x00,0x08,0x00,0x08,0x00,0x00,
-  0x08,0x00,0x00
-};
-
-/**
- * Internal function to convert a char in upper case.
- *
- * @param c - A char
- * @return The upper case if was in lower case.
- */
-static char toUpperCase(char c) {
-  return (char)(c >= 'a' && c <= 'z' ? c - ('a' - 'A') : c);
-}
-
-/**
- * Safe version of strlen() if a null pointer is passed return 0.
- *
- * @param s - C  string
- * @return The leght of the string
-*/
-static unsigned xstrlen(const char *s) {
-  unsigned count = 0;
-
-  if (s != 0) {
-    while (*s) {
-      s++;
-      count++;
-    }
-  }
-  return count;
-}
-
-static unsigned outBuffer(void (*myoutchar)(void *arg,char), void *arg, const char *buffer, int len, unsigned flags) {
-  unsigned count = 0;
-  int i;
-
-  for (i = 0; i < len ; i++) {
-    if (flags  & FLAG_UPPER) {
-      (*myoutchar)(arg,toUpperCase(buffer[i]));
-    } else {
-      (*myoutchar)(arg,buffer[i]);
-    }
-    count++;
-  }
-  return count;
-}
-
-static unsigned outChars(void (*myoutchar)(void *arg,char), void *arg, char ch, int len) {
-  unsigned count = 0;
-
-  while (len-- > 0) {
-    (*myoutchar)(arg,ch);
-    count++;
-  }
-  return count;
-}
-
-static void putCharIntoBuf(void *arg, char c) {
-  char **s = (char **)arg;
-  *(*s)++ = c;
-}
-
-static int xsprintf(char *buf, const char *fmt, va_list args) {
-  int res;
-
-  res = %'ModuleName'%.xvformat(putCharIntoBuf, (void *)&buf, fmt, args);
-  *buf = 0;
-  return res;
-}
-
-/**
  * Define XCFG_FORMAT_MAKE to build the states[] table.
 */
 #ifdef  XCFG_FORMAT_MAKE
+#include <stdio.h>
 static const unsigned states[] =
 {
 /* CHAR         NORMAL  PERCENT  FLAG   WIDTH     DOT  PRECIS    SIZE    TYPE*/
 /* OTHER    */      0,      0,      0,      0,      0,      0,      0,      0,
 /* PERCENT  */      1,      0,      0,      0,      0,      0,      0,      1,
 /* DOT      */      0,      4,      4,      4,      4,      0,      0,      0,
-/* STAR     */      0,      3,      3,      0,      0,      6,      0,      0,
+/* STAR     */      0,      3,      3,      0,      5,      6,      0,      0,
 /* ZERO     */      0,      2,      2,      3,      5,      5,      0,      0,
 /* DIGIT    */      0,      3,      3,      3,      5,      5,      0,      0,
 /* FLAG     */      0,      2,      2,      2,      2,      2,      2,      0,
@@ -479,7 +404,46 @@ int main(int argc,char **argv)
 {
   make();
 }
-#endif /* XCFG_FORMAT_MAKE */
+#else
+
+/**
+ * Used to convert integer
+ */
+static const char ms_digits[] = "0123456789abcdef";
+
+/**
+ * String used when %%s as null parameter
+ */
+static const char  ms_null[] = "(null)";
+/*
+ * String for true value
+ */
+static const char  ms_true[] = "True";
+
+/**
+ * String for false value
+ */
+static const char  ms_false[]= "False";
+
+/*
+ * This table contains the next state for all char and it will be
+ * generated compiling this file with the option -DXCFG_FORMAT_MAKE
+ */
+static const unsigned char formatStates[] =
+{
+  0x06,0x00,0x00,0x00,0x00,0x01,0x00,0x00,
+  0x10,0x00,0x03,0x00,0x00,0x06,0x02,0x10,
+  0x04,0x45,0x45,0x45,0x45,0x05,0x05,0x05,
+  0x05,0x35,0x30,0x00,0x50,0x60,0x00,0x00,
+  0x00,0x20,0x28,0x38,0x50,0x50,0x00,0x00,
+  0x00,0x30,0x30,0x30,0x50,0x50,0x00,0x00,
+  0x08,0x20,0x20,0x28,0x20,0x20,0x20,0x00,
+  0x08,0x60,0x60,0x60,0x60,0x60,0x60,0x00,
+  0x00,0x70,0x78,0x78,0x78,0x70,0x78,0x00,
+  0x07,0x08,0x00,0x00,0x07,0x00,0x00,0x08,
+  0x08,0x00,0x00,0x08,0x00,0x08,0x00,0x00,
+  0x08,0x00,0x00
+};
 
 %------------------------------------------------------------------------------------------------------------
 %-BW_CUSTOM_VARIABLE_END
@@ -490,10 +454,10 @@ int main(int argc,char **argv)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xformat
 %ifdef xformat
-%define! Parmyoutchar
 %define! Pararg
 %define! Parfmt
 %define! ParopenArgList
+%define! Paroutchar
 %define! RetVal
 %include Common\XFormatxformat.Inc
 /**
@@ -508,13 +472,13 @@ int main(int argc,char **argv)
  *
  * @see xvformat
  */
-unsigned %'ModuleName'%.%xformat(void (*myoutchar)(void *,char), void *arg, const char * fmt, ...)
+unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const char * fmt, ...)
 {
   va_list list;
   unsigned count;
 
   va_start(list,fmt);
-  count = %'ModuleName'%.xvformat(myoutchar,arg,fmt,list);
+  count = %'ModuleName'%.xvformat(outchar,arg,fmt,list);
   va_end(list);
   (void)list;
 
@@ -532,6 +496,82 @@ unsigned %'ModuleName'%.%xformat(void (*myoutchar)(void *,char), void *arg, cons
 %define! Parargs
 %define! RetVal
 %include Common\XFormatxvformat.Inc
+
+/**
+ * Internal function to convert a char in upper case.
+ *
+ * @param c - A char
+ * @return The upper case if was in lower case.
+ */
+static char toUpperCase(char c)
+{
+  return (char)(c >= 'a' && c <= 'z' ? c - ('a' - 'A') : c);
+}
+
+/**
+ * Safe version of strlen() if a null pointer is passed return 0.
+ *
+ * @param s - C  string
+ * @return The length of the string
+*/
+static unsigned xstrlen(const char *s)
+{
+  unsigned count = 0;
+
+  if (s != 0)
+  {
+    while (*s)
+    {
+      s++;
+      count++;
+    }
+  }
+  return count;
+}
+
+static unsigned outBuffer(void (*myoutchar)(void *arg,char), void *arg, const char *buffer, int len, unsigned flags)
+{
+  unsigned count = 0;
+  int i;
+
+  for (i = 0; i < len ; i++)
+  {
+    if (flags  & FLAG_UPPER)
+    {
+      (*myoutchar)(arg,toUpperCase(buffer[i]));
+    } else {
+      (*myoutchar)(arg,buffer[i]);
+    }
+    count++;
+  }
+  return count;
+}
+
+static unsigned outChars(void (*myoutchar)(void *arg,char), void *arg, char ch, int len)
+{
+  unsigned count = 0;
+
+  while (len-- > 0)
+  {
+    (*myoutchar)(arg,ch);
+    count++;
+  }
+  return count;
+}
+
+static void putCharIntoBuf(void *arg, char c) {
+  char **s = (char **)arg;
+  *(*s)++ = c;
+}
+
+static int xsprintf(char *buf, const char *fmt, va_list args) {
+  int res;
+
+  res = %'ModuleName'%.xvformat(putCharIntoBuf, (void *)&buf, fmt, args);
+  *buf = 0;
+  return res;
+}
+
 /*
  * Lint want declare list as const but list is an obscured pointer so
  * the warning is disabled.
@@ -568,7 +608,7 @@ unsigned %'ModuleName'%.%xformat(void (*myoutchar)(void *,char), void *arg, cons
  * - p  Pointer will be emitted with the prefix ->
  * - P  Pointer in upper case letter.
  * - f  Floating point number.
- * - B        Boolean value printed as true / false.
+ * - B  Boolean value printed as True / False.
  *
  * @param outchar - Pointer to the function to output one char.
  * @param arg   - Argument for the output function.
@@ -577,14 +617,14 @@ unsigned %'ModuleName'%.%xformat(void (*myoutchar)(void *,char), void *arg, cons
  *
  * @return The number of char emitted.
  */
-unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const char * fmt, va_list args)
+unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const char * fmt, va_list _args)
 {
     unsigned count = 0;
     int state = 0;
     int cc;
     char c;
     /*
-     * Maximum size of one int in binary format ..
+     * Maximum size of one int in binary format .. + 1 (in 64 bit machine)
      */
     char buffer[65];
     char prefix[2] = {0,0};
@@ -603,6 +643,13 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
     double arr;
 #endif
 
+#if VA_COPY
+   va_list args;
+
+   va_copy(args,_args);
+#else
+   #define        args        _args
+#endif
     while (*fmt)
     {
         c = *fmt++;
@@ -685,7 +732,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                     case    'P':
                         flags |= FLAG_UPPER;
                         /* no break */
-                        //lint -fallthrough
+                        /*lint -fallthrough */
 
                         /*
                          * Pointer we assume sizeof(int) == sizeof(void *)
@@ -723,7 +770,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                         flags |= FLAG_UPPER;
                         /* no break */
 
-                        //lint -fallthrough
+                        /*lint -fallthrough */
 
                         /*
                          * Hex number lower case
@@ -756,7 +803,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                     case    'S':
                         flags |= FLAG_UPPER;
                         /* no break */
-                        //lint -fallthrough
+                        /*lint -fallthrough */
 
                         /*
                          * Normal string
@@ -774,7 +821,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                     case    'C':
                         flags |= FLAG_UPPER;
                         /* no break */
-                        //lint -fallthrough
+                        /* lint -fallthrough */
 
                         /*
                          * Char
@@ -911,6 +958,10 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                     }
 
                 }
+                if (width && length > width)
+                {
+                    length = width;
+                }
 
                 padding = width - (length + prefixlen);
 
@@ -923,6 +974,9 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
 
         }
     }
+
+    va_end(args);
+
     return count;
 }
 /*lint -restore */
@@ -945,10 +999,11 @@ int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...)
   va_start(args,fmt);
   res = xsprintf(buf, fmt, args);
   va_end(args);
-  return res; /* \todo */
+  return res;
 }
 
 %endif %- xsprintf
+#endif
 %-BW_METHOD_END xsprintf
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */

@@ -4,7 +4,7 @@
     <Name>XFormat</Name>
     <Description>Utililty with printf() like functionality</Description>
     <Author>Mario Viara</Author>
-    <Version>01.012</Version>
+    <Version>01.014</Version>
     <Icon>XFormat</Icon>
     <TypesFiles>PE,XFormat\XFormat</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Mario Viara, 2014\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software implementing a command line shell with Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Mario Viara, 2014, https://github.com/MarioViara/xprintfc\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software implementing a command line shell with Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Category>SW-Tools Library</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>XF</Shortcut>
@@ -135,11 +135,11 @@
         <RetHint>Error code</RetHint>
         <ParamCount>4</ParamCount>
         <Parameter>
-          <ParName>myoutchar</ParName>
+          <ParName>outchar</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Function pointer to output one new character</ParHint>
-          <ParUserDeclaration>void (*myoutchar)(void *,char)</ParUserDeclaration>
+          <ParUserDeclaration>void (*outchar)(void *,char)</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>arg</ParName>
@@ -164,7 +164,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>unsigned #M#_#C#(void (*myoutchar)(void *,char), void *arg, const char * fmt, ...)</ANSIC>
+          <ANSIC>unsigned #M#_#C#(void (*outchar)(void *,char), void *arg, const char * fmt, ...)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
