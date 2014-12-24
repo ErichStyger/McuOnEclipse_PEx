@@ -1238,6 +1238,202 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- xEventGroupSync
 %-BW_METHOD_END xEventGroupSync
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerCreate
+%ifdef xTimerCreate
+#define %'ModuleName'%.%xTimerCreate(pcTimerName, xTimerPeriod, uxAutoReload, pvTimerID, pxCallbackFunction) \
+  xTimerCreate(pcTimerName, xTimerPeriod, uxAutoReload, pvTimerID, pxCallbackFunction)
+%define! ParpcTimerName
+%define! ParxTimerPeriod
+%define! ParuxAutoReload
+%define! ParpvTimerID
+%define! ParpxCallbackFunction
+%define! RetVal
+%include Common\FreeRTOSxTimerCreate.Inc
+
+%endif %- xTimerCreate
+%-BW_METHOD_END xTimerCreate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerIsTimerActive
+%ifdef xTimerIsTimerActive
+#define %'ModuleName'%.%xTimerIsTimerActive(xTimer) \
+  xTimerIsTimerActive(xTimer)
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSxTimerIsTimerActive.Inc
+
+%endif %- xTimerIsTimerActive
+%-BW_METHOD_END xTimerIsTimerActive
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStart
+%ifdef xTimerStart
+#define %'ModuleName'%.%xTimerStart(xTimer, xBlockTime) \
+  xTimerStart(xTimer, xBlockTime)
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerStart.Inc
+
+%endif %- xTimerStart
+%-BW_METHOD_END xTimerStart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStop
+%ifdef xTimerStop
+#define %'ModuleName'%.%xTimerStop(xTimer, xBlockTime) \
+  xTimerStop(xTimer, xBlockTime)
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerStop.Inc
+
+%endif %- xTimerStop
+%-BW_METHOD_END xTimerStop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerChangePeriod
+%ifdef xTimerChangePeriod
+#define %'ModuleName'%.%xTimerChangePeriod(xTimer, xNewPeriod, xBlockTime) \
+  xTimerChangePeriod(xTimer, xNewPeriod, xBlockTime)
+%define! ParxTimer
+%define! ParxNewPeriod
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerChangePeriod.Inc
+
+%endif %- xTimerChangePeriod
+%-BW_METHOD_END xTimerChangePeriod
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerDelete
+%ifdef xTimerDelete
+#define %'ModuleName'%.%xTimerDelete(xTimer, xBlockTime) \
+  xTimerDelete(xTimer, xBlockTime)
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerDelete.Inc
+
+%endif %- xTimerDelete
+%-BW_METHOD_END xTimerDelete
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerReset
+%ifdef xTimerReset
+#define %'ModuleName'%.%xTimerReset(xTimer, xBlockTime) \
+  xTimerReset(xTimer, xBlockTime)
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerReset.Inc
+
+%endif %- xTimerReset
+%-BW_METHOD_END xTimerReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStartFromISR
+%ifdef xTimerStartFromISR
+#define %'ModuleName'%.%xTimerStartFromISR(xTimer, pxHigherPriorityTaskWoken) \
+  xTimerStartFromISR(xTimer, pxHigherPriorityTaskWoken)
+%define! ParxTimer
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerStartFromISR.Inc
+
+%endif %- xTimerStartFromISR
+%-BW_METHOD_END xTimerStartFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStopFromISR
+%ifdef xTimerStopFromISR
+#define %'ModuleName'%.%xTimerStopFromISR(xTimer, pxHigherPriorityTaskWoken) \
+  xTimerStopFromISR(xTimer, pxHigherPriorityTaskWoken)
+%define! ParpxHigherPriorityTaskWoken
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSxTimerStopFromISR.Inc
+
+%endif %- xTimerStopFromISR
+%-BW_METHOD_END xTimerStopFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerChangePeriodFromISR
+%ifdef xTimerChangePeriodFromISR
+#define %'ModuleName'%.%xTimerChangePeriodFromISR(xTimer, xNewPeriod, pxHigherPriorityTaskWoken) \
+  xTimerChangePeriodFromISR(xTimer, xNewPeriod, pxHigherPriorityTaskWoken)
+%define! ParxTimer
+%define! ParxNewPeriod
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerChangePeriodFromISR.Inc
+
+%endif %- xTimerChangePeriodFromISR
+%-BW_METHOD_END xTimerChangePeriodFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerResetFromISR
+%ifdef xTimerResetFromISR
+#define %'ModuleName'%.%xTimerResetFromISR(xTimer, pxHigherPriorityTaskWoken) \
+  xTimerResetFromISR(xTimer, pxHigherPriorityTaskWoken)
+%define! ParxTimer
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerResetFromISR.Inc
+
+%endif %- xTimerResetFromISR
+%-BW_METHOD_END xTimerResetFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pvTimerGetTimerID
+%ifdef pvTimerGetTimerID
+#define %'ModuleName'%.%pvTimerGetTimerID(xTimer) \
+  pvTimerGetTimerID(xTimer)
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSpvTimerGetTimerID.Inc
+
+%endif %- pvTimerGetTimerID
+%-BW_METHOD_END pvTimerGetTimerID
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerGetTimerDaemonTaskHandle
+%ifdef xTimerGetTimerDaemonTaskHandle
+#define %'ModuleName'%.%xTimerGetTimerDaemonTaskHandle() \
+  xTimerGetTimerDaemonTaskHandle()
+%define! RetVal
+%include Common\FreeRTOSxTimerGetTimerDaemonTaskHandle.Inc
+
+%endif %- xTimerGetTimerDaemonTaskHandle
+%-BW_METHOD_END xTimerGetTimerDaemonTaskHandle
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pcTimerGetTimerName
+%ifdef pcTimerGetTimerName
+#define %'ModuleName'%.%pcTimerGetTimerName(xTimer) \
+  pcTimerGetTimerName(xTimer)
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSpcTimerGetTimerName.Inc
+
+%endif %- pcTimerGetTimerName
+%-BW_METHOD_END pcTimerGetTimerName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerPendFunctionCall
+%ifdef xTimerPendFunctionCall
+#define %'ModuleName'%.%xTimerPendFunctionCall(xFunctionToPend, pvParameter1, ulParameter2, xTicksToWait) \
+  xTimerPendFunctionCall(xFunctionToPend, pvParameter1, ulParameter2, xTicksToWait)
+%define! ParxFunctionToPend
+%define! ParpvParameter1
+%define! ParulParameter2
+%define! ParxTicksToWait
+%define! RetVal
+%include Common\FreeRTOSxTimerPendFunctionCall.Inc
+
+%endif %- xTimerPendFunctionCall
+%-BW_METHOD_END xTimerPendFunctionCall
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerPendFunctionCallFromISR
+%ifdef xTimerPendFunctionCallFromISR
+#define %'ModuleName'%.%xTimerPendFunctionCallFromISR(xFunctionToPend, pvParameter1, ulParameter2, pxHigherPriorityTaskWoken) \
+  xTimerPendFunctionCallFromISR(xFunctionToPend, pvParameter1, ulParameter2, pxHigherPriorityTaskWoken)
+%define! ParxFunctionToPend
+%define! ParpvParameter1
+%define! ParulParameter2
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerPendFunctionCallFromISR.Inc
+
+%endif %- xTimerPendFunctionCallFromISR
+%-BW_METHOD_END xTimerPendFunctionCallFromISR
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2918,6 +3114,266 @@ EventBits_t %'ModuleName'%.%xEventGroupSync(EventGroupHandle_t xEventGroup, cons
 
 %endif %- xEventGroupSync
 %-BW_METHOD_END xEventGroupSync
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerCreate
+%ifdef xTimerCreate
+%define! ParpcTimerName
+%define! ParxTimerPeriod
+%define! ParuxAutoReload
+%define! ParpvTimerID
+%define! ParpxCallbackFunction
+%define! RetVal
+%include Common\FreeRTOSxTimerCreate.Inc
+/*
+TimerHandle_t %'ModuleName'%.%xTimerCreate(const char * const pcTimerName, const TickType_t xTimerPeriod, const UBaseType_t uxAutoReload, void *const pvTimerID, TimerCallbackFunction_t pxCallbackFunction)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerCreate
+%-BW_METHOD_END xTimerCreate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerIsTimerActive
+%ifdef xTimerIsTimerActive
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSxTimerIsTimerActive.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerIsTimerActive(TimerHandle_t xTimer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerIsTimerActive
+%-BW_METHOD_END xTimerIsTimerActive
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStart
+%ifdef xTimerStart
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerStart.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerStart(TimerHandle_t xTimer, TickType_t xBlockTime)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerStart
+%-BW_METHOD_END xTimerStart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStop
+%ifdef xTimerStop
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerStop.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerStop(TimerHandle_t xTimer, TickType_t xBlockTime)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerStop
+%-BW_METHOD_END xTimerStop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerChangePeriod
+%ifdef xTimerChangePeriod
+%define! ParxTimer
+%define! ParxNewPeriod
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerChangePeriod.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerChangePeriod(TimerHandle_t xTimer, TickType_t xNewPeriod, TickType_t xBlockTime)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerChangePeriod
+%-BW_METHOD_END xTimerChangePeriod
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerDelete
+%ifdef xTimerDelete
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerDelete.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerDelete(TickType_t xTimer, TickType_t xBlockTime)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerDelete
+%-BW_METHOD_END xTimerDelete
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerReset
+%ifdef xTimerReset
+%define! ParxTimer
+%define! ParxBlockTime
+%define! RetVal
+%include Common\FreeRTOSxTimerReset.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerReset(TimerHandle_t xTimer, TickType_t xBlockTime)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerReset
+%-BW_METHOD_END xTimerReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStartFromISR
+%ifdef xTimerStartFromISR
+%define! ParxTimer
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerStartFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerStartFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerStartFromISR
+%-BW_METHOD_END xTimerStartFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerStopFromISR
+%ifdef xTimerStopFromISR
+%define! ParpxHigherPriorityTaskWoken
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSxTimerStopFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerStopFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerStopFromISR
+%-BW_METHOD_END xTimerStopFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerChangePeriodFromISR
+%ifdef xTimerChangePeriodFromISR
+%define! ParxTimer
+%define! ParxNewPeriod
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerChangePeriodFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerChangePeriodFromISR(TimerHandle_t xTimer, TickType_t xNewPeriod, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerChangePeriodFromISR
+%-BW_METHOD_END xTimerChangePeriodFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerResetFromISR
+%ifdef xTimerResetFromISR
+%define! ParxTimer
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerResetFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerResetFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerResetFromISR
+%-BW_METHOD_END xTimerResetFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pvTimerGetTimerID
+%ifdef pvTimerGetTimerID
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSpvTimerGetTimerID.Inc
+/*
+void* %'ModuleName'%.%pvTimerGetTimerID(TimerHandle_t xTimer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- pvTimerGetTimerID
+%-BW_METHOD_END pvTimerGetTimerID
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerGetTimerDaemonTaskHandle
+%ifdef xTimerGetTimerDaemonTaskHandle
+%define! RetVal
+%include Common\FreeRTOSxTimerGetTimerDaemonTaskHandle.Inc
+/*
+TaskHandle_t %'ModuleName'%.%xTimerGetTimerDaemonTaskHandle(void)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerGetTimerDaemonTaskHandle
+%-BW_METHOD_END xTimerGetTimerDaemonTaskHandle
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pcTimerGetTimerName
+%ifdef pcTimerGetTimerName
+%define! ParxTimer
+%define! RetVal
+%include Common\FreeRTOSpcTimerGetTimerName.Inc
+/*
+char* %'ModuleName'%.%pcTimerGetTimerName(TimerHandle_t xTimer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- pcTimerGetTimerName
+%-BW_METHOD_END pcTimerGetTimerName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerPendFunctionCall
+%ifdef xTimerPendFunctionCall
+%define! ParxFunctionToPend
+%define! ParpvParameter1
+%define! ParulParameter2
+%define! ParxTicksToWait
+%define! RetVal
+%include Common\FreeRTOSxTimerPendFunctionCall.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, void* pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerPendFunctionCall
+%-BW_METHOD_END xTimerPendFunctionCall
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerPendFunctionCallFromISR
+%ifdef xTimerPendFunctionCallFromISR
+%define! ParxFunctionToPend
+%define! ParpvParameter1
+%define! ParulParameter2
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTimerPendFunctionCallFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, void* pvParameter1, uint32_t ulParameter2, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerPendFunctionCallFromISR
+%-BW_METHOD_END xTimerPendFunctionCallFromISR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

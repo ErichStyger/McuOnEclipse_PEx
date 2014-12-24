@@ -1166,6 +1166,218 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xTimerCreate">
+<b>xTimerCreate</b></a>
+ -  Creates a new software timer instance. This allocates the storage required by the new timer, initialises the new timers internal state, and returns a handle by which the new timer can be referenced.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> TimerHandle_t xTimerCreate(const char * const pcTimerName, const TickType_t xTimerPeriod, const UBaseType_t uxAutoReload, void *const pvTimerID, TimerCallbackFunction_t pxCallbackFunction)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pcTimerName:byte</i> - Atextnamethatisassignedtothetimer_Thisisdonepurelytoassistdebugging_TheRTOSkernelitselfonlyeverreferencesatimerbyitshandle_andneverbyitsname_</li>
+<li><i>xTimerPeriod:byte</i> - The timer period. The time is defined in tick periods so the constant portTICK_PERIOD_MS can be used to convert a time that has been specified in milliseconds. For example, if the timer must expire after 100 ticks, then xTimerPeriod should be set to 100. Alternatively, if the timer must expire after 500ms, then xPeriod can be set to ( 500 / portTICK_PERIOD_MS ) provided configTICK_RATE_HZ is less than or equal to 1000. </li>
+<li><i>uxAutoReload:byte</i> - If uxAutoReload is set to pdTRUE, then the timer will expire repeatedly with a frequency set by the xTimerPeriod parameter. If uxAutoReload is set to pdFALSE, then the timer will be a one-shot and enter the dormant state after it expires. </li>
+<li><i>pvTimerID:byte</i> - An identifier that is assigned to the timer being created. Typically this would be used in the timer callback function to identify which timer expired when the same callback function is assigned to more than one timer. </li>
+<li><i>pxCallbackFunction:byte</i> - The function to call when the timer expires. Callback functions must have the prototype defined by TimerCallbackFunction_t, which is &quot;void vCallbackFunction( TimerHandle_t xTimer );&quot;. </li>
+<li><i>Return value:TimerHandle_t</i> - Timer handle. If the timer is successfully created then a handle to the newly created timer is returned. If the timer cannot be created (because either there is insufficient FreeRTOS heap remaining to allocate the timer structures, or the timer period was set to 0) then NULL is returned. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerIsTimerActive">
+<b>xTimerIsTimerActive</b></a>
+ - Queries a timer to see if it is active or dormant.<br /> A timer will be dormant if:<br /><br />    It has been created but not started, or<br />    It is an expired one-shot timer that has not been restarted.<br /><br />Timers are created in the dormant state. The xTimerStart(), xTimerReset(), xTimerStartFromISR(), xTimerResetFromISR(), xTimerChangePeriod() and xTimerChangePeriodFromISR() API functions can all be used to transition a timer into the active state. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerIsTimerActive(TimerHandle_t xTimer)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The timer being queried. </li>
+<li><i>Return value:BaseType_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerStart">
+<b>xTimerStart</b></a>
+ -  Timer functionality is provided by a timer service/daemon task. Many of the public FreeRTOS timer API functions send commands to the timer service task through a queue called the timer command queue. The timer command queue is private to the RTOS kernel itself and is not directly accessible to application code. The length of the timer command queue is set by the configTIMER_QUEUE_LENGTH configuration constant.<br /><br />xTimerStart() starts a timer that was previously created using the xTimerCreate() API function. If the timer had already been started and was already in the active state, then xTimerStart() has equivalent functionality to the xTimerReset() API function.<br /><br />Starting a timer ensures the timer is in the active state. If the timer is not stopped, deleted, or reset in the mean time, the callback function associated with the timer will get called 'n 'ticks after xTimerStart() was called, where 'n' is the timers defined period.<br /><br />It is valid to call xTimerStart() before the RTOS scheduler has been started, but when this is done the timer will not actually start until the RTOS scheduler is started, and the timers expiry time will be relative to when the RTOS scheduler is started, not relative to when xTimerStart() was called.<br /><br />The configUSE_TIMERS configuration constant must be set to 1 for xTimerStart() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerStart(TimerHandle_t xTimer, TickType_t xBlockTime)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being started/restarted. </li>
+<li><i>xBlockTime:TickType_t</i> - Specifies the time, in ticks, that the calling task should be held in the Blocked state to wait for the start command to be successfully sent to the timer command queue, should the queue already be full when xTimerStart() was called. xBlockTime is ignored if xTimerStart() is called before the RTOS scheduler is started.</li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the start command could not be sent to the timer command queue even after xBlockTime ticks had passed. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system, although the timers expiry time is relative to when xTimerStart() is actually called. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant.
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerStop">
+<b>xTimerStop</b></a>
+ -  Timer functionality is provided by a timer service/daemon task. Many of the public FreeRTOS timer API functions send commands to the timer service task through a queue called the timer command queue. The timer command queue is private to the RTOS kernel itself and is not directly accessible to application code. The length of the timer command queue is set by the configTIMER_QUEUE_LENGTH configuration constant.<br /><br />xTimerStop() stops a timer that was previously started using either of the xTimerStart(), xTimerReset(), xTimerStartFromISR(), xTimerResetFromISR(), xTimerChangePeriod() and xTimerChangePeriodFromISR() API functions.<br /><br />Stopping a timer ensures the timer is not in the active state.<br /><br />The configUSE_TIMERS configuration constant must be set to 1 for xTimerStop() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerStop(TimerHandle_t xTimer, TickType_t xBlockTime)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being stopped. </li>
+<li><i>xBlockTime:TickType_t</i> - Specifies the time, in ticks, that the calling task should be held in the Blocked state to wait for the stop command to be successfully sent to the timer command queue, should the queue already be full when xTimerStop() was called. xBlockTime is ignored if xTimerStop() is called before the RTOS scheduler is started. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the stop command could not be sent to the timer command queue even after xBlockTime ticks had passed. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerChangePeriod">
+<b>xTimerChangePeriod</b></a>
+ -  Timer functionality is provided by a timer service/daemon task. Many of the public FreeRTOS timer API functions send commands to the timer service task through a queue called the timer command queue. The timer command queue is private to the RTOS kernel itself and is not directly accessible to application code. The length of the timer command queue is set by the configTIMER_QUEUE_LENGTH configuration constant.<br /><br />xTimerChangePeriod() changes the period of a timer that was previously created using the xTimerCreate() API function.<br /><br />xTimerChangePeriod() can be called to change the period of an active or dormant state timer.<br /><br />The configUSE_TIMERS configuration constant must be set to 1 for xTimerChangePeriod() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerChangePeriod(TimerHandle_t xTimer, TickType_t xNewPeriod, TickType_t xBlockTime)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer that is having its period changed. </li>
+<li><i>xNewPeriod:TickType_t</i> - The new period for xTimer. Timer periods are specified in tick periods, so the constant portTICK_PERIOD_MS can be used to convert a time that has been specified in milliseconds. For example, if the timer must expire after 100 ticks, then xNewPeriod should be set to 100. Alternatively, if the timer must expire after 500ms, then xNewPeriod can be set to ( 500 / portTICK_PERIOD_MS ) provided configTICK_RATE_HZ is less than or equal to 1000. </li>
+<li><i>xBlockTime:TickType_t</i> - Specifies the time, in ticks, that the calling task should be held in the Blocked state to wait for the change period command to be successfully sent to the timer command queue, should the queue already be full when xTimerChangePeriod() was called. xBlockTime is ignored if xTimerChangePeriod() is called before the RTOS scheduler is started. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the change period command could not be sent to the timer command queue even after xBlockTime ticks had passed. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerDelete">
+<b>xTimerDelete</b></a>
+ -  Timer functionality is provided by a timer service/daemon task. Many of the public FreeRTOS timer API functions send commands to the timer service task through a queue called the timer command queue. The timer command queue is private to the RTOS kernel itself and is not directly accessible to application code. The length of the timer command queue is set by the configTIMER_QUEUE_LENGTH configuration constant.<br /><br />xTimerDelete() deletes a timer that was previously created using the xTimerCreate() API function.<br /><br />The configUSE_TIMERS configuration constant must be set to 1 for xTimerDelete() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerDelete(TickType_t xTimer, TickType_t xBlockTime)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TickType_t</i> - The handle of the timer being deleted. </li>
+<li><i>xBlockTime:TickType_t</i> - Specifies the time, in ticks, that the calling task should be held in the Blocked state to wait for the delete command to be successfully sent to the timer command queue, should the queue already be full when xTimerDelete() was called. xBlockTime is ignored if xTimerDelete() is called before the RTOS scheduler is started. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the delete command could not be sent to the timer command queue even after xBlockTime ticks had passed. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerReset">
+<b>xTimerReset</b></a>
+ -  Timer functionality is provided by a timer service/daemon task. Many of the public FreeRTOS timer API functions send commands to the timer service task through a queue called the timer command queue. The timer command queue is private to the RTOS kernel itself and is not directly accessible to application code. The length of the timer command queue is set by the configTIMER_QUEUE_LENGTH configuration constant.<br /><br />xTimerReset() re-starts a timer that was previously created using the xTimerCreate() API function. If the timer had already been started and was already in the active state, then xTimerReset() will cause the timer to re-evaluate its expiry time so that it is relative to when xTimerReset() was called. If the timer was in the dormant state then xTimerReset() has equivalent functionality to the xTimerStart() API function.<br /><br />Resetting a timer ensures the timer is in the active state. If the timer is not stopped, deleted, or reset in the mean time, the callback function associated with the timer will get called 'n' ticks after xTimerReset() was called, where 'n' is the timers defined period.<br /><br />It is valid to call xTimerReset() before the RTOS scheduler has been started, but when this is done the timer will not actually start until the RTOS scheduler is started, and the timers expiry time will be relative to when the RTOS scheduler is started, not relative to when xTimerReset() was called.<br /><br />The configUSE_TIMERS configuration constant must be set to 1 for xTimerReset() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerReset(TimerHandle_t xTimer, TickType_t xBlockTime)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being reset/started/restarted. </li>
+<li><i>xBlockTime:TickType_t</i> - Specifies the time, in ticks, that the calling task should be held in the Blocked state to wait for the reset command to be successfully sent to the timer command queue, should the queue already be full when xTimerReset() was called. xBlockTime is ignored if xTimerReset() is called before the RTOS scheduler is started. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the reset command could not be sent to the timer command queue even after xBlockTime ticks had passed. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system, although the timers expiry time is relative to when xTimerReset() is actually called. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerStartFromISR">
+<b>xTimerStartFromISR</b></a>
+ - A version of xTimerStart() that can be called from an interrupt service routine. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerStartFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being started/restarted. </li>
+<li><i>pxHigherPriorityTaskWoken: Pointer to BaseType_t</i> - The timer service/daemon task spends most of its time in the Blocked state, waiting for messages to arrive on the timer command queue. Calling xTimerStartFromISR() writes a message to the timer command queue, so has the potential to transition the timer service/daemon task out of the Blocked state. If calling xTimerStartFromISR() causes the timer service/daemon task to leave the Blocked state, and the timer service/ daemon task has a priority equal to or greater than the currently executing task (the task that was interrupted), then *pxHigherPriorityTaskWoken will get set to pdTRUE internally within the xTimerStartFromISR() function. If xTimerStartFromISR() sets this value to pdTRUE, then a context switch should be performed before the interrupt exits. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the start command could not be sent to the timer command queue. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system, although the timers expiry time is relative to when xTimerStartFromISR() is actually called. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerStopFromISR">
+<b>xTimerStopFromISR</b></a>
+ - A version of xTimerStop() that can be called from an interrupt service routine.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerStopFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being stopped. </li>
+<li><i>pxHigherPriorityTaskWoken: Pointer to BaseType_t</i> - The timer service/daemon task spends most of its time in the Blocked state, waiting for messages to arrive on the timer command queue. Calling xTimerStopFromISR() writes a message to the timer command queue, so has the potential to transition the timer service/daemon task out of the Blocked state. If calling xTimerStopFromISR() causes the timer service/daemon task to leave the Blocked state, and the timer service/ daemon task has a priority equal to or greater than the currently executing task (the task that was interrupted), then *pxHigherPriorityTaskWoken will get set to pdTRUE internally within the xTimerStopFromISR() function. If xTimerStopFromISR() sets this value to pdTRUE, then a context switch should be performed before the interrupt exits. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the stop command could not be sent to the timer command queue. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerChangePeriodFromISR">
+<b>xTimerChangePeriodFromISR</b></a>
+ - A version of xTimerChangePeriod() that can be called from an interrupt service routine. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerChangePeriodFromISR(TimerHandle_t xTimer, TickType_t xNewPeriod, BaseType_t *pxHigherPriorityTaskWoken)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer that is having its period changed. </li>
+<li><i>xNewPeriod:TickType_t</i> - The new period for xTimer. Timer periods are specified in tick periods, so the constant portTICK_PERIOD_MS can be used to convert a time that has been specified in milliseconds. For example, if the timer must expire after 100 ticks, then xNewPeriod should be set to 100. Alternatively, if the timer must expire after 500ms, then xNewPeriod can be set to ( 500 / portTICK_PERIOD_MS ) provided configTICK_RATE_HZ is less than or equal to 1000. </li>
+<li><i>pxHigherPriorityTaskWoken: Pointer to BaseType_t</i> - The timer service/daemon task spends most of its time in the Blocked state, waiting for messages to arrive on the timer command queue. Calling xTimerChangePeriodFromISR() writes a message to the timer command queue, so has the potential to transition the timer service/ daemon task out of the Blocked state. If calling xTimerChangePeriodFromISR() causes the timer service/daemon task to leave the Blocked state, and the timer service/daemon task has a priority equal to or greater than the currently executing task (the task that was interrupted), then *pxHigherPriorityTaskWoken will get set to pdTRUE internally within the xTimerChangePeriodFromISR() function. If xTimerChangePeriodFromISR() sets this value to pdTRUE, then a context switch should be performed before the interrupt exits. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the command to change the timers period could not be sent to the timer command queue. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerResetFromISR">
+<b>xTimerResetFromISR</b></a>
+ - A version of xTimerReset() that can be called from an interrupt service routine.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerResetFromISR(TimerHandle_t xTimer, BaseType_t *pxHigherPriorityTaskWoken)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer that is to be started, reset, or restarted. </li>
+<li><i>pxHigherPriorityTaskWoken: Pointer to BaseType_t</i> - The timer service/daemon task spends most of its time in the Blocked state, waiting for messages to arrive on the timer command queue. Calling xTimerResetFromISR() writes a message to the timer command queue, so has the potential to transition the timer service/daemon task out of the Blocked state. If calling xTimerResetFromISR() causes the timer service/daemon task to leave the Blocked state, and the timer service/ daemon task has a priority equal to or greater than the currently executing task (the task that was interrupted), then *pxHigherPriorityTaskWoken will get set to pdTRUE internally within the xTimerResetFromISR() function. If xTimerResetFromISR() sets this value to pdTRUE then a context switch should be performed before the interrupt exits. </li>
+<li><i>Return value:BaseType_t</i> - pdFAIL will be returned if the reset command could not be sent to the timer command queue. pdPASS will be returned if the command was successfully sent to the timer command queue. When the command is actually processed will depend on the priority of the timer service/daemon task relative to other tasks in the system, although the timers expiry time is relative to when xTimerResetFromISR() is actually called. The timer service/daemon task priority is set by the configTIMER_TASK_PRIORITY configuration constant. 
+</li>
+</ul><br />
+</li>
+<li><a name="pvTimerGetTimerID">
+<b>pvTimerGetTimerID</b></a>
+ -  Returns the ID assigned to the timer.<br /><br />IDs are assigned to timers using the pvTimerID parameter of the call to xTimerCreate() that was used to create the timer.<br /><br />If the same callback function is assigned to multiple timers then the timer ID can be used within the callback function to identify which timer actually expired. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void* pvTimerGetTimerID(TimerHandle_t xTimer)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The timer being queried. </li>
+<li><i>Return value:void*</i> - The ID assigned to the timer being queried. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerGetTimerDaemonTaskHandle">
+<b>xTimerGetTimerDaemonTaskHandle</b></a>
+ - INCLUDE_xTimerGetTimerDaemonTaskHandle and configUSE_TIMERS must both be set to 1 in FreeRTOSConfig.h for xTimerGetTimerDaemonTaskHandle() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> TaskHandle_t xTimerGetTimerDaemonTaskHandle(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:TaskHandle_t</i> - Returns the task handle associated with the software timer daemon (or service) task. If configUSE_TIMERS is set to 1 in FreeRTOSConfig.h, then the timer daemon task is created automatically when the RTOS scheduler is started. 
+</li>
+</ul><br />
+</li>
+<li><a name="pcTimerGetTimerName">
+<b>pcTimerGetTimerName</b></a>
+ - no hint
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> char* pcTimerGetTimerName(TimerHandle_t xTimer)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTimer:TimerHandle_t</i> - The handle of the timer being queried. </li>
+<li><i>Return value:char*</i> - A pointer to the timer's name, which is a standard NULL terminated C string. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerPendFunctionCall">
+<b>xTimerPendFunctionCall</b></a>
+ -  Used to pend the execution of a function to the RTOS daemon task (the timer service task, hence this function is pre-fixed with 'Timer').<br /><br />Functions that can be deferred to the RTOS daemon task must have the following prototype:<br /><br />void vPendableFunction( void * pvParameter1, uint32_t ulParameter2 );<br /><br />The pvParameter1 and ulParameter2 are provided for use by the application code.<br /><br />INCLUDE_xTimerPendFunctionCall() and configUSE_TIMERS must both be set to 1 for xTimerPendFunctionCall() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerPendFunctionCall(PendedFunction_t xFunctionToPend, void* pvParameter1, uint32_t ulParameter2, TickType_t xTicksToWait)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xFunctionToPend:byte</i> - The function to execute from the timer service/ daemon task. The function must conform to the PendedFunction_t prototype as shown above. </li>
+<li><i>pvParameter1:void*</i> - The value of the callback function's first parameter. The parameter has a void * type to allow it to be used to pass any type. For example, integer types can be cast to a void *, or the void * can be used to point to a structure. </li>
+<li><i>ulParameter2:uint32_t</i> - The value of the callback function's second parameter. </li>
+<li><i>xTicksToWait:TickType_t</i> -  	Calling this function will result in a message being sent to the timer daemon task on a queue. xTicksToWait is the amount of time the calling task should remain in the Blocked state (so not using any processing time) for space to become available on the timer queue if the queue is found to be full. The length of the queue is set by the value of configTIMER_QUEUE_LENGTH in FreeRTOSConfig.h. </li>
+<li><i>Return value:BaseType_t</i> - pdPASS is returned if the message was successfully sent to the RTOS timer daemon task, otherwise pdFALSE is returned. 
+</li>
+</ul><br />
+</li>
+<li><a name="xTimerPendFunctionCallFromISR">
+<b>xTimerPendFunctionCallFromISR</b></a>
+ -  Used from application interrupt service routines to defer the execution of a function to the RTOS daemon task (the timer service task, hence this function is implemented in timers.c and is prefixed with 'Timer').<br /><br />Ideally an interrupt service routine (ISR) is kept as short as possible, but sometimes an ISR either has a lot of processing to do, or needs to perform processing that is not deterministic. In these cases xTimerPendFunctionCallFromISR() can be used to defer processing of a function to the RTOS daemon task.<br /><br />A mechanism is provided that allows the interrupt to return directly to the task that will subsequently execute the pended function. This allows the callback function to execute contiguously in time with the interrupt - just as if the callback had executed in the interrupt itself.<br /><br />Functions that can be deferred to the RTOS daemon task must have the following prototype:<br /><br />void vPendableFunction( void * pvParameter1, uint32_t ulParameter2 );<br /><br />The pvParameter1 and ulParameter2 are provided for use by the application code.<br /><br />INCLUDE_xTimerPendFunctionCall() and configUSE_TIMERS must both be set to 1 for xTimerPendFunctionCallFromISR() to be available. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTimerPendFunctionCallFromISR(PendedFunction_t xFunctionToPend, void* pvParameter1, uint32_t ulParameter2, BaseType_t *pxHigherPriorityTaskWoken)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xFunctionToPend:byte</i> - The function to execute from the timer service/ daemon task. The function must conform to the PendedFunction_t prototype as shown above. </li>
+<li><i>pvParameter1:void*</i> -  	The value of the callback function's first parameter. The parameter has a void * type to allow it to be used to pass any type. For example, integer types can be cast to a void *, or the void * can be used to point to a structure. </li>
+<li><i>ulParameter2:uint32_t</i> - The value of the callback function's second parameter. </li>
+<li><i>pxHigherPriorityTaskWoken: Pointer to BaseType_t</i> - As mentioned above, calling xTimerPendFunctionCallFromISR() will result in a message being sent to the RTOS timer daemon task. If the priority of the daemon task (which is set using configTIMER_TASK_PRIORITY in FreeRTOSConfig.h) is higher than the priority of the currently running task (the task the interrupt interrupted) then *pxHigherPriorityTaskWoken will be set to pdTRUE within xTimerPendFunctionCallFromISR(), indicating that a context switch should be requested before the interrupt exits. For that reason *pxHigherPriorityTaskWoken must be initialised to pdFALSE. See the example code below. </li>
+<li><i>Return value:BaseType_t</i> - pdPASS is returned if the message was successfully sent to the RTOS timer daemon task, otherwise pdFALSE is returned. 
+</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line Parser
