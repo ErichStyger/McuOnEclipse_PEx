@@ -901,12 +901,12 @@ static void SPIWriteReadBuffer(uint8_t *bufOut, uint8_t *bufIn, uint8_t bufSize)
   uint16_t snt, rcvd;
 
   while(%'ModuleName'%.SPI_GetCharsInTxBuf()!=0) {} /* wait until tx is empty */
-  while(%@SPI@'ModuleName'%.SendBlock(bufOut, bufSize, &snt)!=ERR_OK) {
+  while(SPI_SendBlock(bufOut, bufSize, &snt)!=ERR_OK) {
     /* send buffer */
   }
   while(%'ModuleName'%.SPI_GetCharsInTxBuf()!=0) {} /* wait until data has been sent */
   while(%'ModuleName'%.SPI_GetCharsInRxBuf()==0) {} /* wait until we receive data */
-  while(%@SPI@'ModuleName'%.RecvBlock(bufIn, bufSize, &rcvd)!=ERR_OK) {
+  while(SPI_RecvBlock(bufIn, bufSize, &rcvd)!=ERR_OK) {
     /* get data */
   }
 #else
@@ -928,9 +928,9 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize)
 {
 #if %'ModuleName'%.USE_SPI_BLOCK_MODE
   uint16_t snt, rcvd;
-  static uint8_t dummyBuf[%@SPI@'ModuleName'%.INP_BUF_SIZE];
+  static uint8_t dummyBuf[SPI_INP_BUF_SIZE];
 
-  if (bufSize>%@SPI@'ModuleName'%.INP_BUF_SIZE) { /* not enough dummy buffer */
+  if (bufSize>SPI_INP_BUF_SIZE) { /* not enough dummy buffer */
     uint8_t i;
 
     for(i=0;i<bufSize;i++) {
@@ -938,12 +938,12 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize)
     }
   } else {
     while(%'ModuleName'%.SPI_GetCharsInTxBuf()!=0) {} /* wait until tx is empty */
-    while(%@SPI@'ModuleName'%.SendBlock(bufOut, bufSize, &snt)!=ERR_OK) {
+    while(SPI_SendBlock(bufOut, bufSize, &snt)!=ERR_OK) {
       /* send buffer */
     }
     while(%'ModuleName'%.SPI_GetCharsInTxBuf()!=0) {} /* wait until data has been sent */
     while(%'ModuleName'%.SPI_GetCharsInRxBuf()==0) {} /* wait until we receive data */
-    while(%@SPI@'ModuleName'%.RecvBlock(dummyBuf, bufSize, &rcvd)!=ERR_OK) {
+    while(SPI_SPI.RecvBlock(dummyBuf, bufSize, &rcvd)!=ERR_OK) {
       /* get data */
     }
   }
