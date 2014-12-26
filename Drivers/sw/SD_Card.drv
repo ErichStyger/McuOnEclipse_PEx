@@ -1015,8 +1015,6 @@ void %'ModuleName'%.%Activate(void)
    */
 %if defined(OnActivate)
   %OnActivate(speedMode);
-%else
-  (void)mode; /*  not used */
 %endif
   %'ModuleName'%.%InitCommChannel();
 %if defined(ACT)
@@ -1043,8 +1041,6 @@ void %'ModuleName'%.%Deactivate(void)
 %endif
 %if defined(OnDeactivate)
   %OnDeactivate(speedMode);
-%else
-  (void)mode; /* not used */
 %endif
 }
 
