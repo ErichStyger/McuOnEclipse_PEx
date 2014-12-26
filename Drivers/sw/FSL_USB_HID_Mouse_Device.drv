@@ -391,7 +391,6 @@ void %'ModuleName'%.App_Callback(byte controller_ID, byte event_type, void *val)
 byte %'ModuleName'%.%App_Task(void)
 {
   uint32_t hidCode; /* upper 8bits are modifier, lower 8bits are hid code value */
-  int i;
 
   /* device is %CPUDevice */
 %if (CPUDevice="MC9S08JE128") | (CPUDevice="MC9S08JM16") | (CPUDevice="MC9S08JM60") | (CPUDevice="MC9S08JS16") | (CPUDevice="MC9S08MM128")
