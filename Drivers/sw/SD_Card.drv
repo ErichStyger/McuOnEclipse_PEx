@@ -460,8 +460,13 @@ enum { /* SD card response codes */
 };
 
 %if defined(SpiBlockTransferEnabled) & %SpiBlockTransferEnabled='yes'
+%if defined(HWSPI) %- does not work correctly with HW SPI!
+#define %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED          0
+#define %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED     0
+%else
 #define %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED          1
 #define %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED     1
+%endif
 %else
 #define %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED          0
 #define %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED     0
