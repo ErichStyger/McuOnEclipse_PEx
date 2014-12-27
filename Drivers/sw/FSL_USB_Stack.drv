@@ -370,6 +370,7 @@ void %'ModuleName'%.usb_int_en(void)
 %define! RetVal
 %include Common\FSL_USB_StackInit.Inc
 %if (CPUDevice="Kinetis K22FN120")
+#if 0 /* not needed any more? */
 #ifndef MPU_CESR /* Processor Expert does not use MK22F12.h and uses MK22F51212.h instead? */
   /** MPU - Peripheral register structure */
   typedef struct MPU_MemMap {
@@ -389,6 +390,7 @@ void %'ModuleName'%.usb_int_en(void)
   #define MPU_CESR_REG(base)                       ((base)->CESR)
   #define MPU_CESR                                 MPU_CESR_REG(MPU_BASE_PTR)
 #endif
+#endif
 
 %endif
 uint8_t %'ModuleName'%.%Init(void)
@@ -404,7 +406,9 @@ uint8_t %'ModuleName'%.%Init(void)
 %if (CPUDevice="Kinetis K64F")
   MPU_CESR = 0; /* K64F has memory protection unit, disable it! */
 %elif (CPUDevice="Kinetis K22FN120")
-  MPU_CESR = 0; /* K22FN (Kinetis K2) has memory protection unit, disable it! */
+  #if 0 /* not needed with KDS V2.0.0? */
+    MPU_CESR = 0; /* K22FN (Kinetis K2) has memory protection unit, disable it! */
+  #endif
 %endif
   /* Initialize the USB interface */
 %if USBDeviceClass="CDC Device"
