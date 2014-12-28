@@ -130,6 +130,9 @@ DRESULT %'ModuleName'%.disk_ioctl (
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
+#define %'ModuleName'%.DISK_READ_TIMEOUT_MS   %diskReadTimeoutMs /* disk read timeout in milliseconds */
+#define %'ModuleName'%.DISK_WRITE_TIMEOUT_MS  %diskWriteTimeoutMs /* disk write timeout in milliseconds */
+#define %'ModuleName'%.DISK_IOCTL_TIMEOUT_MS  %diskIOctlTimeoutMs /* disk ioctl timeout in milliseconds */
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -477,10 +480,23 @@ DRESULT %'ModuleName'%.disk_read (
   if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED)) {
     res = RES_ERROR;
   } else {
+#if %'ModuleName'%.DISK_READ_TIMEOUT_MS > 0
+    uint16_t timoutMs = %'ModuleName'%.DISK_READ_TIMEOUT_MS;
+#endif
+
     while(!bCallBack) {  /* Wait till command comes back */
       Poll();
+#if %'ModuleName'%.DISK_READ_TIMEOUT_MS > 0
+      if (timoutMs>0) {
+        %@Wait@'ModuleName'%.WaitOSms(1);
+        timoutMs--;
+      } else {
+        bStatus = USBERR_ERROR;
+        break; /* leave loop */
+      }
+#endif
     }
-    if (!bStatus) {
+    if (bStatus==USB_OK) {
       res = RES_OK;
     } else {
       res = RES_NOTRDY;
@@ -513,8 +529,21 @@ DRESULT %'ModuleName'%.disk_write (
   if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED)) {
     res = RES_ERROR;
   } else {
+#if %'ModuleName'%.DISK_READ_TIMEOUT_MS > 0
+    uint16_t timoutMs = %'ModuleName'%.DISK_WRITE_TIMEOUT_MS;
+#endif
+
     while(!bCallBack) {  /* Wait till command comes back */
       Poll();
+#if %'ModuleName'%.DISK_WRITE_TIMEOUT_MS > 0
+      if (timoutMs>0) {
+        %@Wait@'ModuleName'%.WaitOSms(1);
+        timoutMs--;
+      } else {
+        bStatus = USBERR_ERROR;
+        break; /* leave loop */
+      }
+#endif
     }
     if (!bStatus) {
       res = RES_OK;
@@ -546,9 +575,22 @@ DRESULT %'ModuleName'%.disk_ioctl (
     if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED)) {
       res = RES_ERROR;
     } else {
+#if %'ModuleName'%.DISK_READ_TIMEOUT_MS > 0
+    uint16_t timoutMs = %'ModuleName'%.DISK_IOCTL_TIMEOUT_MS;
+#endif
+
       /* Wait till command comes back */
       while(!bCallBack) {
         Poll();
+#if %'ModuleName'%.DISK_IOCTL_TIMEOUT_MS > 0
+      if (timoutMs>0) {
+        %@Wait@'ModuleName'%.WaitOSms(1);
+        timoutMs--;
+      } else {
+        bStatus = USBERR_ERROR;
+        break; /* leave loop */
+      }
+#endif
       }
       if (!bStatus) {
         res = RES_OK;
