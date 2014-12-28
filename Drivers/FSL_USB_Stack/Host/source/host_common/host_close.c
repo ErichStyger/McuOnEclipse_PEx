@@ -36,6 +36,7 @@
 #include "usbprv_host.h"
 #endif
 #include "host_close.h"
+#include "mem_util.h"
 
 
 /*FUNCTION*-------------------------------------------------------------

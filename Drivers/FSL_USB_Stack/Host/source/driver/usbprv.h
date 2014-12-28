@@ -46,6 +46,10 @@
 		#define USB_lock()                           __asm { move.w SR,D0; ori.l #0x0700,D0; move.w D0,SR;  }
 		#define USB_unlock()                         __asm { move.w SR,D0; andi.l #0xF8FF,D0; move.w D0,SR;  }
 	#else
+            #if 1 /* << EST: use save disable/enable interrupt functions, otherwise interrupts get enabled allways! */
+			#define USB_lock()                           EnterCritical();
+			#define USB_unlock()                         ExitCritical();
+            #else
 		#ifdef __CC_ARM
 			#define USB_lock()                           __disable_irq();
 			#define USB_unlock()                         __enable_irq();
@@ -53,6 +57,7 @@
 			#define USB_lock()                           __asm(" CPSID i");
 			#define USB_unlock()                         __asm(" CPSIE i");
 		#endif
+            #endif
 	#endif
 #endif
 
@@ -80,11 +85,7 @@
 	/* todo AI: change this to USB_mem_alloc_zero */
 	#define USB_mem_alloc_zero(n)             USB_mem_alloc_word_aligned(n)
 #endif
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
-#define USB_mem_free(ptr)                     vPortFree(ptr)
-%else
-#define USB_mem_free(ptr)                     free(ptr)
-%endif
+#define USB_mem_free(ptr)                     USB_mem_free(ptr)
 #define USB_mem_zero(ptr,n)                   memset((ptr),(0),(n))
 #define USB_mem_copy(src,dst,n)               memcpy((dst),(src),(n))
 

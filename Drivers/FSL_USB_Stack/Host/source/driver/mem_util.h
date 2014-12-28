@@ -7,5 +7,6 @@
 
 void* USB_mem_alloc_zero(uint_32 size);
 void* USB_mem_alloc_word_aligned(uint_32 size);
+void USB_mem_free(void *ptr);
 
 #endif /* __MEM_UTIL_H__ */

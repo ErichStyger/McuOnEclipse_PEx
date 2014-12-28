@@ -58,6 +58,7 @@
 #include "host_common.h"
 #include "psptypes.h"
 #include "usb_user_config.h" /* << EST 'user_config.h' conflicts with MQX Lite */
+#include "mem_util.h"
 
 #if HIGH_SPEED_DEVICE
 #include "ehci_usbprv_host.h"
