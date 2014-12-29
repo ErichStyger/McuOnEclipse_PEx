@@ -3,16 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (ParseCommand)
+%include Common\GeneralMethod.inc (SetVolume)
 %;**     Description :
-%;**         Shell Command Line parser. This method is enabled/disabled
-%;**         depending on if you have the Shell enabled/disabled in the
-%;**         properties.
+%;**         Sets the volume
 %include Common\GeneralParameters.inc(27)
-%;**         cmd%Parcmd %>27 - Pointer to command string
-%;**       * handled%Parhandled %>27 - Pointer to variable which tells if
-%;** %>29 the command has been handled or not
-%;**       * io%Pario %>27 - Pointer to I/O structure
+%;**         left%Parleft %>27 - zero is max volume, 0xfe is silence,
+%;** %>29 0xff is analog power down
+%;**         right%Parright %>27 - zero is max volume, 0xfe is silence,
+%;** %>29 0xff is analog power down
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

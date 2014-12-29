@@ -99,6 +99,27 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
+/* VS1053 Registers */
+#define VS1053_MODE         0x00
+#define VS1053_STATUS       0x01
+#define VS1053_BASS         0x02
+#define VS1053_CLOCKF       0x03
+#define VS1053_DECODE_TIME  0x04
+#define VS1053_AUDATA       0x05
+#define VS1053_WRAM         0x06
+#define VS1053_WRAMADDR     0x07
+#define VS1053_HDAT0        0x08
+#define VS1053_HDAT1        0x09
+#define VS1053_AIADDR       0x0A
+#define VS1053_VOL          0x0B
+#define VS1053_AICTRL0      0x0C
+#define VS1053_AICTRL1      0x0D
+#define VS1053_AICTRL2      0x0E
+#define VS1053_AICTRL3      0x0F
+#define VS1053_IO_DDR       0xC017
+#define VS1053_IO_IDATA     0xC018
+#define VS1053_IO_ODATA     0xC019
+
 %ifdef ParseCommand
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  1 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %else
@@ -112,7 +133,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool handled, const %@Shell@'ModuleName'%.StdIOType *io);
+byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
@@ -139,6 +160,105 @@ byte %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN IsReady
+%ifdef IsReady
+bool %'ModuleName'%.%IsReady(void);
+%define! RetVal
+%include Common\VS1053IsReady.Inc
+
+%endif %- IsReady
+%-BW_METHOD_END IsReady
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteRegister
+%ifdef WriteRegister
+byte %'ModuleName'%.%WriteRegister(byte reg, word value);
+%define! Parreg
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053WriteRegister.Inc
+
+%endif %- WriteRegister
+%-BW_METHOD_END WriteRegister
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ActivateSPI
+%ifdef ActivateSPI
+byte %'ModuleName'%.%ActivateSPI(void);
+%define! RetVal
+%include Common\VS1053ActivateSPI.Inc
+
+%endif %- ActivateSPI
+%-BW_METHOD_END ActivateSPI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DeactivateSPI
+%ifdef DeactivateSPI
+byte %'ModuleName'%.%DeactivateSPI(void);
+%define! RetVal
+%include Common\VS1053DeactivateSPI.Inc
+
+%endif %- DeactivateSPI
+%-BW_METHOD_END DeactivateSPI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadRegister
+%ifdef ReadRegister
+byte %'ModuleName'%.%ReadRegister(byte reg, word *value);
+%define! Parreg
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053ReadRegister.Inc
+
+%endif %- ReadRegister
+%-BW_METHOD_END ReadRegister
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendZeroes
+%ifdef SendZeroes
+byte %'ModuleName'%.%SendZeroes(word nofZeros);
+%define! ParnofZeros
+%define! RetVal
+%include Common\VS1053SendZeroes.Inc
+
+%endif %- SendZeroes
+%-BW_METHOD_END SendZeroes
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetVolume
+%ifdef SetVolume
+byte %'ModuleName'%.%SetVolume(byte left, byte right);
+%define! Parleft
+%define! Parright
+%define! RetVal
+%include Common\VS1053SetVolume.Inc
+
+%endif %- SetVolume
+%-BW_METHOD_END SetVolume
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StartSong
+%ifdef StartSong
+byte %'ModuleName'%.%StartSong(void);
+%define! RetVal
+%include Common\VS1053StartSong.Inc
+
+%endif %- StartSong
+%-BW_METHOD_END StartSong
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StopSong
+%ifdef StopSong
+byte %'ModuleName'%.%StopSong(void);
+%define! RetVal
+%include Common\VS1053StopSong.Inc
+
+%endif %- StopSong
+%-BW_METHOD_END StopSong
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendData
+%ifdef SendData
+byte %'ModuleName'%.%SendData(byte *data, size_t dataSize);
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\VS1053SendData.Inc
+
+%endif %- SendData
+%-BW_METHOD_END SendData
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -147,6 +267,22 @@ byte %'ModuleName'%.%Init(void);
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
+%-BW_METHOD_BEGIN OnActivateSPI
+%ifdef OnActivateSPI
+%INTERFACE OnActivateSPI
+void %OnActivateSPI(void);
+%include Common\VS1053OnActivateSPI.Inc
+
+%endif %- OnActivateSPI
+%-BW_METHOD_END OnActivateSPI
+%-BW_METHOD_BEGIN OnDeactivateSPI
+%ifdef OnDeactivateSPI
+%INTERFACE OnDeactivateSPI
+void %OnDeactivateSPI(void);
+%include Common\VS1053OnDeactivateSPI.Inc
+
+%endif %- OnDeactivateSPI
+%-BW_METHOD_END OnDeactivateSPI
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\VS1053Settings.Inc
@@ -171,10 +307,98 @@ byte %'ModuleName'%.%Init(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+
+static uint8_t rxDummy; /* dummy byte if we do not need the result. Needed to read from SPI register. */
+#define %'ModuleName'%.SPI_WRITE(write)            \
+   { \
+     while(%@SPI@'ModuleName'%.SendChar(write)!=ERR_OK) {} \
+     while(%@SPI@'ModuleName'%.RecvChar(&rxDummy)!=ERR_OK) {} \
+   }
+#define %'ModuleName'%.SPI_WRITE_READ(write, readP) \
+   { \
+     while(%@SPI@'ModuleName'%.SendChar(write)!=ERR_OK) {} \
+     while(%@SPI@'ModuleName'%.RecvChar(readP)!=ERR_OK) {} \
+   }
+
+/* macros to select device and to switch between data and control mode */
+#define %'ModuleName'%.CONTROL_MODE_ON()    %@DCS@'ModuleName'%.SetVal(); %@MCS@'ModuleName'%.ClrVal()
+#define %'ModuleName'%.CONTROL_MODE_OFF()   %@MCS@'ModuleName'%.SetVal()
+#define %'ModuleName'%.DATA_MODE_ON()       %@MCS@'ModuleName'%.SetVal(); %@DCS@'ModuleName'%.ClrVal()
+#define %'ModuleName'%.DATA_MODE_OFF()      %@DCS@'ModuleName'%.SetVal()
+
+#define %'ModuleName'%.DATA_SIZE_BYTES      32  /* always 32 bytes of data */
+#define %'ModuleName'%.BAUD_SPEED_INDEX     %SPIBaudMode   /* index as defined in properties */
+
 %if defined(Shell)
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
+  uint8_t buf[48];
+  uint16_t val;
+
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  dummy", (unsigned char*)"yes\r\n", io->stdOut);
+  if (%'ModuleName'%.%ReadRegister(VS1053_MODE, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  MODE", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_STATUS, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  STATUS", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_BASS, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  BASS", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_CLOCKF, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  CLOCKF", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_DECODE_TIME, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " seconds\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  DECODE", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_AUDATA, &val)==ERR_OK) {
+    buf[0] = '\0';
+    %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), val&0xFFFE);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " Hz, ");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (val&1)?"stereo\r\n":"mono\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  AUDATA", buf, io->stdOut);
+
+  if (%'ModuleName'%.%ReadRegister(VS1053_VOL, &val)==ERR_OK) {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " (0x0000 full, 0xFEFE silence)\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  VOLUME", buf, io->stdOut);
+
   return ERR_OK;
 }
 
@@ -199,13 +423,156 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %define! Pario
 %define! RetVal
 %include Common\VS1053ParseCommand.Inc
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool handled, const %@Shell@'ModuleName'%.StdIOType *io)
+byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
+    *handled = TRUE;
+    return PrintHelp(io);
+  } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
+    *handled = TRUE;
+    return PrintStatus(io);
+  }
+  return ERR_OK;
 }
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ActivateSPI
+%ifdef ActivateSPI
+%define! RetVal
+%include Common\VS1053ActivateSPI.Inc
+byte %'ModuleName'%.%ActivateSPI(void)
+{
+  uint8_t res;
+  bool isError = FALSE;
+
+%if defined(OnActivateSPI)
+  %OnActivateSPI(); /* call user event */
+%endif
+  res = %@SPI@'ModuleName'%.Disable();
+  if (res != ERR_OK) {
+    isError = TRUE;
+  }
+  res = %@SPI@'ModuleName'%.SetIdleClockPolarity(0);    /* low idle clock polarity */
+  if (res != ERR_OK) {
+    isError = TRUE;
+  }
+  res = %@SPI@'ModuleName'%.SetShiftClockPolarity(0);   /* shift clock polarity: falling edge */
+  if (res != ERR_OK) {
+    isError = TRUE;
+  }
+  res = %@SPI@'ModuleName'%.SetBaudRateMode(%'ModuleName'%.BAUD_SPEED_INDEX);
+  if (res != ERR_OK) {
+    isError = TRUE;
+  }
+  res = %@SPI@'ModuleName'%.Enable();
+  if (res != ERR_OK) {
+    isError = TRUE;
+  }
+  if (isError) {
+    return ERR_FAILED;
+  } else {
+    return ERR_OK;
+  }
+}
+
+%endif %- ActivateSPI
+%-BW_METHOD_END ActivateSPI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DeactivateSPI
+%ifdef DeactivateSPI
+%define! RetVal
+%include Common\VS1053DeactivateSPI.Inc
+byte %'ModuleName'%.%DeactivateSPI(void)
+{
+%if defined(OnDeactivateSPI)
+  %OnDeactivateSPI(); /* call user event */
+%endif
+  return ERR_OK;
+}
+
+%endif %- DeactivateSPI
+%-BW_METHOD_END DeactivateSPI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN IsReady
+%ifdef IsReady
+%define! RetVal
+%include Common\VS1053IsReady.Inc
+bool %'ModuleName'%.%IsReady(void)
+{
+  return %@DREQ@'ModuleName'%.GetVal()!=0; /* DREQ HIGH: ready to receive data */
+}
+
+%endif %- IsReady
+%-BW_METHOD_END IsReady
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteRegister
+%ifdef WriteRegister
+%define! Parreg
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053WriteRegister.Inc
+byte %'ModuleName'%.%WriteRegister(byte reg, word value)
+{
+  %'ModuleName'%.ActivateSPI();
+  %'ModuleName'%.CONTROL_MODE_ON();
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  /* send instruction byte, address byte and 16bit data word */
+  %'ModuleName'%.SPI_WRITE(0x02); /* write instruction */
+  %'ModuleName'%.SPI_WRITE(reg);
+  %'ModuleName'%.SPI_WRITE(value>>8); /* high byte first */
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  %'ModuleName'%.SPI_WRITE(value&0xff); /* low byte */
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  %'ModuleName'%.CONTROL_MODE_OFF();
+  %'ModuleName'%.DeactivateSPI();
+  return ERR_OK;
+}
+
+%endif %- WriteRegister
+%-BW_METHOD_END WriteRegister
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadRegister
+%ifdef ReadRegister
+%define! Parreg
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053ReadRegister.Inc
+byte %'ModuleName'%.%ReadRegister(byte reg, word *value)
+{
+  uint8_t val0, val1;
+
+  %'ModuleName'%.ActivateSPI();
+  %'ModuleName'%.CONTROL_MODE_ON();
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  /* send instruction byte, address byte and 16bit data word */
+  %'ModuleName'%.SPI_WRITE(0x03); /* read instruction */
+  %'ModuleName'%.SPI_WRITE(reg);
+  %'ModuleName'%.SPI_WRITE_READ(0xff, &val0); /* read first byte */
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  %'ModuleName'%.SPI_WRITE_READ(0xff, &val1); /* read second byte */
+  while(!%'ModuleName'%.%IsReady()) {
+    /* wait until pin goes high so we know it is ready */
+  }
+  %'ModuleName'%.CONTROL_MODE_OFF();
+  *value = (val0<<8)|val1;
+  %'ModuleName'%.DeactivateSPI();
+  return ERR_OK;
+}
+
+%endif %- ReadRegister
+%-BW_METHOD_END ReadRegister
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -225,11 +592,114 @@ byte %'ModuleName'%.%Deinit(void)
 %include Common\VS1053Init.Inc
 byte %'ModuleName'%.%Init(void)
 {
+  %@MCS@'ModuleName'%.SetVal(); /* chip select is low active, deselect it */
+  %@DCS@'ModuleName'%.SetVal(); /* data mode is low active, deselect data mode */
   return ERR_OK;
 }
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendZeroes
+%ifdef SendZeroes
+%define! ParnofZeros
+%define! RetVal
+%include Common\VS1053SendZeroes.Inc
+byte %'ModuleName'%.%SendZeroes(word nofZeros)
+{
+  uint16_t chunk;
+
+  %'ModuleName'%.ActivateSPI();
+  %'ModuleName'%.DATA_MODE_ON();
+  while(nofZeros!=0) {
+    while(!%'ModuleName'%.%IsReady()) {
+      /* wait until pin goes high so we know it is ready */
+    }
+    if (nofZeros>%'ModuleName'%.DATA_SIZE_BYTES) { /* max 32 bytes */
+      chunk = %'ModuleName'%.DATA_SIZE_BYTES;
+    } else {
+      chunk = nofZeros;
+    }
+    nofZeros -= chunk;
+    while(chunk>0) {
+      %'ModuleName'%.SPI_WRITE(0);
+      chunk--;
+    }
+  }
+  %'ModuleName'%.DATA_MODE_OFF();
+  %'ModuleName'%.DeactivateSPI();
+  return ERR_OK;
+}
+
+%endif %- SendZeroes
+%-BW_METHOD_END SendZeroes
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StartSong
+%ifdef StartSong
+%define! RetVal
+%include Common\VS1053StartSong.Inc
+byte %'ModuleName'%.%StartSong(void)
+{
+  return %'ModuleName'%.%SendZeroes(10);
+}
+
+%endif %- StartSong
+%-BW_METHOD_END StartSong
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StopSong
+%ifdef StopSong
+%define! RetVal
+%include Common\VS1053StopSong.Inc
+byte %'ModuleName'%.%StopSong(void)
+{
+  return %'ModuleName'%.%SendZeroes(2048);
+}
+
+%endif %- StopSong
+%-BW_METHOD_END StopSong
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetVolume
+%ifdef SetVolume
+%define! Parleft
+%define! Parright
+%define! RetVal
+%include Common\VS1053SetVolume.Inc
+byte %'ModuleName'%.%SetVolume(byte left, byte right)
+{
+  /* max volume: 0x0000, total silence: 0xFEFE, 0xFFFF analog power down */
+  return %'ModuleName'%.%WriteRegister(VS1053_VOL, (left<<8)|right);
+}
+
+%endif %- SetVolume
+%-BW_METHOD_END SetVolume
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendData
+%ifdef SendData
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\VS1053SendData.Inc
+byte %'ModuleName'%.%SendData(byte *data, size_t dataSize)
+{
+  if (dataSize!=%'ModuleName'%.DATA_SIZE_BYTES) {
+    return ERR_FAULT; /* need 32 bytes! */
+  }
+  %'ModuleName'%.ActivateSPI();
+  %'ModuleName'%.DATA_MODE_ON();
+  while(dataSize>0) {
+    while(!%'ModuleName'%.%IsReady()) {
+      /* wait until pin goes high so we know it is ready */
+    }
+    %'ModuleName'%.SPI_WRITE(*data++);
+    dataSize--;
+  }
+  %'ModuleName'%.DATA_MODE_OFF();
+  %'ModuleName'%.DeactivateSPI();
+  return ERR_OK;
+}
+
+%endif %- SendData
+%-BW_METHOD_END SendData
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -237,11 +707,33 @@ byte %'ModuleName'%.%Init(void)
 %-
 %-
 %-BW_EVENT_IMPLEMENT_START
+%-BW_METHOD_BEGIN OnActivateSPI
+%ifdef OnActivateSPI
+%IMPLEMENTATION OnActivateSPI
+%include Common\VS1053OnActivateSPI.Inc
+void %OnActivateSPI(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnActivateSPI
+%-BW_METHOD_END OnActivateSPI
+%-BW_METHOD_BEGIN OnDeactivateSPI
+%ifdef OnDeactivateSPI
+%IMPLEMENTATION OnDeactivateSPI
+%include Common\VS1053OnDeactivateSPI.Inc
+void %OnDeactivateSPI(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnDeactivateSPI
+%-BW_METHOD_END OnDeactivateSPI
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+  (void)%'ModuleName'%.%Init();
 %CODE_END
 %-
 %ENABLE
