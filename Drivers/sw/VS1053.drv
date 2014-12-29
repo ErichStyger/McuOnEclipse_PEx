@@ -405,6 +405,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  volume <left> <right>", (unsigned char*)"Set volume, full: 0x00, 0xFE silence, 0xFF power down\r\n", io->stdOut);
   return ERR_OK;
 }
 
@@ -425,12 +426,33 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %include Common\VS1053ParseCommand.Inc
 byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
+  const uint8_t *p;
+  uint32_t val32u;
+
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
     *handled = TRUE;
     return PrintHelp(io);
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' volume ", sizeof("%'ModuleName' volume ")-1)==0) {
+    uint8_t left, right;
+
+    *handled = TRUE;
+    p = cmd+sizeof("%'ModuleName' volume ")-1;
+    if (%@Utility@'ModuleName'%.xatoi(&p, &val32u)==ERR_OK) {
+      left = (uint8_t)val32u;
+      if (%@Utility@'ModuleName'%.xatoi(&p, &val32u)==ERR_OK) {
+        right = (uint8_t)val32u;
+        return %'ModuleName'%.%SetVolume(left, right);
+      } else {
+        %@Shell@'ModuleName'%.SendStr("Failed reading right volume", io->stdErr);
+        return ERR_FAILED;
+      }
+    } else {
+      %@Shell@'ModuleName'%.SendStr("Failed reading left volume", io->stdErr);
+      return ERR_FAILED;
+    }
   }
   return ERR_OK;
 }
