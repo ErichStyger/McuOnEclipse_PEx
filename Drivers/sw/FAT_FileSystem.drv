@@ -915,10 +915,9 @@ DRESULT disk_ioctl (
 
 #elif %'ModuleName'%.USE_LFN == 1                                %>40 /* LFN with static LFN working buffer */
 static TCHAR %'ModuleName'%.FileName[%'ModuleName'%.MAX_LFN+1];
-static TCHAR %'ModuleName'%.FileName2[%'ModuleName'%.MAX_LFN+1];
 #define %'ModuleName'%.DEF_NAMEBUF(name)
-#define %'ModuleName'%.PTR_NAMEBUF(name)                         %>40 &%'ModuleName'%.name[0]
-#define %'ModuleName'%.SIZE_NAMEBUF(name)                        %>40 sizeof(%'ModuleName'%.name)
+#define %'ModuleName'%.PTR_NAMEBUF(name)                         %>40 &%'ModuleName'%.FileName[0]
+#define %'ModuleName'%.SIZE_NAMEBUF(name)                        %>40 sizeof(%'ModuleName'%.FileName)
 #define %'ModuleName'%.INIT_NAMEBUF(name)
 #define %'ModuleName'%.FREE_NAMEBUF(name)
 
@@ -1012,7 +1011,7 @@ static byte PrintDir(const byte *dirPathPtr, const %@Shell@'ModuleName'%.StdIOTy
   p1 = s1 = s2 = 0;
 #if %'ModuleName'%.USE_LFN
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  fInfo.lfname = (char*)fileName;
+  fInfo.lfname = %'ModuleName'%.PTR_NAMEBUF(fileName);
   fInfo.lfsize = %'ModuleName'%.SIZE_NAMEBUF(fileName);
 #endif
   for(;;) {
