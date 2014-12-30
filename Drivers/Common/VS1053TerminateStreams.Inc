@@ -3,11 +3,10 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SendZeroes)
+%include Common\GeneralMethod.inc (TerminateStreams)
 %;**     Description :
-%;**         Sends a number of zeros
-%include Common\GeneralParameters.inc(27)
-%;**         nofZeros%ParnofZeros %>27 - Number of zeros to send
+%;**         Stops a currently playing stream
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

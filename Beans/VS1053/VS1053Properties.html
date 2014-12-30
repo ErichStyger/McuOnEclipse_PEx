@@ -188,7 +188,7 @@ LI.EXP {
                 
                 VS1053
               </div>
-              <div class="descrtext">Component for the VS1053 Audio Codec Device</div>
+              <div class="descrtext">Component for the VLSI VS1053 Audio Codec Device</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">Low</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
@@ -239,6 +239,22 @@ LI.EXP {
 <li>
 <a name="DREQ">
 <b>DREQ</b></a> - Interface to DREQ (data request) pin. HIGH means I can send data
+</li>
+<li>
+<a name="WaitIfNotReady">
+<b>Wait if not Ready</b></a> - If enabled, it will wait while the device is not ready (DREQ LOW). Otherwise, it will simply poll the  DREQ pin.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="WaitNotReadyMs">
+  <b>Wait time (ms)</b></a> - Waiting time, in milli seconds. It will use the WaitOSms() method.
+  </li>
+  <li>
+  <a name="Wait">
+  <b>Wait</b></a> - Interface to waiting routines
+  </li>
+</ul>
 </li>
 <li>
 <a name="ShellEnabled">

@@ -101,6 +101,22 @@
 %-    typedef int TMyInteger;
 /* VS1053 Registers */
 #define VS1053_MODE         0x00
+  #define VS1053_MODE_SM_DIFF           (1<<0)
+  #define VS1053_MODE_SM_LAYER12        (1<<1)
+  #define VS1053_MODE_SM_RESET          (1<<2)
+  #define VS1053_MODE_SM_CANCEL         (1<<3)
+  #define VS1053_MODE_SM_EARSPEAKER_LO  (1<<4)
+  #define VS1053_MODE_SM_TESTS          (1<<5)
+  #define VS1053_MODE_SM_STREAM         (1<<6)
+  #define VS1053_MODE_SM_EARSPEAKER_HI  (1<<7)
+  #define VS1053_MODE_SM_DACT           (1<<8)
+  #define VS1053_MODE_SM_SDIORD         (1<<9)
+  #define VS1053_MODE_SM_SDISHARE       (1<<10)
+  #define VS1053_MODE_SM_SDINEW         (1<<11)
+  #define VS1053_MODE_SM_ADPCM          (1<<12)
+  #define VS1053_MODE_SM_LINE1          (1<<14)
+  #define VS1053_MODE_SM_SM_CLK_RANGE   (1<<15)
+
 #define VS1053_STATUS       0x01
 #define VS1053_BASS         0x02
 #define VS1053_CLOCKF       0x03
@@ -120,15 +136,27 @@
 #define VS1053_IO_IDATA     0xC018
 #define VS1053_IO_ODATA     0xC019
 
+#define VS1053_PARA_END_FILL_BYTE 0x1E06 /*1e06 byte value to send after file sent */
+
 %ifdef ParseCommand
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  1 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %else
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %endif %- ParseCommand
+
+%if defined(WaitIfNotReady) & %WaitIfNotReady='yes' & defined(WaitNotReadyMs) & defined(Wait)
+#define %'ModuleName'%.WAIT_IF_NOT_READY          1 /* Wait if not ready */
+%else
+#define %'ModuleName'%.WAIT_IF_NOT_READY          0 /* Wait if not ready */
+%endif
+#if %'ModuleName'%.WAIT_IF_NOT_READY
+  #define %'ModuleName'%.WAIT_IF_NOT_READY_TIME_MS  %WaitNotReadyMs /* Wait if not ready */
+  #define %'ModuleName'%.WAIT_IF_NOT_READY_WAIT()   %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.WAIT_IF_NOT_READY_TIME_MS)
+#else
+  #define %'ModuleName'%.WAIT_IF_NOT_READY_WAIT()   /* nothing */
+#endif
 %-
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
@@ -210,15 +238,16 @@ byte %'ModuleName'%.%ReadRegister(byte reg, word *value);
 %endif %- ReadRegister
 %-BW_METHOD_END ReadRegister
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SendZeroes
-%ifdef SendZeroes
-byte %'ModuleName'%.%SendZeroes(word nofZeros);
-%define! ParnofZeros
+%-BW_METHOD_BEGIN SendValues
+%ifdef SendValues
+byte %'ModuleName'%.%SendValues(word nofValues, byte value);
+%define! ParnofValues
+%define! Parvalue
 %define! RetVal
-%include Common\VS1053SendZeroes.Inc
+%include Common\VS1053SendValues.Inc
 
-%endif %- SendZeroes
-%-BW_METHOD_END SendZeroes
+%endif %- SendValues
+%-BW_METHOD_END SendValues
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetVolume
 %ifdef SetVolume
@@ -240,14 +269,14 @@ byte %'ModuleName'%.%StartSong(void);
 %endif %- StartSong
 %-BW_METHOD_END StartSong
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN StopSong
-%ifdef StopSong
-byte %'ModuleName'%.%StopSong(void);
+%-BW_METHOD_BEGIN TerminateStreams
+%ifdef TerminateStreams
+byte %'ModuleName'%.%TerminateStreams(void);
 %define! RetVal
-%include Common\VS1053StopSong.Inc
+%include Common\VS1053TerminateStreams.Inc
 
-%endif %- StopSong
-%-BW_METHOD_END StopSong
+%endif %- TerminateStreams
+%-BW_METHOD_END TerminateStreams
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendData
 %ifdef SendData
@@ -259,6 +288,28 @@ byte %'ModuleName'%.%SendData(byte *data, size_t dataSize);
 
 %endif %- SendData
 %-BW_METHOD_END SendData
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteWRAM
+%ifdef WriteWRAM
+byte %'ModuleName'%.%WriteWRAM(word addr, word value);
+%define! Paraddr
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053WriteWRAM.Inc
+
+%endif %- WriteWRAM
+%-BW_METHOD_END WriteWRAM
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadWRAM
+%ifdef ReadWRAM
+byte %'ModuleName'%.%ReadWRAM(word addr, word *value);
+%define! Paraddr
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053ReadWRAM.Inc
+
+%endif %- ReadWRAM
+%-BW_METHOD_END ReadWRAM
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -540,18 +591,18 @@ byte %'ModuleName'%.%WriteRegister(byte reg, word value)
   %'ModuleName'%.ActivateSPI();
   %'ModuleName'%.CONTROL_MODE_ON();
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   /* send instruction byte, address byte and 16bit data word */
   %'ModuleName'%.SPI_WRITE(0x02); /* write instruction */
   %'ModuleName'%.SPI_WRITE(reg);
   %'ModuleName'%.SPI_WRITE(value>>8); /* high byte first */
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   %'ModuleName'%.SPI_WRITE(value&0xff); /* low byte */
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   %'ModuleName'%.CONTROL_MODE_OFF();
   %'ModuleName'%.DeactivateSPI();
@@ -574,18 +625,18 @@ byte %'ModuleName'%.%ReadRegister(byte reg, word *value)
   %'ModuleName'%.ActivateSPI();
   %'ModuleName'%.CONTROL_MODE_ON();
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   /* send instruction byte, address byte and 16bit data word */
   %'ModuleName'%.SPI_WRITE(0x03); /* read instruction */
   %'ModuleName'%.SPI_WRITE(reg);
   %'ModuleName'%.SPI_WRITE_READ(0xff, &val0); /* read first byte */
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   %'ModuleName'%.SPI_WRITE_READ(0xff, &val1); /* read second byte */
   while(!%'ModuleName'%.%IsReady()) {
-    /* wait until pin goes high so we know it is ready */
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
   %'ModuleName'%.CONTROL_MODE_OFF();
   *value = (val0<<8)|val1;
@@ -595,6 +646,94 @@ byte %'ModuleName'%.%ReadRegister(byte reg, word *value)
 
 %endif %- ReadRegister
 %-BW_METHOD_END ReadRegister
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteWRAM
+%ifdef WriteWRAM
+%define! Paraddr
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053WriteWRAM.Inc
+byte %'ModuleName'%.%WriteWRAM(word addr, word value)
+{
+  uint8_t res;
+
+  res = %'ModuleName'%.%WriteRegister(VS1053_WRAMADDR, addr);
+  if (res==ERR_OK) {
+    res = %'ModuleName'%.%WriteRegister(VS1053_WRAM, value);
+  }
+  return res;
+}
+
+%endif %- WriteWRAM
+%-BW_METHOD_END WriteWRAM
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadWRAM
+%ifdef ReadWRAM
+%define! Paraddr
+%define! Parvalue
+%define! RetVal
+%include Common\VS1053ReadWRAM.Inc
+byte %'ModuleName'%.%ReadWRAM(word addr, word *value)
+{
+  uint8_t res = ERR_OK;
+  uint16_t tmp1, tmp2;
+
+  for(;;) { /* breaks */
+   res = %'ModuleName'%.%WriteRegister(VS1053_WRAMADDR, addr);
+   if (res!=ERR_OK) {
+     break;
+   }
+   res = %'ModuleName'%.%ReadRegister(VS1053_WRAM, &tmp1);
+   if (res!=ERR_OK) {
+     break;
+   }
+   /* second try */
+   res = %'ModuleName'%.%WriteRegister(VS1053_WRAMADDR, addr);
+   if (res!=ERR_OK) {
+     break;
+   }
+   res = %'ModuleName'%.%ReadRegister(VS1053_WRAM, &tmp2);
+   if (res!=ERR_OK) {
+     break;
+   }
+   if (tmp1==tmp2) {
+     *value = tmp1;
+     break;
+   }
+
+   res = %'ModuleName'%.%WriteRegister(VS1053_WRAMADDR, addr);
+   if (res!=ERR_OK) {
+     break;
+   }
+   res = %'ModuleName'%.%ReadRegister(VS1053_WRAM, &tmp1);
+   if (res!=ERR_OK) {
+     break;
+   }
+   if (tmp1==tmp2) {
+     *value = tmp1;
+     break;
+   }
+
+   res = %'ModuleName'%.%WriteRegister(VS1053_WRAMADDR, addr);
+   if (res!=ERR_OK) {
+     break;
+   }
+   res = %'ModuleName'%.%ReadRegister(VS1053_WRAM, &tmp1);
+   if (res!=ERR_OK) {
+     break;
+   }
+   if (tmp1==tmp2) {
+     *value = tmp1;
+     break;
+   }
+   *value = tmp1;
+    break;
+  } /* for */
+  return res;
+}
+
+%endif %- ReadWRAM
+%-BW_METHOD_END ReadWRAM
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -622,29 +761,30 @@ byte %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SendZeroes
-%ifdef SendZeroes
-%define! ParnofZeros
+%-BW_METHOD_BEGIN SendValues
+%ifdef SendValues
+%define! ParnofValues
+%define! Parvalue
 %define! RetVal
-%include Common\VS1053SendZeroes.Inc
-byte %'ModuleName'%.%SendZeroes(word nofZeros)
+%include Common\VS1053SendValues.Inc
+byte %'ModuleName'%.%SendValues(word nofValues, byte value)
 {
   uint16_t chunk;
 
   %'ModuleName'%.ActivateSPI();
   %'ModuleName'%.DATA_MODE_ON();
-  while(nofZeros!=0) {
+  while(nofValues=0) {
     while(!%'ModuleName'%.%IsReady()) {
-      /* wait until pin goes high so we know it is ready */
+      %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
     }
-    if (nofZeros>%'ModuleName'%.DATA_SIZE_BYTES) { /* max 32 bytes */
+    if (nofValues>%'ModuleName'%.DATA_SIZE_BYTES) { /* max 32 bytes */
       chunk = %'ModuleName'%.DATA_SIZE_BYTES;
     } else {
-      chunk = nofZeros;
+      chunk = nofValues;
     }
-    nofZeros -= chunk;
+    nofValues -= chunk;
     while(chunk>0) {
-      %'ModuleName'%.SPI_WRITE(0);
+      %'ModuleName'%.SPI_WRITE(value);
       chunk--;
     }
   }
@@ -653,8 +793,8 @@ byte %'ModuleName'%.%SendZeroes(word nofZeros)
   return ERR_OK;
 }
 
-%endif %- SendZeroes
-%-BW_METHOD_END SendZeroes
+%endif %- SendValues
+%-BW_METHOD_END SendValues
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN StartSong
 %ifdef StartSong
@@ -662,23 +802,74 @@ byte %'ModuleName'%.%SendZeroes(word nofZeros)
 %include Common\VS1053StartSong.Inc
 byte %'ModuleName'%.%StartSong(void)
 {
-  return %'ModuleName'%.%SendZeroes(10);
+  return %'ModuleName'%.%SendValues(10, 0);
 }
 
 %endif %- StartSong
 %-BW_METHOD_END StartSong
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN StopSong
-%ifdef StopSong
+%-BW_METHOD_BEGIN TerminateStreams
+%ifdef TerminateStreams
 %define! RetVal
-%include Common\VS1053StopSong.Inc
-byte %'ModuleName'%.%StopSong(void)
+%include Common\VS1053TerminateStreams.Inc
+byte %'ModuleName'%.%TerminateStreams(void)
 {
-  return %'ModuleName'%.%SendZeroes(2048);
+  uint16_t endFill, sciMode;
+  uint8_t endFillByte;
+  uint8_t res = ERR_OK;
+  int i;
+
+  for(;;) { /* breaks */
+    /* read fillbyte from WRAM */
+    res = %'ModuleName'%.%ReadWRAM(VS1053_PARA_END_FILL_BYTE, &endFill);
+    if (res!=ERR_OK) {
+      break;
+    }
+    endFillByte = endFill; /* only 8 lower bits */
+    /* send at least 2052 EndFillByte */
+    res = %'ModuleName'%.%SendValues(2052, endFillByte);
+    if (res!=ERR_OK) {
+      break;
+    }
+    /* set SCI_MODE bit to SM_CANCEL */
+    res = %'ModuleName'%.%ReadRegister(VS1053_MODE, &sciMode);
+    if (res!=ERR_OK) {
+      break;
+    }
+    sciMode |= VS1053_MODE_SM_CANCEL;
+    res = %'ModuleName'%.%WriteRegister(VS1053_MODE, sciMode);
+    if (res!=ERR_OK) {
+      break;
+    }
+    /* send up to 2048 bytes of endFillByte */
+    for(i=0;i<64;i++) {
+      res = %'ModuleName'%.%SendValues(32, endFillByte);
+      if (res!=ERR_OK) {
+        break;
+      }
+      /* read SCI_MODE register. If SM_CANCEL is still set, repeat ... */
+      res = %'ModuleName'%.%ReadRegister(VS1053_MODE, &sciMode);
+      if (res!=ERR_OK) {
+        break;
+      }
+      if (!(sciMode&VS1053_MODE_SM_CANCEL)) {
+        break;
+      }
+    }
+    if (sciMode&VS1053_MODE_SM_CANCEL) {
+      /* \todo Need software reset! */
+      res = ERR_FAILED;
+    }
+    if (res!=ERR_OK) {
+      break;
+    }
+    break;
+  } /* for */
+  return res;
 }
 
-%endif %- StopSong
-%-BW_METHOD_END StopSong
+%endif %- TerminateStreams
+%-BW_METHOD_END TerminateStreams
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetVolume
 %ifdef SetVolume
@@ -710,7 +901,7 @@ byte %'ModuleName'%.%SendData(byte *data, size_t dataSize)
   %'ModuleName'%.DATA_MODE_ON();
   while(dataSize>0) {
     while(!%'ModuleName'%.%IsReady()) {
-      /* wait until pin goes high so we know it is ready */
+      %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
     }
     %'ModuleName'%.SPI_WRITE(*data++);
     dataSize--;
