@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Bean  documentation - Events
+Shell documentation - Events
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-<b>Shell</b>
+			<b>Shell</b>
             </span>
           </td>
         </tr>
@@ -146,17 +146,19 @@ LI.EXP {
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
 <a href="Shell.html">General Info</a><br />
-<a href="ShellApplication Notes.html">Application Notes</a><br />
-<i>Events</i><br />
-<a href="ShellMethods.html">Methods</a><br />
 <a href="ShellProperties.html">Properties</a><br />
+<a href="ShellMethods.html">Methods</a><br />
+<i>Events</i><br />
+<a href="ShellUser Types.html">Types and constants</a><br />
+<a href="ShellApplication Notes.html">ShellApplication Notes</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
+<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
+<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="Shell_b.gif" alt="Bean icon"/>
-
+<img src="Shell_b.gif" alt="Shell icon"/>
 
 </center>
             </div>
@@ -174,18 +176,15 @@ LI.EXP {
 
            <div class="titlebox">
               <div class="beanname">
-                Bean
-                
-                
+                Component
                 Shell
               </div>
               <div class="descrtext">Command Line Shell</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
-                <a href="../../DOCs/BeanCategoriesInfo.html">SW-User Components</a>
-                
-                </span>
+                <a href="../../DOCs/BeanCategoriesInfo.html">Software-User Components</a>
+				</span>
               </div>
             </div>
 
@@ -198,7 +197,7 @@ LI.EXP {
      </div>
      <div class="user_text">
 <div class="user_text" style="margin-top:10px">
-<ul>
+<!--BEG_CDE_EVENTS--><ul>
 <li>
 <a name="EventModule">
 <b>EventModule</b>
@@ -206,27 +205,36 @@ LI.EXP {
  - Name of the user module (without extension), where the events from this component are placed.
 </li>
 <li>
-<a name="OnBeforeIterateCmd">
-<b>OnBeforeIterateCmd</b>
+<a name="Event module name">
+<b>Event module name -</b>
 </a>
- - Hook called before parsing a command in IterateTable().
+Name of the user module (without extension), where the events from this component are placed.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnBeforeIterateCmd(const uint8_t *cmd)<br />
+<br /><i>ANSIC prototype:</i>void Event module name</ul><br />
+</li>
+<li>
+<a name="OnBeforeIterateCmd">
+<b>OnBeforeIterateCmd -</b>
+</a>
+Hook called before parsing a command in IterateTable().
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i>void OnBeforeIterateCmd(uint8_t cmd)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd:byte</i> - command parsed</li>
+<li><i>cmd:uint8_t</i> - command parsed</li>
 </ul><br />
 </li>
 <li>
 <a name="OnAfterIterateCmd">
-<b>OnAfterIterateCmd</b>
+<b>OnAfterIterateCmd -</b>
 </a>
- - Hook called after parsing a command in IterateTable().
+Hook called after parsing a command in IterateTable().
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnAfterIterateCmd(const uint8_t *cmd)<br />
+<br /><i>ANSIC prototype:</i>void OnAfterIterateCmd(uint8_t cmd)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd:byte</i> - command parsed</li>
+<li><i>cmd:uint8_t</i> - command parsed</li>
 </ul><br />
 </li>
 </ul>
@@ -235,9 +243,9 @@ LI.EXP {
 <b><i>For each generated event it is possible to set:</i></b><br />
 </font>
 <ul>
-  <li><b>Procedure Name</b> - name of procedure (written by user) that handles the event.</li>
+<li><b>Procedure Name</b> - name of procedure (written by user) that handles the event.</li>
 </ul>
-
+<!--END_CDE_EVENTS-->
 </div>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -247,7 +255,7 @@ LI.EXP {
       <p class="footer">
         PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
         <br />
-        
+        Copyright 1997 - 2014 Freescale Semiconductor, Inc.
       </p>
 
     </td>

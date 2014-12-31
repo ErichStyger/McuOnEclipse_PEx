@@ -1,1 +1,2 @@
-%;**                                                             %>12 Implements a shell.
+%-ABSTRACT_HEADER_START
+%;**%>12
