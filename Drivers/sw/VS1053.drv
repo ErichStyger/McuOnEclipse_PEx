@@ -49,6 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
+%define! Description_SendMIDI Sends a MIDI data byte
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -310,6 +311,70 @@ byte %'ModuleName'%.%ReadWRAM(word addr, word *value);
 
 %endif %- ReadWRAM
 %-BW_METHOD_END ReadWRAM
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LoadUserCode
+%ifdef LoadUserCode
+byte %'ModuleName'%.%LoadUserCode(const uint16_t *data, word nofWords);
+%define! Pardata
+%define! ParnofWords
+%define! RetVal
+%include Common\VS1053LoadUserCode.Inc
+
+%endif %- LoadUserCode
+%-BW_METHOD_END LoadUserCode
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LoadRealtimeMidiPlugin
+%ifdef LoadRealtimeMidiPlugin
+byte %'ModuleName'%.%LoadRealtimeMidiPlugin(void);
+%define! RetVal
+%include Common\VS1053LoadRealtimeMidiPlugin.Inc
+
+%endif %- LoadRealtimeMidiPlugin
+%-BW_METHOD_END LoadRealtimeMidiPlugin
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG SendMIDI
+byte %'ModuleName'%.SendMIDI(byte data);
+%define! Pardata
+%define! RetVal
+%include Common\GeneralInternal.inc (SendMIDI)
+
+%-INTERNAL_METHOD_END SendMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TalkMIDI
+%ifdef TalkMIDI
+byte %'ModuleName'%.%TalkMIDI(byte cmd, byte data1, byte data2);
+%define! Parcmd
+%define! Pardata1
+%define! Pardata2
+%define! RetVal
+%include Common\VS1053TalkMIDI.Inc
+
+%endif %- TalkMIDI
+%-BW_METHOD_END TalkMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NoteOnMIDI
+%ifdef NoteOnMIDI
+byte %'ModuleName'%.%NoteOnMIDI(byte channel, byte note, byte velocity);
+%define! Parchannel
+%define! Parnote
+%define! Parvelocity
+%define! RetVal
+%include Common\VS1053NoteOnMIDI.Inc
+
+%endif %- NoteOnMIDI
+%-BW_METHOD_END NoteOnMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NoteOffMIDI
+%ifdef NoteOffMIDI
+byte %'ModuleName'%.%NoteOffMIDI(byte channel, byte note, byte velocity);
+%define! Parchannel
+%define! Parnote
+%define! Parvelocity
+%define! RetVal
+%include Common\VS1053NoteOffMIDI.Inc
+
+%endif %- NoteOffMIDI
+%-BW_METHOD_END NoteOffMIDI
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -358,6 +423,18 @@ void %OnDeactivateSPI(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+
+/*
+ * Plugin to put VS10XX into realtime MIDI mode
+ * Originally from http://www.vlsi.fi/fileadmin/software/VS10XX/vs1053b-rtmidistart.zip
+ * Permission to reproduce here granted by VLSI solution.
+ */
+static const uint16_t %'ModuleName'%.Realtime_MIDI_Plugin[28] = { /* Compressed plugin */
+  0x0007, 0x0001, 0x8050, 0x0006, 0x0014, 0x0030, 0x0715, 0xb080, /* 0 */
+  0x3400, 0x0007, 0x9255, 0x3d00, 0x0024, 0x0030, 0x0295, 0x6890, /* 8 */
+  0x3400, 0x0030, 0x0495, 0x3d00, 0x0024, 0x2908, 0x4d40, 0x0030, /* 10 */
+  0x0200, 0x000a, 0x0001, 0x0050,
+};
 
 static uint8_t rxDummy; /* dummy byte if we do not need the result. Needed to read from SPI register. */
 #define %'ModuleName'%.SPI_WRITE(write)            \
@@ -855,7 +932,7 @@ byte %'ModuleName'%.%TerminateStreams(void)
       if (!(sciMode&VS1053_MODE_SM_CANCEL)) {
         break;
       }
-    }
+    } /* for */
     if (sciMode&VS1053_MODE_SM_CANCEL) {
       /* \todo Need software reset! */
       res = ERR_FAILED;
@@ -913,6 +990,121 @@ byte %'ModuleName'%.%SendData(byte *data, size_t dataSize)
 
 %endif %- SendData
 %-BW_METHOD_END SendData
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LoadUserCode
+%ifdef LoadUserCode
+%define! Pardata
+%define! ParnofWords
+%define! RetVal
+%include Common\VS1053LoadUserCode.Inc
+byte %'ModuleName'%.%LoadUserCode(const uint16_t *data, word nofWords)
+{
+  int i;
+  uint16_t addr, n, val;
+  uint8_t res = ERR_OK;
+
+  i = 0;
+  while(i<nofWords) {
+    addr = data[i++];
+    n = data[i++];
+    while(n--) {
+      val = data[i++];
+      res = %'ModuleName'%.%WriteRegister(addr, val);
+      if (res!=ERR_OK) {
+        break;
+      }
+    }
+  }
+  return res;
+}
+
+%endif %- LoadUserCode
+%-BW_METHOD_END LoadUserCode
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LoadRealtimeMidiPlugin
+%ifdef LoadRealtimeMidiPlugin
+%define! RetVal
+%include Common\VS1053LoadRealtimeMidiPlugin.Inc
+byte %'ModuleName'%.%LoadRealtimeMidiPlugin(void)
+{
+  return %'ModuleName'%.%LoadUserCode(&%'ModuleName'%.Realtime_MIDI_Plugin[0], sizeof(%'ModuleName'%.Realtime_MIDI_Plugin)/sizeof(%'ModuleName'%.Realtime_MIDI_Plugin[0]));
+}
+
+%endif %- LoadRealtimeMidiPlugin
+%-BW_METHOD_END LoadRealtimeMidiPlugin
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG SendMIDI
+%define! Pardata
+%define! RetVal
+%include Common\GeneralInternal.inc (SendMIDI)
+byte %'ModuleName'%.SendMIDI(byte data)
+{
+  %'ModuleName'%.SPI_WRITE(0x00);
+  %'ModuleName'%.SPI_WRITE(data);
+  return ERR_OK;
+}
+
+%-INTERNAL_METHOD_END SendMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TalkMIDI
+%ifdef TalkMIDI
+%define! Parcmd
+%define! Pardata1
+%define! Pardata2
+%define! RetVal
+%include Common\VS1053TalkMIDI.Inc
+byte %'ModuleName'%.%TalkMIDI(byte cmd, byte data1, byte data2)
+{
+  %'ModuleName'%.ActivateSPI();
+  %'ModuleName'%.DATA_MODE_ON();
+  while(!%'ModuleName'%.%IsReady()) {
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
+  }
+  (void)%'ModuleName'%.SendMIDI(cmd);
+  /* some MIDI commands have only one data byte. All cmds less than 0xBn have two data bytes */
+  if ((cmd&0xF0)<=0xB0 || (cmd&0xF0)>=0xE0) {
+    (void)%'ModuleName'%.SendMIDI(data1);
+    (void)%'ModuleName'%.SendMIDI(data2);
+  } else {
+    (void)%'ModuleName'%.SendMIDI(data1);
+  }
+  %'ModuleName'%.DATA_MODE_OFF();
+  %'ModuleName'%.DeactivateSPI();
+  return ERR_OK;
+}
+
+%endif %- TalkMIDI
+%-BW_METHOD_END TalkMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NoteOnMIDI
+%ifdef NoteOnMIDI
+%define! Parchannel
+%define! Parnote
+%define! Parvelocity
+%define! RetVal
+%include Common\VS1053NoteOnMIDI.Inc
+byte %'ModuleName'%.%NoteOnMIDI(byte channel, byte note, byte velocity)
+{
+  return %'ModuleName'%.%TalkMIDI((0x90|channel), note, velocity);
+}
+
+%endif %- NoteOnMIDI
+%-BW_METHOD_END NoteOnMIDI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NoteOffMIDI
+%ifdef NoteOffMIDI
+%define! Parchannel
+%define! Parnote
+%define! Parvelocity
+%define! RetVal
+%include Common\VS1053NoteOffMIDI.Inc
+byte %'ModuleName'%.%NoteOffMIDI(byte channel, byte note, byte velocity)
+{
+  return %'ModuleName'%.%TalkMIDI((0x80|channel), note, velocity);
+}
+
+%endif %- NoteOffMIDI
+%-BW_METHOD_END NoteOffMIDI
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
