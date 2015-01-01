@@ -3,13 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (NoteOnMIDI)
+%include Common\GeneralMethod.inc (MIDI_SetPan)
 %;**     Description :
-%;**         Send a MIDI note-on message, like pressing a piano key.
+%;**         Sets the pan (stereo position) for the channel
 %include Common\GeneralParameters.inc(27)
-%;**         channel%Parchannel %>27 - Channel is from 0-15
-%;**         note%Parnote %>27 - Note to be played
-%;**         velocity%Parvelocity %>27 - pressing velocity of key
+%;**         channel%Parchannel %>27 - Channel
+%;**         pan%Parpan %>27 - pan (stereo position), where 64 is middle.
+%;** %>29 Allowed values: 0..127
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

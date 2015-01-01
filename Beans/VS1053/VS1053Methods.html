@@ -376,12 +376,12 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="TalkMIDI">
-<b>TalkMIDI</b></a>
+<li><a name="MIDI_Talk">
+<b>MIDI_Talk</b></a>
  - Plays a MIDI note
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte TalkMIDI(byte cmd, byte data1, byte data2)<br />
+<br /><i>ANSIC prototype:</i> byte MIDI_Talk(byte cmd, byte data1, byte data2)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>cmd:byte</i> - command byte</li>
 <li><i>data1:byte</i> - data1 byte</li>
@@ -390,12 +390,12 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="NoteOnMIDI">
-<b>NoteOnMIDI</b></a>
+<li><a name="MIDI_NoteOn">
+<b>MIDI_NoteOn</b></a>
  - Send a MIDI note-on message, like pressing a piano key.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte NoteOnMIDI(byte channel, byte note, byte velocity)<br />
+<br /><i>ANSIC prototype:</i> byte MIDI_NoteOn(byte channel, byte note, byte velocity)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>channel:byte</i> - Channel is from 0-15</li>
 <li><i>note:byte</i> - Note to be played</li>
@@ -404,16 +404,80 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="NoteOffMIDI">
-<b>NoteOffMIDI</b></a>
+<li><a name="MIDI_NoteOff">
+<b>MIDI_NoteOff</b></a>
  - Send a MIDI note-off message, like releasing a piano key.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte NoteOffMIDI(byte channel, byte note, byte velocity)<br />
+<br /><i>ANSIC prototype:</i> byte MIDI_NoteOff(byte channel, byte note, byte velocity)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>channel:byte</i> - Channel is from 0-15</li>
 <li><i>note:byte</i> - Note to be played</li>
 <li><i>velocity:byte</i> - releasing velocity of key</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="MIDI_SetVolume">
+<b>MIDI_SetVolume</b></a>
+ - Sets the volume for the channel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte MIDI_SetVolume(byte channel, byte volume)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>channel:byte</i> - Channel (0..15)</li>
+<li><i>volume:byte</i> - volume, 0 (silence) to 127 (max volume)</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="MIDI_SetBank">
+<b>MIDI_SetBank</b></a>
+ - Sets the bank for the channel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte MIDI_SetBank(byte channel, byte bank)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>channel:byte</i> - Channel</li>
+<li><i>bank:byte</i> - bank (0 is default, 0x78 and 0x7f is drums, 0x79 melodic)</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="MIDI_SetInstrument">
+<b>MIDI_SetInstrument</b></a>
+ - Sets the instrument for the channel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte MIDI_SetInstrument(byte channel, byte instrument)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>channel:byte</i> - Channel</li>
+<li><i>instrument:byte</i> - instrument number (0..127)</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="MIDI_SetPan">
+<b>MIDI_SetPan</b></a>
+ - Sets the pan (stereo position) for the channel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte MIDI_SetPan(byte channel, byte pan)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>channel:byte</i> - Channel</li>
+<li><i>pan:byte</i> - pan (stereo position), where 64 is middle. Allowed values: 0..127</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="MIDI_AllSoundOff">
+<b>MIDI_AllSoundOff</b></a>
+ - Turns off all oscillators for the channel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte MIDI_AllSoundOff(byte channel)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>channel:byte</i> - Channel</li>
 <li><i>Return value:byte</i> - Error code
 </li>
 </ul><br />

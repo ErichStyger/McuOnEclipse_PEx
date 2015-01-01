@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_METHOD_BEGIN
@@ -49,7 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_SendMIDI Sends a MIDI data byte
+%define! Description_MIDI_Send Sends a MIDI data byte
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -156,6 +156,186 @@
 #else
   #define %'ModuleName'%.WAIT_IF_NOT_READY_WAIT()   /* nothing */
 #endif
+
+/* ---------------------------*/
+/* MIDI support               */
+/* ---------------------------*/
+/* see http://www.midi.org/techspecs/midimessages.php for message format */
+/* supported MIDI messages */
+/* channel messages */
+#define %'ModuleName'%.MIDI_MSG_CH_NOTE_OFF      0x80 /* channel message 'note off' */
+#define %'ModuleName'%.MIDI_MSG_CH_NOTE_ON       0x90 /* channel message 'note on' */
+#define %'ModuleName'%.MIDI_MSG_CH_PRG           0xC0 /* channel message 'program' */
+#define %'ModuleName'%.MIDI_MSG_CH_PITCH_WHEEL   0xE0 /* channel message 'pitch wheel' */
+#define %'ModuleName'%.MIDI_MSG_CH_PARAMETER     0xB0 /* channel message 'parameter' */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_BANK_SELECT          0x00 /* bank select, 0 is default, 0x7f and 0x7f is drums, 0x79 melodic */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_RPN_MSB              0x06 /* RPN MSB: 0 = bend range, 2 = coarse tune */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_VOLUME               0x07 /* channel volume */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_PAN                  0x0A /* pan */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_EXPRESSION           0x0B /* expression (changes volume) */
+  #define %'ModuleName'%.MIDI_MSG_CH_PARAM_ALL_SOUND_OFF        0x78 /* all sound off */
+
+/* http://www.sengpielaudio.com/calculator-notenames.htm
+Octave #  MIDI Note Numbers
+          C   C#  D   D#  E   F   F#  G   G#  A   A#  B
+-1        0   1   2   3   4   5   6   7   8   9  10  11
+0        12  13  14  15  16  17  18  19  20  21  22  23
+1        24  25  26  27  28  29  30  31  32  33  34  35
+2        36  37  38  39  40  41  42  43  44  45  46  47
+3        48  49  50  51  52  53  54  55  56  57  58  59
+4        60  61  62  63  64  65  66  67  68  69  70  71
+5        72  73  74  75  76  77  78  79  80  81  82  83
+6        84  85  86  87  88  89  90  91  92  93  94  95
+7        96  97  98  99 100 101 102 103 104 105 106 107
+8       108 109 110 111 112 113 114 115 116 117 118 119
+9       120 121 122 123 124 125 126 127
+*/
+/* 'm' is for -1 octave, 'h' is for '#' */
+/* Octave -1 */
+#define %'ModuleName'%.MIDI_NOTE_Cm     0
+#define %'ModuleName'%.MIDI_NOTE_Chm    1
+#define %'ModuleName'%.MIDI_NOTE_Dm     2
+#define %'ModuleName'%.MIDI_NOTE_Dhm    3
+#define %'ModuleName'%.MIDI_NOTE_Em     4
+#define %'ModuleName'%.MIDI_NOTE_Fm     5
+#define %'ModuleName'%.MIDI_NOTE_Fhm    6
+#define %'ModuleName'%.MIDI_NOTE_Gm     7
+#define %'ModuleName'%.MIDI_NOTE_Ghm    8
+#define %'ModuleName'%.MIDI_NOTE_Am     9
+#define %'ModuleName'%.MIDI_NOTE_Ahm   10
+#define %'ModuleName'%.MIDI_NOTE_Bm    11
+/* Octave 0 */
+#define %'ModuleName'%.MIDI_NOTE_C0    12
+#define %'ModuleName'%.MIDI_NOTE_Ch0   13
+#define %'ModuleName'%.MIDI_NOTE_D0    14
+#define %'ModuleName'%.MIDI_NOTE_Dh0   15
+#define %'ModuleName'%.MIDI_NOTE_E0    16
+#define %'ModuleName'%.MIDI_NOTE_F0    17
+#define %'ModuleName'%.MIDI_NOTE_Fh0   18
+#define %'ModuleName'%.MIDI_NOTE_G0    19
+#define %'ModuleName'%.MIDI_NOTE_Gh0   20
+#define %'ModuleName'%.MIDI_NOTE_A0    21
+#define %'ModuleName'%.MIDI_NOTE_Ah0   22
+#define %'ModuleName'%.MIDI_NOTE_B0    23
+/* Octave 1 */
+#define %'ModuleName'%.MIDI_NOTE_C1    24
+#define %'ModuleName'%.MIDI_NOTE_Ch1   25
+#define %'ModuleName'%.MIDI_NOTE_D1    26
+#define %'ModuleName'%.MIDI_NOTE_Dh1   27
+#define %'ModuleName'%.MIDI_NOTE_E1    28
+#define %'ModuleName'%.MIDI_NOTE_F1    29
+#define %'ModuleName'%.MIDI_NOTE_Fh1   30
+#define %'ModuleName'%.MIDI_NOTE_G1    31
+#define %'ModuleName'%.MIDI_NOTE_Gh1   32
+#define %'ModuleName'%.MIDI_NOTE_A1    33
+#define %'ModuleName'%.MIDI_NOTE_Ah1   34
+#define %'ModuleName'%.MIDI_NOTE_B1    35
+/* Octave 2 */
+#define %'ModuleName'%.MIDI_NOTE_C2    36
+#define %'ModuleName'%.MIDI_NOTE_Ch2   37
+#define %'ModuleName'%.MIDI_NOTE_D2    38
+#define %'ModuleName'%.MIDI_NOTE_Dh2   39
+#define %'ModuleName'%.MIDI_NOTE_E2    40
+#define %'ModuleName'%.MIDI_NOTE_F2    41
+#define %'ModuleName'%.MIDI_NOTE_Fh2   42
+#define %'ModuleName'%.MIDI_NOTE_G2    43
+#define %'ModuleName'%.MIDI_NOTE_Gh2   44
+#define %'ModuleName'%.MIDI_NOTE_A2    45
+#define %'ModuleName'%.MIDI_NOTE_Ah2   46
+#define %'ModuleName'%.MIDI_NOTE_B2    47
+/* Octave 3 */
+#define %'ModuleName'%.MIDI_NOTE_C3    48
+#define %'ModuleName'%.MIDI_NOTE_Ch3   49
+#define %'ModuleName'%.MIDI_NOTE_D3    50
+#define %'ModuleName'%.MIDI_NOTE_Dh3   51
+#define %'ModuleName'%.MIDI_NOTE_E3    52
+#define %'ModuleName'%.MIDI_NOTE_F3    53
+#define %'ModuleName'%.MIDI_NOTE_Fh3   54
+#define %'ModuleName'%.MIDI_NOTE_G3    55
+#define %'ModuleName'%.MIDI_NOTE_Gh3   56
+#define %'ModuleName'%.MIDI_NOTE_A3    57
+#define %'ModuleName'%.MIDI_NOTE_Ah3   58
+#define %'ModuleName'%.MIDI_NOTE_B3    59
+/* Octave 4 */
+#define %'ModuleName'%.MIDI_NOTE_C4    60
+#define %'ModuleName'%.MIDI_NOTE_Ch4   61
+#define %'ModuleName'%.MIDI_NOTE_D4    62
+#define %'ModuleName'%.MIDI_NOTE_Dh4   63
+#define %'ModuleName'%.MIDI_NOTE_E4    64
+#define %'ModuleName'%.MIDI_NOTE_F4    65
+#define %'ModuleName'%.MIDI_NOTE_Fh4   66
+#define %'ModuleName'%.MIDI_NOTE_G4    67
+#define %'ModuleName'%.MIDI_NOTE_Gh4   68
+#define %'ModuleName'%.MIDI_NOTE_A4    69
+#define %'ModuleName'%.MIDI_NOTE_Ah4   70
+#define %'ModuleName'%.MIDI_NOTE_B4    71
+/* Octave 5 */
+#define %'ModuleName'%.MIDI_NOTE_C5    72
+#define %'ModuleName'%.MIDI_NOTE_Ch5   73
+#define %'ModuleName'%.MIDI_NOTE_D5    74
+#define %'ModuleName'%.MIDI_NOTE_Dh5   75
+#define %'ModuleName'%.MIDI_NOTE_E5    76
+#define %'ModuleName'%.MIDI_NOTE_F5    77
+#define %'ModuleName'%.MIDI_NOTE_Fh5   78
+#define %'ModuleName'%.MIDI_NOTE_G5    79
+#define %'ModuleName'%.MIDI_NOTE_Gh5   80
+#define %'ModuleName'%.MIDI_NOTE_A5    81
+#define %'ModuleName'%.MIDI_NOTE_Ah5   82
+#define %'ModuleName'%.MIDI_NOTE_B5    83
+/* Octave 6 */
+#define %'ModuleName'%.MIDI_NOTE_C6    84
+#define %'ModuleName'%.MIDI_NOTE_Ch6   85
+#define %'ModuleName'%.MIDI_NOTE_D6    86
+#define %'ModuleName'%.MIDI_NOTE_Dh6   87
+#define %'ModuleName'%.MIDI_NOTE_E6    88
+#define %'ModuleName'%.MIDI_NOTE_F6    89
+#define %'ModuleName'%.MIDI_NOTE_Fh6   90
+#define %'ModuleName'%.MIDI_NOTE_G6    91
+#define %'ModuleName'%.MIDI_NOTE_Gh6   92
+#define %'ModuleName'%.MIDI_NOTE_A6    93
+#define %'ModuleName'%.MIDI_NOTE_Ah6   94
+#define %'ModuleName'%.MIDI_NOTE_B6    95
+/* Octave 7 */
+#define %'ModuleName'%.MIDI_NOTE_C7    96
+#define %'ModuleName'%.MIDI_NOTE_Ch7   97
+#define %'ModuleName'%.MIDI_NOTE_D7    98
+#define %'ModuleName'%.MIDI_NOTE_Dh7   99
+#define %'ModuleName'%.MIDI_NOTE_E7   100
+#define %'ModuleName'%.MIDI_NOTE_F7   101
+#define %'ModuleName'%.MIDI_NOTE_Fh7  102
+#define %'ModuleName'%.MIDI_NOTE_G7   103
+#define %'ModuleName'%.MIDI_NOTE_Gh7  104
+#define %'ModuleName'%.MIDI_NOTE_A7   105
+#define %'ModuleName'%.MIDI_NOTE_Ah7  106
+#define %'ModuleName'%.MIDI_NOTE_B7   107
+/* Octave 8 */
+#define %'ModuleName'%.MIDI_NOTE_C8   108
+#define %'ModuleName'%.MIDI_NOTE_Ch8  109
+#define %'ModuleName'%.MIDI_NOTE_D8   110
+#define %'ModuleName'%.MIDI_NOTE_Dh8  111
+#define %'ModuleName'%.MIDI_NOTE_E8   112
+#define %'ModuleName'%.MIDI_NOTE_F8   113
+#define %'ModuleName'%.MIDI_NOTE_Fh8  114
+#define %'ModuleName'%.MIDI_NOTE_G8   115
+#define %'ModuleName'%.MIDI_NOTE_Gh8  116
+#define %'ModuleName'%.MIDI_NOTE_A8   117
+#define %'ModuleName'%.MIDI_NOTE_Ah8  118
+#define %'ModuleName'%.MIDI_NOTE_B8   119
+/* Octave 9 */
+#define %'ModuleName'%.MIDI_NOTE_C9   120
+#define %'ModuleName'%.MIDI_NOTE_Ch9  121
+#define %'ModuleName'%.MIDI_NOTE_D9   122
+#define %'ModuleName'%.MIDI_NOTE_Dh9  123
+#define %'ModuleName'%.MIDI_NOTE_E9   124
+#define %'ModuleName'%.MIDI_NOTE_F9   125
+#define %'ModuleName'%.MIDI_NOTE_Fh9  126
+#define %'ModuleName'%.MIDI_NOTE_G9   127
+
+/* instruments */
+#define %'ModuleName'%.MIDI_INSTR_Default              0
+#define %'ModuleName'%.MIDI_INSTR_AcousticGrandPiano   1
+#define %'ModuleName'%.MIDI_INSTR_PanFlute             76
+
 %-
 %-BW_CUSTOM_USERTYPE_END
 %-BW_DEFINITION_START
@@ -332,49 +512,103 @@ byte %'ModuleName'%.%LoadRealtimeMidiPlugin(void);
 %endif %- LoadRealtimeMidiPlugin
 %-BW_METHOD_END LoadRealtimeMidiPlugin
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG SendMIDI
-byte %'ModuleName'%.SendMIDI(byte data);
+%-INTERNAL_METHOD_BEG MIDI_Send
+byte %'ModuleName'%.MIDI_Send(byte data);
 %define! Pardata
 %define! RetVal
-%include Common\GeneralInternal.inc (SendMIDI)
+%include Common\GeneralInternal.inc (MIDI_Send)
 
-%-INTERNAL_METHOD_END SendMIDI
+%-INTERNAL_METHOD_END MIDI_Send
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN TalkMIDI
-%ifdef TalkMIDI
-byte %'ModuleName'%.%TalkMIDI(byte cmd, byte data1, byte data2);
+%-BW_METHOD_BEGIN MIDI_Talk
+%ifdef MIDI_Talk
+byte %'ModuleName'%.%MIDI_Talk(byte cmd, byte data1, byte data2);
 %define! Parcmd
 %define! Pardata1
 %define! Pardata2
 %define! RetVal
-%include Common\VS1053TalkMIDI.Inc
+%include Common\VS1053MIDI_Talk.Inc
 
-%endif %- TalkMIDI
-%-BW_METHOD_END TalkMIDI
+%endif %- MIDI_Talk
+%-BW_METHOD_END MIDI_Talk
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN NoteOnMIDI
-%ifdef NoteOnMIDI
-byte %'ModuleName'%.%NoteOnMIDI(byte channel, byte note, byte velocity);
+%-BW_METHOD_BEGIN MIDI_NoteOn
+%ifdef MIDI_NoteOn
+byte %'ModuleName'%.%MIDI_NoteOn(byte channel, byte note, byte velocity);
 %define! Parchannel
 %define! Parnote
 %define! Parvelocity
 %define! RetVal
-%include Common\VS1053NoteOnMIDI.Inc
+%include Common\VS1053MIDI_NoteOn.Inc
 
-%endif %- NoteOnMIDI
-%-BW_METHOD_END NoteOnMIDI
+%endif %- MIDI_NoteOn
+%-BW_METHOD_END MIDI_NoteOn
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN NoteOffMIDI
-%ifdef NoteOffMIDI
-byte %'ModuleName'%.%NoteOffMIDI(byte channel, byte note, byte velocity);
+%-BW_METHOD_BEGIN MIDI_NoteOff
+%ifdef MIDI_NoteOff
+byte %'ModuleName'%.%MIDI_NoteOff(byte channel, byte note, byte velocity);
 %define! Parchannel
 %define! Parnote
 %define! Parvelocity
 %define! RetVal
-%include Common\VS1053NoteOffMIDI.Inc
+%include Common\VS1053MIDI_NoteOff.Inc
 
-%endif %- NoteOffMIDI
-%-BW_METHOD_END NoteOffMIDI
+%endif %- MIDI_NoteOff
+%-BW_METHOD_END MIDI_NoteOff
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetVolume
+%ifdef MIDI_SetVolume
+byte %'ModuleName'%.%MIDI_SetVolume(byte channel, byte volume);
+%define! Parchannel
+%define! Parvolume
+%define! RetVal
+%include Common\VS1053MIDI_SetVolume.Inc
+
+%endif %- MIDI_SetVolume
+%-BW_METHOD_END MIDI_SetVolume
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetBank
+%ifdef MIDI_SetBank
+byte %'ModuleName'%.%MIDI_SetBank(byte channel, byte bank);
+%define! Parchannel
+%define! Parbank
+%define! RetVal
+%include Common\VS1053MIDI_SetBank.Inc
+
+%endif %- MIDI_SetBank
+%-BW_METHOD_END MIDI_SetBank
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetInstrument
+%ifdef MIDI_SetInstrument
+byte %'ModuleName'%.%MIDI_SetInstrument(byte channel, byte instrument);
+%define! Parchannel
+%define! Parinstrument
+%define! RetVal
+%include Common\VS1053MIDI_SetInstrument.Inc
+
+%endif %- MIDI_SetInstrument
+%-BW_METHOD_END MIDI_SetInstrument
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetPan
+%ifdef MIDI_SetPan
+byte %'ModuleName'%.%MIDI_SetPan(byte channel, byte pan);
+%define! Parchannel
+%define! Parpan
+%define! RetVal
+%include Common\VS1053MIDI_SetPan.Inc
+
+%endif %- MIDI_SetPan
+%-BW_METHOD_END MIDI_SetPan
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_AllSoundOff
+%ifdef MIDI_AllSoundOff
+byte %'ModuleName'%.%MIDI_AllSoundOff(byte channel);
+%define! Parchannel
+%define! RetVal
+%include Common\VS1053MIDI_AllSoundOff.Inc
+
+%endif %- MIDI_AllSoundOff
+%-BW_METHOD_END MIDI_AllSoundOff
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1033,78 +1267,162 @@ byte %'ModuleName'%.%LoadRealtimeMidiPlugin(void)
 %endif %- LoadRealtimeMidiPlugin
 %-BW_METHOD_END LoadRealtimeMidiPlugin
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG SendMIDI
+%-INTERNAL_METHOD_BEG MIDI_Send
 %define! Pardata
 %define! RetVal
-%include Common\GeneralInternal.inc (SendMIDI)
-byte %'ModuleName'%.SendMIDI(byte data)
+%include Common\GeneralInternal.inc (MIDI_Send)
+byte %'ModuleName'%.MIDI_Send(byte data)
 {
   %'ModuleName'%.SPI_WRITE(0x00);
   %'ModuleName'%.SPI_WRITE(data);
   return ERR_OK;
 }
 
-%-INTERNAL_METHOD_END SendMIDI
+%-INTERNAL_METHOD_END MIDI_Send
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN TalkMIDI
-%ifdef TalkMIDI
+%-BW_METHOD_BEGIN MIDI_Talk
+%ifdef MIDI_Talk
 %define! Parcmd
 %define! Pardata1
 %define! Pardata2
 %define! RetVal
-%include Common\VS1053TalkMIDI.Inc
-byte %'ModuleName'%.%TalkMIDI(byte cmd, byte data1, byte data2)
+%include Common\VS1053MIDI_Talk.Inc
+byte %'ModuleName'%.%MIDI_Talk(byte cmd, byte data1, byte data2)
 {
   %'ModuleName'%.ActivateSPI();
   %'ModuleName'%.DATA_MODE_ON();
   while(!%'ModuleName'%.%IsReady()) {
     %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
   }
-  (void)%'ModuleName'%.SendMIDI(cmd);
+  (void)%'ModuleName'%.MIDI_Send(cmd);
   /* some MIDI commands have only one data byte. All cmds less than 0xBn have two data bytes */
   if ((cmd&0xF0)<=0xB0 || (cmd&0xF0)>=0xE0) {
-    (void)%'ModuleName'%.SendMIDI(data1);
-    (void)%'ModuleName'%.SendMIDI(data2);
+    (void)%'ModuleName'%.MIDI_Send(data1);
+    (void)%'ModuleName'%.MIDI_Send(data2);
   } else {
-    (void)%'ModuleName'%.SendMIDI(data1);
+    (void)%'ModuleName'%.MIDI_Send(data1);
   }
   %'ModuleName'%.DATA_MODE_OFF();
   %'ModuleName'%.DeactivateSPI();
   return ERR_OK;
 }
 
-%endif %- TalkMIDI
-%-BW_METHOD_END TalkMIDI
+%endif %- MIDI_Talk
+%-BW_METHOD_END MIDI_Talk
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN NoteOnMIDI
-%ifdef NoteOnMIDI
+%-BW_METHOD_BEGIN MIDI_NoteOn
+%ifdef MIDI_NoteOn
 %define! Parchannel
 %define! Parnote
 %define! Parvelocity
 %define! RetVal
-%include Common\VS1053NoteOnMIDI.Inc
-byte %'ModuleName'%.%NoteOnMIDI(byte channel, byte note, byte velocity)
+%include Common\VS1053MIDI_NoteOn.Inc
+byte %'ModuleName'%.%MIDI_NoteOn(byte channel, byte note, byte velocity)
 {
-  return %'ModuleName'%.%TalkMIDI((0x90|channel), note, velocity);
+  channel &= 0x0F; /* limit channel to 0..15 */
+  note &= 0x7F; /* 0..127 */
+  velocity &= 0x7F; /* 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_NOTE_ON|channel), note, velocity);
 }
 
-%endif %- NoteOnMIDI
-%-BW_METHOD_END NoteOnMIDI
+%endif %- MIDI_NoteOn
+%-BW_METHOD_END MIDI_NoteOn
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN NoteOffMIDI
-%ifdef NoteOffMIDI
+%-BW_METHOD_BEGIN MIDI_NoteOff
+%ifdef MIDI_NoteOff
 %define! Parchannel
 %define! Parnote
 %define! Parvelocity
 %define! RetVal
-%include Common\VS1053NoteOffMIDI.Inc
-byte %'ModuleName'%.%NoteOffMIDI(byte channel, byte note, byte velocity)
+%include Common\VS1053MIDI_NoteOff.Inc
+byte %'ModuleName'%.%MIDI_NoteOff(byte channel, byte note, byte velocity)
 {
-  return %'ModuleName'%.%TalkMIDI((0x80|channel), note, velocity);
+  channel &= 0x0F; /* limit channel to 0..15 */
+  note &= 0x7F; /* 0..127 */
+  velocity &= 0x7F; /* 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_NOTE_OFF|channel), note, velocity);
 }
 
-%endif %- NoteOffMIDI
-%-BW_METHOD_END NoteOffMIDI
+%endif %- MIDI_NoteOff
+%-BW_METHOD_END MIDI_NoteOff
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetVolume
+%ifdef MIDI_SetVolume
+%define! Parchannel
+%define! Parvolume
+%define! RetVal
+%include Common\VS1053MIDI_SetVolume.Inc
+byte %'ModuleName'%.%MIDI_SetVolume(byte channel, byte volume)
+{
+  channel &= 0x0F; /* limit channel to 0..15 */
+  volume &= 0x7F; /* limit to 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PARAMETER|channel), %'ModuleName'%.MIDI_MSG_CH_PARAM_VOLUME, volume);
+}
+
+%endif %- MIDI_SetVolume
+%-BW_METHOD_END MIDI_SetVolume
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetBank
+%ifdef MIDI_SetBank
+%define! Parchannel
+%define! Parbank
+%define! RetVal
+%include Common\VS1053MIDI_SetBank.Inc
+byte %'ModuleName'%.%MIDI_SetBank(byte channel, byte bank)
+{
+  channel &= 0x0F; /* limit channel to 0..15 */
+  bank &= 0x7F; /* limit to 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PARAMETER|channel), %'ModuleName'%.MIDI_MSG_CH_PARAM_BANK_SELECT, bank);
+}
+
+%endif %- MIDI_SetBank
+%-BW_METHOD_END MIDI_SetBank
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetInstrument
+%ifdef MIDI_SetInstrument
+%define! Parchannel
+%define! Parinstrument
+%define! RetVal
+%include Common\VS1053MIDI_SetInstrument.Inc
+byte %'ModuleName'%.%MIDI_SetInstrument(byte channel, byte instrument)
+{
+  channel &= 0x0F; /* limit channel to 0..15 */
+  instrument &= 0x7F; /* limit to 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PRG|channel), instrument, 0 /* dummy */);
+}
+
+%endif %- MIDI_SetInstrument
+%-BW_METHOD_END MIDI_SetInstrument
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_SetPan
+%ifdef MIDI_SetPan
+%define! Parchannel
+%define! Parpan
+%define! RetVal
+%include Common\VS1053MIDI_SetPan.Inc
+byte %'ModuleName'%.%MIDI_SetPan(byte channel, byte pan)
+{
+  channel &= 0x0F; /* limit channel to 0..15 */
+  pan &= 0x7F; /* limit to 0..127 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PARAMETER|channel), %'ModuleName'%.MIDI_MSG_CH_PARAM_PAN, pan);
+}
+
+%endif %- MIDI_SetPan
+%-BW_METHOD_END MIDI_SetPan
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MIDI_AllSoundOff
+%ifdef MIDI_AllSoundOff
+%define! Parchannel
+%define! RetVal
+%include Common\VS1053MIDI_AllSoundOff.Inc
+byte %'ModuleName'%.%MIDI_AllSoundOff(byte channel)
+{
+  channel &= 0x0F; /* limit channel to 0..15 */
+  return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PARAMETER|channel), %'ModuleName'%.MIDI_MSG_CH_PARAM_ALL_SOUND_OFF, 0 /* dummy */);
+}
+
+%endif %- MIDI_AllSoundOff
+%-BW_METHOD_END MIDI_AllSoundOff
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

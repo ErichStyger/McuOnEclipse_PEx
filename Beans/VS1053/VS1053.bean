@@ -4,7 +4,7 @@
     <Name>VS1053</Name>
     <Description>Component for the VLSI VS1053 Audio Codec Device</Description>
     <Author>Erich Styger</Author>
-    <Version>01.017</Version>
+    <Version>01.003</Version>
     <Icon>VS1053</Icon>
     <TypesFiles>PE,VS1053\VS1053</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -710,8 +710,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SendMIDI</Name>
-        <Symbol>SendMIDI</Symbol>
+        <Name>MIDI_Send</Name>
+        <Symbol>MIDI_Send</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Sends a MIDI data byte</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -744,8 +744,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>TalkMIDI</Name>
-        <Symbol>TalkMIDI</Symbol>
+        <Name>MIDI_Talk</Name>
+        <Symbol>MIDI_Talk</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Plays a MIDI note</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -790,8 +790,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>NoteOnMIDI</Name>
-        <Symbol>NoteOnMIDI</Symbol>
+        <Name>MIDI_NoteOn</Name>
+        <Symbol>MIDI_NoteOn</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Send a MIDI note-on message, like pressing a piano key.</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -836,8 +836,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>NoteOffMIDI</Name>
-        <Symbol>NoteOffMIDI</Symbol>
+        <Name>MIDI_NoteOff</Name>
+        <Symbol>MIDI_NoteOff</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Send a MIDI note-off message, like releasing a piano key.</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -877,6 +877,200 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>byte #M#_#C#(byte channel, byte note, byte velocity)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MIDI_SetVolume</Name>
+        <Symbol>MIDI_SetVolume</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the volume for the channel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>channel</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Channel (0..15)</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>volume</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>volume, 0 (silence) to 127 (max volume)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(byte channel, byte volume)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MIDI_SetBank</Name>
+        <Symbol>MIDI_SetBank</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the bank for the channel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>channel</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Channel</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bank</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>bank (0 is default, 0x78 and 0x7f is drums, 0x79 melodic)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(byte channel, byte bank)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MIDI_SetInstrument</Name>
+        <Symbol>MIDI_SetInstrument</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the instrument for the channel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>channel</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Channel</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>instrument</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>instrument number (0..127)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(byte channel, byte instrument)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MIDI_SetPan</Name>
+        <Symbol>MIDI_SetPan</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the pan (stereo position) for the channel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>channel</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Channel</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pan</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>pan (stereo position), where 64 is middle. Allowed values: 0..127</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(byte channel, byte pan)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MIDI_AllSoundOff</Name>
+        <Symbol>MIDI_AllSoundOff</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Turns off all oscillators for the channel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>channel</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Channel</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(byte channel)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

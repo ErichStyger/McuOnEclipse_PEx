@@ -3,7 +3,7 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (TalkMIDI)
+%include Common\GeneralMethod.inc (MIDI_Talk)
 %;**     Description :
 %;**         Plays a MIDI note
 %include Common\GeneralParameters.inc(27)
