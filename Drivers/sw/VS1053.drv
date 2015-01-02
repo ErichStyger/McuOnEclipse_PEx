@@ -331,10 +331,18 @@ Octave #  MIDI Note Numbers
 #define %'ModuleName'%.MIDI_NOTE_Fh9  126
 #define %'ModuleName'%.MIDI_NOTE_G9   127
 
-/* instruments */
-#define %'ModuleName'%.MIDI_INSTR_Default              0
-#define %'ModuleName'%.MIDI_INSTR_AcousticGrandPiano   1
-#define %'ModuleName'%.MIDI_INSTR_PanFlute             76
+/* GM1 instruments */
+#define %'ModuleName'%.MIDI_INSTR_Default               0
+#define %'ModuleName'%.MIDI_INSTR_AcousticGrandPiano    1
+#define %'ModuleName'%.MIDI_INSTR_PanFlute              76
+#define %'ModuleName'%.MIDI_INSTR_GuitarFretNoise       121
+#define %'ModuleName'%.MIDI_INSTR_BreatNoise            122
+#define %'ModuleName'%.MIDI_INSTR_Seashore              123
+#define %'ModuleName'%.MIDI_INSTR_BirdTweet             124
+#define %'ModuleName'%.MIDI_INSTR_TelephoneRing         125
+#define %'ModuleName'%.MIDI_INSTR_Helicopter            126
+#define %'ModuleName'%.MIDI_INSTR_Applause              127
+#define %'ModuleName'%.MIDI_INSTR_GunShot               128
 
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -609,6 +617,15 @@ byte %'ModuleName'%.%MIDI_AllSoundOff(byte channel);
 
 %endif %- MIDI_AllSoundOff
 %-BW_METHOD_END MIDI_AllSoundOff
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SoftReset
+%ifdef SoftReset
+byte %'ModuleName'%.%SoftReset(void);
+%define! RetVal
+%include Common\VS1053SoftReset.Inc
+
+%endif %- SoftReset
+%-BW_METHOD_END SoftReset
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -768,6 +785,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  volume <left> <right>", (unsigned char*)"Set volume, full: 0x00, 0xFE silence, 0xFF power down\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  softreset", (unsigned char*)"Perform a software reset\r\n", io->stdOut);
   return ERR_OK;
 }
 
@@ -815,6 +833,9 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
       %@Shell@'ModuleName'%.SendStr("Failed reading left volume", io->stdErr);
       return ERR_FAILED;
     }
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' softreset")==0) {
+    *handled = TRUE;
+    return %'ModuleName'%.%SoftReset();
   }
   return ERR_OK;
 }
@@ -1168,8 +1189,7 @@ byte %'ModuleName'%.%TerminateStreams(void)
       }
     } /* for */
     if (sciMode&VS1053_MODE_SM_CANCEL) {
-      /* \todo Need software reset! */
-      res = ERR_FAILED;
+      return %'ModuleName'%.%SoftReset();
     }
     if (res!=ERR_OK) {
       break;
@@ -1386,6 +1406,7 @@ byte %'ModuleName'%.%MIDI_SetBank(byte channel, byte bank)
 %include Common\VS1053MIDI_SetInstrument.Inc
 byte %'ModuleName'%.%MIDI_SetInstrument(byte channel, byte instrument)
 {
+  /* set an instrument, e.g. %'ModuleName'%.MIDI_INSTR_Default */
   channel &= 0x0F; /* limit channel to 0..15 */
   instrument &= 0x7F; /* limit to 0..127 */
   return %'ModuleName'%.%MIDI_Talk((%'ModuleName'%.MIDI_MSG_CH_PRG|channel), instrument, 0 /* dummy */);
@@ -1423,6 +1444,34 @@ byte %'ModuleName'%.%MIDI_AllSoundOff(byte channel)
 
 %endif %- MIDI_AllSoundOff
 %-BW_METHOD_END MIDI_AllSoundOff
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SoftReset
+%ifdef SoftReset
+%define! RetVal
+%include Common\VS1053SoftReset.Inc
+byte %'ModuleName'%.%SoftReset(void)
+{
+  uint8_t res;
+  uint16_t sciMode;
+
+  res = %'ModuleName'%.%ReadRegister(VS1053_MODE, &sciMode);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  res = %'ModuleName'%.%WriteRegister(VS1053_MODE, sciMode|VS1053_MODE_SM_RESET);
+  if (res!=ERR_OK) {
+    return res;;
+  }
+  %@Wait@'ModuleName'%.Waitus(2); /* wait for at least 2 us */
+  /* DREQ should now be down for about 1.8 ms. Wait until DREQ gets up again */
+  while(!%'ModuleName'%.%IsReady()) {
+    %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
+  }
+  return res;
+}
+
+%endif %- SoftReset
+%-BW_METHOD_END SoftReset
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
