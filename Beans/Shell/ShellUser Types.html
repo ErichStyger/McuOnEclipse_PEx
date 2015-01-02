@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Shell documentation - Component types &amp; constants
+Bean  documentation - Component types &amp; constants
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-			<b>Shell</b>
+<b>Shell</b>
             </span>
           </td>
         </tr>
@@ -146,19 +146,18 @@ LI.EXP {
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
 <a href="Shell.html">General Info</a><br />
-<a href="ShellProperties.html">Properties</a><br />
-<a href="ShellMethods.html">Methods</a><br />
+<a href="ShellApplication Notes.html">Application Notes</a><br />
 <a href="ShellEvents.html">Events</a><br />
+<a href="ShellMethods.html">Methods</a><br />
+<a href="ShellProperties.html">Properties</a><br />
 <i>Types and constants</i><br />
-<a href="ShellApplication Notes.html">ShellApplication Notes</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="Shell_b.gif" alt="Shell icon"/>
+<img src="Shell_b.gif" alt="Bean icon"/>
+
 
 </center>
             </div>
@@ -176,7 +175,9 @@ LI.EXP {
 
            <div class="titlebox">
               <div class="beanname">
-                Component
+                Bean
+                
+                
                 Shell
               </div>
               <div class="descrtext">Command Line Shell</div>
@@ -184,6 +185,7 @@ LI.EXP {
               <div class="info_name">Category: 
                 <span class="info_text">
                 <a href="../../DOCs/BeanCategoriesInfo.html">Software-User Components</a>
+                
                 </span>
               </div>
             </div>
@@ -199,43 +201,58 @@ LI.EXP {
            <div class="user_text">
            <ul>
 <div class="user_text">
-<!--BEG_CDE_USERTYPES--><a name="StdIO_OutErr_FctType"></a><li><b><i>ComponentName_</i>StdIO_OutErr_FctType</b> : user definition<pre class="bluetext"></pre>
+<a name="StdIO_OutErr_FctType"></a>
+<li><b><i>ComponentName_</i>StdIO_OutErr_FctType</b> : user definition<pre class="bluetext">
+typedef void (*ComponentName%.StdIO_OutErr_FctType)(uint8_t);</pre>
 <I>Callback for an output or error I/O function</I>
 </li>
-<a name="StdIO_In_FctType"></a><li><b><i>ComponentName_</i>StdIO_In_FctType</b> : user definition<pre class="bluetext"></pre>
+<a name="StdIO_In_FctType"></a>
+<li><b><i>ComponentName_</i>StdIO_In_FctType</b> : user definition<pre class="bluetext">
+typedef void (*ComponentName%.StdIO_In_FctType)(uint8_t *);</pre>
 <I>Callback for an I/O input function.</I>
 </li>
-<a name="StdIO_KeyPressed_FctType"></a><li><b><i>ComponentName_</i>StdIO_KeyPressed_FctType</b> : user definition<pre class="bluetext"></pre>
+<a name="StdIO_KeyPressed_FctType"></a>
+<li><b><i>ComponentName_</i>StdIO_KeyPressed_FctType</b> : user definition<pre class="bluetext">
+typedef bool (*ComponentName%.StdIO_KeyPressed_FctType)(void);</pre>
 <I>Callback which returns true if a key has been pressed</I>
 </li>
-<a name="StdIOType"></a><li><b><i>ComponentName_</i>StdIOType</b> = <tt class="bluetext">struct {</tt>
-<i>Record containing input, output and error callback (stdin, stdout, stderr).</i>
+<a name="StdIOType"></a>
+<li><b><i>ComponentName_</i>StdIOType</b> = <tt class="bluetext">struct {</tt>
+ <i>- Record containing input, output and error callback (stdin, stdout, stderr).</i>
 <dl><dt></dt><dd>
-	<dl>
-		<dt><tt class="bluetext">StdIO_In_FctType stdIn</tt>;</dt>
-<dd><i>standard input</i></dd>
-		<dt><tt class="bluetext">StdIO_OutErr_FctType stdOut</tt>;</dt>
-<dd><i>standard output</i></dd>
-		<dt><tt class="bluetext">StdIO_OutErr_FctType stdErr</tt>;</dt>
-<dd><i>standard error</i></dd>
-		<dt><tt class="bluetext">StdIO_KeyPressed_FctType keyPressed</tt>;</dt>
-<dd><i>key pressed callback</i></dd>
-	</dl>
+  <dl>
+    <dt><tt class="bluetext"><i>ComponentName_</i>StdIO_In_FctType stdIn</tt>;</dt>
+    <dd><i>standard input</i></dd>
+    <dt><tt class="bluetext"><i>ComponentName_</i>StdIO_OutErr_FctType stdOut</tt>;</dt>
+    <dd><i>standard output</i></dd>
+    <dt><tt class="bluetext"><i>ComponentName_</i>StdIO_OutErr_FctType stdErr</tt>;</dt>
+    <dd><i>standard error</i></dd>
+    <dt><tt class="bluetext"><i>ComponentName_</i>StdIO_KeyPressed_FctType keyPressed</tt>;</dt>
+    <dd><i>key pressed callback</i></dd>
+  </dl>
 </dd></dl>
 <tt class="bluetext">}</tt></li>
-<a name="ConstStdIOType"></a><li><b><i>ComponentName_</i>ConstStdIOType</b> : user definition<pre class="bluetext"></pre>
+<a name="ConstStdIOType"></a>
+<li><b><i>ComponentName_</i>ConstStdIOType</b> : user definition<pre class="bluetext">
+typedef const ComponentName%.StdIOType ComponentName%.ConstStdIOType;</pre>
 <I>constant StdIOType</I>
 </li>
-<a name="ParseCommandCallback"></a><li><b><i>ComponentName_</i>ParseCommandCallback</b> : user definition<pre class="bluetext"></pre>
+<a name="ParseCommandCallback"></a>
+<li><b><i>ComponentName_</i>ParseCommandCallback</b> : user definition<pre class="bluetext">
+typedef uint8_t (*ComponentName%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const ComponentName%.StdIOType *io);</pre>
 <I>Callback for parsing a shell command</I>
 </li>
-<a name="ConstStdIOTypePtr"></a><li><b><i>ComponentName_</i>ConstStdIOTypePtr</b> : user definition<pre class="bluetext"></pre>
+<a name="ConstStdIOTypePtr"></a>
+<li><b><i>ComponentName_</i>ConstStdIOTypePtr</b> : user definition<pre class="bluetext">
+typedef const ComponentName%.ConstStdIOType *ComponentName%.ConstStdIOTypePtr;</pre>
 <I>Pointer to constant standard I/O descriptor</I>
 </li>
-<a name="ConstParseCommandCallback"></a><li><b><i>ComponentName_</i>ConstParseCommandCallback</b> : user definition<pre class="bluetext"></pre>
+<a name="ConstParseCommandCallback"></a>
+<li><b><i>ComponentName_</i>ConstParseCommandCallback</b> : user definition<pre class="bluetext">
+typedef const ComponentName%.ParseCommandCallback ComponentName%.ConstParseCommandCallback;</pre>
 <I>Callback for parsing a shell command</I>
 </li>
-<!--END_CDE_USERTYPES-->
+
 </div>
            </ul>
           </div>
@@ -251,7 +268,8 @@ LI.EXP {
            <div class="user_text">
            <ul>
 <div class="user_text">
-<!--BEG_CDE_CONSTANTS--><!--END_CDE_CONSTANTS-->
+<b>There are no constants defined in this component</b>
+
 </div>
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
@@ -261,7 +279,7 @@ LI.EXP {
           <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
-            Copyright 1997 - 2014 Freescale Semiconductor, Inc.
+            
           </p>
 
 		</td>

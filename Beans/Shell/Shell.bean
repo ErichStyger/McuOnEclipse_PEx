@@ -4,14 +4,14 @@
     <Name>Shell</Name>
     <Description>Command Line Shell</Description>
     <Author>Erich Styger</Author>
-    <Version>01.051</Version>
+    <Version>01.059</Version>
     <Icon>Shell</Icon>
     <TypesFiles>PE,Shell\Shell</TypesFiles>
     <FileVersion>6</FileVersion>
   </Header>
   <Options>
-    <BW_HelpType>Default</BW_HelpType>
-    <BW_HelpFiles>,Properties,Methods,Events,"User Types"</BW_HelpFiles>
+    <BW_HelpType>&lt;none&gt;</BW_HelpType>
+    <BW_HelpFiles>,"Application Notes",Events,Methods,Properties,"User Types"</BW_HelpFiles>
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
@@ -23,6 +23,8 @@
     <BeanLevel>High</BeanLevel>
     <Shortcut>CLS</Shortcut>
     <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
+    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedCns>0</BW_NeedCns>
   </Options>
   <PropertyList>
     <Property>
@@ -32,10 +34,7 @@
         <Hint>Name of the component.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_StringStyle>EDITBOX</UI_StringStyle>
-        <DefaultValue />
+        <DefaultValue/>
       </TCompNameItem>
     </Property>
     <Property>
@@ -46,9 +45,6 @@
         <Hint>If enabled, the component will echo characters read on the terminal.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>CHECKBOX</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -63,7 +59,7 @@
       <TStrgItem>
         <Name>Prompt</Name>
         <Symbol>Prompt</Symbol>
-        <Hint>Prompt string to be used. Make sure the string is in double quotes. You can use normal C escape characters like \r or \n
+        <Hint>Prompt string to be used. Make sure the string is in double quotes. You can use normal C escape characters like \\r or \n
 
 
 
@@ -73,9 +69,6 @@
  as well.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_StringStyle>EDITBOX</UI_StringStyle>
         <DefaultValue>"CMD&gt; "</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
@@ -89,9 +82,6 @@
         <Hint>Here you can specify a project name which is shown if you use the help command.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_StringStyle>EDITBOX</UI_StringStyle>
         <DefaultValue>My Project Name</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
@@ -105,9 +95,6 @@
         <Hint>If commands start with this prefix character, the command will be executed in silent mode (only errors will be reported). To disable silent support (for better code efficiency, use  an empty char).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_StringStyle>EDITBOX</UI_StringStyle>
         <DefaultValue>#</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
@@ -123,12 +110,6 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>GROUP</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>CHECKBOX</UI_ValueSelectionStyle>
         <Description>Enabled</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -143,14 +124,10 @@
               <Hint>Interface to waiting routine</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_EnumStyle>COMBO</UI_EnumStyle>
-              <DefaultValue />
+              <DefaultValue/>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <SortStyle />
-              <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
+              <SortStyle/>
             </TInhrLinkItem>
           </GrupItem>
           <GrupItem>
@@ -160,9 +137,6 @@
               <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DO_NOT_DISPLAY</UI_DisplayExtraText>
-              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>10</DefaultValue>
               <MinValue>0</MinValue>
               <MaxValue>-1</MaxValue>
@@ -181,9 +155,6 @@
               <Hint>If set to yes, then it uses the RTOS waiting/delay instead of busy waiting if RTOS is present.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_BoolStyle>CHECKBOX</UI_BoolStyle>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
               <DefaultIndex>0</DefaultIndex>
               <TextValueIndex>false</TextValueIndex>
@@ -204,9 +175,6 @@
         <Hint>Position of the ':' for the status commands. Used for SendStatusString().</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
         <DefaultValue>13</DefaultValue>
         <MinValue>0</MinValue>
         <MaxValue>-1</MaxValue>
@@ -224,9 +192,6 @@
         <Hint>Position of the ';' in the help commands. Used for SendHelpString().</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
         <DefaultValue>26</DefaultValue>
         <MinValue>0</MinValue>
         <MaxValue>-1</MaxValue>
@@ -246,12 +211,6 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>GROUP</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>CHECKBOX</UI_ValueSelectionStyle>
         <Description>Disabled</Description>
         <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
@@ -265,9 +224,6 @@
               <Hint>Length of possible sub command string. Used as buffer on the stack, so should not be choosen too large</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>32</DefaultValue>
               <MinValue>2</MinValue>
               <MaxValue>-1</MaxValue>
@@ -285,9 +241,6 @@
               <Hint>Multiple commands can be separated using this separation character</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_StringStyle>EDITBOX</UI_StringStyle>
               <DefaultValue>;</DefaultValue>
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
@@ -305,14 +258,10 @@
         <Hint>Interface to utility</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_EnumStyle>COMBO</UI_EnumStyle>
-        <DefaultValue />
+        <DefaultValue/>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <SortStyle />
-        <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
+        <SortStyle/>
       </TInhrLinkItem>
     </Property>
     <Property>
@@ -324,12 +273,6 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>GROUP</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>CHECKBOX</UI_ValueSelectionStyle>
         <Description>Enabled</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -344,14 +287,10 @@
               <Hint>Interface to low level asynchroserial component</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_EnumStyle>COMBO</UI_EnumStyle>
-              <DefaultValue />
+              <DefaultValue/>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <SortStyle />
-              <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
+              <SortStyle/>
             </TInhrLinkItem>
           </GrupItem>
         </Children>
@@ -365,9 +304,6 @@
         <Hint>If enabled and an RTOS is present, a semaphore is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>CHECKBOX</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -386,14 +322,10 @@
         <Hint>Interface to critical section handling</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_EnumStyle>COMBO</UI_EnumStyle>
-        <DefaultValue />
+        <DefaultValue/>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <SortStyle />
-        <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
+        <SortStyle/>
       </TInhrLinkItem>
     </Property>
     <Property>
@@ -401,16 +333,10 @@
         <Name>History</Name>
         <Symbol>HistoryEnabled</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled, the component will store up to four entered commands. Recall them clicking a non alphanumeric key.</Hint>
+        <Hint>If enabled, the component will store up to four entered commands. Recall them by enter a non-alphanumeric key.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>TAB</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>CHECKBOX</UI_ValueSelectionStyle>
         <Description>yes</Description>
         <Expanded>Yes</Expanded>
         <DefaultValue>true</DefaultValue>
@@ -424,9 +350,6 @@
               <Hint>Stored caracters for each history line.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
               <DefaultValue>128</DefaultValue>
               <MinValue>8</MinValue>
               <MaxValue>128</MaxValue>
@@ -450,9 +373,6 @@
         <Hint>Prints the prompt to the stdOut channel</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -487,9 +407,6 @@
         <Hint>Sends an 8bit unsigned number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -530,9 +447,6 @@
         <Hint>Sends an 8bit signed number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -573,9 +487,6 @@
         <Hint>Sends a 16bit unsigned number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -616,9 +527,6 @@
         <Hint>Sends a 16bit signed number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -659,9 +567,6 @@
         <Hint>Sends a 32bit unsigned number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -702,9 +607,6 @@
         <Hint>Sends a 32bit signed number to the given I/O</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -745,9 +647,6 @@
         <Hint>Prints a string using an I/O function</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -789,9 +688,6 @@
         <Hint>Sends data using an I/O function. Unlike SendStr(), with this method it is possible to send binary data, including zero bytes.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -839,9 +735,6 @@
         <Hint>Prints various available system status information</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -876,9 +769,6 @@
         <Hint>Parses a shell command. Use 'help' to get a list of supported commands.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -926,9 +816,6 @@
         <Hint>Reads a line from stdIn and returns TRUE if we have a line, FALSE otherwise.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -982,9 +869,6 @@
         <Hint>Prints a standard message for failed or unknown commands</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1026,9 +910,6 @@
         <Hint>Parses a shell command. It handles first the internal commands and will call the provided callback.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1082,9 +963,6 @@
         <Hint>Sets an StdIO structure which is returned by GetStdio()</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1119,9 +997,6 @@
         <Hint>Returns the default stdio channel. This method is only available if a shell is enabled in the component properties.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1150,9 +1025,6 @@
         <Hint>Used to get mutual access to the shell console. Only has an effect if using an RTOS with semaphore for the console access.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1181,9 +1053,6 @@
         <Hint>Used to release mutual access to the shell console. Only has an effect if using an RTOS with semaphore for the console access.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1212,9 +1081,6 @@
         <Hint>Reads characters from the default input channel and appends it to the buffer. Once a new line has been detected, the line will be parsed using the handlers in the table.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1268,9 +1134,6 @@
         <Hint>Parses a shell command. It handles first the internal commands and will call the provided callback.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1318,9 +1181,6 @@
         <Hint>Return the semaphore of the shell.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1349,9 +1209,6 @@
         <Hint>Prints a string using an I/O function, formated for the 'help' command</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1412,9 +1269,6 @@
         <Hint>Prints a status string using an I/O function, formated for the 'status' command</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1463,9 +1317,6 @@
         <Hint>Prints a string using an I/O function, formated for the 'help' command</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1514,9 +1365,6 @@
         <Hint>Reads a character (blocking)</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1551,9 +1399,6 @@
         <Hint>Sends a character (blocking)</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1588,9 +1433,6 @@
         <Hint>Checks if a key has been pressed (a character is present in the input buffer)</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1619,9 +1461,6 @@
         <Hint>Initializes the module, especially creates the mutex semaphore if an RTOS is used.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1650,9 +1489,6 @@
         <Hint>De-Initializes the module, especially frees the mutex semaphore if an RTOS is used.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
@@ -1682,9 +1518,6 @@
         <Hint>Name of the user module (without extension), where the events from this component are placed.</Hint>
         <ItemLevel>ADVANCED</ItemLevel>
         <EditLine>true</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_StringStyle>EDITBOX</UI_StringStyle>
         <DefaultValue>Events</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
@@ -1700,12 +1533,6 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>GROUP</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>don't generate code</Description>
         <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
@@ -1732,10 +1559,7 @@
               <Hint>OnBeforeIterateCmd procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_StringStyle>EDITBOX</UI_StringStyle>
-              <DefaultValue />
+              <DefaultValue/>
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1755,12 +1579,6 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_GroupStyle>GROUP</UI_GroupStyle>
-        <UI_Layout>DEFAULT</UI_Layout>
-        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
-        <UI_ValueSelectionStyle>DROPDOWN</UI_ValueSelectionStyle>
         <Description>don't generate code</Description>
         <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
@@ -1787,10 +1605,7 @@
               <Hint>OnAfterIterateCmd procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
-              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-              <UI_StringStyle>EDITBOX</UI_StringStyle>
-              <DefaultValue />
+              <DefaultValue/>
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -1803,7 +1618,9 @@
     </Event>
   </EventList>
   <Links>
-    <EmptySection_DummyValue />
+    <EmptySection_DummyValue/>
   </Links>
+  <Revisions>
+    <RevisionVersion>2</RevisionVersion>
+  </Revisions>
 </Bean>
-

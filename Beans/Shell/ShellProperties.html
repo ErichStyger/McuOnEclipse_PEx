@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Shell documentation - Properties
+Bean  documentation - Properties
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-			<b>Shell</b>
+<b>Shell</b>
             </span>
           </td>
         </tr>
@@ -146,19 +146,18 @@ LI.EXP {
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
 <a href="Shell.html">General Info</a><br />
-<i>Properties</i><br />
-<a href="ShellMethods.html">Methods</a><br />
+<a href="ShellApplication Notes.html">Application Notes</a><br />
 <a href="ShellEvents.html">Events</a><br />
+<a href="ShellMethods.html">Methods</a><br />
+<i>Properties</i><br />
 <a href="ShellUser Types.html">Types and constants</a><br />
-<a href="ShellApplication Notes.html">ShellApplication Notes</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
-<a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br />
-<a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br />
 
 <br /><br /><br />
 <center>
-<img src="Shell_b.gif" alt="Shell icon"/>
+<img src="Shell_b.gif" alt="Bean icon"/>
+
 
 </center>
             </div>
@@ -181,7 +180,9 @@ LI.EXP {
           
            <div class="titlebox">
               <div class="beanname">
-                Component              
+                Bean
+                
+                
                 Shell
               </div>
               <div class="descrtext">Command Line Shell</div>
@@ -189,10 +190,20 @@ LI.EXP {
               <div class="info_name">Category: 
                 <span class="info_text">
                 <a href="../../DOCs/BeanCategoriesInfo.html">Software-User Components</a>
+                
                 </span>
               </div>
             </div>
-                                      
+                      
+<!--
+            </td>
+        </tr>
+
+        <tr>        
+-->  
+            
+<!--            <td align="left"> -->
+<!--                   <br /> -->                  
      <div class="text_title">
           Properties:
 		 </div>		 
@@ -202,7 +213,6 @@ LI.EXP {
                   
 <div class="user_text">
 <ul>
-<!--BEG_CDE_PROPERTIES-->
 <li>
 <a name="DeviceName">
 <b>Component name</b></a> - Name of the component.
@@ -213,7 +223,7 @@ LI.EXP {
 </li>
 <li>
 <a name="Prompt">
-<b>Prompt</b></a> - Prompt string to be used. Make sure the string is in double quotes. You can use normal C escape characters like \r or 
+<b>Prompt</b></a> - Prompt string to be used. Make sure the string is in double quotes. You can use normal C escape characters like \r or <br />
 
 
 
@@ -232,24 +242,22 @@ LI.EXP {
 </li>
 <li>
 <a name="BlockingSend">
-<b>Blocking Send</b></a> - If enabled, then sending using SendChar() to the communication channel will block until success.<ul><li>
-<a name="Wait">
-<b>Wait</b>
-</a>
-Interface to waiting routine
-</li>
-<li>
-<a name="WaitTimeMs">
-<b>Wait Time (ms)</b>
-</a>
-Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
-</li>
-<li>
-<a name="RTOSWait">
-<b>RTOS Wait</b>
-</a>
-If set to yes, then it uses the RTOS waiting/delay instead of busy waiting if RTOS is present.
-</li>
+<b>Blocking Send</b></a> - If enabled, then sending using SendChar() to the communication channel will block until success.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Wait">
+  <b>Wait</b></a> - Interface to waiting routine
+  </li>
+  <li>
+  <a name="WaitTimeMs">
+  <b>Wait Time (ms)</b></a> - Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
+  </li>
+  <li>
+  <a name="RTOSWait">
+  <b>RTOS Wait</b></a> - If set to yes, then it uses the RTOS waiting/delay instead of busy waiting if RTOS is present.
+  </li>
 </ul>
 </li>
 <li>
@@ -262,18 +270,18 @@ If set to yes, then it uses the RTOS waiting/delay instead of busy waiting if RT
 </li>
 <li>
 <a name="MultiCommandEnabled">
-<b>Multi Command</b></a> - Enables execution of multiple commands in a single command, separated with a separation char.<ul><li>
-<a name="MaxSubCommandStringSize">
-<b>Length</b>
-</a>
-Length of possible sub command string. Used as buffer on the stack, so should not be choosen too large
-</li>
-<li>
-<a name="MultiCmdSeparationChar">
-<b>Separator</b>
-</a>
-Multiple commands can be separated using this separation character
-</li>
+<b>Multi Command</b></a> - Enables execution of multiple commands in a single command, separated with a separation char.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="MaxSubCommandStringSize">
+  <b>Length</b></a> - Length of possible sub command string. Used as buffer on the stack, so should not be choosen too large
+  </li>
+  <li>
+  <a name="MultiCmdSeparationChar">
+  <b>Separator</b></a> - Multiple commands can be separated using this separation character
+  </li>
 </ul>
 </li>
 <li>
@@ -282,12 +290,14 @@ Multiple commands can be separated using this separation character
 </li>
 <li>
 <a name="DefaultSerialEnabled">
-<b>Default Serial</b></a> - If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.<ul><li>
-<a name="Serial">
-<b>Console Interface</b>
-</a>
-Interface to low level asynchroserial component
-</li>
+<b>Default Serial</b></a> - If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Serial">
+  <b>Console Interface</b></a> - Interface to low level asynchroserial component
+  </li>
 </ul>
 </li>
 <li>
@@ -300,15 +310,17 @@ Interface to low level asynchroserial component
 </li>
 <li>
 <a name="HistoryEnabled">
-<b>History</b></a> - If enabled, the component will store up to four entered commands. Recall them clicking a non alphanumeric key.<ul><li>
-<a name="HistLength">
-<b>Stored Characters</b>
-</a>
-Stored caracters for each history line.
-</li>
+<b>History</b></a> - If enabled, the component will store up to four entered commands. Recall them by enter a non-alphanumeric key.<br />
+The following items are available only if the group is enabled (the value is "yes"):<br />
+
+<ul>
+  <li>
+  <a name="HistLength">
+  <b>Stored Characters</b></a> - Stored caracters for each history line.
+  </li>
 </ul>
 </li>
-<!--END_CDE_PROPERTIES-->
+
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
@@ -317,7 +329,7 @@ Stored caracters for each history line.
            <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
-            Copyright 1997 - 2014 Freescale Semiconductor, Inc.
+            
            </p>
     </td>
   </tr>

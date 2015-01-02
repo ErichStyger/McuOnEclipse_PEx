@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--User types for component-->
 <UserTypes>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -7,8 +8,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef void (*%'ModuleName'%.StdIO_OutErr_FctType)(uint8_t); /* Callback for an output or error I/O function */\n</PreparedHint>
+    <PreparedHint>typedef void (*%'ModuleName'%.StdIO_OutErr_FctType)(uint8_t); /* Callback for an output or error I/O function */\n
+</PreparedHint>
     <Type>typedef void (*%'ModuleName'%.StdIO_OutErr_FctType)(uint8_t);</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -17,8 +20,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef void (*%'ModuleName'%.StdIO_In_FctType)(uint8_t *); /* Callback for an I/O input function. */\n</PreparedHint>
+    <PreparedHint>typedef void (*%'ModuleName'%.StdIO_In_FctType)(uint8_t *); /* Callback for an I/O input function. */\n
+</PreparedHint>
     <Type>typedef void (*%'ModuleName'%.StdIO_In_FctType)(uint8_t *);</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -27,8 +32,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef bool (*%'ModuleName'%.StdIO_KeyPressed_FctType)(void); /* Callback which returns true if a key has been pressed */\n</PreparedHint>
+    <PreparedHint>typedef bool (*%'ModuleName'%.StdIO_KeyPressed_FctType)(void); /* Callback which returns true if a key has been pressed */\n
+</PreparedHint>
     <Type>typedef bool (*%'ModuleName'%.StdIO_KeyPressed_FctType)(void);</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TRecordType</UsrType>
@@ -37,12 +44,13 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef struct { /* Record containing input, output and error callback (stdin, stdout, stderr). */\n
+    <PreparedHint>  typedef struct { /* Record containing input, output and error callback (stdin, stdout, stderr). */\n
     %'ModuleName'_StdIO_In_FctType stdIn; /* standard input */\n
     %'ModuleName'_StdIO_OutErr_FctType stdOut; /* standard output */\n
     %'ModuleName'_StdIO_OutErr_FctType stdErr; /* standard error */\n
     %'ModuleName'_StdIO_KeyPressed_FctType keyPressed; /* key pressed callback */\n
-  } %'ModuleName'_StdIOType;\n</PreparedHint>
+  } %'ModuleName'_StdIOType;\n
+</PreparedHint>
     <RecordItem>
       <ItemName>stdIn</ItemName>
       <ItemType>StdIO_In_FctType</ItemType>
@@ -75,8 +83,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef const %'ModuleName'%.StdIOType %'ModuleName'%.ConstStdIOType; /* constant StdIOType */\n</PreparedHint>
+    <PreparedHint>typedef const %'ModuleName'%.StdIOType %'ModuleName'%.ConstStdIOType; /* constant StdIOType */\n
+</PreparedHint>
     <Type>typedef const %'ModuleName'%.StdIOType %'ModuleName'%.ConstStdIOType;</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -85,8 +95,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef uint8_t (*%'ModuleName'%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const %'ModuleName'%.StdIOType *io); /* Callback for parsing a shell command */\n</PreparedHint>
+    <PreparedHint>typedef uint8_t (*%'ModuleName'%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const %'ModuleName'%.StdIOType *io); /* Callback for parsing a shell command */\n
+</PreparedHint>
     <Type>typedef uint8_t (*%'ModuleName'%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const %'ModuleName'%.StdIOType *io);</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -95,8 +107,10 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef const %'ModuleName'%.ConstStdIOType *%'ModuleName'%.ConstStdIOTypePtr; /* Pointer to constant standard I/O descriptor */\n</PreparedHint>
+    <PreparedHint>typedef const %'ModuleName'%.ConstStdIOType *%'ModuleName'%.ConstStdIOTypePtr; /* Pointer to constant standard I/O descriptor */\n
+</PreparedHint>
     <Type>typedef const %'ModuleName'%.ConstStdIOType *%'ModuleName'%.ConstStdIOTypePtr;</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
@@ -105,68 +119,81 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef const %'ModuleName'%.ParseCommandCallback %'ModuleName'%.ConstParseCommandCallback; /* Callback for parsing a shell command */\n</PreparedHint>
+    <PreparedHint>typedef const %'ModuleName'%.ParseCommandCallback %'ModuleName'%.ConstParseCommandCallback; /* Callback for parsing a shell command */\n
+</PreparedHint>
     <Type>typedef const %'ModuleName'%.ParseCommandCallback %'ModuleName'%.ConstParseCommandCallback;</Type>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>uint8_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>uint32_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>uint16_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>int8_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>int32_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>int16_t</Name>
-    <Hint />
+    <Hint/>
     <Generate>no</Generate>
     <Unique>no</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n</PreparedHint>
-    <Type />
+    <PreparedHint>\n
+</PreparedHint>
+    <Type/>
+    <HWTestType>pointer</HWTestType>
   </Type>
 </UserTypes>
-
