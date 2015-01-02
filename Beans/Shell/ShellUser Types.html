@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Shell documentation - General info
+Shell documentation - Component types &amp; constants
 </title>
 <STYLE type="text/css">
 body{
@@ -129,7 +129,7 @@ LI.EXP {
 <table border="0"  cellspacing="0" cellpadding="0">
   <tr>
     <td valign="top" width="150" >
-      <table width="150" height="160" cellpadding="3" cellspacing="0" border="0">
+      <table  width="150" height="160" cellpadding="3" cellspacing="0" border="0">
         <tbody>
         <tr class="lefttitlebox">
           <td width="4"></td>
@@ -145,11 +145,11 @@ LI.EXP {
             &nbsp;<br />
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
-<i>General Info</i><br />
+<a href="Shell.html">General Info</a><br />
 <a href="ShellProperties.html">Properties</a><br />
 <a href="ShellMethods.html">Methods</a><br />
 <a href="ShellEvents.html">Events</a><br />
-<a href="ShellUser Types.html">Types and constants</a><br />
+<i>Types and constants</i><br />
 <a href="ShellApplication Notes.html">ShellApplication Notes</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
@@ -158,7 +158,7 @@ LI.EXP {
 
 <br /><br /><br />
 <center>
-<img src="Shell_b.gif" alt="Component icon"/>
+<img src="Shell_b.gif" alt="Shell icon"/>
 
 </center>
             </div>
@@ -176,9 +176,9 @@ LI.EXP {
 
            <div class="titlebox">
               <div class="beanname">
-                Component              
+                Component
                 Shell
-              </div>              
+              </div>
               <div class="descrtext">Command Line Shell</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
@@ -187,26 +187,84 @@ LI.EXP {
                 </span>
               </div>
             </div>
-            <div class="user_text">
-<!---DESCBEG DON'T CHANGE THIS-->
-This component implements a simple shell: a command line driver which uses a console/terminal interface to configure and monitor the system.
-The shell provides interfaces and routines common to such an shell.
-Additionally it provides usual file I/O routines if the FatFS is used.
-If using the FreeRTOS, it provides status information about the RTOS.
 
-<br /><br />
-<div class="text_title">
-Important Notes
+           <div class="text_title">
+                Component types:
+      		 </div>
+           		 
+      		 <div class="descr_line">                  
+                (User types are derived from basic types and they are designed for usage in the driver interface. They are declared in the generated code.)                   
+           </div>
+           
+           <div class="user_text">
+           <ul>
+<div class="user_text">
+<!--BEG_CDE_USERTYPES--><a name="StdIO_OutErr_FctType"></a><li><b><i>ComponentName_</i>StdIO_OutErr_FctType</b> : user definition<pre class="bluetext"></pre>
+<I>Callback for an output or error I/O function</I>
+</li>
+<a name="StdIO_In_FctType"></a><li><b><i>ComponentName_</i>StdIO_In_FctType</b> : user definition<pre class="bluetext"></pre>
+<I>Callback for an I/O input function.</I>
+</li>
+<a name="StdIO_KeyPressed_FctType"></a><li><b><i>ComponentName_</i>StdIO_KeyPressed_FctType</b> : user definition<pre class="bluetext"></pre>
+<I>Callback which returns true if a key has been pressed</I>
+</li>
+<a name="StdIOType"></a><li><b><i>ComponentName_</i>StdIOType</b> = <tt class="bluetext">struct {</tt>
+<i>Record containing input, output and error callback (stdin, stdout, stderr).</i>
+<dl><dt></dt><dd>
+	<dl>
+		<dt><tt class="bluetext">StdIO_In_FctType stdIn</tt>;</dt>
+<dd><i>standard input</i></dd>
+		<dt><tt class="bluetext">StdIO_OutErr_FctType stdOut</tt>;</dt>
+<dd><i>standard output</i></dd>
+		<dt><tt class="bluetext">StdIO_OutErr_FctType stdErr</tt>;</dt>
+<dd><i>standard error</i></dd>
+		<dt><tt class="bluetext">StdIO_KeyPressed_FctType keyPressed</tt>;</dt>
+<dd><i>key pressed callback</i></dd>
+	</dl>
+</dd></dl>
+<tt class="bluetext">}</tt></li>
+<a name="ConstStdIOType"></a><li><b><i>ComponentName_</i>ConstStdIOType</b> : user definition<pre class="bluetext"></pre>
+<I>constant StdIOType</I>
+</li>
+<a name="ParseCommandCallback"></a><li><b><i>ComponentName_</i>ParseCommandCallback</b> : user definition<pre class="bluetext"></pre>
+<I>Callback for parsing a shell command</I>
+</li>
+<a name="ConstStdIOTypePtr"></a><li><b><i>ComponentName_</i>ConstStdIOTypePtr</b> : user definition<pre class="bluetext"></pre>
+<I>Pointer to constant standard I/O descriptor</I>
+</li>
+<a name="ConstParseCommandCallback"></a><li><b><i>ComponentName_</i>ConstParseCommandCallback</b> : user definition<pre class="bluetext"></pre>
+<I>Callback for parsing a shell command</I>
+</li>
+<!--END_CDE_USERTYPES-->
 </div>
-If using AsynchroSerial, make sure interrupts are enabled for Rx/Tx in the properties. And that you have configured an appropriate input/output buffer size.
-<!---DESCEND DON'T CHANGE THIS-->
-            </div>
-           <p class="footer">
+           </ul>
+          </div>
+
+           <div class="text_title">
+                Component constants:
+      		 </div>
+           		 
+      		 <div class="descr_line">                  
+                (Constants defined by this component for usage in the driver interface. They are defined in the generated code.)                   
+           </div>
+           
+           <div class="user_text">
+           <ul>
+<div class="user_text">
+<!--BEG_CDE_CONSTANTS--><!--END_CDE_CONSTANTS-->
+</div>
+           </ul>
+<!---USERBEG DON'T CHANGE THIS LINE-->
+
+<!---USEREND DON'T CHANGE THIS LINE-->
+          </div>
+          <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
             Copyright 1997 - 2014 Freescale Semiconductor, Inc.
-           </p> 
-    </td>
+          </p>
+
+		</td>
   </tr>
 
 </table>
