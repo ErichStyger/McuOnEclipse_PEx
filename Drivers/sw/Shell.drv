@@ -757,15 +757,15 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         bufSize--;
         if ((c=='\r') || (c=='\n')) {
 %if %EchoEnabled='yes'
-          SHELL_SendStr((unsigned char*)"\n", io->stdOut);
+          %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
 %endif
 %if %HistoryEnabled='yes'
         if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
             %'ModuleName'_history_index = 0;                     %>40/* update the history with the current command */
-            UTIL1_strcpy(%'ModuleName'_history3, %'ModuleName'%.HIST_LEN, %'ModuleName'_history2);%>40/* add the current command to the history */
-            UTIL1_strcpy(%'ModuleName'_history2, %'ModuleName'%.HIST_LEN, %'ModuleName'_history1);
-            UTIL1_strcpy(%'ModuleName'_history1, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
-            UTIL1_strcpy(%'ModuleName'_history0, %'ModuleName'%.HIST_LEN, bufStart);
+            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history3, %'ModuleName'%.HIST_LEN, %'ModuleName'_history2);%>40/* add the current command to the history */
+            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history2, %'ModuleName'%.HIST_LEN, %'ModuleName'_history1);
+            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history1, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
+            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history0, %'ModuleName'%.HIST_LEN, bufStart);
             if (buf-bufStart <= %'ModuleName'%.HIST_LEN) {       %>40/* size check */
                %'ModuleName'_history0[buf-bufStart-1] = '\0';
             } else {
@@ -786,30 +786,30 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
 %if %HistoryEnabled='yes'
         switch (%'ModuleName'_history_index) {                   %>40/* if not an alphnumeric switch to history  */
         case 0:
-          UTIL1_strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
+          %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
           break;
         case 1:
-          UTIL1_strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history1);
+          %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history1);
           break;
         case 2:
-          UTIL1_strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history2);
+          %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history2);
           break;
         case 3:
-          UTIL1_strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history3);
+          %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history3);
           break;
         default:
-          UTIL1_strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
+          %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history0);
           break;
         }
         %'ModuleName'_history_index++;                           %>40/* update the index */
         %'ModuleName'_history_index &= 3;
-        bufSize = bufSize + buf - bufStart - UTIL1_strlen(bufStart);%>40/* update the buffer */
-        buf = bufStart + UTIL1_strlen(bufStart);
+        bufSize = bufSize + buf - bufStart - %@Utility@'ModuleName'%.strlen(bufStart);%>40/* update the buffer */
+        buf = bufStart + %@Utility@'ModuleName'%.strlen(bufStart);
 %endif
 %if %EchoEnabled='yes'
-        SHELL_SendStr((unsigned char*)"\r\n", io->stdOut);
-        SHELL_PrintPrompt(io);
-        SHELL_SendStr(bufStart, io->stdOut);
+        %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
+        %'ModuleName'%.%PrintPrompt(io);
+        %'ModuleName'%.%SendStr(bufStart, io->stdOut);
 %endif
       }
     } /* for */
