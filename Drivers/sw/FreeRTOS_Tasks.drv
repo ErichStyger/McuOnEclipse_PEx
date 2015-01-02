@@ -202,13 +202,19 @@ void %'ModuleName'%.%CreateTasks(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
-%FILE Sources\frtos_tasks.c
+%USER_MODULE frtos_tasks.c
 
 %include Common\Header.End
+
+%EMBED_CODE! <includes> initialization
+/* Begin of <includes> initialization, DO NOT MODIFY LINES BELOW */
 
 #include "%'ModuleName'.h"
 #include "%@FreeRTOS@'ModuleName'.h"
 #include "frtos_tasks.h"
+
+/* End <includes> initialization, DO NOT MODIFY LINES ABOVE */
+%EMBED_END <includes> initialization was updated
 
 %for i from [0..%EXPR(%get(nof_tasks, Value)-1)]
 static portTASK_FUNCTION(%get(taskName%i, Value)Task, pvParameters) {
@@ -244,7 +250,7 @@ void CreateTasks(void) {
 %endfor
 }
 
-%FILE Sources\frtos_tasks.h
+%USER_MODULE frtos_tasks.h
 
 #ifndef __frtos_tasks_H
 #define __frtos_tasks_H
