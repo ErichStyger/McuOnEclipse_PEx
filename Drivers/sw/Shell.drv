@@ -748,7 +748,7 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
            bufSize++;
         }
       } else if (isalnum(c) || (c==' ') ||
-      	(c=='\r') || (c=='\n')) {
+        (c=='\r') || (c=='\n')) {
 %if %EchoEnabled='yes'
         io->stdOut(c);                                           %>40/* echo character */
 %endif
@@ -757,11 +757,11 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         bufSize--;
         if ((c=='\r') || (c=='\n')) {
 %if %EchoEnabled='yes'
-      	  SHELL_SendStr((unsigned char*)"\n", io->stdOut);
+          SHELL_SendStr((unsigned char*)"\n", io->stdOut);
 %endif
 %if %HistoryEnabled='yes'
-					if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
-  	    		shell_history_count = 0;
+        if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
+            shell_history_count = 0;
             UTIL1_strcpy(shell_history3, SHELL_HIST_LEN, shell_history2);
             UTIL1_strcpy(shell_history2, SHELL_HIST_LEN, shell_history1);
             UTIL1_strcpy(shell_history1, SHELL_HIST_LEN, shell_history0);
@@ -779,37 +779,37 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
           break;
         }
       } else {                                                   %>40/* not an alphanumeric */
-      	while (c!='\0') {
-      	   c = '\0';                                             %>40/* initialize character */
+        while (c!='\0') {
+           c = '\0';                                             %>40/* initialize character */
            io->stdIn(&c);                                        %>40/* read character */
         }
 %if %HistoryEnabled='yes'
-				switch (shell_history_count) {
-				case 0:
-					UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history0);
-					break;
-				case 1:
-					UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history1);
-					break;
-				case 2:
-					UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history2);
-					break;
-				case 3:
-					UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history3);
-					break;
-				default:
-					UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history0);
-					break;
-				}
-				shell_history_count++;
-				shell_history_count &= 3;
-      	bufSize = bufSize + buf - bufStart - UTIL1_strlen(bufStart);
-      	buf = bufStart + UTIL1_strlen(bufStart);
+        switch (shell_history_count) {
+        case 0:
+          UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history0);
+          break;
+        case 1:
+          UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history1);
+          break;
+        case 2:
+          UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history2);
+          break;
+        case 3:
+          UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history3);
+          break;
+        default:
+          UTIL1_strcpy(bufStart, SHELL_HIST_LEN, shell_history0);
+          break;
+        }
+        shell_history_count++;
+        shell_history_count &= 3;
+        bufSize = bufSize + buf - bufStart - UTIL1_strlen(bufStart);
+        buf = bufStart + UTIL1_strlen(bufStart);
 %endif
 %if %EchoEnabled='yes'
-      	SHELL_SendStr((unsigned char*)"\r\n", io->stdOut);
-      	SHELL_PrintPrompt(io);
-      	SHELL_SendStr(bufStart, io->stdOut);
+        SHELL_SendStr((unsigned char*)"\r\n", io->stdOut);
+        SHELL_PrintPrompt(io);
+        SHELL_SendStr(bufStart, io->stdOut);
 %endif
       }
     } /* for */
