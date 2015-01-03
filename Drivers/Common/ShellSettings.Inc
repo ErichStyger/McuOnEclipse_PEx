@@ -25,5 +25,11 @@
 %;**%>14 Console Interface %>60: %get(Serial,Text)
 %else %- DefaultSerialEnabled
 %endif %- DefaultSerialEnabled
-%;**%>12 Serial Semaphore %>60: %get(ConsoleSempahore,Text)
+%;**%>12 Semaphore %>60: %get(ConsoleSempahore,Text)
 %;**%>12 Critical Section %>60: %get(CriticalSection,Text)
+%;**%>12 History %>60: %get(HistoryEnabled,Text)
+%if %get(HistoryEnabled, Bool) = 'yes'
+%;**%>14 Number of History Items %>60: %get(NofHistoryItems,Text)
+%;**%>14 Stored Characters %>60: %get(HistLength,Text)
+%else %- HistoryEnabled
+%endif %- HistoryEnabled
