@@ -283,27 +283,6 @@ If this is zero (0), the code for recording Interrupt Service Routines is exclud
 <b>Max ISR Nesting</b></a> - Defines the maxium level of ISR nesting
 </li>
 <li>
-<a name="UsePrimaskCS">
-<b>Use PRIMASK Critical Section</b></a> - This sets USE_PRIMASK_CS in trcConfig.h<br />
-* USE_PRIMASK_CS (for Cortex M devices only)<br />
-*<br />
-* An integer constant that selects between two options for the critical<br />
-* sections of the recorder library.<br />
- *<br />
-*   0: The default FreeRTOS critical section (BASEPRI) - default setting<br />
-*   1: Always disable ALL interrupts (using PRIMASK)<br />
- *<br />
-* Option 0 uses the standard FreeRTOS macros for critical sections.<br />
-* However, on Cortex-M devices they only disable interrupts with priorities <br />
-* below a certain configurable level, while higher priority ISRs remain active.<br />
-* Such high-priority ISRs may not use the recorder functions in this mode.<br />
-*<br />
-* Option 1 allows you to safely call the recorder from any ISR, independent of <br />
-* the interrupt priority. This mode may however cause higher IRQ latencies<br />
-* (some microseconds) since ALL configurable interrupts are disabled during <br />
-* the recorder's critical sections in this mode, using the PRIMASK register.
-</li>
-<li>
 <a name="IncludeObjectDelete">
 <b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
 This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
@@ -352,12 +331,6 @@ There are 2 options:<br />
   <li><u>Stop when full</u>: Stops recording when buffer is ful</li>
 </ul><br />
 
-</li>
-<li>
-<a name="StopAfterNevents">
-<b>Stop after N events</b></a> - This sets STOP_AFTER_N_EVENTS in trcConfig.h<br />
-<br />
-STOP_AFTER_N_EVENTS is intended for tests of the ring buffer mode (when RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER). It stops the recording when the specified number of events has been observed. This value can be larger than the buffer size, to allow for test of the &quot;wrapping around&quot; that occurs in ring buffer mode . A negative value (or no definition of this macro) disables this feature.
 </li>
 <li>
 <a name="UseImplicitIFErules">

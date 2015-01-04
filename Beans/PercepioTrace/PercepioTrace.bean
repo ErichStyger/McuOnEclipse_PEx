@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.030</Version>
+    <Version>01.034</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -248,41 +248,6 @@ If this is zero (0), the code for recording Interrupt Service Routines is exclud
     </Property>
     <Property>
       <TBoolItem>
-        <Name>Use PRIMASK Critical Section</Name>
-        <Symbol>UsePrimaskCS</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets USE_PRIMASK_CS in trcConfig.h\n
-* USE_PRIMASK_CS (for Cortex M devices only)\n
-*\n
-* An integer constant that selects between two options for the critical\n
-* sections of the recorder library.\n
- *\n
-*   0: The default FreeRTOS critical section (BASEPRI) - default setting\n
-*   1: Always disable ALL interrupts (using PRIMASK)\n
- *\n
-* Option 0 uses the standard FreeRTOS macros for critical sections.\n
-* However, on Cortex-M devices they only disable interrupts with priorities \n
-* below a certain configurable level, while higher priority ISRs remain active.\n
-* Such high-priority ISRs may not use the recorder functions in this mode.\n
-*\n
-* Option 1 allows you to safely call the recorder from any ISR, independent of \n
-* the interrupt priority. This mode may however cause higher IRQ latencies\n
-* (some microseconds) since ALL configurable interrupts are disabled during \n
-* the recorder's critical sections in this mode, using the PRIMASK register.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
         <Name>Include object delete events</Name>
         <Symbol>IncludeObjectDelete</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
@@ -422,25 +387,6 @@ When RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recording is stopped 
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
       </TEnumItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Stop after N events</Name>
-        <Symbol>StopAfterNevents</Symbol>
-        <Hint>This sets STOP_AFTER_N_EVENTS in trcConfig.h\n
-\n
-STOP_AFTER_N_EVENTS is intended for tests of the ring buffer mode (when RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER). It stops the recording when the specified number of events has been observed. This value can be larger than the buffer size, to allow for test of the "wrapping around" that occurs in ring buffer mode . A negative value (or no definition of this macro) disables this feature.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>-1</DefaultValue>
-        <MinValue>-1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
     </Property>
     <Property>
       <TBoolItem>
@@ -1170,34 +1116,6 @@ This does not limit the total amount of objects created, if objects are deleted 
     </Method>
     <Method>
       <TMthdItem>
-        <Name>vTraceStartStatusMonitor</Name>
-        <Symbol>vTraceStartStatusMonitor</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>This starts a task to monitor the state of the recorder. This task periodically prints a line to the console window, which shows the number of events recorded and the latest timestamp. This task calls vTracePortEnd when the recorder has been stopped, where custom actions can be added, e.g., to store the trace to a file if a file system is available on the device.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>vTraceSetQueueName</Name>
         <Symbol>vTraceSetQueueName</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1340,10 +1258,17 @@ This does not limit the total amount of objects created, if objects are deleted 
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>0</ParamCount>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>pendingISR</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The parameter pendingISR indicates if the interrupt has requested a task-switch (= 1) or if the interrupt returns to the earlier context (= 0)</ParHint>
+          <ParUserDeclaration>int pendingISR</ParUserDeclaration>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
+          <ANSIC>void #M#_#C#(int pendingISR)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.6.0 Recorder Library
+ * Tracealyzer v2.7.0 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcKernel.h
@@ -45,7 +45,10 @@
 /* Internal functions */
 
 #if !defined INCLUDE_READY_EVENTS || INCLUDE_READY_EVENTS == 1
-void vTraceStoreTaskReady(objectHandleType handle);
+	void vTraceSetReadyEventsEnabled(int status);
+	void vTraceStoreTaskReady(objectHandleType handle);
+#else
+	#define vTraceSetReadyEventsEnabled(status)
 #endif
 
 void vTraceStoreLowPower(uint32_t flag);
@@ -55,10 +58,10 @@ void vTraceStoreTaskswitch(objectHandleType task_handle);
 void vTraceStoreKernelCall(uint32_t eventcode, traceObjectClass objectClass, uint32_t byteParam);
 
 void vTraceStoreKernelCallWithNumericParamOnly(uint32_t evtcode,
-                                               uint32_t param);
+												uint32_t param);
 
 void vTraceStoreKernelCallWithParam(uint32_t evtcode, traceObjectClass objectClass,
-                                    uint32_t objectNumber, uint32_t param);
+									uint32_t objectNumber, uint32_t param);
 
 void vTraceSetTaskInstanceFinished(objectHandleType handle);
 
@@ -73,18 +76,19 @@ uint8_t uiTraceGetObjectState(uint8_t objectclass, objectHandleType id);
 #if (INCLUDE_OBJECT_DELETE == 1)
 
 void vTraceStoreObjectNameOnCloseEvent(objectHandleType handle,
-                                       traceObjectClass objectclass);
+										traceObjectClass objectclass);
 
 void vTraceStoreObjectPropertiesOnCloseEvent(objectHandleType handle,
-                                             traceObjectClass objectclass);
+											 traceObjectClass objectclass);
 #endif
 
 /* Internal constants for task state */
 #define TASK_STATE_INSTANCE_NOT_ACTIVE 0
 #define TASK_STATE_INSTANCE_ACTIVE 1
-#define TASK_STATE_INSTANCE_MARKED_FINISHED 2
-
 
 #endif
 
 #endif
+
+
+

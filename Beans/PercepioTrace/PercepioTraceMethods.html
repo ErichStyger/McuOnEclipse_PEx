@@ -301,15 +301,6 @@ LI.EXP {
 <li><i>Variable_1:byte</i> - open parameter list</li>
 </ul><br />
 </li>
-<li><a name="vTraceStartStatusMonitor">
-<b>vTraceStartStatusMonitor</b></a>
- - This starts a task to monitor the state of the recorder. This task periodically prints a line to the console window, which shows the number of events recorded and the latest timestamp. This task calls vTracePortEnd when the recorder has been stopped, where custom actions can be added, e.g., to store the trace to a file if a file system is available on the device.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceStartStatusMonitor(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
 <li><a name="vTraceSetQueueName">
 <b>vTraceSetQueueName</b></a>
  - Assigns a name to a FreeRTOS Queue, Semaphore or Mutex. This function should  be called right after creation of the queue/mutex/semaphore. If not using this function, the queues/mutexes/semaphores will be presented by their numeric handle only.
@@ -348,8 +339,9 @@ LI.EXP {
  - Registers the end of an Interrupt Service Routine. This must not be interrupted by another ISR containing recorder library calls, so if allowing nested ISRs this must be called with interrupts disabled.  Method is always enabled if 'Include ISR tracing' is set to 'yes' in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceStoreISREnd(void)<br />
+<br /><i>ANSIC prototype:</i> void vTraceStoreISREnd(int pendingISR)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pendingISR:byte</i> - The parameter pendingISR indicates if the interrupt has requested a task-switch (= 1) or if the interrupt returns to the earlier context (= 0)</li>
 </ul><br />
 </li>
 <li><a name="vTraceTaskSkipDefaultInstanceFinishedEvents">

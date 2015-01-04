@@ -210,15 +210,6 @@
 %endif %- vTracePrintF
 %-BW_METHOD_END vTracePrintF
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceStartStatusMonitor
-%ifdef vTraceStartStatusMonitor
-#define %'ModuleName'%.%vTraceStartStatusMonitor() \
-  vTraceStartStatusMonitor()
-
-%include Common\PercepioTracevTraceStartStatusMonitor.Inc
-
-%endif %- vTraceStartStatusMonitor
-%-BW_METHOD_END vTraceStartStatusMonitor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceSetQueueName
 %ifdef vTraceSetQueueName
@@ -258,9 +249,10 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISREnd
 %ifdef vTraceStoreISREnd
-#define %'ModuleName'%.%vTraceStoreISREnd() \
-  vTraceStoreISREnd()
+#define %'ModuleName'%.%vTraceStoreISREnd(pendingISR) \
+  vTraceStoreISREnd(pendingISR)
 
+%define! ParpendingISR
 %include Common\PercepioTracevTraceStoreISREnd.Inc
 
 %endif %- vTraceStoreISREnd
@@ -508,18 +500,6 @@ void %'ModuleName'%.%vTracePrintF(traceLabel eventLabel, char *formatStr, ...)
 %endif %- vTracePrintF
 %-BW_METHOD_END vTracePrintF
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceStartStatusMonitor
-%ifdef vTraceStartStatusMonitor
-%include Common\PercepioTracevTraceStartStatusMonitor.Inc
-/*
-void %'ModuleName'%.%vTraceStartStatusMonitor(void)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceStartStatusMonitor
-%-BW_METHOD_END vTraceStartStatusMonitor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceSetQueueName
 %ifdef vTraceSetQueueName
@@ -568,9 +548,10 @@ void %'ModuleName'%.%vTraceStoreISRBegin(objectHandleType id)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISREnd
 %ifdef vTraceStoreISREnd
+%define! ParpendingISR
 %include Common\PercepioTracevTraceStoreISREnd.Inc
 /*
-void %'ModuleName'%.%vTraceStoreISREnd(void)
+void %'ModuleName'%.%vTraceStoreISREnd(int pendingISR)
 {
   *** Implemented as macro in the header file
 }
