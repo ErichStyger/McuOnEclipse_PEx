@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.028</Version>
+    <Version>01.030</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright Percepio AB, 2013-2014\nhttp      : www.percepio.se\nmail      : info@percepio.com\nProcessor Expert port: Erich Styger, 2013-2014</Copyright>
+    <Copyright>(c) Copyright Percepio AB, 2013-2015\nhttp      : www.percepio.se\nmail      : info@percepio.com\nProcessor Expert port: Erich Styger, 2013-2015</Copyright>
     <Category>Operating Systems</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>PTRC</Shortcut>
@@ -1463,6 +1463,52 @@ This does not limit the total amount of objects created, if objects are deleted 
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void* #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>vGetGDBDumpCommand</Name>
+        <Symbol>vGetGDBDumpCommand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Gets the gdb command to dump the trace data to a file. Useful for copy-pasting it to the gdb console.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer for the command. Make it large enoug (about 64 bytes)</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bufSize</ParName>
+          <ParType>16bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>size of the buffer</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>fileName</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the file name string, e.g. "C:\\tmp\\trace.dump"</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(byte *buf, word bufSize, byte *fileName)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

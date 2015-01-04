@@ -307,6 +307,17 @@
 
 %endif %- vTraceInitTraceData
 %-BW_METHOD_END vTraceInitTraceData
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vGetGDBDumpCommand
+%ifdef vGetGDBDumpCommand
+void %'ModuleName'%.%vGetGDBDumpCommand(byte *buf, word bufSize, byte *fileName);
+%define! Parbuf
+%define! ParbufSize
+%define! ParfileName
+%include Common\PercepioTracevGetGDBDumpCommand.Inc
+
+%endif %- vGetGDBDumpCommand
+%-BW_METHOD_END vGetGDBDumpCommand
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -621,6 +632,31 @@ void* %'ModuleName'%.%vTraceInitTraceData(void)
 
 %endif %- vTraceInitTraceData
 %-BW_METHOD_END vTraceInitTraceData
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vGetGDBDumpCommand
+%ifdef vGetGDBDumpCommand
+%define! Parbuf
+%define! ParbufSize
+%define! ParfileName
+%include Common\PercepioTracevGetGDBDumpCommand.Inc
+void %'ModuleName'%.%vGetGDBDumpCommand(byte *buf, word bufSize, byte *fileName)
+{
+  /* construct gdb command string: dump binary memory <file> <hexStartAddr> <hexEndAddr> */
+  uint8_t *ptr; /* pointer to data */
+  size_t len; /* size/length of data */
+
+  ptr = (uint8_t*)%'ModuleName'%.%vTraceGetTraceBuffer();
+  len = %'ModuleName'%.%uiTraceGetTraceBufferSize();
+  %@Utility@'ModuleName'%.strcpy(buf, bufSize, (unsigned char*)"dump binary memory ");
+  %@Utility@'ModuleName'%.strcat(buf, bufSize, fileName);
+  %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)" 0x");
+  %@Utility@'ModuleName'%.strcatNum32Hex(buf, bufSize, (uint32_t)ptr);
+  %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)" 0x");
+  %@Utility@'ModuleName'%.strcatNum32Hex(buf, bufSize, (uint32_t)(ptr+len));
+}
+
+%endif %- vGetGDBDumpCommand
+%-BW_METHOD_END vGetGDBDumpCommand
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
