@@ -10,9 +10,6 @@
 #include "RNetConf.h"
 #include "RMSG.h"
 #include "%@RTOS@'ModuleName'.h"
-#if PL_HAS_RTOS_TRACE
-  #include "RTOSTRC1.h"
-#endif
 #include "RPHY.h"
 
 /* Configuration for tx and rx queues */
@@ -166,21 +163,25 @@ uint8_t RMSG_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell
 %endif
 
 void RMSG_Deinit(void) {
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RMSG_MsgRxQueue);
+  %@RTOS@'ModuleName'%.vQueueDelete(RMSG_MsgRxQueue);
+  RMSG_MsgRxQueue = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RMSG_MsgTxQueue);
+  %@RTOS@'ModuleName'%.vQueueDelete(RMSG_MsgTxQueue);
+  RMSG_MsgTxQueue = NULL;
 }
 
 void RMSG_Init(void) {
   RMSG_MsgRxQueue = %@RTOS@'ModuleName'%.xQueueCreate(RMSG_QUEUE_RX_NOF_ITEMS, RPHY_BUFFER_SIZE);
-#if PL_HAS_RTOS_TRACE
-  RTOSTRC1_vTraceSetQueueName(RMSG_MsgRxQueue, "RadioRxMsg");
-#endif
   if (RMSG_MsgRxQueue==NULL) { /* queue creation failed! */
     for(;;) {} /* not enough memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RMSG_MsgRxQueue, "RadioRxMsg");
+
   RMSG_MsgTxQueue = %@RTOS@'ModuleName'%.xQueueCreate(RMSG_QUEUE_TX_NOF_ITEMS, RPHY_BUFFER_SIZE);
-#if PL_HAS_RTOS_TRACE
-  RTOSTRC1_vTraceSetQueueName(RMSG_MsgTxQueue, "RadioTxMsg");
-#endif
   if (RMSG_MsgTxQueue==NULL) { /* queue creation failed! */
     for(;;) {} /* not enough memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RMSG_MsgTxQueue, "RadioTxMsg");
 }

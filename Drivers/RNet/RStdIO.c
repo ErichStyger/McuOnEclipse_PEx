@@ -12,9 +12,6 @@
 #include "RStdIO.h"
 #include "%@RTOS@'ModuleName'.h"
 #include "%@Utility@'ModuleName'.h"
-#if PL_HAS_RTOS_TRACE
-  #include "RTOSTRC1.h"
-#endif
 #include "%@Shell@'ModuleName'.h"
 #include "Radio.h"
 #include "RMSG.h"
@@ -290,12 +287,29 @@ void RSTDIO_Print(%@Shell@'ModuleName'%.ConstStdIOTypePtr io) {
 
 /*! \brief Deinitializes the queue module */
 void RSTDIO_Deinit(void) {
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_RxStdInQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_RxStdInQ);
+  RSTDIO_RxStdInQ = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_RxStdOutQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_RxStdOutQ);
+  RSTDIO_RxStdOutQ = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_RxStdErrQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_RxStdErrQ);
+  RSTDIO_RxStdErrQ = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_TxStdInQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_TxStdInQ);
+  RSTDIO_TxStdInQ = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_TxStdOutQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_TxStdOutQ);
+  RSTDIO_TxStdOutQ = NULL;
+
+  %@RTOS@'ModuleName'%.vQueueUnregisterQueue(RSTDIO_TxStdErrQ);
   %@RTOS@'ModuleName'%.vQueueDelete(RSTDIO_TxStdErrQ);
+  RSTDIO_TxStdErrQ = NULL;
 }
 
 void RSTDIO_Init(void) {
@@ -304,33 +318,36 @@ void RSTDIO_Init(void) {
   if (RSTDIO_RxStdInQ==NULL) {
     for(;;){} /* out of memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdInQ, "RxStdInQ");
+
   RSTDIO_RxStdOutQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_RxStdOutQ==NULL) {
     for(;;){} /* out of memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdOutQ, "RxStdOutQ");
+
   RSTDIO_RxStdErrQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_RxStdErrQ==NULL) {
     for(;;){} /* out of memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdErrQ, "RxStdErrQ");
+
   RSTDIO_TxStdInQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdInQ==NULL) {
     for(;;){} /* out of memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdInQ, "TxStdInQ");
+
   RSTDIO_TxStdOutQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdOutQ==NULL) {
     for(;;){} /* out of memory? */
   }
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdOutQ , "TxStdOutQ");
+
   RSTDIO_TxStdErrQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdErrQ==NULL) {
     for(;;){} /* out of memory? */
   }
-#if PL_HAS_RTOS_TRACE
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_RxStdInQ,  "RxStdIn");
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_RxStdOutQ, "RxStdOut");
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_RxStdErrQ, "RxStdErr");
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_TxStdInQ,  "TxStdIn");
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_TxStdOutQ, "TxStdOut");
-  RTOSTRC1_vTraceSetQueueName(RSTDIO_TxStdErrQ, "TxStdErr");
-#endif
+  %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdErrQ , "TxStdErrQ");
 }
 %endif
