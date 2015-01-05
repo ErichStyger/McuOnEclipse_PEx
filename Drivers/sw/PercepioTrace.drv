@@ -310,6 +310,55 @@ void %'ModuleName'%.%vGetGDBDumpCommand(byte *buf, word bufSize, byte *fileName)
 
 %endif %- vGetGDBDumpCommand
 %-BW_METHOD_END vGetGDBDumpCommand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceSetStopHook
+%ifdef vTraceSetStopHook
+#define %'ModuleName'%.%vTraceSetStopHook(stopHookFunction) \
+  vTraceSetStopHook(stopHookFunction)
+%define! ParstopHookFunction
+%include Common\PercepioTracevTraceSetStopHook.Inc
+
+%endif %- vTraceSetStopHook
+%-BW_METHOD_END vTraceSetStopHook
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTraceGetLastError
+%ifdef xTraceGetLastError
+#define %'ModuleName'%.%xTraceGetLastError() \
+  %xTraceGetLastError()
+%define! RetVal
+%include Common\PercepioTracexTraceGetLastError.Inc
+
+%endif %- xTraceGetLastError
+%-BW_METHOD_END xTraceGetLastError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceClearError
+%ifdef vTraceClearError
+#define %'ModuleName'%.%vTraceClearError(resetErrorMessage) \
+  vTraceClearError(resetErrorMessage)
+%define! ParresetErrorMessage
+%define! RetVal
+%include Common\PercepioTracevTraceClearError.Inc
+
+%endif %- vTraceClearError
+%-BW_METHOD_END vTraceClearError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceTaskInstanceFinish
+%ifdef vTraceTaskInstanceFinish
+#define %'ModuleName'%.%vTraceTaskInstanceFinish() \
+  vTraceTaskInstanceFinish() \
+%include Common\PercepioTracevTraceTaskInstanceFinish.Inc
+
+%endif %- vTraceTaskInstanceFinish
+%-BW_METHOD_END vTraceTaskInstanceFinish
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceTaskInstanceFinishDirect
+%ifdef vTraceTaskInstanceFinishDirect
+#define %'ModuleName'%.%vTraceTaskInstanceFinishDirect() \
+  vTraceTaskInstanceFinishDirect()
+%include Common\PercepioTracevTraceTaskInstanceFinishDirect.Inc
+
+%endif %- vTraceTaskInstanceFinishDirect
+%-BW_METHOD_END vTraceTaskInstanceFinishDirect
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -638,6 +687,75 @@ void %'ModuleName'%.%vGetGDBDumpCommand(byte *buf, word bufSize, byte *fileName)
 
 %endif %- vGetGDBDumpCommand
 %-BW_METHOD_END vGetGDBDumpCommand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceSetStopHook
+%ifdef vTraceSetStopHook
+%define! ParstopHookFunction
+%include Common\PercepioTracevTraceSetStopHook.Inc
+/*
+void %'ModuleName'%.%vTraceSetStopHook(TRACE_STOP_HOOK stopHookFunction)
+{
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- vTraceSetStopHook
+%-BW_METHOD_END vTraceSetStopHook
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTraceGetLastError
+%ifdef xTraceGetLastError
+%define! RetVal
+%include Common\PercepioTracexTraceGetLastError.Inc
+/*
+char* %'ModuleName'%.%xTraceGetLastError(void)
+{
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- xTraceGetLastError
+%-BW_METHOD_END xTraceGetLastError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceClearError
+%ifdef vTraceClearError
+%define! ParresetErrorMessage
+%define! RetVal
+%include Common\PercepioTracevTraceClearError.Inc
+/*
+byte %'ModuleName'%.%vTraceClearError(int resetErrorMessage)
+{
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- vTraceClearError
+%-BW_METHOD_END vTraceClearError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceTaskInstanceFinish
+%ifdef vTraceTaskInstanceFinish
+%include Common\PercepioTracevTraceTaskInstanceFinish.Inc
+/*
+void %'ModuleName'%.%vTraceTaskInstanceFinish(void)
+{
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- vTraceTaskInstanceFinish
+%-BW_METHOD_END vTraceTaskInstanceFinish
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceTaskInstanceFinishDirect
+%ifdef vTraceTaskInstanceFinishDirect
+%include Common\PercepioTracevTraceTaskInstanceFinishDirect.Inc
+/*
+void %'ModuleName'%.%vTraceTaskInstanceFinishDirect(void)
+{
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- vTraceTaskInstanceFinishDirect
+%-BW_METHOD_END vTraceTaskInstanceFinishDirect
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
