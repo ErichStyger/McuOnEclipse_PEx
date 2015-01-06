@@ -4,23 +4,26 @@
     <Type>
       <Type>TEnumSpec</Type>
       <Name>typeMemAllocScheme</Name>
-      <Items lines_count="4">
+      <Items lines_count="5">
         <Line>Scheme 1</Line>
         <Line>Scheme 2</Line>
         <Line>Scheme 3</Line>
         <Line>Scheme 4</Line>
+        <Line>Scheme 5</Line>
       </Items>
-      <Hints lines_count="4">
+      <Hints lines_count="5">
         <Line>This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.</Line>
         <Line>This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.</Line>
         <Line>This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.</Line>
         <Line>This scheme includes memory block coalescence.</Line>
+        <Line>A sample implementation of pvPortMalloc() that allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed.</Line>
       </Hints>
-      <Defines lines_count="4">
+      <Defines lines_count="5">
         <Line>Scheme1</Line>
         <Line>Scheme2</Line>
         <Line>Scheme3</Line>
         <Line>Scheme4</Line>
+        <Line>Scheme5</Line>
       </Defines>
     </Type>
     <Type>

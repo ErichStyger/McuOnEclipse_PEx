@@ -41,6 +41,9 @@
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_4.c
 %include freeRTOS\heap_4.c
 
+%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_5.c
+%include freeRTOS\heap_5.c
+
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'FreeRTOS_license.txt
 %include freeRTOS\license.txt
 
@@ -64,6 +67,9 @@
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'portmacro.h
 %include freeRTOS\portmacro.h
+
+%FILE %'DirRel_Code'%'RTOSPortDirFolder'deprecated_definitions.h
+%include freeRTOS\deprecated_definitions.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'projdefs.h
 %include freeRTOS\projdefs.h

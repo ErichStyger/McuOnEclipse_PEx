@@ -259,13 +259,15 @@
 /*----------------------------------------------------------*/
 /* Heap Memory */
 %if MemoryScheme = "Scheme1"
-#define configFRTOS_MEMORY_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc) or 4 (coalesc blocks) */
+#define configFRTOS_MEMORY_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %elif MemoryScheme = "Scheme2"
-#define configFRTOS_MEMORY_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc) or 4 (coalesc blocks) */
+#define configFRTOS_MEMORY_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %elif MemoryScheme = "Scheme3"
-#define configFRTOS_MEMORY_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc) or 4 (coalesc blocks) */
+#define configFRTOS_MEMORY_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %elif MemoryScheme = "Scheme4"
-#define configFRTOS_MEMORY_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc) or 4 (coalesc blocks) */
+#define configFRTOS_MEMORY_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+%elif MemoryScheme = "Scheme5"
+#define configFRTOS_MEMORY_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %endif
 #define configTOTAL_HEAP_SIZE                                    %>50 ((size_t)(%TotalHeapSize)) /* size of heap in bytes */
 %if defined(HeapSectionName)
