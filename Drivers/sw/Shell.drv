@@ -762,8 +762,14 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
            *buf = '\0';
            bufSize++;
         }
-      } else if (isalnum(c) || (c==' ') ||
+      } else 
+%if %SilentModePrefixChar<>''
+      if (isalnum(c) || (c==' ') ||
+        (c=='\r') || (c=='\n') || (c=='%SilentModePrefixChar')) {
+%else
+      if (isalnum(c) || (c==' ') ||
         (c=='\r') || (c=='\n')) {
+%endif
 #if %'ModuleName'%.ECHO_ENABLED
         io->stdOut(c);                                           %>40/* echo character */
 #endif
