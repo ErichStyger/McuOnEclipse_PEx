@@ -158,6 +158,14 @@
 #define %'ModuleName'%.HIST_LEN         0                        %>40/* history buffer size */
 %endif
 
+/* settings for silent prefix char */
+%if %SilentModePrefixChar='' %- empty property
+#define %'ModuleName'%.SILENT_PREFIX_CHAR    ' '                 %>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
+%else
+#define %'ModuleName'%.SILENT_PREFIX_CHAR    '%SilentModePrefixChar'%>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
+%endif
+#define %'ModuleName'%.NO_SILENT_PREFIX_CHAR ' '                 %>40/* used for no silent prefix char */
+
 /* settings for local echo */
 %if %EchoEnabled='yes'
 #define %'ModuleName'%.ECHO_ENABLED  1                           %>40/* 1: enabled, 0: disabled */
@@ -939,9 +947,9 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
 {
   uint8_t res = ERR_OK;
   bool handled;
-%if %SilentModePrefixChar<>''
+#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
   bool silent;
-%endif
+#endif
 %if %MultiCommandEnabled='yes'
   uint8_t buf[%MaxSubCommandStringSize];
   uint8_t i;
@@ -953,12 +961,12 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
   }
   /* parse first shell commands */
   handled = FALSE;
-%if %SilentModePrefixChar<>''
-  silent = (bool)(*cmd=='%SilentModePrefixChar');
+#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
+  silent = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
   if (silent) {
-    cmd++; /* skip '#' */
+    cmd++; /* skip silent character */
   }
-%endif
+#endif
 %if %MultiCommandEnabled='yes'
   parseBuffer = FALSE;
   finished = FALSE;
@@ -998,13 +1006,13 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
     res = ERR_FAILED;
   }
 %endif
-%if %SilentModePrefixChar<>''
+#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
   if (!silent) {
     %'ModuleName'%.PrintPrompt(io);
   }
-%else
+#else
   %'ModuleName'%.PrintPrompt(io);
-%endif
+#endif
   return res;
 }
 
