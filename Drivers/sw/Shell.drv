@@ -165,6 +165,18 @@
 #define %'ModuleName'%.SILENT_PREFIX_CHAR    '%SilentModePrefixChar'%>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
 %endif
 #define %'ModuleName'%.NO_SILENT_PREFIX_CHAR ' '                 %>40/* used for no silent prefix char */
+#define %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED (%'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR)
+
+/* multi command support */
+%if %MultiCommandEnabled='yes'
+#define %'ModuleName'%.MULTI_CMD_ENABLED   1 /* 1: enabled, 0: disabled */
+#define %'ModuleName'%.MULTI_CMD_SIZE      %MaxSubCommandStringSize /* max size of each command */
+#define %'ModuleName'%.MULTI_CMD_CHAR      '%MultiCmdSeparationChar' /* separation character */
+%else
+#define %'ModuleName'%.MULTI_CMD_ENABLED   0 /* 1: enabled, 0: disabled */
+#define %'ModuleName'%.MULTI_CMD_SIZE      0 /* max size of each command */
+#define %'ModuleName'%.MULTI_CMD_CHAR      ';' /* separation character */
+%endif
 
 /* settings for local echo */
 %if %EchoEnabled='yes'
@@ -184,12 +196,7 @@
 #define %'ModuleName'%.CMD_HELP   "help"
 #define %'ModuleName'%.CMD_STATUS "status"
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
-%-*****************************************************************************************************
-
-
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendStr
 %ifdef SendStr
@@ -770,8 +777,17 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
            *buf = '\0';
            bufSize++;
         }
-      } else if (isalnum(c) || (c==' ') ||
-        (c=='\r') || (c=='\n')) {
+      } else if
+        (
+            isalnum(c) || (c==' ') || (c=='\r') || (c=='\n')
+        #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
+          || (c==%'ModuleName'%.SILENT_PREFIX_CHAR)
+        #endif
+        #if %'ModuleName'%.MULTI_CMD_ENABLED
+          || (c==%'ModuleName'%.MULTI_CMD_CHAR)
+        #endif
+        )
+      {
 #if %'ModuleName'%.ECHO_ENABLED
         io->stdOut(c);                                           %>40/* echo character */
 #endif
@@ -803,7 +819,11 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         if (bufSize <= 1) {                                      %>40/* buffer full */
           break;
         }
+#if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
+      } else if (c!=%'ModuleName'%.SILENT_PREFIX_CHAR) {         %>40/* silent prefix enabled, might be non-alphanumeric */
+#else
       } else {                                                   %>40/* not an alphanumeric */
+#endif
 #if %'ModuleName'%.HISTORY_ENABLED
         uint8_t cBuf[3]={'\0','\0','\0'}, cBufIdx = 0;
         bool prevInHistory;
@@ -947,27 +967,19 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
 {
   uint8_t res = ERR_OK;
   bool handled;
-#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
-  bool silent;
+#if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
+  bool silent = FALSE;
 #endif
-%if %MultiCommandEnabled='yes'
-  uint8_t buf[%MaxSubCommandStringSize];
+#if %'ModuleName'%.MULTI_CMD_ENABLED
+  uint8_t buf[%'ModuleName'%.MULTI_CMD_SIZE];
   uint8_t i;
   bool parseBuffer, finished;
-%endif
+#endif
 
   if (*cmd=='\0') { /* empty command */
     return ERR_OK;
   }
-  /* parse first shell commands */
-  handled = FALSE;
-#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
-  silent = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
-  if (silent) {
-    cmd++; /* skip silent character */
-  }
-#endif
-%if %MultiCommandEnabled='yes'
+#if %'ModuleName'%.MULTI_CMD_ENABLED
   parseBuffer = FALSE;
   finished = FALSE;
   i = 0;
@@ -978,7 +990,14 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
     }
     buf[i] = *cmd;
     cmd++; i++;
-    if (buf[i-1] == '%MultiCmdSeparationChar') { /* found separator */
+  #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
+    if (i==1 && buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR) { /* first character is silent character */
+      silent |= (bool)(buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR);
+      buf[0] = *cmd; /* skip silent character */
+      cmd++;
+    }
+  #endif
+    if (buf[i-1] == %'ModuleName'%.MULTI_CMD_CHAR) { /* found separator */
       buf[i-1] = '\0';
       parseBuffer = TRUE;
     } else if (buf[i-1]=='\0') {
@@ -986,11 +1005,11 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
       finished = TRUE;
     }
     if (parseBuffer) {
+      handled = FALSE;
       res = %'ModuleName'%.IterateTable(buf, &handled, io, parseCallback); /* iterate through all parser functions in table */
-      if (!handled || res!=ERR_OK) { /* no handler has handled the command? */
+      if (!handled || res!=ERR_OK) { /* no handler has handled the command, or error? */
         %'ModuleName'%.PrintCommandFailed(buf, io);
         res = ERR_FAILED;
-        break; /* get out of loop */
       }
       parseBuffer = FALSE;
       i = 0; /* restart */
@@ -999,14 +1018,20 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
       break; /* get out of loop */
     }
   } /* for */
-%else
+#else
+  #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
+  silent = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
+  if (silent) {
+    cmd++; /* skip silent character */
+  }
+  #endif
   res = %'ModuleName'%.IterateTable(cmd, &handled, io, parseCallback); /* iterate through all parser functions in table */
   if (!handled || res!=ERR_OK) { /* no handler has handled the command? */
     %'ModuleName'%.PrintCommandFailed(cmd, io);
     res = ERR_FAILED;
   }
-%endif
-#if %'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR
+#endif
+#if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
   if (!silent) {
     %'ModuleName'%.PrintPrompt(io);
   }
