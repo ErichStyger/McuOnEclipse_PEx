@@ -1025,6 +1025,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
     cmd++; /* skip silent character */
   }
   #endif
+  handled = FALSE;
   res = %'ModuleName'%.IterateTable(cmd, &handled, io, parseCallback); /* iterate through all parser functions in table */
   if (!handled || res!=ERR_OK) { /* no handler has handled the command? */
     %'ModuleName'%.PrintCommandFailed(cmd, io);
