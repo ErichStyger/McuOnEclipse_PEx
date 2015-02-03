@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.399</Version>
+    <Version>01.402</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -255,6 +255,24 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
     </Property>
     <Property>
       <TBoolItem>
+        <Name>configASSERT defined</Name>
+        <Symbol>configASSERTdefined</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If set to 'yes', FreeRTOSConfig.h will have the configASSERT() macro defined. lt is used in different places in the Kernel to verify proper operation. For better code density/speed you might set this option to 'no'.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
         <Name>Application Task Tags</Name>
         <Symbol>UseApplicationTaskTags</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
@@ -424,7 +442,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for the scheduler</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TBoolGrupItem>
@@ -967,7 +985,7 @@ To use this method in combination with method 1 set configCHECK_FOR_STACK_OVERFL
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for the periodic tick timer</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TBoolGrupItem>
@@ -1177,7 +1195,7 @@ Using a 16 bit type will greatly improve performance on 8 and 16 bit architectur
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for Queues</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TIntgItem>
@@ -1230,7 +1248,7 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for Mutex and Semaphore</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TBoolItem>
@@ -1349,7 +1367,7 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for the memory and heap allocation</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TEnumItem>
@@ -1441,7 +1459,7 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Configures the RTOS adapter settings</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <Children>
           <GrupItem>
             <TGrupItem>

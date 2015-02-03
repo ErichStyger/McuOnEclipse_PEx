@@ -68,7 +68,7 @@
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'portmacro.h
 %include freeRTOS\portmacro.h
 
-%FILE %'DirRel_Code'%'RTOSPortDirFolder'deprecated_definitions.h
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'deprecated_definitions.h
 %include freeRTOS\deprecated_definitions.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'projdefs.h

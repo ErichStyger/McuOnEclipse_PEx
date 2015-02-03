@@ -315,6 +315,10 @@ There are 4 options:<br />
 <b>Disabled Interrupts in Startup</b></a> - If set to 'yes', then interrupts will be disabled in PE_low_level_init() using the PEX_RTOS_INIT() macro.
 </li>
 <li>
+<a name="configASSERTdefined">
+<b>configASSERT defined</b></a> - If set to 'yes', FreeRTOSConfig.h will have the configASSERT() macro defined. lt is used in different places in the Kernel to verify proper operation. For better code density/speed you might set this option to 'no'.
+</li>
+<li>
 <a name="UseApplicationTaskTags">
 <b>Application Task Tags</b></a> - This configures configUSE_APPLICATION_TASK_TAG. If enabled, the methodsxTaskGetApplicationTaskTag(), vTaskSetApplicationTaskTag() and xTaskCallApplicationTaskHook() are enabled.
 </li>

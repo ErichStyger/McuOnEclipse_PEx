@@ -429,8 +429,12 @@ extern void vPortYieldFromISR(void);
 /*-----------------------------------------------------------*/
 
 #ifdef configASSERT
-	void vPortValidateInterruptPriority( void );
-	#define portASSERT_IF_INTERRUPT_PRIORITY_INVALID() 	vPortValidateInterruptPriority()
+#if 0 /* NYI */ && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
+  void vPortValidateInterruptPriority( void );
+  #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID() 	vPortValidateInterruptPriority()
+#else
+  #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID()
+#endif
 #endif
 
 %elif (CPUfamily = "56800")
