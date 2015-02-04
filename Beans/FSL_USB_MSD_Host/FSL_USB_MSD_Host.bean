@@ -4,7 +4,7 @@
     <Name>FSL_USB_MSD_Host</Name>
     <Description>Freescale USB Stack (MSD Host)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.023</Version>
+    <Version>01.024</Version>
     <Icon>FSL_USB_MSD_Host</Icon>
     <TypesFiles>PE,FSL_USB_MSD_Host\FSL_USB_MSD_Host</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -24,7 +24,6 @@
     <DemoDriver>no</DemoDriver>
     <Shortcut>HIDK</Shortcut>
     <BeanLevel>High</BeanLevel>
-    <OnlyForInheritanceSharing>true</OnlyForInheritanceSharing>
   </Options>
   <PropertyList>
     <Property>
@@ -55,6 +54,34 @@
     </Property>
   </PropertyList>
   <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Deinitializes the driver</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
     <Method>
       <TMthdItem>
         <Name>Init</Name>

@@ -134,6 +134,7 @@
 #define %'ModuleName'%.USB_ERR_RX_PUT          8  /* Error while putting RX byte into buffer */
 #define %'ModuleName'%.USB_ERR_TX_BLOCK        9  /* Error sending data block */
 #define %'ModuleName'%.USB_TIMEOUT_SEND       10  /* Timeout while sending */
+#define %'ModuleName'%.USB_ERR_DEINIT         11  /* USB deinitialization error */
 
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
 /* special USB interrupt handling for %CPUDevice */
@@ -312,6 +313,15 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize);
 %include Common\GeneralInternal.inc (SendDataBlock)
 
 %-INTERNAL_METHOD_END SendDataBlock
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+uint8_t %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -736,6 +746,28 @@ uint8_t %'ModuleName'%.%App_Task(uint8_t *txBuf, size_t txBufSize)
 %endif %- App_Task
 %-BW_METHOD_END App_Task
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceDeinit.Inc
+uint8_t %'ModuleName'%.%Deinit(void)
+{
+  uint_8 err;
+
+  err = USB_Class_CDC_DeInit(CONTROLLER_ID);
+  if(err != USB_OK) {
+    /* Error deinitializing USB-CDC Class */
+%if defined(OnError)
+    %OnError(%'ModuleName'%.USB_ERR_DEINIT);
+%endif
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
@@ -812,7 +844,6 @@ void %'ModuleName'%.%ClearTxBuffer(void)
 
 %endif %- ClearTxBuffer
 %-BW_METHOD_END ClearTxBuffer
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

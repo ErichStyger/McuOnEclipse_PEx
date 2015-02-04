@@ -159,6 +159,7 @@
 #define %'ModuleName'%.USB_ERR_TX_STRING       5  /* Error sending string */
 #define %'ModuleName'%.USB_ERR_CHECKED_TXFULL  6  /* Error during sending a checked block */
 #define %'ModuleName'%.USB_ERR_RECEIVE         7  /* Error while starting a receive transaction */
+#define %'ModuleName'%.USB_ERR_DEINIT          8  /* USB deinitialization error */
 
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
 /* special USB interrupt handling for %CPUDevice */
@@ -196,6 +197,15 @@ void %@MSDHost@OnError(byte error);
 
 %endif %- @MSDHost@OnError
 %-INHERITED_EVENT_END MSDHost OnError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+uint8_t %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_StackDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -365,34 +375,46 @@ void %'ModuleName'%.usb_int_en(void)
 
 %-INTERNAL_METHOD_END usb_int_en
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_StackDeinit.Inc
+uint8_t %'ModuleName'%.%Deinit(void)
+{
+  uint8_t err;
+
+  %'ModuleName'%.usb_int_dis(); /* disable USB interrupts */
+  /* Initialize the USB interface */
+%if USBDeviceClass="CDC Device"
+  err = %@CDCDevice@'ModuleName'%.Deinit();
+%elif USBDeviceClass="CDC Host"
+  err = %@CDCHost@'ModuleName'%.Deinit();
+%elif USBDeviceClass="HID Keyboard Device"
+  err = %@HIDKDevice@'ModuleName'%.Deinit();
+%elif USBDeviceClass="HID Mouse Device"
+  err = %@HIDMDevice@'ModuleName'%.Deinit();
+%elif USBDeviceClass="MSD Host"
+  err = %@MSDHost@'ModuleName'%.Deinit();
+%else
+  #error "unknown USBDeviceClass %USBDeviceClass"
+%endif
+  if(err != ERR_OK) {
+    /* Error deinitializing USB Class */
+%if defined(OnError)
+    %OnError(%'ModuleName'%.USB_ERR_DEINIT);
+%endif
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
 %include Common\FSL_USB_StackInit.Inc
-%if (CPUDevice="Kinetis K22FN120")
-#if 0 /* not needed any more? */
-#ifndef MPU_CESR /* Processor Expert does not use MK22F12.h and uses MK22F51212.h instead? */
-  /** MPU - Peripheral register structure */
-  typedef struct MPU_MemMap {
-    uint32_t CESR;                                   /**< Control/Error Status Register, offset: 0x0 */
-    uint8_t RESERVED_0[12];
-    struct {                                         /* offset: 0x10, array step: 0x8 */
-      uint32_t EAR;                                    /**< Error Address Register, slave port n, array offset: 0x10, array step: 0x8 */
-      uint32_t EDR;                                    /**< Error Detail Register, slave port n, array offset: 0x14, array step: 0x8 */
-    } SP[5];
-    uint8_t RESERVED_1[968];
-    uint32_t WORD[12][4];                            /**< Region Descriptor n, Word 0..Region Descriptor n, Word 3, array offset: 0x400, array step: index*0x10, index2*0x4 */
-    uint8_t RESERVED_2[832];
-    uint32_t RGDAAC[12];                             /**< Region Descriptor Alternate Access Control n, array offset: 0x800, array step: 0x4 */
-  } volatile *MPU_MemMapPtr;
-
-  #define MPU_BASE_PTR                             ((MPU_MemMapPtr)0x4000D000u)
-  #define MPU_CESR_REG(base)                       ((base)->CESR)
-  #define MPU_CESR                                 MPU_CESR_REG(MPU_BASE_PTR)
-#endif
-#endif
-
-%endif
 uint8_t %'ModuleName'%.%Init(void)
 {
   uint8_t err;

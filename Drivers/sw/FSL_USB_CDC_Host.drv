@@ -131,6 +131,7 @@
 #define %'ModuleName'%.USB_ERR_RX_PUT          8  /* Error while putting RX byte into buffer */
 #define %'ModuleName'%.USB_ERR_TX_BLOCK        9  /* Error sending data block */
 #define %'ModuleName'%.USB_TIMEOUT_SEND       10  /* Timeout while sending */
+#define %'ModuleName'%.USB_ERR_DEINIT         11  /* USB deinitialization error */
 
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
 /* special USB interrupt handling for %CPUDevice */
@@ -309,6 +310,15 @@ byte %'ModuleName'%.SendDataBlock(byte *data, word dataSize);
 %include Common\GeneralInternal.inc (SendDataBlock)
 
 %-INTERNAL_METHOD_END SendDataBlock
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+byte %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_HostDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -734,13 +744,37 @@ byte %'ModuleName'%.%App_Task(byte *txBuf, size_t txBufSize)
 %endif %- App_Task
 %-BW_METHOD_END App_Task
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_CDC_HostDeinit.Inc
+byte %'ModuleName'%.%Deinit(void)
+{
+#if 0 /* NYI */
+  uint_8 err;
+
+  err = USB_Class_CDC_DeInit(CONTROLLER_ID);
+  if(err != USB_OK) {
+    /* Error initializing USB-CDC Class */
+%if defined(OnError)
+    %OnError(%'ModuleName'%.USB_ERR_DEINIT);
+%endif
+    return ERR_FAILED;
+  }
+#endif
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
 %include Common\FSL_USB_CDC_HostInit.Inc
 byte %'ModuleName'%.%Init(void)
 {
-#if 0
+#if 0 /* NYI */
   uint_8 err;
 
   err = USB_Class_CDC_Init(CONTROLLER_ID, %'ModuleName'%.%App_Callback, NULL, %'ModuleName'%.%Notify_Callback, TRUE);
@@ -812,7 +846,6 @@ void %'ModuleName'%.%ClearTxBuffer(void)
 
 %endif %- ClearTxBuffer
 %-BW_METHOD_END ClearTxBuffer
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

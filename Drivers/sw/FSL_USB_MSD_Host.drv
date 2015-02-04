@@ -121,7 +121,6 @@ byte %'ModuleName'%.%Init(void);
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN USB_App_Callback
 %ifdef USB_App_Callback
 void %'ModuleName'%.%USB_App_Callback(byte controller_ID, byte event_type, void *val);
@@ -143,6 +142,15 @@ void %'ModuleName'%.%USB_Notify_Callback(byte controller_ID, byte event_type, vo
 
 %endif %- USB_Notify_Callback
 %-BW_METHOD_END USB_Notify_Callback
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+byte %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_MSD_HostDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -176,10 +184,8 @@ void %OnError(byte error);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-//#include "hidef.h"          /* for EnableInterrupts macro */
 #include "derivative.h"     /* include peripheral declarations */
 #include "types.h"          /* Contains User Defined Data Types */
-//#include "usb_cdc.h"        /* USB CDC Class Header File */
 #include <stdio.h>
 /* skip the inclusion in dependency state */
 #ifndef __NO_SETJMP
@@ -204,6 +210,18 @@ void %OnError(byte error);
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_MSD_HostDeinit.Inc
+byte %'ModuleName'%.%Deinit(void)
+{
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
@@ -215,7 +233,6 @@ byte %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

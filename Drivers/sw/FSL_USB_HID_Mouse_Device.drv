@@ -106,6 +106,7 @@
 
 /* error/event codes for events */
 #define %'ModuleName'%.USB_ERR_INIT            1  /* USB initialization error */
+#define %'ModuleName'%.USB_ERR_DEINIT          2  /* USB deinitialization error */
 
 /* bits for the first byte (action) of the update message */
 #define %'ModuleName'%.MOUSE_LEFT    (1<<0)
@@ -219,6 +220,15 @@ byte %'ModuleName'%.%Click(byte buttonMask);
 
 %endif %- Click
 %-BW_METHOD_END Click
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+byte %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_HID_Mouse_DeviceDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -433,6 +443,28 @@ byte %'ModuleName'%.%App_Task(void)
 %endif %- App_Task
 %-BW_METHOD_END App_Task
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_HID_Mouse_DeviceDeinit.Inc
+byte %'ModuleName'%.%Deinit(void)
+{
+  byte err;
+
+  err = USB_Class_HID_DeInit(CONTROLLER_ID);
+  if(err != USB_OK) {
+    /* Error initializing USB HID Class */
+%if defined(OnEvent)
+    %OnEvent(%'ModuleName'%.USB_ERR_DEINIT);
+%endif
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
@@ -443,7 +475,7 @@ byte %'ModuleName'%.%Init(void)
 
   err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);
   if(err != USB_OK) {
-    /* Error initializing USB-CDC Class */
+    /* Error initializing USB HID Class */
 %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_ERR_INIT);
 %endif

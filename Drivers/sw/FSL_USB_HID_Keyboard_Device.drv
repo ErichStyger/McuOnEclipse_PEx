@@ -337,6 +337,7 @@
 #define %'ModuleName'%.USB_APP_SEND_COMPLETE   7  /* sending message completed */
 #define %'ModuleName'%.USB_APP_NUMLOCK_ON      8  /* request from host to turn NumLock on */
 #define %'ModuleName'%.USB_APP_NUMLOCK_OFF     9  /* request from host to turn NumLock off */
+#define %'ModuleName'%.USB_ERR_DEINIT         10  /* USB deinitialization error */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -463,6 +464,15 @@ void %'ModuleName'%.App_Callback(byte controller_ID, byte event_type, void *val)
 %include Common\GeneralInternal.inc (App_Callback)
 
 %-INTERNAL_METHOD_END App_Callback
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+byte %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\FSL_USB_HID_Keyboard_DeviceDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -704,6 +714,28 @@ byte %'ModuleName'%.%App_Task(void)
 %endif %- App_Task
 %-BW_METHOD_END App_Task
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\FSL_USB_HID_Keyboard_DeviceDeinit.Inc
+byte %'ModuleName'%.%Deinit(void)
+{
+  byte err;
+
+  err = USB_Class_HID_DeInit(CONTROLLER_ID);
+  if(err != USB_OK) {
+    /* Error initializing USB HID Class */
+%if defined(OnEvent)
+    %OnEvent(%'ModuleName'%.USB_ERR_DEINIT);
+%endif
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %define! RetVal
@@ -714,7 +746,7 @@ byte %'ModuleName'%.%Init(void)
 
   err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);
   if(err != USB_OK) {
-    /* Error initializing USB-CDC Class */
+    /* Error initializing USB HID Class */
 %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_ERR_INIT);
 %endif
