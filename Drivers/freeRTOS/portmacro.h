@@ -67,7 +67,6 @@
     1 tab == 4 spaces!
 */
 
-
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
 
@@ -220,7 +219,7 @@ extern void vPortExitCritical(void);
 #define portDISABLE_INTERRUPTS()             __asm("sei")
 #define portENTER_CRITICAL()                 vPortEnterCritical()
 #define portEXIT_CRITICAL()                  vPortExitCritical()
-%elif (CPUfamily = "Kinetis") & ((%Compiler == "GNUC")|(%Compiler = "ARM_CC"))
+%elif (CPUfamily = "Kinetis")
 #if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* Cortex M4 */
   #if (configCOMPILER==configCOMPILER_ARM_KEIL)
     __asm uint32_t ulPortSetInterruptMask(void);
@@ -255,12 +254,17 @@ extern void vPortExitCritical(void);
 	   : /* no input */        \
 	   :"r0" /* clobber */     \
       )
+  #elif configCOMPILER==configCOMPILER_ARM_IAR
+    void vPortSetInterruptMask(void); /* prototype, implemented in portasm.s */
+    void vPortClearInterruptMask(void); /* prototype, implemented in portasm.s */
+    #define portSET_INTERRUPT_MASK()    vPortSetInterruptMask()
+    #define portCLEAR_INTERRUPT_MASK()  vPortClearInterruptMask()
   #endif
-#else
+#else /* Cortex-M0+ */
   #if configCOMPILER==configCOMPILER_ARM_KEIL
     #define portSET_INTERRUPT_MASK()              __disable_irq()
     #define portCLEAR_INTERRUPT_MASK()            __enable_irq()
-  #else
+  #else /* IAR, CW ARM or GNU ARM gcc */
     #define portSET_INTERRUPT_MASK()              __asm volatile("cpsid i")
     #define portCLEAR_INTERRUPT_MASK()            __asm volatile("cpsie i")
   #endif
@@ -274,7 +278,7 @@ extern void vPortExitCritical(void);
 
 #if configCOMPILER==configCOMPILER_ARM_KEIL
   #define portDISABLE_ALL_INTERRUPTS()   __disable_irq()
-#else
+#else /* IAR, CW ARM or GNU ARM gcc */
   #define portDISABLE_ALL_INTERRUPTS()   __asm volatile("cpsid i")
 #endif
 #define portDISABLE_INTERRUPTS()   portSET_INTERRUPT_MASK()
@@ -285,26 +289,6 @@ extern void vPortExitCritical(void);
 /* There are an uneven number of items on the initial stack, so
 portALIGNMENT_ASSERT_pxCurrentTCB() will trigger false positive asserts. */
 #define portALIGNMENT_ASSERT_pxCurrentTCB (void)
-
-%elif (CPUfamily = "Kinetis")
-extern void vPortSetInterruptMask(void);
-extern void vPortClearInterruptMask(void);
-extern void vPortEnterCritical(void);
-extern void vPortExitCritical(void);
-#if configCOMPILER==configCOMPILER_IAR
-/* \todo: !!! IAR does not allow msr BASEPRI, r0 in vPortSetInterruptMask()? */
-#define portDISABLE_ALL_INTERRUPTS()         __asm volatile( "cpsid i" )
-#define portDISABLE_INTERRUPTS()             __asm volatile( "cpsid i" )
-#define portENABLE_INTERRUPTS()              __asm volatile( "cpsie i" )
-#else
-#define portDISABLE_ALL_INTERRUPTS()         __asm volatile( "cpsid i" )
-#define portDISABLE_INTERRUPTS()             vPortSetInterruptMask()
-#define portENABLE_INTERRUPTS()              vPortClearInterruptMask()
-#endif
-#define portENTER_CRITICAL()                 vPortEnterCritical()
-#define portEXIT_CRITICAL()                  vPortExitCritical()
-#define portSET_INTERRUPT_MASK_FROM_ISR()    0;vPortSetInterruptMask()
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x) vPortClearInterruptMask();(void)x
 %elif (CPUfamily = "56800")
 extern void vPortEnterCritical(void);
 extern void vPortExitCritical(void);
@@ -718,6 +702,8 @@ void vPortYieldHandler(void);
 BaseType_t configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME(void); /* return pdTRUE if RTOS can enter tickless idle mode, pdFALSE otherwise */
 #endif
 
+void prvTaskExitError(void);
+  /* handler to catch task exit errors */
 
 
 #ifdef __cplusplus

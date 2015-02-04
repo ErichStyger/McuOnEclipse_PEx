@@ -16,6 +16,11 @@
 %else
   %define  RTOSPortDirFolder 
 %endif
+%if defined(RTOSConfigFolderName)
+  %define  RTOSConfigDirFolder /%'RTOSConfigFolderName'/
+%else
+  %define  RTOSConfigDirFolder 
+%endif
 %-
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'croutine.h
 %include freeRTOS\croutine.h
@@ -26,7 +31,7 @@
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'FreeRTOS.h
 %include freeRTOS\FreeRTOS.h
 
-%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'FreeRTOSConfig.h
+%FILE %'DirRel_Code'%'RTOSConfigDirFolder'FreeRTOSConfig.h
 %include freeRTOS\FreeRTOSConfig.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_1.c

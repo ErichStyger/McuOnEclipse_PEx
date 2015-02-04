@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.402</Version>
+    <Version>01.404</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -60,7 +60,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Custom port settings</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
             <TEnumItem>
@@ -88,11 +88,29 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
+                <GrupItem>
+                  <TBoolItem>
+                    <Name>Kinetis SDK</Name>
+                    <Symbol>KinetisSDKenabled</Symbol>
+                    <TypeSpec>typeYesNo</TypeSpec>
+                    <Hint>This will configure the configPEX_KINETIS_SDK macro in FreeRTOSConfig.h</Hint>
+                    <ItemLevel>EXPERT</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>0</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <DefaultValue>true</DefaultValue>
+                    <Popup>false</Popup>
+                  </TBoolItem>
+                </GrupItem>
                 <GrupItem>
                   <TStrgItem>
                     <Name>Source Folder</Name>
@@ -127,6 +145,19 @@
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <DefaultValue>FreeRTOS\port</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Config Folder</Name>
+                    <Symbol>RTOSConfigFolderName</Symbol>
+                    <Hint>The RTOS FreeRTOSConfig.h wilf will be generated into this sub folder name. The name can be empty.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>FreeRTOS\config\gcc</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>
@@ -442,7 +473,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Settings for the scheduler</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
             <TBoolGrupItem>
