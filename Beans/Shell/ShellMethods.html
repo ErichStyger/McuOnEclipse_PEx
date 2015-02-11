@@ -328,6 +328,21 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="IsHistoryCharacter">
+<b>IsHistoryCharacter</b></a>
+ - Returns TRUE if character is a history character
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>ch:byte</i> - current command character</li>
+<li><i>cmdBuf: Pointer to byte</i> - Pointer to command line buffer read so far</li>
+<li><i>cmdBufIdx:byte</i> - Index of character into cmdBuf</li>
+<li><i>isPrev: Pointer to bool</i> - Pointer to return value, if it is 'previous' history or not</li>
+<li><i>Return value:bool</i> - TRUE if it is an accepted history character
+</li>
+</ul><br />
+</li>
 <li><a name="ReadLine">
 <b>ReadLine</b></a>
  - Reads a line from stdIn and returns TRUE if we have a line, FALSE otherwise.

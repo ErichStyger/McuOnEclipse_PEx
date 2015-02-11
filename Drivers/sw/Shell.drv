@@ -149,9 +149,11 @@
 
 /* settings for command line history */
 %if %HistoryEnabled='yes'
-#define %'ModuleName'%.HISTORY_ENABLED  1                        %>40/* 1: enabled, 0: disabled */
-#define %'ModuleName'%.NOF_HISTORY      %NofHistoryItems         %>40/* number of items in history */
-#define %'ModuleName'%.HIST_LEN         %HistLength              %>40/* history buffer size */
+#define %'ModuleName'%.HISTORY_ENABLED   1                       %>40/* 1: enabled, 0: disabled */
+#define %'ModuleName'%.NOF_HISTORY       %NofHistoryItems        %>40/* number of items in history */
+#define %'ModuleName'%.HIST_LEN          %HistLength             %>40/* history buffer size */
+#define %'ModuleName'%.HISTORY_PREV_CHAR '%PrevHistoryChar'      %>40/* character for 'previous' in history */
+#define %'ModuleName'%.HISTORY_NEXT_CHAR '%NextHistoryChar'      %>40/* character for 'next' in history */
 %else
 #define %'ModuleName'%.HISTORY_ENABLED  0                        %>40/* 1: enabled, 0: disabled */
 #define %'ModuleName'%.NOF_HISTORY      0                        %>40/* number of items in history */
@@ -479,6 +481,19 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 
 %endif %- SendData
 %-BW_METHOD_END SendData
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN IsHistoryCharacter
+%ifdef IsHistoryCharacter
+bool %'ModuleName'%.%IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev);
+%define! ParcmdBuf
+%define! ParcmdBufIdx
+%define! ParisPrev
+%define! Parch
+%define! RetVal
+%include Common\ShellIsHistoryCharacter.Inc
+
+%endif %- IsHistoryCharacter
+%-BW_METHOD_END IsHistoryCharacter
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -747,6 +762,56 @@ void %'ModuleName'%.%PrintPrompt(%'ModuleName'_ConstStdIOType *io)
 %endif %- PrintPrompt
 %-BW_METHOD_END PrintPrompt
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN IsHistoryCharacter
+%ifdef IsHistoryCharacter
+%define! ParcmdBuf
+%define! ParcmdBufIdx
+%define! ParisPrev
+%define! Parch
+%define! RetVal
+%include Common\ShellIsHistoryCharacter.Inc
+bool %'ModuleName'%.%IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev)
+{
+  *isPrev = FALSE;
+#if %'ModuleName'%.HISTORY_ENABLED
+  if (   cmdBufIdx==0 /* first character on command line */
+      || (%@Utility@'ModuleName'%.strcmp(cmdBuf, CLS1_history[CLS1_history_index])==0) /* pressing prev/next character on previous history element */
+      )
+  {
+    if (ch==%'ModuleName'%.HISTORY_PREV_CHAR) {
+      *isPrev = TRUE;
+      return TRUE;
+    } else if (ch==%'ModuleName'%.HISTORY_NEXT_CHAR) {
+      *isPrev = FALSE;
+      return TRUE;
+    }
+  }
+#if 0
+  if (cmdBufIdx==0 || cmdBufIdx==2) { /* accept only first character or sequence as history sequence */
+    if (cmdBufIdx==2 && cmdBuf[0]==0x1b && cmdBuf[1]==0x5b) {
+      /* up:    0x27 0x5b 0x41
+       * down:  0x27 0x5b 0x42
+       * right: 0x27 0x5b 0x43
+       * left:  0x27 0x5b 0x44
+       */
+      if (cmdBuf[2]==0x41 /* up */ || cmdBuf[2]==0x44 /* left */) {
+        *isPrev = TRUE;
+        return TRUE;
+      } else if (cmdBuf[2]==0x42 /* down */ || cmdBuf[2]==0x43 /* right */) {
+        *isPrev = FALSE;
+        return TRUE;
+      }
+    }
+    /* \todo: handle TAB and SHIFT-TAB */
+  }
+#endif
+#endif
+  return FALSE;
+}
+
+%endif %- IsHistoryCharacter
+%-BW_METHOD_END IsHistoryCharacter
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadLine
 %ifdef ReadLine
 %define! ParbufStart
@@ -758,6 +823,7 @@ void %'ModuleName'%.%PrintPrompt(%'ModuleName'_ConstStdIOType *io)
 bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %'ModuleName'_ConstStdIOType *io)
 {
   uint8_t c;
+  bool isBackwardHistory;
 
   if (io->keyPressed()) {
     for(;;) {                                                    %>40/* while not '\r' or '\n' */
@@ -777,53 +843,7 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
            *buf = '\0';
            bufSize++;
         }
-      } else if
-        (
-            isalnum(c) || (c==' ') || (c=='\r') || (c=='\n')
-        #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-          || (c==%'ModuleName'%.SILENT_PREFIX_CHAR)
-        #endif
-        #if %'ModuleName'%.MULTI_CMD_ENABLED
-          || (c==%'ModuleName'%.MULTI_CMD_CHAR)
-        #endif
-        )
-      {
-#if %'ModuleName'%.ECHO_ENABLED
-        io->stdOut(c);                                           %>40/* echo character */
-#endif
-        *buf = (uint8_t)c;                                       %>40/* append character to the string */
-        buf++;
-        bufSize--;
-        if ((c=='\r') || (c=='\n')) {
-#if %'ModuleName'%.ECHO_ENABLED
-          %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
-#endif
-#if %'ModuleName'%.HISTORY_ENABLED
-          if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
-            int i;
-
-            for(i=%'ModuleName'%.NOF_HISTORY-1; i>0;i--) {
-              %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history[i], %'ModuleName'%.HIST_LEN, %'ModuleName'_history[i-1]);%>40/* move previous commands */
-            }
-            %'ModuleName'_history_index = 0;                     %>40/* update the history with the current command */
-            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history[0], %'ModuleName'%.HIST_LEN, bufStart);%>40/* add the current command to the history */
-            if (buf-bufStart <= %'ModuleName'%.HIST_LEN) {       %>40/* size check */
-              %'ModuleName'_history[0][buf-bufStart-1] = '\0';
-            } else {
-              %'ModuleName'_history[0][%'ModuleName'%.HIST_LEN-1] = '\0';
-            }
-          }
-#endif
-          break;
-        }
-        if (bufSize <= 1) {                                      %>40/* buffer full */
-          break;
-        }
-#if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-      } else if (c!=%'ModuleName'%.SILENT_PREFIX_CHAR) {         %>40/* silent prefix enabled, might be non-alphanumeric */
-#else
-      } else {                                                   %>40/* not an alphanumeric */
-#endif
+      } else if (%'ModuleName'%.%IsHistoryCharacter(c, bufStart, buf-bufStart, &isBackwardHistory)) {
 #if %'ModuleName'%.HISTORY_ENABLED
         uint8_t cBuf[3]={'\0','\0','\0'}, cBufIdx = 0;
         bool prevInHistory;
@@ -870,6 +890,38 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         %'ModuleName'%.%PrintPrompt(io);
         %'ModuleName'%.%SendStr(bufStart, io->stdOut);
 #endif
+      } else {
+#if %'ModuleName'%.ECHO_ENABLED
+        io->stdOut(c);                                           %>40/* echo character */
+#endif
+        *buf = (uint8_t)c;                                       %>40/* append character to the string */
+        buf++;
+        bufSize--;
+        if ((c=='\r') || (c=='\n')) {
+#if %'ModuleName'%.ECHO_ENABLED
+          %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
+#endif
+#if %'ModuleName'%.HISTORY_ENABLED
+          if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
+            int i;
+
+            for(i=%'ModuleName'%.NOF_HISTORY-1; i>0;i--) {
+              %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history[i], %'ModuleName'%.HIST_LEN, %'ModuleName'_history[i-1]);%>40/* move previous commands */
+            }
+            %'ModuleName'_history_index = 0;                     %>40/* update the history with the current command */
+            %@Utility@'ModuleName'%.strcpy(%'ModuleName'_history[0], %'ModuleName'%.HIST_LEN, bufStart);%>40/* add the current command to the history */
+            if (buf-bufStart <= %'ModuleName'%.HIST_LEN) {       %>40/* size check */
+              %'ModuleName'_history[0][buf-bufStart-1] = '\0';
+            } else {
+              %'ModuleName'_history[0][%'ModuleName'%.HIST_LEN-1] = '\0';
+            }
+          }
+#endif
+          break;
+        }
+        if (bufSize <= 1) {                                      %>40/* buffer full */
+          break;
+        }
       }
     } /* for */
     *buf = '\0';                                                 %>40/* zero terminate string */
