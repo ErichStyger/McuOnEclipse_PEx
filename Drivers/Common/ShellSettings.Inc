@@ -31,5 +31,7 @@
 %if %get(HistoryEnabled, Bool) = 'yes'
 %;**%>14 Number of History Items %>60: %get(NofHistoryItems,Text)
 %;**%>14 Stored Characters %>60: %get(HistLength,Text)
+%;**%>14 Char for Next %>60: %get(NextHistoryChar,Text)
+%;**%>14 Char for Previous %>60: %get(PrevHistoryChar,Text)
 %else %- HistoryEnabled
 %endif %- HistoryEnabled
