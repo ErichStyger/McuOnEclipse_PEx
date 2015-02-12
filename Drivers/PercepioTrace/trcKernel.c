@@ -50,8 +50,10 @@ int8_t nISRactive = 0;
 objectHandleType handle_of_last_logged_task = 0;
 uint8_t inExcludedTask = 0;
 
+#if (INCLUDE_MEMMANG_EVENTS == 1) /* << EST */
 /* Current heap usage. Always updated. */
 static uint32_t heapMemUsage = 0;
+#endif
 
 #if (TRACE_SCHEDULING_ONLY == 0)
 static uint32_t prvTraceGetParam(uint32_t, uint32_t);
