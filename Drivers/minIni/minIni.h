@@ -32,9 +32,9 @@
 #define NDEBUG
 %endif
 %if defined(useGlobalBuffer) & %useGlobalBuffer='yes'
-#define INI_USE_GLOBAL_BUFFER   1 /* 0: use Stack for buffer; 1: use global memory for buffer */
+#define INI_USE_GLOBAL_BUFFER   1 /* 0: use stack for buffer; 1: use global memory for buffer */
 %else
-#define INI_USE_GLOBAL_BUFFER   0 /* 0: use Stack for buffer; 1: use global memory for buffer */
+#define INI_USE_GLOBAL_BUFFER   0 /* 0: use stack for buffer; 1: use global memory for buffer */
 %endif
 
 #include "minGlue-FatFs.h"
