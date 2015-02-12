@@ -241,6 +241,10 @@ LI.EXP {
 <b>No Debug</b></a> - If set to yes, then it defines NDEBUG in minIni.h, so assert() calls are not performed.
 </li>
 <li>
+<a name="useGlobalBuffer">
+<b>Global Buffer</b></a> - If set to 'yes', the module will use a global buffer instead a local buffer on the stack. This reduces stack usage for  large buffer sizes, but makes things non-reentrant.
+</li>
+<li>
 <a name="FatFSGroup">
 <b>FatFS</b></a> - FatFS configuration items
 <ul>

@@ -83,6 +83,10 @@
   #error Missing definition for INI_FILETYPE.
 #endif
 
+#if INI_USE_GLOBAL_BUFFER
+static TCHAR LocalBuffer[INI_BUFFERSIZE];
+#endif
+
 #if !defined sizearray
   #define sizearray(a)    (sizeof(a) / sizeof((a)[0]))
 #endif
@@ -221,7 +225,9 @@ static int getkeystring(INI_FILETYPE *fp, const TCHAR *Section, const TCHAR *Key
   TCHAR *sp, *ep;
   int len, idx;
   enum quote_option quotes;
+#if !INI_USE_GLOBAL_BUFFER
   TCHAR LocalBuffer[INI_BUFFERSIZE];
+#endif
 
   assert(fp != NULL);
   /* Move through file 1 line at a time until a section is matched or EOF. If
@@ -449,7 +455,9 @@ int  ini_getkey(const TCHAR *Section, int idx, TCHAR *Buffer, int BufferSize, co
  */
 int  ini_browse(INI_CALLBACK Callback, const void *UserData, const TCHAR *Filename)
 {
+#if !INI_USE_GLOBAL_BUFFER
   TCHAR LocalBuffer[INI_BUFFERSIZE];
+#endif
   TCHAR *sp, *ep;
   int lenSec, lenKey;
   enum quote_option quotes;
@@ -610,7 +618,9 @@ int ini_puts(const TCHAR *Section, const TCHAR *Key, const TCHAR *Value, const T
   INI_FILETYPE wfp;
   INI_FILEPOS mark;
   TCHAR *sp, *ep;
+#if !INI_USE_GLOBAL_BUFFER
   TCHAR LocalBuffer[INI_BUFFERSIZE];
+#endif
   int len, match, flag, cachelen;
 
   assert(Filename != NULL);

@@ -4,6 +4,8 @@
 %;**%>12 Portable strnicmp() %>60: %get(portableStrnicmp,Text)
 %;**%>12 Use Real %>60: %get(useReal,Text)
 %;**%>12 Read Only %>60: %get(isReadOnly,Text)
+%;**%>12 No Debug %>60: %get(isNoDebug,Text)
+%;**%>12 Global Buffer %>60: %get(useGlobalBuffer,Text)
 %;**%>12 FatFS %>60: %get(FatFSGroup,Text)
 %;**%>14 FatFS %>60: %get(FatFS,Text)
 %;**%>14 Buffer Size %>60: %get(FatFsIniBufferSize,Text)

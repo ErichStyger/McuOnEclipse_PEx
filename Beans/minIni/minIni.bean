@@ -4,7 +4,7 @@
     <Name>minIni</Name>
     <Description>minIni is a programmer’s library to read and write 'ini' files in embedded systems.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.037</Version>
+    <Version>01.038</Version>
     <Icon>CPU_CHIP</Icon>
     <TypesFiles>PE,minIni\minIni</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -119,6 +119,24 @@
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Global Buffer</Name>
+        <Symbol>useGlobalBuffer</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If set to 'yes', the module will use a global buffer instead a local buffer on the stack. This reduces stack usage for  large buffer sizes, but makes things non-reentrant.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
