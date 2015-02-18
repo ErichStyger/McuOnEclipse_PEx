@@ -519,6 +519,10 @@ static uint8_t %'ModuleName'%.currDisplay = 1; /* only for displays with E1 and 
 #define Timing_tDDR_ns   160 /* tDDR: Data delay time */
 #define Timing_tCYCLE_ns 500 /* tCYLE: Enable Cycle time */
 
+#define %'ModuleName'%.WAIT_DISPLAY_US      %WaitDisplayUs /* wait time as specified in properties */
+#define %'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA1_US     15 /* wait time after first 4bit data */
+#define %'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA2_US     60 /* wait time after second 4bit data */
+
 %if ndefined(DataBus)
 static uint8_t DataGet(void) {
   uint8_t val;
@@ -682,9 +686,9 @@ void %'ModuleName'%.WaitForLCDReady(void)
 %include Common\LCDHTAWriteLCDCommand.Inc
 void %'ModuleName'%.%WriteLCDCommand(byte cmd)
 {
-%if %WaitDisplayUs >. '0'
-  %@Wait@'ModuleName'%.Waitus(%WaitDisplayUs);                   %>40 /* wait for some time not to write to the display while he may be busy with previous command */
-%endif
+#if %'ModuleName'%.WAIT_DISPLAY_US > 0
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.WAIT_DISPLAY_US);   %>40 /* wait for some time not to write to the display while he may be busy with previous command */
+#endif
 %if %ReadFromDisplay='yes' & %CheckBusyFlag = 'yes'
   %'ModuleName'%.WaitForLCDReady();                              %>40 /* Wait until LCD is ready */
 %endif
@@ -692,10 +696,10 @@ void %'ModuleName'%.%WriteLCDCommand(byte cmd)
   /* 2 4bit transfer */
   DataPut((byte)((cmd&0xF0)>>4));                                %>40 /* Write the data (cycle #1) */
   EnablePulse();                                                 %>40 /* transfer data */
-  Waitus(15);
+  Waitus(%'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA1_US);
   DataPut((byte)(cmd&0x0F) );                                    %>40 /* Write the data (cycle #2) */
   EnablePulse();                                                 %>40 /* do the command transfer */
-  Waitus(60);
+  Waitus(%'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA2_US);
 %else
   /* 8bit transfer */
   DataPut(cmd);                                                  %>40 /* put data on bus */
@@ -730,9 +734,9 @@ void %'ModuleName'%.%Home(void)
 %include Common\GeneralInternal.inc (WriteLCDData)
 void %'ModuleName'%.WriteLCDData(byte ch)
 {
-%if %WaitDisplayUs >. '0'
-   %@Wait@'ModuleName'%.Waitus(%WaitDisplayUs);                  %>40 /* wait for some time not to write to the display while he may be busy with previous command */
-%endif
+#if %'ModuleName'%.WAIT_DISPLAY_US > 0
+   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.WAIT_DISPLAY_US);  %>40 /* wait for some time not to write to the display while he may be busy with previous command */
+#endif
 %if %ReadFromDisplay='yes' & %CheckBusyFlag = 'yes'
    %'ModuleName'%.WaitForLCDReady();                             %>40 /* Wait until LCD is ready */
 %endif
@@ -741,10 +745,10 @@ void %'ModuleName'%.WriteLCDData(byte ch)
    /* 2 4bit transfer */
    DataPut((byte)((ch&0xF0)>>4));                                %>40 /* Write the data (cycle #1) */
    EnablePulse();                                                %>40 /* transfer data */
-   Waitus(15);
+   Waitus(%'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA1_US);
    DataPut((byte)(ch&0x0F));                                     %>40 /* Write the data (cycle #2) */
    EnablePulse();                                                %>40 /* do the command transfer */
-   Waitus(60);
+   Waitus(%'ModuleName'%.WAIT_LCD_CMD_AFTER_4BIT_DATA2_US);
 %else
    /* 8bit data transfer */
    DataPut(ch);                                                  %>40 /* put data on bus */
