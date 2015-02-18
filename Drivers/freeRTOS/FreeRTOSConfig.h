@@ -170,9 +170,17 @@
 %else
 #define configPEX_KINETIS_SDK                                    %>50 0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 %endif
-
+%if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
+#define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 1 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
+%else
+#define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 0 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
+%endif
 %if %CollectRuntimeStatisticsGroup='yes'
 #define configGENERATE_RUN_TIME_STATS                            %>50 1 /* 1: generate runtime statistics; 0: no runtime statistics */
+%if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
+#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCount() /* default: use Tick counter as runtime counter */
+%else
 %if defined(RuntimeCntr)
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 {%'ModuleName'%.RunTimeCounter = 0; (void)%@RuntimeCntr@'ModuleName'%.Enable();}
 #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.RunTimeCounter
@@ -180,8 +188,11 @@
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 {%'ModuleName'%.RunTimeCounter = 0; %'ModuleName'%.RunTimeCounterHandle = %@RuntimeCntrLDD@'ModuleName'%.Init(NULL); (void)%@RuntimeCntrLDD@'ModuleName'%.Enable(%'ModuleName'%.RunTimeCounterHandle);}
 #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.RunTimeCounter
 %endif
+%endif %- useARMSysTickUseCoreClock
 %else
 #define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
+#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCount() /* default: use Tick counter as runtime counter */
 %endif
 %-
 %if UsePreemption = 'yes'

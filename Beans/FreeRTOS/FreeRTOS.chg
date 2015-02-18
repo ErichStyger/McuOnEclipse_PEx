@@ -55,7 +55,12 @@
     %set LDDTickGroup Value Enabled
   %endif
   %set LDDTickGroup ReadOnly yes
-  %set LDDRuntimeCounterGroup Value Enabled
+  %- Runtime counter settings
+  %if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
+    %set LDDRuntimeCounterGroup Value Disabled
+  %else
+    %set LDDRuntimeCounterGroup Value Enabled
+  %endif
   %set LDDRuntimeCounterGroup ReadOnly yes
   %set NonLDDTickGroup Value Disabled
   %set NonLDDTickGroup ReadOnly yes
