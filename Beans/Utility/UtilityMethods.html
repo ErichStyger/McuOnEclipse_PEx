@@ -723,6 +723,21 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ScanDecimal32sDotNumber">
+<b>ScanDecimal32sDotNumber</b></a>
+ - Scans a decimal 32bit signed number with a following dot (fractional part), e.g. &quot;-34587.0248&quot;, it will return the (signed) integral and fractional part with number of fractional zeros. The function accepts as well numbers  like &quot;17&quot; (no fractional part&quot; or &quot;17.0&quot; 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal32sDotNumber(const unsigned char **str, int32_t *integral, uint32_t *fractional, uint8_t *nofFractionalZeros)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>str:uint8_t</i> - string to scan. It returns as well until where it has scanned</li>
+<li><i>integral: Pointer to int32_t</i> - Pointer to value before the dot</li>
+<li><i>fractional: Pointer to dword</i> - Pointer to value after the dot, e.g. 32 for &quot;-134.0032&quot;</li>
+<li><i>nofFractionalZeros:byte</i> - Number of fractional leading zeros, e.g. 2 for &quot;-134.0032&quot;</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ScanHex8uNumber">
 <b>ScanHex8uNumber</b></a>
  - Scans a hexadecimal 8bit number, starting with 0x

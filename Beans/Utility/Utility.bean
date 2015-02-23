@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.106</Version>
+    <Version>01.109</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -2046,6 +2046,62 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(const unsigned char **str, int32_t *val)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ScanDecimal32sDotNumber</Name>
+        <Symbol>ScanDecimal32sDotNumber</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Scans a decimal 32bit signed number with a following dot (fractional part), e.g. "-34587.0248", it will return the (signed) integral and fractional part with number of fractional zeros. The function accepts as well numbers  like "17" (no fractional part" or "17.0" </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>str</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>string to scan. It returns as well until where it has scanned</ParHint>
+          <ParUserDeclaration>const unsigned char **str</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>integral</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to value before the dot</ParHint>
+          <ParUserDeclaration>int32_t *integral</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>fractional</ParName>
+          <ParType>32bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to value after the dot, e.g. 32 for "-134.0032"</ParHint>
+          <ParUserDeclaration>uint32_t *fractional</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>nofFractionalZeros</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Number of fractional leading zeros, e.g. 2 for "-134.0032"</ParHint>
+          <ParUserDeclaration>uint8_t *nofFractionalZeros</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char **str, int32_t *integral, uint32_t *fractional, uint8_t *nofFractionalZeros)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

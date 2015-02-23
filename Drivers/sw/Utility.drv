@@ -724,6 +724,19 @@ uint8_t %'ModuleName'%.%ScanDoubleQuotedString(const uint8_t **cmd, uint8_t *buf
 
 %endif %- ScanDoubleQuotedString
 %-BW_METHOD_END ScanDoubleQuotedString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanDecimal32sDotNumber
+%ifdef ScanDecimal32sDotNumber
+uint8_t %'ModuleName'%.%ScanDecimal32sDotNumber(const unsigned char **str, int32_t *integral, uint32_t *fractional, uint8_t *nofFractionalZeros);
+%define! Parstr
+%define! Parintegral
+%define! Parfractional
+%define! ParnofFractionalZeros
+%define! RetVal
+%include Common\UtilityScanDecimal32sDotNumber.Inc
+
+%endif %- ScanDecimal32sDotNumber
+%-BW_METHOD_END ScanDecimal32sDotNumber
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2174,6 +2187,47 @@ uint8_t %'ModuleName'%.%ScanDecimal32sNumber(const unsigned char **str, int32_t 
 
 %endif %- ScanDecimal32sNumber
 %-BW_METHOD_END ScanDecimal32sNumber
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanDecimal32sDotNumber
+%ifdef ScanDecimal32sDotNumber
+%define! Parstr
+%define! Parintegral
+%define! Parfractional
+%define! ParnofFractionalZeros
+%define! RetVal
+%include Common\UtilityScanDecimal32sDotNumber.Inc
+uint8_t %'ModuleName'%.%ScanDecimal32sDotNumber(const unsigned char **str, int32_t *integral, uint32_t *fractional, uint8_t *nofFractionalZeros)
+{
+  /* scans e.g. "-3445.071" and returns -3445 in integral part, and 71 in fractional part */
+  uint8_t res;
+  const unsigned char *p = *str;
+
+  *integral = 0;
+  *fractional = 0;
+  *nofFractionalZeros = 0;
+  res = %'ModuleName'%.%ScanDecimal32sNumber(&p, integral);
+  if (res != ERR_OK) {
+    return res;
+  }
+  if (*p=='.') {
+    p++; /* skip '.' */
+    while (*p=='0') { /* count leading zeros */
+      (*nofFractionalZeros)++;
+      p++; /* skip leading zero */
+    }
+    if (*p>='0' && *p<='9') { /* number */
+      res = %'ModuleName'%.%ScanDecimal32uNumber(&p, fractional);
+      if (res != ERR_OK) {
+        return res;
+      }
+    }
+  }
+  *str = p; /* store parsing pointer */
+  return ERR_OK;
+}
+
+%endif %- ScanDecimal32sDotNumber
+%-BW_METHOD_END ScanDecimal32sDotNumber
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN strcmp
 %ifdef strcmp
