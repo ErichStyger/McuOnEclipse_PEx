@@ -8,6 +8,8 @@
   %set ColdFireV2CPUSpecific Value Disabled
   %set KinetisCPUSpecific ReadOnly yes
   %set KinetisCPUSpecific Value Disabled
+  %set KinetisSDKGroup ReadOnly yes
+  %set KinetisSDKGroup Value Disabled
 %elif (CPUfamily = "MCF")
   %set ColdFireV1CPUSpecific ReadOnly yes
   %set ColdFireV1CPUSpecific Value Disabled
@@ -15,6 +17,8 @@
   %set ColdFireV2CPUSpecific Value Enabled
   %set KinetisCPUSpecific ReadOnly yes
   %set KinetisCPUSpecific Value Disabled
+  %set KinetisSDKGroup ReadOnly yes
+  %set KinetisSDKGroup Value Disabled
 %elif (CPUfamily = "Kinetis")
   %set ColdFireV1CPUSpecific ReadOnly yes
   %set ColdFireV1CPUSpecific Value Disabled
@@ -22,6 +26,7 @@
   %set ColdFireV2CPUSpecific Value Disabled
   %set KinetisCPUSpecific ReadOnly no
   %set KinetisCPUSpecific Value Enabled
+  %set KinetisSDKGroup ReadOnly no
 %else %- S08
   %set ColdFireV1CPUSpecific ReadOnly yes
   %set ColdFireV1CPUSpecific Value Disabled
@@ -29,6 +34,8 @@
   %set ColdFireV2CPUSpecific Value Disabled
   %set KinetisCPUSpecific ReadOnly yes
   %set KinetisCPUSpecific Value Disabled
+  %set KinetisSDKGroup ReadOnly yes
+  %set KinetisSDKGroup Value Disabled
 %endif
 %- only Kinetis has Low Level Drivers
 %if (CPUfamily = "Kinetis")

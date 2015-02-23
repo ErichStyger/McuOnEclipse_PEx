@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.406</Version>
+    <Version>01.410</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -249,6 +249,56 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
       </TGrupItem>
     </Property>
     <Property>
+      <TBoolGrupItem>
+        <Name>Kinetis SDK</Name>
+        <Symbol>KinetisSDKGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group used to configure the component for the Kinetis SDK</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Generate RTOS PEx Macros</Name>
+              <Symbol>GenerateRTOSPExMacros</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, the component creates PEX_RTOS_INIT() and PEX_RTOS_START() macros in the component header file.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Kinetis SDK</Name>
+              <Symbol>KinetisSDK</Symbol>
+              <TypeSpec>FreeRTOS\KinetisSDK</TypeSpec>
+              <Hint>Link to Kinetis SDK component</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
       <TBoolItem>
         <Name>Classic CodeWarrior</Name>
         <Symbol>IsClassicCW</Symbol>
@@ -384,7 +434,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
