@@ -417,7 +417,7 @@ static void SD_Wait(TSDData *SD, bool *ErrorFlag)
 %define! ParUserDataPtr
 %define! RetVal
 %include Common\FatFsMemSDHCInit.Inc
-%if %PullCodeEnabled='yes' & defined(PullIncludeCode)
+%if defined(PullIncludeCode) & %PullCodeEnabled='yes'
 %PullIncludeCode  /* user provided include code */
 %else
 /* no user include code provided/enabled */
@@ -428,7 +428,7 @@ byte %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
 
   (void)UserDataPtr; /* not used */
   /* Enable pull-up/pull-down on GPIO pin used for SD card detection with user code provided in properties */
-%if %PullCodeEnabled='yes' & defined(PullCodeEnabled)
+%if defined(PullCodeEnabled) & %PullCodeEnabled='yes'
   %PullCode  /* user provided code */
 %else
   /* no user code provided/enabled */
