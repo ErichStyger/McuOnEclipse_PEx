@@ -775,7 +775,7 @@ bool %'ModuleName'%.%IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx,
   *isPrev = FALSE;
 #if %'ModuleName'%.HISTORY_ENABLED
   if (   cmdBufIdx==0 /* first character on command line */
-      || (%@Utility@'ModuleName'%.strcmp(cmdBuf, CLS1_history[CLS1_history_index])==0) /* pressing prev/next character on previous history element */
+      || (%@Utility@'ModuleName'%.strcmp(cmdBuf, %'ModuleName'%.history[%'ModuleName'%.history_index])==0) /* pressing prev/next character on previous history element */
       )
   {
     if (ch==%'ModuleName'%.HISTORY_PREV_CHAR) {
