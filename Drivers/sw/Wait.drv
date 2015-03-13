@@ -128,6 +128,11 @@ extern "C" {
 #pragma MESSAGE DISABLE C4001 /* Condition always FALSE */
 %endif
 %-
+%if (CPU_FAMILY = "Kinetis")
+#define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_CORE_CLK_HZ   %>%CTAB /* for Kinetis, use core clock as base for instruction execution */
+%else
+#define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_BUS_CLK_HZ    %>%CTAB /* for none-Kinetis, use buse clock as base for instruction execution */
+%endif
 #define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/1000))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
 %- ColdFire is too fast for a single instruction range: add plus 1 cycle to keep timing accurate enough
@@ -217,11 +222,11 @@ void %'ModuleName'%.%Waitms(uint16_t ms);
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
 #define %'ModuleName'%.Waitus(us)  \
-       (  ((%'ModuleName'%.NofCyclesUs((us),CPU_BUS_CLK_HZ)==0)||(us)==0) ? \
+       (  ((%'ModuleName'%.NofCyclesUs((us),%'ModuleName'%.INSTR_CLOCK_HZ)==0)||(us)==0) ? \
           (void)0 : \
           ( ((us)/1000)==0 ? (void)0 : %'ModuleName'%.Waitms((uint16_t)((us)/1000))) \
-          , (%'ModuleName'%.NofCyclesUs(((us)%%1000), CPU_BUS_CLK_HZ)==0) ? (void)0 : \
-            %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesUs(((us)%%1000), CPU_BUS_CLK_HZ)) \
+          , (%'ModuleName'%.NofCyclesUs(((us)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)==0) ? (void)0 : \
+            %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesUs(((us)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)) \
        )
 %else
 void %'ModuleName'%.%Waitus(uint16_t us);
@@ -237,12 +242,12 @@ void %'ModuleName'%.%Waitus(uint16_t us);
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
 #define %'ModuleName'%.Waitns(ns)  \
-       (  ((%'ModuleName'%.NofCyclesNs((ns), CPU_BUS_CLK_HZ)==0)||(ns)==0) ? \
+       (  ((%'ModuleName'%.NofCyclesNs((ns), %'ModuleName'%.INSTR_CLOCK_HZ)==0)||(ns)==0) ? \
           (void)0 : \
           %'ModuleName'%.Waitus((ns)/1000) \
-          , (%'ModuleName'%.NofCyclesNs((ns)%%1000, CPU_BUS_CLK_HZ)==0) ? \
+          , (%'ModuleName'%.NofCyclesNs((ns)%%1000, %'ModuleName'%.INSTR_CLOCK_HZ)==0) ? \
               (void)0 : \
-              %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesNs(((ns)%%1000), CPU_BUS_CLK_HZ)) \
+              %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesNs(((ns)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)) \
        )
 %else
 void %'ModuleName'%.%Waitns(uint16_t ns);
@@ -583,7 +588,7 @@ void %'ModuleName'%.%Waitms(uint16_t ms)
 %if defined(LowClock_kHz) | defined(SlowClock_kHz)
   /* dynamic clock/speed configuration */
   if (CpuMode == HIGH_SPEED) {
-    msCycles = %'ModuleName'%.NofCyclesMs(1, CPU_BUS_CLK_HZ_HIGH);
+    msCycles = %'ModuleName'%.NofCyclesMs(1, %'ModuleName'%.INSTR_CLOCK_HZ);
  %if defined(LowClock_kHz)
   %if defined(SlowClock_kHz)
   } else if (CpuMode == LOW_SPEED) {
@@ -599,11 +604,7 @@ void %'ModuleName'%.%Waitms(uint16_t ms)
   }
 %else
   /* static clock/speed configuration */
-%if (CPU_FAMILY = "Kinetis")
-  msCycles = %'ModuleName'%.NofCyclesMs(1, CPU_CORE_CLK_HZ);
-%else
-  msCycles = %'ModuleName'%.NofCyclesMs(1, CPU_BUS_CLK_HZ);
-%endif
+  msCycles = %'ModuleName'%.NofCyclesMs(1, %'ModuleName'%.INSTR_CLOCK_HZ);
 %endif
   while(ms>0) {
 %if (CPU_FAMILY = "Kinetis")
@@ -654,7 +655,7 @@ void %'ModuleName'%.%Waitus(uint16_t us)
 %if defined(LowClock_kHz) | defined(SlowClock_kHz)
   /* dynamic clock/speed configuration */
   if (CpuMode == HIGH_SPEED) {
-    %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesUs(us, CPU_BUS_CLK_HZ_HIGH));
+    %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesUs(us, %'ModuleName'%.INSTR_CLOCK_HZ));
  %if defined(LowClock_kHz)
   %if defined(SlowClock_kHz)
   } else if (CpuMode == LOW_SPEED) {
@@ -670,7 +671,7 @@ void %'ModuleName'%.%Waitus(uint16_t us)
   }
 %else
   /* static clock/speed configuration */
-  %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesUs(us, CPU_BUS_CLK_HZ));
+  %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesUs(us, %'ModuleName'%.INSTR_CLOCK_HZ));
 %endif
 }
 %ifdef COMPILER_HIX
@@ -710,7 +711,7 @@ void %'ModuleName'%.%Waitns(uint16_t ns)
  %endif
   }
 %else
-  %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesNs(ns, CPU_BUS_CLK_HZ));
+  %'ModuleName'%.WaitCycles((uint16_t)%'ModuleName'%.NofCyclesNs(ns, %'ModuleName'%.INSTR_CLOCK_HZ));
 %endif
 }
 %ifdef COMPILER_HIX
