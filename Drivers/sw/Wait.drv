@@ -336,7 +336,7 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles);
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
 %if (CPU_FAMILY = "Kinetis") & %Compiler = "GNUC"
-__attribute__((naked)) void %'ModuleName'%.%Wait10Cycles(void)
+__attribute__((naked, no_instrument_function)) void %'ModuleName'%.%Wait10Cycles(void)
 %else
 void %'ModuleName'%.%Wait10Cycles(void)
 %endif
@@ -418,7 +418,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
   /* Implemented in assembly file, as IAR does not support labels in HLI */
 %else
 %if (CPU_FAMILY = "Kinetis") & %Compiler = "GNUC"
-__attribute__((naked)) void %'ModuleName'%.%Wait100Cycles(void)
+__attribute__((naked, no_instrument_function)) void %'ModuleName'%.%Wait100Cycles(void)
 %elif (CPU_FAMILY = "Kinetis") & (%Compiler = "ARM_CC") %- Keil/ARM compiler
 __asm void %'ModuleName'%.%Wait100Cycles(void)
 %else
