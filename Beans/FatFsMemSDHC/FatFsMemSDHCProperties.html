@@ -275,6 +275,10 @@ The following items are available only if the group is enabled (the value is "En
 </ul>
 </li>
 <li>
+<a name="CardPresentFunctionName">
+<b>CardPresent() Function</b></a> - If no Card Detect pin is configured, you can provide your own custom function name (e.g MyCardPresent). The function has the following prototype: bool FunctionName(void). If you provide TRUE or FALSE as function name, it will always return TRUE or FALSE, otherwise it uses the provided function name. If the name it empty, it always returns FALSE.
+</li>
+<li>
 <a name="WriteProtectPinEnabled">
 <b>Write Protect Pin</b></a> - Optional pin to detect if the card is write protected.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
@@ -289,6 +293,10 @@ The following items are available only if the group is enabled (the value is "En
   <b>Low Active</b></a> - If pin is low active (logical low level means write protection is on)
   </li>
 </ul>
+</li>
+<li>
+<a name="isWriteProtectedFunctionName">
+<b>isWriteProtected() Function</b></a> - If no Write protect pin is configured, you can provide your own custom function name (e.g MyCardPresentPresent). The function has the following prototype: bool FunctionName(void). If you provide TRUE or FALSE as function name, it will always return TRUE or FALSE, otherwise it uses the provided function name. If the name it empty, it always returns FALSE.
 </li>
 <li>
 <a name="Timeout">

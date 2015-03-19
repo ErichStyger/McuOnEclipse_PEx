@@ -4,7 +4,7 @@
     <Name>FatFsMemSDHC</Name>
     <Description>Memory Implementation for FatFS using SDHC_LDD</Description>
     <Author>Erich Styger</Author>
-    <Version>01.028</Version>
+    <Version>01.036</Version>
     <Icon>FatFsMemSDHC</Icon>
     <TypesFiles>PE,FatFsMemSDHC\FatFsMemSDHC</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -218,6 +218,19 @@
       </TBoolGrupItem>
     </Property>
     <Property>
+      <TStrgItem>
+        <Name>CardPresent() Function</Name>
+        <Symbol>CardPresentFunctionName</Symbol>
+        <Hint>If no Card Detect pin is configured, you can provide your own custom function name (e.g MyCardPresent). The function has the following prototype: bool FunctionName(void). If you provide TRUE or FALSE as function name, it will always return TRUE or FALSE, otherwise it uses the provided function name. If the name it empty, it always returns FALSE.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>FALSE</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
+    </Property>
+    <Property>
       <TBoolGrupItem>
         <Name>Write Protect Pin</Name>
         <Symbol>WriteProtectPinEnabled</Symbol>
@@ -270,6 +283,19 @@
           </GrupItem>
         </Children>
       </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TStrgItem>
+        <Name>isWriteProtected() Function</Name>
+        <Symbol>isWriteProtectedFunctionName</Symbol>
+        <Hint>If no Write protect pin is configured, you can provide your own custom function name (e.g MyCardPresentPresent). The function has the following prototype: bool FunctionName(void). If you provide TRUE or FALSE as function name, it will always return TRUE or FALSE, otherwise it uses the provided function name. If the name it empty, it always returns FALSE.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>FALSE</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
     </Property>
     <Property>
       <TInhrLinkItem>

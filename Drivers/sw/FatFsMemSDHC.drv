@@ -379,6 +379,17 @@ bool %'ModuleName'%.%CardPresent(void)
 %else
   return %@CD@'ModuleName'%.GetVal()!=0;
 %endif
+%elif defined(CardPresentFunctionName)
+  %if %CardPresentFunctionName='TRUE'
+  return TRUE; /* 'TRUE' provided as CardPresent() function in properties */
+  %elif %CardPresentFunctionName='FALSE'
+  return FALSE; /* 'FALSE' provided as CardPresent() function in properties */
+  %elif %CardPresentFunctionName<>""
+  bool %CardPresentFunctionName(void); /* prototype for user defined function */
+  return %CardPresentFunctionName(); /* call user provided function */
+  %else
+  return FALSE; /* no CD pin and no custom card present function, assume card is not inserted */
+  %endif
 %else
   return FALSE; /* no CD pin, assume card is not inserted */
 %endif
@@ -536,6 +547,17 @@ bool %'ModuleName'%.%isWriteProtected(void)
   return %@WP@'ModuleName'%.GetVal()==0;
   %else
   return %@WP@'ModuleName'%.GetVal()!=0;
+  %endif
+%elif defined(isWriteProtectedFunctionName)
+  %if %isWriteProtectedFunctionName='TRUE'
+  return TRUE; /* 'TRUE' provided as isWriteProtected() function in properties */
+  %elif %isWriteProtectedFunctionName='FALSE'
+  return FALSE; /* 'FALSE' provided as isWriteProtected() function in properties */
+  %elif %isWriteProtectedFunctionName<>""
+  bool %isWriteProtectedFunctionName(void); /* prototype for user defined function */
+  return %isWriteProtectedFunctionName(); /* call user provided function */
+  %else
+  return FALSE; /* no CD pin and no custom isWriteProtected function, write protection is off */
   %endif
 %else
   return FALSE; /* no card write protection pin available */
