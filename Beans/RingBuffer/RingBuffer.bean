@@ -4,7 +4,7 @@
     <Name>RingBuffer</Name>
     <Description>Implements a ring buffer for 16bit elements</Description>
     <Author>Erich Styger</Author>
-    <Version>01.033</Version>
+    <Version>01.037</Version>
     <Icon>RingBuffer</Icon>
     <TypesFiles>PE,RingBuffer\RingBuffer</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -196,6 +196,46 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType *elemP)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Peek</Name>
+        <Symbol>Peek</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns an element of the buffer without removiing it.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>index</ParName>
+          <ParType>BufSizeType</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Index of element. 0 peeks the top element, 1 the next, and so on.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>elemP</ParName>
+          <ParType>ElementType</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the received element</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

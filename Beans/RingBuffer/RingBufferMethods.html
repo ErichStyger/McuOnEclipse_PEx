@@ -239,6 +239,19 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="Peek">
+<b>Peek</b></a>
+ - Returns an element of the buffer without removiing it.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Peek(<i>ComponentName_</i>BufSizeType index, <i>ComponentName_</i>ElementType *elemP)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>index:<i>ComponentName_</i>BufSizeType</i> - Index of element. 0 peeks the top element, 1 the next, and so on.</li>
+<li><i>elemP: Pointer to <i>ComponentName_</i>ElementType</i> - Pointer to where to store the received element</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="NofElements">
 <b>NofElements</b></a>
  - Returns the actual number of elements in the buffer.
