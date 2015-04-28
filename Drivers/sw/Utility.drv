@@ -2503,6 +2503,9 @@ uint8_t %'ModuleName'%.%strCutTail(uint8_t *str, uint8_t *tail)
 %include Common\UtilitystrcatNum32sDotValue100.Inc
 void %'ModuleName'%.%strcatNum32sDotValue100(uint8_t *dst, size_t dstSize, int32_t num)
 {
+  if (num<0 && (num/100)==0) { /* e.g. -53 ==> write sign, as strcatNum32() below will not know that it is negative */
+    %'ModuleName'%.%chcat(dst, dstSize, '-');
+  }
   %'ModuleName'%.%strcatNum32s(dst, dstSize, num/100);
   %'ModuleName'%.%chcat(dst, dstSize, '.');
   if (num<0) {
