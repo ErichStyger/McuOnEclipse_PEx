@@ -262,7 +262,7 @@
 %else
 #define configSYSTICK_CLOCK_HZ                                   %>50 configBUS_CLOCK_HZ /* frequency of system tick counter */
 %endif
-#define configMINIMAL_STACK_SIZE                                 %>50 ((unsigned portSHORT)%MinimalStackSize) /* stack size in addressable stack units */
+#define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
 /*----------------------------------------------------------*/
 /* Heap Memory */
 %if MemoryScheme = "Scheme1"
