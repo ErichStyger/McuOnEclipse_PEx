@@ -791,7 +791,13 @@ void %OnTraceStart(void)
 %include Common\PercepioTraceOnTraceWrap.Inc
 void %OnTraceWrap(void)
 {
+#if 0 /* default implementation for gdb below ... */
   /* Write your code here ... */
+  uint8_t buf[64];
+
+  /* GDB: dump binary memory <file> <hexStartAddr> <hexEndAddr> */
+  %'ModuleName'%.%vGetGDBDumpCommand(buf, sizeof(buf), "c:\\tmp\\trc.dump");
+#endif
 }
 
 %endif %- OnTraceWrap
