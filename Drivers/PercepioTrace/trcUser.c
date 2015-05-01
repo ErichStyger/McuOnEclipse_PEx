@@ -41,9 +41,11 @@
 
 #include "trcUser.h"
 #if 1 /* << EST: include own interface for events */
+#if !configPEX_KINETIS_SDK
 %for var from EventModules
 #include "%var.h"
 %endfor
+#endif
 #include "%@Utility@'ModuleName'.h" /* header file for utility functions */
 #endif
 
