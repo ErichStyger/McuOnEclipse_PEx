@@ -290,22 +290,22 @@
 %endif
 #endif
 /*----------------------------------------------------------*/
-#define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length */
+#define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
 %if %UseTraceFacility='yes'
-#define configUSE_TRACE_FACILITY                                 %>50 1
+#define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: generate runtime stats and trace information, 0: no runtime stats/trace */
 %else
-#define configUSE_TRACE_FACILITY                                 %>50 0
+#define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: generate runtime stats and trace information, 0: no runtime stats/trace */
 %endif
 %if defined(UseTraceHooksGroup) & %UseTraceHooksGroup='yes' & defined(FRTrace)
-#define configUSE_TRACE_HOOKS                                    %>50 1 /* using Percepio Trace hooks */
+#define configUSE_TRACE_HOOKS                                    %>50 1 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
 %else
-#define configUSE_TRACE_HOOKS                                    %>50 0 /* not using Percepio Trace hooks */
+#define configUSE_TRACE_HOOKS                                    %>50 0 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
 %endif
 #define configUSE_STATS_FORMATTING_FUNCTIONS                     %>50 (configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS)
 %if %Use16bitTicks='yes'
-#define configUSE_16_BIT_TICKS                                   %>50 1
+#define configUSE_16_BIT_TICKS                                   %>50 1 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
 %else
-#define configUSE_16_BIT_TICKS                                   %>50 0
+#define configUSE_16_BIT_TICKS                                   %>50 0 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
 %endif
 %if %IdleShouldYield='yes'
 #define configIDLE_SHOULD_YIELD                                  %>50 1

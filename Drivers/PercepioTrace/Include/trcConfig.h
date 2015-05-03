@@ -52,24 +52,24 @@
  * Available ports are:
  *
  * Port Name							Code	 Official	OS supported
- * PORT_APPLICATION_DEFINED				 -2		-			-
- * PORT_NOT_SET							       -1		-			-
- * PORT_HWIndependent					      0		Yes			Any
- * PORT_Win32							          1		Yes			FreeRTOS on Win32
- * PORT_Atmel_AT91SAM7					    2		No			Any
- * PORT_Atmel_UC3A0						      3		No			Any
- * PORT_ARM_CortexM						      4		Yes			Any
- * PORT_Renesas_RX600					      5		Yes			Any
- * PORT_Microchip_dsPIC_AND_PIC24		6		Yes			Any				
- * PORT_TEXAS_INSTRUMENTS_TMS570		7		No			Any				
- * PORT_TEXAS_INSTRUMENTS_MSP430		8		No			Any				
- * PORT_MICROCHIP_PIC32MX				    9		Yes			Any
- * PORT_XILINX_PPC405					     10		No			FreeRTOS
- * PORT_XILINX_PPC440					     11		No			FreeRTOS
- * PORT_XILINX_MICROBLAZE				   12		No			Any
- * PORT_NXP_LPC210X						     13		No			Any
- * PORT_MICROCHIP_PIC32MZ				   14		Yes			Any
- * PORT_ARM_CORTEX_A9					     15		No			Any
+ * PORT_APPLICATION_DEFINED	            -2		-			-
+ * PORT_NOT_SET                         -1		-			-
+ * PORT_HWIndependent                    0		Yes			Any
+ * PORT_Win32                            1		Yes			FreeRTOS on Win32
+ * PORT_Atmel_AT91SAM7                   2		No			Any
+ * PORT_Atmel_UC3A0                      3		No			Any
+ * PORT_ARM_CortexM                      4		Yes			Any
+ * PORT_Renesas_RX600                    5		Yes			Any
+ * PORT_Microchip_dsPIC_AND_PIC24        6		Yes			Any
+ * PORT_TEXAS_INSTRUMENTS_TMS570         7		No			Any
+ * PORT_TEXAS_INSTRUMENTS_MSP430         8		No			Any
+ * PORT_MICROCHIP_PIC32MX                9		Yes			Any
+ * PORT_XILINX_PPC405                    10		No			FreeRTOS
+ * PORT_XILINX_PPC440                    11		No			FreeRTOS
+ * PORT_XILINX_MICROBLAZE                12		No			Any
+ * PORT_NXP_LPC210X                      13		No			Any
+ * PORT_MICROCHIP_PIC32MZ                14		Yes			Any
+ * PORT_ARM_CORTEX_A9                    15		No			Any
  *****************************************************************************/
 
 // Set the port setting here!

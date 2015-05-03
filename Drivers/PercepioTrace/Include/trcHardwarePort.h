@@ -118,7 +118,7 @@
 #define PORT_NXP_LPC210X					13	/*	No			Any					*/
 #define PORT_MICROCHIP_PIC32MZ				14	/*	Yes			Any					*/
 #define PORT_ARM_CORTEX_A9					15	/*	No			Any					*/
-#define PORT_FREESCALE_PROCESSOR_EXPERT 16  /* No          FreeRTOS          */ /* << EST */
+#define PORT_FREESCALE_PROCESSOR_EXPERT     16  /*  No          FreeRTOS            */ /* << EST */
 
 #include "trcConfig.h"
 

@@ -328,9 +328,11 @@ extern "C" {
 #endif
 
 %- << EST: Modification for Processor Expert port
-%if %UseTraceHooksGroup = 'yes'
-#include "trcKernelPort.h" /* include trace macro definition */
-%endif
+#if configUSE_TRACE_HOOKS
+%- %if %UseTraceHooksGroup = 'yes'
+  #include "trcKernelPort.h" /* include trace macro definition */
+%- %endif
+#endif
 
 /* Remove any unused trace macros. */
 #ifndef traceSTART
