@@ -121,9 +121,12 @@
 #define configCPU_FAMILY_ARM_M0P      %>45 6  /* ARM Cortex-M0+ */
 #define configCPU_FAMILY_ARM_M4       %>45 7  /* ARM Cortex-M4 */
 #define configCPU_FAMILY_ARM_M4F      %>45 8  /* ARM Cortex-M4F (with floating point unit) */
+#define configCPU_FAMILY_ARM_M7       %>45 9  /* ARM Cortex-M7 */
+#define configCPU_FAMILY_ARM_M7F      %>45 10  /* ARM Cortex-M7F (with floating point unit) */
 /* Macros to identify set of core families */
+#define configCPU_FAMILY_IS_ARM_M7(fam)   %>45 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
 #define configCPU_FAMILY_IS_ARM_M4(fam)   %>45 (((fam)==configCPU_FAMILY_ARM_M4)  || ((fam)==configCPU_FAMILY_ARM_M4F))
-#define configCPU_FAMILY_IS_ARM(fam)      %>45 (((fam)==configCPU_FAMILY_ARM_M0P) || configCPU_FAMILY_IS_ARM_M4(fam))
+#define configCPU_FAMILY_IS_ARM(fam)      %>45 (((fam)==configCPU_FAMILY_ARM_M0P) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
 
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #define configCPU_FAMILY  %>50 configCPU_FAMILY_S08
@@ -292,9 +295,9 @@
 /*----------------------------------------------------------*/
 #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
 %if %UseTraceFacility='yes'
-#define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: generate runtime stats and trace information, 0: no runtime stats/trace */
+#define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
 %else
-#define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: generate runtime stats and trace information, 0: no runtime stats/trace */
+#define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
 %endif
 %if defined(UseTraceHooksGroup) & %UseTraceHooksGroup='yes' & defined(FRTrace)
 #define configUSE_TRACE_HOOKS                                    %>50 1 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
