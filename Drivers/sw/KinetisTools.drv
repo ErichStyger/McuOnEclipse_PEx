@@ -135,6 +135,12 @@ typedef enum {
 %else
 #error "Not a Kinetis!"
 %endif
+%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
+#define %'ModuleName'%.IS_USING_KINETIS_SDK   1 /* 1: using Kinetis SDK, 0: not using Kinetis SDK */
+%else
+#define %'ModuleName'%.IS_USING_KINETIS_SDK   0 /* 1: using Kinetis SDK, 0: not using Kinetis SDK */
+%endif
+
 %-BW_CUSTOM_USERTYPE_END
 
 %-BW_DEFINITION_START
@@ -304,8 +310,16 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
 %include Common\KinetisToolsSoftwareReset.Inc
 void %'ModuleName'%.%SoftwareReset(void)
 {
-  /* generic way to request a reset from software for ARM Cortex */
+  /* Generic way to request a reset from software for ARM Cortex */
+  /* See https://community.freescale.com/thread/99740
+     To write to this register, you must write 0x5FA to the VECTKEY field, otherwise the processor ignores the write.
+     SYSRESETREQ will cause a system reset asynchronously, so need to wait afterwards.
+   */
+#if %'ModuleName'%.IS_USING_KINETIS_SDK
+  SCB->AIRCR = (0x5FA<<SCB_AIRCR_VECTKEY_Pos)|SCB_AIRCR_SYSRESETREQ_Msk;
+#else
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
+#endif
   for(;;) {
     /* wait until reset */
   }
@@ -428,7 +442,6 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetKinetisFamilyString
 %ifdef GetKinetisFamilyString

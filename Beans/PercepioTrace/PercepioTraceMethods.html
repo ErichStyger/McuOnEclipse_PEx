@@ -388,11 +388,11 @@ LI.EXP {
  - Gets the gdb command to dump the trace data to a file. Useful for copy-pasting it to the gdb console.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vGetGDBDumpCommand(byte *buf, word bufSize, byte *fileName)<br />
+<br /><i>ANSIC prototype:</i> void vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t *fileName)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>buf: Pointer to byte</i> - Pointer to buffer for the command. Make it large enoug (about 64 bytes)</li>
-<li><i>bufSize:word</i> - size of the buffer</li>
-<li><i>fileName: Pointer to byte</i> - Pointer to the file name string, e.g. &quot;C:\tmp\trace.dump&quot;</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to buffer for the command. Make it large enoug (about 64 bytes)</li>
+<li><i>bufSize:uint16_t</i> - size of the buffer</li>
+<li><i>fileName: Pointer to uint8_t</i> - Pointer to the file name string, e.g. &quot;C:\tmp\trace.dump&quot;</li>
 </ul><br />
 </li>
 <li><a name="vTraceSetStopHook">
