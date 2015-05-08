@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.037</Version>
+    <Version>01.038</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Percepio AB, 2013-2015\nhttp      : www.percepio.se\nmail      : info@percepio.com\nProcessor Expert port: Erich Styger, 2013-2015</Copyright>
@@ -1415,25 +1415,25 @@ This does not limit the total amount of objects created, if objects are deleted 
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>buf</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to buffer for the command. Make it large enoug (about 64 bytes)</ParHint>
         </Parameter>
         <Parameter>
           <ParName>bufSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>size of the buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>fileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the file name string, e.g. "C:\\tmp\\trace.dump"</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte *buf, word bufSize, byte *fileName)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t *buf, uint16_t bufSize, uint8_t *fileName)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
