@@ -484,7 +484,7 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN IsHistoryCharacter
 %ifdef IsHistoryCharacter
-bool %'ModuleName'%.%IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev);
+bool %'ModuleName'%.%IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdBufIdx, bool *isPrev);
 %define! ParcmdBuf
 %define! ParcmdBufIdx
 %define! ParisPrev
@@ -770,7 +770,7 @@ void %'ModuleName'%.%PrintPrompt(%'ModuleName'_ConstStdIOType *io)
 %define! Parch
 %define! RetVal
 %include Common\ShellIsHistoryCharacter.Inc
-bool %'ModuleName'%.%IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev)
+bool %'ModuleName'%.%IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdBufIdx, bool *isPrev)
 {
   *isPrev = FALSE;
 #if %'ModuleName'%.HISTORY_ENABLED

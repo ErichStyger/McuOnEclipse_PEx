@@ -117,7 +117,7 @@ extern "C" {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetEvent
 %ifdef SetEvent
-void %'ModuleName'%.%SetEvent(byte event);
+void %'ModuleName'%.%SetEvent(uint8_t event);
 %define! Parevent
 %include Common\SimpleEventsSetEvent.Inc
 
@@ -140,7 +140,7 @@ void %'ModuleName'%.Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetEvent
 %ifdef GetEvent
-bool %'ModuleName'%.%GetEvent(byte event);
+bool %'ModuleName'%.%GetEvent(uint8_t event);
 %define! Parevent
 %define! RetVal
 %include Common\SimpleEventsGetEvent.Inc
@@ -150,7 +150,7 @@ bool %'ModuleName'%.%GetEvent(byte event);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClearEvent
 %ifdef ClearEvent
-void %'ModuleName'%.%ClearEvent(byte event);
+void %'ModuleName'%.%ClearEvent(uint8_t event);
 %define! Parevent
 %include Common\SimpleEventsClearEvent.Inc
 
@@ -171,7 +171,7 @@ bool %'ModuleName'%.%EventsPending(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetClearEvent
 %ifdef GetClearEvent
-bool %'ModuleName'%.%GetClearEvent(byte event);
+bool %'ModuleName'%.%GetClearEvent(uint8_t event);
 %define! Parevent
 %define! RetVal
 %include Common\SimpleEventsGetClearEvent.Inc
@@ -189,7 +189,7 @@ bool %'ModuleName'%.%GetClearEvent(byte event);
 %-BW_METHOD_BEGIN AppHandleEvent
 %ifdef AppHandleEvent
 %INTERFACE AppHandleEvent
-void %AppHandleEvent(byte event);
+void %AppHandleEvent(uint8_t event);
 %define! Parevent
 %include Common\SimpleEventsAppHandleEvent.Inc
 
@@ -233,7 +233,7 @@ static byte %'ModuleName'%.Events[((%'ModuleName'%.NOF_EVENTS-1)/8)+1];%>40 /*!<
 %ifdef SetEvent
 %define! Parevent
 %include Common\SimpleEventsSetEvent.Inc
-void %'ModuleName'%.%SetEvent(byte event)
+void %'ModuleName'%.%SetEvent(uint8_t event)
 {
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
@@ -250,7 +250,7 @@ void %'ModuleName'%.%SetEvent(byte event)
 %ifdef ClearEvent
 %define! Parevent
 %include Common\SimpleEventsClearEvent.Inc
-void %'ModuleName'%.%ClearEvent(byte event)
+void %'ModuleName'%.%ClearEvent(uint8_t event)
 {
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
@@ -268,7 +268,7 @@ void %'ModuleName'%.%ClearEvent(byte event)
 %define! Parevent
 %define! RetVal
 %include Common\SimpleEventsGetEvent.Inc
-bool %'ModuleName'%.%GetEvent(byte event)
+bool %'ModuleName'%.%GetEvent(uint8_t event)
 {
   /* event is in the range of 0..255: find bit position in array */
   return (bool)(%'ModuleName'%.Events[event/8]&(0x80>>(event%%8)));
@@ -282,7 +282,7 @@ bool %'ModuleName'%.%GetEvent(byte event)
 %define! Parevent
 %define! RetVal
 %include Common\SimpleEventsGetClearEvent.Inc
-bool %'ModuleName'%.%GetClearEvent(byte event)
+bool %'ModuleName'%.%GetClearEvent(uint8_t event)
 {
   bool isSet = FALSE;
   %@CriticalSection@'ModuleName'%.CriticalVariable();
@@ -390,7 +390,7 @@ void %'ModuleName'%.Init(void)
 %IMPLEMENTATION AppHandleEvent
 %define! Parevent
 %include Common\SimpleEventsAppHandleEvent.Inc
-void %AppHandleEvent(byte event)
+void %AppHandleEvent(uint8_t event)
 {
   (void)event; /* only to avoid compiler warning about unused variable */
   /* Write your code here ... */

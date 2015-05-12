@@ -4,7 +4,7 @@
     <Name>Shell</Name>
     <Description>Command Line Shell</Description>
     <Author>Erich Styger</Author>
-    <Version>01.071</Version>
+    <Version>01.073</Version>
     <Icon>Shell</Icon>
     <TypesFiles>PE,Shell\Shell</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -338,7 +338,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>no</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -875,19 +875,19 @@
         <ParamCount>4</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>current command character</ParHint>
         </Parameter>
         <Parameter>
           <ParName>cmdBuf</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to command line buffer read so far</ParHint>
         </Parameter>
         <Parameter>
           <ParName>cmdBufIdx</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Index of character into cmdBuf</ParHint>
           <ParUserDeclaration>size_t cmdBufIdx</ParUserDeclaration>
@@ -900,7 +900,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t ch, uint8_t *cmdBuf, size_t cmdBufIdx, bool *isPrev)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

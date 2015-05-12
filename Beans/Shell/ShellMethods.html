@@ -333,11 +333,11 @@ LI.EXP {
  - Returns TRUE if character is a history character
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool IsHistoryCharacter(byte ch, byte *cmdBuf, size_t cmdBufIdx, bool *isPrev)<br />
+<br /><i>ANSIC prototype:</i> bool IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdBufIdx, bool *isPrev)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - current command character</li>
-<li><i>cmdBuf: Pointer to byte</i> - Pointer to command line buffer read so far</li>
-<li><i>cmdBufIdx:byte</i> - Index of character into cmdBuf</li>
+<li><i>ch:uint8_t</i> - current command character</li>
+<li><i>cmdBuf: Pointer to uint8_t</i> - Pointer to command line buffer read so far</li>
+<li><i>cmdBufIdx:uint8_t</i> - Index of character into cmdBuf</li>
 <li><i>isPrev: Pointer to bool</i> - Pointer to return value, if it is 'previous' history or not</li>
 <li><i>Return value:bool</i> - TRUE if it is an accepted history character
 </li>

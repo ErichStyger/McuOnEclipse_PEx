@@ -4,7 +4,7 @@
     <Name>SimpleEvents</Name>
     <Description>Simple Event Handling</Description>
     <Author>Erich Styger</Author>
-    <Version>01.047</Version>
+    <Version>01.050</Version>
     <Icon>SimpleEvents</Icon>
     <TypesFiles>PE,SimpleEvents\SimpleEvents</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2011, all rights reserved.\n\nThis an open source software implementing a simple event module using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -160,13 +160,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>event</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The event (number) to be set so it will be called by the HandleEvent() routine later on. Note that there cannot be multiple instances of an event, and the lower the event number, the higher the priority.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte event)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t event)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -194,13 +194,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>event</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The event number to be cleared.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte event)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t event)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -256,13 +256,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>event</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The event number to check. If the event is set, the function returns TRUE.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte event)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t event)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -290,13 +290,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>event</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The event number to check. If the event is set, the function returns TRUE.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte event)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t event)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -389,13 +389,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>event</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Event (event number) to be processed.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte event)</ANSIC>
+          <ANSIC>void #C#(uint8_t event)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

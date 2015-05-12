@@ -212,9 +212,9 @@ LI.EXP {
  - Sets an event (number) be processed by the next HandleEvent() call
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetEvent(byte event)<br />
+<br /><i>ANSIC prototype:</i> void SetEvent(uint8_t event)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>event:byte</i> - The event (number) to be set so it will be called by the HandleEvent() routine later on. Note that there cannot be multiple instances of an event, and the lower the event number, the higher the priority.</li>
+<li><i>event:uint8_t</i> - The event (number) to be set so it will be called by the HandleEvent() routine later on. Note that there cannot be multiple instances of an event, and the lower the event number, the higher the priority.</li>
 </ul><br />
 </li>
 <li><a name="ClearEvent">
@@ -222,9 +222,9 @@ LI.EXP {
  - Clears one event (number). If the event is not set, then the function has no effect.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void ClearEvent(byte event)<br />
+<br /><i>ANSIC prototype:</i> void ClearEvent(uint8_t event)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>event:byte</i> - The event number to be cleared.</li>
+<li><i>event:uint8_t</i> - The event number to be cleared.</li>
 </ul><br />
 </li>
 <li><a name="EventsPending">
@@ -243,9 +243,9 @@ LI.EXP {
  - Allows to check if an event is set or not.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetEvent(byte event)<br />
+<br /><i>ANSIC prototype:</i> bool GetEvent(uint8_t event)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>event:byte</i> - The event number to check. If the event is set, the function returns TRUE.</li>
+<li><i>event:uint8_t</i> - The event number to check. If the event is set, the function returns TRUE.</li>
 <li><i>Return value:bool</i> - none
 </li>
 </ul><br />
@@ -255,9 +255,9 @@ LI.EXP {
  - Allows to check if an event is set or not. If set, it will be automatically cleared.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetClearEvent(byte event)<br />
+<br /><i>ANSIC prototype:</i> bool GetClearEvent(uint8_t event)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>event:byte</i> - The event number to check. If the event is set, the function returns TRUE.</li>
+<li><i>event:uint8_t</i> - The event number to check. If the event is set, the function returns TRUE.</li>
 <li><i>Return value:bool</i> - none
 </li>
 </ul><br />
