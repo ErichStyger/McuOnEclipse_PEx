@@ -1715,6 +1715,27 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 }
 
 %endif
+%if defined(GenerateOSAFunctions) & %GenerateOSAFunctions='yes'
+/*!
+ * \brief Initializes the OS Adapter layer for the Kinetis SDK.
+ * \return Error code, kStatus_OSA_Success if everything is ok.
+ */
+osa_status_t OSA_Init(void) {
+%if %UseTraceHooksGroup='yes'
+  %@FRTrace@'ModuleName'%.vTraceInitTraceData();/* initialize trace first, as needed by RTOS functions */
+%endif
+  return kStatus_OSA_Success;
+}
+
+/*!
+ * \brief Starts the OS within the OS Adapter layer of the Kinetis SDK
+ * \return Error code, kStatus_OSA_Success if everything is ok.
+ */
+osa_status_t OSA_Start(void) {
+  vTaskStartScheduler(); /* start the RTOS scheduler */
+  return kStatus_OSA_Success;
+}
+%endif
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers

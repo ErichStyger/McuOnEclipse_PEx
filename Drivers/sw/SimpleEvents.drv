@@ -222,7 +222,7 @@ void %AppHandleEvent(uint8_t event);
 %-
 %define NumOfEvents %EventNameListLines
 #define %'ModuleName'%.NOF_EVENTS  %EventNameListLines           %>40 /*!< Number of events supported */
-static byte %'ModuleName'%.Events[((%'ModuleName'%.NOF_EVENTS-1)/8)+1];%>40 /*!< Bit set of events */
+static uint8_t %'ModuleName'%.Events[((%'ModuleName'%.NOF_EVENTS-1)/8)+1];%>40 /*!< Bit set of events */
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -335,7 +335,7 @@ bool %'ModuleName'%.%EventsPending(void)
 void %'ModuleName'%.%HandleEvent(void)
 {
   /* Handle the one with the highest priority. */
-  byte event;
+  uint8_t event;
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
 %if %PowerSave = 'yes'
@@ -369,7 +369,7 @@ void %'ModuleName'%.Init(void)
 %if %NumOfEvents <=. '8'
   %'ModuleName'%.Events[0] = 0; /* initialize data structure */
 %else
-  byte i;
+  uint8_t i;
 
   for(i=0;i<sizeof(%'ModuleName'%.Events); i++) {
     %'ModuleName'%.Events[i] = 0; /* initialize data structure */
