@@ -755,6 +755,8 @@ uint8_t %'ModuleName'%.%Deinit(void)
   uint_8 err;
 
   err = USB_Class_CDC_DeInit(CONTROLLER_ID);
+  %@RxBuffer@'ModuleName'%.Deinit();
+  %@TxBuffer@'ModuleName'%.Deinit();
   if(err != USB_OK) {
     /* Error deinitializing USB-CDC Class */
 %if defined(OnError)
@@ -776,6 +778,8 @@ uint8_t %'ModuleName'%.%Init(void)
 {
   uint_8 err;
 
+  %@RxBuffer@'ModuleName'%.Init();
+  %@TxBuffer@'ModuleName'%.Init();
   err = USB_Class_CDC_Init(CONTROLLER_ID, %'ModuleName'%.%App_Callback, NULL, %'ModuleName'%.%Notify_Callback, TRUE);
   if(err != USB_OK) {
     /* Error initializing USB-CDC Class */
