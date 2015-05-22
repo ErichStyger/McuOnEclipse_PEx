@@ -1825,7 +1825,7 @@ __asm void vPortPendSVHandler(void) {
 #endif
   str r0, [r2]               /* Save the new top of stack into the first member of the TCB. */
   stmdb sp!, {r3, r14}
-  mov r0, #0
+  mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
   msr basepri, r0
   bl vTaskSwitchContext
   mov r0, #0
