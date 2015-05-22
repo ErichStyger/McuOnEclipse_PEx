@@ -192,6 +192,15 @@ uint8_t %'ModuleName'%.%Peek(%'ModuleName'_BufSizeType index, %'ModuleName'_Elem
 
 %endif %- Peek
 %-BW_METHOD_END Peek
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+#define %'ModuleName'%.%Deinit() \
+   /* nothing to deinitialize */
+%include Common\RingBufferDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -440,6 +449,18 @@ uint8_t %'ModuleName'%.%Peek(%'ModuleName'_BufSizeType index, %'ModuleName'_Elem
 
 %endif %- Peek
 %-BW_METHOD_END Peek
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\RingBufferDeinit.Inc
+/**
+void %'ModuleName'%.%Deinit(void)
+{
+  ** Function is implemented as macro in the header file
+}
+*/
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
