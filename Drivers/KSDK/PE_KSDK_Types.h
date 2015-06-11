@@ -8,6 +8,9 @@
 #ifndef PE_KSDK_TYPES_H_
 #define PE_KSDK_TYPES_H_
 
+#include <stdbool.h> /* bool */
+#include <stdint.h>  /* int8_t, ... */
+
 #ifndef FALSE
   #define  FALSE  0x00u
 #endif
