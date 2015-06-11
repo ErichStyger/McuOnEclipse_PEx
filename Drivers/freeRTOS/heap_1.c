@@ -107,7 +107,7 @@ task.h is included from an application file. */
 #elif configUSE_HEAP_SECTION_NAME
   static uint8_t __attribute__((section (configHEAP_SECTION_NAME_STRING))) ucHeap[configTOTAL_HEAP_SIZE];
 #else
-static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
+  static uint8_t ucHeap[configTOTAL_HEAP_SIZE];
 #endif
 static size_t xNextFreeByte = ( size_t ) 0;
 
