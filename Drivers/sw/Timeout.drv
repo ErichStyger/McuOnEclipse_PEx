@@ -245,7 +245,7 @@ static bool %'ModuleName'%.FreeCounters[%'ModuleName'%.NOF_COUNTERS];%>40/* arra
     nofTicks = 1; /* wait at least for one tick, otherwise will timeout immediately */
   }
   %@CriticalSection@'ModuleName'%.EnterCritical();
-  while (!%'ModuleName'%.FreeCounters[handle] && handle<%'ModuleName'%.NOF_COUNTERS) {
+  while (handle<%'ModuleName'%.NOF_COUNTERS && !%'ModuleName'%.FreeCounters[handle]) {
     handle++;
   }
   if (handle<%'ModuleName'%.NOF_COUNTERS) {
