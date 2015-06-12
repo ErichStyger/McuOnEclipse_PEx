@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.045</Version>
+    <Version>01.050</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -280,6 +280,56 @@
           </GrupItem>
         </Children>
       </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Power Options</Name>
+        <Symbol>PowerOptionsGroup</Symbol>
+        <Hint>These options configure power options in the USB descriptor (g_config_descriptor[] inside usb_descriptor.c). S08/CFv1 are both self powered (its compulsory to set bus powered)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Always</Expanded>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Bus Powered</Name>
+              <Symbol>ConfigBusPowered</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This setting configures if BUS_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Self Powered</Name>
+              <Symbol>ConfigSelfPowered</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This setting configures if SELF_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
   </PropertyList>
   <MethodList>

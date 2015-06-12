@@ -75,7 +75,21 @@ uint_8 USB_DESC_CONST g_config_descriptor[CONFIG_DESC_SIZE] =
    1,                      /*  NumInterfaces */
    1,                      /*  Configuration Value */
    0,                      /*  Configuration Description String Index*/
-   BUS_POWERED|SELF_POWERED|(REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
+#if 0
+    BUS_POWERED|SELF_POWERED|(REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
+#else /* << EST: use settings from component */
+  %if defined(ConfigBusPowered) & %ConfigBusPowered='yes'
+    BUS_POWERED |
+  %else
+    0 /* not BUS_POWERED */ | 
+  %endif
+  %if defined(ConfigSelfPowered) & %ConfigSelfPowered='yes'
+    SELF_POWERED |
+  %else
+    0 /* not SELF_POWERED */ | 
+  %endif
+    (REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
+#endif
    /* S08/CFv1 are both self powered (its compulsory to set bus powered)*/
    /*Attributes.support RemoteWakeup and self power*/
    0x32,                   /*  Current draw from bus */

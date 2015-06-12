@@ -116,7 +116,21 @@ uint_8 USB_DESC_CONST g_config_descriptor[CONFIG_DESC_SIZE] =
     (uint_8)(1+DATA_CLASS_SUPPORT),/*NumInterfaces*/
     0x01,                      /*  Configuration Value */
     0x00,                      /*  Configuration Description String Index*/
+#if 0
     BUS_POWERED|SELF_POWERED|(REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
+#else /* << EST: use settings from component */
+  %if defined(ConfigBusPowered) & %ConfigBusPowered='yes'
+    BUS_POWERED |
+  %else
+    0 /* not BUS_POWERED */ | 
+  %endif
+  %if defined(ConfigSelfPowered) & %ConfigSelfPowered='yes'
+    SELF_POWERED |
+  %else
+    0 /* not SELF_POWERED */ | 
+  %endif
+    (REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
+#endif
               /*  Attributes.support RemoteWakeup and self power*/
     0x32,                   /*  Current draw from bus -- 100mA*/
 

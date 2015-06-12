@@ -265,6 +265,20 @@ The following items are available only if the group is enabled (the value is "En
 <a name="TxBuffer">
 <b>Send Buffer</b></a> - Interface to ring buffer for sending data. Elements in the bufer must be 16bits each.
 </li>
+<li>
+<a name="PowerOptionsGroup">
+<b>Power Options</b></a> - These options configure power options in the USB descriptor (g_config_descriptor[] inside usb_descriptor.c). S08/CFv1 are both self powered (its compulsory to set bus powered)
+<ul>
+  <li>
+  <a name="ConfigBusPowered">
+  <b>Bus Powered</b></a> - This setting configures if BUS_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)
+  </li>
+  <li>
+  <a name="ConfigSelfPowered">
+  <b>Self Powered</b></a> - This setting configures if SELF_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)
+  </li>
+</ul>
+</li>
 
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
