@@ -25,4 +25,4 @@
 %;**%>12 Power Options %>60: %get(PowerOptionsGroup,Text)
 %;**%>14 Bus Powered %>60: %get(ConfigBusPowered,Text)
 %;**%>14 Self Powered %>60: %get(ConfigSelfPowered,Text)
-%;**%>14 Remote Wakeup Support %>60: %get(ConfigRemoteWackupSupport,Text)
+
