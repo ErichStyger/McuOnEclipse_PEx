@@ -737,6 +737,19 @@ uint8_t %'ModuleName'%.%ScanDecimal32sDotNumber(const unsigned char **str, int32
 
 %endif %- ScanDecimal32sDotNumber
 %-BW_METHOD_END ScanDecimal32sDotNumber
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatPad
+%ifdef strcatPad
+void %'ModuleName'%.%strcatPad(uint8_t *dst, size_t dstSize, const unsigned char *src, char padChar, uint8_t srcPadSize);
+%define! Pardst
+%define! PardstSize
+%define! Parsrc
+%define! ParpadChar
+%define! ParsrcPadSize
+%include Common\UtilitystrcatPad.Inc
+
+%endif %- strcatPad
+%-BW_METHOD_END strcatPad
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2620,6 +2633,45 @@ uint8_t %'ModuleName'%.%ScanDoubleQuotedString(const uint8_t **cmd, uint8_t *buf
 
 %endif %- ScanDoubleQuotedString
 %-BW_METHOD_END ScanDoubleQuotedString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatPad
+%ifdef strcatPad
+%define! Pardst
+%define! PardstSize
+%define! Parsrc
+%define! ParpadChar
+%define! ParsrcPadSize
+%include Common\UtilitystrcatPad.Inc
+void %'ModuleName'%.%strcatPad(uint8_t *dst, size_t dstSize, const unsigned char *src, char padChar, uint8_t srcPadSize)
+{
+  uint8_t *p;
+  size_t nof = 0;
+
+  if (dstSize<2) {
+    return; /* hmm, really to small for anything than the zero byte? */
+  }
+  p = dst;
+  while(*p != '\0') { /* find end of string */
+    p++;
+    nof++;
+  }
+  %'ModuleName'%.%strcat(dst+nof, dstSize-nof, src); /* add string */
+  dstSize -= nof;
+  while(*p != '\0' && srcPadSize>0 && dstSize>1) {
+    p++;
+    srcPadSize--;
+    dstSize--;
+  }
+  while(srcPadSize>0 && dstSize>1) {
+    *p++ = padChar; /* add padding char */
+    srcPadSize--;
+    dstSize--;
+  }
+  *p = '\0'; /* terminate string */
+}
+
+%endif %- strcatPad
+%-BW_METHOD_END strcatPad
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

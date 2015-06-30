@@ -230,6 +230,20 @@ LI.EXP {
 <li><i>src: Pointer to uint8_t</i> - Pointer to source string.</li>
 </ul><br />
 </li>
+<li><a name="strcatPad">
+<b>strcatPad</b></a>
+ - Same as normal strcat, but safe as it does not write beyond the buffer. The buffer will be filled with a pad character for a given length.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void strcatPad(uint8_t *dst, size_t dstSize, const unsigned char *src, char padChar, uint8_t srcPadSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dst: Pointer to uint8_t</i> - Pointer to destination string</li>
+<li><i>dstSize:uint8_t</i> - Size of the destination buffer (in bytes).</li>
+<li><i>src: Pointer to uint8_t</i> - Pointer to source string.</li>
+<li><i>padChar:char</i> - Character to be used for padding</li>
+<li><i>srcPadSize:uint8_t</i> - To which size the src string has to be padded.</li>
+</ul><br />
+</li>
 <li><a name="chcat">
 <b>chcat</b></a>
  - Adds a single character to a zero byte terminated buffer. It cares about buffer overflow.
