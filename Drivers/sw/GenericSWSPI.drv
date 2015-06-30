@@ -270,12 +270,12 @@ byte %'ModuleName'_%SetShiftClockPolarity(byte Edge);
 %-BW_METHOD_END SetShiftClockPolarity
 %-BW_METHOD_BEGIN SetIdleClockPolarity
 %ifdef SetIdleClockPolarity
-byte %'ModuleName'_%SetIdleClockPolarity(byte Level);
+byte %'ModuleName'%.%SetIdleClockPolarity(byte Level);
 %define! ParLevel
 %define! RetVal
 %include Common\GenericSWSPISetIdleClockPolarity.Inc
 
-%endif %-SetIdleClockPolarity
+%endif %- SetIdleClockPolarity
 %-BW_METHOD_END SetIdleClockPolarity
 %-INTERNAL_METHOD_BEG Init
 void %'ModuleName'_Init(void);
@@ -546,7 +546,7 @@ byte %'ModuleName'_%SetShiftClockPolarity(byte Edge)
 %define! ParLevel
 %define! RetVal
 %include Common\GenericSWSPISetIdleClockPolarity.Inc
-byte %'ModuleName'_%SetIdleClockPolarity(byte Level)
+byte %'ModuleName'%.%SetIdleClockPolarity(byte Level)
 {
   %@Clk@'ModuleName'%.PutVal((byte)Level);                       %>>/* Set CLK to (new) idle value */
   return ERR_OK;
