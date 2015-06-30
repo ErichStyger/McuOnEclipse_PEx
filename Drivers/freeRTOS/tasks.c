@@ -3662,14 +3662,16 @@ TCB_t *pxTCB;
 										break;
 				}
 
-				/* Write the task name to the string, padding with spaces so it
-				can be printed in tabular form more easily. */
-				pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
-
-				/* Write the rest of the string. */
 #if 0
+        /* Write the task name to the string, padding with spaces so it
+        can be printed in tabular form more easily. */
+        pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
+
+        /* Write the rest of the string. */
 				sprintf( ( char * ) pcWriteBuffer, ( char * ) "\t\t%%c\t%%u\t%%u\t%%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber );
+        pcWriteBuffer += strlen( pcWriteBuffer );
 #else /* << EST */
+        %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
 	      %@Utility@'ModuleName'%.strcat((uint8_t*)pcWriteBuffer, bufSize, (const unsigned char*)"\t");
 	      %@Utility@'ModuleName'%.chcat((uint8_t*)pcWriteBuffer, bufSize, (unsigned char)cStatus);
 	      %@Utility@'ModuleName'%.chcat((uint8_t*)pcWriteBuffer, bufSize, (unsigned char)'\t');
@@ -3680,7 +3682,6 @@ TCB_t *pxTCB;
 	      %@Utility@'ModuleName'%.strcatNum32u((uint8_t*)pcWriteBuffer, bufSize, pxTaskStatusArray[ x ].xTaskNumber);
 	      %@Utility@'ModuleName'%.strcat((uint8_t*)pcWriteBuffer, bufSize, (const unsigned char*)"\r\n");
 #endif
-				pcWriteBuffer += strlen( pcWriteBuffer );
 			}
 
 			/* Free the array again. */
@@ -3763,11 +3764,14 @@ TCB_t *pxTCB;
 					ulTotalRunTimeDiv100 has already been divided by 100. */
 					ulStatsAsPercentage = pxTaskStatusArray[ x ].ulRunTimeCounter / ulTotalTime;
 
+#if 0
 					/* Write the task name to the string, padding with
 					spaces so it can be printed in tabular form more
 					easily. */
 					pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
-
+#else
+          %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
+#endif
 					if( ulStatsAsPercentage > 0UL )
 					{
 						#ifdef portLU_PRINTF_SPECIFIER_REQUIRED
@@ -3812,8 +3816,9 @@ TCB_t *pxTCB;
 						}
 						#endif
 					}
-
+#if 0
 					pcWriteBuffer += strlen( pcWriteBuffer );
+#endif
 				}
 			}
 			else
