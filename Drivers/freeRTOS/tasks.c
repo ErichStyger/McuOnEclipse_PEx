@@ -3564,7 +3564,7 @@ TCB_t *pxTCB;
 
 #endif /* portCRITICAL_NESTING_IN_TCB */
 /*-----------------------------------------------------------*/
-
+#if 0 /* << EST: not used */
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
 
 	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
@@ -3589,6 +3589,7 @@ TCB_t *pxTCB;
 	}
 
 #endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
+#endif
 /*-----------------------------------------------------------*/
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
@@ -3671,7 +3672,7 @@ TCB_t *pxTCB;
 				sprintf( ( char * ) pcWriteBuffer, ( char * ) "\t\t%%c\t%%u\t%%u\t%%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber );
         pcWriteBuffer += strlen( pcWriteBuffer );
 #else /* << EST */
-        %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
+        %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, (const unsigned char*)pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
 	      %@Utility@'ModuleName'%.strcat((uint8_t*)pcWriteBuffer, bufSize, (const unsigned char*)"\t");
 	      %@Utility@'ModuleName'%.chcat((uint8_t*)pcWriteBuffer, bufSize, (unsigned char)cStatus);
 	      %@Utility@'ModuleName'%.chcat((uint8_t*)pcWriteBuffer, bufSize, (unsigned char)'\t');
@@ -3770,7 +3771,7 @@ TCB_t *pxTCB;
 					easily. */
 					pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 #else
-          %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
+          %@Utility@'ModuleName'%.strcatPad((uint8_t*)pcWriteBuffer, bufSize, (const unsigned char*)pxTaskStatusArray[ x ].pcTaskName, ' ', configMAX_TASK_NAME_LEN);
 #endif
 					if( ulStatsAsPercentage > 0UL )
 					{

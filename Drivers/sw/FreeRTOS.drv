@@ -1646,7 +1646,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 #if configUSE_TRACE_FACILITY /* FreeRTOS trace feature enabled */
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"TASK LIST:\r\n", io->stdOut);
   buf[0] = '\0';
-  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), "Name", ' ', configMAX_TASK_NAME_LEN);
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', configMAX_TASK_NAME_LEN);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\tState\tPrio\tStack\tTCB#\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)%@Shell@'ModuleName'%.DASH_LINE, io->stdOut);
