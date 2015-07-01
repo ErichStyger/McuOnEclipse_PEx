@@ -551,7 +551,9 @@ static void prvResetNextTaskUnblockTime( void );
 	 * Helper function used to pad task names with spaces when printing out
 	 * human readable tables of task information.
 	 */
+#if 0 /* << EST: not used */
 	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName );
+#endif
 
 #endif
 /*-----------------------------------------------------------*/
