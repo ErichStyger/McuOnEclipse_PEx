@@ -198,7 +198,6 @@ uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, 
 %endif %- UIDtoString
 %-BW_METHOD_END UIDtoString
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN GetKinetisFamilyString
 %ifdef GetKinetisFamilyString
 %'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void);
@@ -298,6 +297,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
 {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  reset", (unsigned char*)"Performs a software reset\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
   return ERR_OK;
 }
@@ -424,7 +424,7 @@ uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, 
 %include Common\KinetisToolsParseCommand.Inc
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP) == 0
     || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help") == 0) {
@@ -436,6 +436,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   {
     *handled = TRUE;
     res = PrintStatus(io);
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' reset") == 0) {
+    *handled = TRUE;
+    %'ModuleName'%.%SoftwareReset(); /* will perform RESET and does NOT return here! */
   }
   return res;
 }
