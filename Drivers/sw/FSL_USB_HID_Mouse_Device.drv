@@ -380,10 +380,11 @@ uint_8 USB_App_Param_Callback(
 %include Common\GeneralInternal.inc (App_Callback)
 void %'ModuleName'%.App_Callback(byte controller_ID, byte event_type, void *val)
 {
-  UNUSED(controller_ID)
-  UNUSED(val)
-  if((event_type == USB_APP_BUS_RESET) || (event_type == USB_APP_CONFIG_CHANGED)) {
+  (void)controller_ID; /* not used */
+  (void)val; /* not used */
+  if((event_type == USB_APP_BUS_RESET) || (event_type == USB_APP_CONFIG_CHANGED) || (event_type==USB_APP_BUS_SUSPEND)) {
     mouse_init = FALSE;
+    transactionOngoing = FALSE;
   } else if(event_type == USB_APP_ENUM_COMPLETE) {
     /* if enumeration is complete set mouse_init so that application can start */
     mouse_init = TRUE;
@@ -451,6 +452,8 @@ byte %'ModuleName'%.%Deinit(void)
 {
   byte err;
 
+  mouse_init = FALSE;
+  transactionOngoing = FALSE;
   err = USB_Class_HID_DeInit(CONTROLLER_ID);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
@@ -473,6 +476,8 @@ byte %'ModuleName'%.%Init(void)
 {
   byte err;
 
+  mouse_init = FALSE;
+  transactionOngoing =  FALSE;
   err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */

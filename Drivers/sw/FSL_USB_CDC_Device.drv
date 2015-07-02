@@ -385,7 +385,6 @@ static volatile boolean start_app = FALSE;
 
 /* Virtual COM Application Carrier Activate Flag */
 static volatile boolean start_transactions = FALSE;
-
 static volatile boolean transactionOngoing = FALSE;
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -757,6 +756,9 @@ uint8_t %'ModuleName'%.%Deinit(void)
   err = USB_Class_CDC_DeInit(CONTROLLER_ID);
   %@RxBuffer@'ModuleName'%.Deinit();
   %@TxBuffer@'ModuleName'%.Deinit();
+  start_app = FALSE;
+  start_transactions = FALSE;
+  transactionOngoing = FALSE;
   if(err != USB_OK) {
     /* Error deinitializing USB-CDC Class */
 %if defined(OnError)
@@ -778,6 +780,9 @@ uint8_t %'ModuleName'%.%Init(void)
 {
   uint_8 err;
 
+  start_app = FALSE;
+  start_transactions = FALSE;
+  transactionOngoing = FALSE;
   %@RxBuffer@'ModuleName'%.Init();
   %@TxBuffer@'ModuleName'%.Init();
   err = USB_Class_CDC_Init(CONTROLLER_ID, %'ModuleName'%.%App_Callback, NULL, %'ModuleName'%.%Notify_Callback, TRUE);

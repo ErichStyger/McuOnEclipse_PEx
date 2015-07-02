@@ -473,6 +473,15 @@ byte %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN isEnumerated
+%ifdef isEnumerated
+bool %'ModuleName'%.%isEnumerated(void);
+%define! RetVal
+%include Common\FSL_USB_HID_Keyboard_DeviceisEnumerated.Inc
+
+%endif %- isEnumerated
+%-BW_METHOD_END isEnumerated
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -636,20 +645,26 @@ void %'ModuleName'%.App_Callback(byte controller_ID, byte event_type, void *val)
   UNUSED(val)
   if((event_type == USB_APP_BUS_RESET) || (event_type == USB_APP_CONFIG_CHANGED)) {
     keyboard_init=FALSE;
+    transactionOngoing = FALSE;
     %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_APP_BUS_RESET);
     %endif
   } else if(event_type == USB_APP_ENUM_COMPLETE) {
     /* if enumeration is complete set keyboard_init so that application can start */
     keyboard_init=TRUE;
+    transactionOngoing = FALSE;
     %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_APP_ENUM_COMPLETE);
     %endif
   } else if(event_type == USB_APP_ERROR) {
+    keyboard_init=FALSE;
+    transactionOngoing = FALSE;
     %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_APP_ERROR);
     %endif
   } else if (event_type == USB_APP_BUS_SUSPEND) {
+    keyboard_init=FALSE;
+    transactionOngoing = FALSE;
     %if defined(OnEvent)
     %OnEvent(%'ModuleName'%.USB_APP_BUS_SUSPEND);
     %endif
@@ -723,6 +738,8 @@ byte %'ModuleName'%.%Deinit(void)
   byte err;
 
   err = USB_Class_HID_DeInit(CONTROLLER_ID);
+  transactionOngoing = FALSE;
+  keyboard_init = FALSE;
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
 %if defined(OnEvent)
@@ -742,8 +759,10 @@ byte %'ModuleName'%.%Deinit(void)
 %include Common\FSL_USB_HID_Keyboard_DeviceInit.Inc
 byte %'ModuleName'%.%Init(void)
 {
-  byte err;
+  uint8_t err;
 
+  transactionOngoing = FALSE;
+  keyboard_init = FALSE;
   err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
@@ -991,6 +1010,18 @@ byte %'ModuleName'%.%Send(byte modifier, byte key)
 
 %endif %- Send
 %-BW_METHOD_END Send
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN isEnumerated
+%ifdef isEnumerated
+%define! RetVal
+%include Common\FSL_USB_HID_Keyboard_DeviceisEnumerated.Inc
+bool %'ModuleName'%.%isEnumerated(void)
+{
+  return keyboard_init;
+}
+
+%endif %- isEnumerated
+%-BW_METHOD_END isEnumerated
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
