@@ -120,9 +120,9 @@
 #include <stdarg.h> /* open argument list support */
 
 %if defined(FloatingPointEnabled) & %FloatingPointEnabled='yes'
-  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    1 /* enable/disable floating format (component property) */
+#define %'ModuleName'%.XCFG_FORMAT_FLOAT    1 /* enable/disable floating format (component property) */
 %else
-  #define %'ModuleName'%.XCFG_FORMAT_FLOAT    0 /* enable/disable floating format (component property) */
+#define %'ModuleName'%.XCFG_FORMAT_FLOAT    0 /* enable/disable floating format (component property) */
 %endif
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -846,6 +846,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
 
                         if (dbl < 0)
                         {
+                            flags |= FLAG_MINUS;
                             dbl -= arr;
                             value = (long)dbl;
                             dbl -= (long)value;
