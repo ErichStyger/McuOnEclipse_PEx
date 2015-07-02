@@ -312,6 +312,9 @@ uint_8 USB_HID_Other_Requests
 {
     uint_8 index;
     uint_8 status = USBERR_INVALID_REQ_TYPE;
+#if 1 /* << EST: making buffer static, as for USB_HID_GET_REPORT_REQUEST below we return the address of this buffer! */
+    static
+#endif
     uint_8 rpt_buf[REPORT_SIZE];/* buffer to send in case of get report req */
     *((uint_32_ptr)rpt_buf) = 0;
 
