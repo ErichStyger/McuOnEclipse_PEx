@@ -876,6 +876,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawX(void)
   } val;
   static const uint8_t addr = %'ModuleName'_OUT_X_MSB;
 
+  val.be = 0; /* init */
   if(%@I2C@'ModuleName'%.ReadAddress(%'ModuleName'_I2C_ADDR, (uint8_t*)&addr, sizeof(addr), &val.buf[0], sizeof(val.buf))!=ERR_OK) {
   %if defined(OnError)
     %OnError();
@@ -904,6 +905,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawY(void)
   } val;
   static const uint8_t addr = %'ModuleName'_OUT_Y_MSB;
 
+  val.be = 0; /* init */
   if(%@I2C@'ModuleName'%.ReadAddress(%'ModuleName'_I2C_ADDR, (uint8_t*)&addr, sizeof(addr), &val.buf[0], sizeof(val.buf))!=ERR_OK) {
   %if defined(OnError)
     %OnError();
@@ -932,6 +934,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawZ(void)
   } val;
   static const uint8_t addr = %'ModuleName'_OUT_Z_MSB;
 
+  val.be = 0; /* init */
   if(%@I2C@'ModuleName'%.ReadAddress(%'ModuleName'_I2C_ADDR, (uint8_t*)&addr, sizeof(addr), &val.buf[0], sizeof(val.buf))!=ERR_OK) {
   %if defined(OnError)
     %OnError();
