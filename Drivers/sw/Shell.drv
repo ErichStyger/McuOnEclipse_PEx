@@ -1146,7 +1146,7 @@ uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmd
       cmdBuf[0] = '\0';
     }
     if (len>=cmdBufSize-1) {                                     %>40/* buffer overflow? Parse what we have, will be likely return an error */
-      res = %'ModuleName'%.%ParseWithCommandTable(cmdBuf, io, parseCallback);
+      (void)%'ModuleName'%.%ParseWithCommandTable(cmdBuf, io, parseCallback);
       cmdBuf[0] = '\0'; /* start again */
       res = ERR_OVERFLOW;
     } else if (cmdBuf[len-1]=='\n' || cmdBuf[len-1]=='\r') {     %>40/* line end: parse command */

@@ -928,7 +928,7 @@ uint32_t get_fat (	/* 0xFFFFFFFF:Disk error, 1:Internal error, 2..0x0FFFFFFF:Clu
 			wc = fs->win[bc++ %% SS(fs)];
 			if (move_window(fs, fs->fatbase + (bc / SS(fs))) != FR_OK) break;
 			wc |= fs->win[bc %% SS(fs)] << 8;
-			val = clst & 1 ? wc >> 4 : (wc & 0xFFF);
+			val = (clst & 1) ? wc >> 4 : (wc & 0xFFF);
 			break;
 
 		case FS_FAT16 :

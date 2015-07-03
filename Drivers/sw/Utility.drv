@@ -1706,7 +1706,7 @@ uint8_t %'ModuleName'%.%ReadEscapedName(const unsigned char *filename, uint8_t *
   bool res = ERR_OK;
   #define IS_SPACE(ch) ((ch)==' '||(ch)=='\t'||(ch)=='\n'||(ch)=='\v'||(ch)=='\f'||(ch)=='\r')
 
-  if (filename==NULL || (destname!=NULL && maxlen<=0)) {
+  if (filename==NULL || (destname!=NULL && maxlen==0)) {
     return ERR_FAILED;
   }
   if (filename[0] == '"') { /* translated mode */
