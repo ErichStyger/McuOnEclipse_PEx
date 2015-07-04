@@ -725,7 +725,11 @@ int ini_puts(const TCHAR *Section, const TCHAR *Key, const TCHAR *Value, const T
     ep = _tcschr(sp, '='); /* Parse out the equal sign */
     if (ep == NULL)
       ep = _tcschr(sp, ':');
+#if 1 /* << EST: deal with case that Key can be NULL */
+    match = (ep != NULL && (int)(skiptrailing(ep,sp)-sp) == len && Key!=NULL && _tcsnicmp(sp,Key,len) == 0);
+#else
     match = (ep != NULL && (int)(skiptrailing(ep,sp)-sp) == len && _tcsnicmp(sp,Key,len) == 0);
+#endif
     if ((Key != NULL && match) || *sp == '[')
       break;  /* found the key, or found a new section */
     /* copy other keys in the section */
