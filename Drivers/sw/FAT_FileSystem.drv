@@ -2415,7 +2415,9 @@ byte %'ModuleName'%.%UnMountFileSystem(byte *logicalDrive, const %@Shell@'Module
 
   fres = %'ModuleName'%.mount(NULL, (const TCHAR*)logicalDrive, 0);
   if (fres != FR_OK) {
-    FatFsFResultMsg((unsigned char*)"unmount failed", fres, io);
+    if (io!=NULL) {
+      FatFsFResultMsg((unsigned char*)"unmount failed", fres, io);
+    }
     return ERR_FAILED;
   }
   return ERR_OK;
