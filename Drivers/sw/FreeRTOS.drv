@@ -1514,6 +1514,30 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- xTaskNotifyWait
 %-BW_METHOD_END xTaskNotifyWait
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTaskSetThreadLocalStoragePointer
+%ifdef vTaskSetThreadLocalStoragePointer
+#define %'ModuleName'%.%vTaskSetThreadLocalStoragePointer(xTaskToSet, xIndex, pvValue) \
+  vTaskSetThreadLocalStoragePointer(xTaskToSet, xIndex, pvValue)
+%define! ParxTaskToSet
+%define! ParxIndex
+%define! ParpvValue
+%include Common\FreeRTOSvTaskSetThreadLocalStoragePointer.Inc
+
+%endif %- vTaskSetThreadLocalStoragePointer
+%-BW_METHOD_END vTaskSetThreadLocalStoragePointer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pvTaskGetThreadLocalStoragePointer
+%ifdef pvTaskGetThreadLocalStoragePointer
+#define %'ModuleName'%.%pvTaskGetThreadLocalStoragePointer(xTaskToQuery, xIndex) \
+  pvTaskGetThreadLocalStoragePointer(xTaskToQuery, xIndex)
+%define! ParxTaskToQuery
+%define! ParxIndex
+%define! RetVal
+%include Common\FreeRTOSpvTaskGetThreadLocalStoragePointer.Inc
+
+%endif %- pvTaskGetThreadLocalStoragePointer
+%-BW_METHOD_END pvTaskGetThreadLocalStoragePointer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3576,6 +3600,38 @@ BaseType_t %'ModuleName'%.%xTaskNotifyWait(uint32_t ulBitsToClearOnEntry, uint32
 
 %endif %- xTaskNotifyWait
 %-BW_METHOD_END xTaskNotifyWait
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTaskSetThreadLocalStoragePointer
+%ifdef vTaskSetThreadLocalStoragePointer
+%define! ParxTaskToSet
+%define! ParxIndex
+%define! ParpvValue
+%include Common\FreeRTOSvTaskSetThreadLocalStoragePointer.Inc
+/*
+void %'ModuleName'%.%vTaskSetThreadLocalStoragePointer(TaskHandle_t xTaskToSet, BaseType_t xIndex, void *pvValue)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- vTaskSetThreadLocalStoragePointer
+%-BW_METHOD_END vTaskSetThreadLocalStoragePointer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pvTaskGetThreadLocalStoragePointer
+%ifdef pvTaskGetThreadLocalStoragePointer
+%define! ParxTaskToQuery
+%define! ParxIndex
+%define! RetVal
+%include Common\FreeRTOSpvTaskGetThreadLocalStoragePointer.Inc
+/*
+void* %'ModuleName'%.%pvTaskGetThreadLocalStoragePointer(TaskHandle_t xTaskToQuery, BaseType_t xIndex)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- pvTaskGetThreadLocalStoragePointer
+%-BW_METHOD_END pvTaskGetThreadLocalStoragePointer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

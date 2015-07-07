@@ -351,6 +351,10 @@ The following items are available only if the group is enabled (the value is "En
 <b>Application Task Tags</b></a> - This configures configUSE_APPLICATION_TASK_TAG. If enabled, the methodsxTaskGetApplicationTaskTag(), vTaskSetApplicationTaskTag() and xTaskCallApplicationTaskHook() are enabled.
 </li>
 <li>
+<a name="NumThreadLocalStoragePointers">
+<b>Thread Local Storage Pointers</b></a> - Number of thread local storage pointers, zero to disable functionality. Defines configNUM_THREAD_LOCAL_STORAGE_POINTERS
+</li>
+<li>
 <a name="UseTraceFacility">
 <b>Use Trace Facility</b></a> - Set to 1 if you wish the trace visualisation functionality to be available, or 0 if the trace functionality is not going to be used. If you use the trace functionality a trace buffer must also be provided. If using Trace Hooks, this property is automatically enabled. This setting controls the configUSE_TRACE_FACILITY macro.
 </li>
@@ -494,11 +498,13 @@ The following items are available only if the group is enabled (the value is "En
     <li>
     <a name="ARMFamilyType">
     <b>ARM Family</b></a> - Specifies the ARM family used<br /><br />
-There are 3 options:<br />
+There are 5 options:<br />
 <ul>
-  <li><u>Cortex M0+</u>: ARM Cortex M0+ (Kinetis L family)</li>
-  <li><u>Cortex M4</u>: ARM Cortex M4 (Kinetis K family)</li>
-  <li><u>Cortex M4F</u>: ARM Cortex M4 (Kinetis K family with floating point unit)</li>
+  <li><u>Cortex-M0+</u>: ARM Cortex-M0+ (Kinetis L family)</li>
+  <li><u>Cortex-M4</u>: ARM Cortex-M4 (Kinetis K family)</li>
+  <li><u>Cortex-M4F</u>: ARM Cortex M4 (Kinetis K family with floating point unit)</li>
+  <li><u>Cortex-M7</u>: ARM Cortex-M7</li>
+  <li><u>Cortex-M7F</u>: ARM Cortex-M7 with FPU</li>
 </ul><br />
 
     </li>

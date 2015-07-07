@@ -142,20 +142,26 @@
     <Type>
       <Type>TEnumSpec</Type>
       <Name>typeARMFamily</Name>
-      <Items lines_count="3">
-        <Line>Cortex M0+</Line>
-        <Line>Cortex M4</Line>
-        <Line>Cortex M4F</Line>
+      <Items lines_count="5">
+        <Line>Cortex-M0+</Line>
+        <Line>Cortex-M4</Line>
+        <Line>Cortex-M4F</Line>
+        <Line>Cortex-M7</Line>
+        <Line>Cortex-M7F</Line>
       </Items>
-      <Hints lines_count="3">
-        <Line>ARM Cortex M0+ (Kinetis L family)</Line>
-        <Line>ARM Cortex M4 (Kinetis K family)</Line>
+      <Hints lines_count="5">
+        <Line>ARM Cortex-M0+ (Kinetis L family)</Line>
+        <Line>ARM Cortex-M4 (Kinetis K family)</Line>
         <Line>ARM Cortex M4 (Kinetis K family with floating point unit)</Line>
+        <Line>ARM Cortex-M7</Line>
+        <Line>ARM Cortex-M7 with FPU</Line>
       </Hints>
-      <Defines lines_count="3">
+      <Defines lines_count="5">
         <Line>M0+</Line>
         <Line>M4</Line>
         <Line>M4F</Line>
+        <Line>M7</Line>
+        <Line>M7F</Line>
       </Defines>
     </Type>
     <Type>

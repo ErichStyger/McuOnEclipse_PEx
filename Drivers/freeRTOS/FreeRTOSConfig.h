@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V8.2.0 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V8.2.1 - Copyright (C) 2015 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -113,15 +113,15 @@
 %endif
 /* -------------------------------------------------------------------- */
 /* CPU family identification */
-#define configCPU_FAMILY_S08          %>45 1  /* S08 core */
-#define configCPU_FAMILY_S12          %>45 2  /* S12(X) core */
-#define configCPU_FAMILY_CF1          %>45 3  /* ColdFire V1 core */
-#define configCPU_FAMILY_CF2          %>45 4  /* ColdFire V2 core */
-#define configCPU_FAMILY_DSC          %>45 5  /* 56800/DSC */
-#define configCPU_FAMILY_ARM_M0P      %>45 6  /* ARM Cortex-M0+ */
-#define configCPU_FAMILY_ARM_M4       %>45 7  /* ARM Cortex-M4 */
-#define configCPU_FAMILY_ARM_M4F      %>45 8  /* ARM Cortex-M4F (with floating point unit) */
-#define configCPU_FAMILY_ARM_M7       %>45 9  /* ARM Cortex-M7 */
+#define configCPU_FAMILY_S08          %>45 1   /* S08 core */
+#define configCPU_FAMILY_S12          %>45 2   /* S12(X) core */
+#define configCPU_FAMILY_CF1          %>45 3   /* ColdFire V1 core */
+#define configCPU_FAMILY_CF2          %>45 4   /* ColdFire V2 core */
+#define configCPU_FAMILY_DSC          %>45 5   /* 56800/DSC */
+#define configCPU_FAMILY_ARM_M0P      %>45 6   /* ARM Cortex-M0+ */
+#define configCPU_FAMILY_ARM_M4       %>45 7   /* ARM Cortex-M4 */
+#define configCPU_FAMILY_ARM_M4F      %>45 8   /* ARM Cortex-M4F (with floating point unit) */
+#define configCPU_FAMILY_ARM_M7       %>45 9   /* ARM Cortex-M7 */
 #define configCPU_FAMILY_ARM_M7F      %>45 10  /* ARM Cortex-M7F (with floating point unit) */
 /* Macros to identify set of core families */
 #define configCPU_FAMILY_IS_ARM_M7(fam)   %>45 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
@@ -129,23 +129,27 @@
 #define configCPU_FAMILY_IS_ARM(fam)      %>45 (((fam)==configCPU_FAMILY_ARM_M0P) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
 
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_S08
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_S08
 %elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_S12
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_S12
 %elif (CPUfamily = "ColdFireV1")
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_CF1
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_CF1
 %elif (CPUfamily = "MCF")
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_CF2
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_CF2
 %elif (CPUfamily = "56800")
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_DSC  
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_DSC
 %elif (CPUfamily = "Kinetis")
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes' %- Note: for IAR this is defined in portasm.s too!
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_ARM_M0P
-%else %-M4 or M4F
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M0P
+%elif %ARMFamilyType="M7"
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M7
+%elif %ARMFamilyType="M7F"
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M7F
+%else %-M4, M4F or M7
  %if %CPUDB_prph_has_feature(CPU, FPU) = 'no'
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_ARM_M4
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M4
  %else
-#define configCPU_FAMILY  %>50 configCPU_FAMILY_ARM_M4F
+#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M4F
  %endif
 %endif
 %else
@@ -370,6 +374,11 @@
 #define configUSE_TICKLESS_IDLE_DECISION_HOOK                    %>50 0 /* set to 1 to enable application hook, zero otherwise */
 #define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME               %>50 xEnterTicklessIdle /* function name of decision hook */
 %endif
+%if defined(NumThreadLocalStoragePointers)
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 %NumThreadLocalStoragePointers /* number of tread local storage pointers, 0 to disable functionality */
+%else
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 0 /* number of tread local storage pointers, 0 to disable functionality */
+%endif
 
 #define configMAX_PRIORITIES                                     %>50 ((unsigned portBASE_TYPE)%MaxPriority)
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities
@@ -483,7 +492,6 @@
 %else
 #define INCLUDE_pcTaskGetTaskName                                %>50 0
 %endif
-
 /* -------------------------------------------------------------------- */
 %if (CPUfamily = "ColdFireV1")
 /* It is not advisable to change these values on a ColdFire V1 core. */

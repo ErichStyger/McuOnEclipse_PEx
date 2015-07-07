@@ -1458,6 +1458,31 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="vTaskSetThreadLocalStoragePointer">
+<b>vTaskSetThreadLocalStoragePointer</b></a>
+ - Only enabled if configNUM_THREAD_LOCAL_STORAGE_POINTERS is &gt;0.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void vTaskSetThreadLocalStoragePointer(TaskHandle_t xTaskToSet, BaseType_t xIndex, void *pvValue)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTaskToSet:TaskHandle_t</i> - Task handle</li>
+<li><i>xIndex:BaseType_t</i> - Index of thread local storage item</li>
+<li><i>pvValue:pVoid</i> - no hint</li>
+</ul><br />
+</li>
+<li><a name="pvTaskGetThreadLocalStoragePointer">
+<b>pvTaskGetThreadLocalStoragePointer</b></a>
+ - Sets the thread local storage. Only enabled if configNUM_THREAD_LOCAL_STORAGE_POINTERS is &gt;0
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void* pvTaskGetThreadLocalStoragePointer(TaskHandle_t xTaskToQuery, BaseType_t xIndex)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTaskToQuery:TaskHandle_t</i> - Task handle from which to get the local thread storage.</li>
+<li><i>xIndex:BaseType_t</i> - Index of thread storage</li>
+<li><i>Return value:void*</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line Parser
