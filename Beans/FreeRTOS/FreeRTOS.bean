@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.423</Version>
+    <Version>01.424</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -6057,7 +6057,7 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to command string</ParHint>
           <ParUserDeclaration>const unsigned char *cmd</ParUserDeclaration>
@@ -6070,7 +6070,7 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to I/O structure</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
