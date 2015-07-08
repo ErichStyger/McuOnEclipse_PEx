@@ -3750,12 +3750,11 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 #if 0
 %endif
   /* example for Kinetis (enable SetOperationMode() in CPU component): */
-  Cpu_SetOperationMode(DOM_WAIT, NULL, NULL);
-  /* or to wait for interrupt:
+  // Cpu_SetOperationMode(DOM_WAIT, NULL, NULL); /* Processor Expert way to get into WAIT mode */
+  /* or to wait for interrupt: */
     __asm volatile("dsb");
     __asm volatile("wfi");
     __asm volatile("isb");
-  */
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "ColdFireV1")
 #elif 1
 %else
