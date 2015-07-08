@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.422</Version>
+    <Version>01.423</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -52,10 +52,78 @@
       </TStrgItem>
     </Property>
     <Property>
+      <TBoolGrupItem>
+        <Name>Kinetis SDK</Name>
+        <Symbol>KinetisSDKGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group used to configure the component if used with the Kinetis SDK.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Generate PEX_RTOS Macros</Name>
+              <Symbol>GenerateRTOSPExMacros</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, the component creates PEX_RTOS_INIT() and PEX_RTOS_START() macros in the component header file. As the Kinetis SDK does generate them, the default setting is 'no', otherwise macros will be defined twice.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Generate OSA Functions</Name>
+              <Symbol>GenerateOSAFunctions</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, the component creates OSA_Init() and OSA_Start() functions which are needed for the OS Adaption layer of the Kinetis SDK.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Kinetis SDK</Name>
+              <Symbol>KinetisSDK</Symbol>
+              <TypeSpec>FreeRTOS\KinetisSDK</TypeSpec>
+              <Hint>Link to Kinetis SDK component which maps Processor Expert types like byte to uint8_t.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
       <TGrupItem>
         <Name>Custom Port</Name>
         <Symbol>CustomPortGroup</Symbol>
-        <Hint>Allows custom settings for FreeRTOS port</Hint>
+        <Hint>Allows custom settings for FreeRTOS port. Only necessary to generate RTOS source code and then use it without Processor Expert project.</Hint>
         <ItemLevel>EXPERT</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -247,74 +315,6 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
           </GrupItem>
         </Children>
       </TGrupItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Kinetis SDK</Name>
-        <Symbol>KinetisSDKGroup</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Group used to configure the component if used with the Kinetis SDK.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Generate PEX_RTOS Macros</Name>
-              <Symbol>GenerateRTOSPExMacros</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If enabled, the component creates PEX_RTOS_INIT() and PEX_RTOS_START() macros in the component header file. As the Kinetis SDK does generate them, the default setting is 'no', otherwise macros will be defined twice.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>false</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Generate OSA Functions</Name>
-              <Symbol>GenerateOSAFunctions</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If enabled, the component creates OSA_Init() and OSA_Start() functions which are needed for the OS Adaption layer of the Kinetis SDK.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Kinetis SDK</Name>
-              <Symbol>KinetisSDK</Symbol>
-              <TypeSpec>FreeRTOS\KinetisSDK</TypeSpec>
-              <Hint>Link to Kinetis SDK component which maps Processor Expert types like byte to uint8_t.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
     </Property>
     <Property>
       <TBoolItem>
