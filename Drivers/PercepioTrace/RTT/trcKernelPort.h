@@ -84,7 +84,7 @@ void Trace_Init(void);
 	/* Uses CMSIS API */
 #if 1 /* << EST: PEx interface */
 #if !configPEX_KINETIS_SDK
-#include "%ProcessorModule.h"
+  #include "%ProcessorModule.h"
 #endif
 #endif
 //#include "board.h"
@@ -543,6 +543,28 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 #undef traceGIVE_MUTEX_RECURSIVE_FAILED
 #define traceGIVE_MUTEX_RECURSIVE_FAILED( pxMutex ) \
 	vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_RECURSIVE_FAILED, pxMutex);
+
+/**************************************************************************/
+/* Hack to make sure xQueueGiveFromISR also has a xCopyPosition parameter */
+/**************************************************************************/
+/* Helpers needed to correctly expand names */
+#define TZ__CAT2(a,b) a ## b
+#define TZ__CAT(a,b) TZ__CAT2(a, b)
+
+/* Expands name if this header is included... uxQueueType must be a macro that only exists in queue.c or whatever, and it must expand to nothing or to something that's valid in identifiers */
+#define xQueueGiveFromISR(a,b) TZ__CAT(xQueueGiveFromISR__, uxQueueType) (a,b)
+
+/* If in queue.c, the "uxQueueType" macro expands to "pcHead". queueSEND_TO_BACK is the value we need to send in */
+#define xQueueGiveFromISR__pcHead(__a, __b) MyWrapper(__a, __b, const BaseType_t xCopyPosition); \
+BaseType_t xQueueGiveFromISR(__a, __b) { return MyWrapper(xQueue, pxHigherPriorityTaskWoken, queueSEND_TO_BACK); } \
+BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
+
+/* If not in queue.c, "uxQueueType" isn't expanded */
+#define xQueueGiveFromISR__uxQueueType(__a, __b) xQueueGiveFromISR(__a,__b)
+
+/**************************************************************************/
+/* End of xQueueGiveFromISR hack                                          */
+/**************************************************************************/
 
 /* Called when a message is sent from interrupt context, e.g., using xQueueSendFromISR */
 #undef traceQUEUE_SEND_FROM_ISR

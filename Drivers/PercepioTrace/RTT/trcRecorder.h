@@ -342,4 +342,6 @@ extern void psfError(int errCode);
 #define PSF_ERROR_EVENT_CODE_TOO_LARGE 1
 #define PSF_ERROR_ISR_NESTING_OVERFLOW 2
 
+#define vTraceInitTraceData()   Trace_Init()
+
 #endif /* _PSF_H */

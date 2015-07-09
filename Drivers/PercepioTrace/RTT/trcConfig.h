@@ -43,6 +43,8 @@
 #ifndef TRC_STREAMING_RECORDER_CONFIG_H
 #define TRC_STREAMING_RECORDER_CONFIG_H
 
+#define TRC_CONFIG_USE_RTT_STREAMING   1  /* Set to 1 if using RTT streaming, 0 otherwise */
+
 // Set the hardware port setting here!
 #define RECORDER_HARDWARE_PORT PORT_ARM_Cortex_M
 
@@ -76,7 +78,7 @@
  * trace display will be affected. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define SYMBOL_TABLE_SLOTS 30
+#define SYMBOL_TABLE_SLOTS   %SymbolTableSlots
 
 /*******************************************************************************
  * Configuration Macro: SYMBOL_MAX_LENGTH
@@ -157,7 +159,7 @@
  * The priority of the TzCtrl task, that receive commands from.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TZCTRL_TASK_PRIORITY 10
+#define TZCTRL_TASK_PRIORITY %TzCtrlTaskPrioStr
 
 /*******************************************************************************
  * Configuration Macro: MEASURE_BLOCKING_TIME

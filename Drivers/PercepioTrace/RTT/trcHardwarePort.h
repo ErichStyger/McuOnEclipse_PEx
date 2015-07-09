@@ -53,6 +53,38 @@
  * to a certain operating system.
  *****************************************************************************/
 
+#if 1 /* << EST */
+#include "FreeRTOSConfig.h"
+
+#if !configPEX_KINETIS_SDK /* Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
+
+/** \brief  Get Priority Mask
+
+    This function returns the current state of the priority mask bit from the Priority Mask Register.
+
+    \return               Priority Mask value
+ */
+__attribute__( ( always_inline ) ) static inline uint32_t __get_PRIMASK(void)
+{
+  uint32_t result;
+
+  __asm volatile ("MRS %%0, primask" : "=r" (result) );
+  return(result);
+}
+
+
+/** \brief  Set Priority Mask
+
+    This function assigns the given value to the Priority Mask Register.
+
+    \param [in]    priMask  Priority Mask
+ */
+__attribute__( ( always_inline ) ) static inline void __set_PRIMASK(uint32_t priMask)
+{
+  __asm volatile ("MSR primask, %%0" : : "r" (priMask) : "memory");
+}
+#endif /* !configPEX_KINETIS_SDK */
+#endif /* << EST */
 
 /****** Port Name ********************** Code */
 #define PORT_APPLICATION_DEFINED			-1
