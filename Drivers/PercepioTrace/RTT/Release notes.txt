@@ -1,0 +1,23 @@
+Release notes, Trace Recorder Library for Tracealyzer v2.8.5
+April 17, 2015. Percepio AB.
+
+Changes:
+v2.8.5
+- Added internal OS tick counter that can be used by certain kernel ports to keep track of the actual OS tick, in case it can be delayed.
+- Updated generic macro names.
+- Removed usage of strlen().
+
+- Added support for width and padding formats for %d, %u, %x and %X.
+- Reduced RAM usage for certain cases by redefining unused buffers.
+v2.8.2
+- Improved vTracePrintF() parsing.
+- Added vTracePrint() that performs no formatting.
+- Removed need for passing parameter to vTraceStoreISREnd() on embOS port. This parameter is detected automatically.
+- Added vTraceStoreISREndManual(param) that can be used on kernel ports that doesn't automatically detect pending task switches after interrupts.
+v2.8.1
+- New J-Link drivers fixes the RTT Buffer Index != 0 issue.
+- trcRecorder.c hotfixed to handle missing defines in embOS that haven't made it to release yet.
+v2.8.0
+- Initial release. Only RTT Buffer Index 0 works in this version.
+
+For questions, contact support@percepio.com or sales@percepio.com

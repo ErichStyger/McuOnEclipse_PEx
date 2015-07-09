@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.038</Version>
+    <Version>01.041</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -48,6 +48,24 @@
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
       </TStrgItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Streaming with RTT</Name>
+        <Symbol>StreamingTraceWithRTT</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>EXPERIMENTAL: using a different trace library which streams using Segger RTT</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
     <Property>
       <TInhrLinkItem>

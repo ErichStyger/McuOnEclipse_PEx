@@ -92,10 +92,13 @@
 %-BW_METHOD_MACROS_END
 
 #include "%ProcessorModule.h"
-#include "trcUser.h"
+%if defined(StreamingTraceWithRTT) & %StreamingTraceWithRTT='yes'
+#include "trcRecorder.h" /* streaming trace with RTT */
+%else
+#include "trcUser.h" /* traditional recorder, without streaming over RTT */
+%endif
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -106,8 +109,6 @@
 %-    typedef int TMyInteger;
 %-
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN uiTraceGetTraceBufferSize
@@ -185,7 +186,6 @@
 %endif %- xTraceOpenLabel
 %-BW_METHOD_END xTraceOpenLabel
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceUserEvent
 %ifdef vTraceUserEvent
 #define %'ModuleName'%.%vTraceUserEvent(eventLabel) \
@@ -209,7 +209,6 @@
 
 %endif %- vTracePrintF
 %-BW_METHOD_END vTracePrintF
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceSetQueueName
 %ifdef vTraceSetQueueName

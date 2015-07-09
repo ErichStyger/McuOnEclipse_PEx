@@ -1,6 +1,39 @@
 %-
 %- Percepio FreeRTOS Trace source files
-%- 
+%-
+%if defined(StreamingTraceWithRTT) & %StreamingTraceWithRTT='yes'
+
+%FILE %'DirRel_Code'trcRecorder.h
+%include PercepioTrace\RTT\trcRecorder.h
+
+%FILE %'DirRel_Code'trcRecorder.c
+%include PercepioTrace\RTT\trcRecorder.c
+
+%FILE %'DirRel_Code'trcKernelPort.h
+%include PercepioTrace\RTT\trcKernelPort.h
+
+%FILE %'DirRel_Code'trcKernelPort.c
+%include PercepioTrace\RTT\trcKernelPort.c
+
+%FILE %'DirRel_Code'trcHardwarePort.h
+%include PercepioTrace\RTT\trcHardwarePort.h
+
+%FILE %'DirRel_Code'trcConfig.h
+%include PercepioTrace\RTT\trcConfig.h
+
+%FILE %'DirRel_Code'SEGGER_RTT_Printf.c
+%include PercepioTrace\RTT\SEGGER_RTT_Printf.c
+
+%FILE %'DirRel_Code'SEGGER_RTT_Conf.h
+%include PercepioTrace\RTT\SEGGER_RTT_conf.h
+
+%FILE %'DirRel_Code'SEGGER_RTT.h
+%include PercepioTrace\RTT\SEGGER_RTT.h
+
+%FILE %'DirRel_Code'SEGGER_RTT.c
+%include PercepioTrace\RTT\SEGGER_RTT.c
+
+%else
 %FILE %'DirRel_Code'trcBase.c
 %include PercepioTrace\trcBase.c
 
@@ -39,3 +72,5 @@
 
 %FILE %'DirRel_Code'trcKernelPort.c
 %include PercepioTrace\KernelPorts\FreeRTOS\trcKernelPort.c
+
+%endif %- StreamingWithTraceRTT
