@@ -93,7 +93,7 @@
  * which will affect the trace display. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define SYMBOL_MAX_LENGTH 25
+#define SYMBOL_MAX_LENGTH   %SymbolMaxLength
 
 /*******************************************************************************
  * Configuration Macro: OBJECT_DATA_SLOTS
@@ -102,7 +102,7 @@
  * be stored at the same time. Must be sufficient for all tasks, otherwise there
  * will be warnings (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define OBJECT_DATA_SLOTS 20
+#define OBJECT_DATA_SLOTS   %ObjectDataSlots
 
 /*******************************************************************************
  * Configuration Macro: RTT_UP_BUFFER_INDEX
@@ -111,7 +111,7 @@
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define RTT_UP_BUFFER_INDEX 0
+#define RTT_UP_BUFFER_INDEX   %RTTUpBufferIndex
 
 /*******************************************************************************
  * Configuration Macro: RTT_DOWN_BUFFER_INDEX
@@ -120,7 +120,7 @@
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define RTT_DOWN_BUFFER_INDEX 0
+#define RTT_DOWN_BUFFER_INDEX   %RTTDownBufferIndex
 
 /*******************************************************************************
  * Configuration Macro: RTT_MODE
@@ -151,7 +151,7 @@
  * The stack size of the TzCtrl task, that receive commands.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TZCTRL_TASK_STACK_SIZE 512
+#define TZCTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
 
 /*******************************************************************************
  * Configuration Macro: TZCTRL_TASK_PRIORITY
@@ -201,12 +201,10 @@
 #define BLOCKING_MIN_CYCLES 500
 
 
-#define JLINK_RTT 1
+#define JLINK_RTT     1
 #define PERIODIC_TASK 2
 
 #define RECORDER_TRANSFER_METHOD JLINK_RTT
-
-
 
 #endif
 
