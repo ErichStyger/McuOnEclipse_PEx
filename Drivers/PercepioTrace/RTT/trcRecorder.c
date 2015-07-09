@@ -90,14 +90,18 @@ typedef struct{
 } PSFHeaderInfo;
 
 /* The size of each slot in the Symbol Table */
-#define SYMBOL_TABLE_SLOT_SIZE (SYMBOL_MAX_LENGTH + sizeof(uint32_t))
+#if 1 /* << EST: must have 32bit aligned addresses! */
+  #define SYMBOL_TABLE_SLOT_SIZE (sizeof(uint32_t) + (((SYMBOL_MAX_LENGTH)+3)/4)*4)
+#else
+  #define SYMBOL_TABLE_SLOT_SIZE (SYMBOL_MAX_LENGTH + sizeof(uint32_t))
+#endif
 
 #define OBJECT_DATA_SLOT_SIZE (sizeof(uint32_t) + sizeof(uint32_t))
 
 /* The total size of the Symbol Table */
 #define SYMBOL_TABLE_BUFFER_SIZE (SYMBOL_TABLE_SLOTS * SYMBOL_TABLE_SLOT_SIZE)
 
-/* The total size of the Objact Data Table */
+/* The total size of the Object Data Table */
 #define OBJECT_DATA_TABLE_BUFFER_SIZE (OBJECT_DATA_SLOTS * OBJECT_DATA_SLOT_SIZE)
 
 /* The Symbol Table type - just a byte array */
@@ -924,6 +928,7 @@ void vTraceSaveSymbol(void *address, const char *name)
 		if (ptr == 0 && foundSlot == SYMBOL_TABLE_BUFFER_SIZE)
 		{
 			foundSlot = i;
+			break; /* << EST: added to improve speed */
 		}
 		else if (ptr == address)
 		{

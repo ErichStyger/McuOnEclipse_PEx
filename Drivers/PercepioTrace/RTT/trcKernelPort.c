@@ -88,6 +88,7 @@ uint32_t LongestSymbolName_last = 0;
 uint32_t MaxBytesTruncated_last = 0;
 
 /* Up-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
+#if 0
 #if RTT_UP_BUFFER_INDEX != 0
 static char _TzTraceData[BUFFER_SIZE_UP];
 #else
@@ -99,6 +100,7 @@ static char _TzTraceData[4];    /* Not used */
 static char _TzCtrlData[BUFFER_SIZE_DOWN];
 #else
 static char _TzCtrlData[4];     /* Not used */
+#endif
 #endif
 
 /*******************************************************************************
