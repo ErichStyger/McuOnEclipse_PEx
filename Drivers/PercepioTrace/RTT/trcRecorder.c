@@ -928,7 +928,6 @@ void vTraceSaveSymbol(void *address, const char *name)
 		if (ptr == 0 && foundSlot == SYMBOL_TABLE_BUFFER_SIZE)
 		{
 			foundSlot = i;
-			break; /* << EST: added to improve speed */
 		}
 		else if (ptr == address)
 		{

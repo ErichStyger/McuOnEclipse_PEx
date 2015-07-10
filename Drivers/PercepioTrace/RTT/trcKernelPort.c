@@ -88,12 +88,10 @@ uint32_t LongestSymbolName_last = 0;
 uint32_t MaxBytesTruncated_last = 0;
 
 /* Up-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
-#if 0
 #if RTT_UP_BUFFER_INDEX != 0
 static char _TzTraceData[BUFFER_SIZE_UP];
 #else
 static char _TzTraceData[4];    /* Not used */
-#endif
 
 /* Down-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
 #if RTT_DOWN_BUFFER_INDEX != 0
@@ -253,14 +251,14 @@ void Trace_Init()
 	/* Only RTT channel 0 works at the moment, so these only sets RTT_MODE! */
 	SEGGER_RTT_ConfigUpBuffer(RTT_UP_BUFFER_INDEX,
 								"TzData",
-								0,//_TzTraceData,
-								0,//sizeof(_TzTraceData),
+								_TzTraceData,
+								sizeof(_TzTraceData),
 								RTT_MODE );
 
 	SEGGER_RTT_ConfigDownBuffer(RTT_DOWN_BUFFER_INDEX,
 								"TzCtrl",
-								0,//_TzCtrlData,
-								0,//sizeof(_TzCtrlData),
+								_TzCtrlData,
+								sizeof(_TzCtrlData),
 								0);
 
 	WarnChn = vTraceStoreUserEventChannelName("Warnings from Recorder");
