@@ -342,6 +342,9 @@ extern void psfError(int errCode);
 #define PSF_ERROR_EVENT_CODE_TOO_LARGE 1
 #define PSF_ERROR_ISR_NESTING_OVERFLOW 2
 
+/* << EST: mapping old trace recorder API to new RTT API */
 #define vTraceInitTraceData()   Trace_Init()
+#define uiTraceStart()        1 /* not available in RTT version */
+#define vTraceStop()            /* not available in RTT version */
 
 #endif /* _PSF_H */
