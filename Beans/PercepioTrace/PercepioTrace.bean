@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.044</Version>
+    <Version>01.046</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -88,7 +88,7 @@
               <Hint>SYMBOL_MAX_LENGTH: The maximum length of symbol names.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>25</DefaultValue>
+              <DefaultValue>24</DefaultValue>
               <MinValue>0</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
@@ -106,40 +106,6 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>20</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>RTT Up Buffer Index</Name>
-              <Symbol>RTTUpBufferIndex</Symbol>
-              <Hint>RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>0</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>RTT Down Buffer Index</Name>
-              <Symbol>RTTDownBufferIndex</Symbol>
-              <Hint>RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>0</DefaultValue>
               <MinValue>0</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
@@ -174,6 +140,54 @@
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
             </TStrgItem>
+          </GrupItem>
+          <GrupItem>
+            <TGrupItem>
+              <Name>RTT Settings</Name>
+              <Symbol>RTTSettings</Symbol>
+              <Hint>Settings for the Segger RTT (Real Time Terminal)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description/>
+              <Expanded>Yes</Expanded>
+              <Children>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>RTT Up Buffer Index</Name>
+                    <Symbol>RTTUpBufferIndex</Symbol>
+                    <Hint>RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>RTT Down Buffer Index</Name>
+                    <Symbol>RTTDownBufferIndex</Symbol>
+                    <Hint>RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+              </Children>
+            </TGrupItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>

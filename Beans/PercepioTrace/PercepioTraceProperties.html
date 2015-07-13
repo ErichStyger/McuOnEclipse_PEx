@@ -243,20 +243,26 @@ The following items are available only if the group is enabled (the value is "En
   <b>Object Data Slots</b></a> - OBJECT_DATA_SLOTS: The maximum number of object data entries (used for task priorities) that can be stored at the same time. Must be sufficient for all tasks, otherwise there will be warnings (as User Events) from TzCtrl task, that monitors this.
   </li>
   <li>
-  <a name="RTTUpBufferIndex">
-  <b>RTT Up Buffer Index</b></a> - RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
-  </li>
-  <li>
-  <a name="RTTDownBufferIndex">
-  <b>RTT Down Buffer Index</b></a> - RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
-  </li>
-  <li>
   <a name="TzCtrlTaskPrioStr">
   <b>TzCtrl Task Priority</b></a> - Priority of the TzCtrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)
   </li>
   <li>
   <a name="TzCtrlTaskStackSize">
   <b>TzCtrl Task Stack Size</b></a> - TZCTRL_TASK_STACK_SIZE: The stack size of the TzCtrl task, that receive commands.
+  </li>
+  <li>
+  <a name="RTTSettings">
+  <b>RTT Settings</b></a> - Settings for the Segger RTT (Real Time Terminal)
+  <ul>
+    <li>
+    <a name="RTTUpBufferIndex">
+    <b>RTT Up Buffer Index</b></a> - RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
+    </li>
+    <li>
+    <a name="RTTDownBufferIndex">
+    <b>RTT Down Buffer Index</b></a> - RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
+    </li>
+  </ul>
   </li>
 </ul>
 </li>
