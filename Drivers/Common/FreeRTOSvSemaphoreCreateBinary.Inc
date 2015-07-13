@@ -17,6 +17,14 @@
 %;**         synchronisation (between tasks or between tasks and an
 %;**         interrupt), and mutexes the better choice for implementing
 %;**         simple mutual exclusion.
+%;**         This old vSemaphoreCreateBinary() macro is now deprecated in
+%;**         favour of the xSemaphoreCreateBinary() function.  Note that
+%;**         binary semaphores created using the vSemaphoreCreateBinary()
+%;**         macro are created in a state such that the first call to
+%;**         'take' the semaphore would pass, whereas binary semaphores
+%;**         created using xSemaphoreCreateBinary() are created in a
+%;**         state such that the the semaphore must first be 'given'
+%;**         before it can be 'taken'.
 %;**         A binary semaphore need not be given back once obtained, so
 %;**         task synchronisation can be implemented by one
 %;**         task/interrupt continuously 'giving' the semaphore while

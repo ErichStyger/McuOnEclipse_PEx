@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.430</Version>
+    <Version>01.432</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -18,7 +18,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>20</BW_NeedUst>
+    <BW_NeedUst>21</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License : Open Source (LGPL)\nFreeRTOS (c) Copyright 2003-2015 Richard Barry, http: www.FreeRTOS.org\nFreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013\nProcessor Expert and CodeWarrior (c) Copyright Freescale Semiconductor, 2013, all rights reserved\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -2790,12 +2790,14 @@ xSemaphoreGive() is part of the fully featured intertask communications API. xSe
 \n
 Binary semaphores and mutexes are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
 \n
+This old vSemaphoreCreateBinary() macro is now deprecated in favour of the xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
+\n
 A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
 \n
 The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
 \n
 Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
+        <ItemLevel>@ HIDDEN @</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
@@ -2820,6 +2822,38 @@ Both mutex and binary semaphores are assigned to variables of type xSemaphoreHan
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateBinary</Name>
+        <Symbol>xSemaphoreCreateBinary</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>The old vSemaphoreCreateBinary() macro is now deprecated in favour of this xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
+\n
+Function that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore.  The data size is 0 as nothing is actually stored - all that is important is whether the queue is empty or full (the binary semaphore is available or not).\n
+\n
+This type of semaphore can be used for pure synchronisation between tasks or between an interrupt and a task.  The semaphore need not be given back once obtained, so one task/interrupt can continuously 'give' the semaphore while another continuously 'takes' the semaphore.  For this reason this type of semaphore does not use a priority inheritance mechanism.  For an alternative that does use priority inheritance see xSemaphoreCreateMutex().</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>SemaphoreHandle_t</ReturnType>
+        <RetHint>Handle to the created semaphore.</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>SemaphoreHandle_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

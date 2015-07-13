@@ -1538,6 +1538,16 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- pvTaskGetThreadLocalStoragePointer
 %-BW_METHOD_END pvTaskGetThreadLocalStoragePointer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateBinary
+%ifdef xSemaphoreCreateBinary
+#define %'ModuleName'%.%xSemaphoreCreateBinary() \
+  xSemaphoreCreateBinary()
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateBinary.Inc
+
+%endif %- xSemaphoreCreateBinary
+%-BW_METHOD_END xSemaphoreCreateBinary
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3632,6 +3642,20 @@ void* %'ModuleName'%.%pvTaskGetThreadLocalStoragePointer(TaskHandle_t xTaskToQue
 
 %endif %- pvTaskGetThreadLocalStoragePointer
 %-BW_METHOD_END pvTaskGetThreadLocalStoragePointer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateBinary
+%ifdef xSemaphoreCreateBinary
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateBinary.Inc
+/*
+SemaphoreHandle_t %'ModuleName'%.%xSemaphoreCreateBinary(void)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xSemaphoreCreateBinary
+%-BW_METHOD_END xSemaphoreCreateBinary
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
