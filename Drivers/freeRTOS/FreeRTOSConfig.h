@@ -296,6 +296,11 @@
 #define configHEAP_SECTION_NAME_STRING  %>50 ".m_data_20000000" /* heap section name (use e.g. ".m_data_20000000" for gcc and "m_data_20000000" for IAR). Check your linker file for the name used. */
 %endif
 #endif
+%if defined(ApplicationAllocatedHeap) & %ApplicationAllocatedHeap='yes'
+#define configAPPLICATION_ALLOCATED_HEAP                         %>50 1 /* set to one if application is defining heap ucHeap[] variable, 0 otherwise */
+%else
+#define configAPPLICATION_ALLOCATED_HEAP                         %>50 0 /* set to one if application is defining heap ucHeap[] variable, 0 otherwise */
+%endif
 /*----------------------------------------------------------*/
 #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
 %if %UseTraceFacility='yes'
