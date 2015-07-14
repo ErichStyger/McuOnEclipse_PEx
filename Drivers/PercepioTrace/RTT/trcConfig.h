@@ -46,27 +46,27 @@
 #define TRC_CONFIG_USE_RTT_STREAMING   1  /* Set to 1 if using RTT streaming, 0 otherwise */
 
 // Set the hardware port setting here!
-#define RECORDER_HARDWARE_PORT PORT_ARM_Cortex_M
+#define TRC_RECORDER_HARDWARE_PORT TRC_PORT_ARM_Cortex_M
 
 /******************************************************************************
- * FREERTOS_VERSION
+ * TRC_FREERTOS_VERSION
  * 
  * Specify what version of FreeRTOS that is used. This is necessary compensate 
  * for renamed symbols in the FreeRTOS kernel (does not build if incorrect).
  * 
- * FREERTOS_VERSION_7_3_OR_7_4 (= 1)		If using FreeRTOS v7.3.0 - v7.4.2
- * FREERTOS_VERSION_7_5_OR_7_6 (= 2)		If using FreeRTOS v7.5.0 - v7.6.0
- * FREERTOS_VERSION_8_0_OR_LATER (= 3)		If using FreeRTOS v8.0.0 or later
+ * TRC_FREERTOS_VERSION_7_3_OR_7_4 (= 1)		If using FreeRTOS v7.3.0 - v7.4.2
+ * TRC_FREERTOS_VERSION_7_5_OR_7_6 (= 2)		If using FreeRTOS v7.5.0 - v7.6.0
+ * TRC_FREERTOS_VERSION_8_0_OR_LATER (= 3)		If using FreeRTOS v8.0.0 or later
  *****************************************************************************/
-#define FREERTOS_VERSION_NOT_SET			0
-#define FREERTOS_VERSION_7_3_OR_7_4			1
-#define FREERTOS_VERSION_7_5_OR_7_6			2
-#define FREERTOS_VERSION_8_0_OR_LATER		3
+#define TRC_FREERTOS_VERSION_NOT_SET			  0
+#define TRC_FREERTOS_VERSION_7_3_OR_7_4			1
+#define TRC_FREERTOS_VERSION_7_5_OR_7_6			2
+#define TRC_FREERTOS_VERSION_8_0_OR_LATER		3
 
-#define FREERTOS_VERSION	FREERTOS_VERSION_8_0_OR_LATER
+#define TRC_FREERTOS_VERSION	TRC_FREERTOS_VERSION_8_0_OR_LATER
 
 /*******************************************************************************
- * Configuration Macro: SYMBOL_TABLE_SLOTS
+ * Configuration Macro: TRC_SYMBOL_TABLE_SLOTS
  *
  * The maximum number of symbols names that can be stored. This includes:
  * - Task names
@@ -78,10 +78,10 @@
  * trace display will be affected. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define SYMBOL_TABLE_SLOTS   %SymbolTableSlots
+#define TRC_SYMBOL_TABLE_SLOTS   %SymbolTableSlots
 
 /*******************************************************************************
- * Configuration Macro: SYMBOL_MAX_LENGTH
+ * Configuration Macro: TRC_SYMBOL_MAX_LENGTH
  *
  * The maximum length of symbol names, including:
  * - Task names
@@ -93,37 +93,37 @@
  * which will affect the trace display. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define SYMBOL_MAX_LENGTH   %SymbolMaxLength
+#define TRC_SYMBOL_MAX_LENGTH   %SymbolMaxLength
 
 /*******************************************************************************
- * Configuration Macro: OBJECT_DATA_SLOTS
+ * Configuration Macro: TRC_OBJECT_DATA_SLOTS
  *
  * The maximum number of object data entries (used for task priorities) that can
  * be stored at the same time. Must be sufficient for all tasks, otherwise there
  * will be warnings (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-#define OBJECT_DATA_SLOTS   %ObjectDataSlots
+#define TRC_OBJECT_DATA_SLOTS   %ObjectDataSlots
 
 /*******************************************************************************
- * Configuration Macro: RTT_UP_BUFFER_INDEX
+ * Configuration Macro: TRC_RTT_UP_BUFFER_INDEX
  *
  * Defines the RTT buffer to use for writing the trace data. Make sure that
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define RTT_UP_BUFFER_INDEX   %RTTUpBufferIndex
+#define TRC_RTT_UP_BUFFER_INDEX   %RTTUpBufferIndex
 
 /*******************************************************************************
- * Configuration Macro: RTT_DOWN_BUFFER_INDEX
+ * Configuration Macro: TRC_RTT_DOWN_BUFFER_INDEX
  *
  * Defines the RTT buffer to use for reading the trace data. Make sure that
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define RTT_DOWN_BUFFER_INDEX   %RTTDownBufferIndex
+#define TRC_RTT_DOWN_BUFFER_INDEX   %RTTDownBufferIndex
 
 /*******************************************************************************
- * Configuration Macro: RTT_MODE
+ * Configuration Macro: TRC_RTT_MODE
  *
  * Defines how the RTT up-buffer (target->host) should behave when full.
  *
@@ -136,33 +136,33 @@
  * the results from the PC application is not guaranteed to be accurate.
  *
  * In case blocking mode is used (SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) you can
- * see any cases of blocking as User Events in the PC application . To do that, you need
- * to enable MEASURE_BLOCKING_TIME. When you have recorded a trace, check the
+ * see any cases of blocking as User Events in the PC application. To do that, you need
+ * to enable TRC_MEASURE_BLOCKING_TIME. When you have recorded a trace, check the
  * View Filter, under User Events, and enable "Blocking on trace buffer" if
  * this is present (otherwise there is no blocking). This shows the high
  * watermark for any RTT blocking time, measured between each run of TzCtrl.
  * See also MEASURE_BLOCKING_TIME.
  ******************************************************************************/
-#define RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
+#define TRC_RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
 
 /*******************************************************************************
- * Configuration Macro: TZCTRL_TASK_STACK_SIZE
+ * Configuration Macro: TRC_TZCTRL_TASK_STACK_SIZE
  *
  * The stack size of the TzCtrl task, that receive commands.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TZCTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
+#define TRC_TZCTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
 
 /*******************************************************************************
- * Configuration Macro: TZCTRL_TASK_PRIORITY
+ * Configuration Macro: TRC_CTRL_TASK_PRIORITY
  *
  * The priority of the TzCtrl task, that receive commands from.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TZCTRL_TASK_PRIORITY %TzCtrlTaskPrioStr
+#define TRC_CTRL_TASK_PRIORITY %TzCtrlTaskPrioStr
 
 /*******************************************************************************
- * Configuration Macro: MEASURE_BLOCKING_TIME
+ * Configuration Macro: TRC_MEASURE_BLOCKING_TIME
  *
  * If using SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL, this activates detection and
  * warnings in case of blocking in SEGGER_RTT_Write (if too small buffer).
@@ -175,7 +175,7 @@
  * Event Signal Plot to get an overview of the magnitude of the blocking and
  * decide if acceptable.
  *
- * To eliminate or at least reduce occurences of blocking:
+ * To eliminate or at least reduce occurrences of blocking:
  *
  * - Verify the J-Link Speed in the Settings dialog of the PC application.
  *   Default is 4 MHz, but can be increased a lot depending on your J-Link.
@@ -188,23 +188,23 @@
  *
  * - Reduce the amount of data produced, e.g., by removing frequent User Events.
  ******************************************************************************/
-#define MEASURE_BLOCKING_TIME 0
+#define TRC_MEASURE_BLOCKING_TIME 0
 
 /*******************************************************************************
- * Configuration Macro: BLOCKING_MIN_CYCLES
+ * Configuration Macro: TRC_BLOCKING_MIN_CYCLES
  *
  * Threshold value for deciding if SEGGER_RTT_Write has blocked. Most events
  * take 200-300 cycles on ARM Cortex-M MCUs, so anything above 500 cycles should
  * be due to blocking on a full buffer (i.e., waiting for the debugger to read
  * the RTT buffer data and make room for more...).
  ******************************************************************************/
-#define BLOCKING_MIN_CYCLES 500
+#define TRC_BLOCKING_MIN_CYCLES 500
 
 
-#define JLINK_RTT     1
-#define PERIODIC_TASK 2
+#define TRC_JLINK_RTT     1
+#define TRC_PERIODIC_TASK 2
 
-#define RECORDER_TRANSFER_METHOD JLINK_RTT
+#define TRC_RECORDER_TRANSFER_METHOD TRC_JLINK_RTT
 
 #endif
 

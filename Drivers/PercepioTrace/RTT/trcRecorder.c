@@ -90,19 +90,15 @@ typedef struct{
 } PSFHeaderInfo;
 
 /* The size of each slot in the Symbol Table */
-#if 1 /* << EST: must have 32bit aligned addresses! */
-  #define SYMBOL_TABLE_SLOT_SIZE (sizeof(uint32_t) + (((SYMBOL_MAX_LENGTH)+3)/4)*4)
-#else
-  #define SYMBOL_TABLE_SLOT_SIZE (SYMBOL_MAX_LENGTH + sizeof(uint32_t))
-#endif
+#define SYMBOL_TABLE_SLOT_SIZE (sizeof(uint32_t) + (((TRC_SYMBOL_MAX_LENGTH)+(sizeof(uint32_t)-1))/sizeof(uint32_t))*sizeof(uint32_t))
 
 #define OBJECT_DATA_SLOT_SIZE (sizeof(uint32_t) + sizeof(uint32_t))
 
 /* The total size of the Symbol Table */
-#define SYMBOL_TABLE_BUFFER_SIZE (SYMBOL_TABLE_SLOTS * SYMBOL_TABLE_SLOT_SIZE)
+#define SYMBOL_TABLE_BUFFER_SIZE (TRC_SYMBOL_TABLE_SLOTS * SYMBOL_TABLE_SLOT_SIZE)
 
 /* The total size of the Object Data Table */
-#define OBJECT_DATA_TABLE_BUFFER_SIZE (OBJECT_DATA_SLOTS * OBJECT_DATA_SLOT_SIZE)
+#define OBJECT_DATA_TABLE_BUFFER_SIZE (TRC_OBJECT_DATA_SLOTS * OBJECT_DATA_SLOT_SIZE)
 
 /* The Symbol Table type - just a byte array */
 typedef struct{
@@ -659,9 +655,9 @@ void vTraceStoreHeader()
                         /* Lowest bit used for IRQ_PRIORITY_ORDER */
                         header->options = header->options | (IRQ_PRIORITY_ORDER << 0);
 			header->symbolSize = SYMBOL_TABLE_SLOT_SIZE;
-			header->symbolCount = SYMBOL_TABLE_SLOTS;
+			header->symbolCount = TRC_SYMBOL_TABLE_SLOTS;
 			header->objectDataSize = 8;
-			header->objectDataCount = OBJECT_DATA_SLOTS;
+			header->objectDataCount = TRC_OBJECT_DATA_SLOTS;
 			COMMIT_EVENT(header, sizeof(PSFHeaderInfo));
 		}
 	}
@@ -941,7 +937,7 @@ void vTraceSaveSymbol(void *address, const char *name)
 		*((uint32_t*)&symbolTable.pSymbolTableBuffer[foundSlot]) =
 			(uint32_t)address;
 
-		for (i = 0; i < SYMBOL_MAX_LENGTH; i++)
+		for (i = 0; i < TRC_SYMBOL_MAX_LENGTH; i++)
         {
 			if (name[i] == 0)
 				break;

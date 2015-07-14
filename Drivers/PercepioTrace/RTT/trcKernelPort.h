@@ -79,15 +79,16 @@ void Trace_Init(void);
 #define TRACE_TICK_RATE_HZ configTICK_RATE_HZ /* Defined in "FreeRTOS.h" */
 #define TRACE_CPU_CLOCK_HZ configCPU_CLOCK_HZ /* Defined in "FreeRTOSConfig.h" */
 
-#if (RECORDER_HARDWARE_PORT == PORT_ARM_Cortex_M)
+#if (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_ARM_Cortex_M)
 	
 	/* Uses CMSIS API */
 #if 1 /* << EST: PEx interface */
 #if !configPEX_KINETIS_SDK
   #include "%ProcessorModule.h"
 #endif
+#else
+  #include "board.h"
 #endif
-//#include "board.h"
 
 	#define TRACE_ALLOC_CRITICAL_SECTION() int __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = __get_PRIMASK(); __set_PRIMASK(1);}
@@ -95,7 +96,7 @@ void Trace_Init(void);
 
 #endif
 
-#if ((RECORDER_HARDWARE_PORT == PORT_ARM_CORTEX_A9) || (RECORDER_HARDWARE_PORT == PORT_Renesas_RX600))
+#if ((TRC_RECORDER_HARDWARE_PORT == TRC_PORT_ARM_CORTEX_A9) || (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_Renesas_RX600))
 	#define TRACE_ALLOC_CRITICAL_SECTION() int __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = portSET_INTERRUPT_MASK_FROM_ISR();}
 	#define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(__irq_status);}
@@ -284,7 +285,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 #define PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED				0xC8
 
 #define ALLOCATE_EVENT(_type, _ptr, _size) _type tmpEvt; _type* _ptr = &tmpEvt;
-#define COMMIT_EVENT(_ptr, _size) SEGGER_RTT_Write(RTT_UP_BUFFER_INDEX,(const char*)_ptr, _size);
+#define COMMIT_EVENT(_ptr, _size) SEGGER_RTT_Write(TRC_RTT_UP_BUFFER_INDEX,(const char*)_ptr, _size);
 
 #define TRACE_GET_OS_TICKS() (uiTraceTickCount)
 
@@ -336,7 +337,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 
 /* Called on each OS tick. Will call uiPortGetTimestamp to make sure it is called at least once every OS tick. */
 #undef traceTASK_INCREMENT_TICK
-#if (FREERTOS_VERSION == FREERTOS_VERSION_7_3_OR_7_4)
+#if (TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_7_3_OR_7_4)
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
 	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { extern uint32_t uiTraceTickCount; uiTraceTickCount++; } \
@@ -440,7 +441,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 
 /* Called in xQueueCreateCountingSemaphore, if the queue creation fails */
 #undef traceCREATE_COUNTING_SEMAPHORE
-#if FREERTOS_VERSION == FREERTOS_VERSION_8_0_OR_LATER
+#if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceCREATE_COUNTING_SEMAPHORE() \
 	vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, xHandle, ((Queue_t *) xHandle)->uxMessagesWaiting);
 #else
@@ -649,7 +650,7 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	}
 		
 #undef traceTAKE_MUTEX_RECURSIVE
-#if FREERTOS_VERSION == FREERTOS_VERSION_8_0_OR_LATER
+#if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTAKE_MUTEX_RECURSIVE( pxQueue ) \
 	vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE, pxQueue, xTicksToWait);
 #else
@@ -658,7 +659,7 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 #endif
 
 #undef traceTAKE_MUTEX_RECURSIVE_FAILED
-#if FREERTOS_VERSION == FREERTOS_VERSION_8_0_OR_LATER
+#if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTAKE_MUTEX_RECURSIVE_FAILED( pxQueue ) \
 vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, pxQueue, xTicksToWait);
 #else
@@ -754,7 +755,7 @@ switch (pxQueue->ucQueueType) \
 #define traceTIMER_CREATE_FAILED() \
 	vTraceStoreEvent0(PSF_EVENT_TIMER_CREATE_FAILED);
 
-#if FREERTOS_VERSION == FREERTOS_VERSION_8_0_OR_LATER
+#if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \
 	case tmrCOMMAND_RESET: \
 		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET : PSF_EVENT_TIMER_RESET_FAILED, tmr, xOptionalValue); \
@@ -860,6 +861,11 @@ vTraceStoreKernelObjectName(object, name);
 #define vTraceSetEventGroupName(object, name) \
 vTraceStoreKernelObjectName(object, name);
 
+/* << EST: mapping old trace recorder API to new RTT API */
+#define vTraceStop()            /* not available in RTT version */
+#define vTraceInitTraceData() Trace_Init()
+#define uiTraceStart() 
+
 #else /*(USE_TRACEALYZER_RECORDER == 1)*/
 
 #define vTraceSetQueueName(object, name)
@@ -869,6 +875,11 @@ vTraceStoreKernelObjectName(object, name);
 #define vTraceSetMutexName(object, name)
 
 #define vTraceSetEventGroupName(object, name)
+
+/* << EST: mapping old trace recorder API to new RTT API */
+#define vTraceStop()            /* not available in RTT version */
+#define vTraceInitTraceData() 
+#define uiTraceStart() 
 
 #endif /*(USE_TRACEALYZER_RECORDER == 1)*/
 

@@ -64,7 +64,7 @@ extern volatile uint32_t NoRoomForObjectData;
 extern volatile uint32_t LongestSymbolName;
 extern volatile uint32_t MaxBytesTruncated;
 
-#if ((RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (MEASURE_BLOCKING_TIME))
+#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
 
 /*** Used in blocking RTT mode, if enabled MEASURE_BLOCKING_TIME **************/
 
@@ -88,17 +88,17 @@ uint32_t LongestSymbolName_last = 0;
 uint32_t MaxBytesTruncated_last = 0;
 
 /* Up-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
-#if RTT_UP_BUFFER_INDEX != 0
+#if TRC_RTT_UP_BUFFER_INDEX != 0
 static char _TzTraceData[BUFFER_SIZE_UP];
 #else
 static char _TzTraceData[4];    /* Not used */
+#endif
 
 /* Down-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
-#if RTT_DOWN_BUFFER_INDEX != 0
+#if TRC_RTT_DOWN_BUFFER_INDEX != 0
 static char _TzCtrlData[BUFFER_SIZE_DOWN];
 #else
 static char _TzCtrlData[4];     /* Not used */
-#endif
 #endif
 
 /*******************************************************************************
@@ -155,7 +155,7 @@ void CheckRecorderStatus(void)
 
 	if (LongestSymbolName > LongestSymbolName_last)
 	{
-		if (LongestSymbolName > SYMBOL_MAX_LENGTH)
+		if (LongestSymbolName > TRC_SYMBOL_MAX_LENGTH)
 		{
 			vTracePrintF(WarnChn, "SYMBOL_MAX_LENGTH too small. Add %%d chars.",
 				LongestSymbolName);
@@ -183,7 +183,7 @@ void CheckRecorderStatus(void)
 		MaxBytesTruncated_last = MaxBytesTruncated;
 	}
 
-#if ((RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (MEASURE_BLOCKING_TIME))
+#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
 	if (blockingCount > 0)
 	{
 		/* At least one case of RTT blocking since the last check and this is
@@ -212,7 +212,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 
 	while (1)
 	{
-		bytes = SEGGER_RTT_Read(RTT_DOWN_BUFFER_INDEX,
+		bytes = SEGGER_RTT_Read(TRC_RTT_DOWN_BUFFER_INDEX,
 								(char*)&msg, sizeof(TracealyzerCommandType));
 	if (bytes != 0)
 		{
@@ -249,13 +249,13 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 void Trace_Init()
 {
 	/* Only RTT channel 0 works at the moment, so these only sets RTT_MODE! */
-	SEGGER_RTT_ConfigUpBuffer(RTT_UP_BUFFER_INDEX,
+	SEGGER_RTT_ConfigUpBuffer(TRC_RTT_UP_BUFFER_INDEX,
 								"TzData",
 								_TzTraceData,
 								sizeof(_TzTraceData),
-								RTT_MODE );
+								TRC_RTT_MODE );
 
-	SEGGER_RTT_ConfigDownBuffer(RTT_DOWN_BUFFER_INDEX,
+	SEGGER_RTT_ConfigDownBuffer(TRC_RTT_DOWN_BUFFER_INDEX,
 								"TzCtrl",
 								_TzCtrlData,
 								sizeof(_TzCtrlData),
@@ -263,12 +263,12 @@ void Trace_Init()
 
 	WarnChn = vTraceStoreUserEventChannelName("Warnings from Recorder");
 
-#if ((RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (MEASURE_BLOCKING_TIME))
+#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
 	RTTDiagChn = vTraceStoreUserEventChannelName("Blocking on trace buffer");
 #endif
 
   	/* Creates the TzCtrl task - receives trace commands (start, stop, ...) */
-	xTaskCreate( TzCtrl, "TzCtrl", configMINIMAL_STACK_SIZE, NULL, TZCTRL_TASK_PRIORITY, &HandleTzCtrl );
+	xTaskCreate( TzCtrl, "TzCtrl", configMINIMAL_STACK_SIZE, NULL, TRC_CTRL_TASK_PRIORITY, &HandleTzCtrl );
 }
 
 #else /* (USE_TRACEALYZER_RECORDER == 1) */

@@ -56,7 +56,7 @@
 #if 1 /* << EST */
 #include "FreeRTOSConfig.h"
 
-#if !configPEX_KINETIS_SDK /* Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
+#if !configPEX_KINETIS_SDK /* << EST Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
   /** \brief  Get Priority Mask
 
       This function returns the current state of the priority mask bit from the Priority Mask Register.
@@ -87,14 +87,14 @@
 #endif /* !configPEX_KINETIS_SDK */
 #endif /* << EST */
 
-/****** Port Name ********************** Code */
-#define PORT_APPLICATION_DEFINED			-1
-#define PORT_NOT_SET						0
-#define PORT_ARM_Cortex_M					1
-#define PORT_ARM_CORTEX_A9					2
-#define PORT_Renesas_RX600					3
-#define PORT_TEXAS_INSTRUMENTS_TMS570_RM48	4
-#define PORT_MICROCHIP_PIC32_MX_MZ			5
+/****** Port Name ***************************** Code */
+#define TRC_PORT_APPLICATION_DEFINED			-1
+#define TRC_PORT_NOT_SET						0
+#define TRC_PORT_ARM_Cortex_M					1
+#define TRC_PORT_ARM_CORTEX_A9					2
+#define TRC_PORT_Renesas_RX600					3
+#define TRC_PORT_TEXAS_INSTRUMENTS_TMS570_RM48	4
+#define TRC_PORT_MICROCHIP_PIC32_MX_MZ			5
 
 /*******************************************************************************
  *
@@ -133,42 +133,42 @@
  *
  ******************************************************************************/
 
-#define FREE_RUNNING_32BIT_INCR 1
-#define FREE_RUNNING_32BIT_DECR 2
-#define OS_TIMER_INCR 3
-#define OS_TIMER_DECR 4
+#define TRC_FREE_RUNNING_32BIT_INCR 1
+#define TRC_FREE_RUNNING_32BIT_DECR 2
+#define TRC_OS_TIMER_INCR 3
+#define TRC_OS_TIMER_DECR 4
 
-#if (RECORDER_HARDWARE_PORT == PORT_ARM_Cortex_M)
+#if (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_ARM_Cortex_M)
 
-	#define HWTC_TYPE OS_TIMER_DECR
+	#define HWTC_TYPE TRC_OS_TIMER_DECR
     #define HWTC_COUNT (*((uint32_t*)0xE000E018)) /* SysTick counter */
 	#define IRQ_PRIORITY_ORDER 0
 
-#elif (RECORDER_HARDWARE_PORT == PORT_Renesas_RX600)
+#elif (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_Renesas_RX600)
 
 	#include "iodefine.h"
 
-	#define HWTC_TYPE OS_TIMER_INCR
+	#define HWTC_TYPE TRC_OS_TIMER_INCR
 	#define HWTC_COUNT (CMT0.CMCNT)
 	#define IRQ_PRIORITY_ORDER 1
 
-#elif (RECORDER_HARDWARE_PORT == PORT_MICROCHIP_PIC32_MX_MZ)
+#elif (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_MICROCHIP_PIC32_MX_MZ)
 
-	#define HWTC_TYPE OS_TIMER_INCR
+	#define HWTC_TYPE TRC_OS_TIMER_INCR
 	#define HWTC_COUNT (TMR1)
 	#define IRQ_PRIORITY_ORDER 0
 
-#elif (RECORDER_HARDWARE_PORT == PORT_TEXAS_INSTRUMENTS_TMS570_RM48)
+#elif (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_TEXAS_INSTRUMENTS_TMS570_RM48)
 
 	#define RTIFRC0 *((uint32_t *)0xFFFFFC10)
 	#define RTICOMP0 *((uint32_t *)0xFFFFFC50)
 	#define RTIUDCP0 *((uint32_t *)0xFFFFFC54)
 
-	#define HWTC_TYPE OS_TIMER_INCR
+	#define HWTC_TYPE TRC_OS_TIMER_INCR
 	#define HWTC_COUNT (RTIFRC0 - (RTICOMP0 - RTIUDCP0))
 	#define IRQ_PRIORITY_ORDER 0
 
-#elif (RECORDER_HARDWARE_PORT == PORT_ARM_CORTEX_A9)
+#elif (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_ARM_CORTEX_A9)
 
     #define CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK    0x0000FF00
     #define CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT   8
@@ -177,24 +177,24 @@
     #define CA9_MPCORE_PRIVCTR_CONTROL_REG      (*(volatile uint32_t*)(0xF8F00600 + 8))
     #define CA9_MPCORE_PRIVCTR_PRESCALER        (((CA9_MPCORE_PRIVCTR_CONTROL_REG & CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_MASK) >> CA9_MPCORE_PRIVCTR_CONTROL_PRESCALER_SHIFT) + 1)
 
-    #define HWTC_TYPE 							OS_TIMER_DECR
+    #define HWTC_TYPE 							TRC_OS_TIMER_DECR
     #define HWTC_COUNT                          CA9_MPCORE_PRIVCTR_COUNTER_REG
     #define IRQ_PRIORITY_ORDER 0
 
-#elif (RECORDER_HARDWARE_PORT == PORT_APPLICATION_DEFINED)
+#elif (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_APPLICATION_DEFINED)
 
 	#if !( defined (HWTC_TYPE) && defined (HWTC_COUNT) && defined (IRQ_PRIORITY_ORDER))
 		#error RECORDER_HARDWARE_PORT is PORT_APPLICATION_DEFINED but not all of the necessary constants have been defined.
 	#endif
 
-#elif (RECORDER_HARDWARE_PORT != PORT_NOT_SET)
+#elif (TRC_RECORDER_HARDWARE_PORT != TRC_PORT_NOT_SET)
 
 	#error "RECORDER_HARDWARE_PORT had unsupported value!"
-	#define RECORDER_HARDWARE_PORT PORT_NOT_SET
+	#define TRC_RECORDER_HARDWARE_PORT PORT_NOT_SET
 
 #endif
 
-#if (RECORDER_HARDWARE_PORT != PORT_NOT_SET)
+#if (TRC_RECORDER_HARDWARE_PORT != TRC_PORT_NOT_SET)
 
 	#ifndef HWTC_COUNT
 	#error "HWTC_COUNT is not set!"

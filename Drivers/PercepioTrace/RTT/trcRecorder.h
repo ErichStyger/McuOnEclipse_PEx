@@ -322,15 +322,17 @@ void processCommand(TracealyzerCommandType* cmd);
 #define vTraceStoreEvent1(e, param1)
 #define vTraceStoreEvent2(e, param1, param2)
 #define vTraceStoreEvent3(e, param1, param2, param3)
-#define vTraceStoreUserEventChannelName(x) 0
-#define vTracePrint(chn, ...) chn = chn; /* Use it, to avoid warnings */
-#define vTracePrintF(chn, ...) chn = chn; /* Use it, to avoid warnings */
+#define vTraceStoreUserEventChannelName(x) 
+#define vTracePrint(chn, ...) 
+#define vTracePrintF(chn, ...) 
 #define vTraceInstanceFinishedNow()
 #define vTraceInstanceFinishedNext()
 #define vTraceStoreISRBegin(x)
-#define vTraceStoreISREnd(x);
-#define vTraceSetISRProperties(a, b)
-#define vTraceStoreKernelObjectName(a, b)
+#define vTraceStoreISREnd()
+#define vTraceStoreISREndManual(x)
+#define vTraceSetISRProperties(a, b) 
+#define vTraceStoreKernelObjectName(a, b) 
+#define Trace_Init() 
 
 #endif
 
@@ -341,10 +343,5 @@ extern void psfError(int errCode);
 #define PSF_ERROR_NONE 0
 #define PSF_ERROR_EVENT_CODE_TOO_LARGE 1
 #define PSF_ERROR_ISR_NESTING_OVERFLOW 2
-
-/* << EST: mapping old trace recorder API to new RTT API */
-#define vTraceInitTraceData()   Trace_Init()
-#define uiTraceStart()        1 /* not available in RTT version */
-#define vTraceStop()            /* not available in RTT version */
 
 #endif /* _PSF_H */
