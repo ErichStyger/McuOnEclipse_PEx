@@ -227,7 +227,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 		else
 		{
 			CheckRecorderStatus();
-			vTaskDelay(100);
+			vTaskDelay(100/portTICK_RATE_MS);
 		}
 	}
 }
