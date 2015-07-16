@@ -221,6 +221,30 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks);
 
 %endif %- AddTicks
 %-BW_METHOD_END AddTicks
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TicksToTime
+%ifdef TicksToTime
+uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time);
+%define! Particks
+%define! Partime
+%define! ParTime
+%define! RetVal
+%include Common\GenericTimeDateTicksToTime.Inc
+
+%endif %- TicksToTime
+%-BW_METHOD_END TicksToTime
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeToTicks
+%ifdef TimeToTicks
+uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks);
+%define! Partime
+%define! Particks
+%define! ParTime
+%define! RetVal
+%include Common\GenericTimeDateTimeToTicks.Inc
+
+%endif %- TimeToTicks
+%-BW_METHOD_END TimeToTicks
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -252,6 +276,29 @@ void %OnTimeSet(uint8_t hour, uint8_t minute, uint8_t second, uint8_t hSecond);
 
 %endif %- OnTimeSet
 %-BW_METHOD_END OnTimeSet
+%-BW_METHOD_BEGIN OnTimeGet
+%ifdef OnTimeGet
+%INTERFACE OnTimeGet
+void %OnTimeGet(uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond);
+%define! Parhour
+%define! Parminute
+%define! Parsecond
+%define! ParhSecond
+%include Common\GenericTimeDateOnTimeGet.Inc
+
+%endif %- OnTimeGet
+%-BW_METHOD_END OnTimeGet
+%-BW_METHOD_BEGIN OnDateGet
+%ifdef OnDateGet
+%INTERFACE OnDateGet
+void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
+%define! Parday
+%define! Parmonth
+%define! Paryear
+%include Common\GenericTimeDateOnDateGet.Inc
+
+%endif %- OnDateGet
+%-BW_METHOD_END OnDateGet
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\GenericTimeDateSettings.Inc
@@ -293,8 +340,8 @@ static uint16_t CntYear;                                         %>40/* Year Cou
 static uint32_t tickCntr;                                        %>40/* Software tick counter (1 tick = %'ModuleName'%.TICK_TIME_MS ms) */
 
 /* Table of month length (in days) */
-static const  uint8_t ULY[12] = {31U,28U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}; /* Un-leap-year */
-static const  uint8_t  LY[12] = {31U,29U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}; /* Leap-year */
+static const uint8_t ULY[12] = {31U,28U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}; /* Un-leap-year */
+static const uint8_t  LY[12] = {31U,29U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}; /* Leap-year */
 
 %ifdef ParseCommand
 static uint8_t AddDate(uint8_t *buf, uint16_t bufSize) {
@@ -338,9 +385,6 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   if (*p==' ') { /* ok, have an argument */
     if (%@Utility@'ModuleName'%.ScanDate(&p, &day, &month, &year) == ERR_OK) { /* ok, format fine */
       /* update real time clock */
-      %if defined(OnDateSet)
-      %OnDateSet(day, month, year); /* call user event */
-      %endif
       res = %'ModuleName'%.%SetDate(year, month, day);
       if (res != ERR_OK) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting time\r\n", io->stdErr);
@@ -377,9 +421,6 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   p = cmd + sizeof("%'ModuleName' time")-1;
   if (*p==' ') { /* has an argument */
     if (%@Utility@'ModuleName'%.ScanTime(&p, &hour, &minute, &second, &hSecond)==ERR_OK) { /* format fine */
-      %if defined(OnTimeSet)
-      %OnTimeSet(hour, minute, second, hSecond); /* call user event */
-      %endif
       /* set RTC time */
       res = %'ModuleName'%.%SetTime(hour, minute, second, hSecond);
       if (res != ERR_OK) {
@@ -451,16 +492,23 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
 #endif
 uint8_t %'ModuleName'%.%SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t Sec100)
 {
+  uint32_t nofTicks;
+  TIMEREC time;
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
   if ((Sec100>99U) || (Sec>59U) || (Min>59U) || (Hour>23U)) {    %>40/* Test correctnes of given time */
     return ERR_RANGE;                                            %>40/* If not correct then error */
   }
+%if defined(OnTimeSet)
+  %OnTimeSet(Hour, Min, Sec, Sec100); /* call user event */
+%endif
+  time.Hour = Hour;
+  time.Min = Min;
+  time.Sec = Sec;
+  time.Sec100 = Sec100;
+  %'ModuleName'%.%TimeToTicks(&time, &nofTicks);
   %@CriticalSection@'ModuleName'%.EnterCritical();
-  tickCntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Hour)
-              + (60UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Min)
-              + (%'ModuleName'%.TICKS_PER_S*(uint32_t)Sec)
-              + ((%'ModuleName'%.TICKS_PER_S/100)*(uint32_t)Sec100);%>40/* Load given time re-calculated to %'ModuleName'%.TICK_TIME_MS ms ticks into software tick counter */
+  tickCntr = nofTicks;
   %@CriticalSection@'ModuleName'%.ExitCritical();
   return ERR_OK;                                                 %>40/* OK */
 }
@@ -536,17 +584,18 @@ uint8_t %'ModuleName'%.%GetTime(TIMEREC *Time)
   uint32_t ticks;                                                %>40/* temporary variable of software tick counter */
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
+%if defined(OnTimeGet)
+  %OnTimeGet(&Time->Hour, &Time->Min, &Time->Sec, &Time->Sec100); /* call user event */
+  (void)%'ModuleName'%.%TimeToTicks(Time, &ticks);
+  %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* need exclusive access to tick counter */
+  tickCntr = ticks;                                              %>40/* actual number of ticks */
+  %@CriticalSection@'ModuleName'%.ExitCritical();                %>40/* end of critical section */
+%else
   %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* need exclusive access to tick counter */
   ticks = tickCntr;                                              %>40/* actual number of ticks */
   %@CriticalSection@'ModuleName'%.ExitCritical();                %>40/* end of critical section */
-  Time->Hour = (uint8_t)(ticks/(3600*%'ModuleName'%.TICKS_PER_S));%>40/* number of hours */
-  ticks %%= (3600*%'ModuleName'%.TICKS_PER_S);                   %>40/* remainder of ticks inside hour */
-  Time->Min = (uint8_t)(ticks/(60*%'ModuleName'%.TICKS_PER_S));  %>40/* number of minutes */
-  ticks %%= (60*%'ModuleName'%.TICKS_PER_S);                     %>40/* remainder of ticks inside minute */
-  Time->Sec = (uint8_t)(ticks/%'ModuleName'%.TICKS_PER_S);       %>40/* number of seconds */
-  ticks %%= %'ModuleName'%.TICKS_PER_S;
-  Time->Sec100 = (uint8_t)((ticks*(1000/%'ModuleName'%.TICKS_PER_S))/10);%>40/* number of 1/100 seconds */
-  return ERR_OK;
+%endif
+  return %'ModuleName'%.%TicksToTime(ticks, Time);               %>40 /* convert ticks to time information */
 }
 
 %endif %- GetTime
@@ -571,6 +620,9 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day)
   if (ptr[Month - 1U] < Day) {                                   %>40/* Does the obtained number of days exceed number of days in the appropriate month & year? */
     return ERR_RANGE;                                            %>40/* If yes (incorrect date inserted) then error */
   }
+%if defined(OnDateSet)
+  %OnDateSet(Day, Month, Year); /* call user event */
+%endif
   %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* Save the PS register */
   CntDay = Day;                                                  %>40/* Set day counter to the given value */
   CntMonth = Month;                                              %>40/* Set month counter to the given value */
@@ -591,6 +643,9 @@ uint8_t %'ModuleName'%.%GetDate(DATEREC *Date)
 {
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
+%if defined(OnDateGet)
+  %OnDateGet(&CntDay, &CntMonth, &CntYear); /* call user event */
+%endif
   %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* Save the PS register */
   Date->Year = CntYear;                                          %>40/* Year */
   Date->Month = CntMonth;                                        %>40/* Month */
@@ -659,6 +714,50 @@ void %'ModuleName'%.%DeInit(void)
 
 %endif %- DeInit
 %-BW_METHOD_END DeInit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TicksToTime
+%ifdef TicksToTime
+%define! Particks
+%define! Partime
+%define! ParTime
+%define! RetVal
+%include Common\GenericTimeDateTicksToTime.Inc
+uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time)
+{
+  Time->Hour = (uint8_t)(ticks/(3600*%'ModuleName'%.TICKS_PER_S));%>40/* number of hours */
+  ticks %%= (3600*%'ModuleName'%.TICKS_PER_S);                   %>40/* remainder of ticks inside hour */
+  Time->Min = (uint8_t)(ticks/(60*%'ModuleName'%.TICKS_PER_S));  %>40/* number of minutes */
+  ticks %%= (60*%'ModuleName'%.TICKS_PER_S);                     %>40/* remainder of ticks inside minute */
+  Time->Sec = (uint8_t)(ticks/%'ModuleName'%.TICKS_PER_S);       %>40/* number of seconds */
+  ticks %%= %'ModuleName'%.TICKS_PER_S;
+  Time->Sec100 = (uint8_t)((ticks*(1000/%'ModuleName'%.TICKS_PER_S))/10);%>40/* number of 1/100 seconds */
+  return ERR_OK;
+}
+
+%endif %- TicksToTime
+%-BW_METHOD_END TicksToTime
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeToTicks
+%ifdef TimeToTicks
+%define! Partime
+%define! Particks
+%define! ParTime
+%define! RetVal
+%include Common\GenericTimeDateTimeToTicks.Inc
+uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks)
+{
+  uint32_t tickCntr;
+
+  tickCntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Hour)
+              + (60UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Min)
+              + (%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Sec)
+              + ((%'ModuleName'%.TICKS_PER_S/100)*(uint32_t)Time->Sec100);%>40/* Load given time re-calculated to %'ModuleName'%.TICK_TIME_MS ms ticks into software tick counter */
+  *ticks = tickCntr;
+  return ERR_OK;
+}
+
+%endif %- TimeToTicks
+%-BW_METHOD_END TimeToTicks
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -695,6 +794,35 @@ void %OnTimeSet(uint8_t hour, uint8_t minute, uint8_t second, uint8_t hSecond)
 
 %endif %- OnTimeSet
 %-BW_METHOD_END OnTimeSet
+%-BW_METHOD_BEGIN OnTimeGet
+%ifdef OnTimeGet
+%IMPLEMENTATION OnTimeGet
+%define! Parhour
+%define! Parminute
+%define! Parsecond
+%define! ParhSecond
+%include Common\GenericTimeDateOnTimeGet.Inc
+void %OnTimeGet(uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnTimeGet
+%-BW_METHOD_END OnTimeGet
+%-BW_METHOD_BEGIN OnDateGet
+%ifdef OnDateGet
+%IMPLEMENTATION OnDateGet
+%define! Parday
+%define! Parmonth
+%define! Paryear
+%include Common\GenericTimeDateOnDateGet.Inc
+void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnDateGet
+%-BW_METHOD_END OnDateGet
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */

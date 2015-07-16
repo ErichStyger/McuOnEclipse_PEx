@@ -3,15 +3,16 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralEvent.inc (OnTimeSet)
+%include Common\GeneralMethod.inc (TicksToTime)
 %;**     Description :
-%;**         Called in the event of a new time set
+%;**         Transforms ticks into time information
 %include Common\GeneralParameters.inc(27)
-%;**         hour%Parhour %>27 - The hour to be set
-%;**         minute%Parminute %>27 - The minute to be set
-%;**         second%Parsecond %>27 - The second to be set
-%;**         hSecond%ParhSecond %>27 - The 0.01 second to be set
-%include Common\GeneralReturnNothing.inc
+%;**         ticks%Particks %>27 - 
+%;**       * Time%ParTime %>27 - Pointer where to store the time
+%;** %>29 information
+%;**     Returns     :
+%;**         ---%RetVal %>27 - Error code
+%include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
 %}

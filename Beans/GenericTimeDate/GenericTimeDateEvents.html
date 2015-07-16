@@ -220,10 +220,25 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void OnTimeSet(uint8_t hour, uint8_t minute, uint8_t second, uint8_t hSecond)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>hour:uint8_t</i> - The new hour</li>
-<li><i>minute:uint8_t</i> - The new minute</li>
-<li><i>second:uint8_t</i> - The new second</li>
-<li><i>hSecond:uint8_t</i> - The new 0.01 second part</li>
+<li><i>hour:uint8_t</i> - The hour to be set</li>
+<li><i>minute:uint8_t</i> - The minute to be set</li>
+<li><i>second:uint8_t</i> - The second to be set</li>
+<li><i>hSecond:uint8_t</i> - The 0.01 second to be set</li>
+</ul><br />
+</li>
+<li>
+<a name="OnTimeGet">
+<b>OnTimeGet</b>
+</a>
+ - Called in the event of a new time get
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void OnTimeGet(uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>hour:uint8_t</i> - Pointer to the hour, can be overwritten in the event routine.</li>
+<li><i>minute:uint8_t</i> - Pointer to the minute, can be overwritten in the event routine.</li>
+<li><i>second:uint8_t</i> - Pointer to the second, can be overwritten in the event routine.</li>
+<li><i>hSecond:uint8_t</i> - Pointer to the 0.01 second, can be overwritten in the event routine.</li>
 </ul><br />
 </li>
 <li>
@@ -235,9 +250,23 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void OnDateSet(uint8_t day, uint8_t month, uint16_t year)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>day:uint8_t</i> - the new day</li>
-<li><i>month:uint8_t</i> - the new month</li>
-<li><i>year:uint16_t</i> - the new year</li>
+<li><i>day:uint8_t</i> - The new day</li>
+<li><i>month:uint8_t</i> - The new month</li>
+<li><i>year:uint16_t</i> - The new year</li>
+</ul><br />
+</li>
+<li>
+<a name="OnDateGet">
+<b>OnDateGet</b>
+</a>
+ - called in the event of a date get
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>day:uint8_t</i> - Pointer to the day, can be written in the event routine.</li>
+<li><i>month:uint8_t</i> - Pointer to the month, can be written in the event routine.</li>
+<li><i>year:uint16_t</i> - Pointer to the year, can be written in the event routine.</li>
 </ul><br />
 </li>
 </ul>

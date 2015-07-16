@@ -3,14 +3,16 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralEvent.inc (OnTimeSet)
+%include Common\GeneralEvent.inc (OnDateGet)
 %;**     Description :
-%;**         Called in the event of a new time set
+%;**         called in the event of a date get
 %include Common\GeneralParameters.inc(27)
-%;**         hour%Parhour %>27 - The hour to be set
-%;**         minute%Parminute %>27 - The minute to be set
-%;**         second%Parsecond %>27 - The second to be set
-%;**         hSecond%ParhSecond %>27 - The 0.01 second to be set
+%;**       * day%Parday %>27 - Pointer to the day, can be written in the
+%;** %>29 event routine.
+%;**       * month%Parmonth %>27 - Pointer to the month, can be written
+%;** %>29 in the event routine.
+%;**       * year%Paryear %>27 - Pointer to the year, can be written in
+%;** %>29 the event routine.
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================
 %ifndef CommentLine

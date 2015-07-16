@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.020</Version>
+    <Version>01.027</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>4</BW_NeedUst>
+    <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Freescale Semiconductor, 2014\nhttp: www.freescale.com\nSource code is based on the original TimeDate Processor Expert component.</Copyright>
@@ -267,6 +267,86 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint16_t nofTicks)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>TicksToTime</Name>
+        <Symbol>TicksToTime</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Transforms ticks into time information</Hint>
+        <ItemLevel>@ HIDDEN @</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>ticks</ParName>
+          <ParType>uint32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>Time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer where to store the time information</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint32_t ticks, TIMEREC *Time)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>TimeToTicks</Name>
+        <Symbol>TimeToTicks</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Transforms time information into ticks</Hint>
+        <ItemLevel>@ HIDDEN @</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>Time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer where to time information</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>ticks</ParName>
+          <ParType>uint32_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the ticks</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, uint32_t *ticks)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -575,25 +655,25 @@
           <ParName>hour</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>The new hour</ParHint>
+          <ParHint>The hour to be set</ParHint>
         </Parameter>
         <Parameter>
           <ParName>minute</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>The new minute</ParHint>
+          <ParHint>The minute to be set</ParHint>
         </Parameter>
         <Parameter>
           <ParName>second</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>The new second</ParHint>
+          <ParHint>The second to be set</ParHint>
         </Parameter>
         <Parameter>
           <ParName>hSecond</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>The new 0.01 second part</ParHint>
+          <ParHint>The 0.01 second to be set</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -605,6 +685,69 @@
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
               <Hint>OnTimeSet procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnTimeGet</Name>
+        <Symbol>OnTimeGet</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Called in the event of a new time get</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>hour</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the hour, can be overwritten in the event routine.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>minute</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the minute, can be overwritten in the event routine.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>second</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the second, can be overwritten in the event routine.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>hSecond</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the 0.01 second, can be overwritten in the event routine.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnTimeGet procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>
@@ -638,19 +781,19 @@
           <ParName>day</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>the new day</ParHint>
+          <ParHint>The new day</ParHint>
         </Parameter>
         <Parameter>
           <ParName>month</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>the new month</ParHint>
+          <ParHint>The new month</ParHint>
         </Parameter>
         <Parameter>
           <ParName>year</ParName>
           <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>the new year</ParHint>
+          <ParHint>The new year</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -662,6 +805,63 @@
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
               <Hint>OnDateSet procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnDateGet</Name>
+        <Symbol>OnDateGet</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>called in the event of a date get</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>day</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the day, can be written in the event routine.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>month</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the month, can be written in the event routine.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>year</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the year, can be written in the event routine.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(uint8_t *day, uint8_t *month, uint16_t *year)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnDateGet procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>
