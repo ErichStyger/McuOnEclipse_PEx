@@ -864,7 +864,7 @@ vTraceStoreKernelObjectName(object, name);
 /* << EST: mapping old trace recorder API to new RTT API */
 #define vTraceStop()            /* not available in RTT version */
 #define vTraceInitTraceData() Trace_Init()
-#define uiTraceStart() 
+#define uiTraceStart()     (1)
 
 #else /*(USE_TRACEALYZER_RECORDER == 1)*/
 
@@ -879,7 +879,7 @@ vTraceStoreKernelObjectName(object, name);
 /* << EST: mapping old trace recorder API to new RTT API */
 #define vTraceStop()            /* not available in RTT version */
 #define vTraceInitTraceData() 
-#define uiTraceStart() 
+#define uiTraceStart()    (1)
 
 #endif /*(USE_TRACEALYZER_RECORDER == 1)*/
 
