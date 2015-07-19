@@ -49,6 +49,17 @@
 #define TRC_RECORDER_HARDWARE_PORT TRC_PORT_ARM_Cortex_M
 
 /******************************************************************************
+ * BSP and other project specific includes
+ * 
+ * Include the necessary header files.
+ *****************************************************************************/
+#if !configPEX_KINETIS_SDK /* << EST: PEx interface */
+  #include "%ProcessorModule.h"
+#else
+  #include "board.h"
+#endif
+
+/******************************************************************************
  * TRC_FREERTOS_VERSION
  * 
  * Specify what version of FreeRTOS that is used. This is necessary compensate 
@@ -58,7 +69,7 @@
  * TRC_FREERTOS_VERSION_7_5_OR_7_6 (= 2)		If using FreeRTOS v7.5.0 - v7.6.0
  * TRC_FREERTOS_VERSION_8_0_OR_LATER (= 3)		If using FreeRTOS v8.0.0 or later
  *****************************************************************************/
-#define TRC_FREERTOS_VERSION_NOT_SET			  0
+#define TRC_FREERTOS_VERSION_NOT_SET			0
 #define TRC_FREERTOS_VERSION_7_3_OR_7_4			1
 #define TRC_FREERTOS_VERSION_7_5_OR_7_6			2
 #define TRC_FREERTOS_VERSION_8_0_OR_LATER		3
@@ -136,8 +147,8 @@
  * the results from the PC application is not guaranteed to be accurate.
  *
  * In case blocking mode is used (SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) you can
- * see any cases of blocking as User Events in the PC application. To do that, you need
- * to enable TRC_MEASURE_BLOCKING_TIME. When you have recorded a trace, check the
+ * see any cases of blocking as User Events in the PC application . To do that, you need
+ * to enable MEASURE_BLOCKING_TIME. When you have recorded a trace, check the
  * View Filter, under User Events, and enable "Blocking on trace buffer" if
  * this is present (otherwise there is no blocking). This shows the high
  * watermark for any RTT blocking time, measured between each run of TzCtrl.
@@ -146,12 +157,12 @@
 #define TRC_RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
 
 /*******************************************************************************
- * Configuration Macro: TRC_TZCTRL_TASK_STACK_SIZE
+ * Configuration Macro: TRC_CTRL_TASK_STACK_SIZE
  *
  * The stack size of the TzCtrl task, that receive commands.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TRC_TZCTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
+#define TRC_CTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
 
 /*******************************************************************************
  * Configuration Macro: TRC_CTRL_TASK_PRIORITY
@@ -205,6 +216,8 @@
 #define TRC_PERIODIC_TASK 2
 
 #define TRC_RECORDER_TRANSFER_METHOD TRC_JLINK_RTT
+
+
 
 #endif
 

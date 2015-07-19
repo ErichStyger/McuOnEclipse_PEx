@@ -199,7 +199,7 @@ void CheckRecorderStatus(void)
 /*******************************************************************************
  * TzCtrl
  *
- * Task for recieving commands from embOS-Trace and for recorder diagnostics.
+ * Task for receiving commands from embOS-Trace and for recorder diagnostics.
  *
  * Stack size and priority is configured in trcKernelPort.h, using:
  * - TZCTRL_TASK_STACK_SIZE (default 512)
@@ -227,7 +227,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 		else
 		{
 			CheckRecorderStatus();
-			vTaskDelay(pdMS_TO_TICKS(100));
+			vTaskDelay((100 * configTICK_RATE_HZ) / 1000);	/* 100ms */
 		}
 	}
 }
@@ -270,10 +270,5 @@ void Trace_Init()
   	/* Creates the TzCtrl task - receives trace commands (start, stop, ...) */
 	xTaskCreate( TzCtrl, "TzCtrl", configMINIMAL_STACK_SIZE, NULL, TRC_CTRL_TASK_PRIORITY, &HandleTzCtrl );
 }
-
-#else /* (USE_TRACEALYZER_RECORDER == 1) */
-
-#define Trace_Init()
-
 
 #endif

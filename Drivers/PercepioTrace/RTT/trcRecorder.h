@@ -316,7 +316,13 @@ int isValidCommand(TracealyzerCommandType* cmd);
 /* Executed the received command (Start or Stop) */
 void processCommand(TracealyzerCommandType* cmd);
 
-#else
+/* Backwards compatibility macros with old recorder */
+#define vTraceInitTraceData() Trace_Init()
+#define uiTraceStart() (1)
+#define vTraceStart()
+#define vTraceStop()
+
+#else /*(USE_TRACEALYZER_RECORDER == 1)*/
 
 #define vTraceStoreEvent0(e)
 #define vTraceStoreEvent1(e, param1)

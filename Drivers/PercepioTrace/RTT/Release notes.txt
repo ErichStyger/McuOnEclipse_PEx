@@ -1,5 +1,5 @@
 Release notes, Trace Recorder Library for Tracealyzer v2.8.5
-April 17, 2015. Percepio AB.
+July 10, 2015. Percepio AB.
 
 Changes:
 v2.8.5
@@ -9,6 +9,13 @@ v2.8.5
 
 - Added support for width and padding formats for %d, %u, %x and %X.
 - Reduced RAM usage for certain cases by redefining unused buffers.
+- Fixed traceTAKE_MUTEX_RECURSIVE_FAILED being called traceTAKE_MUTEX_RECURSIVE resulting in duplicate defines.
+- Implemented fix for missing parameter "xCopyPosition" when using "xSemaphoreGiveFromISR()" in FreeRTOS v8.
+- Added prefix to internal defines to avoid conflicts.
+- Fixed possible memory alignment issue which could cause hard fault.
+- Made sure TzCtrl runs every 100ms instead of every 100 OS ticks.
+- Moved project specific includes to trcConfig.h.
+- Added a few backwards compatibility macros.
 v2.8.2
 - Improved vTracePrintF() parsing.
 - Added vTracePrint() that performs no formatting.

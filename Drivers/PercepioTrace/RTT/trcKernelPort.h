@@ -71,9 +71,6 @@ void Trace_Init(void);
 
 #include "trcRecorder.h"
 
-// TODO: REMOVE
-//#include "sysclk.h"
-
 /* Defines that must be set for the recorder to work properly */
 #define KERNEL_ID 0x1AA1
 #define TRACE_TICK_RATE_HZ configTICK_RATE_HZ /* Defined in "FreeRTOS.h" */
@@ -81,15 +78,7 @@ void Trace_Init(void);
 
 #if (TRC_RECORDER_HARDWARE_PORT == TRC_PORT_ARM_Cortex_M)
 	
-	/* Uses CMSIS API */
-#if 1 /* << EST: PEx interface */
-#if !configPEX_KINETIS_SDK
-  #include "%ProcessorModule.h"
-#endif
-#else
-  #include "board.h"
-#endif
-
+	/* Uses CMSIS API. Must be #included in trcConfig.h. */
 	#define TRACE_ALLOC_CRITICAL_SECTION() int __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = __get_PRIMASK(); __set_PRIMASK(1);}
 	#define TRACE_EXIT_CRITICAL_SECTION() {__set_PRIMASK(__irq_status);}
@@ -861,11 +850,6 @@ vTraceStoreKernelObjectName(object, name);
 #define vTraceSetEventGroupName(object, name) \
 vTraceStoreKernelObjectName(object, name);
 
-/* << EST: mapping old trace recorder API to new RTT API */
-#define vTraceStop()            /* not available in RTT version */
-#define vTraceInitTraceData() Trace_Init()
-#define uiTraceStart()     (1)
-
 #else /*(USE_TRACEALYZER_RECORDER == 1)*/
 
 #define vTraceSetQueueName(object, name)
@@ -876,10 +860,7 @@ vTraceStoreKernelObjectName(object, name);
 
 #define vTraceSetEventGroupName(object, name)
 
-/* << EST: mapping old trace recorder API to new RTT API */
-#define vTraceStop()            /* not available in RTT version */
-#define vTraceInitTraceData() 
-#define uiTraceStart()    (1)
+#define Trace_Init() 
 
 #endif /*(USE_TRACEALYZER_RECORDER == 1)*/
 
