@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.047</Version>
+    <Version>01.048</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -119,7 +119,7 @@
             <TStrgItem>
               <Name>Ctrl Task Priority</Name>
               <Symbol>CtrlTaskPrioStr</Symbol>
-              <Hint>Priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)</Hint>
+              <Hint>TRC_CTRL_TASK_PRIORITY: Priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>1</DefaultValue>
@@ -130,9 +130,9 @@
           </GrupItem>
           <GrupItem>
             <TStrgItem>
-              <Name>TzCtrl Task Stack Size</Name>
-              <Symbol>TzCtrlTaskStackSize</Symbol>
-              <Hint>TZCTRL_TASK_STACK_SIZE: The stack size of the TzCtrl task, that receive commands.</Hint>
+              <Name>Ctrl Task Stack Size</Name>
+              <Symbol>CtrlTaskStackSize</Symbol>
+              <Hint>CTRL_TASK_STACK_SIZE: The stack size of the Ctrl task, that receive commands.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>configMINIMAL_STACK_SIZE</DefaultValue>

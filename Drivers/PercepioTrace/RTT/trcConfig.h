@@ -162,7 +162,7 @@
  * The stack size of the TzCtrl task, that receive commands.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TRC_CTRL_TASK_STACK_SIZE   %TzCtrlTaskStackSize
+#define TRC_CTRL_TASK_STACK_SIZE   %CtrlTaskStackSize
 
 /*******************************************************************************
  * Configuration Macro: TRC_CTRL_TASK_PRIORITY
@@ -170,7 +170,7 @@
  * The priority of the TzCtrl task, that receive commands from.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
-#define TRC_CTRL_TASK_PRIORITY %TzCtrlTaskPrioStr
+#define TRC_CTRL_TASK_PRIORITY %CtrlTaskPrioStr
 
 /*******************************************************************************
  * Configuration Macro: TRC_MEASURE_BLOCKING_TIME
