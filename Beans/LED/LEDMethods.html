@@ -252,9 +252,9 @@ LI.EXP {
  - This returns logical 1 in case the LED is on, 0 otherwise.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Get(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Get(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Status of the LED (on or off)
+<li><i>Return value:uint8_t</i> - Status of the LED (on or off)
 </li>
 </ul><br />
 </li>
@@ -263,9 +263,9 @@ LI.EXP {
  - Turns the LED on or off.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Put(byte val)<br />
+<br /><i>ANSIC prototype:</i> void Put(uint8_t val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>val:byte</i> - value to define if the LED has to be on or off.</li>
+<li><i>val:uint8_t</i> - value to define if the LED has to be on or off.</li>
 </ul><br />
 </li>
 <li><a name="SetRatio16">
@@ -273,9 +273,9 @@ LI.EXP {
  - Method to specify the duty cycle. If using a PWM pin, this means the duty cycle is set. For On/off pins, values smaller 0x7FFF means off, while values greater means on.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetRatio16(word ratio)<br />
+<br /><i>ANSIC prototype:</i> void SetRatio16(uint16_t ratio)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ratio:word</i> - Ratio value, where 0 means 'off' and 0xffff means 'on'</li>
+<li><i>ratio:uint16_t</i> - Ratio value, where 0 means 'off' and 0xffff means 'on'</li>
 </ul><br />
 </li>
 <li><a name="ParseCommand">
@@ -283,12 +283,12 @@ LI.EXP {
  - Shell Command Line parser. This method is enabled/disabled depending on if you have the Shell enabled/disabled in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd: Pointer to byte</i> - Pointer to command string</li>
+<li><i>cmd: Pointer to uint8_t</i> - Pointer to command string</li>
 <li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
-<li><i>io: Pointer to byte</i> - Pointer to I/O structure</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>io: Pointer to uint8_t</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>

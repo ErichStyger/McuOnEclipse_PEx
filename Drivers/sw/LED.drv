@@ -211,7 +211,7 @@ void %'ModuleName'%.%Deinit(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
@@ -223,7 +223,7 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetRatio16
 %ifdef SetRatio16
-void %'ModuleName'%.%SetRatio16(word ratio);
+void %'ModuleName'%.%SetRatio16(uint16_t ratio);
 %define! Parratio
 %include Common\LEDSetRatio16.Inc
 
@@ -312,7 +312,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %define! Pario
 %define! RetVal
 %include Common\LEDParseCommand.Inc
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
     *handled = TRUE;
@@ -404,7 +404,7 @@ void %'ModuleName'%.%Neg(void)
 %define! RetVal
 %include Common\LEDGet.Inc
 /*
-byte %'ModuleName'%.%Get(void)
+uint8_t %'ModuleName'%.%Get(void)
 {
   *** This method is implemented as macro in the header file
 }
@@ -430,7 +430,7 @@ void %'ModuleName'%.%Init(void)
 %define! Parval
 %include Common\LEDPut.Inc
 /*
-void %'ModuleName'%.%Put(byte val)
+void %'ModuleName'%.%Put(uint8_t val)
 {
   *** This method is implemented as macro in the header file
 }
@@ -453,7 +453,7 @@ void %'ModuleName'%.%Deinit(void)
 %ifdef SetRatio16
 %define! Parratio
 %include Common\LEDSetRatio16.Inc
-void %'ModuleName'%.%SetRatio16(word ratio)
+void %'ModuleName'%.%SetRatio16(uint16_t ratio)
 {
 %if defined(LEDPin)
   /* on/off LED: binary on or off */
