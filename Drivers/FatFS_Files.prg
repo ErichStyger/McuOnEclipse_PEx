@@ -8,6 +8,10 @@
 %FILE %'DirRel_Code'diskio.h
 %include FatFS\diskio.h
 
+%- diskio.c is *not* used. Instead, the functions are in FAT1.c
+%- %FILE %'DirRel_Code'diskio.c
+%- %include FatFS\diskio.c
+
 %FILE %'DirRel_Code'ff.h
 %include FatFS\ff.h
 
