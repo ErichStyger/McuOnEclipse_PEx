@@ -125,7 +125,7 @@ extern "C" {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AddTrigger
 %ifdef AddTrigger
-void %'ModuleName'%.%AddTrigger(byte trigger, word incTicks, void (*callback)(void));
+void %'ModuleName'%.%AddTrigger(uint8_t trigger, uint16_t incTicks, void (*callback)(void));
 %define! Partrigger
 %define! Parcallback
 %define! ParincTicks
@@ -159,7 +159,7 @@ bool %'ModuleName'%.%AnyTriggerPending(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN TriggerPending
 %ifdef TriggerPending
-bool %'ModuleName'%.%TriggerPending(byte trigger);
+bool %'ModuleName'%.%TriggerPending(uint8_t trigger);
 %define! Partrigger
 %define! RetVal
 %include Common\TriggerTriggerPending.Inc
@@ -217,11 +217,18 @@ bool %'ModuleName'%.%TriggerPending(byte trigger);
   \brief Descriptor defining a trigger. Triggers are used set as 'reminders' for the future.
 */
 typedef struct TriggerDesc {
-  word triggerTime;       %>%CTAB /*!< trigger 'time' in ticks */
+  uint16_t triggerTime;       %>%CTAB /*!< trigger 'time' in ticks */
   void (*callback)(void); %>%CTAB /*!< callback function */
 } TriggerDesc;
 
 static TriggerDesc TriggerList[%TriggerNameListLines]; %>%CTAB /*!< Array of triggers */
+
+#ifndef TRUE
+  #define TRUE 1
+#endif
+#ifndef FALSE
+  #define FALSE 0
+#endif
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -241,7 +248,7 @@ static bool CheckCallbacks(void);
 %define! Parcallback
 %define! ParincTicks
 %include Common\TriggerAddTrigger.Inc
-void %'ModuleName'%.%AddTrigger(byte trigger, word incTicks, void (*callback)(void))
+void %'ModuleName'%.%AddTrigger(uint8_t trigger, uint16_t incTicks, void (*callback)(void))
 {
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
@@ -358,7 +365,7 @@ bool %'ModuleName'%.%AnyTriggerPending(void)
 %define! Partrigger
 %define! RetVal
 %include Common\TriggerTriggerPending.Inc
-bool %'ModuleName'%.%TriggerPending(byte trigger)
+bool %'ModuleName'%.%TriggerPending(uint8_t trigger)
 {
   return (bool)(TriggerList[trigger].callback != NULL);
 }

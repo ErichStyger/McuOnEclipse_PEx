@@ -4,8 +4,8 @@
     <Name>Trigger</Name>
     <Description>Component implementing a trigger</Description>
     <Author>Erich Styger</Author>
-    <Version>01.057</Version>
-    <Icon>Trigger</Icon>
+    <Version>01.061</Version>
+    <Icon>TriggerMcu</Icon>
     <TypesFiles>PE,Trigger\Trigger</TypesFiles>
     <FileVersion>6</FileVersion>
   </Header>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014, all rights reserved.\n\nThis an open source software implementing a trigger module using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -192,26 +192,26 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>trigger</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The trigger to be added</ParHint>
         </Parameter>
         <Parameter>
           <ParName>incTicks</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Trigger time, in trigger ticks. The time will is relative to the current tick time</ParHint>
         </Parameter>
         <Parameter>
           <ParName>callback</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Callback to be called when the trigger fires</ParHint>
           <ParUserDeclaration>void (*callback)(void)</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte trigger, word incTicks, void (*callback)(void))</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t trigger, uint16_t incTicks, void (*callback)(void))</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -351,13 +351,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>trigger</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The trigger to check</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte trigger)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t trigger)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
