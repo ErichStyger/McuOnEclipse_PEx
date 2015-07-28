@@ -1011,7 +1011,7 @@ static byte PrintDir(const byte *dirPathPtr, const %@Shell@'ModuleName'%.StdIOTy
   p1 = s1 = s2 = 0;
 #if %'ModuleName'%.USE_LFN
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  fInfo.lfname = %'ModuleName'%.PTR_NAMEBUF(fileName);
+  fInfo.lfname = (TCHAR*)%'ModuleName'%.PTR_NAMEBUF(fileName);
   fInfo.lfsize = %'ModuleName'%.SIZE_NAMEBUF(fileName);
 #endif
   for(;;) {
