@@ -805,6 +805,10 @@ bool %'ModuleName'%.%IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdB
     /* \todo: handle TAB and SHIFT-TAB */
   }
 #endif
+#else
+  (void)ch; /* not used */
+  (void)cmdBuf; /* not used */
+  (void)cmdBufIdx; /* not used */
 #endif
   return FALSE;
 }
