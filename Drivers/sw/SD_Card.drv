@@ -1444,14 +1444,26 @@ bool %'ModuleName'%.%CardPresent(void)
 %include Common\SD_CardSetSlowMode.Inc
 void %'ModuleName'%.%SetSlowMode(void)
 {
+%ifdef LDDHWSPI
+#if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
+%endif
   %'ModuleName'%.SPI_Disable();
+%ifdef LDDHWSPI
+#endif
+%endif
 %if defined(HWSPI)
   (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
   (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
 %endif
   %'ModuleName'%.SPI_SetSlowMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
   speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
+%ifdef LDDHWSPI
+#if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
+%endif
   %'ModuleName'%.SPI_Enable();
+%ifdef LDDHWSPI
+#endif
+%endif
 }
 
 %endif %- SetSlowMode
@@ -1462,14 +1474,26 @@ void %'ModuleName'%.%SetSlowMode(void)
 %include Common\SD_CardSetFastMode.Inc
 void %'ModuleName'%.%SetFastMode(void)
 {
+%ifdef LDDHWSPI
+#if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
+%endif
   %'ModuleName'%.SPI_Disable();
+%ifdef LDDHWSPI
+#endif
+%endif
 %if defined(HWSPI)
   (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
   (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
 %endif
   %'ModuleName'%.SPI_SetFastMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
   speedMode = %'ModuleName'%.ACTIVATE_MODE_FAST;
+%ifdef LDDHWSPI
+#if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
+%endif
   %'ModuleName'%.SPI_Enable();
+%ifdef LDDHWSPI
+#endif
+%endif
 }
 
 %endif %- SetFastMode
