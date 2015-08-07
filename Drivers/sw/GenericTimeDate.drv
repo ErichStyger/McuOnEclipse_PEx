@@ -325,7 +325,7 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 %-     int %'ModuleName'%.counter2;
 #define %'ModuleName'%.TICK_TIME_MS \
 %if defined(RTOS)
-  (1000/%@RTOS@TickRateHz)                                       %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'.%.AddTick() is called */
+  (1000/%@RTOS@TickRateHz)                                       %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'%.AddTick() is called */
 %else
   %TickTimeMs                                                    %>40 /* Period in milliseconds as defined in component properties, at which %'ModuleName'.%.AddTick() is called */
 %endif
@@ -582,20 +582,18 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks)
 uint8_t %'ModuleName'%.%GetTime(TIMEREC *Time)
 {
   uint32_t ticks;                                                %>40/* temporary variable of software tick counter */
+  uint8_t res;
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
-%if defined(OnTimeGet)
-  %OnTimeGet(&Time->Hour, &Time->Min, &Time->Sec, &Time->Sec100); /* call user event */
-  (void)%'ModuleName'%.%TimeToTicks(Time, &ticks);
-  %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* need exclusive access to tick counter */
-  tickCntr = ticks;                                              %>40/* actual number of ticks */
-  %@CriticalSection@'ModuleName'%.ExitCritical();                %>40/* end of critical section */
-%else
   %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* need exclusive access to tick counter */
   ticks = tickCntr;                                              %>40/* actual number of ticks */
   %@CriticalSection@'ModuleName'%.ExitCritical();                %>40/* end of critical section */
+
+  res = %'ModuleName'%.%TicksToTime(ticks, Time);
+%if defined(OnTimeGet)
+  %OnTimeGet(&Time->Hour, &Time->Min, &Time->Sec, &Time->Sec100); /* call user event */
 %endif
-  return %'ModuleName'%.%TicksToTime(ticks, Time);               %>40 /* convert ticks to time information */
+  return res;
 }
 
 %endif %- GetTime
