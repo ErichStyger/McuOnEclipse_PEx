@@ -57,6 +57,12 @@
 #define GET_BLOCK_SIZE		3	/* Get erase block size (for only f_mkfs()) */
 #define ERASE_BLOCK_SIZE	1 	/* Unknown erasable block size*/
 
+#define REQUEST_SENSE_CMD               4
+#define UFI_INQUIRY_CMD                 5
+#define UFI_READ_FORMAT_CAPACITY_CMD    6
+#define UFI_READ_CAPACITY_CMD           7
+#define UFI_TEST_UNIT_READY_CMD         8
+
 /*
 ** Following structs contain all states and pointers
 ** used by the application to control/operate devices.
