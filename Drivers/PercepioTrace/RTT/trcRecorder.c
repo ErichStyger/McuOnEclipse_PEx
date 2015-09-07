@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcRecorder.c
@@ -42,6 +42,7 @@
 #include <stdint.h>
 
 #include "trcRecorder.h"
+#include "trcStreamPort.h"
 
 #if (USE_TRACEALYZER_RECORDER == 1)
 
@@ -478,7 +479,7 @@ void vTraceStoreISRBegin(void* handle)
 	{
 		ISR_stack_index++;
 		ISR_stack[ISR_stack_index] = (uint32_t)handle;
-		vTraceStoreEvent1(PSF_EVENT_ISR_BEGIN, handle);
+		vTraceStoreEvent1(PSF_EVENT_ISR_BEGIN, (uint32_t)handle);
 		TRACE_EXIT_CRITICAL_SECTION();
 	}
 	else
@@ -546,7 +547,7 @@ void vTraceStoreISREndManual(int isTaskSwitchRequired)
 		ISR_stack_index--;
 
 		/* Store return to interrupted ISR (if nested ISRs)*/
-		vTraceStoreEvent1(PSF_EVENT_ISR_RESUME, (void*)ISR_stack[ISR_stack_index]);
+		vTraceStoreEvent1(PSF_EVENT_ISR_RESUME, (uint32_t)ISR_stack[ISR_stack_index]);
 	}
 	else
 	{
@@ -555,7 +556,7 @@ void vTraceStoreISREndManual(int isTaskSwitchRequired)
 		/* Store return to interrupted task, if a task switch has not been triggered by an interrupt */
 	  	if (isTaskSwitchRequired == 0)
 		{
-		  	vTraceStoreEvent1(PSF_EVENT_TS_RESUME, TRACE_GET_CURRENT_TASK());
+		  	vTraceStoreEvent1(PSF_EVENT_TS_RESUME, (uint32_t)TRACE_GET_CURRENT_TASK());
 		}
 	}
 
@@ -591,7 +592,7 @@ void intSetRecorderEnabled(int isEnabled)
 		vTraceStoreSymbolTable();
     	vTraceStoreObjectDataTable();
         vTraceStoreEvent3(	PSF_EVENT_TRACE_START,
-							(void*)TRACE_GET_OS_TICKS(),
+							(uint32_t)TRACE_GET_OS_TICKS(),
 							(uint32_t)currentTask,
 							SessionCounter++);
         vTraceStoreTSConfig();
@@ -604,6 +605,7 @@ void intSetRecorderEnabled(int isEnabled)
 void vTraceStoreSymbolTable()
 {
 	uint32_t i = 0;
+        uint32_t j = 0;
   	TRACE_ALLOC_CRITICAL_SECTION();
 
 	TRACE_ENTER_CRITICAL_SECTION();
@@ -611,9 +613,14 @@ void vTraceStoreSymbolTable()
 	if (RecorderEnabled)
 	{
 		for (i = 0; i < sizeof(SymbolTable); i += SYMBOL_TABLE_SLOT_SIZE)
-                {
-			COMMIT_EVENT(	&symbolTable.pSymbolTableBuffer[i], SYMBOL_TABLE_SLOT_SIZE);
-                }
+		{
+            TRC_STREAM_PORT_ALLOCATE_EVENT(uint8_t, data, SYMBOL_TABLE_SLOT_SIZE);
+            for (j = 0; j < SYMBOL_TABLE_SLOT_SIZE; j++)
+            {
+                    data[j] = symbolTable.pSymbolTableBuffer[i+j];
+            }
+			TRC_STREAM_PORT_COMMIT_EVENT(data, SYMBOL_TABLE_SLOT_SIZE);
+		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
 }
@@ -622,6 +629,7 @@ void vTraceStoreSymbolTable()
 void vTraceStoreObjectDataTable()
 {
 	uint32_t i = 0;
+        uint32_t j = 0;
   	TRACE_ALLOC_CRITICAL_SECTION();
 
 	TRACE_ENTER_CRITICAL_SECTION();
@@ -629,9 +637,14 @@ void vTraceStoreObjectDataTable()
 	if (RecorderEnabled)
 	{
 		for (i = 0; i < sizeof(ObjectDataTable); i += OBJECT_DATA_SLOT_SIZE)
-                {
-                        COMMIT_EVENT(&objectDataTable.pObjectDataTableBuffer[i], OBJECT_DATA_SLOT_SIZE);
-                }
+        {
+            TRC_STREAM_PORT_ALLOCATE_EVENT(uint8_t, data, OBJECT_DATA_SLOT_SIZE);
+            for (j = 0; j < OBJECT_DATA_SLOT_SIZE; j++)
+            {
+                    data[j] = objectDataTable.pObjectDataTableBuffer[i+j];
+            }
+            TRC_STREAM_PORT_COMMIT_EVENT(data, OBJECT_DATA_SLOT_SIZE);
+        }
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
 }
@@ -645,20 +658,20 @@ void vTraceStoreHeader()
 
 	if (RecorderEnabled)
 	{
-	  	ALLOCATE_EVENT(PSFHeaderInfo, header, sizeof(PSFHeaderInfo));
+	  	TRC_STREAM_PORT_ALLOCATE_EVENT(PSFHeaderInfo, header, sizeof(PSFHeaderInfo));
 		if (header != NULL)
 		{
 			header->psf = PSFEndianessIdentifier;
 			header->version = FormatVersion;
 			header->platform = KERNEL_ID;
-                        header->options = 0;
-                        /* Lowest bit used for IRQ_PRIORITY_ORDER */
-                        header->options = header->options | (IRQ_PRIORITY_ORDER << 0);
+            header->options = 0;
+            /* Lowest bit used for IRQ_PRIORITY_ORDER */
+            header->options = header->options | (IRQ_PRIORITY_ORDER << 0);
 			header->symbolSize = SYMBOL_TABLE_SLOT_SIZE;
 			header->symbolCount = TRC_SYMBOL_TABLE_SLOTS;
 			header->objectDataSize = 8;
 			header->objectDataCount = TRC_OBJECT_DATA_SLOTS;
-			COMMIT_EVENT(header, sizeof(PSFHeaderInfo));
+			TRC_STREAM_PORT_COMMIT_EVENT(header, sizeof(PSFHeaderInfo));
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
@@ -677,13 +690,13 @@ void vTraceStoreEvent0(uint16_t eventID)
 	{
 		eventCounter++;
 
-  		ALLOCATE_EVENT(BaseEvent, event, sizeof(BaseEvent));
+  		TRC_STREAM_PORT_ALLOCATE_EVENT(BaseEvent, event, sizeof(BaseEvent));
 		if (event != NULL)
 		{
 			event->EventID = eventID | PARAM_COUNT(0);
 			event->EventCount = eventCounter;
 			event->TS = prvGetTimestamp32();
-			COMMIT_EVENT(event, sizeof(BaseEvent));
+			TRC_STREAM_PORT_COMMIT_EVENT(event, sizeof(BaseEvent));
 		}
 
 	}
@@ -691,7 +704,7 @@ void vTraceStoreEvent0(uint16_t eventID)
 }
 
 /* Store an event with one 32-bit parameter (pointer address or an int) */
-void vTraceStoreEvent1(uint16_t eventID, void* param1)
+void vTraceStoreEvent1(uint16_t eventID, uint32_t param1)
 {
   	TRACE_ALLOC_CRITICAL_SECTION();
 
@@ -702,21 +715,21 @@ void vTraceStoreEvent1(uint16_t eventID, void* param1)
 	if (RecorderEnabled)
 	{
 		eventCounter++;
-  		ALLOCATE_EVENT(EventWithParam_1, event, sizeof(EventWithParam_1));
+  		TRC_STREAM_PORT_ALLOCATE_EVENT(EventWithParam_1, event, sizeof(EventWithParam_1));
 		if (event != NULL)
 		{
 			event->base.EventID = eventID | PARAM_COUNT(1);
 			event->base.EventCount = eventCounter;
 			event->base.TS = prvGetTimestamp32();
 			event->param1 = (uint32_t)param1;
-			COMMIT_EVENT(event, sizeof(EventWithParam_1));
+			TRC_STREAM_PORT_COMMIT_EVENT(event, sizeof(EventWithParam_1));
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
 }
 
 /* Store an event with two 32-bit parameters */
-void vTraceStoreEvent2(uint16_t eventID, void* param1, uint32_t param2)
+void vTraceStoreEvent2(uint16_t eventID, uint32_t param1, uint32_t param2)
 {
   	TRACE_ALLOC_CRITICAL_SECTION();
 
@@ -728,7 +741,7 @@ void vTraceStoreEvent2(uint16_t eventID, void* param1, uint32_t param2)
 	{
 		eventCounter++;
 
-	  	ALLOCATE_EVENT(EventWithParam_2, event, sizeof(EventWithParam_2));
+	  	TRC_STREAM_PORT_ALLOCATE_EVENT(EventWithParam_2, event, sizeof(EventWithParam_2));
 		if (event != NULL)
 		{
 		  	event->base.EventID = eventID | PARAM_COUNT(2);
@@ -736,7 +749,7 @@ void vTraceStoreEvent2(uint16_t eventID, void* param1, uint32_t param2)
 			event->base.TS = prvGetTimestamp32();
 			event->param1 = (uint32_t)param1;
 			event->param2 = param2;
-			COMMIT_EVENT(event, sizeof(EventWithParam_2));
+			TRC_STREAM_PORT_COMMIT_EVENT(event, sizeof(EventWithParam_2));
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
@@ -744,7 +757,7 @@ void vTraceStoreEvent2(uint16_t eventID, void* param1, uint32_t param2)
 
 /* Store an event with three 32-bit parameters */
 void vTraceStoreEvent3(	uint16_t eventID,
-						void* param1,
+						uint32_t param1,
 						uint32_t param2,
 						uint32_t param3)
 {
@@ -758,7 +771,7 @@ void vTraceStoreEvent3(	uint16_t eventID,
 	{
   		eventCounter++;
 
-	  	ALLOCATE_EVENT(EventWithParam_3, event, sizeof(EventWithParam_3));
+	  	TRC_STREAM_PORT_ALLOCATE_EVENT(EventWithParam_3, event, sizeof(EventWithParam_3));
 		if (event != NULL)
 		{
 			event->base.EventID = eventID | PARAM_COUNT(3);
@@ -767,7 +780,7 @@ void vTraceStoreEvent3(	uint16_t eventID,
 			event->param1 = (uint32_t)param1;
 			event->param2 = param2;
 			event->param3 = param3;
-			COMMIT_EVENT(event, sizeof(EventWithParam_3));
+			TRC_STREAM_PORT_COMMIT_EVENT(event, sizeof(EventWithParam_3));
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
@@ -790,7 +803,7 @@ void vTraceStoreEvent(int nParam, uint16_t eventID, ...)
 
 		eventCounter++;
 
-	  	ALLOCATE_EVENT(largestEventType, event, eventSize);
+	  	TRC_STREAM_PORT_ALLOCATE_EVENT(largestEventType, event, eventSize);
 		if (event != NULL)
 		{
 			event->base.EventID = eventID | PARAM_COUNT(nParam);
@@ -805,7 +818,7 @@ void vTraceStoreEvent(int nParam, uint16_t eventID, ...)
 			}
 			va_end(vl);
 
-			COMMIT_EVENT(event, eventSize);
+			TRC_STREAM_PORT_COMMIT_EVENT(event, eventSize);
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
@@ -875,7 +888,7 @@ static void prvTraceStoreStringEvent(	int nArgs,
 
 		eventCounter++;
 
-	  	ALLOCATE_EVENT(largestEventType, event, eventSize);
+	  	TRC_STREAM_PORT_ALLOCATE_EVENT(largestEventType, event, eventSize);
 		if (event != NULL)
 		{
 			event->base.EventID = (eventID) | PARAM_COUNT(nParam);
@@ -905,7 +918,7 @@ static void prvTraceStoreStringEvent(	int nArgs,
 			}
 
 			event->data[nArgs * 4 + len] = 0;
-			COMMIT_EVENT(event, eventSize);
+			TRC_STREAM_PORT_COMMIT_EVENT(event, eventSize);
 		}
 	}
 	TRACE_EXIT_CRITICAL_SECTION();
@@ -1089,7 +1102,7 @@ static uint32_t prvGetTimestamp32(void)
 void vTraceStoreTSConfig(void)
 {
 	vTraceStoreEvent3(	PSF_EVENT_TS_CONFIG,
-						(void*)TRACE_CPU_CLOCK_HZ,
+						(uint32_t)TRACE_CPU_CLOCK_HZ,
 						(uint32_t)TRACE_TICK_RATE_HZ,
 						(int32_t)HWTC_TYPE);
 }

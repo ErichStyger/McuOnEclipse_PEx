@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcKernelPort.h
@@ -43,7 +43,6 @@
 #define TRCKERNELPORTFREERTOS_H
 
 #include "FreeRTOS.h"	/* Defines configUSE_TRACE_FACILITY */
-#include "SEGGER_RTT.h"
 #include "trcConfig.h"
 #include "trcHardwarePort.h"
 
@@ -273,8 +272,15 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 #define PSF_EVENT_MUTEX_TAKE_RECURSIVE						0xC7
 #define PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED				0xC8
 
-#define ALLOCATE_EVENT(_type, _ptr, _size) _type tmpEvt; _type* _ptr = &tmpEvt;
-#define COMMIT_EVENT(_ptr, _size) SEGGER_RTT_Write(TRC_RTT_UP_BUFFER_INDEX,(const char*)_ptr, _size);
+#define PSF_EVENT_TASK_NOTIFY								0xC9
+#define PSF_EVENT_TASK_NOTIFY_TAKE							0xCA
+#define PSF_EVENT_TASK_NOTIFY_TAKE_BLOCK					0xCB
+#define PSF_EVENT_TASK_NOTIFY_TAKE_FAILED					0xCC
+#define PSF_EVENT_TASK_NOTIFY_WAIT							0xCD
+#define PSF_EVENT_TASK_NOTIFY_WAIT_BLOCK					0xCE
+#define PSF_EVENT_TASK_NOTIFY_WAIT_FAILED					0xCF
+#define PSF_EVENT_TASK_NOTIFY_FROM_ISR						0xD0
+#define PSF_EVENT_TASK_NOTIFY_GIVE_FROM_ISR					0xD1
 
 #define TRACE_GET_OS_TICKS() (uiTraceTickCount)
 
@@ -322,7 +328,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 /* Called for each task that becomes ready */
 #undef traceMOVED_TASK_TO_READY_STATE
 #define traceMOVED_TASK_TO_READY_STATE( pxTCB ) \
-	vTraceStoreEvent1(PSF_EVENT_TASK_READY, pxTCB);
+	vTraceStoreEvent1(PSF_EVENT_TASK_READY, (uint32_t)pxTCB);
 
 /* Called on each OS tick. Will call uiPortGetTimestamp to make sure it is called at least once every OS tick. */
 #undef traceTASK_INCREMENT_TICK
@@ -330,13 +336,13 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
 	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxMissedTicks == 0) { extern uint32_t uiTraceTickCount; uiTraceTickCount++; } \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { vTraceStoreEvent1(PSF_EVENT_NEW_TIME, (void*)(xTickCount + 1)); }
+	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { vTraceStoreEvent1(PSF_EVENT_NEW_TIME, (xTickCount + 1)); }
 
 #else
 
 #define traceTASK_INCREMENT_TICK( xTickCount ) \
 	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdTRUE || uxPendedTicks == 0) { extern uint32_t uiTraceTickCount; uiTraceTickCount++; } \
-	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { vTraceStoreEvent1(PSF_EVENT_NEW_TIME, (void*)(xTickCount + 1)); }
+	if (uxSchedulerSuspended == ( unsigned portBASE_TYPE ) pdFALSE) { vTraceStoreEvent1(PSF_EVENT_NEW_TIME, (xTickCount + 1)); }
 
 #endif
 
@@ -345,28 +351,28 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 #define traceTASK_SWITCHED_IN() \
 	if (prvIsNewTCB(pxCurrentTCB)) \
 	{ \
-		vTraceStoreEvent2(PSF_EVENT_TASK_ACTIVATE, pxCurrentTCB, pxCurrentTCB->uxPriority); \
+		vTraceStoreEvent2(PSF_EVENT_TASK_ACTIVATE, (uint32_t)pxCurrentTCB, pxCurrentTCB->uxPriority); \
 	}
 
 /* Called on vTaskSuspend */
 #undef traceTASK_SUSPEND
 #define traceTASK_SUSPEND( pxTaskToSuspend ) \
-	vTraceStoreEvent1(PSF_EVENT_TASK_SUSPEND, pxTaskToSuspend);
+	vTraceStoreEvent1(PSF_EVENT_TASK_SUSPEND, (uint32_t)pxTaskToSuspend);
 
 /* Called on vTaskDelay - note the use of FreeRTOS variable xTicksToDelay */
 #undef traceTASK_DELAY
 #define traceTASK_DELAY() \
-	vTraceStoreEvent1(PSF_EVENT_TASK_DELAY, (void*)xTicksToDelay);
+	vTraceStoreEvent1(PSF_EVENT_TASK_DELAY, xTicksToDelay);
 
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
 #define traceTASK_DELAY_UNTIL() \
-	vTraceStoreEvent1(PSF_EVENT_TASK_DELAY_UNTIL, (void*)xTimeToWake);
+	vTraceStoreEvent1(PSF_EVENT_TASK_DELAY_UNTIL, xTimeToWake);
 
 /* Called on vTaskDelete */
 #undef traceTASK_DELETE
 #define traceTASK_DELETE( pxTaskToDelete ) \
-	vTraceStoreEvent2(PSF_EVENT_TASK_DELETE, pxTaskToDelete, (pxTaskToDelete != NULL) ? (pxTaskToDelete->uxPriority) : 0);
+	vTraceStoreEvent2(PSF_EVENT_TASK_DELETE, (uint32_t)pxTaskToDelete, (pxTaskToDelete != NULL) ? (pxTaskToDelete->uxPriority) : 0);
 
 /* Called on vQueueDelete */
 #undef traceQUEUE_DELETE
@@ -374,15 +380,15 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(PSF_EVENT_QUEUE_DELETE, pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
+			vTraceStoreEvent2(PSF_EVENT_QUEUE_DELETE, (uint32_t)pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent2(PSF_EVENT_MUTEX_DELETE, pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
+			vTraceStoreEvent2(PSF_EVENT_MUTEX_DELETE, (uint32_t)pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
 			break; \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_DELETE, pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_DELETE, (uint32_t)pxQueue, (pxQueue != NULL) ? (pxQueue->uxMessagesWaiting) : 0); \
 			break; \
 	}
 
@@ -394,7 +400,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 		vTraceSaveSymbol(pxNewTCB, (const char*)pcName); \
 		vTraceSaveObjectData(pxNewTCB, uxPriority); \
 		vTraceStoreStringEvent(1, PSF_EVENT_OBJ_NAME, pcName, pxNewTCB); \
-		vTraceStoreEvent2(PSF_EVENT_TASK_CREATE, pxNewTCB, uxPriority); \
+		vTraceStoreEvent2(PSF_EVENT_TASK_CREATE, (uint32_t)pxNewTCB, uxPriority); \
 	}
 
 /* Called in vTaskCreate, if it fails (typically if the stack can not be allocated) */
@@ -408,10 +414,10 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (pxNewQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(PSF_EVENT_QUEUE_CREATE, pxNewQueue, pxNewQueue->uxLength); \
+			vTraceStoreEvent2(PSF_EVENT_QUEUE_CREATE, (uint32_t)pxNewQueue, pxNewQueue->uxLength); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
-			vTraceStoreEvent1(PSF_EVENT_SEMAPHORE_BINARY_CREATE, pxNewQueue); \
+			vTraceStoreEvent1(PSF_EVENT_SEMAPHORE_BINARY_CREATE, (uint32_t)pxNewQueue); \
 			break; \
 	}
 
@@ -432,10 +438,10 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 #undef traceCREATE_COUNTING_SEMAPHORE
 #if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, xHandle, ((Queue_t *) xHandle)->uxMessagesWaiting);
+	vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (uint32_t)xHandle, ((Queue_t *) xHandle)->uxMessagesWaiting);
 #else
 #define traceCREATE_COUNTING_SEMAPHORE() \
-	vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, pxHandle, pxHandle->uxMessagesWaiting);
+	vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_COUNTING_CREATE, (uint32_t)pxHandle, pxHandle->uxMessagesWaiting);
 #endif
 
 #undef traceCREATE_COUNTING_SEMAPHORE_FAILED
@@ -448,10 +454,10 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_CREATE, pxNewQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_CREATE, (uint32_t)pxNewQueue); \
 			break; \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_RECURSIVE_CREATE, pxNewQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_RECURSIVE_CREATE, (uint32_t)pxNewQueue); \
 			break; \
 	}
 
@@ -474,15 +480,15 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND : PSF_EVENT_QUEUE_SEND_FRONT, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting + 1); \
+			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND : PSF_EVENT_QUEUE_SEND_FRONT, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting + 1); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE, pxQueue, pxQueue->uxMessagesWaiting + 1); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting + 1); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE, pxQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE, (uint32_t)pxQueue); \
 			break; \
 	}
 
@@ -492,15 +498,15 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FAILED : PSF_EVENT_QUEUE_SEND_FRONT_FAILED, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FAILED : PSF_EVENT_QUEUE_SEND_FRONT_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FAILED, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_FAILED, pxQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_FAILED, (uint32_t)pxQueue); \
 			break; \
 	}
 
@@ -512,27 +518,27 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_BLOCK : PSF_EVENT_QUEUE_SEND_FRONT_BLOCK, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_BLOCK : PSF_EVENT_QUEUE_SEND_FRONT_BLOCK, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_BLOCK, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_BLOCK, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_BLOCK, pxQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_BLOCK, (uint32_t)pxQueue); \
 			break; \
 	}
 
 /* Called for Recursive Mutex */
 #undef traceGIVE_MUTEX_RECURSIVE
 #define traceGIVE_MUTEX_RECURSIVE( pxMutex ) \
-	vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_RECURSIVE, pxMutex);
+	vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_RECURSIVE, (uint32_t)pxMutex);
 
 /* Called for Recursive Mutex */
 #undef traceGIVE_MUTEX_RECURSIVE_FAILED
 #define traceGIVE_MUTEX_RECURSIVE_FAILED( pxMutex ) \
-	vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_RECURSIVE_FAILED, pxMutex);
+	vTraceStoreEvent1(PSF_EVENT_MUTEX_GIVE_RECURSIVE_FAILED, (uint32_t)pxMutex);
 
 /**************************************************************************/
 /* Hack to make sure xQueueGiveFromISR also has a xCopyPosition parameter */
@@ -562,11 +568,11 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FROMISR : PSF_EVENT_QUEUE_SEND_FRONT_FROMISR, pxQueue, pxQueue->uxMessagesWaiting + 1); \
+			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FROMISR : PSF_EVENT_QUEUE_SEND_FRONT_FROMISR, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting + 1); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FROMISR, pxQueue, pxQueue->uxMessagesWaiting + 1); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FROMISR, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting + 1); \
 			break; \
 	}
 
@@ -576,11 +582,11 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FROMISR_FAILED : PSF_EVENT_QUEUE_SEND_FRONT_FROMISR_FAILED, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(xCopyPosition == queueSEND_TO_BACK ? PSF_EVENT_QUEUE_SEND_FROMISR_FAILED : PSF_EVENT_QUEUE_SEND_FRONT_FROMISR_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FROMISR_FAILED, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_GIVE_FROMISR_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 	}
 
@@ -590,15 +596,15 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(PSF_EVENT_QUEUE_RECEIVE, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting - 1); \
+			vTraceStoreEvent3(PSF_EVENT_QUEUE_RECEIVE, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting - 1); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent3(PSF_EVENT_SEMAPHORE_TAKE, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting - 1); \
+			vTraceStoreEvent3(PSF_EVENT_SEMAPHORE_TAKE, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting - 1); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE, pxQueue, xTicksToWait); \
+			vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE, (uint32_t)pxQueue, xTicksToWait); \
 			break; \
 	}
 
@@ -608,15 +614,15 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_QUEUE_RECEIVE_FAILED : PSF_EVENT_QUEUE_PEEK_FAILED, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_QUEUE_RECEIVE_FAILED : PSF_EVENT_QUEUE_PEEK_FAILED, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_SEMAPHORE_TAKE_FAILED : PSF_EVENT_SEMAPHORE_PEEK_FAILED, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_SEMAPHORE_TAKE_FAILED : PSF_EVENT_SEMAPHORE_PEEK_FAILED, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent2(xJustPeeking == pdFALSE ? PSF_EVENT_MUTEX_TAKE_FAILED : PSF_EVENT_MUTEX_PEEK_FAILED, pxQueue, xTicksToWait); \
+			vTraceStoreEvent2(xJustPeeking == pdFALSE ? PSF_EVENT_MUTEX_TAKE_FAILED : PSF_EVENT_MUTEX_PEEK_FAILED, (uint32_t)pxQueue, xTicksToWait); \
 			break; \
 	}
 
@@ -626,34 +632,34 @@ BaseType_t MyWrapper(__a, __b, const BaseType_t xCopyPosition)
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_QUEUE_RECEIVE_BLOCK : PSF_EVENT_QUEUE_PEEK_BLOCK, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_QUEUE_RECEIVE_BLOCK : PSF_EVENT_QUEUE_PEEK_BLOCK, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_SEMAPHORE_TAKE_BLOCK : PSF_EVENT_SEMAPHORE_PEEK_BLOCK, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(xJustPeeking == pdFALSE ? PSF_EVENT_SEMAPHORE_TAKE_BLOCK : PSF_EVENT_SEMAPHORE_PEEK_BLOCK, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent2(xJustPeeking == pdFALSE ? PSF_EVENT_MUTEX_TAKE_BLOCK : PSF_EVENT_MUTEX_PEEK_BLOCK, pxQueue, xTicksToWait); \
+			vTraceStoreEvent2(xJustPeeking == pdFALSE ? PSF_EVENT_MUTEX_TAKE_BLOCK : PSF_EVENT_MUTEX_PEEK_BLOCK, (uint32_t)pxQueue, xTicksToWait); \
 			break; \
 	}
 		
 #undef traceTAKE_MUTEX_RECURSIVE
 #if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTAKE_MUTEX_RECURSIVE( pxQueue ) \
-	vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE, pxQueue, xTicksToWait);
+	vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE, (uint32_t)pxQueue, xTicksToWait);
 #else
 #define traceTAKE_MUTEX_RECURSIVE( pxQueue ) \
-	vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE, pxQueue, xBlockTime);
+	vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE, (uint32_t)pxQueue, xBlockTime);
 #endif
 
 #undef traceTAKE_MUTEX_RECURSIVE_FAILED
 #if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTAKE_MUTEX_RECURSIVE_FAILED( pxQueue ) \
-vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, pxQueue, xTicksToWait);
+vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, (uint32_t)pxQueue, xTicksToWait);
 #else
 #define traceTAKE_MUTEX_RECURSIVE_FAILED( pxQueue ) \
-vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, pxQueue, xBlockTime);
+vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, (uint32_t)pxQueue, xBlockTime);
 #endif
 
 /* Called when a message is received in interrupt context, e.g., using xQueueReceiveFromISR */
@@ -662,11 +668,11 @@ vTraceStoreEvent2(PSF_EVENT_MUTEX_TAKE_RECURSIVE_FAILED, pxQueue, xBlockTime);
 switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(PSF_EVENT_QUEUE_RECEIVE_FROMISR, pxQueue, pxQueue->uxMessagesWaiting - 1); \
+			vTraceStoreEvent2(PSF_EVENT_QUEUE_RECEIVE_FROMISR, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting - 1); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_TAKE_FROMISR, pxQueue, pxQueue->uxMessagesWaiting - 1); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_TAKE_FROMISR, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting - 1); \
 			break; \
 	}
 
@@ -676,11 +682,11 @@ switch (pxQueue->ucQueueType) \
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent2(PSF_EVENT_QUEUE_RECEIVE_FROMISR_FAILED, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(PSF_EVENT_QUEUE_RECEIVE_FROMISR_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_TAKE_FROMISR_FAILED, pxQueue, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent2(PSF_EVENT_SEMAPHORE_TAKE_FROMISR_FAILED, (uint32_t)pxQueue, pxQueue->uxMessagesWaiting); \
 			break; \
 	}
 
@@ -690,55 +696,55 @@ switch (pxQueue->ucQueueType) \
 	switch (pxQueue->ucQueueType) \
 	{ \
 		case queueQUEUE_TYPE_BASE: \
-			vTraceStoreEvent3(PSF_EVENT_QUEUE_PEEK, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(PSF_EVENT_QUEUE_PEEK, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_BINARY_SEMAPHORE: \
 		case queueQUEUE_TYPE_COUNTING_SEMAPHORE: \
-			vTraceStoreEvent3(PSF_EVENT_SEMAPHORE_PEEK, pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
+			vTraceStoreEvent3(PSF_EVENT_SEMAPHORE_PEEK, (uint32_t)pxQueue, xTicksToWait, pxQueue->uxMessagesWaiting); \
 			break; \
 		case queueQUEUE_TYPE_MUTEX: \
 		case queueQUEUE_TYPE_RECURSIVE_MUTEX: \
-			vTraceStoreEvent1(PSF_EVENT_MUTEX_PEEK, pxQueue); \
+			vTraceStoreEvent1(PSF_EVENT_MUTEX_PEEK, (uint32_t)pxQueue); \
 			break; \
 	}
 
 /* Called in vTaskPrioritySet */
 #undef traceTASK_PRIORITY_SET
 #define traceTASK_PRIORITY_SET( pxTask, uxNewPriority ) \
-	vTraceStoreEvent2(PSF_EVENT_TASK_PRIORITY, pxTask, uxNewPriority);
+	vTraceStoreEvent2(PSF_EVENT_TASK_PRIORITY, (uint32_t)pxTask, uxNewPriority);
 	
 /* Called in vTaskPriorityInherit, which is called by Mutex operations */
 #undef traceTASK_PRIORITY_INHERIT
 #define traceTASK_PRIORITY_INHERIT( pxTask, uxNewPriority ) \
-	vTraceStoreEvent2(PSF_EVENT_TASK_PRIO_INHERIT, pxTask, uxNewPriority);
+	vTraceStoreEvent2(PSF_EVENT_TASK_PRIO_INHERIT, (uint32_t)pxTask, uxNewPriority);
 
 /* Called in vTaskPriorityDisinherit, which is called by Mutex operations */
 #undef traceTASK_PRIORITY_DISINHERIT
 #define traceTASK_PRIORITY_DISINHERIT( pxTask, uxNewPriority ) \
-	vTraceStoreEvent2(PSF_EVENT_TASK_PRIO_DISINHERIT, pxTask, uxNewPriority);
+	vTraceStoreEvent2(PSF_EVENT_TASK_PRIO_DISINHERIT, (uint32_t)pxTask, uxNewPriority);
 
 /* Called in vTaskResume */
 #undef traceTASK_RESUME
 #define traceTASK_RESUME( pxTaskToResume ) \
-	vTraceStoreEvent1(PSF_EVENT_TASK_RESUME, pxTaskToResume);
+	vTraceStoreEvent1(PSF_EVENT_TASK_RESUME, (uint32_t)pxTaskToResume);
 
 /* Called in vTaskResumeFromISR */
 #undef traceTASK_RESUME_FROM_ISR
 #define traceTASK_RESUME_FROM_ISR( pxTaskToResume ) \
-	vTraceStoreEvent1(PSF_EVENT_TASK_RESUME_FROMISR, pxTaskToResume);
+	vTraceStoreEvent1(PSF_EVENT_TASK_RESUME_FROMISR, (uint32_t)pxTaskToResume);
 
 #undef traceMALLOC
 #define traceMALLOC( pvAddress, uiSize ) \
-	vTraceStoreEvent2(PSF_EVENT_MALLOC, (void*)pvAddress, (int32_t)uiSize);
+	vTraceStoreEvent2(PSF_EVENT_MALLOC, (uint32_t)pvAddress, (int32_t)uiSize);
 
 #undef traceFREE
 #define traceFREE( pvAddress, uiSize ) \
-	vTraceStoreEvent2(PSF_EVENT_FREE, (void*)pvAddress, (int32_t)(-uiSize));
+	vTraceStoreEvent2(PSF_EVENT_FREE, (uint32_t)pvAddress, (int32_t)(-uiSize));
 
 /* Called in timer.c - xTimerCreate */
 #undef traceTIMER_CREATE
 #define traceTIMER_CREATE(tmr) \
-	vTraceStoreEvent2(PSF_EVENT_TIMER_CREATE, tmr, tmr->xTimerPeriodInTicks);
+	vTraceStoreEvent2(PSF_EVENT_TIMER_CREATE, (uint32_t)tmr, tmr->xTimerPeriodInTicks);
 
 #undef traceTIMER_CREATE_FAILED
 #define traceTIMER_CREATE_FAILED() \
@@ -747,19 +753,19 @@ switch (pxQueue->ucQueueType) \
 #if TRC_FREERTOS_VERSION == TRC_FREERTOS_VERSION_8_0_OR_LATER
 #define traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \
 	case tmrCOMMAND_RESET: \
-		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET : PSF_EVENT_TIMER_RESET_FAILED, tmr, xOptionalValue); \
+		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET : PSF_EVENT_TIMER_RESET_FAILED, (uint32_t)tmr, xOptionalValue); \
 		break; \
 	case tmrCOMMAND_START_FROM_ISR: \
-		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_START_FROMISR : PSF_EVENT_TIMER_START_FROMISR_FAILED, tmr, xOptionalValue); \
+		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_START_FROMISR : PSF_EVENT_TIMER_START_FROMISR_FAILED, (uint32_t)tmr, xOptionalValue); \
 		break; \
 	case tmrCOMMAND_RESET_FROM_ISR: \
-		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET_FROMISR : PSF_EVENT_TIMER_RESET_FROMISR_FAILED, tmr, xOptionalValue); \
+		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_RESET_FROMISR : PSF_EVENT_TIMER_RESET_FROMISR_FAILED, (uint32_t)tmr, xOptionalValue); \
 		break; \
 	case tmrCOMMAND_STOP_FROM_ISR: \
-		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_STOP_FROMISR : PSF_EVENT_TIMER_STOP_FROMISR_FAILED, tmr, xOptionalValue); \
+		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_STOP_FROMISR : PSF_EVENT_TIMER_STOP_FROMISR_FAILED, (uint32_t)tmr, xOptionalValue); \
 		break; \
 	case tmrCOMMAND_CHANGE_PERIOD_FROM_ISR: \
-		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR : PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR_FAILED, tmr, xOptionalValue); \
+		vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR : PSF_EVENT_TIMER_CHANGEPERIOD_FROMISR_FAILED, (uint32_t)tmr, xOptionalValue); \
 		break;
 #else
 #define traceTIMER_COMMAND_SEND_8_0_CASES(tmr) 
@@ -775,29 +781,29 @@ switch (pxQueue->ucQueueType) \
 		case tmrCOMMAND_STOP: \
 			break; \
 		case tmrCOMMAND_CHANGE_PERIOD: \
-			vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD : PSF_EVENT_TIMER_CHANGEPERIOD_FAILED, tmr, xOptionalValue); \
+			vTraceStoreEvent2((xReturn == pdPASS) ? PSF_EVENT_TIMER_CHANGEPERIOD : PSF_EVENT_TIMER_CHANGEPERIOD_FAILED, (uint32_t)tmr, xOptionalValue); \
 			break; \
 		case tmrCOMMAND_DELETE: \
-			vTraceStoreEvent1((xReturn == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, tmr); \
+			vTraceStoreEvent1((xReturn == pdPASS) ? PSF_EVENT_TIMER_DELETE : PSF_EVENT_TIMER_DELETE_FAILED, (uint32_t)tmr); \
 			break; \
 		traceTIMER_COMMAND_SEND_8_0_CASES(tmr) \
 	}
 
 #undef tracePEND_FUNC_CALL
 #define tracePEND_FUNC_CALL(func, arg1, arg2, ret) \
-	vTraceStoreEvent1((ret == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, func);
+	vTraceStoreEvent1((ret == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL : PSF_EVENT_TIMER_PENDFUNCCALL_FAILED, (uint32_t)func);
 
 #undef tracePEND_FUNC_CALL_FROM_ISR
 #define tracePEND_FUNC_CALL_FROM_ISR(func, arg1, arg2, ret) \
-	vTraceStoreEvent1((ret == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, func);
+	vTraceStoreEvent1((ret == pdPASS) ? PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR : PSF_EVENT_TIMER_PENDFUNCCALL_FROMISR_FAILED, (uint32_t)func);
 
 #undef traceEVENT_GROUP_CREATE
 #define traceEVENT_GROUP_CREATE(eg) \
-	vTraceStoreEvent1(PSF_EVENT_EVENTGROUP_CREATE, eg);
+	vTraceStoreEvent1(PSF_EVENT_EVENTGROUP_CREATE, (uint32_t)eg);
 
 #undef traceEVENT_GROUP_DELETE
 #define traceEVENT_GROUP_DELETE(eg) \
-	vTraceStoreEvent1(PSF_EVENT_EVENTGROUP_DELETE, eg);
+	vTraceStoreEvent1(PSF_EVENT_EVENTGROUP_DELETE, (uint32_t)eg);
 
 #undef traceEVENT_GROUP_CREATE_FAILED
 #define traceEVENT_GROUP_CREATE_FAILED() \
@@ -805,35 +811,69 @@ switch (pxQueue->ucQueueType) \
 
 #undef traceEVENT_GROUP_SYNC_BLOCK
 #define traceEVENT_GROUP_SYNC_BLOCK(eg, bitsToSet, bitsToWaitFor) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SYNC_BLOCK, eg, bitsToWaitFor);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SYNC_BLOCK, (uint32_t)eg, bitsToWaitFor);
 
 #undef traceEVENT_GROUP_SYNC_END
 #define traceEVENT_GROUP_SYNC_END(eg, bitsToSet, bitsToWaitFor, wasTimeout) \
-	vTraceStoreEvent2((wasTimeout != pdTRUE) ? PSF_EVENT_EVENTGROUP_SYNC : PSF_EVENT_EVENTGROUP_SYNC_FAILED, eg, bitsToWaitFor);
+	vTraceStoreEvent2((wasTimeout != pdTRUE) ? PSF_EVENT_EVENTGROUP_SYNC : PSF_EVENT_EVENTGROUP_SYNC_FAILED, (uint32_t)eg, bitsToWaitFor);
 
 #undef traceEVENT_GROUP_WAIT_BITS_BLOCK
 #define traceEVENT_GROUP_WAIT_BITS_BLOCK(eg, bitsToWaitFor) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_WAITBITS_BLOCK, eg, bitsToWaitFor);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_WAITBITS_BLOCK, (uint32_t)eg, bitsToWaitFor);
 
 #undef traceEVENT_GROUP_WAIT_BITS_END
 #define traceEVENT_GROUP_WAIT_BITS_END(eg, bitsToWaitFor, wasTimeout) \
-	vTraceStoreEvent2((wasTimeout != pdTRUE) ? PSF_EVENT_EVENTGROUP_WAITBITS : PSF_EVENT_EVENTGROUP_WAITBITS_FAILED, eg, bitsToWaitFor);
+	vTraceStoreEvent2((wasTimeout != pdTRUE) ? PSF_EVENT_EVENTGROUP_WAITBITS : PSF_EVENT_EVENTGROUP_WAITBITS_FAILED, (uint32_t)eg, bitsToWaitFor);
 
 #undef traceEVENT_GROUP_CLEAR_BITS
 #define traceEVENT_GROUP_CLEAR_BITS(eg, bitsToClear) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_CLEARBITS, eg, bitsToClear);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_CLEARBITS, (uint32_t)eg, bitsToClear);
 
 #undef traceEVENT_GROUP_CLEAR_BITS_FROM_ISR
 #define traceEVENT_GROUP_CLEAR_BITS_FROM_ISR(eg, bitsToClear) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_CLEARBITS_FROMISR, eg, bitsToClear);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_CLEARBITS_FROMISR, (uint32_t)eg, bitsToClear);
 
 #undef traceEVENT_GROUP_SET_BITS
 #define traceEVENT_GROUP_SET_BITS(eg, bitsToSet) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SETBITS, eg, bitsToSet);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SETBITS, (uint32_t)eg, bitsToSet);
 
 #undef traceEVENT_GROUP_SET_BITS_FROM_ISR
 #define traceEVENT_GROUP_SET_BITS_FROM_ISR(eg, bitsToSet) \
-	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SETBITS_FROMISR, eg, bitsToSet);
+	vTraceStoreEvent2(PSF_EVENT_EVENTGROUP_SETBITS_FROMISR, (uint32_t)eg, bitsToSet);
+
+#undef traceTASK_NOTIFY_TAKE
+#define traceTASK_NOTIFY_TAKE() \
+	if (pxCurrentTCB->eNotifyState == eNotified) \
+		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_TAKE, (uint32_t)pxCurrentTCB, xTicksToWait); \
+	else \
+		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_TAKE_FAILED, (uint32_t)pxCurrentTCB, xTicksToWait);
+
+#undef traceTASK_NOTIFY_TAKE_BLOCK
+#define traceTASK_NOTIFY_TAKE_BLOCK() \
+	vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_TAKE_BLOCK, (uint32_t)pxCurrentTCB, xTicksToWait);
+
+#undef traceTASK_NOTIFY_WAIT
+#define traceTASK_NOTIFY_WAIT() \
+	if (pxCurrentTCB->eNotifyState == eNotified) \
+		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_WAIT, (uint32_t)pxCurrentTCB, xTicksToWait); \
+	else \
+		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_WAIT_FAILED, (uint32_t)pxCurrentTCB, xTicksToWait);
+
+#undef traceTASK_NOTIFY_WAIT_BLOCK
+#define traceTASK_NOTIFY_WAIT_BLOCK() \
+	vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_WAIT_BLOCK, (uint32_t)pxCurrentTCB, xTicksToWait);
+
+#undef traceTASK_NOTIFY
+#define traceTASK_NOTIFY() \
+	vTraceStoreEvent1(PSF_EVENT_TASK_NOTIFY, (uint32_t)xTaskToNotify);
+
+#undef traceTASK_NOTIFY_FROM_ISR
+#define traceTASK_NOTIFY_FROM_ISR() \
+	vTraceStoreEvent1(PSF_EVENT_TASK_NOTIFY_FROM_ISR, (uint32_t)xTaskToNotify);
+	
+#undef traceTASK_NOTIFY_GIVE_FROM_ISR
+#define traceTASK_NOTIFY_GIVE_FROM_ISR() \
+	vTraceStoreEvent1(PSF_EVENT_TASK_NOTIFY_GIVE_FROM_ISR, (uint32_t)xTaskToNotify);
 
 /************************************************************************/
 /* KERNEL SPECIFIC MACROS TO NAME OBJECTS, IF NECESSARY				 */
@@ -864,7 +904,7 @@ vTraceStoreKernelObjectName(object, name);
 
 #endif /*(USE_TRACEALYZER_RECORDER == 1)*/
 
-#endif /* TRCKERNELPORTFREERTOS_H_ */
+#endif /* TRCKERNELPORTFREERTOS_H */
 
 
 

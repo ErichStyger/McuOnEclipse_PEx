@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcConfig.h
@@ -43,9 +43,16 @@
 #ifndef TRC_STREAMING_RECORDER_CONFIG_H
 #define TRC_STREAMING_RECORDER_CONFIG_H
 
-#define TRC_CONFIG_USE_RTT_STREAMING   1  /* Set to 1 if using RTT streaming, 0 otherwise */
-
-// Set the hardware port setting here!
+#if 1 /* << EST: macro to identify if RTT is enabled */
+  #define TRC_CONFIG_USE_RTT_STREAMING   1  /* Set to 1 if using RTT streaming, 0 otherwise */
+#endif
+/*******************************************************************************
+ * Configuration Macro: TRC_RECORDER_HARDWARE_PORT
+ *
+ * Specify what hardware is used.
+ *
+ * See trcHardwarePort.h for available ports, or to define your own.
+ ******************************************************************************/
 #define TRC_RECORDER_HARDWARE_PORT TRC_PORT_ARM_Cortex_M
 
 /******************************************************************************
@@ -133,28 +140,6 @@
  ******************************************************************************/
 #define TRC_RTT_DOWN_BUFFER_INDEX   %RTTDownBufferIndex
 
-/*******************************************************************************
- * Configuration Macro: TRC_RTT_MODE
- *
- * Defines how the RTT up-buffer (target->host) should behave when full.
- *
- * - SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL - Blocks (system stalls)
- * - SEGGER_RTT_MODE_NO_BLOCK_SKIP - Skips data (events lost)
- *
- * If events are lost when using SEGGER_RTT_MODE_NO_BLOCK_SKIP, this is detected
- * by the PC application (using a 16-bit sequence number) and the intervals with lost
- * events are then highlighted with a light red background color. In that case,
- * the results from the PC application is not guaranteed to be accurate.
- *
- * In case blocking mode is used (SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) you can
- * see any cases of blocking as User Events in the PC application . To do that, you need
- * to enable MEASURE_BLOCKING_TIME. When you have recorded a trace, check the
- * View Filter, under User Events, and enable "Blocking on trace buffer" if
- * this is present (otherwise there is no blocking). This shows the high
- * watermark for any RTT blocking time, measured between each run of TzCtrl.
- * See also MEASURE_BLOCKING_TIME.
- ******************************************************************************/
-#define TRC_RTT_MODE SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
 
 /*******************************************************************************
  * Configuration Macro: TRC_CTRL_TASK_STACK_SIZE
@@ -211,13 +196,102 @@
  ******************************************************************************/
 #define TRC_BLOCKING_MIN_CYCLES 500
 
+/*******************************************************************************
+ * Configuration Macro: TRC_RECORDER_BUFFER_ALLOCATION
+ *
+ * Specifies how the recorder buffer is allocated.
+ *
+ * Values:
+ * TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+ * TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
+ ******************************************************************************/
+#define TRC_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_STATIC
 
-#define TRC_JLINK_RTT     1
-#define TRC_PERIODIC_TASK 2
+/*******************************************************************************
+ * Configuration Macro: TRC_RECORDER_TRANSFER_METHOD
+ *
+ * Specifies what type of transfer method is used.
+ *
+ * Values:
+ * TRC_RECORDER_TRANSFER_METHOD_JLINK_RTT_BLOCK
+ * TRC_RECORDER_TRANSFER_METHOD_JLINK_RTT_NOBLOCK
+ * TRC_RECORDER_TRANSFER_METHOD_TCPIP
+ * TRC_RECORDER_TRANSFER_METHOD_CUSTOM
+ ******************************************************************************/
+#define TRC_RECORDER_TRANSFER_METHOD TRC_RECORDER_TRANSFER_METHOD_JLINK_RTT_BLOCK
 
-#define TRC_RECORDER_TRANSFER_METHOD TRC_JLINK_RTT
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_BLOCKING_TRANSFER
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Specifies how the custom transfer method handles full buffers.
+ *
+ * Values:
+ * 0 - The custom transfer method skips sending the data if the buffer is full.
+ * 1 - The custom transfer method blocks on send if the buffer is full.
+ ******************************************************************************/
+ #define TRC_STREAM_CUSTOM_BLOCKING_TRANSFER 
 
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_ALLOCATE_FIELDS
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Macro that should allocate any buffers needed for the transfer method.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_ALLOCATE_FIELDS() 
 
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_INIT
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Used to initialize and set up the transfer method.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_INIT() 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_ALLOCATE_EVENT
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Specifies how the trace events that should be sent using the transfer method
+ * are allocated first.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_ALLOCATE_EVENT(_type, _ptr, _size) 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_COMMIT_EVENT
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Specifies how trace events are sent/written.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_COMMIT_EVENT(_ptr, _size) 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_READ_DATA
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Specifies how data is read using the transfer method.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_READ_DATA(_ptrData, _size, _ptrBytesRead) 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_PERIODIC_SEND_DATA
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Specifies how data is sent periodically. Used by certain transfer methods.
+ * See trcStreamPort.h for examples.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_PERIODIC_SEND_DATA(_ptrBytesSent) 
 
 #endif
-

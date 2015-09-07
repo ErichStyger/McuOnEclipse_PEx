@@ -1,7 +1,14 @@
-Release notes, Trace Recorder Library for Tracealyzer v2.8.5
-July 10, 2015. Percepio AB.
+Release notes, Trace Recorder Library for Tracealyzer v2.8.6
+September 4, 2015. Percepio AB.
 
 Changes:
+v2.8.6
+- Changed void* to uint32_t to ensure 32bit for vTraceStoreEvent1(), vTraceStoreEvent2() and vTraceStoreEvent3().
+- Added prefix TRC to most macros to avoid conflicts.
+- Moved all trace stream macros to trcStreamPort.h.
+- Now allows users to define their own trace stream macros. First specify TRC_RECORDER_TRANSFER_METHOD_CUSTOM and then modify the TRC_STREAM_CUSTOM_XXXXXXXXX macros.
+- Added trcPagedEventBuffer that can be used to avoid endless recursion for trace stream methods that use kernel objects (semaphores, mutexes) when sending data.
+- Added trcTCPIP/trcTCPIPConfig for easy trace stream integration with custom TCP/IP stacks.
 v2.8.5
 - Added internal OS tick counter that can be used by certain kernel ports to keep track of the actual OS tick, in case it can be delayed.
 - Updated generic macro names.

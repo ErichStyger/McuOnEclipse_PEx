@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcRecorder.c
@@ -280,14 +280,14 @@ void vTraceStoreTSConfig(void);
 void vTraceStoreEvent0(uint16_t eventID);
 
 /* Store an event with one 32-bit parameter (pointer address or an int) */
-void vTraceStoreEvent1(uint16_t eventID, void* param1);
+void vTraceStoreEvent1(uint16_t eventID, uint32_t param1);
 
 /* Store an event with two 32-bit parameters */
-void vTraceStoreEvent2(uint16_t eventID, void* param1, uint32_t param2);
+void vTraceStoreEvent2(uint16_t eventID, uint32_t param1, uint32_t param2);
 
 /* Store an event with three 32-bit parameters */
 void vTraceStoreEvent3(	uint16_t eventID,
-						void* param1,
+						uint32_t param1,
 						uint32_t param2,
 						uint32_t param3);
 
@@ -338,9 +338,14 @@ void processCommand(TracealyzerCommandType* cmd);
 #define vTraceStoreISREndManual(x)
 #define vTraceSetISRProperties(a, b) 
 #define vTraceStoreKernelObjectName(a, b) 
-#define Trace_Init() 
 
-#endif
+/* Backwards compatibility macros with old recorder */
+#define vTraceInitTraceData()	
+#define uiTraceStart() (1)
+#define vTraceStart()
+#define vTraceStop()
+
+#endif /*(USE_TRACEALYZER_RECORDER == 1)*/
 
 extern void psfError(int errCode);
 
@@ -350,4 +355,4 @@ extern void psfError(int errCode);
 #define PSF_ERROR_EVENT_CODE_TOO_LARGE 1
 #define PSF_ERROR_ISR_NESTING_OVERFLOW 2
 
-#endif /* _PSF_H */
+#endif /* _TRC_RECORDER_H */

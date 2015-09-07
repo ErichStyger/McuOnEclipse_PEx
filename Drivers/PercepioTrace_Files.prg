@@ -33,6 +33,27 @@
 %FILE %'DirRel_Code'SEGGER_RTT.c
 %include PercepioTrace\RTT\SEGGER_RTT.c
 
+%FILE %'DirRel_Code'trcPagedEventBuffer.c
+%include PercepioTrace\RTT\trcPagedEventBuffer.c
+
+%FILE %'DirRel_Code'trcPagedEventBuffer.h
+%include PercepioTrace\RTT\trcPagedEventBuffer.h
+
+%FILE %'DirRel_Code'trcPagedEventBufferConfig.h
+%include PercepioTrace\RTT\trcPagedEventBufferConfig.h
+
+%FILE %'DirRel_Code'trcStreamPort.h
+%include PercepioTrace\RTT\trcStreamPort.h
+
+%- %FILE %'DirRel_Code'trcTCPIP.c
+%- %include PercepioTrace\RTT\trcTCPIP.c
+
+%- %FILE %'DirRel_Code'trcTCPIP.h
+%- %include PercepioTrace\RTT\trcTCPIP.h
+
+%- %FILE %'DirRel_Code'trcTCPIPConfig.h
+%- %include PercepioTrace\RTT\trcTCPIPConfig.h
+
 %else
 %FILE %'DirRel_Code'trcBase.c
 %include PercepioTrace\trcBase.c

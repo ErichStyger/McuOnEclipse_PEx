@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcHardwarePort.h
@@ -211,4 +211,4 @@
 	#endif
 
 #endif
-#endif
+#endif /* TRC_HARDWARE_PORT_H */

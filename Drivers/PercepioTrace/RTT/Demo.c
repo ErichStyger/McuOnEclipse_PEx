@@ -1,5 +1,5 @@
 /*******************************************************************************
- * FreeRTOS+Trace v2.8.5 Demo Application
+ * FreeRTOS+Trace v2.8.6 Demo Application
  * Percepio AB, www.percepio.com
  *
  * traceDemoApp.c

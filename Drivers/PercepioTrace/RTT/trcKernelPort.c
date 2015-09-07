@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.5
+ * Trace Recorder Library for Tracealyzer v2.8.6
  * Percepio AB, www.percepio.com
  *
  * trcKernelPort.c
@@ -39,15 +39,13 @@
  ******************************************************************************/
 
 #include "trcKernelPort.h"
-#include "SEGGER_RTT_Conf.h"
 
 #if (USE_TRACEALYZER_RECORDER == 1)
 
 #include <stdint.h>
 #include "trcRecorder.h"
+#include "trcStreamPort.h"
 #include "task.h"
-
-
 
 /* TzCtrl task TCB */
 xTaskHandle HandleTzCtrl;
@@ -64,9 +62,10 @@ extern volatile uint32_t NoRoomForObjectData;
 extern volatile uint32_t LongestSymbolName;
 extern volatile uint32_t MaxBytesTruncated;
 
-#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
+#define TRC_PORT_MALLOC(size) pvPortMalloc(size)
+#if ((TRC_STREAM_PORT_BLOCKING_TRANSFER == 1) && (TRC_MEASURE_BLOCKING_TIME == 1))
 
-/*** Used in blocking RTT mode, if enabled MEASURE_BLOCKING_TIME **************/
+/*** Used in blocking transfer mode, if enabled TRC_MEASURE_BLOCKING_TIME **************/
 
 /* The highest number of cycles used by SEGGER_RTT_Write. */
 volatile int32_t blockingCyclesMax;
@@ -74,9 +73,12 @@ volatile int32_t blockingCyclesMax;
 /* The number of times SEGGER_RTT_Write has blocked due to a full buffer. */
 volatile uint32_t blockingCount;
 
+#endif /*((TRC_STREAM_PORT_BLOCKING_TRANSFER==1) && (TRC_MEASURE_BLOCKING_TIME))*/
+
+TRC_STREAM_PORT_ALLOCATE_FIELDS();
+
 /* User Event Channel for giving warnings regarding blocking */
-char* RTTDiagChn;
-#endif
+char* DiagChn;
 
 /* User Event Channel for giving warnings regarding NoRoomForSymbol etc. */
 char* WarnChn;
@@ -86,20 +88,6 @@ uint32_t NoRoomForSymbol_last = 0;
 uint32_t NoRoomForObjectData_last = 0;
 uint32_t LongestSymbolName_last = 0;
 uint32_t MaxBytesTruncated_last = 0;
-
-/* Up-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
-#if TRC_RTT_UP_BUFFER_INDEX != 0
-static char _TzTraceData[BUFFER_SIZE_UP];
-#else
-static char _TzTraceData[4];    /* Not used */
-#endif
-
-/* Down-buffer. If index is defined as 0, the internal RTT buffers will be used instead of this. */
-#if TRC_RTT_DOWN_BUFFER_INDEX != 0
-static char _TzCtrlData[BUFFER_SIZE_DOWN];
-#else
-static char _TzCtrlData[4];     /* Not used */
-#endif
 
 /*******************************************************************************
  * prvTraceGetCurrentTaskHandle
@@ -139,7 +127,7 @@ void CheckRecorderStatus(void)
 {
 	if (NoRoomForSymbol > NoRoomForSymbol_last)
 	{
-		vTracePrintF(WarnChn, "SYMBOL_TABLE_SLOTS too small. Add %%d slots.",
+		vTracePrintF(WarnChn, "TRC_SYMBOL_TABLE_SLOTS too small. Add %%d slots.",
 			NoRoomForSymbol);
 
 		NoRoomForSymbol_last = NoRoomForSymbol;
@@ -147,7 +135,7 @@ void CheckRecorderStatus(void)
 
 	if (NoRoomForObjectData > NoRoomForObjectData_last)
 	{
-		vTracePrintF(WarnChn, "OBJECT_DATA_SLOTS too small. Add %%d slots.",
+		vTracePrintF(WarnChn, "TRC_OBJECT_DATA_SLOTS too small. Add %%d slots.",
 			NoRoomForObjectData);
 
 		NoRoomForObjectData_last = NoRoomForObjectData;
@@ -157,7 +145,7 @@ void CheckRecorderStatus(void)
 	{
 		if (LongestSymbolName > TRC_SYMBOL_MAX_LENGTH)
 		{
-			vTracePrintF(WarnChn, "SYMBOL_MAX_LENGTH too small. Add %%d chars.",
+			vTracePrintF(WarnChn, "TRC_SYMBOL_MAX_LENGTH too small. Add %%d chars.",
 				LongestSymbolName);
 		}
 		LongestSymbolName_last = LongestSymbolName;
@@ -183,12 +171,12 @@ void CheckRecorderStatus(void)
 		MaxBytesTruncated_last = MaxBytesTruncated;
 	}
 
-#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
+#if ((TRC_STREAM_PORT_BLOCKING_TRANSFER==1) && (TRC_MEASURE_BLOCKING_TIME))
 	if (blockingCount > 0)
 	{
-		/* At least one case of RTT blocking since the last check and this is
+		/* At least one case of blocking since the last check and this is
 		the longest case. */
-		vTracePrintF(RTTDiagChn, "Longest since last: %%d us",
+		vTracePrintF(DiagChn, "Longest since last: %%d us",
 			(uint32_t)blockingCyclesMax/(TRACE_CPU_CLOCK_HZ/1000000));
 
 		blockingCyclesMax = 0;
@@ -199,11 +187,8 @@ void CheckRecorderStatus(void)
 /*******************************************************************************
  * TzCtrl
  *
- * Task for receiving commands from embOS-Trace and for recorder diagnostics.
+ * Task for receiving commands from FreeRTOS+Trace and for recorder diagnostics.
  *
- * Stack size and priority is configured in trcKernelPort.h, using:
- * - TZCTRL_TASK_STACK_SIZE (default 512)
- * - TZCTRL_TASK_PRIORITY (default 10)
  ******************************************************************************/
 static portTASK_FUNCTION( TzCtrl, pvParameters )
 {
@@ -212,9 +197,8 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 
 	while (1)
 	{
-		bytes = SEGGER_RTT_Read(TRC_RTT_DOWN_BUFFER_INDEX,
-								(char*)&msg, sizeof(TracealyzerCommandType));
-	if (bytes != 0)
+		TRC_STREAM_PORT_READ_DATA(&msg, sizeof(TracealyzerCommandType), &bytes);
+		if (bytes != 0)
 		{
 			if (bytes == sizeof(TracealyzerCommandType))
 			{
@@ -224,47 +208,34 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 				}
 			}
 		}
-		else
-		{
-			CheckRecorderStatus();
-			vTaskDelay((100 * configTICK_RATE_HZ) / 1000);	/* 100ms */
-		}
+                
+        do
+        {
+            TRC_STREAM_PORT_PERIODIC_SEND_DATA(&bytes);
+        }
+		while (bytes != 0);
+
+        CheckRecorderStatus();
+		vTaskDelay((10 * configTICK_RATE_HZ) / 1000);	/* 100ms */
 	}
 }
 
 /*******************************************************************************
  * Trace_Init
  *
- * The main initialization routine for the embOS-Trace recorder. Configures RTT,
- * activates the PTRACE instrumentation in embOS and the TzCtrl task.
+ * The main initialization routine for the trace recorder. Configures the stream
+ * and activates the TzCtrl task.
  * Also sets up the diagnostic User Event channels used by TzCtrl task.
  *
- * Settings used by the trace recorder are found in these header files:
- *  - SEGGER_RTT_Conf.h: settings for SEGGER Real-Time Terminal (RTT) which is
- *    used for the trace streaming.
- *  - trcKernelPort.h: RTT related settings for the trace streaming.
- *  - trcRecorder.h - settings for allocation of internal recorder tables.
- *  - trcHardwarePort.h - hardware-specific configuration (timestamping).
  ******************************************************************************/
-void Trace_Init()
+void Trace_Init(void)
 {
-	/* Only RTT channel 0 works at the moment, so these only sets RTT_MODE! */
-	SEGGER_RTT_ConfigUpBuffer(TRC_RTT_UP_BUFFER_INDEX,
-								"TzData",
-								_TzTraceData,
-								sizeof(_TzTraceData),
-								TRC_RTT_MODE );
-
-	SEGGER_RTT_ConfigDownBuffer(TRC_RTT_DOWN_BUFFER_INDEX,
-								"TzCtrl",
-								_TzCtrlData,
-								sizeof(_TzCtrlData),
-								0);
+	TRC_STREAM_PORT_INIT();
 
 	WarnChn = vTraceStoreUserEventChannelName("Warnings from Recorder");
 
-#if ((TRC_RTT_MODE==SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) && (TRC_MEASURE_BLOCKING_TIME))
-	RTTDiagChn = vTraceStoreUserEventChannelName("Blocking on trace buffer");
+#if ((TRC_STREAM_PORT_BLOCKING_TRANSFER==1) && (TRC_MEASURE_BLOCKING_TIME))
+	DiagChn = vTraceStoreUserEventChannelName("Blocking on trace buffer");
 #endif
 
   	/* Creates the TzCtrl task - receives trace commands (start, stop, ...) */
