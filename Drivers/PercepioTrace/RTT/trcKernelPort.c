@@ -197,6 +197,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 
 	while (1)
 	{
+		bytes = 0;
 		TRC_STREAM_PORT_READ_DATA(&msg, sizeof(TracealyzerCommandType), &bytes);
 		if (bytes != 0)
 		{
@@ -208,14 +209,15 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 				}
 			}
 		}
-                
-        do
-        {
-            TRC_STREAM_PORT_PERIODIC_SEND_DATA(&bytes);
-        }
+
+		do
+		{
+			bytes = 0;
+			TRC_STREAM_PORT_PERIODIC_SEND_DATA(&bytes);
+		}
 		while (bytes != 0);
 
-        CheckRecorderStatus();
+		CheckRecorderStatus();
 		vTaskDelay((10 * configTICK_RATE_HZ) / 1000);	/* 100ms */
 	}
 }
