@@ -562,6 +562,7 @@ DRESULT %'ModuleName'%.disk_ioctl (
         void *buff                                               %>40 /* Buffer to send/receive control data */
 )
 {
+#if 1 /* temporary disabled */
   DRESULT      res = RES_OK;
   USB_STATUS   status = USB_OK;
   MASS_STORAGE_READ_CAPACITY_CMD_STRUCT_INFO read_capacity;
@@ -614,6 +615,248 @@ DRESULT %'ModuleName'%.disk_ioctl (
     res = RES_PARERR;
   } /* EndIf */
   return res;
+#else
+#define _ALIGNED_
+extern uint_8 endpoint_stalled;
+
+  _ALIGNED_ DRESULT                                       res = RES_OK;
+    _ALIGNED_ USB_STATUS                                    status = USB_OK;
+    _ALIGNED_ MASS_STORAGE_READ_CAPACITY_CMD_STRUCT_INFO    read_capacity;
+    static _ALIGNED_ CAPACITY_LIST                          capacity_list;
+    static _ALIGNED_ INQUIRY_DATA_FORMAT                    inquiry;
+    static _ALIGNED_ REQ_SENSE_DATA_FORMAT                  req_sense;
+
+    UNUSED(drv);
+
+        switch (ctrl)
+        {
+            case UFI_TEST_UNIT_READY_CMD:
+            /* Send test unit ready SCSI command */
+            bCallBack = FALSE;
+            status = usb_mass_ufi_test_unit_ready(&pCmd);
+            if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+            {
+                res = RES_ERROR;
+            }
+            else
+            {
+                /* Wait till command comes back */
+                while(!bCallBack)
+                {
+                    Poll();
+                }
+
+                /*
+                * workaround AI:
+                * After the endpoint STALL flag is cleared we have to issue another
+                * REQUEST_SENSE commmand
+                */
+        if(endpoint_stalled)
+        {
+                      endpoint_stalled = FALSE;
+                      res = disk_ioctl(0, REQUEST_SENSE_CMD, NULL);
+                }
+
+        if (!bStatus)
+        {
+                      res = RES_OK;
+        }
+        else
+        {
+                      res = RES_NOTRDY;
+        }
+          }
+          break;
+        case UFI_READ_CAPACITY_CMD:
+          /* Send read_capacity SCSI command */
+          bCallBack = FALSE;
+          status = usb_mass_ufi_read_capacity(&pCmd, (uchar_ptr)&capacity_list,
+                   sizeof(CAPACITY_LIST));
+          if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+          {
+                res = RES_ERROR;
+          }
+          else
+          {
+                /* Wait till command comes back */
+                while(!bCallBack)
+        {
+                        Poll();
+        }
+
+                if(endpoint_stalled)
+        {
+            endpoint_stalled = FALSE;
+            res = disk_ioctl(0, REQUEST_SENSE_CMD, NULL);
+        }
+
+        if (!bStatus)
+        {
+            res = RES_OK;
+        }
+        else
+        {
+            res = RES_NOTRDY;
+        }
+          }
+          break;
+        case UFI_READ_FORMAT_CAPACITY_CMD:
+          /* Send read_capacity SCSI command */
+          bCallBack = FALSE;
+          status = usb_mass_ufi_format_capacity(&pCmd, (uchar_ptr)&read_capacity,\
+                   sizeof(MASS_STORAGE_READ_CAPACITY_CMD_STRUCT_INFO));
+          if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+          {
+                res = RES_ERROR;
+          }
+          else
+          {
+        /* Wait till command comes back */
+        while(!bCallBack)
+        {
+            Poll();
+        }
+
+                if(endpoint_stalled)
+        {
+            endpoint_stalled = FALSE;
+            res = disk_ioctl(0, REQUEST_SENSE_CMD, NULL);
+        }
+
+        if (!bStatus)
+        {
+            res = RES_OK;
+        }
+        else
+        {
+            res = RES_NOTRDY;
+        }
+      }
+          break;
+        case UFI_INQUIRY_CMD:
+          /* Send read_capacity SCSI command */
+          bCallBack = FALSE;
+          status = usb_mass_ufi_inquiry(&pCmd, (uchar_ptr) &inquiry,
+                   sizeof(INQUIRY_DATA_FORMAT));
+          if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+          {
+        res = RES_ERROR;
+          }
+          else
+          {
+        /* Wait till command comes back */
+        while(!bCallBack)
+        {
+            Poll();
+        }
+
+        if(endpoint_stalled)
+        {
+            endpoint_stalled = FALSE;
+            res = disk_ioctl(0, REQUEST_SENSE_CMD, NULL);
+        }
+
+        if (!bStatus)
+        {
+            res = RES_OK;
+        }
+        else
+        {
+            res = RES_NOTRDY;
+        }
+          }
+          break;
+        case REQUEST_SENSE_CMD:
+          /* Send read_capacity SCSI command */
+          bCallBack = FALSE;
+          status = usb_mass_ufi_request_sense(&pCmd, &req_sense,
+                   sizeof(REQ_SENSE_DATA_FORMAT));
+          if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+          {
+                res = RES_ERROR;
+          }
+          else
+          {
+        /* Wait till command comes back */
+        while(!bCallBack)
+        {
+                        Poll();
+        }
+
+                if (!bStatus)
+        {
+            res = RES_OK;
+        }
+        else
+        {
+                        res = RES_NOTRDY;
+        }
+          }
+          break;
+        case GET_SECTOR_COUNT:
+        case GET_SECTOR_SIZE:
+          /* Send read_capacity SCSI command */
+          bCallBack = FALSE;
+          status = usb_mass_ufi_read_capacity(&pCmd, (uchar_ptr)&read_capacity,\
+                   sizeof(MASS_STORAGE_READ_CAPACITY_CMD_STRUCT_INFO));
+          if ((status != USB_OK) && (status != USB_STATUS_TRANSFER_QUEUED))
+          {
+                res = RES_ERROR;
+          }
+          else
+          {
+        /* Wait till command comes back */
+        while(!bCallBack)
+        {
+            Poll();
+        }
+
+        if(endpoint_stalled)
+        {
+            endpoint_stalled = FALSE;
+            res = disk_ioctl(0, REQUEST_SENSE_CMD, NULL);
+        }
+
+        if (!bStatus)
+        {
+                        res = RES_OK;
+        }
+        else
+        {
+            res = RES_NOTRDY;
+        }
+          }
+
+          if(!buff)
+        return res = RES_ERROR;
+
+          /* Get number of sectors on the disk (DWORD) */
+          if (GET_SECTOR_COUNT == ctrl)
+          {
+        *(uint_32 *)buff = *(uint_32 *)read_capacity.BLLBA +1 ;
+          }
+          /* Get the sector size in byte */
+          else
+          {
+        *(uint_32 *)buff = *(uint_32 *)read_capacity.BLENGTH;
+          }
+          break;
+        case GET_BLOCK_SIZE:
+          if(!buff)
+        return res = RES_ERROR;
+
+          *(uint_32*)buff = ERASE_BLOCK_SIZE;
+          res = RES_OK;
+          break;
+        case CTRL_SYNC:
+          res = RES_OK;
+          break;
+        default:
+          res = RES_PARERR;
+          break;
+        }
+        return res;
+#endif
 }
 
 %-BW_CUSTOM_VARIABLE_END

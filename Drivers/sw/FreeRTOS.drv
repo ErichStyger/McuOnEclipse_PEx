@@ -1548,6 +1548,35 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- xSemaphoreCreateBinary
 %-BW_METHOD_END xSemaphoreCreateBinary
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyAndQuery
+%ifdef xTaskNotifyAndQuery
+#define %'ModuleName'%.%xTaskNotifyAndQuery(xTaskToNotify, ulValue, eAction, pulPreviousNotifyValue) \
+  xTaskNotifyAndQuery(xTaskToNotify, ulValue, eAction, pulPreviousNotifyValue)
+%define! ParxTaskToNotify
+%define! ParulValue
+%define! PareAction
+%define! ParpulPreviousNotifyValue
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyAndQuery.Inc
+
+%endif %- xTaskNotifyAndQuery
+%-BW_METHOD_END xTaskNotifyAndQuery
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyAndQueryFromISR
+%ifdef xTaskNotifyAndQueryFromISR
+#define %'ModuleName'%.%xTaskNotifyAndQueryFromISR(xTaskToNotify, ulValue, eAction, pulPreviousNotifyValue, pxHigherPriorityTaskWoken) \
+  xTaskNotifyAndQueryFromISR(xTaskToNotify, ulValue, eAction, pulPreviousNotifyValue, pxHigherPriorityTaskWoken)
+%define! ParxTaskToNotify
+%define! ParulValue
+%define! PareAction
+%define! ParpulPreviousNotifyValue
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyAndQueryFromISR.Inc
+
+%endif %- xTaskNotifyAndQueryFromISR
+%-BW_METHOD_END xTaskNotifyAndQueryFromISR
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3656,6 +3685,43 @@ SemaphoreHandle_t %'ModuleName'%.%xSemaphoreCreateBinary(void)
 
 %endif %- xSemaphoreCreateBinary
 %-BW_METHOD_END xSemaphoreCreateBinary
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyAndQuery
+%ifdef xTaskNotifyAndQuery
+%define! ParxTaskToNotify
+%define! ParulValue
+%define! PareAction
+%define! ParpulPreviousNotifyValue
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyAndQuery.Inc
+/*
+BaseType_t %'ModuleName'%.%xTaskNotifyAndQuery(TaskHandle_t xTaskToNotify, uint32_t ulValue, eNotifyAction eAction, uint32_t *pulPreviousNotifyValue)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskNotifyAndQuery
+%-BW_METHOD_END xTaskNotifyAndQuery
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyAndQueryFromISR
+%ifdef xTaskNotifyAndQueryFromISR
+%define! ParxTaskToNotify
+%define! ParulValue
+%define! PareAction
+%define! ParpulPreviousNotifyValue
+%define! ParpxHigherPriorityTaskWoken
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyAndQueryFromISR.Inc
+/*
+BaseType_t %'ModuleName'%.%xTaskNotifyAndQueryFromISR(TaskHandle_t xTaskToNotify, uint32_t ulValue, eNotifyAction eAction, uint32_t *pulPreviousNotifyValue, BaseType_t *pxHigherPriorityTaskWoken)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskNotifyAndQueryFromISR
+%-BW_METHOD_END xTaskNotifyAndQueryFromISR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
