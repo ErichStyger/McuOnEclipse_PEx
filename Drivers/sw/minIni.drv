@@ -198,7 +198,8 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ini_putl
 %ifdef ini_putl
-int %'ModuleName'%.%ini_putl(const mTCHAR *Section, const mTCHAR *Key, long Value, const mTCHAR *Filename);
+#define %'ModuleName'%.%ini_putl(Section, Key, Value, Filename) \
+  ini_putl(Section, Key, long Value, Filename)
 %define! ParSection
 %define! ParKey
 %define! ParValue
@@ -211,7 +212,8 @@ int %'ModuleName'%.%ini_putl(const mTCHAR *Section, const mTCHAR *Key, long Valu
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ini_puts
 %ifdef ini_puts
-int %'ModuleName'%.%ini_puts(const mTCHAR *Section, const mTCHAR *Key, const mTCHAR *Value, const mTCHAR *Filename);
+#define %'ModuleName'%.%ini_puts(Section, Key, Value, Filename) \
+   ini_puts(Section, Key, Value, Filename);
 %define! ParSection
 %define! ParKey
 %define! ParValue
@@ -224,7 +226,8 @@ int %'ModuleName'%.%ini_puts(const mTCHAR *Section, const mTCHAR *Key, const mTC
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ini_putf
 %ifdef ini_putf
-int %'ModuleName'%.%ini_putf(const mTCHAR *Section, const mTCHAR *Key, INI_REAL Value, const mTCHAR *Filename);
+#define %'ModuleName'%.%ini_putf(Section, Key, Value, Filename) \
+  ini_putf(Section, Key, Value, Filename)
 %define! ParSection
 %define! ParKey
 %define! ParValue
