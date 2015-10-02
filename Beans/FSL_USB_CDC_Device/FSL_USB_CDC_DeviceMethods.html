@@ -364,6 +364,37 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="StdIOKeyPressed">
+<b>StdIOKeyPressed</b></a>
+ - StdIO handler for Shell
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool StdIOKeyPressed(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:bool</i> - True if there are characters in the input/RX buffer
+</li>
+</ul><br />
+</li>
+<li><a name="StdIOReadChar">
+<b>StdIOReadChar</b></a>
+ - StdIO Handler for reading a character. It returns a zero byte if there is no character.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void StdIOReadChar(uint8_t *c)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>c: Pointer to uint8_t</i> - Pointer to where to store the received character</li>
+</ul><br />
+</li>
+<li><a name="StdIOSendChar">
+<b>StdIOSendChar</b></a>
+ - StdIO handler to sends a character.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void StdIOSendChar(uint8_t ch)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>ch:uint8_t</i> - no hint</li>
+</ul><br />
+</li>
 <li><a name="Deinit">
 <b>Deinit</b></a>
  - Deinitializes the driver

@@ -322,6 +322,33 @@ uint8_t %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOKeyPressed
+%ifdef StdIOKeyPressed
+bool %'ModuleName'%.%StdIOKeyPressed(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceStdIOKeyPressed.Inc
+
+%endif %- StdIOKeyPressed
+%-BW_METHOD_END StdIOKeyPressed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOReadChar
+%ifdef StdIOReadChar
+void %'ModuleName'%.%StdIOReadChar(uint8_t *c);
+%define! Parc
+%include Common\FSL_USB_CDC_DeviceStdIOReadChar.Inc
+
+%endif %- StdIOReadChar
+%-BW_METHOD_END StdIOReadChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOSendChar
+%ifdef StdIOSendChar
+void %'ModuleName'%.%StdIOSendChar(uint8_t ch);
+%define! Parch
+%include Common\FSL_USB_CDC_DeviceStdIOSendChar.Inc
+
+%endif %- StdIOSendChar
+%-BW_METHOD_END StdIOSendChar
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -853,6 +880,45 @@ void %'ModuleName'%.%ClearTxBuffer(void)
 
 %endif %- ClearTxBuffer
 %-BW_METHOD_END ClearTxBuffer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOKeyPressed
+%ifdef StdIOKeyPressed
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceStdIOKeyPressed.Inc
+bool %'ModuleName'%.%StdIOKeyPressed(void)
+{
+  return (bool)((%'ModuleName'%.%GetCharsInRxBuf()==0U) ? FALSE : TRUE); /* true if there are characters in receive buffer */
+}
+
+%endif %- StdIOKeyPressed
+%-BW_METHOD_END StdIOKeyPressed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOReadChar
+%ifdef StdIOReadChar
+%define! Parc
+%include Common\FSL_USB_CDC_DeviceStdIOReadChar.Inc
+void %'ModuleName'%.%StdIOReadChar(uint8_t *c)
+{
+  if (%'ModuleName'%.%RecvChar((uint8_t *)c) != ERR_OK) {
+    /* failed to receive character: return a zero character */
+    *c = '\0';
+  }
+}
+
+%endif %- StdIOReadChar
+%-BW_METHOD_END StdIOReadChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOSendChar
+%ifdef StdIOSendChar
+%define! Parch
+%include Common\FSL_USB_CDC_DeviceStdIOSendChar.Inc
+void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
+{
+  while (%'ModuleName'%.%SendChar((uint8_t)ch)==ERR_TXFULL){} /* Send char */
+}
+
+%endif %- StdIOSendChar
+%-BW_METHOD_END StdIOSendChar
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

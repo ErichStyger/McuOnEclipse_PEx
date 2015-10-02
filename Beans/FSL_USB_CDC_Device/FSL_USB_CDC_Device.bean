@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.050</Version>
+    <Version>01.053</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -890,6 +890,102 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(uint8_t *txBuf, size_t txBufSize)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>StdIOKeyPressed</Name>
+        <Symbol>StdIOKeyPressed</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>StdIO handler for Shell</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>True if there are characters in the input/RX buffer</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>StdIOReadChar</Name>
+        <Symbol>StdIOReadChar</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>StdIO Handler for reading a character. It returns a zero byte if there is no character.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>void</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>c</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the received character</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t *c)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>StdIOSendChar</Name>
+        <Symbol>StdIOSendChar</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>StdIO handler to sends a character.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>void</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>ch</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t ch)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
