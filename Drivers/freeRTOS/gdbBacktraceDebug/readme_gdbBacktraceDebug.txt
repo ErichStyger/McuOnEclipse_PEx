@@ -24,3 +24,7 @@ Credits to:
 - Artem Pisarneko for his initial contribution
 - Prasana for the PendSVHandler updates
 - Geoffrey Wossum for the Cortex-M4 contribution
+
+Link to article:
+http://mcuoneclipse.com/2015/10/03/freertos-arm-thread-debugging-with-eclipse-and-gdb/
+
