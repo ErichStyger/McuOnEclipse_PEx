@@ -1999,7 +1999,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
  */
 int volatile dbgPendSVHookState = 0;
 /* Requested target task handle variable */
-void * volatile dbgPendingTaskHandle;
+void *volatile dbgPendingTaskHandle;
 
 const int volatile dbgFreeRTOSConfig_suspend_value = INCLUDE_vTaskSuspend;
 const int volatile dbgFreeRTOSConfig_delete_value = INCLUDE_vTaskDelete;
@@ -2016,14 +2016,14 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
 #if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* Cortex M4 */
   __asm volatile (
 #if configGDB_HELPER
-    "ldr r1, _dbgPendSVHookState    \n" /* Check hook installed */
-    "ldr r0, [r1]                   \n"
-    "cmp r0, #0                     \n"
-    "beq PendSV_Handler_jumper      \n" /* if no hook installed then jump to native handler, else proceed... */
-    "cmp r0, #1                     \n" /* check whether hook triggered for the first time...  */
-    "bne dbg_switch_to_pending_task \n" /* if not so, then jump to switching right now, otherwise current task context must be saved first...  */
-    "mov r0, #2                     \n" /* mark hook after triggered for the first time */
-    "str r0, [r1]                   \n"
+    " ldr r1, _dbgPendSVHookState    \n" /* Check hook installed */
+    " ldr r0, [r1]                   \n"
+    " cmp r0, #0                     \n"
+    " beq PendSV_Handler_jumper      \n" /* if no hook installed then jump to native handler, else proceed... */
+    " cmp r0, #1                     \n" /* check whether hook triggered for the first time...  */
+    " bne dbg_switch_to_pending_task \n" /* if not so, then jump to switching right now, otherwise current task context must be saved first...  */
+    " mov r0, #2                     \n" /* mark hook after triggered for the first time */
+    " str r0, [r1]                   \n"
 #endif /* configGDB_HELPER */
     " mrs r0, psp                \n"
     " ldr  r3, pxCurrentTCBConstG \n" /* Get the location of the current TCB. */
@@ -2061,7 +2061,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
 #endif
     " msr psp, r0                \n"
 #if configGDB_HELPER
-    "bkpt                        \n" /* <-- here debugger stops and steps out to target task context */
+    " bkpt                       \n" /* <-- here debugger stops and steps out to target task context */
 #endif /* configGDB_HELPER */
     " bx r14                     \n"
     "                            \n"

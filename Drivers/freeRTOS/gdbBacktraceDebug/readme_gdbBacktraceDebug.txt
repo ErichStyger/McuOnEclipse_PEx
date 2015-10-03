@@ -8,20 +8,17 @@ It generates the following files:
 - .gdbinit-FreeRTOS-helpers (GDB script file)
 
 Usage:
-- execute GDB script
+- execute GDB script (either manually or in the launch configuration):
   source .//Generated_Code//.gdbinit-FreeRTOS-helpers
 - execute
   freertos_show_threads
   to show threads with handlers
-- use
 - use 
   freertos_switch_to_task <handle>
   to show task stack
 - use
   freertos_restore_running_context
   to restore the context before running
-
-
 
 Credits to:
 - Artem Pisarneko for his initial contribution
