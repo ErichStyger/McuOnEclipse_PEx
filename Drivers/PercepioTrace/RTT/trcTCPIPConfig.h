@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcTCPIPConfig.c
@@ -78,9 +78,10 @@ int32_t trcSocketReceive(void* data, int32_t size, int32_t* bytesRead)
   {
     socket_close(sock);
     sock = NULL;
+    return error;
   }
 
-  return error;
+  return 0;
 }
 
 int32_t trcSocketInitializeListener()

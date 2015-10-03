@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcConfig.h
@@ -158,6 +158,15 @@
 #define TRC_CTRL_TASK_PRIORITY %CtrlTaskPrioStr
 
 /*******************************************************************************
+ * Configuration Macro: TRC_CTRL_TASK_DELAY
+ *
+ * The delay between every loop of the TzCtrl task. A high delay will reduce the
+ * CPU load, but may cause missed events if the TzCtrl task is performing the 
+ * trace transfer.
+ ******************************************************************************/
+#define TRC_CTRL_TASK_DELAY ((10 * configTICK_RATE_HZ) / 1000)
+
+/*******************************************************************************
  * Configuration Macro: TRC_MEASURE_BLOCKING_TIME
  *
  * If using SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL, this activates detection and
@@ -293,5 +302,25 @@
  * See trcStreamPort.h for examples.
  ******************************************************************************/
 #define TRC_STREAM_CUSTOM_PERIODIC_SEND_DATA(_ptrBytesSent) 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_ON_TRACE_BEGIN
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Called on tracing is started. Use this to perform any necessary steps to 
+ * properly start the trace, such as clearing buffers.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_ON_TRACE_BEGIN() 
+
+/*******************************************************************************
+ * Configuration Macro: TRC_STREAM_CUSTOM_ON_TRACE_END
+ *
+ * Note: Only active if TRC_RECORDER_TRANSFER_METHOD_CUSTOM is used.
+ *
+ * Called when tracing is disabled. Use this to perform any necessary steps to 
+ * properly shut down the tracing, such as clearing buffers.
+ ******************************************************************************/
+#define TRC_STREAM_CUSTOM_ON_TRACE_END() 
 
 #endif

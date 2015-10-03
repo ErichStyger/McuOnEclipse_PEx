@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcRecorder.c
@@ -586,6 +586,8 @@ void intSetRecorderEnabled(int isEnabled)
 
 	if (RecorderEnabled)
 	{
+        vTraceOnTraceBegin();
+        
      	eventCounter = 0;
         ISR_stack_index = -1;
         vTraceStoreHeader();
@@ -597,6 +599,10 @@ void intSetRecorderEnabled(int isEnabled)
 							SessionCounter++);
         vTraceStoreTSConfig();
 	}
+    else
+    {
+        vTraceOnTraceEnd();
+    }
 
 	TRACE_EXIT_CRITICAL_SECTION();
 }

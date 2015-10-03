@@ -1,10 +1,10 @@
 /*******************************************************************************
- * FreeRTOS+Trace v2.8.6 Demo Application
+ * Tracealyzer v3.0.0 Demo Application
  * Percepio AB, www.percepio.com
  *
  * traceDemoApp.c
  *
- * Demo application used by all FreeRTOS+Trace demo projects.
+ * Demo application for Tracealyzer demo project.
  *
  * Terms of Use
  * This software is copyright Percepio AB. The recorder library is free for
@@ -53,7 +53,6 @@
 #endif
 
 #include "trcRecorder.h"
-#include "traceDemoApp.h"
 
 #define ISR3_PERIOD 18
 #define ISR2_PERIOD 24

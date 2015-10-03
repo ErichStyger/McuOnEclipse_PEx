@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcRecorder.c

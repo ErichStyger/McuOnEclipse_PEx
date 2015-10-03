@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.048</Version>
+    <Version>01.050</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -43,7 +43,7 @@
         <Hint>Identifies the RTOS+Trace version used from Percepio AB</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue/>
+        <DefaultValue>V2.7.0</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -64,6 +64,19 @@
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
+          <GrupItem>
+            <TStrgItem>
+              <Name>Streaming Recorder Version</Name>
+              <Symbol>StreamingRecorderVersion</Symbol>
+              <Hint>Identifies the RTOS+Trace version used from Percepio AB</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>V3.0.0</DefaultValue>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
+          </GrupItem>
           <GrupItem>
             <TIntgItem>
               <Name>Symbol Table Slots</Name>

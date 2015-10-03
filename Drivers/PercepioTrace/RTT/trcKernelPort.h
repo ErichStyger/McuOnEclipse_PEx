@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcKernelPort.h
@@ -67,6 +67,20 @@ extern int uiInEventGroupSetBitsFromISR;
  *  - trcHardwarePort.h - hardware-specific configuration (timestamping).
  ******************************************************************************/
 void Trace_Init(void);
+
+/*******************************************************************************
+ * vTraceOnTraceBegin
+ *
+ * Called on trace begin.
+ ******************************************************************************/
+void vTraceOnTraceBegin(void);
+
+/*******************************************************************************
+ * vTraceOnTraceEnd
+ *
+ * Called on trace end.
+ ******************************************************************************/
+void vTraceOnTraceEnd(void);
 
 #include "trcRecorder.h"
 

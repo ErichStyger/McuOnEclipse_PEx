@@ -1,7 +1,10 @@
-Release notes, Trace Recorder Library for Tracealyzer v2.8.6
-September 4, 2015. Percepio AB.
+Release notes, Trace Recorder Library for Tracealyzer v3.0.0
+September 7, 2015. Percepio AB.
 
 Changes:
+v3.0.0
+- Modified trcTCPIP functions to take bytes written/read as parameters and instead return potential errors.
+- Added vTraceOnTraceBegin()/vTraceOnTraceEnd() in trcKernelPort that in turn uses macros from trcStreamPort.h to allow transfer method defined (as well as user defined) actions where appropriate. Currently only used by TCP/IP to re-initialize the paged event buffer so no old data is sent on trace start.
 v2.8.6
 - Changed void* to uint32_t to ensure 32bit for vTraceStoreEvent1(), vTraceStoreEvent2() and vTraceStoreEvent3().
 - Added prefix TRC to most macros to avoid conflicts.

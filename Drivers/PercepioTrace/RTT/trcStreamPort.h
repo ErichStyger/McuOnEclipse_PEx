@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcStreamPort.h
@@ -104,6 +104,9 @@
 #define TRC_STREAM_PORT_READ_DATA(_ptrData, _size, _ptrBytesRead) *_ptrBytesRead = SEGGER_RTT_Read(TRC_RTT_DOWN_BUFFER_INDEX, (char*)_ptrData, _size);
 #define TRC_STREAM_PORT_PERIODIC_SEND_DATA(_ptrBytesSent)
 
+#define TRC_STREAM_PORT_ON_TRACE_BEGIN() /* Do nothing */
+#define TRC_STREAM_PORT_ON_TRACE_END() /* Do nothing */
+    
 #endif /*TRC_RECORDER_TRANSFER_METHOD == TRC_RECORDER_TRANSFER_METHOD_JLINK_RTT_BLOCK || TRC_RECORDER_TRANSFER_METHOD == TRC_RECORDER_TRANSFER_METHOD_JLINK_RTT_NOBLOCK*/
 
 /*******************************************************************************
@@ -132,12 +135,15 @@
 
 #define TRC_STREAM_PORT_INIT() \
         TRC_STREAM_PORT_MALLOC(); /*Dynamic allocation or empty if static */ \
-        vTraceBufferInit(_TzTraceData);
+        vPagedEventBufferInit(_TzTraceData);
 
 #define TRC_STREAM_PORT_ALLOCATE_EVENT(_type, _ptrData, _size) _type* _ptrData; _ptrData = (_type*)vPagedEventBufferGetWritePointer(_size);
 #define TRC_STREAM_PORT_COMMIT_EVENT(_ptrData, _size) /* Not needed since we write immediately into the buffer received above by TRC_STREAM_PORT_ALLOCATE_EVENT, and the TRC_STREAM_PORT_PERIODIC_SEND_DATA defined below will take care of the actual trace transfer. */
-#define TRC_STREAM_PORT_READ_DATA(_ptrData, _size, _ptrBytesRead) *_ptrBytesRead = trcTcpRead(_ptrData, _size);
+#define TRC_STREAM_PORT_READ_DATA(_ptrData, _size, _ptrBytesRead) trcTcpRead(_ptrData, _size, _ptrBytesRead);
 #define TRC_STREAM_PORT_PERIODIC_SEND_DATA(_ptrBytesSent) vPagedEventBufferTransfer(trcTcpWrite, _ptrBytesSent);
+
+#define TRC_STREAM_PORT_ON_TRACE_BEGIN() vPagedEventBufferInit(_TzTraceData);
+#define TRC_STREAM_PORT_ON_TRACE_END() /* Do nothing */
 
 #endif /*TRC_RECORDER_TRANSFER_METHOD == TRC_RECORDER_TRANSFER_METHOD_TCPIP*/
 
@@ -159,6 +165,8 @@
 #define TRC_STREAM_PORT_COMMIT_EVENT(_ptr, _size) TRC_STREAM_CUSTOM_COMMIT_EVENT(_ptr, _size)
 #define TRC_STREAM_PORT_READ_DATA(_ptrData, _size, _ptrBytesRead) TRC_STREAM_CUSTOM_READ_DATA(_ptrData, _size, _ptrBytesRead)
 #define TRC_STREAM_PORT_PERIODIC_SEND_DATA(_ptrBytesSent) TRC_STREAM_CUSTOM_PERIODIC_SEND_DATA(_ptrBytesSent)
+#define TRC_STREAM_PORT_ON_TRACE_BEGIN() TRC_STREAM_CUSTOM_ON_TRACE_BEGIN()
+#define TRC_STREAM_PORT_ON_TRACE_END() TRC_STREAM_CUSTOM_ON_TRACE_END()
 
 #endif /*TRC_RECORDER_TRANSFER_METHOD == TRC_RECORDER_TRANSFER_METHOD_CUSTOM*/
 
@@ -188,6 +196,14 @@
 
 #ifndef TRC_STREAM_PORT_PERIODIC_SEND_DATA
 #error "Selected TRC_RECORDER_TRANSFER_METHOD does not define TRC_STREAM_PORT_PERIODIC_SEND_DATA!"
+#endif
+
+#ifndef TRC_STREAM_PORT_ON_TRACE_BEGIN
+#error "Selected TRC_RECORDER_TRANSFER_METHOD does not define TRC_STREAM_PORT_ON_TRACE_BEGIN!"
+#endif
+
+#ifndef TRC_STREAM_PORT_ON_TRACE_END
+#error "Selected TRC_RECORDER_TRANSFER_METHOD does not define TRC_STREAM_PORT_ON_TRACE_END!"
 #endif
 
 #endif /*(USE_TRACEALYZER_RECORDER == 1)*/

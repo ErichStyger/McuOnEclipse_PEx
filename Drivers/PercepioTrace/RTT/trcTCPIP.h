@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcTCPIP.h
@@ -42,7 +42,7 @@
 #ifndef TRC_TCPIP_H
 #define TRC_TCPIP_H
 
-int32_t trcTcpWrite(void* data, uint32_t size);
-int32_t trcTcpRead(void* data, uint32_t size);
+int32_t trcTcpWrite(void* data, uint32_t size, int32_t *ptrBytesWritten);
+int32_t trcTcpRead(void* data, uint32_t size, int32_t *ptrBytesRead);
 
 #endif /*TRC_TCPIP_H*/

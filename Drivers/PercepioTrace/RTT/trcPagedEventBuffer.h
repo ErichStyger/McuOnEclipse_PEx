@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcPagedEventBuffer.h
@@ -42,10 +42,12 @@
 #ifndef TRC_PAGED_EVENT_BUFFER_H
 #define TRC_PAGED_EVENT_BUFFER_H
 
-void vTraceBufferInit(char* buffer);
+void vPagedEventBufferInit(char* buffer);
 
 void* vPagedEventBufferGetWritePointer(int sizeOfEvent);
 
-int32_t vPagedEventBufferTransfer(int32_t (*writeFunc)(void* data, uint32_t size), int32_t* nofBytes);
+int32_t vPagedEventBufferTransfer(int32_t (*writeFunc)(void* data, uint32_t size, int32_t* ptrBytesWritten), int32_t* nofBytes);
+
+void vPagedEventBufferReset(void);
 
 #endif /*TRC_PAGED_EVENT_BUFFER_H*/

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcKernelPort.c
@@ -185,9 +185,29 @@ void CheckRecorderStatus(void)
 }
 
 /*******************************************************************************
+ * vTraceOnTraceBegin
+ *
+ * Called on trace begin.
+ ******************************************************************************/
+void vTraceOnTraceBegin(void)
+{
+	TRC_STREAM_PORT_ON_TRACE_BEGIN();
+}
+
+/*******************************************************************************
+ * vTraceOnTraceEnd
+ *
+ * Called on trace end.
+ ******************************************************************************/
+void vTraceOnTraceEnd(void)
+{
+	TRC_STREAM_PORT_ON_TRACE_END();
+}
+
+/*******************************************************************************
  * TzCtrl
  *
- * Task for receiving commands from FreeRTOS+Trace and for recorder diagnostics.
+ * Task for receiving commands from Tracealyzer and for recorder diagnostics.
  *
  ******************************************************************************/
 static portTASK_FUNCTION( TzCtrl, pvParameters )
@@ -218,7 +238,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 		while (bytes != 0);
 
 		CheckRecorderStatus();
-		vTaskDelay((10 * configTICK_RATE_HZ) / 1000);	/* 100ms */
+		vTaskDelay(TRC_CTRL_TASK_DELAY);	/* 10ms */
 	}
 }
 

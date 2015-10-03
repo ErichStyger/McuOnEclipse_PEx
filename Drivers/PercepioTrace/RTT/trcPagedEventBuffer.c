@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcPagedEventBuffer.c
@@ -178,11 +178,10 @@ Pointer to an integer assigned the number of bytes that was transfered.
 
 *******************************************************************************/
 
-int32_t vPagedEventBufferTransfer(int32_t (*writeFunc)(void* data, uint32_t size), int32_t* nofBytes)
+int32_t vPagedEventBufferTransfer(int32_t (*writeFunc)(void* data, uint32_t size, int32_t* ptrBytesWritten), int32_t* nofBytes)
 {
 	static int firstTime = 1;
 	int8_t pageToTransfer = -1;
-	int32_t ret = 0;
 
 	pageToTransfer = prvGetBufferPage(nofBytes);
 
@@ -193,14 +192,18 @@ int32_t vPagedEventBufferTransfer(int32_t (*writeFunc)(void* data, uint32_t size
 
 	if (pageToTransfer > -1)
 	{
-		ret = writeFunc(&EventBuffer[pageToTransfer * TRC_PAGED_EVENT_BUFFER_PAGE_SIZE], *nofBytes);
-
-		if (ret != 0)
+		if (writeFunc(&EventBuffer[pageToTransfer * TRC_PAGED_EVENT_BUFFER_PAGE_SIZE], *nofBytes, nofBytes) == 0)
 		{
 			prvPageReadComplete(pageToTransfer);
+            
+            return 0;
 		}
+        else
+        {
+            return 1;
+        }
 	}
-	return ret;
+	return 0;
 }
 
 /*******************************************************************************
@@ -263,7 +266,7 @@ void* vPagedEventBufferGetWritePointer(int sizeOfEvent)
 
 /*******************************************************************************
 
-void vTraceBufferInit(char* buffer)
+void vPagedEventBufferInit(char* buffer)
 
 Assigns the buffer to use and initializes the PageInfo structure.
 
@@ -273,16 +276,16 @@ Parameters:
 
 - buffer
 Pointer to the buffer location that is dynamically or statically allocated by
-the called.
+the caller.
 
 *******************************************************************************/
-void vTraceBufferInit(char* buffer)
+void vPagedEventBufferInit(char* buffer)
 {
   	TRACE_ALLOC_CRITICAL_SECTION();
   	int i;
-        
-        EventBuffer = buffer;
-        
+    
+    EventBuffer = buffer;
+    
 	TRACE_ENTER_CRITICAL_SECTION();
 	for (i = 0; i < TRC_PAGED_EVENT_BUFFER_PAGE_COUNT; i++)
 	{

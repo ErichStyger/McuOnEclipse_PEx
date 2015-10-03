@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v2.8.6
+ * Trace Recorder Library for Tracealyzer v3.0.0
  * Percepio AB, www.percepio.com
  *
  * trcTCPIP.c
@@ -43,24 +43,16 @@
 #include "trcTCPIP.h"
 #include "trcTCPIPConfig.h"
 
-int32_t trcTcpWrite(void* data, uint32_t size)
+int32_t trcTcpWrite(void* data, uint32_t size, int32_t *ptrBytesWritten)
 {
-    int32_t bytesWritten = 0;
-    trcSocketSend(data, size, &bytesWritten);
-    return bytesWritten;
+    return trcSocketSend(data, size, ptrBytesWritten);
 }
 
-int32_t trcTcpRead(void* data, uint32_t size)
+int32_t trcTcpRead(void* data, uint32_t size, int32_t *ptrBytesRead)
 {
-    int32_t bytesRead = 0;
-    do
-    {
-        trcSocketInitializeListener();
+    trcSocketInitializeListener();
         
-        trcSocketAccept();
+    trcSocketAccept();
       
-        trcSocketReceive(data, size, &bytesRead);
-
-    } while (sock == NULL);
-    return bytesRead;
+    return trcSocketReceive(data, size, ptrBytesRead);
 }
