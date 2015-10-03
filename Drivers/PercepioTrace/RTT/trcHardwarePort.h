@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.0.0
+ * Trace Recorder Library for Tracealyzer v3.0.2
  * Percepio AB, www.percepio.com
  *
  * trcHardwarePort.h

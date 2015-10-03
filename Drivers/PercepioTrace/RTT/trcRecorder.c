@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.0.0
+ * Trace Recorder Library for Tracealyzer v3.0.2
  * Percepio AB, www.percepio.com
  *
  * trcRecorder.c
@@ -152,6 +152,9 @@ uint16_t FormatVersion = 0x0002;
 
 /* The number of events stored. Used as event sequence number. */
 uint32_t eventCounter = 0;
+
+/* Keeps track of if the current ISR chain has triggered a context switch that will be performed once all ISRs have returned. */
+int32_t isPendingContextSwitch = 0;
 
 /*******************************************************************************
  * NoRoomForSymbol
@@ -475,6 +478,9 @@ void vTraceStoreISRBegin(void* handle)
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
+	if (ISR_stack_index == -1)
+		isPendingContextSwitch = 0; /* We are at the start of a possible ISR chain. No context switches should have been triggered now. */
+
 	if (ISR_stack_index < MAX_ISR_NESTING - 1)
 	{
 		ISR_stack_index++;
@@ -542,6 +548,7 @@ void vTraceStoreISREndManual(int isTaskSwitchRequired)
 
 	TRACE_ENTER_CRITICAL_SECTION();
 
+	isPendingContextSwitch |= isTaskSwitchRequired;	/* Is there a pending context switch right now? */
 	if (ISR_stack_index > 0)
 	{
 		ISR_stack_index--;
@@ -553,8 +560,8 @@ void vTraceStoreISREndManual(int isTaskSwitchRequired)
 	{
                 ISR_stack_index--;
                 
-		/* Store return to interrupted task, if a task switch has not been triggered by an interrupt */
-	  	if (isTaskSwitchRequired == 0)
+		/* Store return to interrupted task, if a task switch has not been triggered by any interrupt */
+		if (isPendingContextSwitch == 0)
 		{
 		  	vTraceStoreEvent1(PSF_EVENT_TS_RESUME, (uint32_t)TRACE_GET_CURRENT_TASK());
 		}

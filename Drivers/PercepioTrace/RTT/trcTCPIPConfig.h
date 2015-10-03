@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.0.0
+ * Trace Recorder Library for Tracealyzer v3.0.2
  * Percepio AB, www.percepio.com
  *
- * trcTCPIPConfig.c
+ * trcTCPIPConfig.h
  *
  * Trace TCP/IP configuration. Modify these includes and functions to perform 
  * the same functionality using your specific TCP/IP stack.
