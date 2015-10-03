@@ -347,6 +347,10 @@ There are 4 options:<br />
 <b>configASSERT defined</b></a> - If set to 'yes', FreeRTOSConfig.h will have the configASSERT() macro defined. lt is used in different places in the Kernel to verify proper operation. For better code density/speed you might set this option to 'no'.
 </li>
 <li>
+<a name="EnableGDBDebugHelper">
+<b>Enable GDB Debug Helper</b></a> - If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. 
+</li>
+<li>
 <a name="UseApplicationTaskTags">
 <b>Application Task Tags</b></a> - This configures configUSE_APPLICATION_TASK_TAG. If enabled, the methodsxTaskGetApplicationTaskTag(), vTaskSetApplicationTaskTag() and xTaskCallApplicationTaskHook() are enabled.
 </li>

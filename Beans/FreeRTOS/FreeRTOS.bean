@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS</Description>
     <Author>Erich Styger</Author>
-    <Version>01.435</Version>
+    <Version>01.438</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -367,6 +367,24 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Enable GDB Debug Helper</Name>
+        <Symbol>EnableGDBDebugHelper</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>

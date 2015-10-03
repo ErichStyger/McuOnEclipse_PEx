@@ -112,6 +112,15 @@
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'event_groups.h
 %include freeRTOS\event_groups.h
 
+%- -----------------------------------------
+%- GDB thread debug helpers
+%FILE %'DirRel_Code'%'RTOSPortDirFolder'readme_gdbBacktraceDebug.txt
+%include freeRTOS\gdbBacktraceDebug\readme_gdbBacktraceDebug.txt
+
+%FILE %'DirRel_Code'%'RTOSPortDirFolder'.gdbinit-FreeRTOS-helpers
+%include freeRTOS\gdbBacktraceDebug\.gdbinit-FreeRTOS-helpers
+%- -----------------------------------------
+
 %undef RTOSSrcDirFolder
 %undef RTOSHeaderDirFolder
 %undef RTOSPortDirFolder

@@ -1798,8 +1798,8 @@ __asm volatile (
   );
 #endif
 }
+#endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */
 /*-----------------------------------------------------------*/
-#endif
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* Cortex M4 */
 #if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
@@ -1892,10 +1892,12 @@ __asm void vPortPendSVHandler(void) {
   nop
 }
 #endif
-#endif
+#endif /* (configCOMPILER==configCOMPILER_ARM_KEIL) */
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if configGDB_HELPER
+__attribute__ ((naked)) void vPortPendSVHandler_native(void) {
+#elif configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {
@@ -1937,7 +1939,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     "                            \n"
     " .align 2                   \n"
     "pxCurrentTCBConst: .word pxCurrentTCB  \n"
-    ::"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY)
+      ::"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY)
   );
 #else /* Cortex M0+ */
   __asm volatile (
@@ -1982,7 +1984,144 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
   );
 #endif
 }
+
+#if configGDB_HELPER /* if GDB debug helper is enabled */
+/* Credits to:
+ * - Artem Pisarneko for his initial contribution
+ * - Prasana for the PendSVHandler updates
+ * - Geoffrey Wossum for the Cortex-M4 contribution
+ */
+
+/* Switch control variable:
+ * 0 - no hook installed (normal execution),
+ * 1 - hook installation performed,
+ * 2 - following hooked switches
+ */
+int volatile dbgPendSVHookState = 0;
+/* Requested target task handle variable */
+void * volatile dbgPendingTaskHandle;
+
+const int volatile dbgFreeRTOSConfig_suspend_value = INCLUDE_vTaskSuspend;
+const int volatile dbgFreeRTOSConfig_delete_value = INCLUDE_vTaskDelete;
+
+void __attribute__ ((naked)) PendSV_Handler_jumper(void) {
+  __asm volatile("b vPortPendSVHandler_native \n");
+}
+
+#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+__attribute__ ((naked)) void PendSV_Handler(void) {
+#else
+__attribute__ ((naked)) void vPortPendSVHandler(void) {
 #endif
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* Cortex M4 */
+  __asm volatile (
+#if configGDB_HELPER
+    "ldr r1, _dbgPendSVHookState    \n" /* Check hook installed */
+    "ldr r0, [r1]                   \n"
+    "cmp r0, #0                     \n"
+    "beq PendSV_Handler_jumper      \n" /* if no hook installed then jump to native handler, else proceed... */
+    "cmp r0, #1                     \n" /* check whether hook triggered for the first time...  */
+    "bne dbg_switch_to_pending_task \n" /* if not so, then jump to switching right now, otherwise current task context must be saved first...  */
+    "mov r0, #2                     \n" /* mark hook after triggered for the first time */
+    "str r0, [r1]                   \n"
+#endif /* configGDB_HELPER */
+    " mrs r0, psp                \n"
+    " ldr  r3, pxCurrentTCBConstG \n" /* Get the location of the current TCB. */
+    " ldr  r2, [r3]              \n"
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F)
+    " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, push high vfp registers. */
+    " it eq                      \n"
+    " vstmdbeq r0!, {s16-s31}    \n"
+
+    " stmdb r0!, {r4-r11, r14}   \n" /* save remaining core registers */
+#else
+    " stmdb r0!, {r4-r11}        \n" /* Save the core registers. */
+#endif
+    " str r0, [r2]               \n" /* Save the new top of stack into the first member of the TCB. */
+    " stmdb sp!, {r3, r14}       \n"
+    " mov r0, %%0                 \n"
+    " msr basepri, r0            \n"
+    " bl vTaskSwitchContext      \n"
+    " mov r0, #0                 \n"
+    " msr basepri, r0            \n"
+    " ldmia sp!, {r3, r14}       \n"
+#if configGDB_HELPER
+    "dbg_switch_to_pending_task:     \n"
+    " ldr r3, _dbgPendingTaskHandle  \n" /* --> Load task handle going to switch to <-- */
+#endif /* configGDB_HELPER */
+    " ldr r1, [r3]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
+    " ldr r0, [r1]               \n"
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F)
+    " ldmia r0!, {r4-r11, r14}   \n" /* Pop the core registers */
+    " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
+    " it eq                      \n"
+    " vldmiaeq r0!, {s16-s31}    \n"
+#else
+    " ldmia r0!, {r4-r11}        \n" /* Pop the core registers. */
+#endif
+    " msr psp, r0                \n"
+#if configGDB_HELPER
+    "bkpt                        \n" /* <-- here debugger stops and steps out to target task context */
+#endif /* configGDB_HELPER */
+    " bx r14                     \n"
+    "                            \n"
+    " .align 2                   \n"
+    "pxCurrentTCBConstG: .word pxCurrentTCB  \n"
+#if configGDB_HELPER
+    "_dbgPendSVHookState: .word dbgPendSVHookState     \n"
+    "_dbgPendingTaskHandle: .word dbgPendingTaskHandle \n"
+    ".word dbgFreeRTOSConfig_suspend_value             \n" /* force keep these symbols from cutting away by linker garbage collector */
+    ".word dbgFreeRTOSConfig_delete_value              \n"
+#endif
+      ::"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY)
+  );
+#else /* Cortex M0+ */
+  __asm volatile (
+    " mrs r0, psp                \n"
+    "                            \n"
+    " ldr r3, pxCurrentTCBConstG  \n" /* Get the location of the current TCB. */
+    " ldr r2, [r3]   \n"
+    "                            \n"
+    " sub r0, r0, #32            \n" /* Make space for the remaining low registers. */
+    " str r0, [r2]               \n" /* Save the new top of stack. */
+    " stmia r0!, {r4-r7}         \n" /* Store the low registers that are not saved automatically. */
+    " mov r4, r8                 \n" /* Store the high registers. */
+    " mov r5, r9                 \n"
+    " mov r6, r10                \n"
+    " mov r7, r11                \n"
+    " stmia r0!, {r4-r7}         \n"
+    "                            \n"
+    " push {r3, r14}             \n"
+    " cpsid i                    \n"
+    " bl vTaskSwitchContext      \n"
+    " cpsie i                    \n"
+    " pop {r2, r3}               \n" /* lr goes in r3. r2 now holds tcb pointer. */
+    "                            \n"
+    " ldr r1, [r2]               \n"
+    " ldr r0, [r1]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
+    " add r0, r0, #16            \n" /* Move to the high registers. */
+    " ldmia r0!, {r4-r7}         \n" /* Pop the high registers. */
+    " mov r8, r4                 \n"
+    " mov r9, r5                 \n"
+    " mov r10, r6                \n"
+    " mov r11, r7                \n"
+    "                            \n"
+    " msr psp, r0                \n" /* Remember the new top of stack for the task. */
+    "                            \n"
+    " sub r0, r0, #32            \n" /* Go back for the low registers that are not automatically restored. */
+    " ldmia r0!, {r4-r7}         \n" /* Pop low registers.  */
+    "                            \n"
+    " bx r3                      \n"
+    "                            \n"
+    ".align 2                    \n"
+    "pxCurrentTCBConstG: .word pxCurrentTCB"
+  );
+#endif
+}
+
+#endif /* configGDB_HELPER */
+
+#endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */
 /*-----------------------------------------------------------*/
 #if 0 /* NYI */ && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
 #if( configASSERT_DEFINED == 1 )
