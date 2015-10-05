@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.036</Version>
+    <Version>01.039</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright Freescale, all rights reserved, 2013-2014.\nPorted as Processor Expert component: Erich Styger\nhttp: www.mcuoneclipse.com</Copyright>
+    <Copyright>(c) Copyright Freescale, all rights reserved, 2013-2015.\nPorted as Processor Expert component: Erich Styger\nhttp: www.mcuoneclipse.com</Copyright>
     <Category>SW-Communication</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>USB</Shortcut>
@@ -51,26 +51,76 @@
       </TStrgItem>
     </Property>
     <Property>
-      <TInhrItem>
-        <Name>USB Init</Name>
-        <Symbol>USBInit</Symbol>
-        <TypeSpec>FSL_USB_Stack\InitUSB</TypeSpec>
-        <Hint>USB peripheral to initialize. \n
+      <TBoolGrupItem>
+        <Name>Link to USB Init</Name>
+        <Symbol>LinkToUSBInitEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>If enabled, can specify a linked USB Initialization component instead of an inherited one.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>USB Init</Name>
+              <Symbol>USBInitLinked</Symbol>
+              <TypeSpec>FSL_USB_Stack\InitUSB1</TypeSpec>
+              <Hint>USB initialization</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Inherited USB Init</Name>
+        <Symbol>InheritedUSBInitEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>If enabled, an inherited USB Init component can be used.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Enabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>USB Init</Name>
+              <Symbol>USBInit</Symbol>
+              <TypeSpec>FSL_USB_Stack\InitUSB</TypeSpec>
+              <Hint>USB peripheral to initialize. \n
 For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.\n
 For ColdFire V2, select 'Init_USB_OTG_MCF'.\n
 For HCS08, select 'Init_USB_HCS08'.\n
 For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>-1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <InhrBeanBaseName>USBInit</InhrBeanBaseName>
-        <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-      </TInhrItem>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>USBInit</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
     <Property>
       <TEnumItem>

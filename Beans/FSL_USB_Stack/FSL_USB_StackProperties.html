@@ -221,12 +221,32 @@ LI.EXP {
 <b>Freescale USB Stack Version</b></a> - Version of the Freescale USB Stack used
 </li>
 <li>
-<a name="USBInit">
-<b>USB Init</b></a> - USB peripheral to initialize. <br />
+<a name="LinkToUSBInitEnabled">
+<b>Link to USB Init</b></a> - If enabled, can specify a linked USB Initialization component instead of an inherited one.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="USBInitLinked">
+  <b>USB Init</b></a> - USB initialization
+  </li>
+</ul>
+</li>
+<li>
+<a name="InheritedUSBInitEnabled">
+<b>Inherited USB Init</b></a> - If enabled, an inherited USB Init component can be used.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="USBInit">
+  <b>USB Init</b></a> - USB peripheral to initialize. <br />
 For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.<br />
 For ColdFire V2, select 'Init_USB_OTG_MCF'.<br />
 For HCS08, select 'Init_USB_HCS08'.<br />
 For Kinetis, select 'Init_USB_OTG_VAR0'.
+  </li>
+</ul>
 </li>
 <li>
 <a name="USBDeviceClass">
