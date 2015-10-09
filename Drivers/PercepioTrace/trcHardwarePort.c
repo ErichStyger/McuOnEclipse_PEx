@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcHardwarePort.c
@@ -65,9 +65,7 @@ uint32_t uiTraceTickCount = 0;
 
 uint32_t DWT_CYCLES_ADDED = 0; /* Used on ARM Cortex-M only */
 
-#if (SELECTED_PORT == PORT_ARM_CortexM)
-
-#if (SELECTED_PORT == PORT_ARM_CortexM)
+#if (SELECTED_PORT == PORT_ARM_CortexM) /* << EST: added functions for CMSIS functionality */
 
 void prvTraceEnableIRQ(void)
 {
@@ -90,8 +88,9 @@ uint32_t prvTraceGetIRQMask(void)
   __asm volatile ("MRS %%0, primask" : "=r" (result) );
   return result;
 }
-#endif
+#endif /* (SELECTED_PORT == PORT_ARM_CortexM) */
 
+#if (SELECTED_PORT == PORT_ARM_CortexM)
 void prvTraceInitCortexM(void)
 {
 #if 0 /* NYI */

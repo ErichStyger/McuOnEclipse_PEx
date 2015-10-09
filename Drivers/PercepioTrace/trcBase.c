@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcBase.c
@@ -172,10 +172,10 @@ void prvTraceInitTraceData()
 	RecorderDataPtr->SymbolTable.symTableSize = SYMBOL_TABLE_SIZE;
 	RecorderDataPtr->SymbolTable.nextFreeSymbolIndex = 1;
 #if (INCLUDE_FLOAT_SUPPORT == 1)
-	RecorderDataPtr->exampleFloatEncoding = (float)1.0; /* otherwise already zero */
+	RecorderDataPtr->exampleFloatEncoding = 1.0f; /* otherwise already zero */
 #endif
 	RecorderDataPtr->debugMarker2 = 0xF2F2F2F2;
-    (void)strncpy(RecorderDataPtr->systemInfo, TRACE_DESCRIPTION, TRACE_DESCRIPTION_MAX_LENGTH);
+  (void)strncpy(RecorderDataPtr->systemInfo, TRACE_DESCRIPTION, TRACE_DESCRIPTION_MAX_LENGTH);
 	RecorderDataPtr->debugMarker3 = 0xF3F3F3F3;
 	RecorderDataPtr->endmarker0 = 0x0A;
 	RecorderDataPtr->endmarker1 = 0x0B;

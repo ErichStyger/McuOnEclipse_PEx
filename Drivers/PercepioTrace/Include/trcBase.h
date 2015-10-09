@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcBase.h
@@ -337,7 +337,7 @@ typedef struct
 	/* Used to determine Kernel and Endianess */
 	uint16_t version;
 
-	/* Currently 3, since v2.6.0 */
+	/* Currently 3, since v3.0.1 */
 	uint8_t minor_version;
 
 	/* This should be 0 if lower IRQ priority values implies higher priority

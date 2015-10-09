@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcUser.h
@@ -448,7 +448,7 @@ void vTraceChannelUserEvent(UserEventChannel channel);
 
 #define vTraceSetISRProperties(handle, name, priority)
 #define vTraceStoreISRBegin(id)
-#define vTraceStoreISREnd()
+#define vTraceStoreISREnd(flag)
 #define vTraceExcludeTaskFromTrace(handle)
 #define vTraceSetQueueName(a, b)
 #define vTraceSetMutexName(a, b)

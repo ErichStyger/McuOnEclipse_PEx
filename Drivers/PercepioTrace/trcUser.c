@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcUser.c
@@ -65,9 +65,9 @@
 TRACE_STOP_HOOK vTraceStopHookPtr = (TRACE_STOP_HOOK)0;
 
 extern uint8_t inExcludedTask;
-extern uint8_t nISRactive;
+extern int8_t nISRactive;
 extern objectHandleType handle_of_last_logged_task;
-#if 0 /* << EST */
+#if 0 /* << EST: not used */
 extern uint32_t dts_min;
 extern uint32_t hwtc_count_max_after_tick;
 extern uint32_t hwtc_count_sum_after_tick;
@@ -393,6 +393,7 @@ void vTraceTaskInstanceFinishDirect(void)
 #define MAX_ISR_NESTING 16
 #endif
 static uint8_t isrstack[MAX_ISR_NESTING];
+int32_t isPendingContextSwitch = 0;
 
 /*******************************************************************************
  * vTraceSetISRProperties
@@ -598,11 +599,15 @@ void vTraceStoreISRBegin(objectHandleType handle)
 	 return;
 	}
 	trcCRITICAL_SECTION_BEGIN();
+	
+	if (nISRactive == 0)
+		isPendingContextSwitch = 0;	/* We are at the start of a possible ISR chain. No context switches should have been triggered now. */
+	
 	if (RecorderDataPtr->recorderActive && handle_of_last_logged_task)
 	{
 
 		TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "vTraceStoreISRBegin: Invalid value for handle", ;);
-
+		
 		dts4 = (uint16_t)prvTraceGetDTS(0xFFFF);
 
 		if (RecorderDataPtr->recorderActive) /* Need to repeat this check! */
@@ -658,6 +663,8 @@ void vTraceStoreISREnd(int pendingISR)
 {
 	TSEvent* ts;
 	uint16_t dts5;
+	uint8_t hnd8 = 0, type = 0;
+	
 	TRACE_SR_ALLOC_CRITICAL_SECTION();
 
 	if (! RecorderDataPtr->recorderActive ||  ! handle_of_last_logged_task)
@@ -678,24 +685,28 @@ void vTraceStoreISREnd(int pendingISR)
 	}
 
 	trcCRITICAL_SECTION_BEGIN();
-	if (pendingISR == 0)
+	isPendingContextSwitch |= pendingISR;	/* Is there a pending context switch right now? */
+	nISRactive--;
+	if (nISRactive > 0)
 	{
-		uint8_t hnd8, type;
+		/* Return to another isr */
+		type = TS_ISR_RESUME;
+		hnd8 = prvTraceGet8BitHandle(isrstack[nISRactive - 1]); /* isrstack[nISRactive] is the handle of the ISR we're currently exiting. isrstack[nISRactive - 1] is the handle of the ISR that was executing previously. */
+	}
+	else if (isPendingContextSwitch == 0)
+	{
+		/* No context switch has been triggered by any ISR in the chain. Return to task */
+		type = TS_TASK_RESUME;
+		hnd8 = prvTraceGet8BitHandle(handle_of_last_logged_task);
+	}
+	else
+	{
+		/* Context switch has been triggered by some ISR. We expect a proper context switch event shortly so we do nothing. */
+	}
+
+	if (type != 0)
+	{
 		dts5 = (uint16_t)prvTraceGetDTS(0xFFFF);
-
-		if (nISRactive > 1)
-		{
-			/* return to another isr */
-			type = TS_ISR_RESUME;
-			hnd8 = prvTraceGet8BitHandle(isrstack[nISRactive]);
-		}
-		else
-		{
-			/* return to task */
-			type = TS_TASK_RESUME;
-			hnd8 = prvTraceGet8BitHandle(handle_of_last_logged_task);
-		}
-
 		ts = (TSEvent*)xTraceNextFreeEventBufferSlot();
 		if (ts != NULL)
 		{
@@ -710,7 +721,6 @@ void vTraceStoreISREnd(int pendingISR)
 		ptrLastISRExitEvent = (uint8_t*)ts;
 		#endif		
 	}
-	nISRactive--;
 
 	#if (SELECTED_PORT == PORT_ARM_CortexM)
 	DWTCycleCountAtLastISRExit = REG_DWT_CYCCNT;

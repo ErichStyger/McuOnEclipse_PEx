@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcKernelPortFreeRTOS.h
@@ -56,7 +56,6 @@ extern int uiInEventGroupSetBitsFromISR;
 #define TRACE_CPU_CLOCK_HZ configCPU_CLOCK_HZ /* Defined in "FreeRTOSConfig.h" */
 
 #if (SELECTED_PORT == PORT_ARM_CortexM)
-	
 #if 1 /* << EST, use private functions */
   #define TRACE_SR_ALLOC_CRITICAL_SECTION() int __irq_status;
   #define TRACE_ENTER_CRITICAL_SECTION() { __irq_status = prvTraceGetIRQMask(); prvTraceDisableIRQ(); }
@@ -68,6 +67,12 @@ extern int uiInEventGroupSetBitsFromISR;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = __get_PRIMASK(); __set_PRIMASK(1);}
 	#define TRACE_EXIT_CRITICAL_SECTION() {__set_PRIMASK(__irq_status);}
 #endif
+#endif
+
+#if (SELECTED_PORT == PORT_ARM_CORTEX_M0)
+	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int __irq_status;
+	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = portSET_INTERRUPT_MASK_FROM_ISR();}
+	#define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(__irq_status);}
 #endif
 
 #if ((SELECTED_PORT == PORT_ARM_CORTEX_A9) || (SELECTED_PORT == PORT_Renesas_RX600) || (SELECTED_PORT == PORT_MICROCHIP_PIC32MX) || (SELECTED_PORT == PORT_MICROCHIP_PIC32MZ))
@@ -410,6 +415,17 @@ const char* pszTraceGetErrorNotEnoughHandles(traceObjectClass objectclass);
 #define TASK_INSTANCE_FINISHED_NEXT_KSE (EVENTGROUP_EG + 14)			/*0xD0*/
 #define TASK_INSTANCE_FINISHED_DIRECT (EVENTGROUP_EG + 15)				/*0xD1*/
 
+#define TRACE_TASK_NOTIFY_GROUP (EVENTGROUP_EG + 16)					/*0xD2*/
+#define TRACE_TASK_NOTIFY (TRACE_TASK_NOTIFY_GROUP + 0)					/*0xD2*/
+#define TRACE_TASK_NOTIFY_TAKE (TRACE_TASK_NOTIFY_GROUP + 1)			/*0xD3*/
+#define TRACE_TASK_NOTIFY_TAKE_BLOCK (TRACE_TASK_NOTIFY_GROUP + 2)		/*0xD4*/
+#define TRACE_TASK_NOTIFY_TAKE_FAILED (TRACE_TASK_NOTIFY_GROUP + 3)		/*0xD5*/
+#define TRACE_TASK_NOTIFY_WAIT (TRACE_TASK_NOTIFY_GROUP + 4)			/*0xD6*/
+#define TRACE_TASK_NOTIFY_WAIT_BLOCK (TRACE_TASK_NOTIFY_GROUP + 5)		/*0xD7*/
+#define TRACE_TASK_NOTIFY_WAIT_FAILED (TRACE_TASK_NOTIFY_GROUP + 6)		/*0xD8*/
+#define TRACE_TASK_NOTIFY_FROM_ISR (TRACE_TASK_NOTIFY_GROUP + 7)		/*0xD9*/
+#define TRACE_TASK_NOTIFY_GIVE_FROM_ISR (TRACE_TASK_NOTIFY_GROUP + 8)	/*0xDA*/
+
 /************************************************************************/
 /* KERNEL SPECIFIC DATA AND FUNCTIONS NEEDED TO PROVIDE THE				*/
 /* FUNCTIONALITY REQUESTED BY THE TRACE RECORDER						*/
@@ -544,6 +560,12 @@ void* prvTraceGetCurrentTaskHandle(void);
 #undef traceTASK_SUSPEND
 #define traceTASK_SUSPEND( pxTaskToSuspend ) \
 	trcKERNEL_HOOKS_TASK_SUSPEND(TASK_SUSPEND, pxTaskToSuspend);
+
+/* Called from special case with timer only */
+#undef traceTASK_DELAY_SUSPEND
+#define traceTASK_DELAY_SUSPEND( pxTaskToSuspend ) \
+	trcKERNEL_HOOKS_TASK_SUSPEND(TASK_SUSPEND, pxTaskToSuspend); \
+	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 
 /* Called on vTaskDelay - note the use of FreeRTOS variable xTicksToDelay */
 #undef traceTASK_DELAY
@@ -815,6 +837,41 @@ else \
 	vTraceStoreKernelCallWithParam(EVENT_GROUP_SET_BITS_FROM_ISR, TRACE_CLASS_EVENTGROUP, TRACE_GET_EVENTGROUP_NUMBER(eg), bitsToSet); \
 	uiInEventGroupSetBitsFromISR = 1;
 
+#undef traceTASK_NOTIFY_TAKE
+#define traceTASK_NOTIFY_TAKE() \
+	if (pxCurrentTCB->eNotifyState == eNotified) \
+		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_TAKE, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
+	else \
+		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_TAKE_FAILED, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait);
+
+#undef traceTASK_NOTIFY_TAKE_BLOCK
+#define traceTASK_NOTIFY_TAKE_BLOCK() \
+	vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_TAKE_BLOCK, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
+	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
+
+#undef traceTASK_NOTIFY_WAIT
+#define traceTASK_NOTIFY_WAIT() \
+	if (pxCurrentTCB->eNotifyState == eNotified) \
+		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
+	else \
+		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_FAILED, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait);
+
+#undef traceTASK_NOTIFY_WAIT_BLOCK
+#define traceTASK_NOTIFY_WAIT_BLOCK() \
+	vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_BLOCK, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
+	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
+
+#undef traceTASK_NOTIFY
+#define traceTASK_NOTIFY() \
+	vTraceStoreKernelCall(TRACE_TASK_NOTIFY, TRACE_CLASS_TASK, uxTaskGetTaskNumber(xTaskToNotify));
+
+#undef traceTASK_NOTIFY_FROM_ISR
+#define traceTASK_NOTIFY_FROM_ISR() \
+	vTraceStoreKernelCall(TRACE_TASK_NOTIFY_FROM_ISR, TRACE_CLASS_TASK, uxTaskGetTaskNumber(xTaskToNotify));
+	
+#undef traceTASK_NOTIFY_GIVE_FROM_ISR
+#define traceTASK_NOTIFY_GIVE_FROM_ISR() \
+	vTraceStoreKernelCall(TRACE_TASK_NOTIFY_GIVE_FROM_ISR, TRACE_CLASS_TASK, uxTaskGetTaskNumber(xTaskToNotify));
 
 /************************************************************************/
 /* KERNEL SPECIFIC MACROS TO EXCLUDE OR INCLUDE THINGS IN TRACE			*/

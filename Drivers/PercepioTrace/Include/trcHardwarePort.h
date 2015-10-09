@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcHardwarePort.h
@@ -118,7 +118,8 @@
 #define PORT_NXP_LPC210X					13	/*	No			Any					*/
 #define PORT_MICROCHIP_PIC32MZ				14	/*	Yes			Any					*/
 #define PORT_ARM_CORTEX_A9					15	/*	No			Any					*/
-#define PORT_FREESCALE_PROCESSOR_EXPERT     16  /*  No          FreeRTOS            */ /* << EST */
+#define PORT_ARM_CORTEX_M0					16	/*	Yes			Any					*/
+#define PORT_FREESCALE_PROCESSOR_EXPERT     17  /*  No          FreeRTOS            */ /* << EST */
 
 #include "trcConfig.h"
 
@@ -259,6 +260,14 @@
 
 	#define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
 
+#elif (SELECTED_PORT == PORT_ARM_CORTEX_M0)
+    #define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING
+    #define HWTC_COUNT (*((uint32_t*)0xE000E018))
+    #define HWTC_PERIOD ((*(uint32_t*)0xE000E014) + 1)
+    #define HWTC_DIVISOR 2
+	
+    #define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
+	
 #elif (SELECTED_PORT == PORT_Renesas_RX600)
 
 	#include "iodefine.h"
@@ -269,7 +278,7 @@
 	#define HWTC_DIVISOR 1
 	#define IRQ_PRIORITY_ORDER 1 // higher IRQ priority values are more significant
 
-#elif (SELECTED_PORT == PORT_MICROCHIP_PIC32MX || PORT_MICROCHIP_PIC32MZ)
+#elif ((SELECTED_PORT == PORT_MICROCHIP_PIC32MX) || (SELECTED_PORT == PORT_MICROCHIP_PIC32MZ))
 
 	#define HWTC_COUNT_DIRECTION DIRECTION_INCREMENTING
 	#define HWTC_COUNT (TMR1)
@@ -327,11 +336,11 @@
 
 	/* UNOFFICIAL PORT - NOT YET VERIFIED BY PERCEPIO */
 
-	#define RTIFRC0 *((uint32_t *)0xFFFFFC10)
-	#define RTICOMP0 *((uint32_t *)0xFFFFFC50)
-	#define RTIUDCP0 *((uint32_t *)0xFFFFFC54)
+	#define TRC_RTIFRC0 *((uint32_t *)0xFFFFFC10)
+	#define TRC_RTICOMP0 *((uint32_t *)0xFFFFFC50)
+	#define TRC_RTIUDCP0 *((uint32_t *)0xFFFFFC54)
 	#define HWTC_COUNT_DIRECTION DIRECTION_INCREMENTING
-	#define HWTC_COUNT (RTIFRC0 - (RTICOMP0 - RTIUDCP0))
+	#define HWTC_COUNT (TRC_RTIFRC0 - (TRC_RTICOMP0 - TRC_RTIUDCP0))
 	#define HWTC_PERIOD (RTIUDCP0)
 	#define HWTC_DIVISOR 1
 
@@ -427,7 +436,6 @@
 	#if !( defined (HWTC_COUNT_DIRECTION) && defined (HWTC_COUNT) && defined (HWTC_PERIOD) && defined (HWTC_DIVISOR) && defined (IRQ_PRIORITY_ORDER) )
 		#error SELECTED_PORT is PORT_APPLICATION_DEFINED but not all of the necessary constants have been defined.
 	#endif
-
 
 #elif SELECTED_PORT == PORT_FREESCALE_PROCESSOR_EXPERT /* << EST */
   #include "portTicks.h" /* << EST */

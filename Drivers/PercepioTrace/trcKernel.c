@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Tracealyzer v2.7.0 Recorder Library
+ * Tracealyzer v3.0.2 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcKernel.c
@@ -46,13 +46,13 @@
 #endif
 
 /* Internal variables */
-uint8_t nISRactive = 0;
+int8_t nISRactive = 0;
 objectHandleType handle_of_last_logged_task = 0;
 uint8_t inExcludedTask = 0;
 
-#if (INCLUDE_MEMMANG_EVENTS == 1) /* << EST */
-/* Current heap usage. Always updated. */
-static uint32_t heapMemUsage = 0;
+#if (INCLUDE_MEMMANG_EVENTS == 1) && (TRACE_SCHEDULING_ONLY == 0)
+ /* Current heap usage. Always updated. */
+ static uint32_t heapMemUsage = 0;
 #endif
 
 #if (TRACE_SCHEDULING_ONLY == 0)
