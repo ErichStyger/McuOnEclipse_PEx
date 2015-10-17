@@ -247,6 +247,20 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
+<li><a name="WriteBlock">
+<b>WriteBlock</b></a>
+ - Write a block to the device.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte WriteBlock(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>data:void*</i> - Data write buffer</li>
+<li><i>dataSize:word</i> - no hint</li>
+<li><i>flags:byte</i> - flags for the transaction</li>
+<li><i>Return value:byte</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ReadBlock">
 <b>ReadBlock</b></a>
  - Read from the device a block.
@@ -261,16 +275,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="WriteBlock">
-<b>WriteBlock</b></a>
- - Write a block to the device.
+<li><a name="ReadBlockGeneric">
+<b>ReadBlockGeneric</b></a>
+ - Read from the device a block with using additional control and flags.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteBlock(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
+<br /><i>ANSIC prototype:</i> byte ReadBlockGeneric(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags, <i>ComponentName_</i>EnumStartFlags flagsStart, <i>ComponentName_</i>EnumAckFlags flagsAck)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:void*</i> - Data write buffer</li>
-<li><i>dataSize:word</i> - no hint</li>
-<li><i>flags:byte</i> - flags for the transaction</li>
+<li><i>data:void*</i> - Read buffer</li>
+<li><i>dataSize:word</i> - Size of read buffer</li>
+<li><i>flagsSend:byte</i> - flags for the send transaction</li>
+<li><i>flagsStart:byte</i> - Start flags</li>
+<li><i>flagsAck:byte</i> - Acknowledge flags</li>
 <li><i>Return value:byte</i> - Error code
 </li>
 </ul><br />

@@ -4,7 +4,7 @@
     <Name>GenericSWI2C</Name>
     <Description>Generic Software I2C</Description>
     <Author>Erich Styger, Marc Lindahl</Author>
-    <Version>01.007</Version>
+    <Version>01.015</Version>
     <Icon>GenericSWI2C</Icon>
     <TypesFiles>PE,GenericSWI2C\GenericSWI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright Freescale Semiconductor, 2014\nhttp      : www.freescale.com</Copyright>
+    <Copyright>(c) Copyright Freescale Semiconductor, 2014-2015\nhttp      : www.freescale.com\nChanged and extended: Erich Styger, 2014-2015</Copyright>
     <Category>CPU External Devices-Communication</Category>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -288,40 +288,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetAck</Name>
-        <Symbol>SetAck</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>The method sends ACK to the bus.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>Ack</ParName>
-          <ParType>Boolean</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>If acknowledge is high or low</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(bool Ack)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>InternalStop</Name>
         <Symbol>InternalStop</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -582,6 +548,101 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Rcv)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>RecvBlockCustom</Name>
+        <Symbol>RecvBlockCustom</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Same as RecvBlock(), but with additional flags to control the bus transfer.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>Ptr</ParName>
+          <ParType>pointer</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A pointer to the block space for received data</ParHint>
+          <ParUserDeclaration>void *Ptr</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Siz</ParName>
+          <ParType>16bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The size of the block</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>Rcv</ParName>
+          <ParType>16bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>A pointer to the number of actually received data</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>flagsStart</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Flags for start condition</ParHint>
+          <ParUserDeclaration>%'ModuleName'%.EnumStartFlags flagsStart</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>flagsAck</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Flags for Ack after last byte</ParHint>
+          <ParUserDeclaration>%'ModuleName'%.EnumAckFlags flagsAck</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SendAck</Name>
+        <Symbol>SendAck</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>The method sends ACK to the bus.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Ack</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>If acknowledge is high or low</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(bool Ack)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

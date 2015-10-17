@@ -53,7 +53,6 @@
 %define! Description_Read The method reads one byte of data from the bus.
 %define! Description_GetAck The method reads ACK from the bus.
 %define! Description_Write The method sends one byte of data to the bus.
-%define! Description_SetAck The method sends ACK to the bus.
 %define! Description_InternalStop The method generates the Stop condition on the bus.
 %-BW_INTERN_COMMENTS_END
 %-
@@ -106,8 +105,20 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-%-BW_CUSTOM_USERTYPE_END
+typedef enum %'ModuleName'%.EnumStartFlags_ {
+  %'ModuleName'%.SEND_START,        /* Start is sent */
+  %'ModuleName'%.DO_NOT_SEND_START, /* Start is not sent */
+} %'ModuleName'%.EnumStartFlags;
 
+typedef enum %'ModuleName'%.EnumAckFlags_ {
+  %'ModuleName'%.SEND_LAST_ACK,   /* Nack after last received byte is sent */
+  %'ModuleName'%.DO_NOT_LAST_ACK, /* Nack after last received byte is not sent */
+} %'ModuleName'%.EnumAckFlags;
+
+/* defines to be used for %'ModuleName'%.%SendAck(); */
+#define %'ModuleName'%.ACK         0U
+#define %'ModuleName'%.NOACK       1U
+%-BW_CUSTOM_USERTYPE_END
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
@@ -212,6 +223,29 @@ byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt);
 
 %endif %- SendBlockContinue
 %-BW_METHOD_END SendBlockContinue
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecvBlockCustom
+%ifdef RecvBlockCustom
+byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck);
+%define! ParPtr
+%define! ParSiz
+%define! ParRcv
+%define! ParflagsStart
+%define! ParflagsAck
+%define! RetVal
+%include Common\GenericSWI2CRecvBlockCustom.Inc
+
+%endif %- RecvBlockCustom
+%-BW_METHOD_END RecvBlockCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendAck
+%ifdef SendAck
+void %'ModuleName'%.%SendAck(bool Ack);
+%define! ParAck
+%include Common\GenericSWI2CSendAck.Inc
+
+%endif %- SendAck
+%-BW_METHOD_END SendAck
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -291,8 +325,6 @@ void %OnRxChar(void);
   #define %'ModuleName'%.OSYIELD() /* do nothing */
 #endif
 
-#define ACK         0U
-#define NOACK       1U
 #define OUTPUT      1U
 #define INPUT       0U
 #define WRITE       0U
@@ -328,9 +360,6 @@ static bool GetAck(void);
 %-INTERNAL_LOC_METHOD_BEG Write
 static void Write(byte Data);
 %-INTERNAL_LOC_METHOD_END Write
-%-INTERNAL_LOC_METHOD_BEG SetAck
-static void SetAck(bool Ack);
-%-INTERNAL_LOC_METHOD_END SetAck
 %-INTERNAL_LOC_METHOD_BEG InternalStop
 static void InternalStop(void);
 %-INTERNAL_LOC_METHOD_END InternalStop
@@ -450,10 +479,11 @@ static bool GetAck(void)
 
 %-INTERNAL_METHOD_END GetAck
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG SetAck
+%-BW_METHOD_BEGIN SendAck
+%ifdef SendAck
 %define! ParAck
-%include Common\GeneralInternalGlobal.inc (SetAck)
-static void SetAck(bool Ack)
+%include Common\GenericSWI2CSendAck.Inc
+void %'ModuleName'%.%SendAck(bool Ack)
 {
   word timeout;
 
@@ -480,7 +510,8 @@ static void SetAck(bool Ack)
   Delay();
 }
 
-%-INTERNAL_METHOD_END SetAck
+%endif %- SendAck
+%-BW_METHOD_END SendAck
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG InternalStop
 %include Common\GeneralInternalGlobal.inc (InternalStop)
@@ -661,7 +692,7 @@ byte %'ModuleName'%.%RecvChar(byte *Chr)
 %if defined(OnRxChar)
   %OnRxChar();
 %endif
-  SetAck((bool)NOACK);
+  %'ModuleName'%.SendAck((bool)%'ModuleName'%.NOACK);
   return ERR_OK;
 }
 
@@ -800,14 +831,16 @@ byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt)
 %endif %- SendBlockContinue
 %-BW_METHOD_END SendBlockContinue
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN RecvBlock
-%ifdef RecvBlock
+%-BW_METHOD_BEGIN RecvBlockCustom
+%ifdef RecvBlockCustom
 %define! ParPtr
 %define! ParSiz
 %define! ParRcv
+%define! ParflagsStart
+%define! ParflagsAck
 %define! RetVal
-%include Common\GenericSWI2CRecvBlock.Inc
-byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
+%include Common\GenericSWI2CRecvBlockCustom.Inc
+byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)
 {
   register word I;
   bool Acknowledge;
@@ -816,31 +849,33 @@ byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
 
   *Rcv = 0U;
   Trial = TRIALS;
-  do {
-    SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP */
-    SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
-    Delay();                     /* CLOCK HIGH PULSE + BUS FREE TIME */
-    /* check that we have a valid start condition: SDA needs to be high */
-    timeout = 65535U;
-    while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
-      timeout--;
-      %'ModuleName'%.OSYIELD();
-    }
-    Delay();
-    if (timeout==0) {
-      /* InternalStop(); */
-      return ERR_BUSY;
-    }
-    SDA_SetDir((bool)OUTPUT);
-    SDA_ClrVal();                /* START CONDITION */
-    Delay();                     /* START HOLD TIME */
-    SCL_SetDir((bool)OUTPUT);
-    SCL_ClrVal();                /* CLOCK LOW PULSE */
-    Delay();
-    Write((byte)(SlaveAddr + READ));
-    Acknowledge = GetAck();
-    --Trial;
-  } while ((Trial != 0U) && Acknowledge);
+  if (flagsStart == %'ModuleName'%.SEND_START){
+    do {
+      SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP */
+      SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
+      Delay();                     /* CLOCK HIGH PULSE + BUS FREE TIME */
+      /* check that we have a valid start condition: SDA needs to be high */
+      timeout = 65535U;
+      while((SDA_GetVal()==0U) && (timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
+        timeout--;
+        %'ModuleName'%.OSYIELD();
+      }
+      Delay();
+      if (timeout==0) {
+        /* InternalStop(); */
+        return ERR_BUSY;
+      }
+      SDA_SetDir((bool)OUTPUT);
+      SDA_ClrVal();                /* START CONDITION */
+      Delay();                     /* START HOLD TIME */
+      SCL_SetDir((bool)OUTPUT);
+      SCL_ClrVal();                /* CLOCK LOW PULSE */
+      Delay();
+      Write((byte)(SlaveAddr + READ));
+      Acknowledge = GetAck();
+      --Trial;
+    } while ((Trial != 0U) && Acknowledge);
+  } /* %'ModuleName'%.SEND_START */
   if (Acknowledge) {
 %if defined(OnNACK)
     %OnNACK();
@@ -869,13 +904,30 @@ byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
       return ERR_BUSY;
     }
     if (I == (Siz - 1U)) {
-      SetAck((bool)NOACK);
+      if(flagsAck == %'ModuleName'%.SEND_LAST_ACK){
+        %'ModuleName'%.SendAck((bool)%'ModuleName'%.NOACK);
+      }
     } else {
-      SetAck((bool)ACK);
+      %'ModuleName'%.SendAck((bool)%'ModuleName'%.ACK);
     }
     ++(*Rcv);
   }
   return ERR_OK;
+}
+
+%endif %- RecvBlockCustom
+%-BW_METHOD_END RecvBlockCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecvBlock
+%ifdef RecvBlock
+%define! ParPtr
+%define! ParSiz
+%define! ParRcv
+%define! RetVal
+%include Common\GenericSWI2CRecvBlock.Inc
+byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
+{
+  return %'ModuleName'%.%RecvBlockCustom(Ptr, Siz, Rcv, %'ModuleName'%.SEND_START, %'ModuleName'%.SEND_LAST_ACK);
 }
 
 %endif %- RecvBlock
@@ -928,7 +980,6 @@ byte %'ModuleName'%.%GetSelected(byte *Slv)
 
 %endif %- GetSelected
 %-BW_METHOD_END GetSelected
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

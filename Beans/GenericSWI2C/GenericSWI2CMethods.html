@@ -292,6 +292,32 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="RecvBlockCustom">
+<b>RecvBlockCustom</b></a>
+ - Same as RecvBlock(), but with additional flags to control the bus transfer.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> byte RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Ptr:void*</i> - A pointer to the block space for received data</li>
+<li><i>Siz:word</i> - The size of the block</li>
+<li><i>Rcv: Pointer to word</i> - A pointer to the number of actually received data</li>
+<li><i>flagsStart:byte</i> - Flags for start condition</li>
+<li><i>flagsAck:byte</i> - Flags for Ack after last byte</li>
+<li><i>Return value:byte</i> - Error code, possible codes:<br />ERR_OK - OK<br />ERR_SPEED - This device does not work in the active speed mode<br />ERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)<br />ERR_DISABLED - Device is disabled<br />ERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)
+</li>
+</ul><br />
+</li>
+<li><a name="SendAck">
+<b>SendAck</b></a>
+ - The method sends ACK to the bus.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SendAck(bool Ack)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Ack:bool</i> - If acknowledge is high or low</li>
+</ul><br />
+</li>
 <li><a name="SendStop">
 <b>SendStop</b></a>
  - When working as a MASTER, if the 'Automatic stop condition' property value is 'no', this method sends a valid stop  condition to the serial data line of the I2C bus to terminate the communication on the bus after using send methods. This method is enabled only if the component is in MASTER mode and 'Automatic stop condition' property value is 'no'

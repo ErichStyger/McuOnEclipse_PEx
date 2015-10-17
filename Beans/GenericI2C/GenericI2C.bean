@@ -4,7 +4,7 @@
     <Name>GenericI2C</Name>
     <Description>Generic high level I2C Driver on top of the I2C hardware driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.023</Version>
+    <Version>01.026</Version>
     <Icon>Generic2C</Icon>
     <TypesFiles>PE,GenericI2C\GenericI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2013-2014, all rights reserved.\nhttp          : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2013-2015, all rights reserved.\nhttp          : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>GI2C</Shortcut>
@@ -127,7 +127,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -156,7 +156,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -388,6 +388,53 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>WriteBlock</Name>
+        <Symbol>WriteBlock</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Write a block to the device.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>data</ParName>
+          <ParType>pointer</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Data write buffer</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dataSize</ParName>
+          <ParType>16bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>flags</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>flags for the transaction</ParHint>
+          <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>ReadBlock</Name>
         <Symbol>ReadBlock</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -435,10 +482,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>WriteBlock</Name>
-        <Symbol>WriteBlock</Symbol>
+        <Name>ReadBlockGeneric</Name>
+        <Symbol>ReadBlockGeneric</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Write a block to the device.</Hint>
+        <Hint>Read from the device a block with using additional control and flags.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -454,29 +501,43 @@
         <InDefinition>true</InDefinition>
         <ReturnType>8bit unsigned</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>3</ParamCount>
+        <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>data</ParName>
           <ParType>pointer</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Data write buffer</ParHint>
+          <ParHint>Read buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
           <ParType>16bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Size of read buffer</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>flags</ParName>
+          <ParName>flagsSend</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>flags for the transaction</ParHint>
+          <ParHint>flags for the send transaction</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>flagsStart</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Start flags</ParHint>
+          <ParUserDeclaration>%'ModuleName'_EnumStartFlags flagsStart</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>flagsAck</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Acknowledge flags</ParHint>
+          <ParUserDeclaration>%'ModuleName'_EnumAckFlags flagsAck</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
+          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
