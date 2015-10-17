@@ -418,6 +418,9 @@ uint8_t %'ModuleName'%.%Deinit(void)
 uint8_t %'ModuleName'%.%Init(void)
 {
   uint8_t err;
+%if %InheritedUSBInitEnabled='no'
+  void %InitUSBFunctionName(void); /* no inherited init component, use Init function name from properties */
+%endif
 
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
   %'ModuleName'%.usb_int_dis();
@@ -431,6 +434,9 @@ uint8_t %'ModuleName'%.%Init(void)
   #if 0 /* not needed with KDS V2.0.0? */
     MPU_CESR = 0; /* K22FN (Kinetis K2) has memory protection unit, disable it! */
   #endif
+%endif
+%if %InheritedUSBInitEnabled='no'
+  %InitUSBFunctionName(); /* no inherited init component, call Init function name from properties */
 %endif
   /* Initialize the USB interface */
 %if USBDeviceClass="CDC Device"

@@ -221,16 +221,8 @@ LI.EXP {
 <b>Freescale USB Stack Version</b></a> - Version of the Freescale USB Stack used
 </li>
 <li>
-<a name="LinkToUSBInitEnabled">
-<b>Link to USB Init</b></a> - If enabled, can specify a linked USB Initialization component instead of an inherited one.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="USBInitLinked">
-  <b>USB Init</b></a> - USB initialization
-  </li>
-</ul>
+<a name="InitUSBFunctionName">
+<b>Init USB Function</b></a> - Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.
 </li>
 <li>
 <a name="InheritedUSBInitEnabled">

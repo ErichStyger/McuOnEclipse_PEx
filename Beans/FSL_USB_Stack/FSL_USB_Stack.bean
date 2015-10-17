@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.039</Version>
+    <Version>01.041</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -51,36 +51,17 @@
       </TStrgItem>
     </Property>
     <Property>
-      <TBoolGrupItem>
-        <Name>Link to USB Init</Name>
-        <Symbol>LinkToUSBInitEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, can specify a linked USB Initialization component instead of an inherited one.</Hint>
+      <TStrgItem>
+        <Name>Init USB Function</Name>
+        <Symbol>InitUSBFunctionName</Symbol>
+        <Hint>Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>USB Init</Name>
-              <Symbol>USBInitLinked</Symbol>
-              <TypeSpec>FSL_USB_Stack\InitUSB1</TypeSpec>
-              <Hint>USB initialization</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
+        <EditLine>true</EditLine>
+        <DefaultValue>USB0_Init</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
     </Property>
     <Property>
       <TBoolGrupItem>
