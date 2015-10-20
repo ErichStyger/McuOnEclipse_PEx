@@ -99,6 +99,13 @@
   #define DISABLE_TICK_COUNTER()      LPTMR_PDD_EnableDevice(LPTMR0_BASE_PTR, PDD_DISABLE); LPTMR_PDD_DisableInterrupt(LPTMR0_BASE_PTR)
   #define RESET_TICK_COUNTER_VAL()    DISABLE_TICK_COUNTER()  /* CNR is reset when the LPTMR is disabled or counter register overflows */
   #define ACKNOWLEDGE_TICK_ISR()      LPTMR_PDD_ClearInterruptFlag(LPTMR0_BASE_PTR)
+  #if defined(LDD_ivIndex_INT_LPTimer) /* Earlier version of Processor Expert use this vector name */
+    #define configLOW_POWER_TIMER_VECTOR_NUMBER   LDD_ivIndex_INT_LPTimer
+  #elif defined(LDD_ivIndex_INT_LPTMR0) /* Newer versions (Processor Expert for Kinetis v3.0.1 uses this name */
+    #define configLOW_POWER_TIMER_VECTOR_NUMBER   LDD_ivIndex_INT_LPTMR0
+  #else
+  #error "Unknown Low Power Timer Interrupt Number?"
+  #endif
 #else
   #define ENABLE_TICK_COUNTER()       portNVIC_SYSTICK_CTRL_REG = portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SYSTICK_ENABLE_BIT
   #define DISABLE_TICK_COUNTER()      portNVIC_SYSTICK_CTRL_REG = portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT
@@ -1097,8 +1104,8 @@ void vPortInitTickTimer(void) {
   LPTMR_PDD_EnablePrescalerBypass(LPTMR0_BASE_PTR, LPTMR_PDD_BYPASS_ENABLED);
 
   /* set timer interrupt priority in IP[] and enable it in ISER[] */
-  NVIC_SetPriority(LDD_ivIndex_INT_LPTimer, configLIBRARY_LOWEST_INTERRUPT_PRIORITY);
-  NVIC_EnableIRQ(LDD_ivIndex_INT_LPTimer); /* enable IRQ in NVIC_ISER[] */
+  NVIC_SetPriority(configLOW_POWER_TIMER_VECTOR_NUMBER, configLIBRARY_LOWEST_INTERRUPT_PRIORITY);
+  NVIC_EnableIRQ(configLOW_POWER_TIMER_VECTOR_NUMBER); /* enable IRQ in NVIC_ISER[] */
 #else /* use normal SysTick Counter */
   *(portNVIC_SYSPRI3) |= portNVIC_SYSTICK_PRI; /* set priority of SysTick interrupt */
 #endif

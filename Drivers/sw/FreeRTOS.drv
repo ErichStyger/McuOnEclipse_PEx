@@ -198,6 +198,8 @@
 void vPortSVCHandler(void);
 void vPortPendSVHandler(void);
 void vPortTickHandler(void);
+
+/* Version of Processor Expert (variable VersionOfPEx): %PEversionDecimal */
 %-
 %if (defined(PEversionDecimal) && (PEversionDecimal >=0 '1282')) %- this is only supported with MCU 10.3
 %- Get interrupts info from CPU database
@@ -210,6 +212,8 @@ void vPortTickHandler(void);
        %define_prj %'vect' vPortSVCHandler
      %elif vect = 'ivINT_PendableSrvReq'
        %define_prj %'vect' vPortPendSVHandler
+     %elif defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes' & vect = 'ivINT_LPTMR0' %-(PEversionDecimal >=0 '1313')
+       %define_prj %'vect' vPortTickHandler
      %elif defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes' & vect = 'ivINT_LPTimer'
        %define_prj %'vect' vPortTickHandler
      %elif defined(useARMSysTickTimer) & useARMSysTickTimer='yes' & defined(useARMLowPowerTimer) & useARMLowPowerTimer='no' & vect = 'ivINT_SysTick'
