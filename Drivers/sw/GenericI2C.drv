@@ -545,7 +545,7 @@ byte %'ModuleName'%.%ReadBlockGeneric(void* data, word dataSize, %'ModuleName'_E
 %endif
 
 %if defined(LDD_I2C)
-  #error "functionality not implemented yet for I2C LDD */
+  #warning "functionality not implemented yet for I2C LDD. Disable this function to disable warning."
   for(;;) { /* breaks */
     %'ModuleName'%.deviceData.dataReceivedFlg = FALSE;
     res = %@LDD_I2C@'ModuleName'%.MasterReceiveBlock(%'ModuleName'%.deviceData.handle, data, dataSize, flags==%'ModuleName'_SEND_STOP?LDD_I2C_SEND_STOP:LDD_I2C_NO_SEND_STOP);
