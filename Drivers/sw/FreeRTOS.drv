@@ -1581,6 +1581,17 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- xTaskNotifyAndQueryFromISR
 %-BW_METHOD_END xTaskNotifyAndQueryFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyStateClear
+%ifdef xTaskNotifyStateClear
+#define %'ModuleName'%.%xTaskNotifyStateClear(xTask) \
+  xTaskNotifyStateClear(xTask)
+%define! ParxTask
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyStateClear.Inc
+
+%endif %- xTaskNotifyStateClear
+%-BW_METHOD_END xTaskNotifyStateClear
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3730,6 +3741,21 @@ BaseType_t %'ModuleName'%.%xTaskNotifyAndQueryFromISR(TaskHandle_t xTaskToNotify
 
 %endif %- xTaskNotifyAndQueryFromISR
 %-BW_METHOD_END xTaskNotifyAndQueryFromISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskNotifyStateClear
+%ifdef xTaskNotifyStateClear
+%define! ParxTask
+%define! RetVal
+%include Common\FreeRTOSxTaskNotifyStateClear.Inc
+/*
+BaseType_t %'ModuleName'%.%xTaskNotifyStateClear(TaskHandle_t xTask)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskNotifyStateClear
+%-BW_METHOD_END xTaskNotifyStateClear
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

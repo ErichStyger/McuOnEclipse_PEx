@@ -1490,6 +1490,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xTaskNotifyStateClear">
+<b>xTaskNotifyStateClear</b></a>
+ -  [If you are using RTOS task notifications to implement binary or counting semaphore type behaviour then use the simpler xTaskNotifyGive() API function instead of xTaskNotify()]<br /><br /> If the notification state of the task referenced by the handle xTask is eNotified, then set the task's notification state to eNotWaitingNotification. The task's notification value is not altered.  Set xTask to NULL to clear the notification state of the calling task.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTaskNotifyStateClear(TaskHandle_t xTask)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTask:TaskHandle_t</i> - The handle of the RTOS task. Use NULL for using the calling task.</li>
+<li><i>Return value:BaseType_t</i> - pdPASS is returned in all cases other than when eAction is set to eSetValueWithoutOverwrite and the subject task's notification value cannot be updated because the subject task already had a notification pending. 
+</li>
+</ul><br />
+</li>
 <li><a name="vTaskSetThreadLocalStoragePointer">
 <b>vTaskSetThreadLocalStoragePointer</b></a>
  - Only enabled if configNUM_THREAD_LOCAL_STORAGE_POINTERS is &gt;0.

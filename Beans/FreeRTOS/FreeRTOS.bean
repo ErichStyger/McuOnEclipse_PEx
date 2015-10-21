@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.440</Version>
+    <Version>01.444</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -45,7 +45,7 @@
         <Hint>Identifies the RTOS version</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V8.2.2</DefaultValue>
+        <DefaultValue>V8.2.3</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -762,24 +762,6 @@ Mapping for number to vector for the MCF52259:\n
                     <CanDelete>false</CanDelete>
                     <IconPopup>false</IconPopup>
                   </TEnumItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Floating Point Support</Name>
-                    <Symbol>M4FFloatingPointSupport</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>If enabled, the port is supporting the different stack frame created by the Cortex M4F</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>false</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
                 </GrupItem>
                 <GrupItem>
                   <TIntgItem>
@@ -6141,6 +6123,42 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>BaseType_t #M#_#C#(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, uint32_t *pulNotificationValue, TickType_t xTicksToWait)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xTaskNotifyStateClear</Name>
+        <Symbol>xTaskNotifyStateClear</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint> [If you are using RTOS task notifications to implement binary or counting semaphore type behaviour then use the simpler xTaskNotifyGive() API function instead of xTaskNotify()]\n
+\n
+ If the notification state of the task referenced by the handle xTask is eNotified, then set the task's notification state to eNotWaitingNotification. The task's notification value is not altered.  Set xTask to NULL to clear the notification state of the calling task.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>BaseType_t</ReturnType>
+        <RetHint>pdPASS is returned in all cases other than when eAction is set to eSetValueWithoutOverwrite and the subject task's notification value cannot be updated because the subject task already had a notification pending. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xTask</ParName>
+          <ParType>TaskHandle_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The handle of the RTOS task. Use NULL for using the calling task.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>BaseType_t #M#_#C#(TaskHandle_t xTask)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
