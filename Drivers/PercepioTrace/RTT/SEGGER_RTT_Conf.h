@@ -27,11 +27,22 @@ Purpose : Implementation of SEGGER real-time terminal which allows
 #define SEGGER_RTT_MAX_NUM_UP_BUFFERS             (2)     // Max. number of up-buffers (T->H) available on this target    (Default: 2)
 #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (2)     // Max. number of down-buffers (H->T) available on this target  (Default: 2)
 
+%if defined(RTTBufferSizeUp)
+#define BUFFER_SIZE_UP                            (%RTTBufferSizeUp)  // Size of the buffer for terminal output of target, up to host (Default: 1k)
+%else
 #define BUFFER_SIZE_UP                            (10 * 1024)  // Size of the buffer for terminal output of target, up to host (Default: 1k)
+%endif
+%if defined(RTTBufferSizeDown)
+#define BUFFER_SIZE_DOWN                          (%RTTBufferSizeDown)    // Size of the buffer for terminal input to target from host (Usually keyboard input) (Default: 16)
+%else
 #define BUFFER_SIZE_DOWN                          (32)    // Size of the buffer for terminal input to target from host (Usually keyboard input) (Default: 16)
+%endif
 
+%if defined(RTTBufferSizePrintf)
+#define SEGGER_RTT_PRINTF_BUFFER_SIZE             (%RTTBufferSizePrintf)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
+%else
 #define SEGGER_RTT_PRINTF_BUFFER_SIZE             (64)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
-
+%endif
 //
 // Target is not allowed to perform other RTT operations while string still has not been stored completely.
 // Otherwise we would probably end up with a mixed string in the buffer.
