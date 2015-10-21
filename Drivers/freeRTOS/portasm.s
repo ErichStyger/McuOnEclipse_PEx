@@ -4,7 +4,7 @@
 %if ((%configCOMPILER='automatic') & (%Compiler == "GNUC")) | (%configCOMPILER='configCOMPILER_ARM_GCC')
 /* file is intentionally empty as not needed for this GNU gcc FreeRTOS port */
 /*
-    FreeRTOS V8.2.2 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -13,7 +13,7 @@
 
     FreeRTOS is free software; you can redistribute it and/or modify it under
     the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
 
 	***************************************************************************
     >>!   NOTE: The modification to the GPL is included to allow you to     !<<
@@ -75,7 +75,7 @@
 %---------------------------------------------------------------------------------------
 %if ((%configCOMPILER='automatic') & (%Compiler=="ARM_CC")) | (%configCOMPILER='configCOMPILER_ARM_KEIL')
 ;
-;    FreeRTOS V8.2.2 - Copyright (C) 2015 Real Time Engineers Ltd.
+;    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
 ;    All rights reserved
 ;
 ;    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -98,7 +98,7 @@
 ;
 ;    FreeRTOS is free software; you can redistribute it and/or modify it under
 ;    the terms of the GNU General Public License (version 2) as published by the
-;    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+;    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
 ;
 ;    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
 ;    >>!   distribute a combined work that includes FreeRTOS without being   !<<
@@ -235,7 +235,7 @@ _vPortStartFirstTask:
 %if ((%configCOMPILER='automatic') & (%Compiler="IARARM")) | (%configCOMPILER='configCOMPILER_ARM_IAR')
 /* IAR ARM Compiler */
 /*
-    FreeRTOS V8.2.2 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -258,7 +258,7 @@ _vPortStartFirstTask:
 
     FreeRTOS is free software; you can redistribute it and/or modify it under
     the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
 
     >>!   NOTE: The modification to the GPL is included to allow you to     !<<
     >>!   distribute a combined work that includes FreeRTOS without being   !<<
@@ -541,7 +541,7 @@ vPortEnableVFP:
 %if ((%configCOMPILER='automatic') & (%Compiler="CodeWarriorARM")) | (%configCOMPILER='configCOMPILER_ARM_FSL')
 /* legacy Freescale ARM compiler */
 /*
-    FreeRTOS V8.2.2 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -550,7 +550,7 @@ vPortEnableVFP:
 
     FreeRTOS is free software; you can redistribute it and/or modify it under
     the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
 
 	***************************************************************************
     >>!   NOTE: The modification to the GPL is included to allow you to     !<<
