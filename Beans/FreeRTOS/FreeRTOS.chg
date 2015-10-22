@@ -191,4 +191,11 @@
   %set xQueueSelectFromSetFromISR Selection never
 %endif
 
+%if defined(MemoryScheme) & %MemoryScheme='Scheme3'
+  %- malloc scheme
+  %set TotalHeapSize ReadOnly yes
+%else
+  %set TotalHeapSize ReadOnly no
+%endif
+
 %endif %- CPUfamily

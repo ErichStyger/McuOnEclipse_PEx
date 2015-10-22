@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.444</Version>
+    <Version>01.445</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1585,7 +1585,7 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
             <TIntgItem>
               <Name>Total Heap Size</Name>
               <Symbol>TotalHeapSize</Symbol>
-              <Hint>The total amount of RAM available to the kernel. This value is used by the memory allocation schemes.</Hint>
+              <Hint>The total amount of RAM available to the kernel. This value is used by the memory allocation schemes. Value not used if using Scheme3 (malloc/free).</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>2048</DefaultValue>
