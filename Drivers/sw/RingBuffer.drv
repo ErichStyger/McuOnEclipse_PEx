@@ -201,6 +201,15 @@ uint8_t %'ModuleName'%.%Peek(%'ModuleName'_BufSizeType index, %'ModuleName'_Elem
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Delete
+%ifdef Delete
+uint8_t %'ModuleName'%.%Delete(void);
+%define! RetVal
+%include Common\RingBufferDelete.Inc
+
+%endif %- Delete
+%-BW_METHOD_END Delete
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -461,6 +470,37 @@ void %'ModuleName'%.%Deinit(void)
 */
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Delete
+%ifdef Delete
+%define! RetVal
+%include Common\RingBufferDelete.Inc
+uint8_t %'ModuleName'%.%Delete(void)
+{
+  uint8_t res = ERR_OK;
+  %'ModuleName'%.DEFINE_CRITICAL();
+
+  %'ModuleName'%.ENTER_CRITICAL();
+  if (%'ModuleName'%.inSize==0) {
+    res = ERR_RXEMPTY;
+  } else {
+    %'ModuleName'%.inSize--;
+    %'ModuleName'%.outIdx++;
+    if (%'ModuleName'%.outIdx==%'ModuleName'%.BUF_SIZE) {
+      %'ModuleName'%.outIdx = 0;
+    }
+  }
+  %'ModuleName'%.EXIT_CRITICAL();
+%if defined(OnBufferEmpty)
+  if (res==ERR_RXEMPTY) {
+    %OnBufferEmpty(); /* call user event */
+  }
+%endif
+  return res;
+}
+
+%endif %- Delete
+%-BW_METHOD_END Delete
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
