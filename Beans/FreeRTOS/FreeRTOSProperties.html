@@ -577,6 +577,10 @@ The following items are available only if the group is enabled (the value is "En
   <b>Preemptive</b></a> - Set to 1 to use the preemptive kernel, or 0 to use the cooperative kernel. (configUSE_PREEMPTION flag)
   </li>
   <li>
+  <a name="UseTimeSlicing">
+  <b>Time Slicing</b></a> - Set to 1 (default) time will be time slices among the ready high priority tasks of same priority (configUSE_TIME_SLICING flag)
+  </li>
+  <li>
   <a name="UseCoroutines">
   <b>Use Co-Routines</b></a> - Set to 1 to include co-routine functionality in the build, or 0 to omit co-routine functionality from the build. To include co-routines croutine.c must be included in the project. 
   </li>
