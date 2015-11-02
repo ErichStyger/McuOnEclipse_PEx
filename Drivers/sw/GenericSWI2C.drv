@@ -849,7 +849,7 @@ byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleNam
 
   *Rcv = 0U;
   Trial = TRIALS;
-  if (flagsStart == %'ModuleName'%.SEND_START){
+  if (flagsStart == %'ModuleName'%.SEND_START) {
     do {
       SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP */
       SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
@@ -875,20 +875,20 @@ byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleNam
       Acknowledge = GetAck();
       --Trial;
     } while ((Trial != 0U) && Acknowledge);
-  } /* %'ModuleName'%.SEND_START */
-  if (Acknowledge) {
+    if (Acknowledge) {
 %if defined(OnNACK)
-    %OnNACK();
+      %OnNACK();
 %endif
-    /* SCL_SetDir((bool)OUTPUT); */
-    /* SCL_ClrVal(); */               /* CLOCK LOW PULSE */
-    /* InternalStop(); */
-    return ERR_BUSY;
-  } else {
-    SCL_SetDir((bool)OUTPUT);
-    SCL_ClrVal();                /* CLOCK LOW PULSE */
-    Delay();
-  }
+      /* SCL_SetDir((bool)OUTPUT); */
+      /* SCL_ClrVal(); */               /* CLOCK LOW PULSE */
+      /* InternalStop(); */
+      return ERR_BUSY;
+    } else {
+      SCL_SetDir((bool)OUTPUT);
+      SCL_ClrVal();                /* CLOCK LOW PULSE */
+      Delay();
+    }
+  } /* %'ModuleName'%.SEND_START */
   for (I = 0U; I < Siz; I++) {
     *((byte *)Ptr + I) = Read();
 %if defined(OnRxChar)
