@@ -716,6 +716,10 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
       break;
     }
 %endif
+%if defined(SendDataBlockWaitms) & SendDataBlockWaitms >. '0'
+    %@Wait@'ModuleName'%.WaitOSms(%SendDataBlockWaitms); /* wait some time */
+  }
+%endif
   }
 %if defined(Timeout) & %AppTaskTimeout >. "0"
   %@Timeout@'ModuleName'%.LeaveCounter(timeout); /* return timeout counter */

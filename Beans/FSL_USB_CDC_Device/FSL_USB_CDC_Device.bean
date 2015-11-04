@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.053</Version>
+    <Version>01.056</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -233,39 +233,70 @@
       </TInhrItem>
     </Property>
     <Property>
-      <TBoolGrupItem>
-        <Name>Use Timeout</Name>
-        <Symbol>TimeoutEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, the application task implements a timeout so it does not block.</Hint>
+      <TGrupItem>
+        <Name>SendDataBlock</Name>
+        <Symbol>SendBlockConfig</Symbol>
+        <Hint>SendDataBlock will wait as long as a transaction is going on. With this setting, the waiting loop can be configured.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
+        <Description/>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
-            <TInhrLinkItem>
-              <Name>Timeout</Name>
-              <Symbol>Timeout</Symbol>
-              <TypeSpec>FSL_USB_CDC_Device\Timeout</TypeSpec>
-              <Hint>Interface to timeout module. See the timeout documentation how to use it.</Hint>
+            <TBoolGrupItem>
+              <Name>Use Timeout</Name>
+              <Symbol>TimeoutEnabled</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>If enabled, the SendDataBlock() implements a timeout so it does not block.</Hint>
               <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
+              <Description>Disabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>false</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>Timeout</Name>
+                    <Symbol>Timeout</Symbol>
+                    <TypeSpec>FSL_USB_CDC_Device\Timeout</TypeSpec>
+                    <Hint>Interface to timeout module. See the timeout documentation how to use it.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>App Task Timeout (ms)</Name>
+                    <Symbol>AppTaskTimeout</Symbol>
+                    <Hint>The App_Task() is sending data to the CDC. However, if there is no terminal open on the host, then the App_Task() function could be stalled.  A timeout can be specified here. Using a zero value disables the timeout.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>App Task Timeout (ms)</Name>
-              <Symbol>AppTaskTimeout</Symbol>
-              <Hint>The App_Task() is sending data to the CDC. However, if there is no terminal open on the host, then the App_Task() function could be stalled.  A timeout can be specified here. Using a zero value disables the timeout.</Hint>
+              <Name>Waiting time (ms)</Name>
+              <Symbol>SendDataBlockWaitms</Symbol>
+              <Hint>Time to wait wait with WaitOSms() and polling if still a transaction is going on. Use a value of zero to diasble waiting.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>0</DefaultValue>
@@ -278,8 +309,22 @@
               <RuntimeProperty>false</RuntimeProperty>
             </TIntgItem>
           </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Wait</Name>
+              <Symbol>Wait</Symbol>
+              <TypeSpec>FSL_USB_CDC_Device\Wait</TypeSpec>
+              <Hint>Interface to waiting routines</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
         </Children>
-      </TBoolGrupItem>
+      </TGrupItem>
     </Property>
     <Property>
       <TGrupItem>
