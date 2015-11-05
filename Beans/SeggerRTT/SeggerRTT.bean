@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bean>
+  <Header>
+    <Name>SeggerRTT</Name>
+    <Description>Segger RTT (Real Time Terminal)</Description>
+    <Author>Erich Styger</Author>
+    <Version>01.004</Version>
+    <Icon/>
+    <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
+    <FileVersion>6</FileVersion>
+  </Header>
+  <Options>
+    <BW_HelpType>Basic</BW_HelpType>
+    <BW_HelpFiles>,Properties,Methods,Events</BW_HelpFiles>
+    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
+    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
+    <BW_DetailedHelp>yes</BW_DetailedHelp>
+    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedCns>0</BW_NeedCns>
+    <BeanStatus>PROPOSAL</BeanStatus>
+    <Copyright>(c) Copyright Segger, 2015\nhttp      : www.segger.com</Copyright>
+    <Category>SW-User Components</Category>
+    <DemoDriver>no</DemoDriver>
+    <Shortcut>RTT</Shortcut>
+    <BeanLevel>High</BeanLevel>
+  </Options>
+  <PropertyList>
+    <Property>
+      <TCompNameItem>
+        <Name>Component name</Name>
+        <Symbol>DeviceName</Symbol>
+        <Hint>Name of the component.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue/>
+      </TCompNameItem>
+    </Property>
+  </PropertyList>
+  <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>Read</Name>
+        <Symbol>Read</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Read from buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>32bit signed</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>BufferIndex</ParName>
+          <ParType>32bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer</ParHint>
+          <ParUserDeclaration>const char* pBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>BufferSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Number of bytes to write</ParHint>
+          <ParUserDeclaration>unsigned NumBytes</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>long #M#_#C#(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Write</Name>
+        <Symbol>Write</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Write to buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>32bit signed</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>BufferIndex</ParName>
+          <ParType>32bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer</ParHint>
+          <ParUserDeclaration>char* pBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>BufferSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of buffer</ParHint>
+          <ParUserDeclaration>unsigned BufferSize</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>long #M#_#C#(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>WriteString</Name>
+        <Symbol>WriteString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Write to buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>32bit signed</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>s</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to </ParHint>
+          <ParUserDeclaration>const char* s</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>long #M#_#C#(const char* s)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+  </MethodList>
+  <Links>
+    <EmptySection_DummyValue/>
+  </Links>
+  <Revisions>
+    <RevisionVersion>2</RevisionVersion>
+  </Revisions>
+</Bean>
