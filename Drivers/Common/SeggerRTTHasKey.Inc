@@ -3,14 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (HasKey)
 %;**     Description :
-%;**         Write to buffer
-%include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
+%;**         Checks if at least one character for reading is available in
+%;**         the SEGGER RTT buffer
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - 0: No characters are available to read; 1:
+%;** %>29 At least one character is available.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -3,14 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (GetKey)
 %;**     Description :
-%;**         Write to buffer
-%include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
+%;**         Returns a character/key
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - character code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

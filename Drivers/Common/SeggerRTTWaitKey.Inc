@@ -3,14 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (WaitKey)
 %;**     Description :
-%;**         Write to buffer
-%include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
+%;**         Waits for a key and returns it.
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - >=0    Character which has been read.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

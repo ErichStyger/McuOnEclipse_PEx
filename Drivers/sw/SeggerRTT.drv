@@ -90,6 +90,7 @@
 %-BW_METHOD_MACROS_END
 
 #include "%ProcessorModule.h"
+#include "SEGGER_RTT.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -109,7 +110,9 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Read
 %ifdef Read
-long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes);
+#define %'ModuleName'%.%Read(BufferIndex, pBuffer, NumBytes) \
+  SEGGER_RTT_Read(BufferIndex, pBuffer, NumBytes)
+
 %define! ParBufferIndex
 %define! ParpBuffer
 %define! ParBufferSize
@@ -121,7 +124,9 @@ long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned Nu
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Write
 %ifdef Write
-long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize);
+#define %'ModuleName'%.%Write(BufferIndex, pBuffer, BufferSize) \
+  SEGGER_RTT_Write(BufferIndex, pBuffer, BufferSize)
+
 %define! ParBufferIndex
 %define! ParpBuffer
 %define! ParBufferSize
@@ -133,13 +138,76 @@ long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferS
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteString
 %ifdef WriteString
-long %'ModuleName'%.%WriteString(const char* s);
+#define %'ModuleName'%.%WriteString(s) \
+  SEGGER_RTT_WriteString(s)
+
 %define! Pars
+%define! ParBufferIndex
 %define! RetVal
 %include Common\SeggerRTTWriteString.Inc
 
 %endif %- WriteString
 %-BW_METHOD_END WriteString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetKey
+%ifdef GetKey
+#define %'ModuleName'%.%GetKey() \
+  SEGGER_RTT_GetKey()
+
+%define! RetVal
+%include Common\SeggerRTTGetKey.Inc
+
+%endif %- GetKey
+%-BW_METHOD_END GetKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WaitKey
+%ifdef WaitKey
+#define %'ModuleName'%.%WaitKey() \
+  SEGGER_RTT_WaitKey()
+
+%define! RetVal
+%include Common\SeggerRTTWaitKey.Inc
+
+%endif %- WaitKey
+%-BW_METHOD_END WaitKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN HasKey
+%ifdef HasKey
+#define %'ModuleName'%.%HasKey() \
+  SEGGER_RTT_HasKey()
+
+%define! RetVal
+%include Common\SeggerRTTHasKey.Inc
+
+%endif %- HasKey
+%-BW_METHOD_END HasKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOKeyPressed
+%ifdef StdIOKeyPressed
+bool %'ModuleName'%.%StdIOKeyPressed(void);
+%define! RetVal
+%include Common\SeggerRTTStdIOKeyPressed.Inc
+
+%endif %- StdIOKeyPressed
+%-BW_METHOD_END StdIOKeyPressed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOReadChar
+%ifdef StdIOReadChar
+void %'ModuleName'%.%StdIOReadChar(uint8_t *c);
+%define! Parc
+%include Common\SeggerRTTStdIOReadChar.Inc
+
+%endif %- StdIOReadChar
+%-BW_METHOD_END StdIOReadChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOSendChar
+%ifdef StdIOSendChar
+void %'ModuleName'%.%StdIOSendChar(uint8_t ch);
+%define! Parch
+%include Common\SeggerRTTStdIOSendChar.Inc
+
+%endif %- StdIOSendChar
+%-BW_METHOD_END StdIOSendChar
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -186,10 +254,12 @@ long %'ModuleName'%.%WriteString(const char* s);
 %define! ParBufferSize
 %define! RetVal
 %include Common\SeggerRTTRead.Inc
+/**
 long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  Implemented as macro in the header file.
 }
+*/
 
 %endif %- Read
 %-BW_METHOD_END Read
@@ -201,10 +271,12 @@ long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned Nu
 %define! ParBufferSize
 %define! RetVal
 %include Common\SeggerRTTWrite.Inc
+/**
 long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  Implemented as macro in the header file.
 }
+*/
 
 %endif %- Write
 %-BW_METHOD_END Write
@@ -212,15 +284,102 @@ long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferS
 %-BW_METHOD_BEGIN WriteString
 %ifdef WriteString
 %define! Pars
+%define! ParBufferIndex
 %define! RetVal
 %include Common\SeggerRTTWriteString.Inc
-long %'ModuleName'%.%WriteString(const char* s)
+/**
+long %'ModuleName'%.%WriteString(unsigned BufferIndex, const char* s)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  Implemented as macro in the header file.
 }
+*/
 
 %endif %- WriteString
 %-BW_METHOD_END WriteString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetKey
+%ifdef GetKey
+%define! RetVal
+%include Common\SeggerRTTGetKey.Inc
+/**
+dword %'ModuleName'%.%GetKey(void)
+{
+  Implemented as macro in the header file.
+}
+*/
+
+%endif %- GetKey
+%-BW_METHOD_END GetKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WaitKey
+%ifdef WaitKey
+%define! RetVal
+%include Common\SeggerRTTWaitKey.Inc
+/**
+long %'ModuleName'%.%WaitKey(void)
+{
+  Implemented as macro in the header file.
+}
+*/
+
+%endif %- WaitKey
+%-BW_METHOD_END WaitKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN HasKey
+%ifdef HasKey
+%define! RetVal
+%include Common\SeggerRTTHasKey.Inc
+/**
+long %'ModuleName'%.%HasKey(void)
+{
+  Implemented as macro in the header file.
+}
+*/
+
+%endif %- HasKey
+%-BW_METHOD_END HasKey
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOKeyPressed
+%ifdef StdIOKeyPressed
+%define! RetVal
+%include Common\SeggerRTTStdIOKeyPressed.Inc
+bool %'ModuleName'%.%StdIOKeyPressed(void)
+{
+  return %'ModuleName'%.%HasKey()!=0;
+}
+
+%endif %- StdIOKeyPressed
+%-BW_METHOD_END StdIOKeyPressed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOReadChar
+%ifdef StdIOReadChar
+%define! Parc
+%include Common\SeggerRTTStdIOReadChar.Inc
+void %'ModuleName'%.%StdIOReadChar(uint8_t *c)
+{
+  int res;
+
+  res = %'ModuleName'%.%GetKey();
+  if (res==-1) { /* no character present */
+    return '\0';
+  }
+  *c = (uint8_t)res; /* return character */
+}
+
+%endif %- StdIOReadChar
+%-BW_METHOD_END StdIOReadChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StdIOSendChar
+%ifdef StdIOSendChar
+%define! Parch
+%include Common\SeggerRTTStdIOSendChar.Inc
+void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
+{
+  (void)%'ModuleName'%.%Write(0, &ch, 1);
+}
+
+%endif %- StdIOSendChar
+%-BW_METHOD_END StdIOSendChar
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

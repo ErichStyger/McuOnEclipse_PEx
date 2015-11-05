@@ -239,11 +239,76 @@ LI.EXP {
  - Write to buffer
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> long WriteString(const char* s)<br />
+<br /><i>ANSIC prototype:</i> long WriteString(unsigned BufferIndex, const char* s)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>BufferIndex:byte</i> - Buffer to be used</li>
 <li><i>s: Pointer to byte</i> - Pointer to </li>
 <li><i>Return value:long</i> - Error code
 </li>
+</ul><br />
+</li>
+<li><a name="GetKey">
+<b>GetKey</b></a>
+ - Returns a character/key
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> dword GetKey(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:dword</i> - character code
+</li>
+</ul><br />
+</li>
+<li><a name="WaitKey">
+<b>WaitKey</b></a>
+ - Waits for a key and returns it.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> long WaitKey(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:long</i> - &gt;=0    Character which has been read.
+</li>
+</ul><br />
+</li>
+<li><a name="HasKey">
+<b>HasKey</b></a>
+ - Checks if at least one character for reading is available in the SEGGER RTT buffer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> long HasKey(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:long</i> - 0: No characters are available to read; 1: At least one character is available.
+</li>
+</ul><br />
+</li>
+<li><a name="StdIOKeyPressed">
+<b>StdIOKeyPressed</b></a>
+ - StdIO handler for Shell
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool StdIOKeyPressed(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:bool</i> - True if there are characters in teh input buffer
+</li>
+</ul><br />
+</li>
+<li><a name="StdIOReadChar">
+<b>StdIOReadChar</b></a>
+ - StdIO Handler for reading a character. It returns a zero byte if there is no character in input buffer.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void StdIOReadChar(uint8_t *c)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>c: Pointer to uint8_t</i> - Pointer to where to store the received character</li>
+</ul><br />
+</li>
+<li><a name="StdIOSendChar">
+<b>StdIOSendChar</b></a>
+ - StdIO handler to sends a character.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void StdIOSendChar(uint8_t ch)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>ch:uint8_t</i> - Character to send</li>
 </ul><br />
 </li>
 

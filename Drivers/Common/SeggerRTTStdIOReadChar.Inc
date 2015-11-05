@@ -3,14 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (StdIOReadChar)
 %;**     Description :
-%;**         Write to buffer
+%;**         StdIO Handler for reading a character. It returns a zero
+%;**         byte if there is no character in input buffer.
 %include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
-%;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**       * c%Parc %>27 - Pointer to where to store the received
+%;** %>29 character
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

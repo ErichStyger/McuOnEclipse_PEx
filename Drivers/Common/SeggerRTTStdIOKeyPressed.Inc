@@ -3,14 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (StdIOKeyPressed)
 %;**     Description :
-%;**         Write to buffer
-%include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
+%;**         StdIO handler for Shell
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - True if there are characters in teh input
+%;** %>29 buffer
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

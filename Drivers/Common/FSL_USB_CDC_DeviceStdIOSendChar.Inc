@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         StdIO handler to sends a character.
 %include Common\GeneralParameters.inc(27)
-%;**         ch%Parch %>27 - 
+%;**         ch%Parch %>27 - Character to send.
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

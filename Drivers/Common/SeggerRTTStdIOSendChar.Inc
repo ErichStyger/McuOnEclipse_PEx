@@ -3,14 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (StdIOSendChar)
 %;**     Description :
-%;**         Write to buffer
+%;**         StdIO handler to sends a character.
 %include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer to be used
-%;**       * s%Pars %>27 - Pointer to 
-%;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ch%Parch %>27 - Character to send
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
