@@ -21,18 +21,6 @@
 %FILE %'DirRel_Code'trcConfig.h
 %include PercepioTrace\RTT\trcConfig.h
 
-%FILE %'DirRel_Code'SEGGER_RTT_Printf.c
-%include PercepioTrace\RTT\SEGGER_RTT_Printf.c
-
-%FILE %'DirRel_Code'SEGGER_RTT_Conf.h
-%include PercepioTrace\RTT\SEGGER_RTT_conf.h
-
-%FILE %'DirRel_Code'SEGGER_RTT.h
-%include PercepioTrace\RTT\SEGGER_RTT.h
-
-%FILE %'DirRel_Code'SEGGER_RTT.c
-%include PercepioTrace\RTT\SEGGER_RTT.c
-
 %FILE %'DirRel_Code'trcPagedEventBuffer.c
 %include PercepioTrace\RTT\trcPagedEventBuffer.c
 
