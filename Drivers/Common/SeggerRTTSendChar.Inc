@@ -3,16 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (SendChar)
 %;**     Description :
-%;**         Write to buffer
+%;**         Sends a character to channel 0.
 %include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer/channel to be used.
-%;** %>29 0 for terminal.
-%;**       * s%Pars %>27 - Pointer to 
+%;**         ch%Parch %>27 - Character to send
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Number of bytes which have been stored in
-%;** %>29 the "Up"-buffer.
+%;**         ---%RetVal %>27 - Error code. ERR_OK if character has been
+%;** %>29 sent, ERR_TXFULL otherwise.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -211,12 +211,12 @@ LI.EXP {
  - Read from buffer
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> long Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)<br />
+<br /><i>ANSIC prototype:</i> int Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>BufferIndex:dword</i> - no hint</li>
+<li><i>BufferIndex:dword</i> - Buffer/channel to be used. 0 for terminal.</li>
 <li><i>pBuffer: Pointer to byte</i> - Pointer to buffer</li>
 <li><i>BufferSize:byte</i> - Number of bytes to write</li>
-<li><i>Return value:long</i> - Error code
+<li><i>Return value:int</i> - Number of bytes that have been read
 </li>
 </ul><br />
 </li>
@@ -225,12 +225,12 @@ LI.EXP {
  - Write to buffer
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> long Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)<br />
+<br /><i>ANSIC prototype:</i> int Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>BufferIndex:dword</i> - no hint</li>
+<li><i>BufferIndex:dword</i> - Buffer/channel to be used. 0 for terminal.</li>
 <li><i>pBuffer: Pointer to byte</i> - Pointer to buffer</li>
 <li><i>BufferSize:byte</i> - Size of buffer</li>
-<li><i>Return value:long</i> - Error code
+<li><i>Return value:int</i> - Number of bytes which have been written to the up buffer
 </li>
 </ul><br />
 </li>
@@ -239,11 +239,11 @@ LI.EXP {
  - Write to buffer
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> long WriteString(unsigned BufferIndex, const char* s)<br />
+<br /><i>ANSIC prototype:</i> int WriteString(unsigned BufferIndex, const char* s)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>BufferIndex:byte</i> - Buffer to be used</li>
+<li><i>BufferIndex:byte</i> - Buffer/channel to be used. 0 for terminal.</li>
 <li><i>s: Pointer to byte</i> - Pointer to </li>
-<li><i>Return value:long</i> - Error code
+<li><i>Return value:int</i> - Number of bytes which have been stored in the &quot;Up&quot;-buffer.
 </li>
 </ul><br />
 </li>
@@ -277,6 +277,41 @@ LI.EXP {
 <br /><i>ANSIC prototype:</i> long HasKey(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Return value:long</i> - 0: No characters are available to read; 1: At least one character is available.
+</li>
+</ul><br />
+</li>
+<li><a name="RecvChar">
+<b>RecvChar</b></a>
+ - Receives a character from channel 0. Returns ERR_RXEMPTY if no character available
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t RecvChar(uint8_t *c)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>c: Pointer to uint8_t</i> - Pointer to where to store the received character</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SendChar">
+<b>SendChar</b></a>
+ - Sends a character to channel 0.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SendChar(uint8_t ch)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>ch:uint8_t</i> - Character to send</li>
+<li><i>Return value:uint8_t</i> - Error code. ERR_OK if character has been sent, ERR_TXFULL otherwise.
+</li>
+</ul><br />
+</li>
+<li><a name="GetCharsInRxBuf">
+<b>GetCharsInRxBuf</b></a>
+ - Returns the number of characters in the receive buffer.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint16_t GetCharsInRxBuf(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint16_t</i> - Number of characters in the input buffer, zero for none available.
 </li>
 </ul><br />
 </li>

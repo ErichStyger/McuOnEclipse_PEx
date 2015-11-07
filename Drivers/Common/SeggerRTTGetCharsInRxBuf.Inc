@@ -3,16 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (GetCharsInRxBuf)
 %;**     Description :
-%;**         Write to buffer
-%include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer/channel to be used.
-%;** %>29 0 for terminal.
-%;**       * s%Pars %>27 - Pointer to 
+%;**         Returns the number of characters in the receive buffer.
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Number of bytes which have been stored in
-%;** %>29 the "Up"-buffer.
+%;**         ---%RetVal %>27 - Number of characters in the input buffer,
+%;** %>29 zero for none available.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

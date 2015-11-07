@@ -240,6 +240,26 @@ LI.EXP {
 <a name="RTTBufferSizePrintf">
 <b>Buffer Size Printf</b></a> - Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)
 </li>
+<li>
+<a name="BlockingSend">
+<b>Blocking Send</b></a> - Affects if StdIOSendChar shall be blocking or not<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Wait">
+  <b>Wait</b></a> - Interface to wait routines
+  </li>
+  <li>
+  <a name="WaitTimeMs">
+  <b>Wait Time (ms)</b></a> - Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
+  </li>
+</ul>
+</li>
+<li>
+<a name="KinetisSDK">
+<b>Kinetis SDK</b></a> - Provides additional defines to use component with the Kinetis SDK.
+</li>
 
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

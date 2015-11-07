@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.014</Version>
+    <Version>01.021</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Segger, 2015\nhttp      : www.segger.com</Copyright>
@@ -121,6 +121,69 @@
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
     </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Blocking Send</Name>
+        <Symbol>BlockingSend</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Affects if StdIOSendChar shall be blocking or not</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Enabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Wait</Name>
+              <Symbol>Wait</Symbol>
+              <TypeSpec>SeggerRTT\Wait</TypeSpec>
+              <Hint>Interface to wait routines</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Wait Time (ms)</Name>
+              <Symbol>WaitTimeMs</Symbol>
+              <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>10</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Kinetis SDK</Name>
+        <Symbol>KinetisSDK</Symbol>
+        <TypeSpec>SeggerRTT\KinetisSDK</TypeSpec>
+        <Hint>Provides additional defines to use component with the Kinetis SDK.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
   </PropertyList>
   <MethodList>
     <Method>
@@ -142,14 +205,14 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>32bit signed</ReturnType>
-        <RetHint>Error code</RetHint>
+        <ReturnType>int</ReturnType>
+        <RetHint>Number of bytes that have been read</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>BufferIndex</ParName>
           <ParType>32bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Buffer/channel to be used. 0 for terminal.</ParHint>
           <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
         </Parameter>
         <Parameter>
@@ -168,7 +231,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>long #M#_#C#(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)</ANSIC>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -191,14 +254,14 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>32bit signed</ReturnType>
-        <RetHint>Error code</RetHint>
+        <ReturnType>int</ReturnType>
+        <RetHint>Number of bytes which have been written to the up buffer</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>BufferIndex</ParName>
           <ParType>32bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Buffer/channel to be used. 0 for terminal.</ParHint>
           <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
         </Parameter>
         <Parameter>
@@ -217,7 +280,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>long #M#_#C#(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)</ANSIC>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -240,14 +303,14 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>32bit signed</ReturnType>
-        <RetHint>Error code</RetHint>
+        <ReturnType>int</ReturnType>
+        <RetHint>Number of bytes which have been stored in the "Up"-buffer.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>BufferIndex</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Buffer to be used</ParHint>
+          <ParHint>Buffer/channel to be used. 0 for terminal.</ParHint>
           <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
         </Parameter>
         <Parameter>
@@ -259,7 +322,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>long #M#_#C#(unsigned BufferIndex, const char* s)</ANSIC>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* s)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -344,6 +407,102 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>long #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>RecvChar</Name>
+        <Symbol>RecvChar</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Receives a character from channel 0. Returns ERR_RXEMPTY if no character available</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>c</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the received character</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *c)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SendChar</Name>
+        <Symbol>SendChar</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sends a character to channel 0.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code. ERR_OK if character has been sent, ERR_TXFULL otherwise.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>ch</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Character to send</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t ch)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetCharsInRxBuf</Name>
+        <Symbol>GetCharsInRxBuf</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the number of characters in the receive buffer.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint16_t</ReturnType>
+        <RetHint>Number of characters in the input buffer, zero for none available.</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

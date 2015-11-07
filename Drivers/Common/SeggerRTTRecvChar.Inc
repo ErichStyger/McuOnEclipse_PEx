@@ -3,16 +3,15 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (WriteString)
+%include Common\GeneralMethod.inc (RecvChar)
 %;**     Description :
-%;**         Write to buffer
+%;**         Receives a character from channel 0. Returns ERR_RXEMPTY if
+%;**         no character available
 %include Common\GeneralParameters.inc(27)
-%;**         BufferIndex%ParBufferIndex %>27 - Buffer/channel to be used.
-%;** %>29 0 for terminal.
-%;**       * s%Pars %>27 - Pointer to 
+%;**       * c%Parc %>27 - Pointer to where to store the received
+%;** %>29 character
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Number of bytes which have been stored in
-%;** %>29 the "Up"-buffer.
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

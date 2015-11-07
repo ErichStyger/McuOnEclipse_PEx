@@ -208,6 +208,37 @@ void %'ModuleName'%.%StdIOSendChar(uint8_t ch);
 
 %endif %- StdIOSendChar
 %-BW_METHOD_END StdIOSendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecvChar
+%ifdef RecvChar
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *c);
+%define! Parc
+%define! RetVal
+%include Common\SeggerRTTRecvChar.Inc
+
+%endif %- RecvChar
+%-BW_METHOD_END RecvChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendChar
+%ifdef SendChar
+uint8_t %'ModuleName'%.%SendChar(uint8_t ch);
+%define! Parch
+%define! RetVal
+%include Common\SeggerRTTSendChar.Inc
+
+%endif %- SendChar
+%-BW_METHOD_END SendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetCharsInRxBuf
+%ifdef GetCharsInRxBuf
+#define %'ModuleName'%.%GetCharsInRxBuf() \
+  SEGGER_RTT_HasKey()
+
+%define! RetVal
+%include Common\SeggerRTTGetCharsInRxBuf.Inc
+
+%endif %- GetCharsInRxBuf
+%-BW_METHOD_END GetCharsInRxBuf
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -255,7 +286,7 @@ void %'ModuleName'%.%StdIOSendChar(uint8_t ch);
 %define! RetVal
 %include Common\SeggerRTTRead.Inc
 /**
-long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)
+int %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned NumBytes)
 {
   Implemented as macro in the header file.
 }
@@ -272,7 +303,7 @@ long %'ModuleName'%.%Read(unsigned BufferIndex, const char* pBuffer, unsigned Nu
 %define! RetVal
 %include Common\SeggerRTTWrite.Inc
 /**
-long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)
+int %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSize)
 {
   Implemented as macro in the header file.
 }
@@ -288,7 +319,7 @@ long %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferS
 %define! RetVal
 %include Common\SeggerRTTWriteString.Inc
 /**
-long %'ModuleName'%.%WriteString(unsigned BufferIndex, const char* s)
+int %'ModuleName'%.%WriteString(unsigned BufferIndex, const char* s)
 {
   Implemented as macro in the header file.
 }
@@ -361,9 +392,10 @@ void %'ModuleName'%.%StdIOReadChar(uint8_t *c)
 
   res = %'ModuleName'%.%GetKey();
   if (res==-1) { /* no character present */
-    return '\0';
+    *c = '\0';
+  } else {
+    *c = (uint8_t)res; /* return character */
   }
-  *c = (uint8_t)res; /* return character */
 }
 
 %endif %- StdIOReadChar
@@ -375,11 +407,79 @@ void %'ModuleName'%.%StdIOReadChar(uint8_t *c)
 %include Common\SeggerRTTStdIOSendChar.Inc
 void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
 {
-  (void)%'ModuleName'%.%Write(0, &ch, 1);
+%if BlockingSend='yes'
+  for(;;) { /* will break */
+    if (%'ModuleName'%.%Write(0, (const char*)&ch, 1)==1) { /* non blocking send, check that we were able to send */
+      break; /* was able to send character, get out of waiting loop */
+    }
+  %if defined(WaitTimeMs) & WaitTimeMs >. '0'
+    %@Wait@'ModuleName'%.WaitOSms(%WaitTimeMs);
+  %endif
+  } /* for */
+%else
+  (void)%'ModuleName'%.%Write(0, &ch, 1); /* non blocking send, might loose characters */
+%endif
 }
 
 %endif %- StdIOSendChar
 %-BW_METHOD_END StdIOSendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecvChar
+%ifdef RecvChar
+%define! Parc
+%define! RetVal
+%include Common\SeggerRTTRecvChar.Inc
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *c)
+{
+  int res;
+
+  res = %'ModuleName'%.%GetKey();
+  if (res==-1) { /* no character present */
+    return ERR_RXEMPTY;
+  }
+  *c = (uint8_t)res; /* return character */
+  return ERR_OK;
+}
+
+%endif %- RecvChar
+%-BW_METHOD_END RecvChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendChar
+%ifdef SendChar
+%define! Parch
+%define! RetVal
+%include Common\SeggerRTTSendChar.Inc
+uint8_t %'ModuleName'%.%SendChar(uint8_t ch)
+{
+  int res;
+
+  res = SEGGER_RTT_Write(0, (const char*)&ch, 1);
+  if (res!=1) {
+    return ERR_TXFULL; /* character not sent? */
+  }
+  return ERR_OK;
+}
+
+%endif %- SendChar
+%-BW_METHOD_END SendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetCharsInRxBuf
+%ifdef GetCharsInRxBuf
+%define! RetVal
+%include Common\SeggerRTTGetCharsInRxBuf.Inc
+/**
+uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
+{
+  // Function is implemented as macro in the header file
+  if (SEGGER_RTT_HasKey()) {
+    return 1; // at least one available
+  }
+  return 0; // none available
+}
+*/
+
+%endif %- GetCharsInRxBuf
+%-BW_METHOD_END GetCharsInRxBuf
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
