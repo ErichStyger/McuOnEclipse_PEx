@@ -107,28 +107,28 @@ extern void USB_NULL_CALLBACK (PTR_USB_DEV_EVENT_STRUCT event);
 #define USB_EP0_ENABLE              TRUE
 #define USB_EP0_DIR                 EP_CTRL
 #define USB_EP0_HSHK                TRUE
-#define USB_EP0_SIZE                32
+#define USB_EP0_SIZE                %USB_EP0_SIZE /* default 32 */
 
 #if DIC_ISOCHRONOUS_SETTING
 #define USB_EP1_ENABLE              TRUE
 #define USB_EP1_DIR                 USB_DIR_IN
 #define USB_EP1_HSHK                FALSE
-#define USB_EP1_SIZE                64
+#define USB_EP1_SIZE                %USB_EP1_SIZE /* default 64 */
 
 #define USB_EP2_ENABLE              TRUE
 #define USB_EP2_DIR                 EP_OUT
 #define USB_EP2_HSHK                FALSE
-#define USB_EP2_SIZE                64
+#define USB_EP2_SIZE                %USB_EP2_SIZE /* default 64 */
 #else
 #define USB_EP1_ENABLE              TRUE
 #define USB_EP1_DIR                 EP_IN
 #define USB_EP1_HSHK                TRUE
-#define USB_EP1_SIZE                32
+#define USB_EP1_SIZE                %USB_EP1_SIZE /* default 32 */
 
 #define USB_EP2_ENABLE              TRUE
 #define USB_EP2_DIR                 EP_OUT
 #define USB_EP2_HSHK                TRUE
-#define USB_EP2_SIZE                32
+#define USB_EP2_SIZE                %USB_EP2_SIZE /* default 32 */
 #endif
 
 #define USB_EP3_ENABLE              TRUE
