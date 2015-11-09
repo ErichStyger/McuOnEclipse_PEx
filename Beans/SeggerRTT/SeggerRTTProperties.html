@@ -222,37 +222,55 @@ LI.EXP {
 </li>
 <li>
 <a name="RTTBufferNofUp">
-<b>Number of Up Buffers</b></a> - Configures SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
-</li>
-<li>
-<a name="RTTBufferSizeUp">
-<b>Buffer Size Up</b></a> - Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)
+<b>Number of Up Buffers (device to host)</b></a> - Configures SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
 </li>
 <li>
 <a name="RTTBufferNofDown">
-<b>Number of Down Buffers</b></a> - Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
+<b>Number of Down Buffers (host to device)</b></a> - Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
 </li>
 <li>
-<a name="RTTBufferSizeDown">
-<b>Buffer Size Down</b></a> - Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)
+<a name="TerminalBuffer0Group">
+<b>Terminal (Buffer 0)</b></a> - Settings for buffer 0, used for Terminal
+<ul>
+  <li>
+  <a name="RTTBufferSizeUp">
+  <b>Buffer Size Up (device to host)</b></a> - Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)
+  </li>
+  <li>
+  <a name="RTTBufferSizeDown">
+  <b>Buffer Size Down (host to device)</b></a> - Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)
+  </li>
+  <li>
+  <a name="RTTBufferSizePrintf">
+  <b>Buffer Size Printf</b></a> - Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)
+  </li>
+  <li>
+  <a name="BlockingSend">
+  <b>Blocking Send</b></a> - Affects if StdIOSendChar shall be blocking or not<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="Wait">
+    <b>Wait</b></a> - Interface to wait routines
+    </li>
+    <li>
+    <a name="WaitTimeMs">
+    <b>Wait Time (ms)</b></a> - Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
+    </li>
+  </ul>
+  </li>
+</ul>
 </li>
 <li>
-<a name="RTTBufferSizePrintf">
-<b>Buffer Size Printf</b></a> - Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)
-</li>
-<li>
-<a name="BlockingSend">
-<b>Blocking Send</b></a> - Affects if StdIOSendChar shall be blocking or not<br />
+<a name="LockUnlockEnabled">
+<b>Lock/Unlock</b></a> - If enabled, uses lock/unlock while performing RTT operations.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
 <ul>
   <li>
-  <a name="Wait">
-  <b>Wait</b></a> - Interface to wait routines
-  </li>
-  <li>
-  <a name="WaitTimeMs">
-  <b>Wait Time (ms)</b></a> - Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
+  <a name="CriticalSection">
+  <b>CriticalSection</b></a> - Interface to critical section
   </li>
 </ul>
 </li>

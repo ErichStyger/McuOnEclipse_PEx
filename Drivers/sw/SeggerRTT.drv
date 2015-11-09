@@ -239,6 +239,39 @@ uint8_t %'ModuleName'%.%SendChar(uint8_t ch);
 
 %endif %- GetCharsInRxBuf
 %-BW_METHOD_END GetCharsInRxBuf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+
+%include Common\SeggerRTTInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TerminalOut
+%ifdef TerminalOut
+#define %'ModuleName'%.%TerminalOut(TerminalId, s) \
+  SEGGER_RTT_TerminalOut(TerminalId, s)
+
+%define! ParTerminalId
+%define! Pars
+%define! RetVal
+%include Common\SeggerRTTTerminalOut.Inc
+
+%endif %- TerminalOut
+%-BW_METHOD_END TerminalOut
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetTerminal
+%ifdef SetTerminal
+#define %'ModuleName'%.%SetTerminal(TerminalId) \
+  SEGGER_RTT_SetTerminal(TerminalId)
+
+%define! ParTerminalId
+%include Common\SeggerRTTSetTerminal.Inc
+
+%endif %- SetTerminal
+%-BW_METHOD_END SetTerminal
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -480,6 +513,49 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 
 %endif %- GetCharsInRxBuf
 %-BW_METHOD_END GetCharsInRxBuf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\SeggerRTTInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  SEGGER_RTT_Init();
+  SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  SEGGER_RTT_ConfigDownBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TerminalOut
+%ifdef TerminalOut
+%define! ParTerminalId
+%define! Pars
+%define! RetVal
+%include Common\SeggerRTTTerminalOut.Inc
+/**
+int %'ModuleName'%.%TerminalOut(char TerminalId, const char* s)
+{
+  Function is implemented as macro in the header file
+}
+*/
+
+%endif %- TerminalOut
+%-BW_METHOD_END TerminalOut
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetTerminal
+%ifdef SetTerminal
+%define! ParTerminalId
+%include Common\SeggerRTTSetTerminal.Inc
+/**
+void %'ModuleName'%.%SetTerminal(char TerminalId)
+{
+  Function is implemented as macro in the header file
+}
+*/
+
+%endif %- SetTerminal
+%-BW_METHOD_END SetTerminal
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -491,7 +567,7 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+  %'ModuleName'%.%Init();
 %CODE_END
 %-
 %ENABLE

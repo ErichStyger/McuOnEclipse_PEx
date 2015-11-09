@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.022</Version>
+    <Version>01.031</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -39,7 +39,7 @@
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Number of Up Buffers</Name>
+        <Name>Number of Up Buffers (device to host)</Name>
         <Symbol>RTTBufferNofUp</Symbol>
         <Hint>Configures SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -56,24 +56,7 @@
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Buffer Size Up</Name>
-        <Symbol>RTTBufferSizeUp</Symbol>
-        <Hint>Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>1024</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of Down Buffers</Name>
+        <Name>Number of Down Buffers (host to device)</Name>
         <Symbol>RTTBufferNofDown</Symbol>
         <Hint>Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -89,45 +72,125 @@
       </TIntgItem>
     </Property>
     <Property>
-      <TIntgItem>
-        <Name>Buffer Size Down</Name>
-        <Symbol>RTTBufferSizeDown</Symbol>
-        <Hint>Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)</Hint>
+      <TGrupItem>
+        <Name>Terminal (Buffer 0)</Name>
+        <Symbol>TerminalBuffer0Group</Symbol>
+        <Hint>Settings for buffer 0, used for Terminal</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>16</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Buffer Size Printf</Name>
-        <Symbol>RTTBufferSizePrintf</Symbol>
-        <Hint>Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>64</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Buffer Size Up (device to host)</Name>
+              <Symbol>RTTBufferSizeUp</Symbol>
+              <Hint>Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1024</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Buffer Size Down (host to device)</Name>
+              <Symbol>RTTBufferSizeDown</Symbol>
+              <Hint>Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>16</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Buffer Size Printf</Name>
+              <Symbol>RTTBufferSizePrintf</Symbol>
+              <Hint>Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>64</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>Blocking Send</Name>
+              <Symbol>BlockingSend</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Affects if StdIOSendChar shall be blocking or not</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>Wait</Name>
+                    <Symbol>Wait</Symbol>
+                    <TypeSpec>SeggerRTT\Wait</TypeSpec>
+                    <Hint>Interface to wait routines</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>Wait Time (ms)</Name>
+                    <Symbol>WaitTimeMs</Symbol>
+                    <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>10</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TBoolGrupItem>
-        <Name>Blocking Send</Name>
-        <Symbol>BlockingSend</Symbol>
+        <Name>Lock/Unlock</Name>
+        <Symbol>LockUnlockEnabled</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Affects if StdIOSendChar shall be blocking or not</Hint>
+        <Hint>If enabled, uses lock/unlock while performing RTT operations.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -139,10 +202,10 @@
         <Children>
           <GrupItem>
             <TInhrLinkItem>
-              <Name>Wait</Name>
-              <Symbol>Wait</Symbol>
-              <TypeSpec>SeggerRTT\Wait</TypeSpec>
-              <Hint>Interface to wait routines</Hint>
+              <Name>CriticalSection</Name>
+              <Symbol>CriticalSection</Symbol>
+              <TypeSpec>SeggerRTT\CriticalSection</TypeSpec>
+              <Hint>Interface to critical section</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <DefaultValue/>
@@ -150,23 +213,6 @@
               <IconPopup>false</IconPopup>
               <SortStyle/>
             </TInhrLinkItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Wait Time (ms)</Name>
-              <Symbol>WaitTimeMs</Symbol>
-              <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>10</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>
@@ -408,6 +454,111 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>long #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetTerminal</Name>
+        <Symbol>SetTerminal</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint> Sets the terminal to be used for output on channel 0.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>TerminalId</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Terminal ID, 0..15</ParHint>
+          <ParUserDeclaration>char TerminalId</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(char TerminalId)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>TerminalOut</Name>
+        <Symbol>TerminalOut</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Writes a string to the given terminal without changing the terminal for channel 0.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>TerminalId</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>TerminalId, 0..15</ParHint>
+          <ParUserDeclaration>char TerminalId</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>s</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to string</ParHint>
+          <ParUserDeclaration>const char* s</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(char TerminalId, const char* s)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the RTT Control Block.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

@@ -37,9 +37,14 @@ Purpose : Implementation of SEGGER real-time terminal which allows
 // Otherwise we would probably end up with a mixed string in the buffer.
 // If using  RTT from within interrupts, multiple tasks or multi processors, define the SEGGER_RTT_LOCK() and SEGGER_RTT_UNLOCK() function here.
 //
+%if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
+#include "%@CriticalSection@'ModuleName'.h"
+#define SEGGER_RTT_LOCK()     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
+#define SEGGER_RTT_UNLOCK()   %@CriticalSection@'ModuleName'%.ExitCritical()
+%else
 #define SEGGER_RTT_LOCK()
 #define SEGGER_RTT_UNLOCK()
-
+%endif
 //
 // Define SEGGER_RTT_IN_RAM as 1
 // when using RTT in RAM targets (init and data section both in RAM).

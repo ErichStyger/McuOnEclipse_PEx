@@ -280,6 +280,38 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SetTerminal">
+<b>SetTerminal</b></a>
+ -  Sets the terminal to be used for output on channel 0.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetTerminal(char TerminalId)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>TerminalId:byte</i> - Terminal ID, 0..15</li>
+</ul><br />
+</li>
+<li><a name="TerminalOut">
+<b>TerminalOut</b></a>
+ - Writes a string to the given terminal without changing the terminal for channel 0.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int TerminalOut(char TerminalId, const char* s)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>TerminalId:byte</i> - TerminalId, 0..15</li>
+<li><i>s: Pointer to uint8_t</i> - Pointer to string</li>
+<li><i>Return value:int</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="Init">
+<b>Init</b></a>
+ - Initializes the RTT Control Block.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Init(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
 <li><a name="RecvChar">
 <b>RecvChar</b></a>
  - Receives a character from channel 0. Returns ERR_RXEMPTY if no character available
