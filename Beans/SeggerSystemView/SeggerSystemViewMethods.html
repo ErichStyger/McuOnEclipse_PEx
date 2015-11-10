@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1250">
 <title>
-Component  documentation - Properties
+Component  documentation - Methods
 </title>
 <STYLE type="text/css">
 body{
@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-<b>SeggerRTT</b>
+<b>SeggerSystemView</b>
             </span>
           </td>
         </tr>
@@ -145,10 +145,10 @@ LI.EXP {
             &nbsp;<br />
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
-<a href="SeggerRTT.html">General Info</a><br />
-<i>Properties</i><br />
-<a href="SeggerRTTMethods.html">Methods</a><br />
-<a href="SeggerRTTEvents.html">Events</a><br />
+<a href="SeggerSystemView.html">General Info</a><br />
+<a href="SeggerSystemViewProperties.html">Properties</a><br />
+<i>Methods</i><br />
+<a href="SeggerSystemViewEvents.html">Events</a><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
 <a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br/>
@@ -159,7 +159,7 @@ LI.EXP {
 
 <br /><br /><br />
 <center>
-<img src="SeggerRTT_b.gif" alt="Component icon"/>
+<img src="SeggerSystemView_b.gif" alt="Component icon"/>
 
 
 </center>
@@ -174,121 +174,54 @@ LI.EXP {
         <tr class="lefttitlebox"><td width="1"></td></tr>
       </table>
     </td>
-    <td style="padding-left:15px;padding-right:10px;" valign="top" align="left" width="100%">
+    <td style="padding-left:15px;padding-right:10px;" valign="top" align="left" width="100%" >
 
-<!--      <table border="0" cellPadding="0" cellSpacing="0" width="100%">
-        <tbody>
-        <tr>
-          <td class="titlebox">-->
-          
-           <div class="titlebox">
-              <div class="beanname">
-                Component
-                
-                
-                SeggerRTT
-              </div>
-              <div class="descrtext">Segger RTT (Real Time Terminal)</div>
-              <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
-              <div class="info_name">Category: 
-                <span class="info_text">
-                <a href="../../DOCs/BeanCategoriesInfo.html">SW-User Components</a>
-                
-                </span>
-              </div>
+         <div class="titlebox">
+            <div class="beanname">
+              Component
+              
+              
+              SeggerSystemView
             </div>
-                      
-<!--
-            </td>
-        </tr>
+            <div class="descrtext">Segger System View Component</div>
+            <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
+            <div class="info_name">Category: 
+              <span class="info_text">
+              <a href="../../DOCs/BeanCategoriesInfo.html">SW-User Components</a>
+              
+              </span>
+            </div>
+          </div>
 
-        <tr>        
--->  
-            
-<!--            <td align="left"> -->
-<!--                   <br /> -->                  
-     <div class="text_title">
-          Properties:
-		 </div>		 
-		 <div class="descr_line">                  
-                  (Properties are parameters of the component. Please see the <a href="../../DOCs/EmbeddedBeans.html">Embedded Components page</a> for more information.)                   
-     </div>
+         <div class="text_title">
+              Methods:
+    		 </div>		 
+    		 <div class="descr_line">                  
+              (Methods are user-callable functions/subroutines intended for
+               the component functions control. Please see the <a href="../../DOCs/EmbeddedBeans.html#Methods">Embedded Components page</a> for more information.)                   
+         </div>
                   
-<div class="user_text">
-<ul>
-<li>
-<a name="DeviceName">
-<b>Component name</b></a> - Name of the component.
-</li>
-<li>
-<a name="RTTBufferNofUp">
-<b>Number of Up Buffers</b></a> - Configures the device-to-host SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
-</li>
-<li>
-<a name="RTTBufferNofDown">
-<b>Number of Down Buffers (host to device)</b></a> - Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)
-</li>
-<li>
-<a name="TerminalBuffer0Group">
-<b>Terminal (Buffer 0)</b></a> - Settings for buffer 0, used for Terminal
-<ul>
-  <li>
-  <a name="RTTBufferSizeUp">
-  <b>Up Buffer Size (Tx, device to host)</b></a> - Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)
-  </li>
-  <li>
-  <a name="RTTBufferSizeDown">
-  <b>Down Buffer Size (Rx, host to device)</b></a> - Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)
-  </li>
-  <li>
-  <a name="RTTBufferSizePrintf">
-  <b>Printf Buffer Size</b></a> - Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)
-  </li>
-  <li>
-  <a name="BlockingSend">
-  <b>Blocking Send</b></a> - Affects if StdIOSendChar shall be blocking or not<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-  <ul>
-    <li>
-    <a name="Wait">
-    <b>Wait</b></a> - Interface to wait routines
-    </li>
-    <li>
-    <a name="WaitTimeMs">
-    <b>Wait Time (ms)</b></a> - Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.
-    </li>
-  </ul>
-  </li>
-</ul>
-</li>
-<li>
-<a name="LockUnlockEnabled">
-<b>Lock/Unlock</b></a> - If enabled, uses lock/unlock while performing RTT operations.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="CriticalSection">
-  <b>CriticalSection</b></a> - Interface to critical section
-  </li>
-</ul>
-</li>
-<li>
-<a name="KinetisSDK">
-<b>Kinetis SDK</b></a> - Provides additional defines to use component with the Kinetis SDK.
-</li>
-
-     </ul>
+         <div class="user_text">
+            <ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-</div>
-           <p class="footer">
+<b>There are no methods in this component</b>
+
+           </ul>
+<!---USERBEG DON'T CHANGE THIS LINE-->
+
+<!---USEREND DON'T CHANGE THIS LINE-->
+<p>
+<br />
+Note: Some methods can be implemented as macros.
+</p>
+          </div>
+          <p class="footer">
             PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.
             <br />
             
-           </p>
+          </p>
     </td>
   </tr>
 

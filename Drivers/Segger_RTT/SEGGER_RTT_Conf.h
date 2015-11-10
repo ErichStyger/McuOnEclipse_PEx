@@ -39,11 +39,11 @@ Purpose : Implementation of SEGGER real-time terminal which allows
 //
 %if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
 #include "%@CriticalSection@'ModuleName'.h"
-#define SEGGER_RTT_LOCK()     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
-#define SEGGER_RTT_UNLOCK()   %@CriticalSection@'ModuleName'%.ExitCritical()
+#define SEGGER_RTT_LOCK(SavedState)     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
+#define SEGGER_RTT_UNLOCK(SavedState)   %@CriticalSection@'ModuleName'%.ExitCritical()
 %else
-#define SEGGER_RTT_LOCK()
-#define SEGGER_RTT_UNLOCK()
+#define SEGGER_RTT_LOCK(SavedState)
+#define SEGGER_RTT_UNLOCK(SavedState)
 %endif
 //
 // Define SEGGER_RTT_IN_RAM as 1

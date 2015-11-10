@@ -1,237 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bean>
-  <Header>
-    <Name>SeggerRTT</Name>
-    <Description>Segger RTT (Real Time Terminal)</Description>
-    <Author>Erich Styger</Author>
-    <Version>01.037</Version>
-    <Icon>SeggerRTT</Icon>
-    <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
-    <FileVersion>6</FileVersion>
-  </Header>
-  <Options>
-    <BW_HelpType>Basic</BW_HelpType>
-    <BW_HelpFiles>,Properties,Methods,Events</BW_HelpFiles>
-    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
-    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
-    <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>4</BW_NeedUst>
-    <BW_NeedCns>0</BW_NeedCns>
-    <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright Segger, 2015\nhttp      : www.segger.com</Copyright>
-    <Category>SW-User Components</Category>
-    <DemoDriver>no</DemoDriver>
-    <Shortcut>RTT</Shortcut>
-    <BeanLevel>High</BeanLevel>
-    <OneBeanInstance>There can be only one instance of the Segger RTT in a project.</OneBeanInstance>
-  </Options>
-  <PropertyList>
-    <Property>
-      <TCompNameItem>
-        <Name>Component name</Name>
-        <Symbol>DeviceName</Symbol>
-        <Hint>Name of the component.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue/>
-      </TCompNameItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of Up Buffers</Name>
-        <Symbol>RTTBufferNofUp</Symbol>
-        <Hint>Configures the device-to-host SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>1</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of Down Buffers (host to device)</Name>
-        <Symbol>RTTBufferNofDown</Symbol>
-        <Hint>Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>1</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TGrupItem>
-        <Name>Terminal (Buffer 0)</Name>
-        <Symbol>TerminalBuffer0Group</Symbol>
-        <Hint>Settings for buffer 0, used for Terminal</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description/>
-        <Expanded>Yes</Expanded>
-        <Children>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Up Buffer Size (Tx, device to host)</Name>
-              <Symbol>RTTBufferSizeUp</Symbol>
-              <Hint>Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>1024</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Down Buffer Size (Rx, host to device)</Name>
-              <Symbol>RTTBufferSizeDown</Symbol>
-              <Hint>Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>16</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Printf Buffer Size</Name>
-              <Symbol>RTTBufferSizePrintf</Symbol>
-              <Hint>Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>64</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolGrupItem>
-              <Name>Blocking Send</Name>
-              <Symbol>BlockingSend</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>Affects if StdIOSendChar shall be blocking or not</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description>Enabled</Description>
-              <Expanded>Yes</Expanded>
-              <DefaultValue>true</DefaultValue>
-              <DefineSymbol>YES_NO</DefineSymbol>
-              <IfDisabled>setNOTHING</IfDisabled>
-              <Children>
-                <GrupItem>
-                  <TInhrLinkItem>
-                    <Name>Wait</Name>
-                    <Symbol>Wait</Symbol>
-                    <TypeSpec>SeggerRTT\Wait</TypeSpec>
-                    <Hint>Interface to wait routines</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <DefaultValue/>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <SortStyle/>
-                  </TInhrLinkItem>
-                </GrupItem>
-                <GrupItem>
-                  <TIntgItem>
-                    <Name>Wait Time (ms)</Name>
-                    <Symbol>WaitTimeMs</Symbol>
-                    <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>true</EditLine>
-                    <DefaultValue>10</DefaultValue>
-                    <MinValue>0</MinValue>
-                    <MaxValue>-1</MaxValue>
-                    <Bases>DEC</Bases>
-                    <DefaultBase>DEC</DefaultBase>
-                    <ExtraHintDisabled>false</ExtraHintDisabled>
-                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
-                    <RuntimeProperty>false</RuntimeProperty>
-                  </TIntgItem>
-                </GrupItem>
-              </Children>
-            </TBoolGrupItem>
-          </GrupItem>
-        </Children>
-      </TGrupItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Lock/Unlock</Name>
-        <Symbol>LockUnlockEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, uses lock/unlock while performing RTT operations.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>CriticalSection</Name>
-              <Symbol>CriticalSection</Symbol>
-              <TypeSpec>SeggerRTT\CriticalSection</TypeSpec>
-              <Hint>Interface to critical section</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Kinetis SDK</Name>
-        <Symbol>KinetisSDK</Symbol>
-        <TypeSpec>SeggerRTT\KinetisSDK</TypeSpec>
-        <Hint>Provides additional defines to use component with the Kinetis SDK.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-  </PropertyList>
+<Interface>
+  <Name>SeggerRTT</Name>
+  <Description>Interface "SeggerSystemView\SeggerRTT" for component SeggerSystemView, generated by Component Wizard</Description>
+  <Author>Author</Author>
+  <Version>01.000</Version>
+  <FileVersion>2</FileVersion>
   <MethodList>
     <Method>
       <TMthdItem>
@@ -252,6 +25,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Number of bytes that have been read</RetHint>
         <ParamCount>3</ParamCount>
@@ -301,6 +75,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Number of bytes which have been written to the up buffer</RetHint>
         <ParamCount>3</ParamCount>
@@ -350,6 +125,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Number of bytes which have been stored in the "Up"-buffer.</RetHint>
         <ParamCount>2</ParamCount>
@@ -392,6 +168,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>32bit unsigned</ReturnType>
         <RetHint>character code</RetHint>
         <ParamCount>0</ParamCount>
@@ -420,6 +197,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>32bit signed</ReturnType>
         <RetHint>&gt;=0    Character which has been read.</RetHint>
         <ParamCount>0</ParamCount>
@@ -448,6 +226,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>32bit signed</ReturnType>
         <RetHint>0: No characters are available to read; 1: At least one character is available.</RetHint>
         <ParamCount>0</ParamCount>
@@ -476,6 +255,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -511,6 +291,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -553,6 +334,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Error code, &gt;=0 OK, &lt;0 Error</RetHint>
         <ParamCount>5</ParamCount>
@@ -616,6 +398,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>int</ReturnType>
         <RetHint>Error code, &gt;=0 OK, &lt;0 Error</RetHint>
         <ParamCount>5</ParamCount>
@@ -679,6 +462,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -707,6 +491,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -741,6 +526,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code. ERR_OK if character has been sent, ERR_TXFULL otherwise.</RetHint>
         <ParamCount>1</ParamCount>
@@ -775,6 +561,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint16_t</ReturnType>
         <RetHint>Number of characters in the input buffer, zero for none available.</RetHint>
         <ParamCount>0</ParamCount>
@@ -803,6 +590,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>Boolean</ReturnType>
         <RetHint>True if there are characters in teh input buffer</RetHint>
         <ParamCount>0</ParamCount>
@@ -831,6 +619,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -865,6 +654,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>1</ParamCount>
@@ -881,10 +671,45 @@
       </TMthdItem>
     </Method>
   </MethodList>
-  <Links>
+  <EventList>
     <EmptySection_DummyValue/>
-  </Links>
-  <Revisions>
-    <RevisionVersion>2</RevisionVersion>
-  </Revisions>
-</Bean>
+  </EventList>
+  <Registration>
+    <Template>SeggerRTT</Template>
+  </Registration>
+  <UserTypes>
+    <Type>
+      <UsrType>TRetypeType</UsrType>
+      <Name>uint8_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>  typedef byte uint8_t ;\n
+</PreparedHint>
+      <Type>8bit unsigned</Type>
+    </Type>
+    <Type>
+      <UsrType>TRetypeType</UsrType>
+      <Name>uint16_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>  typedef int16_t uint16_t ;\n
+</PreparedHint>
+      <Type>16bit signed</Type>
+    </Type>
+    <Type>
+      <UsrType>TRetypeType</UsrType>
+      <Name>int</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>  typedef int16_t int ;\n
+</PreparedHint>
+      <Type>16bit signed</Type>
+    </Type>
+  </UserTypes>
+</Interface>
