@@ -259,12 +259,20 @@ The following items are available only if the group is enabled (the value is "En
   <b>Segger RTT</b></a> - Interface to Segger RTT
   </li>
   <li>
-  <a name="RTTDownBufferIndex">
-  <b>RTT Down Buffer Index</b></a> - RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
+  <a name="RTTUpBufferIndex">
+  <b>Up Buffer Index</b></a> - RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
   </li>
   <li>
-  <a name="RTTUpBufferIndex">
-  <b>RTT Up Buffer Index</b></a> - RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
+  <a name="TraceRTTUpBufferSize">
+  <b>Up Buffer Size</b></a> - Up Buffer Size (default 1024), only applicable for buffer index &gt; 0
+  </li>
+  <li>
+  <a name="RTTDownBufferIndex">
+  <b>Down Buffer Index</b></a> - RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
+  </li>
+  <li>
+  <a name="TraceRTTDownBufferSize">
+  <b>Down Buffer Size</b></a> - Down Buffer Size (default 32), only applicable for buffer index &gt; 0
   </li>
 </ul>
 </li>

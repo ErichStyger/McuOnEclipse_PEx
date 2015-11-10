@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.031</Version>
+    <Version>01.036</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -84,7 +84,7 @@
         <Children>
           <GrupItem>
             <TIntgItem>
-              <Name>Buffer Size Up (device to host)</Name>
+              <Name>Up Buffer Size (Tx, device to host)</Name>
               <Symbol>RTTBufferSizeUp</Symbol>
               <Hint>Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)</Hint>
               <ItemLevel>BASIC</ItemLevel>
@@ -101,7 +101,7 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>Buffer Size Down (host to device)</Name>
+              <Name>Down Buffer Size (Rx, host to device)</Name>
               <Symbol>RTTBufferSizeDown</Symbol>
               <Hint>Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)</Hint>
               <ItemLevel>BASIC</ItemLevel>
@@ -118,7 +118,7 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>Buffer Size Printf</Name>
+              <Name>Printf Buffer Size</Name>
               <Symbol>RTTBufferSizePrintf</Symbol>
               <Hint>Configures SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h (size is in bytes, default 64)</Hint>
               <ItemLevel>BASIC</ItemLevel>
@@ -531,6 +531,132 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>int #M#_#C#(char TerminalId, const char* s)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ConfigUpBuffer</Name>
+        <Symbol>ConfigUpBuffer</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Configures the Up (device to host) buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>Error code, &gt;=0 OK, &lt;0 Error</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>BufferIndex</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Buffer index</ParHint>
+          <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>sName</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Buffer name</ParHint>
+          <ParUserDeclaration>const char* sName</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer</ParHint>
+          <ParUserDeclaration>char* pBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>intBufferSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of buffer in bytes</ParHint>
+          <ParUserDeclaration>int BufferSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Flags</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>SEGGER_RTT_MODE_NO_BLOCK_SKIP, SEGGER_RTT_MODE_NO_BLOCK_TRIM or  SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL</ParHint>
+          <ParUserDeclaration>int Flags</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ConfigDownBuffer</Name>
+        <Symbol>ConfigDownBuffer</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Configures the Down (host to device) buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>Error code, &gt;=0 OK, &lt;0 Error</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>BufferIndex</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Buffer index</ParHint>
+          <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>sName</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Buffer name</ParHint>
+          <ParUserDeclaration>const char* sName</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer</ParHint>
+          <ParUserDeclaration>char* pBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>intBufferSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of buffer in bytes</ParHint>
+          <ParUserDeclaration>int BufferSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Flags</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>SEGGER_RTT_MODE_NO_BLOCK_SKIP, SEGGER_RTT_MODE_NO_BLOCK_TRIM or  SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL</ParHint>
+          <ParUserDeclaration>int Flags</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

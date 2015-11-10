@@ -321,6 +321,25 @@
  * Called when tracing is disabled. Use this to perform any necessary steps to 
  * properly shut down the tracing, such as clearing buffers.
  ******************************************************************************/
-#define TRC_STREAM_CUSTOM_ON_TRACE_END() 
+#define TRC_STREAM_CUSTOM_ON_TRACE_END()
+
+
+#if 1 /* << EST */
+#include "SEGGER_RTT_Conf.h"
+/* use different buffer sizes for up/down channels other than zero */
+#if TRC_RTT_UP_BUFFER_INDEX == 0
+  #define TRC_BUFFER_UP_SIZE    BUFFER_SIZE_UP /* use setting from SEGGER_RTT_Conf.h */
+#else
+  #define TRC_BUFFER_UP_SIZE    %TraceRTTUpBufferSize
+#endif
+#if TRC_RTT_DOWN_BUFFER_INDEX == 0
+  #define TRC_BUFFER_DOWN_SIZE   BUFFER_SIZE_DOWN /* use setting from SEGGER_RTT_Conf.h */
+#else
+  #define TRC_BUFFER_DOWN_SIZE  %TraceRTTDownBufferSize
+#endif
+#if TRC_RTT_UP_BUFFER_INDEX>=SEGGER_RTT_MAX_NUM_UP_BUFFERS || TRC_RTT_DOWN_BUFFER_INDEX>=SEGGER_RTT_MAX_NUM_DOWN_BUFFERS
+  #error "check number of available RTT buffers!"
+#endif
+#endif /* << EST */
 
 #endif

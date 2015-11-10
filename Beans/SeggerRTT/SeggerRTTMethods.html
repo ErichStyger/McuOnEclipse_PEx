@@ -303,6 +303,38 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ConfigUpBuffer">
+<b>ConfigUpBuffer</b></a>
+ - Configures the Up (device to host) buffer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ConfigUpBuffer(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>BufferIndex:byte</i> - Buffer index</li>
+<li><i>sName:byte</i> - Buffer name</li>
+<li><i>pBuffer: Pointer to byte</i> - Pointer to buffer</li>
+<li><i>intBufferSize:byte</i> - Size of buffer in bytes</li>
+<li><i>Flags:byte</i> - SEGGER_RTT_MODE_NO_BLOCK_SKIP, SEGGER_RTT_MODE_NO_BLOCK_TRIM or  SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL</li>
+<li><i>Return value:int</i> - Error code, &gt;=0 OK, &lt;0 Error
+</li>
+</ul><br />
+</li>
+<li><a name="ConfigDownBuffer">
+<b>ConfigDownBuffer</b></a>
+ - Configures the Down (host to device) buffer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ConfigDownBuffer(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>BufferIndex:byte</i> - Buffer index</li>
+<li><i>sName:byte</i> - Buffer name</li>
+<li><i>pBuffer: Pointer to byte</i> - Pointer to buffer</li>
+<li><i>intBufferSize:byte</i> - Size of buffer in bytes</li>
+<li><i>Flags:byte</i> - SEGGER_RTT_MODE_NO_BLOCK_SKIP, SEGGER_RTT_MODE_NO_BLOCK_TRIM or  SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL</li>
+<li><i>Return value:int</i> - Error code, &gt;=0 OK, &lt;0 Error
+</li>
+</ul><br />
+</li>
 <li><a name="Init">
 <b>Init</b></a>
  - Initializes the RTT Control Block.

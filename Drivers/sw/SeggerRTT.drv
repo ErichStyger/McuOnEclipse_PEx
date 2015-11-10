@@ -272,6 +272,38 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- SetTerminal
 %-BW_METHOD_END SetTerminal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigUpBuffer
+%ifdef ConfigUpBuffer
+#define %'ModuleName'%.%ConfigUpBuffer(BufferIndex, sName, pBuffer, BufferSize, Flags) \
+  SEGGER_RTT_ConfigUpBuffer(BufferIndex, sName, pBuffer, BufferSize, Flags)
+
+%define! ParBufferIndex
+%define! ParsName
+%define! ParpBuffer
+%define! ParintBufferSize
+%define! ParFlags
+%define! RetVal
+%include Common\SeggerRTTConfigUpBuffer.Inc
+
+%endif %- ConfigUpBuffer
+%-BW_METHOD_END ConfigUpBuffer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigDownBuffer
+%ifdef ConfigDownBuffer
+#define %'ModuleName'%.%ConfigDownBuffer(BufferIndex, sName, pBuffer, BufferSize, Flags) \
+  SEGGER_RTT_ConfigDownBuffer(BufferIndex, sName, pBuffer, BufferSize, Flags)
+
+%define! ParBufferIndex
+%define! ParsName
+%define! ParpBuffer
+%define! ParintBufferSize
+%define! ParFlags
+%define! RetVal
+%include Common\SeggerRTTConfigDownBuffer.Inc
+
+%endif %- ConfigDownBuffer
+%-BW_METHOD_END ConfigDownBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -520,8 +552,8 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 void %'ModuleName'%.%Init(void)
 {
   SEGGER_RTT_Init();
-  SEGGER_RTT_ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
-  SEGGER_RTT_ConfigDownBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  %'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  %'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 }
 
 %endif %- Init
@@ -556,6 +588,44 @@ void %'ModuleName'%.%SetTerminal(char TerminalId)
 
 %endif %- SetTerminal
 %-BW_METHOD_END SetTerminal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigUpBuffer
+%ifdef ConfigUpBuffer
+%define! ParBufferIndex
+%define! ParsName
+%define! ParpBuffer
+%define! ParintBufferSize
+%define! ParFlags
+%define! RetVal
+%include Common\SeggerRTTConfigUpBuffer.Inc
+/**
+int %'ModuleName'%.%ConfigUpBuffer(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)
+{
+  Function is implemented as macro in the header file
+}
+*/
+
+%endif %- ConfigUpBuffer
+%-BW_METHOD_END ConfigUpBuffer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ConfigDownBuffer
+%ifdef ConfigDownBuffer
+%define! ParBufferIndex
+%define! ParsName
+%define! ParpBuffer
+%define! ParintBufferSize
+%define! ParFlags
+%define! RetVal
+%include Common\SeggerRTTConfigDownBuffer.Inc
+/**
+int %'ModuleName'%.%ConfigDownBuffer(unsigned BufferIndex, const char* sName, char* pBuffer, int BufferSize, int Flags)
+{
+  Function is implemented as macro in the header file
+}
+*/
+
+%endif %- ConfigDownBuffer
+%-BW_METHOD_END ConfigDownBuffer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

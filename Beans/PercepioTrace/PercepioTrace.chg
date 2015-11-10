@@ -13,3 +13,14 @@
   %set vTraceStoreISRBegin Selection never
   %set vTraceStoreISREnd Selection never
 %endif
+
+%if defined(RTTUpBufferIndex) & %RTTUpBufferIndex >. '0'
+  %set TraceRTTUpBufferSize ReadOnly no
+%else
+  %set TraceRTTUpBufferSize ReadOnly yes
+%endif
+%if defined(RTTDownBufferIndex) & %RTTDownBufferIndex >. '0'
+  %set TraceRTTDownBufferSize ReadOnly no
+%else
+  %set TraceRTTDownBufferSize ReadOnly yes
+%endif

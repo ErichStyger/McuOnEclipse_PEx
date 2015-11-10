@@ -75,11 +75,11 @@
 #define TRC_STREAM_PORT_MALLOC() /* Static allocation. Not used. */
 #else
 #if TRC_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC
-#define TRC_RTT_ALLOC_UP() static char _TzTraceData[BUFFER_SIZE_UP];    /* Static allocation */
+#define TRC_RTT_ALLOC_UP() static char _TzTraceData[TRC_BUFFER_UP_SIZE];    /* Static allocation */
 #define TRC_STREAM_PORT_MALLOC() /* Static allocation. Not used. */
 #else
 #define TRC_RTT_ALLOC_UP() static char* _TzTraceData = NULL;    /* Dynamic allocation */
-#define TRC_STREAM_PORT_MALLOC() _TzTraceData = TRC_PORT_MALLOC(BUFFER_SIZE_UP);
+#define TRC_STREAM_PORT_MALLOC() _TzTraceData = TRC_PORT_MALLOC(TRC_BUFFER_UP_SIZE);
 #endif
 #endif
 
@@ -87,7 +87,7 @@
 #if TRC_RTT_DOWN_BUFFER_INDEX == 0
 #define TRC_RTT_ALLOC_DOWN() static char* _TzCtrlData = NULL;           /* Not actually used. Ignore allocation method. */
 #else
-#define TRC_RTT_ALLOC_DOWN() static char _TzCtrlData[BUFFER_SIZE_DOWN]; /* This buffer should be ~32bytes. Ignore allocation method. */
+#define TRC_RTT_ALLOC_DOWN() static char _TzCtrlData[TRC_BUFFER_DOWN_SIZE]; /* This buffer should be ~32bytes. Ignore allocation method. */
 #endif
   
 #define TRC_STREAM_PORT_ALLOCATE_FIELDS() \
