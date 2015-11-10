@@ -178,10 +178,16 @@ void RMSG_Init(void) {
     for(;;) {} /* not enough memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RMSG_MsgRxQueue, "RadioRxMsg");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RMSG_MsgRxQueue, "RadioRxMsg");
+#endif
 
   RMSG_MsgTxQueue = %@RTOS@'ModuleName'%.xQueueCreate(RMSG_QUEUE_TX_NOF_ITEMS, RPHY_BUFFER_SIZE);
   if (RMSG_MsgTxQueue==NULL) { /* queue creation failed! */
     for(;;) {} /* not enough memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RMSG_MsgTxQueue, "RadioTxMsg");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RMSG_MsgTxQueue, "RadioTxMsg");
+#endif
 }

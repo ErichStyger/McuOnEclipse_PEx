@@ -319,35 +319,53 @@ void RSTDIO_Init(void) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdInQ, "RxStdInQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_RxStdInQ, "RxStdInQ");
+#endif
 
   RSTDIO_RxStdOutQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_RxStdOutQ==NULL) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdOutQ, "RxStdOutQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_RxStdOutQ, "RxStdOutQ");
+#endif
 
   RSTDIO_RxStdErrQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_RxStdErrQ==NULL) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_RxStdErrQ, "RxStdErrQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_RxStdErrQ, "RxStdErrQ");
+#endif
 
   RSTDIO_TxStdInQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdInQ==NULL) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdInQ, "TxStdInQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_TxStdInQ, "TxStdInQ");
+#endif
 
   RSTDIO_TxStdOutQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdOutQ==NULL) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdOutQ , "TxStdOutQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_TxStdOutQ, "TxStdOutQ");
+#endif
 
   RSTDIO_TxStdErrQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_TxStdErrQ==NULL) {
     for(;;){} /* out of memory? */
   }
   %@RTOS@'ModuleName'%.vQueueAddToRegistry(RSTDIO_TxStdErrQ , "TxStdErrQ");
+#if configUSE_TRACE_HOOKS
+  vTraceSetQueueName(RSTDIO_TxStdErrQ, "TxStdErrQ");
+#endif
 }
 %endif
