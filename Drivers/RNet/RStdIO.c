@@ -131,13 +131,13 @@ uint8_t RSTDIO_HandleStdioRxMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *d
   (void)srcAddr;
   (void)packet;
   switch(type) {
-    case RAPP_MSG_TYPE_STDIN: /* <type><size><data */
+    case RAPP_MSG_TYPE_STDIN: /* <type><size><data> */
       *handled = TRUE;
       return RSTDIO_AddToQueue(RSTDIO_QUEUE_RX_IN, data, size);
-    case RAPP_MSG_TYPE_STDOUT: /* <type><size><data */
+    case RAPP_MSG_TYPE_STDOUT: /* <type><size><data> */
       *handled = TRUE;
       return RSTDIO_AddToQueue(RSTDIO_QUEUE_RX_OUT, data, size);
-    case RAPP_MSG_TYPE_STDERR: /* <type><size><data */
+    case RAPP_MSG_TYPE_STDERR: /* <type><size><data> */
       *handled = TRUE;
       return RSTDIO_AddToQueue(RSTDIO_QUEUE_RX_ERR, data, size);
     default:

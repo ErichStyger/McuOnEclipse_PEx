@@ -28,7 +28,7 @@ typedef enum RSTDIO_QueueType {
 } RSTDIO_QueueType;
 
 /*!
- * \brief Sends a character buffer to a tx stdio queues and sends it if queue is full or has \n
+ * \brief Sends a message to a tx stdio queues and sends it if queue is full or has \n at the end
  * \param queueType Which stdio queue to use
  * \param buf Data buffer.
  * \param bufSize Size of data buffer.
@@ -36,6 +36,13 @@ typedef enum RSTDIO_QueueType {
  */
 uint8_t RSTDIO_SendToTxStdio(RSTDIO_QueueType queueType, uint8_t *buf, size_t bufSize);
 
+/*!
+ * \brief Adds a message to a tx queues without sending it
+ * \param queueType Which stdio queue to use
+ * \param buf Data buffer.
+ * \param bufSize Size of data buffer.
+ * \return Error code
+ */
 uint8_t RSTDIO_AddToQueue(RSTDIO_QueueType queueType, const unsigned char *data, size_t dataSize);
 
 /*!
