@@ -268,6 +268,7 @@ void %'ModuleName'%.%Init(void);
   SEGGER_RTT_SetTerminal(TerminalId)
 
 %define! ParTerminalId
+%define! RetVal
 %include Common\SeggerRTTSetTerminal.Inc
 
 %endif %- SetTerminal
@@ -384,7 +385,7 @@ int %'ModuleName'%.%Write(unsigned BufferIndex, char* pBuffer, unsigned BufferSi
 %define! RetVal
 %include Common\SeggerRTTWriteString.Inc
 /**
-int %'ModuleName'%.%WriteString(unsigned BufferIndex, const char* s)
+unsigned %'ModuleName'%.%WriteString(unsigned BufferIndex, const char* s)
 {
   Implemented as macro in the header file.
 }
@@ -578,9 +579,10 @@ int %'ModuleName'%.%TerminalOut(char TerminalId, const char* s)
 %-BW_METHOD_BEGIN SetTerminal
 %ifdef SetTerminal
 %define! ParTerminalId
+%define! RetVal
 %include Common\SeggerRTTSetTerminal.Inc
 /**
-void %'ModuleName'%.%SetTerminal(char TerminalId)
+int %'ModuleName'%.%SetTerminal(char TerminalId)
 {
   Function is implemented as macro in the header file
 }

@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.037</Version>
+    <Version>01.038</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -350,7 +350,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>int</ReturnType>
+        <ReturnType>unsigned</ReturnType>
         <RetHint>Number of bytes which have been stored in the "Up"-buffer.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -369,7 +369,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* s)</ANSIC>
+          <ANSIC>unsigned #M#_#C#(unsigned BufferIndex, const char* s)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -476,7 +476,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
+        <ReturnType>int</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -488,7 +488,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(char TerminalId)</ANSIC>
+          <ANSIC>int #M#_#C#(char TerminalId)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

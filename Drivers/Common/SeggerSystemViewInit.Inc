@@ -3,13 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetTerminal)
+%include Common\GeneralMethod.inc (Init)
 %;**     Description :
-%;**          Sets the terminal to be used for output on channel 0.
-%include Common\GeneralParameters.inc(27)
-%;**         TerminalId%ParTerminalId %>27 - Terminal ID, 0..15
-%;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         Driver Initialization
+%include Common\GeneralParametersNone.inc
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -239,11 +239,11 @@ LI.EXP {
  - Write to buffer
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> int WriteString(unsigned BufferIndex, const char* s)<br />
+<br /><i>ANSIC prototype:</i> unsigned WriteString(unsigned BufferIndex, const char* s)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>BufferIndex:byte</i> - Buffer/channel to be used. 0 for terminal.</li>
 <li><i>s: Pointer to byte</i> - Pointer to </li>
-<li><i>Return value:int</i> - Number of bytes which have been stored in the &quot;Up&quot;-buffer.
+<li><i>Return value:unsigned</i> - Number of bytes which have been stored in the &quot;Up&quot;-buffer.
 </li>
 </ul><br />
 </li>
@@ -285,9 +285,11 @@ LI.EXP {
  -  Sets the terminal to be used for output on channel 0.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetTerminal(char TerminalId)<br />
+<br /><i>ANSIC prototype:</i> int SetTerminal(char TerminalId)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>TerminalId:byte</i> - Terminal ID, 0..15</li>
+<li><i>Return value:int</i> - Error code
+</li>
 </ul><br />
 </li>
 <li><a name="TerminalOut">

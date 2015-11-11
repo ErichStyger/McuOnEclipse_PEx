@@ -90,6 +90,7 @@
 %-BW_METHOD_MACROS_END
 
 #include "%ProcessorModule.h"
+#include "SEGGER_SYSVIEW.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -106,6 +107,14 @@
 
 
 %-BW_DEFINITION_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\SeggerSystemViewInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -144,6 +153,17 @@
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\SeggerSystemViewInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  SEGGER_SYSVIEW_Conf(); /* initialize Segger System Viewer */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -155,7 +175,7 @@
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+  %'ModuleName'%.%Init();
 %CODE_END
 %-
 %ENABLE
