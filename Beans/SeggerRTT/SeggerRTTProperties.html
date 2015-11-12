@@ -234,11 +234,33 @@ LI.EXP {
 <ul>
   <li>
   <a name="RTTBufferSizeUp">
-  <b>Up Buffer Size (Tx, device to host)</b></a> - Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)
+  <b>Up Buffer Size (Tx)</b></a> - Configures BUFFER_SIZE_UP in SEGGER_RTT_Conf.h (size is in bytes, default 1k)
+  </li>
+  <li>
+  <a name="UpBufferMode">
+  <b>Up Buffer Mode</b></a> - Mode to be used for Up Buffer<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>Skip (Default)</u>: Skip. Do not block, output nothing. (Default)</li>
+  <li><u>Trim</u>: Trim: Do not block, output as much as fits.</li>
+  <li><u>Block</u>: Block: Wait until there is space in the buffer.</li>
+</ul><br />
+
   </li>
   <li>
   <a name="RTTBufferSizeDown">
-  <b>Down Buffer Size (Rx, host to device)</b></a> - Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)
+  <b>Down Buffer Size (Rx)</b></a> - Configures BUFFER_SIZE_DOWN in SEGGER_RTT_Conf.h (size is in bytes, default 16)
+  </li>
+  <li>
+  <a name="DownBufferMode">
+  <b>Down Buffer Mode</b></a> - Mode to be used for Down Buffer<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>Skip (Default)</u>: Skip. Do not block, output nothing. (Default)</li>
+  <li><u>Trim</u>: Trim: Do not block, output as much as fits.</li>
+  <li><u>Block</u>: Block: Wait until there is space in the buffer.</li>
+</ul><br />
+
   </li>
   <li>
   <a name="RTTBufferSizePrintf">
@@ -250,6 +272,10 @@ LI.EXP {
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
   <ul>
+    <li>
+    <a name="RTTBlockingSendTimeoutMs">
+    <b>Timeout (ms)</b></a> - Timeout, how long to wait for a single character. Use zero for blocking send.
+    </li>
     <li>
     <a name="Wait">
     <b>Wait</b></a> - Interface to wait routines

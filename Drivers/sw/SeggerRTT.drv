@@ -474,11 +474,21 @@ void %'ModuleName'%.%StdIOReadChar(uint8_t *c)
 void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
 {
 %if BlockingSend='yes'
+%if defined(RTTBlockingSendTimeoutMs) & %RTTBlockingSendTimeoutMs >. '0' & defined(WaitTimeMs) & WaitTimeMs >. '0'
+  int timeoutMs = %RTTBlockingSendTimeoutMs;
+
+%endif
   for(;;) { /* will break */
     if (%'ModuleName'%.%Write(0, (const char*)&ch, 1)==1) { /* non blocking send, check that we were able to send */
       break; /* was able to send character, get out of waiting loop */
     }
   %if defined(WaitTimeMs) & WaitTimeMs >. '0'
+  %if defined(RTTBlockingSendTimeoutMs) & %RTTBlockingSendTimeoutMs >. '0'
+    if(timeoutMs<=0) {
+      break; /* timeout */
+    }
+    timeoutMs -= %WaitTimeMs;
+  %endif
     %@Wait@'ModuleName'%.WaitOSms(%WaitTimeMs);
   %endif
   } /* for */
@@ -553,8 +563,8 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 void %'ModuleName'%.%Init(void)
 {
   SEGGER_RTT_Init();
-  %'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
-  %'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  %'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, %UpBufferMode);
+  %'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, %DownBufferMode);
 }
 
 %endif %- Init

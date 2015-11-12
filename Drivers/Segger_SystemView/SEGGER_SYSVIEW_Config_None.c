@@ -51,7 +51,6 @@ Purpose     : Sample setup configuration of SystemView with embOS.
 #include "SEGGER_SYSVIEW.h"
 #include "SEGGER_SYSVIEW_Config.h"
 
-
 /*********************************************************************
 *
 *       Defines, configurable
@@ -69,10 +68,10 @@ Purpose     : Sample setup configuration of SystemView with embOS.
 #endif
 
 // The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        "Demo Application"
+#define SYSVIEW_APP_NAME        %SysViewAppName
 
 // The target device name
-#define SYSVIEW_DEVICE_NAME     "Cortex-M4"
+#define SYSVIEW_DEVICE_NAME     %SysViewDeviceName
 
 // System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
 #if SYSVIEW_USING_KINETIS_SDK
@@ -87,7 +86,27 @@ Purpose     : Sample setup configuration of SystemView with embOS.
 #define SYSVIEW_TIMESTAMP_FREQ  (SYSVIEW_CPU_FREQ >> 4)
 
 // The lowest RAM address used for IDs (pointers)
-#define SYSVIEW_RAM_BASE        (0x20000000)
+#define SYSVIEW_RAM_BASE        (0x%#l%SysViewRamBase)
+
+#if 1 /* << EST */
+#define portNVIC_SYSTICK_LOAD_REG           (*((volatile unsigned long *)0xe000e014)) /* SYST_RVR, SysTick reload value register */
+#define portNVIC_SYSTICK_CURRENT_VALUE_REG  (*((volatile unsigned long *)0xe000e018)) /* SYST_CVR, SysTick current value register */
+
+#define TICK_NOF_BITS               24
+#define COUNTS_UP                   0 /* SysTick is counting down to zero */
+#define SET_TICK_DURATION(val)      portNVIC_SYSTICK_LOAD_REG = val
+#define GET_TICK_DURATION()         portNVIC_SYSTICK_LOAD_REG
+#define GET_TICK_CURRENT_VAL(addr)  *(addr)=portNVIC_SYSTICK_CURRENT_VALUE_REG
+
+
+uint32_t SEGGER_uxGetTickCounterValue(void) {
+  uint32_t val;
+
+  GET_TICK_CURRENT_VAL(&val);
+  return val;
+}
+
+#endif
 
 /********************************************************************* 
 *
