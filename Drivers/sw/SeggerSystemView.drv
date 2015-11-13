@@ -115,6 +115,28 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnUserStart
+%ifdef OnUserStart
+#define %'ModuleName'%.%OnUserStart(UserId) \
+  SEGGER_SYSVIEW_OnUserStart(UserId)
+
+%define! ParUserId
+%include Common\SeggerSystemViewOnUserStart.Inc
+
+%endif %- OnUserStart
+%-BW_METHOD_END OnUserStart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnUserStop
+%ifdef OnUserStop
+#define %'ModuleName'%.%OnUserStop(UserId) \
+  SEGGER_SYSVIEW_OnUserStop(UserId)
+
+%define! ParUserId
+%include Common\SeggerSystemViewOnUserStop.Inc
+
+%endif %- OnUserStop
+%-BW_METHOD_END OnUserStop
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -164,6 +186,34 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnUserStart
+%ifdef OnUserStart
+%define! ParUserId
+%include Common\SeggerSystemViewOnUserStart.Inc
+/**
+void %'ModuleName'%.%OnUserStart(unsigned UserId)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- OnUserStart
+%-BW_METHOD_END OnUserStart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnUserStop
+%ifdef OnUserStop
+%define! ParUserId
+%include Common\SeggerSystemViewOnUserStop.Inc
+/**
+void %'ModuleName'%.%OnUserStop(unsigned UserId)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- OnUserStop
+%-BW_METHOD_END OnUserStop
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

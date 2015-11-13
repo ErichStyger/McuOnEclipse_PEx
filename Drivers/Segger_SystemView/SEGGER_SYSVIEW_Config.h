@@ -55,30 +55,21 @@ Purpose : SEGGER SYSVIEW setup configuration header
   extern "C" {                // Make sure we have C-declarations in C++ programs.
 #endif
 
-/* macros to identify the core used */
-%if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
-#define SEGGER_SYSVIEW_CORE_M0   1
-#define SEGGER_SYSVIEW_CORE_M4   0
-%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
-#define SEGGER_SYSVIEW_CORE_M0   0
-#define SEGGER_SYSVIEW_CORE_M4   1
-%else
-#define SEGGER_SYSVIEW_CORE_M0   0
-#define SEGGER_SYSVIEW_CORE_M4   0
-#error "unknown ARM core. Only ARM is supported"
-%endif
-
+#include "SEGGER_RTT_Conf.h"
 /*********************************************************************
 *
 *       SysView timestamp configuration
 */
-#if SEGGER_SYSVIEW_CORE_M4
+#if SEGGER_RTT_CORE_M4
   #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(uint32_t *)(0xE0001004)) >> 4)       // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
   #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                  // Define number of valid bits low-order delivered by clock source
   #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(uint32_t *)(0xE000ED04)) & 0x1FF)   /* ICSR[8:0] */
-#else
+#elif SEGGER_RTT_CORE_M0
   #define SEGGER_SYSVIEW_GET_TIMESTAMP()      0
   #define SEGGER_SYSVIEW_TIMESTAMP_BITS       0
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   0
+#else
+  #error "Unknown ARM core!"
 #endif
 /*********************************************************************
 *

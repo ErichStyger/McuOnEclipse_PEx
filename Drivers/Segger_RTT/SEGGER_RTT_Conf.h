@@ -32,18 +32,72 @@ Purpose : Implementation of SEGGER real-time terminal which allows
 
 #define SEGGER_RTT_PRINTF_BUFFER_SIZE             (%RTTBufferSizePrintf)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
 
+/* macros to identify the core used */
+%if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
+#define SEGGER_RTT_CORE_M0   1
+#define SEGGER_RTT_CORE_M4   0
+%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
+#define SEGGER_RTT_CORE_M0   0
+#define SEGGER_RTT_CORE_M4   1
+%else
+#define SEGGER_RTT_CORE_M0   0
+#define SEGGER_RTT_CORE_M4   0
+#error "unknown ARM core. Only ARM is supported"
+%endif
+
+#if SEGGER_RTT_CORE_M0
+  #define SEGGER_RTT_LOCK(SavedState)   {                                               \
+                                        __asm volatile ("mrs   %%0, primask  \n\t"         \
+                                                      "mov   r1, $1     \n\t"           \
+                                                      "msr   primask, r1  \n\t"         \
+                                                      : "=r" (SavedState)               \
+                                                      :                                 \
+                                                      : "r1"                            \
+                                                      );                                \
+                                        }
+
+  #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
+                                        __asm volatile ("msr   primask, %%0  \n\t"         \
+                                                      :                                 \
+                                                      : "r" (SavedState)                \
+                                                      :                                 \
+                                                      );                                \
+                                        }
+
+#elif SEGGER_RTT_CORE_M4
+  #define SEGGER_RTT_LOCK(SavedState)   {                                               \
+                                        __asm volatile ("mrs   %%0, basepri  \n\t"         \
+                                                    "mov   r1, $128     \n\t"           \
+                                                    "msr   basepri, r1  \n\t"           \
+                                                    : "=r" (SavedState)                 \
+                                                    :                                   \
+                                                    : "r1"                              \
+                                                    );                                  \
+                                        }
+  #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
+                                        __asm volatile ("msr   basepri, %%0  \n\t"         \
+                                                      :                                 \
+                                                      : "r" (SavedState)                \
+                                                      :                                 \
+                                                      );                                \
+                                        }
+#else
+  #define SEGGER_RTT_LOCK(SavedState)   (void)(SavedState)
+  #define SEGGER_RTT_UNLOCK(SavedState) (void)(SavedState)
+#endif
+
 //
 // Target is not allowed to perform other RTT operations while string still has not been stored completely.
 // Otherwise we would probably end up with a mixed string in the buffer.
 // If using  RTT from within interrupts, multiple tasks or multi processors, define the SEGGER_RTT_LOCK() and SEGGER_RTT_UNLOCK() function here.
 //
 %if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
-#include "%@CriticalSection@'ModuleName'.h"
-#define SEGGER_RTT_LOCK(SavedState)     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
-#define SEGGER_RTT_UNLOCK(SavedState)   %@CriticalSection@'ModuleName'%.ExitCritical()
+%- #include "%@CriticalSection@'ModuleName'.h"
+%- #define SEGGER_RTT_LOCK(SavedState)     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
+%- #define SEGGER_RTT_UNLOCK(SavedState)   %@CriticalSection@'ModuleName'%.ExitCritical()
 %else
-#define SEGGER_RTT_LOCK(SavedState)
-#define SEGGER_RTT_UNLOCK(SavedState)
+%- #define SEGGER_RTT_LOCK(SavedState)
+%- #define SEGGER_RTT_UNLOCK(SavedState)
 %endif
 //
 // Define SEGGER_RTT_IN_RAM as 1

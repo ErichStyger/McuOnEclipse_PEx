@@ -70,6 +70,13 @@ Purpose     : Sample setup configuration of SystemView with embOS.
 // The application name to be displayed in SystemViewer
 #define SYSVIEW_APP_NAME        %SysViewAppName
 
+// The operating system, if any
+%if defined(OperatingSystemId)
+#define SYSVIEW_OS_NAME         "%OperatingSystemId"
+%else
+#define SYSVIEW_OS_NAME         "Bare-metal"
+%endif
+
 // The target device name
 #define SYSVIEW_DEVICE_NAME     %SysViewDeviceName
 
@@ -116,10 +123,9 @@ uint32_t SEGGER_uxGetTickCounterValue(void) {
 *    Sends SystemView description strings.
 */
 static void _cbSendSystemDesc(void) {
-  SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",D="SYSVIEW_DEVICE_NAME);
+  SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",O="SYSVIEW_OS_NAME",D="SYSVIEW_DEVICE_NAME);
   SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
 }
-
 
 /*********************************************************************
 *

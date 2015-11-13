@@ -16,5 +16,5 @@
 %FILE %'DirRel_Code'SEGGER_SYSVIEW_ConfDefaults.h
 %include Segger_SystemView\SEGGER_SYSVIEW_ConfDefaults.h
 
-%FILE %'DirRel_Code'SEGGER_SYSVIEW_Config_None.c
-%include Segger_SystemView\SEGGER_SYSVIEW_Config_None.c
+%FILE %'DirRel_Code'SEGGER_SYSVIEW_Config.c
+%include Segger_SystemView\SEGGER_SYSVIEW_Config.c
