@@ -71,6 +71,16 @@ Purpose : SEGGER SYSVIEW setup configuration header
 #else
   #error "Unknown ARM core!"
 #endif
+
+// Number of bytes that SysView uses for a buffer.
+#define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
+
+// The RTT channel that SysView will use.
+#define SEGGER_SYSVIEW_RTT_CHANNEL        %RttChannelIndex
+#if SEGGER_SYSVIEW_RTT_CHANNEL>=SEGGER_RTT_MAX_NUM_UP_BUFFERS
+  #error "Not enough RTT buffers allocated in RTT!"
+#endif
+
 /*********************************************************************
 *
 *       API functions

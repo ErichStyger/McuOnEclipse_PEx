@@ -39,7 +39,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.11                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ Purpose     : SEGGER SysView internal header.
 */
 
 #include "SEGGER_SYSVIEW.h"
-#include "SEGGER_SYSVIEW_Config.h"
+#include "SEGGER_SYSVIEW_Conf.h"
 #include "SEGGER_SYSVIEW_ConfDefaults.h"
 
 #ifdef __cplusplus

@@ -39,7 +39,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.11                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ Purpose     : Defines defaults for configurable defines used in
 **********************************************************************
 */
 
-#include "SEGGER_SYSVIEW_Config.h"
+#include "SEGGER_SYSVIEW_Conf.h"
 
 #ifdef __cplusplus
 extern "C" {

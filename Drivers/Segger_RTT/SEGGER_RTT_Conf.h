@@ -1,16 +1,16 @@
 /*********************************************************************
-*              SEGGER MICROCONTROLLER SYSTEME GmbH                   *
-*        Solutions for real time microcontroller applications        *
+*               SEGGER MICROCONTROLLER GmbH & Co. KG                 *
+*       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*        (c) 1996-2014 SEGGER Microcontroller Systeme GmbH           *
+*       (c) 2014 - 2015  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
-* Internet: www.segger.com Support: support@segger.com               *
+*       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
 File    : SEGGER_RTT_Conf.h
-Date    : 17 Dec 2014
+Date    : 07 Sep 2015
 Purpose : Implementation of SEGGER real-time terminal which allows
           real-time terminal communication on targets which support
           debugger memory accesses while the CPU is running.
@@ -99,6 +99,7 @@ Purpose : Implementation of SEGGER real-time terminal which allows
 %- #define SEGGER_RTT_LOCK(SavedState)
 %- #define SEGGER_RTT_UNLOCK(SavedState)
 %endif
+
 //
 // Define SEGGER_RTT_IN_RAM as 1
 // when using RTT in RAM targets (init and data section both in RAM).

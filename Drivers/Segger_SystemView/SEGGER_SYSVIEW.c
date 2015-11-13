@@ -39,7 +39,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.11                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -416,7 +416,6 @@ static int _TrySendOverflowPacket(void) {
   Status = SEGGER_RTT_WriteSkipNoLock(CHANNEL_ID_UP, aPacket, pPayload - aPacket);
   if (Status) {
     _SYSVIEW_Globals.LastTxTimeStamp = TimeStamp;
-    _SYSVIEW_Globals.DropCount = 0;
     _SYSVIEW_Globals.EnableState--; // EnableState has been 2, will be 1. Always.
   } else {
     _SYSVIEW_Globals.DropCount++;
@@ -871,7 +870,6 @@ void SEGGER_SYSVIEW_RecordSystime(void) {
 *    Example packets sent
 *      02 0F 50              // ISR(15) Enter. Timestamp is 80 (0x50)
 */
-
 void SEGGER_SYSVIEW_RecordEnterISR(void) {
   U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32];
   U8* pPayload;

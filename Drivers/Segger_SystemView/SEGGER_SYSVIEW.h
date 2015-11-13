@@ -39,7 +39,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.11                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -165,6 +165,12 @@ U8*  SEGGER_SYSVIEW_EncodeData                    (U8* pPayload, const char* pSr
 U8*  SEGGER_SYSVIEW_EncodeString                  (U8* pPayload, const char* s, unsigned MaxLen);
 U8*  SEGGER_SYSVIEW_EncodeId                      (U8* pPayload, unsigned Id);
 unsigned SEGGER_SYSVIEW_ShrinkId                  (unsigned Id);
+
+/*********************************************************************
+*
+*       Application-provided configuration to be called on application start
+*/
+void SEGGER_SYSVIEW_Conf(void);
 
 #ifdef __cplusplus
 }
