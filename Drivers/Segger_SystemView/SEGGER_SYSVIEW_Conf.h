@@ -39,39 +39,34 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.11                                    *
 *                                                                    *
 **********************************************************************
--------------------------- END-OF-HEADER -----------------------------
-
-File    : SEGGER_SYSVIEW_Config.h
-Purpose : SEGGER SYSVIEW setup configuration header
+----------------------------------------------------------------------
+File        : SEGGER_SYSVIEW_Conf.h
+Purpose     : SEGGER SysView configuration.
+--------  END-OF-HEADER  ---------------------------------------------
 */
 
-#ifndef SEGGER_SYSVIEW_CONFIG_H            // Avoid multiple inclusion.
-#define SEGGER_SYSVIEW_CONFIG_H
+#ifndef SEGGER_SYSVIEW_CONF_H
+#define SEGGER_SYSVIEW_CONF_H
 
-#if defined(__cplusplus)
-  extern "C" {                // Make sure we have C-declarations in C++ programs.
+#ifdef __ICCARM__
+  #include <intrinsics.h>
 #endif
 
 #include "SEGGER_RTT_Conf.h"
+
 /*********************************************************************
 *
-*       SysView timestamp configuration
+*       Defines, configurable
+*
+**********************************************************************
 */
-#if SEGGER_RTT_CORE_M4
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(uint32_t *)(0xE0001004)) >> 4)       // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                  // Define number of valid bits low-order delivered by clock source
-  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(uint32_t *)(0xE000ED04)) & 0x1FF)   /* ICSR[8:0] */
-#elif SEGGER_RTT_CORE_M0
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      0
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       0
-  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   0
-#else
-  #error "Unknown ARM core!"
-#endif
-
+/*********************************************************************
+*
+*       SysView buffer configuration
+*/
 // Number of bytes that SysView uses for a buffer.
 #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
 
@@ -81,19 +76,128 @@ Purpose : SEGGER SYSVIEW setup configuration header
   #error "Not enough RTT buffers allocated in RTT!"
 #endif
 
+
 /*********************************************************************
 *
-*       API functions
-*
-**********************************************************************
+*       SysView timestamp configuration
 */
-
-void SEGGER_SYSVIEW_Conf(void);
-
-#if defined(__cplusplus)
-}                             // Make sure we have C-declarations in C++ programs.
+#if SEGGER_RTT_CORE_M4
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(uint32_t *)(0xE0001004)) >> 4)       // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                  // Define number of valid bits low-order delivered by clock source
+#elif SEGGER_RTT_CORE_M0
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      0
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       0
+#else
+  #error "Unknown ARM core!"
 #endif
 
-#endif                        // Avoid multiple inclusion.
+/*********************************************************************
+*
+*       SysView Id configuration
+*/
+#define SEGGER_SYSVIEW_ID_BASE         0x10000000                          // Default value for the lowest Id reported by the application. Can be overridden by the application via SEGGER_SYSVIEW_SetRAMBase(). (i.e. 0x20000000 when all Ids are an address in this RAM)
+#define SEGGER_SYSVIEW_ID_SHIFT        2                                   // Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
+
+/*********************************************************************
+*
+*       SysView interrupt configuration
+*/
+#if SEGGER_RTT_CORE_M4
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
+#elif SEGGER_RTT_CORE_M0
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
+#else
+  #error "Unknown ARM core!"
+#endif
+
+%- %if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
+%- #include "%@CriticalSection@'ModuleName'.h"
+%- #define SEGGER_SYSVIEW_LOCK()     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
+%- #define SEGGER_SYSVIEW_UNLOCK()   %@CriticalSection@'ModuleName'%.ExitCritical()
+%- %endif
+/*********************************************************************
+*
+*       SysView lock configuration for SEGGER Embedded Studio, 
+*       Rowley CrossStudio and GCC
+*/
+#if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
+  #ifdef __ARM_ARCH_6M__
+    #define SEGGER_SYSVIEW_LOCK() {                                             \
+                                    U32 LockState;                              \
+                                    __asm volatile ("mrs   %%0, primask  \n\t"     \
+                                                  "mov   r1, $1     \n\t"       \
+                                                  "msr   primask, r1  \n\t"     \
+                                                  : "=r" (LockState)            \
+                                                  :                             \
+                                                  : "r1"                        \
+                                                  );                            
+    
+    #define SEGGER_SYSVIEW_UNLOCK() __asm volatile ("msr   primask, %%0  \n\t"     \
+                                                  :                             \
+                                                  : "r" (LockState)             \
+                                                  :                             \
+                                                  );                            \
+                                  }                                             
+                                  
+  #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
+    #define SEGGER_SYSVIEW_LOCK() {                                             \
+                                    U32 LockState;                              \
+                                    __asm volatile ("mrs   %%0, basepri  \n\t"     \
+                                                  "mov   r1, $128     \n\t"     \
+                                                  "msr   basepri, r1  \n\t"     \
+                                                  : "=r" (LockState)            \
+                                                  :                             \
+                                                  : "r1"                        \
+                                                  );                            
+    
+    #define SEGGER_SYSVIEW_UNLOCK() __asm volatile ("msr   basepri, %%0  \n\t"     \
+                                                  :                             \
+                                                  : "r" (LockState)             \
+                                                  :                             \
+                                                  );                            \
+                                  }
+  #else
+    #define SEGGER_SYSVIEW_LOCK()  
+    #define SEGGER_SYSVIEW_UNLOCK()
+  #endif
+#endif
+
+/*********************************************************************
+*
+*       SysView lock configuration for IAR EWARM
+*/
+#ifdef __ICCARM__
+  #if (defined (__ARM7M__) && (__CORE__ == __ARM7M__))
+    #define SEGGER_SYSVIEW_LOCK() {                                             \
+                                    U32 LockState;                              \
+                                    LockState = __get_PRIMASK();                \
+                                    __set_PRIMASK(1);                           
+                                    
+    #define SEGGER_SYSVIEW_UNLOCK() __set_PRIMASK(LockState);                   \
+                                  }
+  #elif (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__))
+    #define SEGGER_SYSVIEW_LOCK() {                                             \
+                                    U32 LockState;                              \
+                                    LockState = __get_BASEPRI();                \
+                                    __set_BASEPRI(128);                           
+                                    
+    #define SEGGER_SYSVIEW_UNLOCK() __set_BASEPRI(LockState);                   \
+                                  }  
+  #endif
+#endif
+
+/*********************************************************************
+*
+*       SysView lock configuration fallback
+*/
+#ifndef   SEGGER_SYSVIEW_LOCK
+  #define SEGGER_SYSVIEW_LOCK()                                                 // Lock SysView (nestable)   (i.e. disable interrupts)
+#endif
+
+#ifndef   SEGGER_SYSVIEW_UNLOCK
+  #define SEGGER_SYSVIEW_UNLOCK()                                               // Unlock SysView (nestable) (i.e. enable previous interrupt lock state)
+#endif
+
+#endif
 
 /*************************** End of file ****************************/

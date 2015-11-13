@@ -111,12 +111,6 @@ extern "C" {
   #error "SEGGER_SYSVIEW_GET_INTERRUPT_ID has to be defined."
 #endif
 
-%if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
-#include "%@CriticalSection@'ModuleName'.h"
-#define SEGGER_SYSVIEW_LOCK()     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
-#define SEGGER_SYSVIEW_UNLOCK()   %@CriticalSection@'ModuleName'%.ExitCritical()
-%endif
-
 // Lock SysView (nestable)
 #ifndef   SEGGER_SYSVIEW_LOCK
   #define SEGGER_SYSVIEW_LOCK()             

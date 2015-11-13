@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.044</Version>
+    <Version>01.045</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -39,7 +39,7 @@
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Number of Up Buffers</Name>
+        <Name>Number of Up Channels</Name>
         <Symbol>RTTBufferNofUp</Symbol>
         <Hint>Configures the device-to-host SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -56,7 +56,7 @@
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Number of Down Buffers (host to device)</Name>
+        <Name>Number of Down Channels (host to device)</Name>
         <Symbol>RTTBufferNofDown</Symbol>
         <Hint>Configures SEGGER_RTT_MAX_NUM_DOWN_BUFFERS in SEGGER_RTT_Conf.h (size is in bytes, default 1)</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -73,7 +73,7 @@
     </Property>
     <Property>
       <TGrupItem>
-        <Name>Terminal (Buffer 0)</Name>
+        <Name>Terminal (Channel 0)</Name>
         <Symbol>TerminalBuffer0Group</Symbol>
         <Hint>Settings for buffer 0, used for Terminal</Hint>
         <ItemLevel>BASIC</ItemLevel>
