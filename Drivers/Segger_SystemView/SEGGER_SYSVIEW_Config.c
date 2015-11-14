@@ -44,12 +44,12 @@
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
-File        : SEGGER_SYSVIEW_Config_embOS.c
-Purpose     : Sample setup configuration of SystemView with embOS.
+File        : SEGGER_SYSVIEW_Config.c
+Purpose     : Setup configuration of SystemView.
 */
 #include <stddef.h> /* for NULL */
 #include "SEGGER_SYSVIEW.h"
-#include "SEGGER_SYSVIEW_Config.h"
+#include "SEGGER_SYSVIEW_Conf.h"
 
 /*********************************************************************
 *

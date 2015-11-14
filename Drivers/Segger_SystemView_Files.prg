@@ -18,3 +18,11 @@
 
 %FILE %'DirRel_Code'SEGGER_SYSVIEW_Config.c
 %include Segger_SystemView\SEGGER_SYSVIEW_Config.c
+
+%if defined(OperatingSystemId) & %OperatingSystemId='FreeRTOS'
+%FILE %'DirRel_Code'SEGGER_SYSVIEW_FreeRTOS.c
+%include Segger_SystemView\SEGGER_SYSVIEW_FreeRTOS.c
+
+%FILE %'DirRel_Code'SEGGER_SYSVIEW_FreeRTOS.h
+%include Segger_SystemView\SEGGER_SYSVIEW_FreeRTOS.h
+%endif
