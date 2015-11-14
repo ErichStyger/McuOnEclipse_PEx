@@ -35,3 +35,4 @@
 %;**%>14 Char for Previous %>60: %get(PrevHistoryChar,Text)
 %else %- HistoryEnabled
 %endif %- HistoryEnabled
+%;**%>12 Kinetis SDK %>60: %get(KinetisSDK,Text)
