@@ -329,6 +329,11 @@
 %else
 #define configUSE_TRACE_HOOKS                                    %>50 0 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
 %endif
+%if defined(SeggerSystemViewerGroup) & %SeggerSystemViewerGroup='yes' & defined(SeggerSystemViewer)
+#define configUSE_SEGGER_SYSTEM_VIEWER_HOOKS                     %>50 1 /* 1: Segger System Viewer hooks, 0: not using Segger System Viewer hooks */
+%else
+#define configUSE_SEGGER_SYSTEM_VIEWER_HOOKS                     %>50 0 /* 1: Segger System Viewer hooks, 0: not using Segger System Viewer hooks */
+%endif
 #define configUSE_STATS_FORMATTING_FUNCTIONS                     %>50 (configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS)
 %if %Use16bitTicks='yes'
 #define configUSE_16_BIT_TICKS                                   %>50 1 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
