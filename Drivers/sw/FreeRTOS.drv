@@ -1709,6 +1709,119 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
 %endif
 
 %if defined(Shell)
+#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
+  UBaseType_t nofTasks, nof, i;
+  TaskStatus_t *pxTaskStatusArray;
+  uint8_t buf[32], tmpBuf[16], res;
+
+  res = ERR_OK;
+  nofTasks = uxTaskGetNumberOfTasks();
+  pxTaskStatusArray = pvPortMalloc(nofTasks*sizeof(TaskStatus_t));
+  if (pxTaskStatusArray!=NULL) {
+    nof = uxTaskGetSystemState(pxTaskStatusArray, nofTasks, NULL);
+    if (nof!=nofTasks) { /* error, array was to small? */
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***GetSystemState failed!\r\n", io->stdErr);
+      res = ERR_FAILED; /* out of memory */
+    } else {
+      #define PAD_STAT_TASK_HANDLE      11
+      #define PAD_STAT_TASK_NAME        configMAX_TASK_NAME_LEN
+      #define PAD_STAT_TASK_STATE       10
+      #define PAD_STAT_TASK_PRIO        8
+      #define PAD_STAT_TASK_RUNTIME     11
+      #define PAD_STAT_TASK_STACK_MARK  11
+      /* header */
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Handle", ' ', PAD_STAT_TASK_HANDLE);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', PAD_STAT_TASK_NAME);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"State", ' ', PAD_STAT_TASK_STATE);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Prio", ' ', PAD_STAT_TASK_PRIO);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Runtime", ' ', PAD_STAT_TASK_RUNTIME);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack", ' ', PAD_STAT_TASK_STACK_MARK);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      %@Shell@'ModuleName'%.SendStr("\r\n", io->stdOut);
+      for(i=0; i<nof; i++) {
+        /* task handle */
+        tmpBuf[0] = '\0';
+        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), "0x");
+        %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)pxTaskStatusArray[i].xHandle);
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_HANDLE);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        /* task name */
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), pxTaskStatusArray[i].pcTaskName, ' ', PAD_STAT_TASK_NAME);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        /* state */
+        switch(pxTaskStatusArray[i].eCurrentState) {
+          case eRunning:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Running"); break;
+          case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Ready"); break;
+          case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Suspended"); break;
+          case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Blocked"); break;
+          default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "UNKNOWN!"); break;
+        }
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATE);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        /* (baseprio,currprio) */
+        tmpBuf[0] = '\0';
+        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), '(');
+        %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].uxBasePriority);
+        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ',');
+        %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].uxCurrentPriority);
+        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ')');
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_PRIO);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        /* runtime */
+        tmpBuf[0] = '\0';
+        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), "0x");
+        %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].ulRunTimeCounter);
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        /* stack high water mark */
+        tmpBuf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatNum16u(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].usStackHighWaterMark);
+        buf[0] = '\0';
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_MARK);
+        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+        %@Shell@'ModuleName'%.SendStr("\r\n", io->stdOut);
+      }
+    }
+  } else {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***alloc failed!\r\n", io->stdErr);
+    res = ERR_FAILED; /* out of memory */
+  }
+  if (pxTaskStatusArray!=NULL) { /* free memory */
+    vPortFree(pxTaskStatusArray);
+  }
+  return res;
+}
+#endif /* configFRTOS_MEMORY_SCHEME!=1 */
+
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 #if configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS /* FreeRTOS trace feature enabled */
 #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
@@ -1795,6 +1908,9 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
+#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  tasklist", (unsigned char*)"Print tasklist\r\n", io->stdOut);
+#endif
   return ERR_OK;
 }
 
@@ -2815,6 +2931,11 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
+#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' tasklist")==0) {
+    *handled = TRUE;
+    return PrintTaskList(io);
+#endif
   }
   return ERR_OK;
 }
