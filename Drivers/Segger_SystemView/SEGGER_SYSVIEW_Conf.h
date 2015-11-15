@@ -84,8 +84,10 @@ Purpose     : SEGGER SysView configuration.
   #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(uint32_t *)(0xE0001004)) >> 4)       // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
   #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                  // Define number of valid bits low-order delivered by clock source
 #elif SEGGER_RTT_CORE_M0
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      0
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       0
+  extern uint32_t SEGGER_uxGetTickCounterValue(void);
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      SEGGER_uxGetTickCounterValue()
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       24
+  #warning "experimental only for Cortex-M0+!"
 #else
   #error "Unknown ARM core!"
 #endif
@@ -104,7 +106,7 @@ Purpose     : SEGGER SysView configuration.
 #if SEGGER_RTT_CORE_M4
   #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
 #elif SEGGER_RTT_CORE_M0
-  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x3F)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
 #else
   #error "Unknown ARM core!"
 #endif

@@ -87,47 +87,6 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 #error "unknown ARM core. Only ARM is supported"
 %endif
 
-#if SEGGER_RTT_CORE_M0
-  #define SEGGER_RTT_LOCK(SavedState)   {                                               \
-                                        __asm volatile ("mrs   %%0, primask  \n\t"         \
-                                                      "mov   r1, $1     \n\t"           \
-                                                      "msr   primask, r1  \n\t"         \
-                                                      : "=r" (SavedState)               \
-                                                      :                                 \
-                                                      : "r1"                            \
-                                                      );                                \
-                                        }
-
-  #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
-                                        __asm volatile ("msr   primask, %%0  \n\t"         \
-                                                      :                                 \
-                                                      : "r" (SavedState)                \
-                                                      :                                 \
-                                                      );                                \
-                                        }
-
-#elif SEGGER_RTT_CORE_M4
-  #define SEGGER_RTT_LOCK(SavedState)   {                                               \
-                                        __asm volatile ("mrs   %%0, basepri  \n\t"         \
-                                                    "mov   r1, $128     \n\t"           \
-                                                    "msr   basepri, r1  \n\t"           \
-                                                    : "=r" (SavedState)                 \
-                                                    :                                   \
-                                                    : "r1"                              \
-                                                    );                                  \
-                                        }
-  #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
-                                        __asm volatile ("msr   basepri, %%0  \n\t"         \
-                                                      :                                 \
-                                                      : "r" (SavedState)                \
-                                                      :                                 \
-                                                      );                                \
-                                        }
-#else
-  #define SEGGER_RTT_LOCK(SavedState)   (void)(SavedState)
-  #define SEGGER_RTT_UNLOCK(SavedState) (void)(SavedState)
-#endif
-
 //
 // Target is not allowed to perform other RTT operations while string still has not been stored completely.
 // Otherwise we would probably end up with a mixed string in the buffer.
@@ -140,44 +99,43 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 */
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
-    #define SEGGER_RTT_LOCK(SavedState)   {                                               \
-                                          __asm volatile ("mrs   %%0, primask  \n\t"         \
-                                                        "mov   r1, $1     \n\t"           \
-                                                        "msr   primask, r1  \n\t"         \
-                                                        : "=r" (SavedState)               \
-                                                        :                                 \
-                                                        : "r1"                            \
-                                                        );                                \
-                                          }
+    #define SEGGER_RTT_LOCK() {                                                 \
+                                    unsigned int LockState;                     \
+                                  __asm volatile ("mrs   %%0, primask  \n\t"     \
+                                                  "mov   r1, $1     \n\t"       \
+                                                  "msr   primask, r1  \n\t"     \
+                                                  : "=r" (LockState)            \
+                                                  :                             \
+                                                  : "r1"                        \
+                                                  );
 
-    #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
-                                          __asm volatile ("msr   primask, %%0  \n\t"         \
-                                                        :                                 \
-                                                        : "r" (SavedState)                \
-                                                        :                                 \
-                                                        );                                \
-                                          }
+    #define SEGGER_RTT_UNLOCK()   __asm volatile ("msr   primask, %%0  \n\t"     \
+                                                  :                             \
+                                                  : "r" (LockState)             \
+                                                  :                             \
+                                                  );                            \
+                                  }
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
-    #define SEGGER_RTT_LOCK(SavedState)   {                                               \
-                                          __asm volatile ("mrs   %%0, basepri  \n\t"         \
-                                                      "mov   r1, $128     \n\t"           \
-                                                      "msr   basepri, r1  \n\t"           \
-                                                      : "=r" (SavedState)                 \
-                                                      :                                   \
-                                                      : "r1"                              \
-                                                      );                                  \
-                                          }
-    #define SEGGER_RTT_UNLOCK(SavedState) {                                               \
-                                          __asm volatile ("msr   basepri, %%0  \n\t"         \
-                                                        :                                 \
-                                                        : "r" (SavedState)                \
-                                                        :                                 \
-                                                        );                                \
-                                          }
+    #define SEGGER_RTT_LOCK() {                                                 \
+                                    unsigned int LockState;                     \
+                                  __asm volatile ("mrs   %%0, basepri  \n\t"     \
+                                                  "mov   r1, $128     \n\t"     \
+                                                  "msr   basepri, r1  \n\t"     \
+                                                  : "=r" (LockState)            \
+                                                  :                             \
+                                                  : "r1"                        \
+                                                  );
+
+    #define SEGGER_RTT_UNLOCK()   __asm volatile ("msr   basepri, %%0  \n\t"     \
+                                                  :                             \
+                                                  : "r" (LockState)             \
+                                                  :                             \
+                                                  );                            \
+                                  }
   #else
-    #define SEGGER_RTT_LOCK(SavedState)   (void)(SavedState)
-    #define SEGGER_RTT_UNLOCK(SavedState) (void)(SavedState)
+    #define SEGGER_RTT_LOCK()
+    #define SEGGER_RTT_UNLOCK()
   #endif
 #endif
 
@@ -187,35 +145,34 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 */
 #ifdef __ICCARM__
   #if (defined (__ARM7M__) && (__CORE__ == __ARM7M__))
-    #define SEGGER_RTT_LOCK(SavedState)   {                                     \
-                                          SavedState = __get_PRIMASK();         \
-                                          __set_PRIMASK(1);                     \
-                                          }
+    #define SEGGER_RTT_LOCK() {                                                 \
+                                    unsigned int LockState;                     \
+                                    LockState = __get_PRIMASK();                \
+                                    __set_PRIMASK(1);
                                     
-    #define SEGGER_RTT_UNLOCK(SavedState) {                                     \
-                                          __set_PRIMASK(SavedState);            \
-                                          }
+    #define SEGGER_RTT_UNLOCK() __set_PRIMASK(LockState);                       \
+                                  }
   #elif (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__))
-    #define SEGGER_RTT_LOCK(SavedState)   {                                     \
-                                          SavedState = __get_BASEPRI();         \
-                                          __set_BASEPRI(128);                   \
-                                          }
+    #define SEGGER_RTT_LOCK() {                                                 \
+                                    unsigned int LockState;                     \
+                                    LockState = __get_BASEPRI();                \
+                                    __set_BASEPRI(128);
                                     
-    #define SEGGER_RTT_UNLOCK(SavedState) {                                     \
-                                          __set_BASEPRI(SavedState);            \
-                                          }  
+    #define SEGGER_RTT_UNLOCK() __set_BASEPRI(LockState);                       \
+                                  }
   #endif
 #endif
+
 /*********************************************************************
 *
 *       RTT lock configuration fallback
 */
 #ifndef   SEGGER_RTT_LOCK
-  #define SEGGER_RTT_LOCK(SavedState)   (void)(SavedState)
+  #define SEGGER_RTT_LOCK()                // Lock RTT (nestable)   (i.e. disable interrupts)
 #endif
 
 #ifndef   SEGGER_RTT_UNLOCK
-  #define SEGGER_RTT_UNLOCK(SavedState) (void)(SavedState)
+  #define SEGGER_RTT_UNLOCK()              // Unlock RTT (nestable) (i.e. enable previous interrupt lock state)
 #endif
 
 #endif
