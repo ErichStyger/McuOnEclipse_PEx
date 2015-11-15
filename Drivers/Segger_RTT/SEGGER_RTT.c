@@ -23,23 +23,22 @@
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
-* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
-* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
-* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
-* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
-* DAMAGE.                                                            *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
+* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
+* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.11                                    *
+*       SystemView version: V2.12                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -91,11 +90,11 @@ Additional information:
 #endif
 
 #ifndef   SEGGER_RTT_LOCK
-  #define SEGGER_RTT_LOCK(SavedState)
+  #define SEGGER_RTT_LOCK()
 #endif
 
 #ifndef   SEGGER_RTT_UNLOCK
-  #define SEGGER_RTT_UNLOCK(SavedState)
+  #define SEGGER_RTT_UNLOCK()
 #endif
 
 #ifndef   STRLEN
@@ -442,9 +441,8 @@ unsigned SEGGER_RTT_ReadNoLock(unsigned BufferIndex, void* pData, unsigned Buffe
 */
 unsigned SEGGER_RTT_Read(unsigned BufferIndex, void* pBuffer, unsigned BufferSize) {
   unsigned NumBytesRead;
-  volatile unsigned SavedState;
   //
-  SEGGER_RTT_LOCK(SavedState);
+  SEGGER_RTT_LOCK();
   //
   // Call the non-locking read function
   //
@@ -452,7 +450,7 @@ unsigned SEGGER_RTT_Read(unsigned BufferIndex, void* pBuffer, unsigned BufferSiz
   //
   // Finish up.
   //
-  SEGGER_RTT_UNLOCK(SavedState);
+  SEGGER_RTT_UNLOCK();
   //
   return NumBytesRead;
 }
@@ -664,10 +662,9 @@ unsigned SEGGER_RTT_WriteNoLock(unsigned BufferIndex, const void* pBuffer, unsig
 */
 unsigned SEGGER_RTT_Write(unsigned BufferIndex, const void* pBuffer, unsigned NumBytes) {
   unsigned Status;
-  volatile unsigned SavedState;
   //
   INIT();
-  SEGGER_RTT_LOCK(SavedState);
+  SEGGER_RTT_LOCK();
   //
   // Call the non-locking write function
   //
@@ -675,7 +672,7 @@ unsigned SEGGER_RTT_Write(unsigned BufferIndex, const void* pBuffer, unsigned Nu
   //
   // Finish up.
   //
-  SEGGER_RTT_UNLOCK(SavedState);
+  SEGGER_RTT_UNLOCK();
   //
   return Status;
 }
@@ -830,10 +827,9 @@ unsigned SEGGER_RTT_HasData(unsigned BufferIndex) {
 */
 int SEGGER_RTT_AllocDownBuffer(const char* sName, void* pBuffer, unsigned BufferSize, unsigned Flags) {
   int BufferIndex;
-  volatile unsigned SavedState;
 
   INIT();
-  SEGGER_RTT_LOCK(SavedState);
+  SEGGER_RTT_LOCK();
   BufferIndex = 0;
   do {
     if (_SEGGER_RTT.aDown[BufferIndex].pBuffer == NULL) {
@@ -851,7 +847,7 @@ int SEGGER_RTT_AllocDownBuffer(const char* sName, void* pBuffer, unsigned Buffer
   } else {
     BufferIndex = -1;
   }
-  SEGGER_RTT_UNLOCK(SavedState);
+  SEGGER_RTT_UNLOCK();
   return BufferIndex;
 }
 
@@ -876,10 +872,9 @@ int SEGGER_RTT_AllocDownBuffer(const char* sName, void* pBuffer, unsigned Buffer
 */
 int SEGGER_RTT_AllocUpBuffer(const char* sName, void* pBuffer, unsigned BufferSize, unsigned Flags) {
   int BufferIndex;
-  volatile unsigned SavedState;
 
   INIT();
-  SEGGER_RTT_LOCK(SavedState);
+  SEGGER_RTT_LOCK();
   BufferIndex = 0;
   do {
     if (_SEGGER_RTT.aUp[BufferIndex].pBuffer == NULL) {
@@ -897,7 +892,7 @@ int SEGGER_RTT_AllocUpBuffer(const char* sName, void* pBuffer, unsigned BufferSi
   } else {
     BufferIndex = -1;
   }
-  SEGGER_RTT_UNLOCK(SavedState);
+  SEGGER_RTT_UNLOCK();
   return BufferIndex;
 }
 
@@ -923,11 +918,10 @@ int SEGGER_RTT_AllocUpBuffer(const char* sName, void* pBuffer, unsigned BufferSi
 */
 int SEGGER_RTT_ConfigUpBuffer(unsigned BufferIndex, const char* sName, void* pBuffer, unsigned BufferSize, unsigned Flags) {
   int r;
-  volatile unsigned SavedState;
 
   INIT();
   if (BufferIndex < (unsigned)_SEGGER_RTT.MaxNumUpBuffers) {
-    SEGGER_RTT_LOCK(SavedState);
+    SEGGER_RTT_LOCK();
     if (BufferIndex > 0u) {
       _SEGGER_RTT.aUp[BufferIndex].sName        = sName;
       _SEGGER_RTT.aUp[BufferIndex].pBuffer      = pBuffer;
@@ -936,7 +930,7 @@ int SEGGER_RTT_ConfigUpBuffer(unsigned BufferIndex, const char* sName, void* pBu
       _SEGGER_RTT.aUp[BufferIndex].WrOff        = 0u;
     }
     _SEGGER_RTT.aUp[BufferIndex].Flags          = Flags;
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
     r =  0;
   } else {
     r = -1;
@@ -966,11 +960,10 @@ int SEGGER_RTT_ConfigUpBuffer(unsigned BufferIndex, const char* sName, void* pBu
 */
 int SEGGER_RTT_ConfigDownBuffer(unsigned BufferIndex, const char* sName, void* pBuffer, unsigned BufferSize, unsigned Flags) {
   int r;
-  volatile unsigned SavedState;
 
   INIT();
   if (BufferIndex < (unsigned)_SEGGER_RTT.MaxNumDownBuffers) {
-    SEGGER_RTT_LOCK(SavedState);
+    SEGGER_RTT_LOCK();
     if (BufferIndex > 0u) {
       _SEGGER_RTT.aDown[BufferIndex].sName        = sName;
       _SEGGER_RTT.aDown[BufferIndex].pBuffer      = pBuffer;
@@ -979,7 +972,7 @@ int SEGGER_RTT_ConfigDownBuffer(unsigned BufferIndex, const char* sName, void* p
       _SEGGER_RTT.aDown[BufferIndex].WrOff        = 0u;
     }
     _SEGGER_RTT.aDown[BufferIndex].Flags          = Flags;
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
     r =  0;
   } else {
     r = -1;
@@ -1005,13 +998,12 @@ int SEGGER_RTT_ConfigDownBuffer(unsigned BufferIndex, const char* sName, void* p
 */
 int SEGGER_RTT_SetNameUpBuffer(unsigned BufferIndex, const char* sName) {
   int r;
-  volatile unsigned SavedState;
 
   INIT();
   if (BufferIndex < (unsigned)_SEGGER_RTT.MaxNumUpBuffers) {
-    SEGGER_RTT_LOCK(SavedState);
+    SEGGER_RTT_LOCK();
     _SEGGER_RTT.aUp[BufferIndex].sName = sName;
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
     r =  0;
   } else {
     r = -1;
@@ -1037,13 +1029,12 @@ int SEGGER_RTT_SetNameUpBuffer(unsigned BufferIndex, const char* sName) {
 */
 int SEGGER_RTT_SetNameDownBuffer(unsigned BufferIndex, const char* sName) {
   int r;
-  volatile unsigned SavedState;
 
   INIT();
   if (BufferIndex < (unsigned)_SEGGER_RTT.MaxNumDownBuffers) {
-    SEGGER_RTT_LOCK(SavedState);
+    SEGGER_RTT_LOCK();
     _SEGGER_RTT.aDown[BufferIndex].sName = sName;
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
     r =  0;
   } else {
     r = -1;
@@ -1081,7 +1072,6 @@ void SEGGER_RTT_Init (void) {
 int SEGGER_RTT_SetTerminal (char TerminalId) {
   char                  ac[2];
   SEGGER_RTT_BUFFER_UP* pRing;
-  volatile unsigned     SavedState;
   unsigned Avail;
   int r;
   //
@@ -1092,7 +1082,7 @@ int SEGGER_RTT_SetTerminal (char TerminalId) {
   if ((unsigned char)TerminalId < (unsigned char)sizeof(_aTerminalId)) { // We only support a certain number of channels
     ac[1] = _aTerminalId[(unsigned char)TerminalId];
     pRing = &_SEGGER_RTT.aUp[0];    // Buffer 0 is always reserved for terminal I/O, so we can use index 0 here, fixed
-    SEGGER_RTT_LOCK(SavedState);    // Lock to make sure that no other task is writing into buffer, while we are and number of free bytes in buffer does not change downwards after checking and before writing
+    SEGGER_RTT_LOCK();    // Lock to make sure that no other task is writing into buffer, while we are and number of free bytes in buffer does not change downwards after checking and before writing
     if ((pRing->Flags & SEGGER_RTT_MODE_MASK) == SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) {
       _ActiveTerminal = TerminalId;
       _WriteBlocking(pRing, ac, 2u);
@@ -1105,7 +1095,7 @@ int SEGGER_RTT_SetTerminal (char TerminalId) {
         r = -1;
       }
     }
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
   } else {
     r = -1;
   }
@@ -1134,7 +1124,6 @@ int SEGGER_RTT_TerminalOut (char TerminalId, const char* s) {
   unsigned              FragLen;
   unsigned              Avail;
   SEGGER_RTT_BUFFER_UP* pRing;
-  volatile unsigned     SavedState;
   //
   INIT();
   //
@@ -1153,7 +1142,7 @@ int SEGGER_RTT_TerminalOut (char TerminalId, const char* s) {
     //
     // How we output depends upon the mode...
     //
-    SEGGER_RTT_LOCK(SavedState);
+    SEGGER_RTT_LOCK();
     Avail = _GetAvailWriteSpace(pRing);
     switch (pRing->Flags & SEGGER_RTT_MODE_MASK) {
     case SEGGER_RTT_MODE_NO_BLOCK_SKIP:
@@ -1198,7 +1187,7 @@ int SEGGER_RTT_TerminalOut (char TerminalId, const char* s) {
     //
     // Finish up.
     //
-    SEGGER_RTT_UNLOCK(SavedState);
+    SEGGER_RTT_UNLOCK();
   } else {
     Status = -1;
   }

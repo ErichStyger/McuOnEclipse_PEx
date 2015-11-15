@@ -23,23 +23,22 @@
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
-* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
-* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
-* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
-* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
-* DAMAGE.                                                            *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
+* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
+* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.10                                    *
+*       SystemView version: V2.12                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -62,20 +61,31 @@ Purpose     : Setup configuration of SystemView.
 %else
 #define SYSVIEW_USING_KINETIS_SDK                                    %>50 0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 %endif
+%if defined(OperatingSystemId) & %OperatingSystemId='FreeRTOS'
+#define SYSVIEW_USING_FREERTOS                                       %>50 1 /* 1: using FreeRTOS; 0: Bare metal */
+%else
+#define SYSVIEW_USING_FREERTOS                                       %>50 0 /* 1: using FreeRTOS; 0: Bare metal */
+%endif
 
 #if !SYSVIEW_USING_KINETIS_SDK
-#include "%ProcessorModule.h"
+  #include "%ProcessorModule.h"
+#endif
+#if SYSVIEW_USING_FREERTOS
+  #include "FreeRTOS.h"
 #endif
 
 // The application name to be displayed in SystemViewer
 #define SYSVIEW_APP_NAME        %SysViewAppName
 
 // The operating system, if any
-%if defined(OperatingSystemId)
-#define SYSVIEW_OS_NAME         "%OperatingSystemId"
-%else
-#define SYSVIEW_OS_NAME         "Bare-metal"
-%endif
+#if SYSVIEW_USING_FREERTOS
+  extern const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI;
+  #define SYSVIEW_OS_NAME         "FreeRTOS"
+  #define SYSVIEW_OS_API          &SYSVIEW_X_OS_TraceAPI
+#else
+  #define SYSVIEW_OS_NAME         "Bare-metal"
+  #define SYSVIEW_OS_API          NULL
+#endif
 
 // The target device name
 #define SYSVIEW_DEVICE_NAME     %SysViewDeviceName
@@ -85,6 +95,8 @@ Purpose     : Setup configuration of SystemView.
   /* The SDK variable SystemCoreClock contains the current clock speed */
   extern unsigned int SystemCoreClock;
   #define SYSVIEW_CPU_FREQ                                       %>50 (SystemCoreClock) /* CPU clock frequency */
+#elif SYSVIEW_USING_FREERTOS
+  #define SYSVIEW_CPU_FREQ                                       %>50 configCPU_CLOCK_HZ
 #else
   #define SYSVIEW_CPU_FREQ                                       %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
 #endif /* SYSVIEW_USING_KINETIS_SDK */
@@ -135,7 +147,7 @@ static void _cbSendSystemDesc(void) {
 */
 void SEGGER_SYSVIEW_Conf(void) {
   SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
-                      NULL, _cbSendSystemDesc);
+      SYSVIEW_OS_API, _cbSendSystemDesc);
   SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
 }
 

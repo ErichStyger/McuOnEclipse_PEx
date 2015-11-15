@@ -1725,7 +1725,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       res = ERR_FAILED; /* out of memory */
     } else {
       #define PAD_STAT_TASK_HANDLE      11
-      #define PAD_STAT_TASK_NAME        configMAX_TASK_NAME_LEN
+      #define PAD_STAT_TASK_NAME        (configMAX_TASK_NAME_LEN+1)
       #define PAD_STAT_TASK_STATE       10
       #define PAD_STAT_TASK_PRIO        8
       #define PAD_STAT_TASK_RUNTIME     11

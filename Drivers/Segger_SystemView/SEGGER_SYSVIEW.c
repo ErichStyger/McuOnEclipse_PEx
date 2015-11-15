@@ -23,23 +23,22 @@
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
-* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
-* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
-* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
-* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
-* DAMAGE.                                                            *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
+* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
+* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.11                                    *
+*       SystemView version: V2.12                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -794,6 +793,13 @@ void SEGGER_SYSVIEW_SendTaskInfo(const SEGGER_SYSVIEW_TASKINFO *pInfo) {
   ENCODE_U32(pPayload, pInfo->Prio);
   pPayload = _EncodeStr(pPayload, pInfo->sName, 32);
   _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_TASK_INFO);
+  pPayloadStart = _PreparePacket(aPacket);
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, SHRINK_ID(pInfo->TaskID));
+  ENCODE_U32(pPayload, pInfo->StackBase);
+  ENCODE_U32(pPayload, pInfo->StackSize);
+  ENCODE_U32(pPayload, 0); // Stack End, future use
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_STACK_INFO);
 }
 
 /*********************************************************************
