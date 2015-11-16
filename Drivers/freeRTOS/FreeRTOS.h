@@ -426,6 +426,10 @@ extern "C" {
 	#define traceMOVED_TASK_TO_READY_STATE( pxTCB )
 #endif
 
+#ifndef tracePOST_MOVED_TASK_TO_READY_STATE /* << EST */
+  #define tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )
+#endif
+
 #ifndef traceQUEUE_CREATE
 	#define traceQUEUE_CREATE( pxNewQueue )
 #endif

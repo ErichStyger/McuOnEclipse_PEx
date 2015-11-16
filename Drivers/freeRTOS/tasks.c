@@ -401,7 +401,9 @@ count overflows. */
 #define prvAddTaskToReadyList( pxTCB )																\
 	traceMOVED_TASK_TO_READY_STATE( pxTCB );														\
 	taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );												\
-	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xGenericListItem ) )
+	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xGenericListItem ) ); \
+	tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )  /* << EST: Additional hook for Segger SystemState to ensure that all tasks are in the list */
+        
 /*-----------------------------------------------------------*/
 
 /*
