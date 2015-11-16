@@ -63,10 +63,10 @@ Purpose : Interface between FreeRTOS and System View.
 *    functions to send the entire task list to the host.
 */
 static void _cbSendTaskList(void) {
-  TaskStatus_t*         pxTaskStatusArray;
-  volatile UBaseType_t  uxArraySize;
-  volatile UBaseType_t  x;
-  char                  cStatus;
+  TaskStatus_t* pxTaskStatusArray;
+  UBaseType_t   uxArraySize, nof;
+  UBaseType_t   x;
+  char          cStatus;
 
 #if INCLUDE_xTaskGetIdleTaskHandle
   TaskHandle_t          hIdle;
@@ -82,14 +82,10 @@ static void _cbSendTaskList(void) {
 
   if( pxTaskStatusArray != NULL ) {
     /* Generate the (binary) data. */
-    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+    nof = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
 
-#if INCLUDE_xTaskGetIdleTaskHandle
-    hIdle = xTaskGetIdleTaskHandle();
-#endif
-    
     /* Create a human readable table from the binary data. */
-    for( x = 0; x < uxArraySize; x++ ) {
+    for( x = 0; x < nof; x++ ) {
 #if INCLUDE_xTaskGetIdleTaskHandle
       if (pxTaskStatusArray[x].xHandle != hIdle) {
         SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, 0, 0);

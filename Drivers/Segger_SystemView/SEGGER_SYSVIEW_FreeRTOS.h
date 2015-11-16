@@ -234,7 +234,12 @@ Purpose : Interface between FreeRTOS and SystemView.
   #define traceTASK_SWITCHED_IN()                   SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB)
 #endif
 
+#if 1 /* << EST */
+#define traceMOVED_TASK_TO_READY_STATE(pxTCB)       
+#define tracePOST_MOVED_TASK_TO_READY_STATE(pxTCB)  SEGGER_SYSVIEW_OnTaskStartReady((U32)pxTCB)
+#else
 #define traceMOVED_TASK_TO_READY_STATE(pxTCB)       SEGGER_SYSVIEW_OnTaskStartReady((U32)pxTCB)
+#endif
 #define traceREADDED_TASK_TO_READY_STATE(pxTCB)     
 
 #define traceMOVED_TASK_TO_DELAYED_LIST()           SEGGER_SYSVIEW_OnTaskStopReady((U32)pxCurrentTCB,  (1u << 2))
