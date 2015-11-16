@@ -231,7 +231,11 @@ Purpose : Interface between FreeRTOS and SystemView.
                                                       SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB);                \
                                                     }
 #else
-  #define traceTASK_SWITCHED_IN()                   SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB)
+  #define traceTASK_SWITCHED_IN()                   if (strcmp(pxCurrentTCB->pcTaskName, "IDLE")==0) {                              \
+                                                      SEGGER_SYSVIEW_OnIdle();                                          \
+                                                    }                                                                   \
+                                                      SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB)                 \
+                                                    }
 #endif
 
 #if 1 /* << EST */
