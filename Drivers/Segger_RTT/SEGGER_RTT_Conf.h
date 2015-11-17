@@ -23,23 +23,22 @@
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
-* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
-* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
-* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
-* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
-* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
-* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
-* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
-* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
-* DAMAGE.                                                            *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
+* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
+* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
+* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
+* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
+* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.11                                    *
+*       SystemView version: V2.12                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -107,14 +106,14 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   : "=r" (LockState)            \
                                                   :                             \
                                                   : "r1"                        \
-                                                  );
-
+                                                  );                            
+    
     #define SEGGER_RTT_UNLOCK()   __asm volatile ("msr   primask, %%0  \n\t"     \
                                                   :                             \
                                                   : "r" (LockState)             \
                                                   :                             \
                                                   );                            \
-                                  }
+                                  }                                             
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     #define SEGGER_RTT_LOCK() {                                                 \
@@ -125,8 +124,8 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   : "=r" (LockState)            \
                                                   :                             \
                                                   : "r1"                        \
-                                                  );
-
+                                                  );                            
+    
     #define SEGGER_RTT_UNLOCK()   __asm volatile ("msr   basepri, %%0  \n\t"     \
                                                   :                             \
                                                   : "r" (LockState)             \
@@ -134,7 +133,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   );                            \
                                   }
   #else
-    #define SEGGER_RTT_LOCK()
+    #define SEGGER_RTT_LOCK()  
     #define SEGGER_RTT_UNLOCK()
   #endif
 #endif
@@ -148,7 +147,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
     #define SEGGER_RTT_LOCK() {                                                 \
                                     unsigned int LockState;                     \
                                     LockState = __get_PRIMASK();                \
-                                    __set_PRIMASK(1);
+                                    __set_PRIMASK(1);                           
                                     
     #define SEGGER_RTT_UNLOCK() __set_PRIMASK(LockState);                       \
                                   }
@@ -156,10 +155,10 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
     #define SEGGER_RTT_LOCK() {                                                 \
                                     unsigned int LockState;                     \
                                     LockState = __get_BASEPRI();                \
-                                    __set_BASEPRI(128);
+                                    __set_BASEPRI(128);                           
                                     
     #define SEGGER_RTT_UNLOCK() __set_BASEPRI(LockState);                       \
-                                  }
+                                  }  
   #endif
 #endif
 

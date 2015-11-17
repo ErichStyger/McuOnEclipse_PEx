@@ -5,6 +5,8 @@
 %;**%>12 Application Name %>60: %get(SysViewAppName,Text)
 %;**%>12 Device Name %>60: %get(SysViewDeviceName,Text)
 %;**%>12 RAM Base %>60: %get(SysViewRamBase,Text)
+%;**%>12 ID Base %>60: %get(SysViewIDBase,Text)
+%;**%>12 ID Shift %>60: %get(SysViewIDShift,Text)
 %;**%>12 RTT Channel %>60: %get(RttChannelIndex,Text)
 %;**%>12 RTT Buffer size %>60: %get(RttBufferSize,Text)
 %;**%>12 Lock/Unlock %>60: %get(LockUnlockEnabled,Text)

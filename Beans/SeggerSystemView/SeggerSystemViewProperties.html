@@ -241,24 +241,20 @@ LI.EXP {
 <b>RAM Base</b></a> - The lowest RAM address used for IDs (pointers)
 </li>
 <li>
+<a name="SysViewIDBase">
+<b>ID Base</b></a> - Default value for the lowest Id reported by the application.
+</li>
+<li>
+<a name="SysViewIDShift">
+<b>ID Shift</b></a> - Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
+</li>
+<li>
 <a name="RttChannelIndex">
 <b>RTT Channel</b></a> - RTT Channel number. Make sure you have enough channels allocated in RTT
 </li>
 <li>
 <a name="RttBufferSize">
 <b>RTT Buffer size</b></a> - Size of RTT buffer (in bytes)
-</li>
-<li>
-<a name="LockUnlockEnabled">
-<b>Lock/Unlock</b></a> - If enabled, uses lock/unlock while performing System View operations.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="CriticalSection">
-  <b>Critical Section</b></a> - Interface to critical section handling
-  </li>
-</ul>
 </li>
 
      </ul>

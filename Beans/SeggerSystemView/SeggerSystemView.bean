@@ -4,7 +4,7 @@
     <Name>SeggerSystemView</Name>
     <Description>Segger System View Component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.011</Version>
+    <Version>01.014</Version>
     <Icon>SeggerSystemView</Icon>
     <TypesFiles>PE,SeggerSystemView\SeggerSystemView</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -109,6 +109,40 @@
     </Property>
     <Property>
       <TIntgItem>
+        <Name>ID Base</Name>
+        <Symbol>SysViewIDBase</Symbol>
+        <Hint>Default value for the lowest Id reported by the application.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>268435456</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC HEX</Bases>
+        <DefaultBase>HEX</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>ID Shift</Name>
+        <Symbol>SysViewIDShift</Symbol>
+        <Hint>Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>2</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TIntgItem>
         <Name>RTT Channel</Name>
         <Symbol>RttChannelIndex</Symbol>
         <Hint>RTT Channel number. Make sure you have enough channels allocated in RTT</Hint>
@@ -140,38 +174,6 @@
         <ChangeValueIntoRange>false</ChangeValueIntoRange>
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Lock/Unlock</Name>
-        <Symbol>LockUnlockEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, uses lock/unlock while performing System View operations.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Critical Section</Name>
-              <Symbol>CriticalSection</Symbol>
-              <TypeSpec>SeggerSystemView\CriticalSection</TypeSpec>
-              <Hint>Interface to critical section handling</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
     </Property>
   </PropertyList>
   <MethodList>

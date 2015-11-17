@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.047</Version>
+    <Version>01.048</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -246,38 +246,6 @@
           </GrupItem>
         </Children>
       </TGrupItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Lock/Unlock</Name>
-        <Symbol>LockUnlockEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, uses lock/unlock while performing RTT operations.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>CriticalSection</Name>
-              <Symbol>CriticalSection</Symbol>
-              <TypeSpec>SeggerRTT\CriticalSection</TypeSpec>
-              <Hint>Interface to critical section</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
     </Property>
     <Property>
       <TInhrLinkItem>

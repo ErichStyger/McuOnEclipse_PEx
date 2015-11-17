@@ -112,14 +112,13 @@ extern "C" {
 
 // Lock SysView (nestable)
 #ifndef   SEGGER_SYSVIEW_LOCK
-  #define SEGGER_SYSVIEW_LOCK()             
+  #define SEGGER_SYSVIEW_LOCK()             SEGGER_RTT_LOCK()
 #endif
 
 // Unlock SysView (nestable)
 #ifndef   SEGGER_SYSVIEW_UNLOCK
-  #define SEGGER_SYSVIEW_UNLOCK()          
+  #define SEGGER_SYSVIEW_UNLOCK()           SEGGER_RTT_UNLOCK()
 #endif
-
 
 #ifdef __cplusplus
 }
