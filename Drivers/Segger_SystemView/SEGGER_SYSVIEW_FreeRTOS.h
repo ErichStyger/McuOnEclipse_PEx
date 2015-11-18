@@ -168,6 +168,8 @@ Purpose : Interface between FreeRTOS and SystemView.
 #define apiID_VEVENTGROUPDELETE                   (103u)
 #define apiID_UXEVENTGROUPGETNUMBER               (104u)
 
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS /* << EST */
+
 #define traceTASK_NOTIFY_TAKE()                                       SEGGER_SYSVIEW_RecordU32x2(apiID_OFFSET + apiID_ULTASKNOTIFYTAKE, xClearCountOnExit, xTicksToWait)
 #define traceTASK_DELAY()                                             SEGGER_SYSVIEW_RecordU32(apiID_OFFSET + apiID_VTASKDELAY, xTicksToDelay)
 #define traceTASK_DELAY_UNTIL()                                       SEGGER_SYSVIEW_RecordVoid(apiID_OFFSET + apiID_VTASKDELAYUNTIL)
@@ -254,6 +256,8 @@ Purpose : Interface between FreeRTOS and SystemView.
 #define traceISR_EXIT_TO_SCHEDULER()                SEGGER_SYSVIEW_RecordExitISRToScheduler()
 #define traceISR_EXIT()                             SEGGER_SYSVIEW_RecordExitISR()
 #define traceISR_ENTER()                            SEGGER_SYSVIEW_RecordEnterISR()
+
+#endif /* configUSE_SEGGER_SYSTEM_VIEWER_HOOKS */ /* << EST */
 
 /*********************************************************************
 *

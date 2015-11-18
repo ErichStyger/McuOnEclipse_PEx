@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.449</Version>
+    <Version>01.450</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -446,7 +446,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <Name>Segger System Viewer Trace</Name>
         <Symbol>SeggerSystemViewerGroup</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Enables Segger System Viewer Trace</Hint>
+        <Hint>Enables Segger System Viewer Trace. Percepio Trace has to be disabled, and 'Use Trace Facility' has to be enabled.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -478,7 +478,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <Name>Percepio Trace</Name>
         <Symbol>UseTraceHooksGroup</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, you can condfigure trace hooks to collect information about the RTOS behaviour.</Hint>
+        <Hint>If enabled, you can condfigure trace hooks to collect information about the RTOS behaviour. Segger System Viewer has to be disabled.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>

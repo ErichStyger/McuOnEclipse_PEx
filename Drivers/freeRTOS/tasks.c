@@ -404,6 +404,18 @@ count overflows. */
 	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xGenericListItem ) ); \
 	tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )  /* << EST: Additional hook for Segger SystemState to ensure that all tasks are in the list */
         
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS /* <<EST for Segger System Viewer */
+/*
+ * Place the task represented by pxTCB which has been in a ready list before
+ * into the appropriate ready list for the task.
+ * It is inserted at the end of the list.
+ */
+#define prvReAddTaskToReadyList( pxTCB )																\
+	traceREADDED_TASK_TO_READY_STATE( pxTCB );														\
+	taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );												\
+	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xGenericListItem ) )
+#endif
+
 /*-----------------------------------------------------------*/
 
 /*
@@ -1268,7 +1280,11 @@ StackType_t *pxTopOfStack;
 					{
 						mtCOVERAGE_TEST_MARKER();
 					}
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+					prvReAddTaskToReadyList( pxTCB );
+#else
 					prvAddTaskToReadyList( pxTCB );
+#endif
 				}
 				else
 				{
@@ -1329,7 +1345,9 @@ StackType_t *pxTopOfStack;
 			{
 				mtCOVERAGE_TEST_MARKER();
 			}
-
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+			traceMOVED_TASK_TO_SUSPENDED_LIST(pxTCB);
+#endif
 			vListInsertEnd( &xSuspendedTaskList, &( pxTCB->xGenericListItem ) );
 		}
 		taskEXIT_CRITICAL();
@@ -2325,6 +2343,9 @@ TickType_t xTimeToWake;
 			/* Add the task to the suspended task list instead of a delayed task
 			list to ensure the task is not woken by a timing event.  It will
 			block indefinitely. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+			traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
+#endif
 			vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 		}
 		else
@@ -2391,6 +2412,9 @@ TickType_t xTimeToWake;
 			/* Add the task to the suspended task list instead of a delayed task
 			list to ensure it is not woken by a timing event.  It will block
 			indefinitely. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+			traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
+#endif
 			vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 		}
 		else
@@ -2462,6 +2486,9 @@ TickType_t xTimeToWake;
 				/* Add the task to the suspended task list instead of a delayed
 				task list to ensure the task is not woken by a timing event.  It
 				will block indefinitely. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+				traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
+#endif
 				vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 			}
 			else
@@ -3114,11 +3141,17 @@ static void prvAddCurrentTaskToDelayedList( const TickType_t xTimeToWake )
 
 	if( xTimeToWake < xTickCount )
 	{
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+		traceMOVED_TASK_TO_OVERFLOW_DELAYED_LIST();
+#endif
 		/* Wake time has overflowed.  Place this item in the overflow list. */
 		vListInsert( pxOverflowDelayedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 	}
 	else
 	{
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+		traceMOVED_TASK_TO_DELAYED_LIST();
+#endif
 		/* The wake time has not overflowed, so the current block list is used. */
 		vListInsert( pxDelayedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 
@@ -3344,6 +3377,20 @@ TCB_t *pxNewTCB;
 
 #endif /* INCLUDE_uxTaskGetStackHighWaterMark */
 /*-----------------------------------------------------------*/
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+#if (INCLUDE_pxTaskGetStackStart == 1)
+	uint8_t* pxTaskGetStackStart( TaskHandle_t xTask)
+	{
+	TCB_t *pxTCB;
+	UBaseType_t uxReturn;
+
+		pxTCB = prvGetTCBFromHandle( xTask );
+		return ( uint8_t * ) pxTCB->pxStack;
+	}
+
+#endif /* INCLUDE_pxTaskGetStackStart */
+#endif
+/*-----------------------------------------------------------*/
 
 #if ( INCLUDE_vTaskDelete == 1 )
 
@@ -3494,7 +3541,11 @@ TCB_t *pxTCB;
 
 					/* Inherit the priority before being moved into the new list. */
 					pxTCB->uxPriority = pxCurrentTCB->uxPriority;
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+					prvReAddTaskToReadyList( pxTCB );
+#else
 					prvAddTaskToReadyList( pxTCB );
+#endif
 				}
 				else
 				{
@@ -3566,8 +3617,11 @@ TCB_t *pxTCB;
 					any other purpose if this task is running, and it must be
 					running to give back the mutex. */
 					listSET_LIST_ITEM_VALUE( &( pxTCB->xEventListItem ), ( TickType_t ) configMAX_PRIORITIES - ( TickType_t ) pxTCB->uxPriority ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+					prvReAddTaskToReadyList( pxTCB );
+#else
 					prvAddTaskToReadyList( pxTCB );
-
+#endif
 					/* Return true to indicate that a context switch is required.
 					This is only actually required in the corner case whereby
 					multiple mutexes were held and the mutexes were given back
@@ -4006,6 +4060,9 @@ TickType_t uxReturn;
 							of a delayed task list to ensure the task is not
 							woken by a timing event.  It will block
 							indefinitely. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+							traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
+#endif
 							vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 						}
 						else
@@ -4124,6 +4181,9 @@ TickType_t uxReturn;
 							of a delayed task list to ensure the task is not
 							woken by a timing event.  It will block
 							indefinitely. */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+							traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
+#endif
 							vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xGenericListItem ) );
 						}
 						else

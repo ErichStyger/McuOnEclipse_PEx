@@ -333,7 +333,7 @@ extern "C" {
 
 %- << EST: Modification for Processor Expert port
 #if configUSE_TRACE_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
-  #error "Only one trace implemenation can be active"
+  #error "Only one trace implementation can be active"
 #endif
 #if configUSE_TRACE_HOOKS /* << EST */
   #include "trcKernelPort.h" /* include Percepio trace macro definition */

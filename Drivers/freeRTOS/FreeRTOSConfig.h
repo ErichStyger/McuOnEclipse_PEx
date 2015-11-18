@@ -526,6 +526,8 @@ point support. */
 #define INCLUDE_pcTaskGetTaskName                                %>50 0
 %endif
 /* -------------------------------------------------------------------- */
+#define INCLUDE_pxTaskGetStackStart                              %>50 (1 && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS)
+/* -------------------------------------------------------------------- */
 %if (CPUfamily = "ColdFireV1")
 /* It is not advisable to change these values on a ColdFire V1 core. */
 %endif
