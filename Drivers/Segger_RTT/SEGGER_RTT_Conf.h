@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.12                                    *
+*       SystemView version: V2.20                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -143,7 +143,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 *       RTT lock configuration for IAR EWARM
 */
 #ifdef __ICCARM__
-  #if (defined (__ARM7M__) && (__CORE__ == __ARM7M__))
+  #if (defined (__ARM6M__) && (__CORE__ == __ARM6M__))
     #define SEGGER_RTT_LOCK() {                                                 \
                                     unsigned int LockState;                     \
                                     LockState = __get_PRIMASK();                \
@@ -151,7 +151,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                     
     #define SEGGER_RTT_UNLOCK() __set_PRIMASK(LockState);                       \
                                   }
-  #elif (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__))
+  #elif ((defined (__ARM7EM__) && (__CORE__ == __ARM7EM__)) || (defined (__ARM7M__) && (__CORE__ == __ARM7M__)))
     #define SEGGER_RTT_LOCK() {                                                 \
                                     unsigned int LockState;                     \
                                     LockState = __get_BASEPRI();                \

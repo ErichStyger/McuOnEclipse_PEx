@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.12                                    *
+*       SystemView version: V2.20                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -233,10 +233,12 @@ Purpose : Interface between FreeRTOS and SystemView.
                                                       SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB);                \
                                                     }
 #else
-  #define traceTASK_SWITCHED_IN()                   if (strcmp(pxCurrentTCB->pcTaskName, "IDLE")==0) {                 \
-                                                      SEGGER_SYSVIEW_OnIdle();                                         \
-                                                    } else {                                                           \
-                                                      SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB);               \
+  #define traceTASK_SWITCHED_IN()                   {                                                                   \
+                                                      if (memcmp(pxCurrentTCB->pcTaskName, "IDLE", 5) != 0) {           \
+                                                        SEGGER_SYSVIEW_OnTaskStartExec((U32)pxCurrentTCB);              \
+                                                      } else {                                                          \
+                                                        SEGGER_SYSVIEW_OnIdle();                                        \
+                                                      }                                                                 \
                                                     }
 #endif
 

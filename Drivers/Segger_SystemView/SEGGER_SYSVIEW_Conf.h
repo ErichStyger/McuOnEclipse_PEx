@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.12                                    *
+*       SystemView version: V2.20                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -50,11 +50,37 @@ Purpose     : SEGGER SysView configuration.
 #ifndef SEGGER_SYSVIEW_CONF_H
 #define SEGGER_SYSVIEW_CONF_H
 
-#ifdef __ICCARM__
-  #include <intrinsics.h>
+#include "SEGGER_RTT_Conf.h"
+/*********************************************************************
+*
+*       Defines, fixed
+*
+**********************************************************************
+*/
+//
+// Constants for known core configuration
+//
+#define SEGGER_SYSVIEW_CORE_OTHER   0
+#define SEGGER_SYSVIEW_CORE_CM0     1 // Cortex-M0/M0+/M1
+#define SEGGER_SYSVIEW_CORE_CM3     2 // Cortex-M3/M4/M7
+
+#if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
+  #ifdef __ARM_ARCH_6M__
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_M0
+  #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
+  #endif
+#elif defined(__ICCARM__)
+  #if (defined (__ARM6M__) && (__CORE__ == __ARM6M__))
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
+  #elif ((defined (__ARM7M__) && (__CORE__ == __ARM7M__)) || (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__))
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
+  #endif
 #endif
 
-#include "SEGGER_RTT_Conf.h"
+#ifndef   SEGGER_SYSVIEW_CORE
+  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_OTHER
+#endif
 
 /*********************************************************************
 *
@@ -80,16 +106,12 @@ Purpose     : SEGGER SysView configuration.
 *
 *       SysView timestamp configuration
 */
-#if SEGGER_RTT_CORE_M4
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(uint32_t *)(0xE0001004)) >> 4)       // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                  // Define number of valid bits low-order delivered by clock source
-#elif SEGGER_RTT_CORE_M0
-  extern uint32_t SEGGER_uxGetTickCounterValue(void);
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      SEGGER_uxGetTickCounterValue()
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       24
-  #warning "experimental only for Cortex-M0+!"
+#if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(U32 *)(0xE0001004)) >> 4)     // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                // Define number of valid bits low-order delivered by clock source
 #else
-  #error "Unknown ARM core!"
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      SEGGER_SYSVIEW_X_GetTimestamp()   // Retrieve a system timestamp via user-defined function
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       32                                // Define number of valid bits low-order delivered by SEGGER_SYSVIEW_X_GetTimestamp()
 #endif
 
 /*********************************************************************
@@ -103,19 +125,13 @@ Purpose     : SEGGER SysView configuration.
 *
 *       SysView interrupt configuration
 */
-#if SEGGER_RTT_CORE_M4
-  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
-#elif SEGGER_RTT_CORE_M0
-  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x3F)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
+#if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)  // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
+#elif SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM0
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x3F)   // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[5:0] = active vector)
 #else
-  #error "Unknown ARM core!"
+  #error "SEGGER_SYSVIEW_GET_INTERRUPT_ID has to be defined!"
 #endif
-
-%- %if defined(LockUnlockEnabled) & %LockUnlockEnabled='yes' & defined(CriticalSection)
-%- #include "%@CriticalSection@'ModuleName'.h"
-%- #define SEGGER_SYSVIEW_LOCK()     %@CriticalSection@'ModuleName'%.CriticalVariable(); %@CriticalSection@'ModuleName'%.EnterCritical()
-%- #define SEGGER_SYSVIEW_UNLOCK()   %@CriticalSection@'ModuleName'%.ExitCritical()
-%- %endif
 
 #endif
 

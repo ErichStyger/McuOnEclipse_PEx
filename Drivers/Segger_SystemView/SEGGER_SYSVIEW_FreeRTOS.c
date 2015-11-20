@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.12                                    *
+*       SystemView version: V2.20                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -63,18 +63,15 @@ Purpose : Interface between FreeRTOS and System View.
 *    functions to send the entire task list to the host.
 */
 static void _cbSendTaskList(void) {
-  TaskStatus_t* pxTaskStatusArray;
-  UBaseType_t   uxArraySize, nof;
-  UBaseType_t   x;
+  TaskStatus_t*         pxTaskStatusArray;
+  UBaseType_t           uxArraySize;
+  UBaseType_t           x;
+  char                  cStatus;
+
 #if INCLUDE_xTaskGetIdleTaskHandle
   TaskHandle_t          hIdle;
-
-  if (xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED) { /* only get Idle task handle if scheduler has been started */
-    hIdle = xTaskGetIdleTaskHandle();
-  } else {
-    hIdle = NULL;
-  }
- #endif
+  hIdle = xTaskGetIdleTaskHandle();
+#endif
 
   /* Take a snapshot of the number of tasks in case it changes while this
   function is executing. */
@@ -85,17 +82,33 @@ static void _cbSendTaskList(void) {
 
   if( pxTaskStatusArray != NULL ) {
     /* Generate the (binary) data. */
-    nof = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
 
+#if INCLUDE_xTaskGetIdleTaskHandle
+    /* only get Idle task handle if scheduler has been started */
+    if (xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED) {
+      hIdle = xTaskGetIdleTaskHandle();
+    } else {
+      hIdle = NULL;
+    }
+#endif
+    
     /* Create a human readable table from the binary data. */
-    for( x = 0; x < nof; x++ ) {
+    for( x = 0; x < uxArraySize; x++ ) {
+      uint8_t* pStack;
+#if INCLUDE_pxTaskGetStackStart
+      pStack = pxTaskGetStackStart(pxTaskStatusArray[x].xHandle);
+#else
+      pStack = (uint8_t*)0;
+#endif
+
 #if INCLUDE_xTaskGetIdleTaskHandle
       if (pxTaskStatusArray[x].xHandle != hIdle) {
-        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, 0, 0);
+        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, 0);
       }
 #else
-      if (strcmp(pxTaskStatusArray[x].pcTaskName,"IDLE")!=0) { /* do not send IDLE task information */
-        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, 0, 0);
+      if (memcmp(pxTaskStatusArray[x].pcTaskName, "IDLE", 5) != 0) {
+        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, 0);
       }
 #endif
     }
@@ -157,16 +170,16 @@ void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 Stac
 *    Record an event with 4 parameters
 */
 void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3) { 
-  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32];
-  U8* pPayload;
-  //
-  pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SysView
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
-  //
-  SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
+      U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32];
+      U8* pPayload;
+      //
+      pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SysView
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
+      //
+      SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
 }
 
 /********************************************************************* 
@@ -177,17 +190,17 @@ void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3
 *    Record an event with 5 parameters
 */
 void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) { 
-  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32];
-  U8* pPayload;
-  //
-  pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SysView
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
-  pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para4);             // Add the fifth parameter to the packet
-  //
-  SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
+      U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32];
+      U8* pPayload;
+      //
+      pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SysView
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
+      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para4);             // Add the fifth parameter to the packet
+      //
+      SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
 }
 
 /*********************************************************************
