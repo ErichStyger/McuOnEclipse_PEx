@@ -249,7 +249,6 @@ void %'ModuleName'%.%AppTask(void);
 #include "hidef.h"
 #include "poll.h"
 #include "msd_commands.h"
-#include "freeRTOS.h" /* FreeRTOS malloc() */
 #include "usb_host_hub_sm.h"
 #include "mem_util.h"
 
@@ -420,11 +419,11 @@ DSTATUS %'ModuleName'%.disk_initialize (
 
   /* Allocate memory for Command Block Wrapper and Command Status Wrapper */
   if (TRUE == first_time_flag) {
-    pCmd.CBW_PTR = (CBW_STRUCT_PTR) pvPortMalloc(sizeof(CBW_STRUCT)); /* << EST using FreeRTOS malloc() */
+    pCmd.CBW_PTR = (CBW_STRUCT_PTR) USB_mem_alloc_word_aligned(sizeof(CBW_STRUCT));
     if (pCmd.CBW_PTR == NULL) {
       return RES_NOT_ENOUGH_CORE;
     }
-    pCmd.CSW_PTR = (CSW_STRUCT_PTR) pvPortMalloc(sizeof(CSW_STRUCT)); /* << EST using FreeRTOS malloc() */
+    pCmd.CSW_PTR = (CSW_STRUCT_PTR) USB_mem_alloc_word_aligned(sizeof(CSW_STRUCT));
     if (pCmd.CSW_PTR == NULL) {
       USB_mem_free(pCmd.CBW_PTR);
       return RES_NOT_ENOUGH_CORE;
