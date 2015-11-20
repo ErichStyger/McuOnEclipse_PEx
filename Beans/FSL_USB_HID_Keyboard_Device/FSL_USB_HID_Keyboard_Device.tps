@@ -13,7 +13,7 @@
         <Line>MCF51MM256</Line>
         <Line>MCF52259</Line>
         <Line>Kinetis KL24Z48</Line>
-        <Line>Kinetis KL25</Line>
+        <Line>Kinetis KL25Z48</Line>
         <Line>Kinetis KL26Z48</Line>
         <Line>Kinetis KL46Z48</Line>
         <Line>Kinetis K20D50</Line>
