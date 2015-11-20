@@ -97,6 +97,8 @@ static void _cbSendTaskList(void) {
     for( x = 0; x < uxArraySize; x++ ) {
       uint8_t* pStack;
 #if INCLUDE_pxTaskGetStackStart
+      extern uint8_t* pxTaskGetStackStart( TaskHandle_t xTask);
+
       pStack = pxTaskGetStackStart(pxTaskStatusArray[x].xHandle);
 #else
       pStack = (uint8_t*)0;
