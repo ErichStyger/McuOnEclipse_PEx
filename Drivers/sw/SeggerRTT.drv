@@ -138,8 +138,8 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteString
 %ifdef WriteString
-#define %'ModuleName'%.%WriteString(s) \
-  SEGGER_RTT_WriteString(s)
+#define %'ModuleName'%.%WriteString(BufferIndex, s) \
+  SEGGER_RTT_WriteString(BufferIndex, s)
 
 %define! Pars
 %define! ParBufferIndex
