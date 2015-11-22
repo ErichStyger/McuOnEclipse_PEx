@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20                                    *
+*       SystemView version: V2.20a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -66,14 +66,14 @@ Purpose     : SEGGER SysView configuration.
 
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_M0
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
   #endif
 #elif defined(__ICCARM__)
   #if (defined (__ARM6M__) && (__CORE__ == __ARM6M__))
     #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-  #elif ((defined (__ARM7M__) && (__CORE__ == __ARM7M__)) || (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__))
+  #elif ((defined (__ARM7M__) && (__CORE__ == __ARM7M__)) || (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__)))
     #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
   #endif
 #endif

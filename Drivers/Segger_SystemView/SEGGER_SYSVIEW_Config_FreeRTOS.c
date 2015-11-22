@@ -41,91 +41,59 @@
 *       SystemView version: V2.20a                                    *
 *                                                                    *
 **********************************************************************
-----------------------------------------------------------------------
-File        : SEGGER_SYSVIEW_ConfDefaults.h
-Purpose     : Defines defaults for configurable defines used in
-              SEGGER SysView.
---------  END-OF-HEADER  ---------------------------------------------
-*/
+-------------------------- END-OF-HEADER -----------------------------
 
-#ifndef SEGGER_SYSVIEW_CONFDEFAULTS_H
-#define SEGGER_SYSVIEW_CONFDEFAULTS_H
+File        : SEGGER_SYSVIEW_Config_FreeRTOS.c
+Purpose     : Sample setup configuration of SystemView with FreeRTOS.
+*/
+#include "FreeRTOS.h"
+#include "SEGGER_SYSVIEW.h"
+
+extern const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI;
 
 /*********************************************************************
 *
-*       #include Section
+*       Defines, configurable
 *
 **********************************************************************
 */
+// The application name to be displayed in SystemViewer
+#define SYSVIEW_APP_NAME        "FreeRTOS Demo Application"
 
-#include "SEGGER_SYSVIEW_Conf.h"
-#include "SEGGER_RTT_Conf.h"
+// The target device name
+#define SYSVIEW_DEVICE_NAME     "Cortex-M4"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_Conf.h
+#define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ >> 4)
 
-/*********************************************************************
+// System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
+#define SYSVIEW_CPU_FREQ        configCPU_CLOCK_HZ
+
+// The lowest RAM address used for IDs (pointers)
+#define SYSVIEW_RAM_BASE        (0x10000000)
+
+/********************************************************************* 
 *
-*       Configuration defaults
+*       _cbSendSystemDesc()
 *
-**********************************************************************
+*  Function description
+*    Sends SystemView description strings.
 */
-
-// Number of bytes that SysView uses for a buffer.
-#ifndef   SEGGER_SYSVIEW_RTT_BUFFER_SIZE
-  #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    1024
-#endif
-
-// The RTT channel that SysView will use.
-#ifndef   SEGGER_SYSVIEW_RTT_CHANNEL
-  #define SEGGER_SYSVIEW_RTT_CHANNEL        0
-#endif
-// Sanity check of RTT channel
-#if (SEGGER_SYSVIEW_RTT_CHANNEL == 0) && (SEGGER_RTT_MAX_NUM_UP_BUFFERS < 2)
-  #error "SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h has to be > 1!"
-#elif (SEGGER_SYSVIEW_RTT_CHANNEL >= SEGGER_RTT_MAX_NUM_UP_BUFFERS)
-  #error "SEGGER_RTT_MAX_NUM_UP_BUFFERS  in SEGGER_RTT_Conf.h has to be > SEGGER_SYSVIEW_RTT_CHANNEL!"
-#endif
-
-// Retrieve a system timestamp.  This gets the Cortex-M cycle counter.
-#ifndef   SEGGER_SYSVIEW_GET_TIMESTAMP
-  #error "SEGGER_SYSVIEW_GET_TIMESTAMP has to be defined in SEGGER_SYSVIEW_Conf.h!"
-#endif
-
-// Define number of valid bits low-order delivered by clock source.
-#ifndef   SEGGER_SYSVIEW_TIMESTAMP_BITS
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS     32
-#endif
-
-// Lowest Id reported by the Application.
-#ifndef   SEGGER_SYSVIEW_ID_BASE 
-  #define SEGGER_SYSVIEW_ID_BASE            0
-#endif
-
-// Number of bits to shift Ids to save bandwidth
-#ifndef   SEGGER_SYSVIEW_ID_SHIFT
-  #define SEGGER_SYSVIEW_ID_SHIFT           0
-#endif
-
-#ifndef   SEGGER_SYSVIEW_GET_INTERRUPT_ID
-  #error "SEGGER_SYSVIEW_GET_INTERRUPT_ID has to be defined in SEGGER_SYSVIEW_Conf.h!"
-#endif
-
-// Lock SysView (nestable)
-#ifndef   SEGGER_SYSVIEW_LOCK
-  #define SEGGER_SYSVIEW_LOCK()             SEGGER_RTT_LOCK()
-#endif
-
-// Unlock SysView (nestable)
-#ifndef   SEGGER_SYSVIEW_UNLOCK
-  #define SEGGER_SYSVIEW_UNLOCK()           SEGGER_RTT_UNLOCK()
-#endif
-
-#ifdef __cplusplus
+static void _cbSendSystemDesc(void) {
+  SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",D="SYSVIEW_DEVICE_NAME",O=FreeRTOS");
+  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
 }
-#endif
 
-#endif
+/*********************************************************************
+*
+*       Global functions
+*
+**********************************************************************
+*/
+void SEGGER_SYSVIEW_Conf(void) {
+  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
+                      &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
+  SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
+}
 
-/****** End of file *************************************************/
+/*************************** End of file ****************************/

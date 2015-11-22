@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.12                                    *
+*       SystemView version: V2.20a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -167,9 +167,10 @@ unsigned SEGGER_SYSVIEW_ShrinkId                  (unsigned Id);
 
 /*********************************************************************
 *
-*       Application-provided configuration to be called on application start
+*       Application-provided functions
 */
-void SEGGER_SYSVIEW_Conf(void);
+void SEGGER_SYSVIEW_Conf                          (void);
+U32  SEGGER_SYSVIEW_X_GetTimestamp                (void);
 
 #ifdef __cplusplus
 }

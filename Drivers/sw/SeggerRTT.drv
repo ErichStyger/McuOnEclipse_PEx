@@ -483,13 +483,13 @@ void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
       break; /* was able to send character, get out of waiting loop */
     }
   %if defined(WaitTimeMs) & WaitTimeMs >. '0'
+    %@Wait@'ModuleName'%.WaitOSms(%WaitTimeMs);
   %if defined(RTTBlockingSendTimeoutMs) & %RTTBlockingSendTimeoutMs >. '0'
     if(timeoutMs<=0) {
       break; /* timeout */
     }
     timeoutMs -= %WaitTimeMs;
   %endif
-    %@Wait@'ModuleName'%.WaitOSms(%WaitTimeMs);
   %endif
   } /* for */
 %else

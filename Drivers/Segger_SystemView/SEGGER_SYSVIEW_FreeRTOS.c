@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20                                    *
+*       SystemView version: V2.20a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -97,7 +97,7 @@ static void _cbSendTaskList(void) {
     for( x = 0; x < uxArraySize; x++ ) {
       uint8_t* pStack;
 #if INCLUDE_pxTaskGetStackStart
-      extern uint8_t* pxTaskGetStackStart( TaskHandle_t xTask);
+      extern uint8_t* pxTaskGetStackStart( TaskHandle_t xTask); /* << EST: prototype */
 
       pStack = pxTaskGetStackStart(pxTaskStatusArray[x].xHandle);
 #else
@@ -106,13 +106,11 @@ static void _cbSendTaskList(void) {
 
 #if INCLUDE_xTaskGetIdleTaskHandle
       if (pxTaskStatusArray[x].xHandle != hIdle) {
-        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, 0);
-      }
 #else
       if (memcmp(pxTaskStatusArray[x].pcTaskName, "IDLE", 5) != 0) {
-        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, 0);
-      }
 #endif
+        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, pxTaskStatusArray[x].usStackHighWaterMark);
+      }
     }
 
     /* Free the array again. */
