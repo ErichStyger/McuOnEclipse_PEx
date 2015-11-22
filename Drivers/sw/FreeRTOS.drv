@@ -1845,7 +1845,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-#if configUSE_TRACE_FACILITY /* FreeRTOS trace feature enabled */
+#if 0 && configUSE_TRACE_FACILITY /* FreeRTOS trace feature enabled */
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"TASK LIST:\r\n", io->stdOut);
   buf[0] = '\0';
   %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', configMAX_TASK_NAME_LEN);

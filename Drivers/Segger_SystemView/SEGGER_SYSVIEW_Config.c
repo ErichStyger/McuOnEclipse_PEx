@@ -126,13 +126,41 @@ uint32_t SEGGER_uxGetTickCounterValue(void) {
 }
 #endif
 
-#if 0 /* << EST */
+#if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM0 /* << EST */
+//
+// SEGGER_SYSVIEW_TickCnt has to be defined in the module which
+// handles the SysTick and must be incremented in the SysTick
+// handler before any SYSVIEW event is generated.
+//
+// Example in embOS RTOSInit.c:
+//
+// unsigned int SEGGER_SYSVIEW_TickCnt; // <<-- Define SEGGER_SYSVIEW_TickCnt.
+// void SysTick_Handler(void) {
+// #if OS_PROFILE
+//   SYSVIEW_TickCnt++;                 // <<-- Increment SEGGER_SYSVIEW_TickCnt before calling OS_EnterNestableInterrupt.
+// #endif
+//   OS_EnterNestableInterrupt();
+//   OS_TICK_Handle();
+//   OS_LeaveNestableInterrupt();
+// }
+//
 extern unsigned int SEGGER_SYSVIEW_TickCnt;
 
+#ifndef SCB_ICSR
 #define SCB_ICSR  (*(volatile U32*) (0xE000ED04uL)) // Interrupt Control State Register
+#endif
+
+#ifndef SCB_ICSR_PENDSTSET_MASK
 #define SCB_ICSR_PENDSTSET_MASK     (1UL << 26)     // SysTick pending bit
+#endif
+
+#ifndef SYST_RVR
 #define SYST_RVR  (*(volatile U32*) (0xE000E014uL)) // SysTick Reload Value Register
+#endif
+
+#ifndef SYST_CVR
 #define SYST_CVR  (*(volatile U32*) (0xE000E018uL)) // SysTick Current Value Register
+#endif
 
 /*********************************************************************
 *

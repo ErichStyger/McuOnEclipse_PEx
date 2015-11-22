@@ -1455,6 +1455,9 @@ portLONG uxGetTickCounterValue(void) {
 }
 /*-----------------------------------------------------------*/
 %endif
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configCPU_FAMILY==configCPU_FAMILY_ARM_M0P
+unsigned int SEGGER_SYSVIEW_TickCnt; /* tick counter for Segger SystemViewer */
+#endif
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
 void SysTick_Handler(void) {
@@ -1470,6 +1473,9 @@ void vPortTickHandler(void) {
                                               bl vPortTickHandler
                                               pop {r4,pc}
   */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configCPU_FAMILY==configCPU_FAMILY_ARM_M0P
+  SEGGER_SYSVIEW_TickCnt++; /* tick counter for Segger SystemViewer */
+#endif
 #if configUSE_TICKLESS_IDLE == 1
   TICK_INTERRUPT_FLAG_SET();
 #endif
@@ -1598,6 +1604,9 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
 #endif
 %endif -% useARMSysTickTimer='no'
   ACKNOWLEDGE_TICK_ISR();
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configCPU_FAMILY==configCPU_FAMILY_ARM_M0P
+  SEGGER_SYSVIEW_TickCnt++; /* tick counter for Segger SystemViewer */
+#endif
 #if configUSE_TICKLESS_IDLE == 1
   TICK_INTERRUPT_FLAG_SET();
 #endif

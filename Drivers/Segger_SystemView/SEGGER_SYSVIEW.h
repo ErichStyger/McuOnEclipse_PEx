@@ -78,7 +78,7 @@ extern "C" {
 **********************************************************************
 */
 
-#define SEGGER_SYSVIEW_VERSION        21000
+#define SEGGER_SYSVIEW_VERSION        22000
 
 #define SEGGER_SYSVIEW_INFO_SIZE      9   // Minimum size, which has to be reserved for a packet. 1-2 byte of message type, 0-2  byte of payload length, 1-5 bytes of timestamp.
 #define SEGGER_SYSVIEW_QUANTA_U32     5   // Maximum number of bytes to encode a U32, should be reserved for each 32-bit value in a packet.
