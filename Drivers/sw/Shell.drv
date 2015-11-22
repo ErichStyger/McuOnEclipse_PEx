@@ -1308,6 +1308,10 @@ void %'ModuleName'%.%SendChar(uint8_t ch)
   %if BlockingSend='yes'
   uint8_t res;
   %endif
+%if defined(ShellBlockingSendTimeoutMs) & %ShellBlockingSendTimeoutMs >. '0' & defined(WaitTimeMs) & WaitTimeMs >. '0'
+  int timeoutMs = %ShellBlockingSendTimeoutMs;
+
+%endif
 
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
   (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
@@ -1324,6 +1328,12 @@ void %'ModuleName'%.%SendChar(uint8_t ch)
       %@Wait@'ModuleName'%.Waitms(%WaitTimeMs);
     %endif
     }
+  %endif
+  %if defined(ShellBlockingSendTimeoutMs) & %ShellBlockingSendTimeoutMs >. '0'
+    if(timeoutMs<=0) {
+      break; /* timeout */
+    }
+    timeoutMs -= %WaitTimeMs;
   %endif
   } while(res==ERR_TXFULL);
   %else
