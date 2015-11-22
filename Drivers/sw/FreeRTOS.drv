@@ -1724,6 +1724,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"***GetSystemState failed!\r\n", io->stdErr);
       res = ERR_FAILED; /* out of memory */
     } else {
+      #define PAD_STAT_TASK_TCB         5
       #define PAD_STAT_TASK_HANDLE      11
       #define PAD_STAT_TASK_NAME        (configMAX_TASK_NAME_LEN+1)
       #define PAD_STAT_TASK_STATE       10
@@ -1731,6 +1732,10 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       #define PAD_STAT_TASK_RUNTIME     11
       #define PAD_STAT_TASK_STACK_MARK  11
       /* header */
+      buf[0] = '\0';
+      UTIL1_strcatPad(buf, sizeof(buf), (const unsigned char*)"TCB#", ' ', PAD_STAT_TASK_TCB);
+      CLS1_SendStr(buf, io->stdOut);
+
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Handle", ' ', PAD_STAT_TASK_HANDLE);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
@@ -1757,6 +1762,12 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 
       %@Shell@'ModuleName'%.SendStr("\r\n", io->stdOut);
       for(i=0; i<nof; i++) {
+        /* TCB */
+        tmpBuf[0] = '\0';
+        UTIL1_strcatNum32u(tmpBuf, sizeof(tmpBuf), (uint32_t)pxTaskStatusArray[i].xTaskNumber);
+        buf[0] = '\0';
+        UTIL1_strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_TCB);
+        CLS1_SendStr(buf, io->stdOut);
         /* task handle */
         tmpBuf[0] = '\0';
         %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), "0x");
