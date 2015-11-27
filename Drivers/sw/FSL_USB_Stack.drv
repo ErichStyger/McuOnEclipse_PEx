@@ -368,6 +368,9 @@ void %'ModuleName'%.usb_int_en(void)
 %elif (CPUDevice="Kinetis K22FN120")
   NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
   NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
+%elif (CPUDevice="Kinetis K24FN120") %- vector 69, IRQ 53
+  NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
+  NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
 %else
   /* functionality not needed for %CPUDevice */
 %endif

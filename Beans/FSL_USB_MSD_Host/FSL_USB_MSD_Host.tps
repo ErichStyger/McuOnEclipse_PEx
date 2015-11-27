@@ -4,7 +4,7 @@
     <Type>
       <Type>TEnumSpec</Type>
       <Name>typeDeviceSupported</Name>
-      <Items lines_count="15">
+      <Items lines_count="16">
         <Line>MCF52259</Line>
         <Line>Kinetis KL24Z48</Line>
         <Line>Kinetis KL25Z48</Line>
@@ -16,12 +16,13 @@
         <Line>Kinetis K21F120</Line>
         <Line>Kinetis K22F120</Line>
         <Line>Kinetis K22FN120</Line>
+        <Line>Kinetis K24FN120</Line>
         <Line>Kinetis K40</Line>
         <Line>Kinetis K60</Line>
         <Line>Kinetis K64F</Line>
         <Line>Kinetis K70</Line>
       </Items>
-      <Hints lines_count="15">
+      <Hints lines_count="16">
         <Line>ColdFire V2 MCF52259</Line>
         <Line>Kinetis KL24Z48</Line>
         <Line>Kinetis L2K family (e.g. KL25Z)</Line>
@@ -33,12 +34,13 @@
         <Line>Kinetis K21F120 (e.g. TWR-K21F120M)</Line>
         <Line>Kinetis K22F50, K22F120</Line>
         <Line>FRDM-K22F (Kinetis K2)</Line>
+        <Line>Kinetis K24FN120</Line>
         <Line>Kinetis K40</Line>
         <Line>Kinetis K60</Line>
         <Line>Kinetis K64F (e.g. FRDM-K64F)</Line>
         <Line>Kinetis K70</Line>
       </Hints>
-      <Defines lines_count="15">
+      <Defines lines_count="16">
         <Line>MCF52259</Line>
         <Line>Kinetis KL24Z48</Line>
         <Line>Kinetis L2K</Line>
@@ -50,6 +52,7 @@
         <Line>Kinetis K21F120</Line>
         <Line>Kinetis K22F120</Line>
         <Line>Kinetis K22FN120</Line>
+        <Line>Kinetis K24FN120</Line>
         <Line>Kinetis K40</Line>
         <Line>Kinetis K60</Line>
         <Line>Kinetis K64F</Line>
