@@ -55,7 +55,11 @@
 	  __declspec(usb_bdt) uint_8_ptr bdt;
 	#elif defined __IAR_SYSTEMS_ICC__
   	  #pragma data_alignment = 512
+#if 1 /* << EST: use g_Mem as name */
+    uint_8_ptr g_Mem @ "usb_bdt";
+#else
 	  uint_8_ptr bdt @ "usb_bdt";
+#endif
 	#elif defined __CC_ARM
 	  __align(512) uint_8 bdt[512];
 	#elif defined(__GNUC__)
