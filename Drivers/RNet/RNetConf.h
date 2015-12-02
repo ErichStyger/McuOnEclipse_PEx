@@ -121,9 +121,9 @@
 
 #ifndef RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS
 %if defined(MsgQueuePutBlockTimeMs)
-#define RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS   (%MsgQueuePutBlockTimeMs/portTICK_RATE_MS)
+#define RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS   (%MsgQueuePutBlockTimeMs/portTICK_PERIOD_MS)
 %else
-#define RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS   (200/portTICK_RATE_MS)
+#define RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS   (200/portTICK_PERIOD_MS)
 %endif
   /*!< Blocking time for putting items into the message queue before timeout. Use portMAX_DELAY for blocking. */
 #endif

@@ -54,7 +54,7 @@ xQueueHandle GetQueueForType(RSTDIO_QueueType queueType) {
  */
 static uint8_t AddToQueue(xQueueHandle queue, const unsigned char *data, size_t dataSize) {
   while(dataSize!=0) {
-    if (%@RTOS@'ModuleName'%.xQueueSendToBack(queue, data, RSTDIO_QUEUE_TIMEOUT_MS/portTICK_RATE_MS)!=pdPASS) {
+    if (%@RTOS@'ModuleName'%.xQueueSendToBack(queue, data, RSTDIO_QUEUE_TIMEOUT_MS/portTICK_PERIOD_MS)!=pdPASS) {
       return ERR_FAULT;
     }
     data++;

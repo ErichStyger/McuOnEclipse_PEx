@@ -266,7 +266,7 @@ void %'ModuleName'%.%Waitns(uint16_t ns);
 %else
 #define %'ModuleName'%.%WaitOSms(ms) \
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
-  vTaskDelay(ms/portTICK_RATE_MS)
+  vTaskDelay(ms/portTICK_PERIOD_MS)
 %else
   %'ModuleName'%.%Waitms(ms) /* no RTOS used, so use normal wait */
 %endif
