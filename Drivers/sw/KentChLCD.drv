@@ -256,6 +256,40 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 
 %endif %- SetDisplayOrientation
 %-BW_METHOD_END SetDisplayOrientation
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLCD
+%ifdef GetLCD
+void %'ModuleName'%.%GetLCD(void);
+%include Common\KentChLCDGetLCD.Inc
+
+%endif %- GetLCD
+%-BW_METHOD_END GetLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GiveLCD
+%ifdef GiveLCD
+byte %'ModuleName'%.%GiveLCD(void);
+%define! RetVal
+%include Common\KentChLCDGiveLCD.Inc
+
+%endif %- GiveLCD
+%-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\KentChLCDInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+byte %'ModuleName'%.%Deinit(void);
+%define! RetVal
+%include Common\KentChLCDDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -931,6 +965,52 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 
 %endif %- SetDisplayOrientation
 %-BW_METHOD_END SetDisplayOrientation
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLCD
+%ifdef GetLCD
+%include Common\KentChLCDGetLCD.Inc
+void %'ModuleName'%.%GetLCD(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- GetLCD
+%-BW_METHOD_END GetLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GiveLCD
+%ifdef GiveLCD
+%define! RetVal
+%include Common\KentChLCDGiveLCD.Inc
+byte %'ModuleName'%.%GiveLCD(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- GiveLCD
+%-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\KentChLCDInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%define! RetVal
+%include Common\KentChLCDDeinit.Inc
+byte %'ModuleName'%.%Deinit(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
