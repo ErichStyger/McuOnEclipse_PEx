@@ -344,6 +344,20 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ini_browse">
+<b>ini_browse</b></a>
+ - Function to browse the ini file. With this function the file is opened only once.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ini_browse(INI_CALLBACK Callback, const void *UserData, const TCHAR *Filename)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Callback:byte</i> - a pointer to a function that will be called for every setting in the INI file.</li>
+<li><i>UserData:byte</i> - arbitrary data, which the function passes on the the Callback function</li>
+<li><i>Filename:byte</i> - the name and full path of the .ini file to read from</li>
+<li><i>Return value:int</i> - 1 on success, 0 on failure (INI file not found)
+</li>
+</ul><br />
+</li>
 
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

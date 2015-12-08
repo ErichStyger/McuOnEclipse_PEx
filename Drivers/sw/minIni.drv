@@ -237,6 +237,19 @@
 
 %endif %- ini_putf
 %-BW_METHOD_END ini_putf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ini_browse
+%ifdef ini_browse
+#define %'ModuleName'%.%ini_browse(Callback, UserData, Filename) \
+  ini_browse(Callback, UserData, Filename)
+%define! ParCallback
+%define! ParUserData
+%define! ParFilename
+%define! RetVal
+%include Common\minIniini_browse.Inc
+
+%endif %- ini_browse
+%-BW_METHOD_END ini_browse
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -440,6 +453,23 @@ int %'ModuleName'%.%ini_putf(const mTCHAR *Section, const mTCHAR *Key, INI_REAL 
 
 %endif %- ini_putf
 %-BW_METHOD_END ini_putf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ini_browse
+%ifdef ini_browse
+%define! ParCallback
+%define! ParUserData
+%define! ParFilename
+%define! RetVal
+%include Common\minIniini_browse.Inc
+/**
+int %'ModuleName'%.%ini_browse(INI_CALLBACK Callback, const void *UserData, const TCHAR *Filename)
+{
+  Implemented as macro in the header file
+}
+*/
+
+%endif %- ini_browse
+%-BW_METHOD_END ini_browse
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

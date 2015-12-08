@@ -4,7 +4,7 @@
     <Name>minIni</Name>
     <Description>minIni is a programmer’s library to read and write 'ini' files in embedded systems.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.039</Version>
+    <Version>01.040</Version>
     <Icon>CPU_CHIP</Icon>
     <TypesFiles>PE,minIni\minIni</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -706,6 +706,55 @@ A false boolean is found if one of the following is matched:\n
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>int #M#_#C#(const mTCHAR *Section, int idx, mTCHAR *Buffer, int BufferSize, const mTCHAR *Filename)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ini_browse</Name>
+        <Symbol>ini_browse</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Function to browse the ini file. With this function the file is opened only once.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>1 on success, 0 on failure (INI file not found)</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>Callback</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>a pointer to a function that will be called for every setting in the INI file.</ParHint>
+          <ParUserDeclaration>INI_CALLBACK Callback</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>UserData</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>arbitrary data, which the function passes on the the Callback function</ParHint>
+          <ParUserDeclaration>const void *UserData</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Filename</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>the name and full path of the .ini file to read from</ParHint>
+          <ParUserDeclaration>const TCHAR *Filename</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(INI_CALLBACK Callback, const void *UserData, const TCHAR *Filename)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
