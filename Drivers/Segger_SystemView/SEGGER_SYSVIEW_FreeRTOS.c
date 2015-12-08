@@ -66,7 +66,6 @@ static void _cbSendTaskList(void) {
   TaskStatus_t*         pxTaskStatusArray;
   UBaseType_t           uxArraySize;
   UBaseType_t           x;
-  char                  cStatus;
 
 #if INCLUDE_xTaskGetIdleTaskHandle
   TaskHandle_t          hIdle;
