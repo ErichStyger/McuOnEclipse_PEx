@@ -11,7 +11,7 @@
         <Line>Kinetis KL26Z48</Line>
         <Line>Kinetis KL46Z48</Line>
         <Line>Kinetis K20D50</Line>
-        <Line>Kinetis K20D72</Line>
+        <Line>Kinetis K20D72, K20D100</Line>
         <Line>Kinetis K21D50</Line>
         <Line>Kinetis K21F120</Line>
         <Line>Kinetis K22F120</Line>
@@ -29,7 +29,7 @@
         <Line>e.g. FRDM-KL26Z48M</Line>
         <Line>e.g. FRDM-KL46Z48M</Line>
         <Line>Kinetis K20D50 (e.g. FRDM-K20D50M)</Line>
-        <Line>Kinetis K20 72 MHz (K20DX)</Line>
+        <Line>Kinetis K20 72 MHz (K20DX) or K20 100 MHz (e.g. MK20DN512)</Line>
         <Line>Kinetis K21D50 (e.g. TWR-K21D50M)</Line>
         <Line>Kinetis K21F120 (e.g. TWR-K21F120M)</Line>
         <Line>Kinetis K22F50, K22F120</Line>
