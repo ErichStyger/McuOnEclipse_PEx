@@ -235,6 +235,24 @@ LI.EXP {
 <li><i>UserId:unsigned</i> - User defined ID for the event</li>
 </ul><br />
 </li>
+<li><a name="RecordEnterISR">
+<b>RecordEnterISR</b></a>
+ - Records the enter of an ISR. Place this call at the beginning of the interrupt service routine.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void RecordEnterISR(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="RecordExitISR">
+<b>RecordExitISR</b></a>
+ - Records the end of the ISR. Call this function at the end of the ISR to be recorded.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void RecordExitISR(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
 
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

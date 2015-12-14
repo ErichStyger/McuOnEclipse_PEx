@@ -137,6 +137,24 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- OnUserStop
 %-BW_METHOD_END OnUserStop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecordEnterISR
+%ifdef RecordEnterISR
+#define %'ModuleName'%.%RecordEnterISR() \
+  SEGGER_SYSVIEW_RecordEnterISR()
+%include Common\SeggerSystemViewRecordEnterISR.Inc
+
+%endif %- RecordEnterISR
+%-BW_METHOD_END RecordEnterISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecordExitISR
+%ifdef RecordExitISR
+#define %'ModuleName'%.%RecordExitISR() \
+  SEGGER_SYSVIEW_RecordExitISR()
+%include Common\SeggerSystemViewRecordExitISR.Inc
+
+%endif %- RecordExitISR
+%-BW_METHOD_END RecordExitISR
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -214,6 +232,32 @@ void %'ModuleName'%.%OnUserStop(unsigned UserId)
 
 %endif %- OnUserStop
 %-BW_METHOD_END OnUserStop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecordEnterISR
+%ifdef RecordEnterISR
+%include Common\SeggerSystemViewRecordEnterISR.Inc
+/*
+void %'ModuleName'%.%RecordEnterISR(void)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- RecordEnterISR
+%-BW_METHOD_END RecordEnterISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN RecordExitISR
+%ifdef RecordExitISR
+%include Common\SeggerSystemViewRecordExitISR.Inc
+/*
+void %'ModuleName'%.%RecordExitISR(void)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- RecordExitISR
+%-BW_METHOD_END RecordExitISR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
