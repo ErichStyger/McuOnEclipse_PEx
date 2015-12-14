@@ -664,11 +664,15 @@ DRESULT %'ModuleName'%.disk_ioctl (
     switch (*ptr) {
       case 0:                                                    %>40 /* Sub control code == 0 (POWER_OFF) */
         if (chk_power()) {
+        /*lint -save -e522 Highest operation lacks side effect */
           power_off();                                           %>40 /* Power off */
+        /*lint -restore */
         }
         break;
       case 1:                                                    %>40 /* Sub control code == 1 (POWER_ON) */
+        /*lint -save -e522 Highest operation lacks side effect */
         power_on();                                              %>40 /* Power on */
+        /*lint -restore */
         break;
       case 2:                                                    %>40 /* Sub control code == 2 (POWER_GET) */
         *(ptr+1) = (uint8_t)chk_power();
@@ -1138,6 +1142,7 @@ bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes)
     %'ModuleName'%.Deactivate();
     return FALSE;
   }
+  /*lint -save -e539 Did not expect positive indentation  */
 #if %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED
   if (nofBytes<=SPI_WRITE_READ_BLOCK_SIZE_DUMMY) {
     %'ModuleName'%.SPI_WRITE_READ_BLOCK((unsigned char*)&dummyArr[0], data, nofBytes);%>40 /* write dummy value, read data */
@@ -1151,6 +1156,7 @@ bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes)
 #if %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED
   }
 #endif
+  /*lint -restore Did not expect positive indentation */
   %'ModuleName'%.SPI_WRITE(%'ModuleName'%.DUMMY);                %>40 /* checksum Bytes not needed */
   %'ModuleName'%.SPI_WRITE(%'ModuleName'%.DUMMY);
   %'ModuleName'%.Deactivate();
@@ -1370,7 +1376,9 @@ byte %'ModuleName'%.%Init(void* unused)
   (void)unused;
   /* -------------------------------- Init & Slow Mode -------------------------------- */
   /* after voltage reaches 2.2V, need to wait at least 1 ms. Then we need to set Data and CS/Chipselect high for at least 74 clocks */
+  /*lint -save -e522 function lacks side-effects */
   %@Wait@'ModuleName'%.Waitms(1);                                %>40 /* wait at least for 1 ms on insertion and power on */
+  /*lint -restore */
   speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
   %'ModuleName'%.Activate();                                     %>40 /* select slave */
   %'ModuleName'%.SetSlowMode();                                  %>40 /* set the SPI clock to 375 kbps. This is required for compatibility across a wide range of SD and MMC cards. */
@@ -1378,7 +1386,9 @@ byte %'ModuleName'%.%Init(void* unused)
   for(cnt=0;cnt<10;cnt++) {                                      %>40 /* send at least 75 SPI clock cycles with the SS signal asserted to ensure that the SD card internal state machine is initialized. */
     %'ModuleName'%.SPI_WRITE(%'ModuleName'%.DUMMY);
   }
+  /*lint -save -e522 function lacks side-effects */
   %@Wait@'ModuleName'%.Waitus(50);                               %>40 /* need to wait a little bin in order SPI transfer to be finished (need this on CN128, but on others too?) */
+  /*lint -restore */
   %'ModuleName'%.Deactivate();
   /* -------------------------------- IDLE Command -------------------------------- */
   arg = 0;

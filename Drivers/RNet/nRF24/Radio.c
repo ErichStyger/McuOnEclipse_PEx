@@ -123,7 +123,6 @@ uint8_t RADIO_PowerDown(void) {
 
 static uint8_t CheckTx(void) {
   RPHY_PacketDesc packet;
-  uint8_t res = ERR_OK;
 #if RNET_CONFIG_SEND_RETRY_CNT==0
   uint8_t TxDataBuffer[RPHY_BUFFER_SIZE]; /* local tx buffer if not using retries */
 #endif
@@ -156,10 +155,8 @@ static uint8_t CheckTx(void) {
     %@nRF24L01p@'ModuleName'%.TxPayload(packet.rxtx, RPHY_PAYLOAD_SIZE); /* send data, using fixed payload size */
 #endif
     return ERR_OK;
-  } else {
-    return ERR_NOTAVAIL; /* no data to send? */
   }
-  return res;
+  return ERR_NOTAVAIL; /* no data to send? */
 }
 
 /* called to check if we have something in the RX queue. If so, we queue it */
@@ -211,7 +208,9 @@ static uint8_t CheckRx(void) {
   if (hasRxData) {
     /* put message into Rx queue */
 #if %'ModuleName'%.CREATE_EVENTS
+    /*lint -save -e522 function lacks side effect  */
     %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_MSG_RECEIVED);
+    /*lint -restore */
 #endif
     res = RMSG_QueueRxMsg(packet.phyData, packet.phySize, RPHY_BUF_SIZE(packet.phyData), packet.flags);
     if (res!=ERR_OK) {
@@ -311,7 +310,9 @@ static void RADIO_HandleStateMachine(void) {
             RADIO_AppStatus = RADIO_TIMEOUT; /* timeout */
           } else {
     #if %'ModuleName'%.CREATE_EVENTS
+            /*lint -save -e522 function lacks side effect  */
             %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_MSG_SENT);
+            /*lint -restore */
     #endif
             RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* turn receive on */
           }
@@ -324,7 +325,9 @@ static void RADIO_HandleStateMachine(void) {
         if (RADIO_RetryCnt<RNET_CONFIG_SEND_RETRY_CNT) {
           Err((unsigned char*)"ERR: Retry\r\n");
   #if %'ModuleName'%.CREATE_EVENTS
+          /*lint -save -e522 function lacks side effect  */
           %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_RETRY);
+          /*lint -restore */
   #endif
           RADIO_RetryCnt++;
           if (RMSG_PutRetryTxMsg(TxDataBuffer, sizeof(TxDataBuffer))==ERR_OK) {
@@ -333,14 +336,18 @@ static void RADIO_HandleStateMachine(void) {
           } else {
             Err((unsigned char*)"ERR: PutRetryTxMsg failed!\r\n");
   #if %'ModuleName'%.CREATE_EVENTS
+            /*lint -save -e522 function lacks side effect  */
             %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_RETRY_MSG_FAILED);
+            /*lint -restore */
   #endif
           }
         }
 #endif
         Err((unsigned char*)"ERR: Timeout\r\n");
 #if %'ModuleName'%.CREATE_EVENTS
+        /*lint -save -e522 function lacks side effect  */
         %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_TIMEOUT);
+        /*lint -restore */
 #endif
         RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* turn receive on */
         break; /* process switch again */
@@ -367,10 +374,10 @@ uint8_t RADIO_PowerUp(void) {
 //  %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.RF_SETUP, %@nRF24L01p@'ModuleName'%.RF_SETUP_RF_PWR_18|%@nRF24L01p@'ModuleName'%.RF_SETUP_RF_DR_1000);
 #if NRF24_DYNAMIC_PAYLOAD
   /* enable dynamic payload */
-  %@nRF24L01p@'ModuleName'%.WriteFeature(%@nRF24L01p@'ModuleName'%.FEATURE_EN_DPL|%@nRF24L01p@'ModuleName'%.FEATURE_EN_ACK_PAY|%@nRF24L01p@'ModuleName'%.FEATURE_EN_DYN_PAY); /* set EN_DPL for dynamic payload */
-  %@nRF24L01p@'ModuleName'%.EnableDynamicPayloadLength(%@nRF24L01p@'ModuleName'%.DYNPD_DPL_P0); /* set DYNPD register for dynamic payload for pipe0 */
+  (void)%@nRF24L01p@'ModuleName'%.WriteFeature(%@nRF24L01p@'ModuleName'%.FEATURE_EN_DPL|%@nRF24L01p@'ModuleName'%.FEATURE_EN_ACK_PAY|%@nRF24L01p@'ModuleName'%.FEATURE_EN_DYN_PAY); /* set EN_DPL for dynamic payload */
+  (void)%@nRF24L01p@'ModuleName'%.EnableDynamicPayloadLength(%@nRF24L01p@'ModuleName'%.DYNPD_DPL_P0); /* set DYNPD register for dynamic payload for pipe0 */
 #else
-  %@nRF24L01p@'ModuleName'%.SetStaticPipePayload(0, RPHY_PAYLOAD_SIZE); /* static number of payload bytes we want to send and receive */
+  (void)%@nRF24L01p@'ModuleName'%.SetStaticPipePayload(0, RPHY_PAYLOAD_SIZE); /* static number of payload bytes we want to send and receive */
 #endif
   (void)RADIO_SetChannel(RADIO_CurrChannel);
 
@@ -385,11 +392,11 @@ uint8_t RADIO_PowerUp(void) {
   %@nRF24L01p@'ModuleName'%.ResetStatusIRQ(%@nRF24L01p@'ModuleName'%.STATUS_RX_DR|%@nRF24L01p@'ModuleName'%.STATUS_TX_DS|%@nRF24L01p@'ModuleName'%.STATUS_MAX_RT);
   
   /* rx/tx mode */
-  %@nRF24L01p@'ModuleName'%.EnableAutoAck(%@nRF24L01p@'ModuleName'%.EN_AA_ENAA_P0); /* enable auto acknowledge on pipe 0. RX_ADDR_P0 needs to be equal to TX_ADDR! */
+  (void)%@nRF24L01p@'ModuleName'%.EnableAutoAck(%@nRF24L01p@'ModuleName'%.EN_AA_ENAA_P0); /* enable auto acknowledge on pipe 0. RX_ADDR_P0 needs to be equal to TX_ADDR! */
   %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.SETUP_RETR, %@nRF24L01p@'ModuleName'%.SETUP_RETR_ARD_750|%@nRF24L01p@'ModuleName'%.SETUP_RETR_ARC_15); /* Important: need 750 us delay between every retry */
   
   RX_POWERUP();  /* Power up in receiving mode */
-  RADIO_Flush(); /* flush possible old data */
+  (void)RADIO_Flush(); /* flush possible old data */
   %@nRF24L01p@'ModuleName'%.StartRxTx(); /* Listening for packets */
 
   RADIO_AppStatus = RADIO_INITIAL_STATE;
@@ -413,7 +420,9 @@ uint8_t RADIO_Process(void) {
     if (RPHY_OnPacketRx(&radioRx)==ERR_OK) { /* process incoming packets */
 #if %'ModuleName'%.CREATE_EVENTS
       if (radioRx.flags&RPHY_PACKET_FLAGS_IS_ACK) { /* it was an ack! */
+        /*lint -save -e522 function lacks side effect */
         %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_ACK_RECEIVED);
+        /*lint -restore */
       }
 #endif
     }
@@ -431,7 +440,7 @@ static const unsigned char *RadioStateStr(RADIO_AppStatusKind state) {
     case RADIO_READY_FOR_TX_RX_DATA:  return (const unsigned char*)"READY_TX_RX";
     case RADIO_CHECK_TX:              return (const unsigned char*)"CHECK_TX";
     case RADIO_POWER_DOWN:            return (const unsigned char*)"POWER_DOWN"; 
-    default:                          return (const unsigned char*)"UNKNOWN";
+    default:                          break;
   }
   return (const unsigned char*)"UNKNOWN";
 }
@@ -596,7 +605,7 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"radio channel", sizeof("radio channel")-1)==0) {
     p = cmd+sizeof("radio channel");
     if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &val)==ERR_OK && val<=0x7F) {
-      RADIO_SetChannel(val);
+      res = RADIO_SetChannel(val);
       *handled = TRUE;
     } else {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"Wrong argument, must be in the range 0..128\r\n", io->stdErr);

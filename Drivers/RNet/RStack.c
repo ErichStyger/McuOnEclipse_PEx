@@ -20,6 +20,7 @@
 #include "RApp.h"
 
 void RSTACK_Init(void) {
+  /*lint -save -e522 function lacks side-effects */
   RADIO_Init();
   RMSG_Init();
   RPHY_Init();
@@ -29,9 +30,11 @@ void RSTACK_Init(void) {
   RSTDIO_Init();
 %endif
   RAPP_Init();
+  /*lint -restore */
 }
 
 void RSTACK_Deinit(void) {
+  /*lint -save -e522 function lacks side-effects */
   RAPP_Deinit();
 %if defined(RStdioEnabled) & %RStdioEnabled='yes'
   RSTDIO_Deinit();
@@ -41,4 +44,5 @@ void RSTACK_Deinit(void) {
   RPHY_Deinit();
   RMSG_Deinit();
   RADIO_Deinit();
+  /*lint -restore */
 }

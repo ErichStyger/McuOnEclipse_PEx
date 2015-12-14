@@ -404,7 +404,7 @@ byte %'ModuleName'%.%ReadOutput(void)
 {
   uint8_t val;
 
-  %'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_OUTPUT_PORT, &val); /* read current output value */
+  (void)%'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_OUTPUT_PORT, &val); /* read current output value */
   return val;
 }
 
@@ -417,7 +417,7 @@ byte %'ModuleName'%.%ReadOutput(void)
 %include Common\PCA9554WriteOutput.Inc
 void %'ModuleName'%.%WriteOutput(byte val)
 {
-  %'ModuleName'%.%WriteI2CByte(%'ModuleName'%.ADDR_REG_OUTPUT_PORT, val);
+  (void)%'ModuleName'%.%WriteI2CByte(%'ModuleName'%.ADDR_REG_OUTPUT_PORT, val);
 }
 
 %endif %- WriteOutput
@@ -454,7 +454,7 @@ void %'ModuleName'%.%SetOutputBit(byte bitNo)
 %include Common\PCA9554ClearOutputBit.Inc
 void %'ModuleName'%.%ClearOutputBit(byte bitNo)
 {
-  %'ModuleName'%.%WriteOutput(%'ModuleName'%.%ReadOutput()&(uint8_t)(~(1<<bitNo))); /* write new output value */
+  (void)%'ModuleName'%.%WriteOutput((uint8_t)(%'ModuleName'%.%ReadOutput()&(uint8_t)(~(uint8_t)(1<<bitNo)))); /* write new output value */
 }
 
 %endif %- ClearOutputBit
@@ -480,7 +480,7 @@ byte %'ModuleName'%.%ReadInput(void)
 {
   uint8_t val;
 
-  %'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_INPUT_PORT, &val); /* read current input value */
+  (void)%'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_INPUT_PORT, &val); /* read current input value */
   return val;
 }
 
@@ -508,7 +508,7 @@ byte %'ModuleName'%.%ReadPolarityInversion(void)
 {
   uint8_t val;
 
-  %'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_POL_INVERT, &val);
+  (void)%'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_POL_INVERT, &val);
   return val;
 }
 
@@ -521,7 +521,7 @@ byte %'ModuleName'%.%ReadPolarityInversion(void)
 %include Common\PCA9554WritePolarityInversion.Inc
 void %'ModuleName'%.%WritePolarityInversion(byte val)
 {
-  %'ModuleName'%.%WriteI2CByte(%'ModuleName'%.ADDR_REG_POL_INVERT, val);
+  (void)%'ModuleName'%.%WriteI2CByte(%'ModuleName'%.ADDR_REG_POL_INVERT, val);
 }
 
 %endif %- WritePolarityInversion
@@ -535,7 +535,7 @@ byte %'ModuleName'%.%ReadConfig(void)
 {
   uint8_t val;
 
-  %'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_CONFIG, &val);
+  (void)%'ModuleName'%.%ReadI2CByte(%'ModuleName'%.ADDR_REG_CONFIG, &val);
   return val;
 }
 

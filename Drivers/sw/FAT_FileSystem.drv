@@ -61,6 +61,10 @@
 %define! Abstract Common\FAT_FileSystemAbstract.Inc
 %include Common\Header.h
 
+#ifndef __%'ModuleName'_H
+#define __%'ModuleName'_H
+
+/* MODULE %ModuleName. */
 /* Wrappers to FatFS types and constants */
 #define %'ModuleName'%.FATFS            FATFS
 #define %'ModuleName'%.DIR              DIR
@@ -74,11 +78,6 @@
 #define %'ModuleName'%.FS_RPATH         _FS_RPATH
 #define %'ModuleName'%.FRESULT          FRESULT
 #define %'ModuleName'%.DRESULT          DRESULT
-
-#ifndef __%'ModuleName'_H
-#define __%'ModuleName'_H
-
-/* MODULE %ModuleName. */
 
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
@@ -827,7 +826,7 @@ DSTATUS disk_initialize (
     default:
       break;
   } /* switch */
-  return RES_PARERR;
+  return (DSTATUS)RES_PARERR;
 }
 /*-----------------------------------------------------------------------*/
 /* Return Disk Status                                                    */
@@ -843,7 +842,7 @@ DSTATUS disk_status (
     default:
       break;
   } /* switch */
-  return RES_PARERR;
+  return (DSTATUS)RES_PARERR;
 }
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
@@ -950,10 +949,10 @@ static void FatFsFResultMsg(byte *msg, %'ModuleName'_FRESULT errNo, const %@Shel
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR: ", io->stdErr);
   %@Shell@'ModuleName'%.SendStr(msg, io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)": (", io->stdErr);
-  %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), errNo);
+  %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), (int16_t)errNo);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)") ", io->stdErr);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)%'ModuleName'%.errFResultMsg(errNo), io->stdErr);
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)%'ModuleName'%.errFResultMsg((int)errNo), io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdErr);
 }
 %ifdef PrintSector
@@ -964,10 +963,10 @@ static void FatFsDResultMsg(byte *msg, %'ModuleName'_DRESULT errNo, const %@Shel
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR: ", io->stdErr);
   %@Shell@'ModuleName'%.SendStr(msg, io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)": (", io->stdErr);
-  %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), errNo);
+  %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), (int16_t)errNo);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)") ", io->stdErr);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)%'ModuleName'%.errDResultMsg(errNo), io->stdErr);
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)%'ModuleName'%.errDResultMsg((int)errNo), io->stdErr);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdErr);
 }
 %endif
@@ -1261,7 +1260,10 @@ static byte SectorCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Cons
 
   res = %@Utility@'ModuleName'%.ScanDecimal32uNumber(&p, &sectorNo);
   if (res == ERR_OK) { /* format fine */
-    %'ModuleName'%.%PrintSector(0, sectorNo, io);
+    res = %'ModuleName'%.%PrintSector(0, sectorNo, io);
+    if (res!=ERR_OK) {
+      return res;
+    }
   } else {
     CmdUsageError(cmd, (unsigned char*)"sector <number>", io);
     return ERR_FAILED;
@@ -2504,7 +2506,7 @@ byte %'ModuleName'%.%CopyFile(const byte *srcFileName, const byte *dstFileName, 
       break; /* get out of loop */
     }
     fres = %'ModuleName'%.write(&fdst, buffer, br, &bw);
-    if (fres != ERR_OK) {
+    if (fres != FR_OK) {
       FatFsFResultMsg((unsigned char*)"writing destination file failed", fres, io);
       res = ERR_FAILED;
       break;
@@ -2728,19 +2730,19 @@ byte %'ModuleName'%.%PrintSector(byte drive, dword sectorNo, const %@Shell@'Modu
   unsigned char buf[8];
   %'ModuleName'%.DRESULT dres;
 %if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if FRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
+#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
   static unsigned char *print_buf=NULL; /* use global buffer pointer, allocated only once, and not deallocated! */
 #else
   unsigned char *print_buf;
 #endif
 %endif
 
-  if ((disk_initialize(drive)&STA_NOINIT)!=RES_OK) {
+  if ((disk_initialize(drive)&STA_NOINIT)!=(DSTATUS)RES_OK) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed\r\n", io->stdErr);
     return ERR_FAILED;
   }
 %if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if FRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
+#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
   if (print_buf!=NULL) { /* only if not allocated yet */
     print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
   }
@@ -2776,7 +2778,7 @@ byte %'ModuleName'%.%PrintSector(byte drive, dword sectorNo, const %@Shell@'Modu
     FatFsDResultMsg((unsigned char*)"disk_read failed", dres, io);
   }
 %if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if FRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
   %@RTOS@'ModuleName'%.vPortFree(print_buf);
 #endif
 %endif

@@ -310,11 +310,11 @@ static void _WriteNoCheck(SEGGER_RTT_BUFFER_UP* pRing, const char* pData, unsign
 *    TerminalId   Terminal ID to switch to.
 */
 static void _PostTerminalSwitch(SEGGER_RTT_BUFFER_UP* pRing, unsigned char TerminalId) {
-  char ac[2];
+  unsigned char ac[2];
 
   ac[0] = 0xFFu;
   ac[1] = _aTerminalId[TerminalId];  // Caller made already sure that TerminalId does not exceed our terminal limit
-  _WriteBlocking(pRing, ac, 2u);
+  _WriteBlocking(pRing, (char*)ac, 2u);
 }
 
 /*********************************************************************
@@ -412,8 +412,8 @@ unsigned SEGGER_RTT_ReadNoLock(unsigned BufferIndex, void* pData, unsigned Buffe
   if (NumBytesRem > 0u) {
     memcpy(pBuffer, pRing->pBuffer + RdOff, NumBytesRem);
     NumBytesRead += NumBytesRem;
-    pBuffer      += NumBytesRem;
-    BufferSize   -= NumBytesRem;
+    //pBuffer      += NumBytesRem;
+    //BufferSize   -= NumBytesRem;
     RdOff        += NumBytesRem;
   }
   if (NumBytesRead) {
@@ -1070,7 +1070,7 @@ void SEGGER_RTT_Init (void) {
 *     < 0  Error (e.g. if RTT is configured for non-blocking mode and there was no space in the buffer to set the new terminal Id)
 */
 int SEGGER_RTT_SetTerminal (char TerminalId) {
-  char                  ac[2];
+  unsigned char                  ac[2];
   SEGGER_RTT_BUFFER_UP* pRing;
   unsigned Avail;
   int r;
@@ -1085,12 +1085,12 @@ int SEGGER_RTT_SetTerminal (char TerminalId) {
     SEGGER_RTT_LOCK();    // Lock to make sure that no other task is writing into buffer, while we are and number of free bytes in buffer does not change downwards after checking and before writing
     if ((pRing->Flags & SEGGER_RTT_MODE_MASK) == SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL) {
       _ActiveTerminal = TerminalId;
-      _WriteBlocking(pRing, ac, 2u);
+      (void)_WriteBlocking(pRing, (const char*)ac, 2u);
     } else {                                                                            // Skipping mode or trim mode? => We cannot trim this command so handling is the same for both modes
       Avail = _GetAvailWriteSpace(pRing);
       if (Avail >= 2) {
         _ActiveTerminal = TerminalId;    // Only change active terminal in case of success
-        _WriteNoCheck(pRing, ac, 2u);
+        _WriteNoCheck(pRing, (const char*)ac, 2u);
       } else {
         r = -1;
       }

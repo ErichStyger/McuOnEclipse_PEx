@@ -21,10 +21,10 @@ typedef enum RMAC_MsgType {
   RMAC_MSG_TYPE_REQ_ACK = 0x80, /* flag: ack requested */
 } RMAC_MsgType;
 
-#define RMAC_MSG_TYPE_IS_DATA(type)  ((type)&RMAC_MSG_TYPE_DATA)
-#define RMAC_MSG_TYPE_IS_ACK(type)   ((type)&RMAC_MSG_TYPE_ACK)
-#define RMAC_MSG_TYPE_IS_CMD(type)   ((type)&RMAC_MSG_TYPE_CMD)
-#define RMAC_MSG_TYPE_REQ_ACK(type)  ((type)&RMAC_MSG_TYPE_REQ_ACK)
+#define RMAC_MSG_TYPE_IS_DATA(type)  ((uint8_t)(type)&(uint8_t)RMAC_MSG_TYPE_DATA)
+#define RMAC_MSG_TYPE_IS_ACK(type)   ((uint8_t)(type)&(uint8_t)RMAC_MSG_TYPE_ACK)
+#define RMAC_MSG_TYPE_IS_CMD(type)   ((uint8_t)(type)&(uint8_t)RMAC_MSG_TYPE_CMD)
+#define RMAC_MSG_TYPE_REQ_ACK(type)  ((uint8_t)(type)&(uint8_t)RMAC_MSG_TYPE_REQ_ACK)
 
 /* payload format is:
  * PHY: <size><phy payload>

@@ -610,11 +610,11 @@ void %'ModuleName'%.%App_Callback(uint8_t controller_ID, uint8_t event_type, voi
     /* Copy Received Data buffer to Application Buffer */
     USB_PACKET_SIZE BytesToBeCopied;
     APP_DATA_STRUCT *dp_rcv = (APP_DATA_STRUCT*)val;
-    uint_8 index;
+    uint_8 idx;
 
     BytesToBeCopied = (USB_PACKET_SIZE)((dp_rcv->data_size>%'ModuleName'%.DATA_BUFF_SIZE) ? %'ModuleName'%.DATA_BUFF_SIZE:dp_rcv->data_size);
-    for(index = 0; index<BytesToBeCopied ; index++) {
-      if (%@RxBuffer@'ModuleName'%.Put(dp_rcv->data_ptr[index])!=ERR_OK) {
+    for(idx = 0; idx<BytesToBeCopied ; idx++) {
+      if (%@RxBuffer@'ModuleName'%.Put(dp_rcv->data_ptr[idx])!=ERR_OK) {
         /* Failed to put byte into buffer. Is the buffer to small? Then increase the Rx buffer.
            Otherwise not much we could do here, so we are loosing byte here.
          */
@@ -706,7 +706,9 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
   timeout = %@Timeout@'ModuleName'%.GetCounter(%AppTaskTimeout/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
 %endif
   while(transactionOngoing) { /* wait until transaction is finished */
+    /*lint -save -e522 function lacks side-effects */
     %'ModuleName'%.RunUsbEngine();
+    /*lint -restore */
 %if defined(Timeout) & %AppTaskTimeout >. "0"
     if (%@Timeout@'ModuleName'%.CounterExpired(timeout)) {
 %if defined(OnError)
@@ -739,7 +741,9 @@ uint8_t %'ModuleName'%.%App_Task(uint8_t *txBuf, size_t txBufSize)
   uint8_t i, res;
 
   /* device is %CPUDevice */
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.RunUsbEngine();
+  /*lint -restore */
   /* call the periodic task function */
   USB_Class_CDC_Periodic_Task();
   /* check whether enumeration is complete or not */

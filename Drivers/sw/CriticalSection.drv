@@ -138,12 +138,14 @@
   taskENTER_CRITICAL()
 %elif (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
   do {                                  \
+    /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
     __asm (                             \
     "mrs   r0, PRIMASK     \n\t"        \
     "cpsid i               \n\t"        \
     "strb r0, %%[output]   \n\t"         \
     : [output] "=m" (cpuSR) :: "r0");   \
     __asm ("" ::: "memory");            \
+    /*lint -restore Symbol 'cpuSR' not subsequently referenced. */\
   } while(0)
 %else
   EnterCritical()

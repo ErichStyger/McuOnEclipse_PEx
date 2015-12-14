@@ -47,6 +47,7 @@
 #endif
 typedef struct _BITMAP_UART
 {
+    /*lint -save -e46 field type should be _Bool, unsigned int or signed int  */
     uint_8 bRxCarrier   : 1;    /* Receive Carrier Activation Flag */
     uint_8 bTxCarrier   : 1;    /* Transmit Carrier Activation Flag */
     uint_8 bBreak       : 1;    /* Break Flag */
@@ -55,6 +56,7 @@ typedef struct _BITMAP_UART
     uint_8 bParity      : 1;    /* Parity Flag */
     uint_8 bOverRun     : 1;    /* OverRun Flag */
     uint_8 reserved1    : 1;    /* Reserved */
+   /*lint -restore */
 }BITMAP_UART;
 #ifdef __MCF52xxx_H__
 #pragma reverse_bitfields off

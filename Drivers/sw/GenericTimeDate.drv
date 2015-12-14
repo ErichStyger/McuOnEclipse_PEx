@@ -506,7 +506,7 @@ uint8_t %'ModuleName'%.%SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t 
   time.Min = Min;
   time.Sec = Sec;
   time.Sec100 = Sec100;
-  %'ModuleName'%.%TimeToTicks(&time, &nofTicks);
+  (void)%'ModuleName'%.%TimeToTicks(&time, &nofTicks);
   %@CriticalSection@'ModuleName'%.EnterCritical();
   tickCntr = nofTicks;
   %@CriticalSection@'ModuleName'%.ExitCritical();
@@ -524,7 +524,7 @@ uint8_t %'ModuleName'%.%SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t 
 %include Common\GenericTimeDateAddTick.Inc
 void %'ModuleName'%.%AddTick(void)
 {
-  const uint8_t* ptr;                                            %>40/* Pointer to ULY/LY table */
+  const uint8_t *ptr;                                            %>40/* Pointer to ULY/LY table */
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
   %@CriticalSection@'ModuleName'%.EnterCritical();               %>40/* need exclusive access to tick counter */
@@ -744,13 +744,13 @@ uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time)
 %include Common\GenericTimeDateTimeToTicks.Inc
 uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks)
 {
-  uint32_t tickCntr;
+  uint32_t cntr;
 
-  tickCntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Hour)
+  cntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Hour)
               + (60UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Min)
               + (%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Sec)
               + ((%'ModuleName'%.TICKS_PER_S/100)*(uint32_t)Time->Sec100);%>40/* Load given time re-calculated to %'ModuleName'%.TICK_TIME_MS ms ticks into software tick counter */
-  *ticks = tickCntr;
+  *ticks = cntr;
   return ERR_OK;
 }
 

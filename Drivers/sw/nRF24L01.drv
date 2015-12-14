@@ -861,11 +861,11 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize);
 void %'ModuleName'%.%ConfigureSPI(void)
 {
 #if %'ModuleName'%.SWITCH_BUS
-  %'ModuleName'%.SPI_Disable();
+  (void)%'ModuleName'%.SPI_Disable();
   (void)%'ModuleName'%.SPI_SetShiftClockPolarity(0); /* falling edge */
   (void)%'ModuleName'%.SPI_SetIdleClockPolarity(0); /* low idle clock polarity */
   (void)%'ModuleName'%.SPI_SetBaudRateMode(%'ModuleName'%.BAUD_RATE_MODE); /* set bus speed */
-  %'ModuleName'%.SPI_Enable();
+  (void)%'ModuleName'%.SPI_Enable();
 #endif
 }
 
@@ -987,8 +987,9 @@ void %'ModuleName'%.%Init(void)
 %include Common\GeneralInternal.inc (OnInterrupt)
 void %@IRQ@OnInterrupt(void)
 {
+  /*lint -save -e522 function lacks side effect  */
 %if AppEventHandler <> "" %- not empty
-  void %AppEventHandler(void); /* prototype */
+  extern void %AppEventHandler(void); /* prototype */
 
 %endif
   %'ModuleName'%.CE_LOW(); /* pull CE Low to disable transceiver */
@@ -998,6 +999,7 @@ void %@IRQ@OnInterrupt(void)
 %if defined(OnInterrupt)
   %OnInterrupt(); /* call user event (if enabled)... */
 %endif
+  /*lint -restore  */
 }
 
 %endif %- @IRQ@OnInterrupt
@@ -1023,7 +1025,9 @@ void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10); /* insert a delay until next command */
+  /*lint -restore */
 }
 
 %endif %- WriteRegister
@@ -1051,7 +1055,9 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
+  /*lint -restore */
   return val;
 }
 
@@ -1079,7 +1085,9 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
+  /*lint -restore */
 }
 
 %endif %- ReadRegisterData
@@ -1106,7 +1114,9 @@ void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
+  /*lint -restore */
 }
 
 %endif %- WriteRegisterData
@@ -1131,7 +1141,9 @@ uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
+  /*lint -restore */
   return val;
 }
 
@@ -1156,7 +1168,9 @@ void %'ModuleName'%.%Write(uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
+  /*lint -restore */
 }
 
 %endif %- Write
@@ -1207,7 +1221,9 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+  /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10); /* insert a delay until next command */
+  /*lint -restore */
   return status;
 }
 
@@ -1224,7 +1240,9 @@ void %'ModuleName'%.%TxPayload(uint8_t *payload, uint8_t payloadSize)
   %'ModuleName'%.%Write(%'ModuleName'%.FLUSH_TX); /* flush old data */
   %'ModuleName'%.%WriteRegisterData(%'ModuleName'%.W_TX_PAYLOAD, payload, payloadSize); /* write payload */
   %'ModuleName'%.CE_HIGH(); /* start transmission */
+  /*lint -save -e522 function lacks side effect  */
   %'ModuleName'%.WAIT_US(15); /* keep signal high for 15 micro-seconds */
+  /*lint -restore */
   %'ModuleName'%.CE_LOW();  /* back to normal */
 }
 
@@ -1440,7 +1458,9 @@ uint8_t %'ModuleName'%.%ConstantCarrierWave(bool turnOn)
   if (turnOn) {
     /* Set PWR_UP = 1 and PRIM_RX = 0 in the CONFIG register. */
     %'ModuleName'%.WriteRegister(%'ModuleName'%.CONFIG, %'ModuleName'%.PWR_UP|%'ModuleName'%.PRIM_TX);
+    /*lint -save -e522 function lacks side effect  */
     %'ModuleName'%.WAIT_US(1500); /* Wait 1.5ms PWR_UP->standby */
+    /*lint -restore */
     /* In the RF register set:
        - CONT_WAVE = 1.
        - PLL_LOCK = 1.
@@ -1578,9 +1598,10 @@ uint8_t %'ModuleName'%.%GetDataRate(uint16_t *rate)
 %include Common\nRF24L01PollInterrupt.Inc
 void %'ModuleName'%.%PollInterrupt(void)
 {
+  /*lint -save -e522 function lacks side effect  */
   uint8_t status;
 %if defined(AppEventHandler) & AppEventHandler<>"" %- not empty
-  void %AppEventHandler(void); /* prototype */
+  extern void %AppEventHandler(void); /* prototype */
 %endif
 
   status = %'ModuleName'%.%GetStatus();
@@ -1593,6 +1614,7 @@ void %'ModuleName'%.%PollInterrupt(void)
     %OnInterrupt(); /* call user event (if enabled)... */
 %endif
   }
+  /*lint -restore */
 }
 
 %endif %- PollInterrupt

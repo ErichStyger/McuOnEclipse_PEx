@@ -41,7 +41,7 @@ xQueueHandle GetQueueForType(RSTDIO_QueueType queueType) {
     case RSTDIO_QUEUE_TX_IN:  return RSTDIO_TxStdInQ;
     case RSTDIO_QUEUE_TX_OUT: return RSTDIO_TxStdOutQ;
     case RSTDIO_QUEUE_TX_ERR: return RSTDIO_TxStdErrQ;
-    default: return NULL;
+    default: break;
   }
   return NULL;
 }
@@ -71,7 +71,7 @@ uint8_t RSTDIO_AddToQueue(RSTDIO_QueueType queueType, const unsigned char *data,
     case RSTDIO_QUEUE_TX_IN:  return AddToQueue(RSTDIO_TxStdInQ,  data, dataSize);
     case RSTDIO_QUEUE_TX_OUT: return AddToQueue(RSTDIO_TxStdOutQ, data, dataSize);
     case RSTDIO_QUEUE_TX_ERR: return AddToQueue(RSTDIO_TxStdErrQ, data, dataSize);
-    default: return ERR_FAILED;
+    default: break;
   }
   return ERR_FAILED;
 }
@@ -93,7 +93,7 @@ uint8_t RSTDIO_NofInQueue(RSTDIO_QueueType queueType) {
     case RSTDIO_QUEUE_TX_IN:  return RSTDIO_NofElements(RSTDIO_TxStdInQ);
     case RSTDIO_QUEUE_TX_OUT: return RSTDIO_NofElements(RSTDIO_TxStdOutQ);
     case RSTDIO_QUEUE_TX_ERR: return RSTDIO_NofElements(RSTDIO_TxStdErrQ);
-    default: return 0;
+    default: break;
   }
   return 0;
 }
@@ -122,7 +122,7 @@ uint8_t RSTDIO_ReceiveQueueChar(RSTDIO_QueueType queueType) {
     case RSTDIO_QUEUE_TX_IN:  return RSTDIO_ReceiveChar(RSTDIO_TxStdInQ);
     case RSTDIO_QUEUE_TX_OUT: return RSTDIO_ReceiveChar(RSTDIO_TxStdOutQ);
     case RSTDIO_QUEUE_TX_ERR: return RSTDIO_ReceiveChar(RSTDIO_TxStdErrQ);
-    default: return '\0';
+    default: break;
   }
   return '\0';
 }

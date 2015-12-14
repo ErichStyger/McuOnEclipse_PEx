@@ -222,11 +222,13 @@ void %'ModuleName'%.%Waitms(uint16_t ms);
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
 #define %'ModuleName'%.Waitus(us)  \
+        /*lint -save -e(505,506,522) Constant value Boolean, Redundant left argument to comma. */\
        (  ((%'ModuleName'%.NofCyclesUs((us),%'ModuleName'%.INSTR_CLOCK_HZ)==0)||(us)==0) ? \
           (void)0 : \
           ( ((us)/1000)==0 ? (void)0 : %'ModuleName'%.Waitms((uint16_t)((us)/1000))) \
           , (%'ModuleName'%.NofCyclesUs(((us)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)==0) ? (void)0 : \
             %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesUs(((us)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)) \
+       /*lint -restore */\
        )
 %else
 void %'ModuleName'%.%Waitus(uint16_t us);
@@ -242,12 +244,14 @@ void %'ModuleName'%.%Waitus(uint16_t us);
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
 #define %'ModuleName'%.Waitns(ns)  \
+        /*lint -save -e(505,506,522) Constant value Boolean, Redundant left argument to comma. */\
        (  ((%'ModuleName'%.NofCyclesNs((ns), %'ModuleName'%.INSTR_CLOCK_HZ)==0)||(ns)==0) ? \
           (void)0 : \
           %'ModuleName'%.Waitus((ns)/1000) \
           , (%'ModuleName'%.NofCyclesNs((ns)%%1000, %'ModuleName'%.INSTR_CLOCK_HZ)==0) ? \
               (void)0 : \
               %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesNs(((ns)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)) \
+       /*lint -restore */\
        )
 %else
 void %'ModuleName'%.%Waitns(uint16_t ns);
@@ -342,6 +346,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %endif
 {
   /* This function will wait 10 CPU cycles (including call overhead). */
+  /*lint -save -e522 function lacks side effect. */
 %if (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08")
   __asm {
       ; BSR to here  ;  [5]
@@ -407,6 +412,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
   #warning "unsupported CPU family %CPUfamily"
   volatile byte i = 0; /* just something to wait, NOT the requested 10 cycles */
 %endif
+  /*lint -restore */
 }
 
 %endif %- Wait10Cycles
@@ -426,6 +432,7 @@ void %'ModuleName'%.%Wait100Cycles(void)
 %endif
 {
   /* This function will spend 100 CPU cycles (including call overhead). */
+  /*lint -save -e522 function lacks side effect. */
 %if (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08")
   __asm {
       ; BSR to here  ;  [5]
@@ -528,6 +535,7 @@ loop
   volatile byte i;
   for(i=0; i<50; i++); /* just something to wait, NOT the requested 100 cycles */
 %endif
+  /*lint -restore */
 }
 %endif  %-(%Compiler = "IARARM")
 
@@ -540,6 +548,7 @@ loop
 %include Common\WaitWaitCycles.Inc
 void %'ModuleName'%.%WaitCycles(uint16_t cycles)
 {
+  /*lint -save -e522 function lacks side effect. */
   while(cycles > 100) {
     %'ModuleName'%.%Wait100Cycles();
     cycles -= 100;
@@ -548,6 +557,7 @@ void %'ModuleName'%.%WaitCycles(uint16_t cycles)
     %'ModuleName'%.%Wait10Cycles();
     cycles -= 10;
   }
+  /*lint -restore */
 }
 
 %endif %- WaitCycles
@@ -559,11 +569,13 @@ void %'ModuleName'%.%WaitCycles(uint16_t cycles)
 %include Common\WaitWaitLongCycles.Inc
 void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 {
+  /*lint -save -e522 function lacks side effect. */
   while(cycles>60000) {
     %'ModuleName'%.%WaitCycles(60000);
     cycles -= 60000;
   }
   %'ModuleName'%.%WaitCycles((uint16_t)cycles);
+  /*lint -restore */
 }
 
 %endif %- WaitLongCycles
@@ -578,6 +590,7 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 %endif
 void %'ModuleName'%.%Waitms(uint16_t ms)
 {
+  /*lint -save -e522 function lacks side effect. */
 %if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08") | (CPU_FAMILY = "RS08")  | (CPU_FAMILY = "HCS12X") | (CPU_FAMILY = "HCS12")
 %if (CPU_FAMILY = "Kinetis")
   uint32_t msCycles; /* cycles for 1 ms */
@@ -633,6 +646,7 @@ void %'ModuleName'%.%Waitms(uint16_t ms)
   %endif
   }
 %endif
+  /*lint -restore */
 }
 %ifdef COMPILER_HIX
 #pragma MESSAGE DEFAULT C5905 /* multiplication with one */

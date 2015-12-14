@@ -225,10 +225,6 @@ LI.EXP {
 <b>Version</b></a> - Identifies the SEGGER SystemView Version
 </li>
 <li>
-<a name="SeggerRTT">
-<b>Segger RTT</b></a> - Interface to Segger RTT Component
-</li>
-<li>
 <a name="SysViewAppName">
 <b>Application Name</b></a> - Configures SYSVIEW_APP_NAME
 </li>
@@ -249,12 +245,26 @@ LI.EXP {
 <b>ID Shift</b></a> - Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
 </li>
 <li>
-<a name="RttChannelIndex">
-<b>RTT Channel</b></a> - RTT Channel number. Make sure you have enough channels allocated in RTT
-</li>
-<li>
-<a name="RttBufferSize">
-<b>RTT Buffer size</b></a> - Size of RTT buffer (in bytes)
+<a name="RTTChannelGroup">
+<b>RTT Channel</b></a> - Settings for the Segger RTT channel
+<ul>
+  <li>
+  <a name="SeggerRTT">
+  <b>Segger RTT</b></a> - Interface to Segger RTT Component
+  </li>
+  <li>
+  <a name="RTTChannelName">
+  <b>Name</b></a> - Name used for RTT channel. This name is used by the SystemViewer on the host to identify the channel.
+  </li>
+  <li>
+  <a name="RttChannelIndex">
+  <b>Channel Index</b></a> - RTT Channel number, starting with zero (which is normally used for the Terminal). Make sure you have enough channels allocated in RTT
+  </li>
+  <li>
+  <a name="RttBufferSize">
+  <b>Buffer size</b></a> - Size of RTT buffer (in bytes)
+  </li>
+</ul>
 </li>
 
      </ul>

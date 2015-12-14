@@ -1,9 +1,9 @@
-/*
- * Note: This file is recreated by the project wizard whenever the MCU is
- *       changed and should not be edited by hand
- */
+#ifndef __DERIVATIVE_USB
+#define __DERIVATIVE_USB
 
 /* Include the derivative-specific header file */
 #include "%ProcessorModule.h"
 
 #define __MK_xxx_H__
+
+#endif

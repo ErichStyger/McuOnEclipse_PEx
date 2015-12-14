@@ -1,7 +1,5 @@
-/*
- * Note: This file is recreated by the project wizard whenever the MCU is
- *       changed and should not be edited by hand
- */
+#ifndef __DERIVATIVE_USB
+#define __DERIVATIVE_USB
 
 /* Include the derivative-specific header file */
 #if 0 /* << EST */
@@ -16,4 +14,4 @@
 #define _Wait asm ( wait; )
   /*!< Macro to enter wait mode */
 
-
+#endif

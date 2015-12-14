@@ -34,7 +34,7 @@ uint8_t RAPP_SendPayloadDataBlock(uint8_t *appPayload, uint8_t appPayloadSize, u
     RAPP_BUF_PAYLOAD_START(buf)[i] = *appPayload;
     appPayload++; i++;
   }
-  return RAPP_PutPayload(buf, sizeof(buf), appPayloadSize, msgType, dstAddr, flags);
+  return RAPP_PutPayload(buf, sizeof(buf), appPayloadSize, (RAPP_MSG_Type)msgType, dstAddr, flags);
 }
 
 uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_ShortAddrType srcAddr, bool *handled, RPHY_PacketDesc *packet, const RAPP_MsgHandler *table) {
@@ -70,7 +70,7 @@ static uint8_t RAPP_OnPacketRx(RPHY_PacketDesc *packet) {
   RAPP_MSG_Type type;
   RNWK_ShortAddrType srcAddr;
   
-  type = RAPP_BUF_TYPE(packet->phyData);
+  type = (RAPP_MSG_Type)RAPP_BUF_TYPE(packet->phyData);
   size = RAPP_BUF_SIZE(packet->phyData);
   data = RAPP_BUF_PAYLOAD_START(packet->phyData);
   srcAddr = RNWK_BUF_GET_SRC_ADDR(packet->phyData);

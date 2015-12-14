@@ -353,9 +353,11 @@ void %'ModuleName'%.%HandleEvent(void)
   }
   %@CriticalSection@'ModuleName'%.ExitCritical();
 %if defined(AppHandleEvent)
+  /*lint -save -e522 function lacks side effect  */
   if (event != %'ModuleName'%.NOF_EVENTS) {
     %AppHandleEvent(event);
   }
+  /*lint -restore */
 %endif
 }
 

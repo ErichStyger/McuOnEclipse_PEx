@@ -102,6 +102,11 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
+%if defined(RTTChannel0Enabled) & %RTTChannel0Enabled='yes'
+#define %'ModuleName'%.RTT_CHANNEL_0_ENABLED   1  /* 0: channel disabled, 1: channel enabled */
+%else
+#define %'ModuleName'%.RTT_CHANNEL_0_ENABLED   0  /* 0: channel disabled, 1: channel enabled */
+%endif
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -563,8 +568,10 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 void %'ModuleName'%.%Init(void)
 {
   SEGGER_RTT_Init();
-  %'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, %UpBufferMode);
-  %'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, %DownBufferMode);
+#if %'ModuleName'%.RTT_CHANNEL_0_ENABLED
+  (void)%'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, %UpBufferMode);
+  (void)%'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, %DownBufferMode);
+#endif
 }
 
 %endif %- Init

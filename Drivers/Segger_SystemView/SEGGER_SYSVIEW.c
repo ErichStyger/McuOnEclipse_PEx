@@ -189,6 +189,7 @@ Additional information:
 *
 **********************************************************************
 */
+#if 0 /* not used */
 //
 // 10 Zero bytes are used as synchronization mark periodically
 //
@@ -202,7 +203,7 @@ static const U8 _abSync[10] = { SEGGER_SYSVIEW_EVENT_ID_NOP,
                                 SEGGER_SYSVIEW_EVENT_ID_NOP,
                                 SEGGER_SYSVIEW_EVENT_ID_NOP,
                                 SEGGER_SYSVIEW_EVENT_ID_NOP};
-
+#endif
 /*********************************************************************
 *
 *       Static data
@@ -238,10 +239,12 @@ static struct {
                                    U32 Data;                      \
                                    p = pDest;                     \
                                    Data = Value;                  \
+                                   /*lint -save -e681 Loop is not entered */\
                                    while(Data > 0x7F) {           \
                                      *p++ = (U8)(Data | 0x80);    \
                                      Data >>= 7;                  \
                                    };                             \
+                                   /*lint -restore */              \
                                    *p++ = (U8)Data;               \
                                    pDest = p;                     \
                                  };
@@ -461,7 +464,7 @@ static void _SendPacket(U8* pStartPacket, U8* pEndPacket, unsigned EventId) {
   // In this case try to send and overflow packet.
   //
   if (_SYSVIEW_Globals.EnableState == 2) {
-    _TrySendOverflowPacket();
+    (void)_TrySendOverflowPacket();
     if (_SYSVIEW_Globals.EnableState != 1) {
       goto SendDone;
     }

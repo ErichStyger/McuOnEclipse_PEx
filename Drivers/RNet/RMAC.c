@@ -18,9 +18,9 @@ static uint8_t RMAC_ExpectedAckSeqNr;
 
 uint8_t RMAC_PutPayload(uint8_t *buf, size_t bufSize, uint8_t payloadSize, RPHY_FlagsType flags) {
   if (flags&RPHY_PACKET_FLAGS_REQ_ACK) {
-    RMAC_BUF_TYPE(buf) = RMAC_MSG_TYPE_DATA|RMAC_MSG_TYPE_REQ_ACK;
+    RMAC_BUF_TYPE(buf) = (uint8_t)((uint8_t)RMAC_MSG_TYPE_DATA|(uint8_t)RMAC_MSG_TYPE_REQ_ACK);
   } else {
-    RMAC_BUF_TYPE(buf) = RMAC_MSG_TYPE_DATA;
+    RMAC_BUF_TYPE(buf) = (uint8_t)RMAC_MSG_TYPE_DATA;
   }
   RMAC_ExpectedAckSeqNr = RMAC_SeqNr;
   RMAC_BUF_SEQN(buf) = RMAC_SeqNr++;
@@ -32,7 +32,7 @@ uint8_t RMAC_OnPacketRx(RPHY_PacketDesc *packet) {
 }
 
 uint8_t RMAC_SendACK(RPHY_PacketDesc *rxPacket, RPHY_PacketDesc *ackPacket) {
-  RMAC_BUF_TYPE(ackPacket->phyData) = RMAC_MSG_TYPE_ACK; /* set type to ack */
+  RMAC_BUF_TYPE(ackPacket->phyData) = (uint8_t)RMAC_MSG_TYPE_ACK; /* set type to ack */
   RMAC_BUF_SEQN(ackPacket->phyData) = RMAC_BUF_SEQN(rxPacket->phyData);
   /* use same sequence number as in the received package, so no change */
   return RPHY_PutPayload(ackPacket->phyData, ackPacket->phySize, RMAC_HEADER_SIZE+RNWK_HEADER_SIZE, RPHY_PACKET_FLAGS_NONE);
@@ -40,7 +40,7 @@ uint8_t RMAC_SendACK(RPHY_PacketDesc *rxPacket, RPHY_PacketDesc *ackPacket) {
 
 RMAC_MsgType RMAC_GetType(uint8_t *buf, size_t bufSize) {
   (void)bufSize; /* not used */
-  return RMAC_BUF_TYPE(buf);
+  return (RMAC_MsgType)RMAC_BUF_TYPE(buf);
 }
 
 bool RMAC_IsExpectedACK(uint8_t *buf, size_t bufSize) {
@@ -56,33 +56,31 @@ void RMAC_DecodeType(uint8_t *buf, size_t bufSize, RPHY_PacketDesc *packet) {
   RMAC_MsgType type;
   bool first = TRUE;
   
-  type = RMAC_BUF_TYPE(packet->phyData);
+  type = (RMAC_MsgType)RMAC_BUF_TYPE(packet->phyData);
   buf[0] = '\0';
   %@Utility@'ModuleName'%.chcat(buf, bufSize, '(');
-  if (type&RMAC_MSG_TYPE_REQ_ACK) {
+  if ((uint8_t)type&(uint8_t)RMAC_MSG_TYPE_REQ_ACK) {
     %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"RACK");
     first = FALSE;
   } else {
     %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"NACK");
     first = FALSE;
   }
-  if (type&RMAC_MSG_TYPE_DATA) {
+  if ((uint8_t)type&(uint8_t)RMAC_MSG_TYPE_DATA) {
     if (!first) {
       %@Utility@'ModuleName'%.chcat(buf, bufSize, '|');
     }
     %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"DATA");
     first = FALSE;
   }
-  if (type&RMAC_MSG_TYPE_ACK) {
+  if ((uint8_t)type&(uint8_t)RMAC_MSG_TYPE_ACK) {
     if (!first) {
       %@Utility@'ModuleName'%.chcat(buf, bufSize, '|');
     }
     %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"ACK");
-    first = FALSE;
   }
-  if (type&RMAC_MSG_TYPE_CMD) {
+  if ((uint8_t)type&(uint8_t)RMAC_MSG_TYPE_CMD) {
     %@Utility@'ModuleName'%.strcat(buf, bufSize, (unsigned char*)"CMD");
-    first = FALSE;
   }
   %@Utility@'ModuleName'%.chcat(buf, bufSize, ')');
 }

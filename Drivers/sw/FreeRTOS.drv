@@ -1760,7 +1760,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack", ' ', PAD_STAT_TASK_STACK_MARK);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
-      %@Shell@'ModuleName'%.SendStr("\r\n", io->stdOut);
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
       for(i=0; i<nof; i++) {
         /* TCB */
         tmpBuf[0] = '\0';
@@ -1770,7 +1770,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
         CLS1_SendStr(buf, io->stdOut);
         /* task handle */
         tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), "0x");
+        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
         %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)pxTaskStatusArray[i].xHandle);
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_HANDLE);
@@ -1778,16 +1778,16 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 
         /* task name */
         buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), pxTaskStatusArray[i].pcTaskName, ' ', PAD_STAT_TASK_NAME);
+        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (unsigned char*)pxTaskStatusArray[i].pcTaskName, ' ', PAD_STAT_TASK_NAME);
         %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
         /* state */
         switch(pxTaskStatusArray[i].eCurrentState) {
-          case eRunning:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Running"); break;
-          case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Ready"); break;
-          case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Suspended"); break;
-          case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "Blocked"); break;
-          default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), "UNKNOWN!"); break;
+          case eRunning:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Running"); break;
+          case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Ready"); break;
+          case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Suspended"); break;
+          case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Blocked"); break;
+          default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"UNKNOWN!"); break;
         }
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATE);
@@ -1806,7 +1806,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 
         /* runtime */
         tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), "0x");
+        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
         %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].ulRunTimeCounter);
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
@@ -1819,7 +1819,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
         %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_MARK);
         %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
-        %@Shell@'ModuleName'%.SendStr("\r\n", io->stdOut);
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
       }
     }
   } else {

@@ -99,6 +99,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
     #define SEGGER_RTT_LOCK() {                                                 \
+                                    /*lint -save -e529 Symbol 'LockState' not subsequently referenced  */ \
                                     unsigned int LockState;                     \
                                   __asm volatile ("mrs   %%0, primask  \n\t"     \
                                                   "mov   r1, $1     \n\t"       \
@@ -113,11 +114,13 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   : "r" (LockState)             \
                                                   :                             \
                                                   );                            \
-                                  }                                             
+                                     /*lint -restore */                          \
+                                 }                                             
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     #define SEGGER_RTT_LOCK() {                                                 \
-                                    unsigned int LockState;                     \
+                                     /*lint -save -e529 Symbol 'LockState' not subsequently referenced  */ \
+                                   unsigned int LockState;                     \
                                   __asm volatile ("mrs   %%0, basepri  \n\t"     \
                                                   "mov   r1, $128     \n\t"     \
                                                   "msr   basepri, r1  \n\t"     \
@@ -131,7 +134,8 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   : "r" (LockState)             \
                                                   :                             \
                                                   );                            \
-                                  }
+                                     /*lint -restore */                          \
+                                 }
   #else
     #define SEGGER_RTT_LOCK()  
     #define SEGGER_RTT_UNLOCK()
