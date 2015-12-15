@@ -96,18 +96,20 @@
 
 #include "%ProcessorModule.h"
 
-extern byte %'ModuleName'%.DisplayBuf[64][3]; /* buffer for the display */
-
 %define NofLedPixels 1
 %:NofLedPixels=1
 %:NofLedPixels*=64
 
-#define NOF_LED_PIXELS %NofLedPixels
+#define %'ModuleName'%.PIXEL_NOF_BITS                            %>40 (24) /* number of bits per pixel */
+#define %'ModuleName'%.WIDTH                                     %>40 (%Width) /* number of pixels in x direction */
+#define %'ModuleName'%.HEIGHT                                    %>40 (%Height) /* number of pixels in y direction */
+#define %'ModuleName'%.NOF_LED_PIXELS                            %>40 (%'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT)
+#define %'ModuleName'%.MEM_BUF_SIZE                              %>40 (%'ModuleName'%.NOF_LED_PIXELS*(%'ModuleName'%.PIXEL_NOF_BITS/8))
 
-#if NOF_LED_PIXELS <= 255
-  typedef byte %'ModuleName'%.PixelCount; /*!< one byte is enough to hold a counter for all pixels */
+#if %'ModuleName'%.NOF_LED_PIXELS <= 255
+  typedef uint8_t %'ModuleName'%.PixelCount; /*!< one byte is enough to hold a counter for all pixels */
 #else
-  typedef word %'ModuleName'%.PixelCount; /*!< one byte is enough to hold a counter for all pixels */
+  typedef uint16_t %'ModuleName'%.PixelCount; /*!< one byte is enough to hold a counter for all pixels */
 #endif
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
@@ -123,6 +125,7 @@ extern byte %'ModuleName'%.DisplayBuf[64][3]; /* buffer for the display */
 %-
 typedef uint32_t %'ModuleName'%.PixelColor;    /* one bit for a pixel */
 typedef uint8_t %'ModuleName'%.PixelDim; /* one byte is enough to describe an x/y position */
+extern uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.MEM_BUF_SIZE]; /* buffer for the display */
 
 #define %'ModuleName'%.PIXEL_ON             %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF            %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
@@ -145,14 +148,14 @@ typedef uint8_t %'ModuleName'%.PixelDim; /* one byte is enough to describe an x/
 #define %'ModuleName'%.COLOR_GREY           1
 #define %'ModuleName'%.COLOR_BRIGHT_GREY    1
 
-#define %'ModuleName'%.HW_WIDTH         %'Width'u                %>40 /* Logical display width in pixels */
-#define %'ModuleName'%.HW_HEIGHT        %'Height'u               %>40 /* Logical display height in pixels */
+#define %'ModuleName'%.HW_WIDTH         %'ModuleName'%.WIDTH     %>40 /* Logical display width in pixels */
+#define %'ModuleName'%.HW_HEIGHT        %'ModuleName'%.HEIGHT    %>40 /* Logical display height in pixels */
 %if %Height <. %Width
-#define %'ModuleName'%.HW_SHORTER_SIDE  %'Height'u               %>40/* size of shorter display side in pixels */
-#define %'ModuleName'%.HW_LONGER_SIDE   %'Width'u                %>40/* size of longer display side in pixels */
+#define %'ModuleName'%.HW_SHORTER_SIDE  %'ModuleName'%.HEIGHT    %>40/* size of shorter display side in pixels */
+#define %'ModuleName'%.HW_LONGER_SIDE   %'ModuleName'%.WIDTH     %>40/* size of longer display side in pixels */
 %else
-#define %'ModuleName'%.HW_SHORTER_SIDE  %'Width'u                %>40/* size of shorter display side in pixels */
-#define %'ModuleName'%.HW_LONGER_SIDE   %'Height'u               %>40/* size of longer display side in pixels */
+#define %'ModuleName'%.HW_SHORTER_SIDE  %'ModuleName'%.WIDTH     %>40/* size of shorter display side in pixels */
+#define %'ModuleName'%.HW_LONGER_SIDE   %'ModuleName'%.HEIGHT    %>40/* size of longer display side in pixels */
 %endif
 
 typedef enum {
@@ -285,6 +288,54 @@ void %'ModuleName'%.%GiveLCD(void);
 
 %endif %- GiveLCD
 %-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetPixel
+%ifdef SetPixel
+uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y);
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixSetPixel.Inc
+
+%endif %- SetPixel
+%-BW_METHOD_END SetPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClrPixel
+%ifdef ClrPixel
+uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y);
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixClrPixel.Inc
+
+%endif %- ClrPixel
+%-BW_METHOD_END ClrPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
+%define! Parx
+%define! Pary
+%define! Parcolor
+%define! RetVal
+%include Common\NEOmatrixPutPixel.Inc
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawFilledBox
+%ifdef DrawFilledBox
+uint8_t %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color);
+%define! Parx
+%define! Pary
+%define! Parwidth
+%define! Parheight
+%define! Parcolor
+%define! RetVal
+%include Common\NEOmatrixDrawFilledBox.Inc
+
+%endif %- DrawFilledBox
+%-BW_METHOD_END DrawFilledBox
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -318,10 +369,11 @@ void %'ModuleName'%.%GiveLCD(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-uint32_t %'ModuleName'%.DisplayBuf[64]; /* buffer for the display */
+uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.MEM_BUF_SIZE]; /* buffer for the display */
 %if defined(Enable) | defined(Disable)
 static bool %'ModuleName'%.DisplayEnabled = TRUE; /* if we allow refresh of the display */
 %endif
+void Adafruit_NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8_t blue);
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -398,12 +450,12 @@ void %'ModuleName'%.%Disable(void)
 %ifdef GetWidth
 %define! RetVal
 %include Common\NEOmatrixGetWidth.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetWidth(void)
 {
-  /* method is implemented as macro in %'ModuleName'.h */
+  method is implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetWidth
 %-BW_METHOD_END GetWidth
@@ -412,12 +464,12 @@ void %'ModuleName'%.%Disable(void)
 %ifdef GetHeight
 %define! RetVal
 %include Common\NEOmatrixGetHeight.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetHeight(void)
 {
-  /* method is implemented as macro in %'ModuleName'.h */
+  method is implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetHeight
 %-BW_METHOD_END GetHeight
@@ -438,12 +490,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %ifdef GetShorterSide
 %define! RetVal
 %include Common\NEOmatrixGetShorterSide.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetShorterSide(void)
 {
-  /* method is implemented as macro in %'ModuleName'.h */
+  method is implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetShorterSide
 %-BW_METHOD_END GetShorterSide
@@ -452,12 +504,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %ifdef GetLongerSide
 %define! RetVal
 %include Common\NEOmatrixGetLongerSide.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetLongerSide(void)
 {
-  /* method is implemented as macro in %'ModuleName'.h */
+  method is implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetLongerSide
 %-BW_METHOD_END GetLongerSide
@@ -483,6 +535,66 @@ void %'ModuleName'%.%GiveLCD(void)
 
 %endif %- GiveLCD
 %-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetPixel
+%ifdef SetPixel
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixSetPixel.Inc
+uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
+{
+  Adafruit_NeoMatrix_drawPixel(x, y, 0xff/4, 0xff/4, 0xff/4);
+}
+
+%endif %- SetPixel
+%-BW_METHOD_END SetPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClrPixel
+%ifdef ClrPixel
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixClrPixel.Inc
+uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
+{
+  Adafruit_NeoMatrix_drawPixel(x, y, 0, 0, 0);
+}
+
+%endif %- ClrPixel
+%-BW_METHOD_END ClrPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%define! RetVal
+%include Common\NEOmatrixPutPixel.Inc
+uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+{
+  Adafruit_NeoMatrix_drawPixel(x, y, (color&0xff0000)>>16, (color&0xff00)>>8, color&0xff);
+}
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawFilledBox
+%ifdef DrawFilledBox
+%define! Parx
+%define! Pary
+%define! Parwidth
+%define! Parheight
+%define! Parcolor
+%define! RetVal
+%include Common\NEOmatrixDrawFilledBox.Inc
+uint8_t %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- DrawFilledBox
+%-BW_METHOD_END DrawFilledBox
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -1015,7 +1015,7 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
 %if %@Display@WindowCapability='yes'
   %'ModuleName'_PixelCount pixCnt;
   %'ModuleName'_PixelDim x1, y1;
-%elif %@Display@DisplayMemoryWrite='yes'
+%- %elif %@Display@DisplayMemoryWrite='yes'
 %else %- use memory buffer
   %'ModuleName'%.PixelDim x0, xe, y0, ye;
 %endif
@@ -1070,11 +1070,12 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
-%elif %@Display@DisplayMemoryWrite='yes'
-  %@Display@'ModuleName'%.DrawFilledBox(x, y, width, height, color);
-  %ifdef RTOS
-  %'ModuleName'%.GiveDisplay();
-  %endif
+%- Not sure why this below exists?
+%- %elif %@Display@DisplayMemoryWrite='yes'
+%-  %@Display@'ModuleName'%.DrawFilledBox(x, y, width, height, color);
+%-  %ifdef RTOS
+%-  %'ModuleName'%.GiveDisplay();
+%-  %endif
 %else %- use memory buffer
   y0 = y; ye = (%'ModuleName'%.PixelDim)(y0+height-1);
   %ifdef RTOS
@@ -1092,7 +1093,9 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
       }
       x0++;
     } /* for */
-    if (y0==ye) break; /* reached end */
+    if (y0==ye) {
+      break; /* reached end */
+    }
     y0++;
   } /* for */
   %ifdef RTOS
@@ -1133,6 +1136,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %@Display@'ModuleName'%.WritePixel(color);                     %>40 /* store pixel with color information */
   %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
 %else %- use memory buffer
+%if %@Display@BitsPerPixel='1'
   if (   (color==%'ModuleName'%.COLOR_BLACK && %'ModuleName'%.COLOR_BLACK==%'ModuleName'%.COLOR_PIXEL_SET)
       || (color==%'ModuleName'%.COLOR_WHITE && %'ModuleName'%.COLOR_WHITE==%'ModuleName'%.COLOR_PIXEL_SET)
      )
@@ -1141,6 +1145,9 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   } else {
     %'ModuleName'%.%ClrPixel(x,y);
   }
+%else /* multi-bit display */
+  %@Display@'ModuleName'%.PutPixel(x, y, color);
+%endif
 %endif
 %ifdef RTOS
   %'ModuleName'%.GiveDisplay();

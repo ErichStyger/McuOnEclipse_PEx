@@ -4,7 +4,7 @@
     <Name>NEOmatrix</Name>
     <Description>Adafruit NeoPixel LED Matrix Display</Description>
     <Author>Erich Styger</Author>
-    <Version>01.099</Version>
+    <Version>01.105</Version>
     <Icon>NEOmatrix</Icon>
     <TypesFiles>PE,NEOmatrix\NEOmatrix</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>2</BW_NeedUst>
+    <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2015, all rights reserved.\n\nThis an open source software implemented using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -40,11 +40,10 @@
       <TIntgItem>
         <Name>Width</Name>
         <Symbol>Width</Symbol>
-        <Hint>Width of display in pixels. This value is calculated based on the number of columns.</Hint>
+        <Hint>Width of display in pixels.</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <ReadOnly>true</ReadOnly>
         <EditLine>true</EditLine>
-        <DefaultValue>0</DefaultValue>
+        <DefaultValue>8</DefaultValue>
         <MinValue>0</MinValue>
         <MaxValue>-1</MaxValue>
         <Bases>DEC</Bases>
@@ -58,11 +57,10 @@
       <TIntgItem>
         <Name>Height</Name>
         <Symbol>Height</Symbol>
-        <Hint>Height of the display in pixels. This value is calculated based on the number of rows.</Hint>
+        <Hint>Height of the display in pixels.</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <ReadOnly>true</ReadOnly>
         <EditLine>true</EditLine>
-        <DefaultValue>0</DefaultValue>
+        <DefaultValue>8</DefaultValue>
         <MinValue>0</MinValue>
         <MaxValue>-1</MaxValue>
         <Bases>DEC</Bases>
@@ -136,7 +134,7 @@
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
         <EditLine>true</EditLine>
-        <DefaultValue>1</DefaultValue>
+        <DefaultValue>24</DefaultValue>
         <MinValue>1</MinValue>
         <MaxValue>-1</MaxValue>
         <Bases>DEC</Bases>
@@ -175,12 +173,12 @@
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
@@ -380,7 +378,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -408,7 +406,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>4</ParamCount>
         <Parameter>
           <ParName>x</ParName>
@@ -460,7 +458,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -488,7 +486,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -549,6 +547,190 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>PutPixel</Name>
+        <Symbol>PutPixel</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets a pixel with a color</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel x coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel y coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>color of pixel</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetPixel</Name>
+        <Symbol>SetPixel</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets a pixel with the default color</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel x coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel y coordinate</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ClrPixel</Name>
+        <Symbol>ClrPixel</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Clears a pixel</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel x coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel y coordinate</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DrawFilledBox</Name>
+        <Symbol>DrawFilledBox</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Draws a filled box at the given coordinates with the given color</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x left upper coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y left upper coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>width</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Width in pixels</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>height</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Height in pixels</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>color to be used to fill the box</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
