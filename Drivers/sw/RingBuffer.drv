@@ -210,6 +210,29 @@ uint8_t %'ModuleName'%.%Delete(void);
 
 %endif %- Delete
 %-BW_METHOD_END Delete
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Putn
+%ifdef Putn
+uint8_t %'ModuleName'%.%Putn(%'ModuleName'_ElementType *elem, %'ModuleName'_BufSizeType nof);
+%define! Parelem
+%define! Parnof
+%define! RetVal
+%include Common\RingBufferPutn.Inc
+
+%endif %- Putn
+%-BW_METHOD_END Putn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Compare
+%ifdef Compare
+uint8_t %'ModuleName'%.%Compare(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP, %'ModuleName'_BufSizeType nof);
+%define! Parindex
+%define! ParelemP
+%define! Parnof
+%define! RetVal
+%include Common\RingBufferCompare.Inc
+
+%endif %- Compare
+%-BW_METHOD_END Compare
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -340,6 +363,29 @@ uint8_t %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
 %endif %- Put
 %-BW_METHOD_END Put
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Putn
+%ifdef Putn
+%define! Parelem
+%define! Parnof
+%define! RetVal
+%include Common\RingBufferPutn.Inc
+uint8_t %'ModuleName'%.%Putn(%'ModuleName'_ElementType *elem, %'ModuleName'_BufSizeType nof)
+{
+  uint8_t res = ERR_OK;
+
+  while(nof>0) {
+    res = %'ModuleName'%.%Put(*elem);
+    if (res!=ERR_OK) {
+      break;
+    }
+    elem++; nof--;
+  }
+  return res;
+}
+
+%endif %- Putn
+%-BW_METHOD_END Putn
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Get
 %ifdef Get
 %define! ParelemP
@@ -458,6 +504,38 @@ uint8_t %'ModuleName'%.%Peek(%'ModuleName'_BufSizeType index, %'ModuleName'_Elem
 
 %endif %- Peek
 %-BW_METHOD_END Peek
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Compare
+%ifdef Compare
+%define! Parindex
+%define! ParelemP
+%define! Parnof
+%define! RetVal
+%include Common\RingBufferCompare.Inc
+uint8_t %'ModuleName'%.%Compare(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP, %'ModuleName'_BufSizeType nof)
+{
+  uint8_t cmpResult = 0;
+  uint8_t res;
+  %'ModuleName'_ElementType val;
+
+  while(nof>0) {
+    res = %'ModuleName'%.%Peek(index, &val);
+    if (res!=ERR_OK) { /* general failure? */
+      cmpResult = -1; /* no match */
+      break;
+    }
+    if (val!=*elemP) { /* mismatch */
+      cmpResult = -1; /* no match */
+      break;
+    }
+    elemP++; index++; nof--;
+  }
+
+  return cmpResult;
+}
+
+%endif %- Compare
+%-BW_METHOD_END Compare
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
