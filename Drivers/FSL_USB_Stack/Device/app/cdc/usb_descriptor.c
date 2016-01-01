@@ -104,7 +104,7 @@ uint_8 USB_DESC_CONST g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
    0x02,0x00,                            /*  BCD Device version             */
    0x01,                                 /*  Manufacturer string index      */
    0x02,                                 /*  Product string index           */
-   0x00,                                 /*  Serial number string index     */
+   0x03,                                 /*  Serial number string index     */
    0x01                                  /*  Number of configurations       */
 };
 
@@ -270,204 +270,146 @@ uint_8 USB_DESC_CONST USB_STR_1[USB_STR_1_SIZE+USB_STR_DESC_SIZE]
                                '.',0
 #else
                                %define! strLen %str_length(CdcBusReportedVendorString)
-
                                %if %strLen>=.'1'
                                  %define! Str1 %CdcBusReportedVendorString
                                  %substring Str1,1,1
-                               %else
-                                 %define! Str1 \x20
+                                 '%Str1',0,
                                %endif
                                %if %strLen>=.'2'
                                  %define! Str2 %CdcBusReportedVendorString
                                  %substring Str2,2,1
-                               %else
-                                 %define! Str2 \x20
+                                 '%Str2',0,
                                %endif
                                %if %strLen>=.'3'
                                  %define! Str3 %CdcBusReportedVendorString
                                  %substring Str3,3,1
-                               %else
-                                 %define! Str3 \x20
+                                 '%Str3',0,
                                %endif
                                %if %strLen>=.'4'
                                  %define! Str4 %CdcBusReportedVendorString
                                  %substring Str4,4,1
-                               %else
-                                 %define! Str4 \x20
+                                 '%Str4',0,
                                %endif
                                %if %strLen>=.'5'
                                  %define! Str5 %CdcBusReportedVendorString
                                  %substring Str5,5,1
-                               %else
-                                 %define! Str5 \x20
+                                 '%Str5',0,
                                %endif
                                %if %strLen>=.'6'
                                  %define! Str6 %CdcBusReportedVendorString
                                  %substring Str6,6,1
-                               %else
-                                 %define! Str6 \x20
+                                 '%Str6',0,
                                %endif
                                %if %strLen>=.'7'
                                  %define! Str7 %CdcBusReportedVendorString
                                  %substring Str7,7,1
-                               %else
-                                 %define! Str7 \x20
+                                 '%Str7',0,
                                %endif
                                %if %strLen>=.'8'
                                  %define! Str8 %CdcBusReportedVendorString
                                  %substring Str8,8,1
-                               %else
-                                 %define! Str8 \x20
+                                 '%Str8',0,
                                %endif
                                %if %strLen>=.'9'
                                  %define! Str9 %CdcBusReportedVendorString
                                  %substring Str9,9,1
-                               %else
-                                 %define! Str9 \x20
+                                 '%Str9',0,
                                %endif
                                %if %strLen>=.'10'
                                  %define! Str10 %CdcBusReportedVendorString
                                  %substring Str10,10,1
-                               %else
-                                 %define! Str10 \x20
+                                 '%Str10',0,
                                %endif
                                %if %strLen>=.'11'
                                  %define! Str11 %CdcBusReportedVendorString
                                  %substring Str11,11,1
-                               %else
-                                 %define! Str11 \x20
+                                 '%Str11',0,
                                %endif
                                %if %strLen>=.'12'
                                  %define! Str12 %CdcBusReportedVendorString
                                  %substring Str12,12,1
-                               %else
-                                 %define! Str12 \x20
+                                 '%Str12',0,
                                %endif
                                %if %strLen>=.'13'
                                  %define! Str13 %CdcBusReportedVendorString
                                  %substring Str13,13,1
-                               %else
-                                 %define! Str13 \x20
+                                 '%Str13',0,
                                %endif
                                %if %strLen>=.'14'
                                  %define! Str14 %CdcBusReportedVendorString
                                  %substring Str14,14,1
-                               %else
-                                 %define! Str14 \x20
+                                 '%Str14',0,
                                %endif
                                %if %strLen>=.'15'
                                  %define! Str15 %CdcBusReportedVendorString
                                  %substring Str15,15,1
-                               %else
-                                 %define! Str15 \x20
+                                 '%Str15',0,
                                %endif
                                %if %strLen>=.'16'
                                  %define! Str16 %CdcBusReportedVendorString
                                  %substring Str16,16,1
-                               %else
-                                 %define! Str16 \x20
+                                 '%Str6',0,
                                %endif
                                %if %strLen>=.'17'
                                  %define! Str17 %CdcBusReportedVendorString
                                  %substring Str17,17,1
-                               %else
-                                 %define! Str17 \x20
+                                 '%Str17',0,
                                %endif
                                %if %strLen>=.'18'
                                  %define! Str18 %CdcBusReportedVendorString
                                  %substring Str18,18,1
-                               %else
-                                 %define! Str18 \x20
+                                 '%Str18',0,
                                %endif
                                %if %strLen>=.'19'
                                  %define! Str19 %CdcBusReportedVendorString
                                  %substring Str19,19,1
-                               %else
-                                 %define! Str19 \x20
+                                 '%Str19',0,
                                %endif
                                %if %strLen>=.'20'
                                  %define! Str20 %CdcBusReportedVendorString
                                  %substring Str20,20,1
-                               %else
-                                 %define! Str20 \x20
+                                 '%Str20',0,
                                %endif
                                %if %strLen>=.'21'
                                  %define! Str21 %CdcBusReportedVendorString
                                  %substring Str21,21,1
-                               %else
-                                 %define! Str21 \x20
+                                 '%Str21',0,
                                %endif
                                %if %strLen>=.'22'
                                  %define! Str22 %CdcBusReportedVendorString
                                  %substring Str22,22,1
-                               %else
-                                 %define! Str22 \x20
+                                 '%Str22',0,
                                %endif
                                %if %strLen>=.'23'
                                  %define! Str23 %CdcBusReportedVendorString
                                  %substring Str23,23,1
-                               %else
-                                 %define! Str23 \x20
+                                 '%Str23',0,
                                %endif
                                %if %strLen>=.'24'
                                  %define! Str24 %CdcBusReportedVendorString
                                  %substring Str24,24,1
-                               %else
-                                 %define! Str24 \x20
+                                 '%Str24',0,
                                %endif
                                %if %strLen>=.'25'
                                  %define! Str25 %CdcBusReportedVendorString
                                  %substring Str25,25,1
-                               %else
-                                 %define! Str25 \x20
+                                 '%Str25',0,
                                %endif
                                %if %strLen>=.'26'
                                  %define! Str26 %CdcBusReportedVendorString
                                  %substring Str26,26,1
-                               %else
-                                 %define! Str26 \x20
+                                 '%Str26',0,
                                %endif
                                %if %strLen>=.'27'
                                  %define! Str27 %CdcBusReportedVendorString
                                  %substring Str27,27,1
-                               %else
-                                 %define! Str27 \x20
+                                 '%Str27',0,
                                %endif
                                %if %strLen>=.'28'
                                  %define! Str28 %CdcBusReportedVendorString
                                  %substring Str28,28,1
-                               %else
-                                 %define! Str28 \x20
+                                 '%Str28',0,
                                %endif
-
-                              '%Str1',0,
-                              '%Str2',0,
-                              '%Str3',0,
-                              '%Str4',0,
-                              '%Str5',0,
-                              '%Str6',0,
-                              '%Str7',0,
-                              '%Str8',0,
-                              '%Str9',0,
-                              '%Str10',0,
-                              '%Str11',0,
-                              '%Str12',0,
-                              '%Str13',0,
-                              '%Str14',0,
-                              '%Str15',0,
-                              '%Str16',0,
-                              '%Str17',0,
-                              '%Str18',0,
-                              '%Str19',0,
-                              '%Str20',0,
-                              '%Str21',0,
-                              '%Str22',0,
-                              '%Str23',0,
-                              '%Str24',0,
-                              '%Str25',0,
-                              '%Str26',0,
-                              '%Str27',0,
-                              '%Str28',0
 #endif
                           };
 
@@ -503,107 +445,294 @@ uint_8 USB_DESC_CONST USB_STR_2[USB_STR_2_SIZE+USB_STR_DESC_SIZE]
                                ' ',0
 #else
                                %define! strLen %str_length(CdcBusReportedDeviceDescriptionString)
- 
                                %if %strLen>=.'1'
                                  %define! Str1 %CdcBusReportedDeviceDescriptionString
                                  %substring Str1,1,1
-                               %else
-                                 %define! Str1 \x20
+                                 '%Str1',0,
                                %endif
                                %if %strLen>=.'2'
                                  %define! Str2 %CdcBusReportedDeviceDescriptionString
                                  %substring Str2,2,1
-                               %else
-                                 %define! Str2 \x20
+                                 '%Str2',0,
                                %endif
                                %if %strLen>=.'3'
                                  %define! Str3 %CdcBusReportedDeviceDescriptionString
                                  %substring Str3,3,1
-                               %else
-                                 %define! Str3 \x20
+                                 '%Str3',0,
                                %endif
                                %if %strLen>=.'4'
                                  %define! Str4 %CdcBusReportedDeviceDescriptionString
                                  %substring Str4,4,1
-                               %else
-                                 %define! Str4 \x20
+                                 '%Str4',0,
                                %endif
                                %if %strLen>=.'5'
                                  %define! Str5 %CdcBusReportedDeviceDescriptionString
                                  %substring Str5,5,1
-                               %else
-                                 %define! Str5 \x20
+                                 '%Str5',0,
                                %endif
                                %if %strLen>=.'6'
                                  %define! Str6 %CdcBusReportedDeviceDescriptionString
                                  %substring Str6,6,1
-                               %else
-                                 %define! Str6 \x20
-                               %endif
+                                 '%Str6',0,
+                              %endif
                                %if %strLen>=.'7'
                                  %define! Str7 %CdcBusReportedDeviceDescriptionString
                                  %substring Str7,7,1
-                               %else
-                                 %define! Str7 \x20
+                                 '%Str7',0,
                                %endif
                                %if %strLen>=.'8'
                                  %define! Str8 %CdcBusReportedDeviceDescriptionString
                                  %substring Str8,8,1
-                               %else
-                                 %define! Str8 \x20
+                                 '%Str8',0,
                                %endif
                                %if %strLen>=.'9'
                                  %define! Str9 %CdcBusReportedDeviceDescriptionString
                                  %substring Str9,9,1
-                               %else
-                                 %define! Str9 \x20
+                                 '%Str9',0,
                                %endif
                                %if %strLen>=.'10'
                                  %define! Str10 %CdcBusReportedDeviceDescriptionString
                                  %substring Str10,10,1
-                               %else
-                                 %define! Str10 \x20
+                                 '%Str10',0,
                                %endif
                                %if %strLen>=.'11'
                                  %define! Str11 %CdcBusReportedDeviceDescriptionString
                                  %substring Str11,11,1
-                               %else
-                                %define! Str11 \x20
+                                 '%Str11',0,
                                %endif
                                %if %strLen>=.'12'
                                  %define! Str12 %CdcBusReportedDeviceDescriptionString
                                  %substring Str12,12,1
-                               %else
-                                 %define! Str12 \x20
+                                 '%Str12',0,
                                %endif
                                %if %strLen>=.'13'
                                  %define! Str13 %CdcBusReportedDeviceDescriptionString
                                  %substring Str13,13,1
-                               %else
-                                 %define! Str13 \x20
+                                 '%Str13',0,
                                %endif
                                %if %strLen>=.'14'
                                  %define! Str14 %CdcBusReportedDeviceDescriptionString
                                  %substring Str14,14,1
-                               %else
-                                 %define! Str14 \x20
+                                 '%Str14',0,
                                %endif
-
-                               '%Str1',0,
-                               '%Str2',0,
-                               '%Str3',0,
-                               '%Str4',0,
-                               '%Str5',0,
-                               '%Str6',0,
-                               '%Str7',0,
-                               '%Str8',0,
-                               '%Str9',0,
-                               '%Str10',0,
-                               '%Str11',0,
-                               '%Str12',0,
-                               '%Str13',0,
-                               '%Str14',0
+                               %if %strLen>=.'15'
+                                 %define! Str15 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str15,15,1
+                                 '%Str15',0,
+                               %endif
+                               %if %strLen>=.'16'
+                                 %define! Str16 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str16,16,1
+                                 '%Str16',0,
+                               %endif
+                               %if %strLen>=.'17'
+                                 %define! Str17 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str17,17,1
+                                 '%Str17',0,
+                               %endif
+                               %if %strLen>=.'18'
+                                 %define! Str18 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str18,18,1
+                                 '%Str18',0,
+                               %endif
+                               %if %strLen>=.'19'
+                                 %define! Str19 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str19,19,1
+                                 '%Str19',0,
+                               %endif
+                               %if %strLen>=.'20'
+                                 %define! Str20 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str20,20,1
+                                 '%Str20',0,
+                               %endif
+                               %if %strLen>=.'21'
+                                 %define! Str21 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str21,21,1
+                                 '%Str21',0,
+                               %endif
+                               %if %strLen>=.'22'
+                                 %define! Str22 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str22,22,1
+                                 '%Str22',0,
+                               %endif
+                               %if %strLen>=.'23'
+                                 %define! Str23 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str23,23,1
+                                 '%Str23',0,
+                               %endif
+                               %if %strLen>=.'24'
+                                 %define! Str24 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str24,24,1
+                                 '%Str24',0,
+                               %endif
+                               %if %strLen>=.'25'
+                                 %define! Str25 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str25,25,1
+                                 '%Str25',0,
+                               %endif
+                               %if %strLen>=.'26'
+                                 %define! Str26 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str26,26,1
+                                 '%Str26',0,
+                               %endif
+                               %if %strLen>=.'27'
+                                 %define! Str27 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str27,27,1
+                                 '%Str27',0,
+                               %endif
+                               %if %strLen>=.'28'
+                                 %define! Str28 %CdcBusReportedDeviceDescriptionString
+                                 %substring Str28,28,1
+                                 '%Str28',0,
+                               %endif
 #endif
+                          };
+
+/* string descriptor for serial number */
+uint_8 USB_DESC_CONST USB_STR_3[USB_STR_3_SIZE+USB_STR_DESC_SIZE]
+                          = {  sizeof(USB_STR_3),
+                               USB_STRING_DESCRIPTOR,
+                               %define! strLen %str_length(CdcSerialNumberString)
+                               %if %strLen>=.'1'
+                                 %define! Str1 %CdcSerialNumberString
+                                 %substring Str1,1,1
+                                 '%Str1',0,
+                               %endif
+                               %if %strLen>=.'2'
+                                 %define! Str2 %CdcSerialNumberString
+                                 %substring Str2,2,1
+                                 '%Str2',0,
+                               %endif
+                               %if %strLen>=.'3'
+                                 %define! Str3 %CdcSerialNumberString
+                                 %substring Str3,3,1
+                                 '%Str3',0,
+                               %endif
+                               %if %strLen>=.'4'
+                                 %define! Str4 %CdcSerialNumberString
+                                 %substring Str4,4,1
+                                 '%Str4',0,
+                               %endif
+                               %if %strLen>=.'5'
+                                 %define! Str5 %CdcSerialNumberString
+                                 %substring Str5,5,1
+                                 '%Str5',0,
+                               %endif
+                               %if %strLen>=.'6'
+                                 %define! Str6 %CdcSerialNumberString
+                                 %substring Str6,6,1
+                                 '%Str6',0,
+                              %endif
+                               %if %strLen>=.'7'
+                                 %define! Str7 %CdcSerialNumberString
+                                 %substring Str7,7,1
+                                 '%Str7',0,
+                               %endif
+                               %if %strLen>=.'8'
+                                 %define! Str8 %CdcSerialNumberString
+                                 %substring Str8,8,1
+                                 '%Str8',0,
+                               %endif
+                               %if %strLen>=.'9'
+                                 %define! Str9 %CdcSerialNumberString
+                                 %substring Str9,9,1
+                                 '%Str9',0,
+                               %endif
+                               %if %strLen>=.'10'
+                                 %define! Str10 %CdcSerialNumberString
+                                 %substring Str10,10,1
+                                 '%Str10',0,
+                               %endif
+                               %if %strLen>=.'11'
+                                 %define! Str11 %CdcSerialNumberString
+                                 %substring Str11,11,1
+                                 '%Str11',0,
+                               %endif
+                               %if %strLen>=.'12'
+                                 %define! Str12 %CdcSerialNumberString
+                                 %substring Str12,12,1
+                                 '%Str12',0,
+                               %endif
+                               %if %strLen>=.'13'
+                                 %define! Str13 %CdcSerialNumberString
+                                 %substring Str13,13,1
+                                 '%Str13',0,
+                               %endif
+                               %if %strLen>=.'14'
+                                 %define! Str14 %CdcSerialNumberString
+                                 %substring Str14,14,1
+                                 '%Str14',0,
+                               %endif
+                               %if %strLen>=.'15'
+                                 %define! Str15 %CdcSerialNumberString
+                                 %substring Str15,15,1
+                                 '%Str15',0,
+                               %endif
+                               %if %strLen>=.'16'
+                                 %define! Str16 %CdcSerialNumberString
+                                 %substring Str16,16,1
+                                 '%Str16',0,
+                               %endif
+                               %if %strLen>=.'17'
+                                 %define! Str17 %CdcSerialNumberString
+                                 %substring Str17,17,1
+                                 '%Str17',0,
+                               %endif
+                               %if %strLen>=.'18'
+                                 %define! Str18 %CdcSerialNumberString
+                                 %substring Str18,18,1
+                                 '%Str18',0,
+                               %endif
+                               %if %strLen>=.'19'
+                                 %define! Str19 %CdcSerialNumberString
+                                 %substring Str19,19,1
+                                 '%Str19',0,
+                               %endif
+                               %if %strLen>=.'20'
+                                 %define! Str20 %CdcSerialNumberString
+                                 %substring Str20,20,1
+                                 '%Str20',0,
+                               %endif
+                               %if %strLen>=.'21'
+                                 %define! Str21 %CdcSerialNumberString
+                                 %substring Str21,21,1
+                                 '%Str21',0,
+                               %endif
+                               %if %strLen>=.'22'
+                                 %define! Str22 %CdcSerialNumberString
+                                 %substring Str22,22,1
+                                 '%Str22',0,
+                               %endif
+                               %if %strLen>=.'23'
+                                 %define! Str23 %CdcSerialNumberString
+                                 %substring Str23,23,1
+                                 '%Str23',0,
+                               %endif
+                               %if %strLen>=.'24'
+                                 %define! Str24 %CdcSerialNumberString
+                                 %substring Str24,24,1
+                                 '%Str24',0,
+                               %endif
+                               %if %strLen>=.'25'
+                                 %define! Str25 %CdcSerialNumberString
+                                 %substring Str25,25,1
+                                 '%Str25',0,
+                               %endif
+                               %if %strLen>=.'26'
+                                 %define! Str26 %CdcSerialNumberString
+                                 %substring Str26,26,1
+                                 '%Str26',0,
+                               %endif
+                               %if %strLen>=.'27'
+                                 %define! Str27 %CdcSerialNumberString
+                                 %substring Str27,27,1
+                                 '%Str27',0,
+                               %endif
+                               %if %strLen>=.'28'
+                                 %define! Str28 %CdcSerialNumberString
+                                 %substring Str28,28,1
+                                 '%Str28',0,
+                               %endif
                           };
 
 uint_8 USB_DESC_CONST USB_STR_n[USB_STR_n_SIZE+USB_STR_DESC_SIZE]

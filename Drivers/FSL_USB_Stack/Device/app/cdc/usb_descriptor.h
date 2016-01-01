@@ -158,8 +158,12 @@
 /* string descriptors sizes */
 #define USB_STR_DESC_SIZE (2)
 #define USB_STR_0_SIZE  (2)
-#define USB_STR_1_SIZE  (56)
-#define USB_STR_2_SIZE  (28)
+%define! strLenVendorString %str_length(CdcBusReportedVendorString)
+#define USB_STR_1_SIZE  (2*%strLenVendorString) /* bus reported vendor string */
+%define! strLenDeviceDescriptionString %str_length(CdcBusReportedDeviceDescriptionString)
+#define USB_STR_2_SIZE  (2*strLenDeviceDescriptionString) /* bus reported device description string */
+%define! strLenSerialNumber %str_length(CdcSerialNumberString)
+#define USB_STR_3_SIZE  (2*%strLenSerialNumber) /* serial number descriptor string */
 #define USB_STR_n_SIZE  (32)
 
 /* descriptors codes */
