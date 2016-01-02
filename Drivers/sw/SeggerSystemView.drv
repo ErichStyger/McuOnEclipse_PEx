@@ -155,6 +155,90 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- RecordExitISR
 %-BW_METHOD_END RecordExitISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Print
+%ifdef Print
+#define %'ModuleName'%.%Print(s) \
+  SEGGER_SYSVIEW_Print(s)
+%define! Pars
+%include Common\SeggerSystemViewPrint.Inc
+
+%endif %- Print
+%-BW_METHOD_END Print
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Warn
+%ifdef Warn
+#define %'ModuleName'%.%Warn(s) \
+  SEGGER_SYSVIEW_Warn(s)
+%define! Pars
+%include Common\SeggerSystemViewWarn.Inc
+
+%endif %- Warn
+%-BW_METHOD_END Warn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Error
+%ifdef Error
+#define %'ModuleName'%.%Error(s) \
+  SEGGER_SYSVIEW_Error(s)
+%define! Pars
+%include Common\SeggerSystemViewError.Inc
+
+%endif %- Error
+%-BW_METHOD_END Error
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintfHost
+%ifdef PrintfHost
+#define %'ModuleName'%.%PrintfHost    SEGGER_SYSVIEW_PrintfHost
+%define! Pars
+%include Common\SeggerSystemViewPrintfHost.Inc
+
+%endif %- PrintfHost
+%-BW_METHOD_END PrintfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintfTarget
+%ifdef PrintfTarget
+#define %'ModuleName'%.%PrintfTarget   SEGGER_SYSVIEW_PrintfTarget
+%define! Pars
+%include Common\SeggerSystemViewPrintfTarget.Inc
+
+%endif %- PrintfTarget
+%-BW_METHOD_END PrintfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WarnfHost
+%ifdef WarnfHost
+#define %'ModuleName'%.%WarnfHost  SEGGER_SYSVIEW_WarnfHost
+%define! Pars
+%include Common\SeggerSystemViewWarnfHost.Inc
+
+%endif %- WarnfHost
+%-BW_METHOD_END WarnfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WarnfTarget
+%ifdef WarnfTarget
+#define %'ModuleName'%.%WarnfTarget   SEGGER_SYSVIEW_WarnfTarget
+%define! Pars
+%include Common\SeggerSystemViewWarnfTarget.Inc
+
+%endif %- WarnfTarget
+%-BW_METHOD_END WarnfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ErrorfHost
+%ifdef ErrorfHost
+#define %'ModuleName'%.%ErrorfHost   SEGGER_SYSVIEW_ErrorfHost
+%define! Pars
+%include Common\SeggerSystemViewErrorfHost.Inc
+
+%endif %- ErrorfHost
+%-BW_METHOD_END ErrorfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ErrorfTarget
+%ifdef ErrorfTarget
+#define %'ModuleName'%.%ErrorfTarget   SEGGER_SYSVIEW_ErrorfTarget
+%define! Pars
+%include Common\SeggerSystemViewErrorfTarget.Inc
+
+%endif %- ErrorfTarget
+%-BW_METHOD_END ErrorfTarget
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -258,6 +342,132 @@ void %'ModuleName'%.%RecordExitISR(void)
 
 %endif %- RecordExitISR
 %-BW_METHOD_END RecordExitISR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Print
+%ifdef Print
+%define! Pars
+%include Common\SeggerSystemViewPrint.Inc
+/*
+void %'ModuleName'%.%Print(const char *s)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- Print
+%-BW_METHOD_END Print
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Warn
+%ifdef Warn
+%define! Pars
+%include Common\SeggerSystemViewWarn.Inc
+/*
+void %'ModuleName'%.%Warn(const char *s)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- Warn
+%-BW_METHOD_END Warn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Error
+%ifdef Error
+%define! Pars
+%include Common\SeggerSystemViewError.Inc
+/*
+void %'ModuleName'%.%Error(const char *s)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- Error
+%-BW_METHOD_END Error
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintfHost
+%ifdef PrintfHost
+%define! Pars
+%include Common\SeggerSystemViewPrintfHost.Inc
+/*
+void %'ModuleName'%.%PrintfHost(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- PrintfHost
+%-BW_METHOD_END PrintfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintfTarget
+%ifdef PrintfTarget
+%define! Pars
+%include Common\SeggerSystemViewPrintfTarget.Inc
+/*
+void %'ModuleName'%.%PrintfTarget(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- PrintfTarget
+%-BW_METHOD_END PrintfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WarnfHost
+%ifdef WarnfHost
+%define! Pars
+%include Common\SeggerSystemViewWarnfHost.Inc
+/*
+void %'ModuleName'%.%WarnfHost(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- WarnfHost
+%-BW_METHOD_END WarnfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WarnfTarget
+%ifdef WarnfTarget
+%define! Pars
+%include Common\SeggerSystemViewWarnfTarget.Inc
+/*
+void %'ModuleName'%.%WarnfTarget(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- WarnfTarget
+%-BW_METHOD_END WarnfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ErrorfHost
+%ifdef ErrorfHost
+%define! Pars
+%include Common\SeggerSystemViewErrorfHost.Inc
+/*
+void %'ModuleName'%.%ErrorfHost(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- ErrorfHost
+%-BW_METHOD_END ErrorfHost
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ErrorfTarget
+%ifdef ErrorfTarget
+%define! Pars
+%include Common\SeggerSystemViewErrorfTarget.Inc
+/*
+void %'ModuleName'%.%ErrorfTarget(const char *s, ...)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- ErrorfTarget
+%-BW_METHOD_END ErrorfTarget
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
