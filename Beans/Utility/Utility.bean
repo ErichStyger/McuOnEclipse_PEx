@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.111</Version>
+    <Version>01.112</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -2595,16 +2595,18 @@
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to string. This string is compared if it contains the tail.</ParHint>
+          <ParUserDeclaration>const uint8_t *str</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>tail</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to tail string.</ParHint>
+          <ParUserDeclaration>const uint8_t *tail</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(uint8_t *str, uint8_t *tail)</ANSIC>
+          <ANSIC>byte #M#_#C#(const uint8_t *str, const uint8_t *tail)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
