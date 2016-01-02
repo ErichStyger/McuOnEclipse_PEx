@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20a                                    *
+*       SystemView version: V2.26                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -133,6 +133,8 @@ Additional information:
 #include "SEGGER_SYSVIEW_Int.h"
 #include "SEGGER_RTT.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
 
 /*********************************************************************
 *
@@ -182,6 +184,25 @@ Additional information:
 #define ENABLE_STATE_OFF        0
 #define ENABLE_STATE_ON         1
 #define ENABLE_STATE_DROPPING   2
+
+#define FORMAT_FLAG_LEFT_JUSTIFY   (1u << 0)
+#define FORMAT_FLAG_PAD_ZERO       (1u << 1)
+#define FORMAT_FLAG_PRINT_SIGN     (1u << 2)
+#define FORMAT_FLAG_ALTERNATE      (1u << 3)
+
+/*********************************************************************
+*
+*       Types
+*
+**********************************************************************
+*/
+typedef struct {
+  U8*       pBuffer;
+  U8*       pPayload;
+  U8*       pPayloadStart;
+  U32       Options;
+  unsigned  Cnt;
+} SEGGER_SYSVIEW_PRINTF_DESC;
 
 /*********************************************************************
 *
@@ -524,6 +545,403 @@ SendDone:
   }
   //
   SEGGER_SYSVIEW_UNLOCK();  // We are done. Unlock and return
+}
+
+/*********************************************************************
+*
+*       _APrintHost()
+*
+*  Function description
+*    Prepares a string and its parameters to be formatted on the host.
+*
+*  Parameters
+*    s            Pointer to format string.
+*    Options      Options to be sent to the host.
+*    pArguments   Pointer to array of arguments for the format string.
+*    NumArguments Number of arguments in the array.
+*/
+static void _APrintHost(const char* s, U32 Options, U32* pArguments, U32 NumArguments) {
+  U8 aPacket[SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_MAX_STRING_LEN + 2 * SEGGER_SYSVIEW_QUANTA_U32 + SEGGER_SYSVIEW_MAX_ARGUMENTS * SEGGER_SYSVIEW_QUANTA_U32];
+  U8* pPayload;
+  U8* pPayloadStart;
+
+  pPayloadStart = _PreparePacket(aPacket);
+  pPayload = _EncodeStr(pPayloadStart, s, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  ENCODE_U32(pPayload, Options);
+  ENCODE_U32(pPayload, NumArguments);
+  while (NumArguments--) {
+    ENCODE_U32(pPayload, (*pArguments++));
+  }
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
+}
+
+/*********************************************************************
+*
+*       _VPrintHost()
+*
+*  Function description
+*    Prepares a string and its parameters to be formatted on the host.
+*
+*  Parameters
+*    s            Pointer to format string.
+*    Options      Options to be sent to the host.
+*    pParamList   Pointer to the list of arguments for the format string.
+*/
+static void _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
+  U32 aParas[SEGGER_SYSVIEW_MAX_ARGUMENTS];
+  U32 NumArguments;
+  const char* p;
+  
+  p = s;
+  NumArguments = 0;
+  while (*p) {
+    if (*p == '%%') {
+      aParas[NumArguments++] = va_arg(*pParamList, int);
+      if (NumArguments == SEGGER_SYSVIEW_MAX_ARGUMENTS) {
+        break;
+      }
+    }
+    p++;
+  }
+  _APrintHost(s, Options, aParas, NumArguments);
+}
+
+/*********************************************************************
+*
+*       _StoreChar()
+*
+*  Parameters
+*    p            Pointer to the buffer description.
+*    c            Character to be printed.
+*/
+static void _StoreChar(SEGGER_SYSVIEW_PRINTF_DESC * p, char c) {
+  unsigned Cnt;
+  U8* pPayload;
+  U32 Options;
+
+  Cnt = p->Cnt;
+  if ((Cnt + 1u) <= SEGGER_SYSVIEW_MAX_STRING_LEN) {
+    *(p->pPayload++) = c;
+    p->Cnt = Cnt + 1u;
+  }
+  //
+  // Write part of string, when the buffer is full
+  //
+  if (p->Cnt == SEGGER_SYSVIEW_MAX_STRING_LEN) {
+    *(p->pPayloadStart) = p->Cnt;
+    pPayload = p->pPayload;
+    Options = p->Options;
+    ENCODE_U32(pPayload, Options);
+    ENCODE_U32(pPayload, 0);
+    _SendPacket(p->pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
+    p->pPayloadStart = _PreparePacket(p->pBuffer);
+    p->pPayload = p->pPayloadStart + 1u;
+    p->Cnt = 0u;
+  }
+}
+
+/*********************************************************************
+*
+*       _PrintUnsigned()
+*
+*  Parameters
+*    pBufferDesc  Pointer to the buffer description.
+*    v            Value to be printed.
+*    Base         Base of the value.
+*    NumDigits    Number of digits to be printed.
+*    FieldWidth   Width of the printed field.
+*    FormatFlags  Flags for formatting the value.
+*/
+static void _PrintUnsigned(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, unsigned v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+  static const char _aV2C[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+  unsigned Div;
+  unsigned Digit;
+  unsigned Number;
+  unsigned Width;
+  char c;
+
+  Number = v;
+  Digit = 1u;
+  //
+  // Get actual field width
+  //
+  Width = 1u;
+  while (Number >= Base) {
+    Number = (Number / Base);
+    Width++;
+  }
+  if (NumDigits > Width) {
+    Width = NumDigits;
+  }
+  //
+  // Print leading chars if necessary
+  //
+  if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u) {
+    if (FieldWidth != 0u) {
+      if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && (NumDigits == 0u)) {
+        c = '0';
+      } else {
+        c = ' ';
+      }
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
+        _StoreChar(pBufferDesc, c);
+      }
+    }
+  }
+  //
+  // Compute Digit.
+  // Loop until Digit has the value of the highest digit required.
+  // Example: If the output is 345 (Base 10), loop 2 times until Digit is 100.
+  //
+  while (1) {
+    if (NumDigits > 1u) {       // User specified a min number of digits to print? => Make sure we loop at least that often, before checking anything else (> 1 check avoids problems with NumDigits being signed / unsigned)
+      NumDigits--;
+    } else {
+      Div = v / Digit;
+      if (Div < Base) {        // Is our divider big enough to extract the highest digit from value? => Done
+        break;
+      }
+    }
+    Digit *= Base;
+  }
+  //
+  // Output digits
+  //
+  do {
+    Div = v / Digit;
+    v -= Div * Digit;
+    _StoreChar(pBufferDesc, _aV2C[Div]);
+    Digit /= Base;
+  } while (Digit);
+  //
+  // Print trailing spaces if necessary
+  //
+  if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == FORMAT_FLAG_LEFT_JUSTIFY) {
+    if (FieldWidth != 0u) {
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
+        _StoreChar(pBufferDesc, ' ');
+      }
+    }
+  }
+}
+
+/*********************************************************************
+*
+*       _PrintInt()
+*
+*  Parameters
+*    pBufferDesc  Pointer to the buffer description.
+*    v            Value to be printed.
+*    Base         Base of the value.
+*    NumDigits    Number of digits to be printed.
+*    FieldWidth   Width of the printed field.
+*    FormatFlags  Flags for formatting the value.
+*/
+static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+  unsigned Width;
+  int Number;
+
+  Number = (v < 0) ? -v : v;
+
+  //
+  // Get actual field width
+  //
+  Width = 1u;
+  while (Number >= (int)Base) {
+    Number = (Number / (int)Base);
+    Width++;
+  }
+  if (NumDigits > Width) {
+    Width = NumDigits;
+  }
+  if ((FieldWidth > 0u) && ((v < 0) || ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN))) {
+    FieldWidth--;
+  }
+
+  //
+  // Print leading spaces if necessary
+  //
+  if ((((FormatFlags & FORMAT_FLAG_PAD_ZERO) == 0u) || (NumDigits != 0u)) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u)) {
+    if (FieldWidth != 0u) {
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
+        _StoreChar(pBufferDesc, ' ');
+      }
+    }
+  }
+  //
+  // Print sign if necessary
+  //
+  if (v < 0) {
+    v = -v;
+    _StoreChar(pBufferDesc, '-');
+  } else if ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN) {
+    _StoreChar(pBufferDesc, '+');
+  } else {
+
+  }
+  //
+  // Print leading zeros if necessary
+  //
+  if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u) && (NumDigits == 0u)) {
+    if (FieldWidth != 0u) {
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
+        _StoreChar(pBufferDesc, '0');
+      }
+    }
+  }
+  //
+  // Print number without sign
+  //
+  _PrintUnsigned(pBufferDesc, (unsigned)v, Base, NumDigits, FieldWidth, FormatFlags);
+}
+
+/*********************************************************************
+*
+*       _VPrintTarget()
+*
+*  Function description
+*    Stores a formatted string.
+*    This data is read by the host.
+*
+*  Parameters
+*    sFormat      Pointer to format string.
+*    Options      Options to be sent to the host.
+*    pParamList   Pointer to the list of arguments for the format string.
+*/
+static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList) {
+  char c;
+  SEGGER_SYSVIEW_PRINTF_DESC BufferDesc;
+  int v;
+  unsigned NumDigits;
+  unsigned FormatFlags;
+  unsigned FieldWidth;
+  U8 aPacket[SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_MAX_STRING_LEN + 1 + 2 * SEGGER_SYSVIEW_QUANTA_U32];
+
+  SEGGER_SYSVIEW_LOCK();
+
+  BufferDesc.pBuffer        = aPacket;
+  BufferDesc.Cnt            = 0u;
+  BufferDesc.pPayloadStart  = _PreparePacket(aPacket);
+  BufferDesc.pPayload       = BufferDesc.pPayloadStart + 1u;
+  BufferDesc.Options        =  Options;
+
+  do {
+    c = *sFormat;
+    sFormat++;
+    if (c == 0u) {
+      break;
+    }
+    if (c == '%%') {
+      //
+      // Filter out flags
+      //
+      FormatFlags = 0u;
+      v = 1;
+      do {
+        c = *sFormat;
+        switch (c) {
+        case '-': FormatFlags |= FORMAT_FLAG_LEFT_JUSTIFY; sFormat++; break;
+        case '0': FormatFlags |= FORMAT_FLAG_PAD_ZERO;     sFormat++; break;
+        case '+': FormatFlags |= FORMAT_FLAG_PRINT_SIGN;   sFormat++; break;
+        case '#': FormatFlags |= FORMAT_FLAG_ALTERNATE;    sFormat++; break;
+        default:  v = 0; break;
+        }
+      } while (v);
+      //
+      // filter out field with
+      //
+      FieldWidth = 0u;
+      do {
+        c = *sFormat;
+        if ((c < '0') || (c > '9')) {
+          break;
+        }
+        sFormat++;
+        FieldWidth = (FieldWidth * 10u) + ((unsigned)c - '0');
+      } while (1);
+
+      //
+      // Filter out precision (number of digits to display)
+      //
+      NumDigits = 0u;
+      c = *sFormat;
+      if (c == '.') {
+        sFormat++;
+        do {
+          c = *sFormat;
+          if ((c < '0') || (c > '9')) {
+            break;
+          }
+          sFormat++;
+          NumDigits = NumDigits * 10u + ((unsigned)c - '0');
+        } while (1);
+      }
+      //
+      // Filter out length modifier
+      //
+      c = *sFormat;
+      do {
+        if ((c == 'l') || (c == 'h')) {
+          c = *sFormat;
+          sFormat++;
+        } else {
+          break;
+        }
+      } while (1);
+      //
+      // Handle specifiers
+      //
+      switch (c) {
+      case 'c': {
+        char c0;
+        v = va_arg(*pParamList, int);
+        c0 = (char)v;
+        _StoreChar(&BufferDesc, c0);
+        break;
+      }
+      case 'd':
+        v = va_arg(*pParamList, int);
+        _PrintInt(&BufferDesc, v, 10u, NumDigits, FieldWidth, FormatFlags);
+        break;
+      case 'u':
+        v = va_arg(*pParamList, int);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 10u, NumDigits, FieldWidth, FormatFlags);
+        break;
+      case 'x':
+      case 'X':
+        v = va_arg(*pParamList, int);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, NumDigits, FieldWidth, FormatFlags);
+        break;
+      case 'p':
+        v = va_arg(*pParamList, int);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, 8u, 8u, 0u);
+        break;
+      case '%%':
+        _StoreChar(&BufferDesc, '%%');
+        break;
+      default:
+        break;
+      }
+      sFormat++;
+    } else {
+      _StoreChar(&BufferDesc, c);
+    }
+  } while (*sFormat);
+
+  //
+  // Write remaining data, if any
+  //
+  if (BufferDesc.Cnt != 0u) {
+    *(BufferDesc.pPayloadStart) = BufferDesc.Cnt;
+    ENCODE_U32(BufferDesc.pPayload, BufferDesc.Options);
+    ENCODE_U32(BufferDesc.pPayload, 0);
+    _SendPacket(BufferDesc.pPayloadStart, BufferDesc.pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
+  }
+  SEGGER_SYSVIEW_UNLOCK();
 }
 
 /*********************************************************************
@@ -1303,6 +1721,237 @@ U8* SEGGER_SYSVIEW_EncodeId(U8* pPayload, unsigned Id) {
 */
 unsigned SEGGER_SYSVIEW_ShrinkId(unsigned Id) {
   return SHRINK_ID(Id);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_PrintfHostEx()
+*
+*  Function description
+*    Print a string which is formatted on the host by SystemViewer
+*    with Additional information.
+*
+*  Parameters
+*    s        - String to be formatted.
+*    Options  - Options for the string. i.e. Log level.
+*
+*  Additional information
+*    All format arguments are treated as 32-bit scalar values.
+*/
+void SEGGER_SYSVIEW_PrintfHostEx(const char* s, U32 Options, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, Options);
+  _VPrintHost(s, Options, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_PrintfHost()
+*
+*  Function description
+*    Print a string which is formatted on the host by SystemViewer.
+*
+*  Parameters
+*    s        - String to be formatted.
+*
+*  Additional information
+*    All format arguments are treated as 32-bit scalar values.
+*/
+void SEGGER_SYSVIEW_PrintfHost(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintHost(s, SEGGER_SYSVIEW_LOG, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_WarnfHost()
+*
+*  Function description
+*    Print a warnin string which is formatted on the host by 
+*    SystemViewer.
+*
+*  Parameters
+*    s        - String to be formatted.
+*
+*  Additional information
+*    All format arguments are treated as 32-bit scalar values.
+*/
+void SEGGER_SYSVIEW_WarnfHost(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintHost(s, SEGGER_SYSVIEW_WARNING, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_ErrorfHost()
+*
+*  Function description
+*    Print an error string which is formatted on the host by 
+*    SystemViewer.
+*
+*  Parameters
+*    s        - String to be formatted.
+*
+*  Additional information
+*    All format arguments are treated as 32-bit scalar values.
+*/
+void SEGGER_SYSVIEW_ErrorfHost(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintHost(s, SEGGER_SYSVIEW_ERROR, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_PrintfTargetEx()
+*
+*  Function description
+*    Print a string which is formatted on the target before sent to 
+*    the host with Additional information.
+*
+*  Parameters
+*    s        - String to be formatted.
+*    Options  - Options for the string. i.e. Log level.
+*/
+void SEGGER_SYSVIEW_PrintfTargetEx(const char* s, U32 Options, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, Options);
+  _VPrintTarget(s, Options, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_PrintfTarget()
+*
+*  Function description
+*    Print a string which is formatted on the target before sent to 
+*    the host.
+*
+*  Parameters
+*    s        - String to be formatted.
+*/
+void SEGGER_SYSVIEW_PrintfTarget(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintTarget(s, SEGGER_SYSVIEW_LOG, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_WarnfTarget()
+*
+*  Function description
+*    Print a warning string which is formatted on the target before
+*    sent to the host.
+*
+*  Parameters
+*    s        - String to be formatted.
+*/
+void SEGGER_SYSVIEW_WarnfTarget(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintTarget(s, SEGGER_SYSVIEW_WARNING, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_ErrorfTarget()
+*
+*  Function description
+*    Print an error string which is formatted on the target before
+*    sent to the host.
+*
+*  Parameters
+*    s        - String to be formatted.
+*/
+void SEGGER_SYSVIEW_ErrorfTarget(const char* s, ...) {
+  va_list ParamList;
+
+  va_start(ParamList, s);
+  _VPrintTarget(s, SEGGER_SYSVIEW_ERROR, &ParamList);
+  va_end(ParamList);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_Print()
+*
+*  Function description
+*    Print a string to the host.
+*
+*  Parameters
+*    s        - String to sent.
+*/
+void SEGGER_SYSVIEW_Print(const char* s) {
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + SEGGER_SYSVIEW_MAX_STRING_LEN];
+  U8* pPayload;
+  U8* pPayloadStart;
+
+  pPayloadStart = _PreparePacket(aPacket);
+  pPayload = _EncodeStr(pPayloadStart, s, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  ENCODE_U32(pPayload, SEGGER_SYSVIEW_LOG);
+  ENCODE_U32(pPayload, 0);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_Warn()
+*
+*  Function description
+*    Print a warning string to the host.
+*
+*  Parameters
+*    s        - String to sent.
+*/
+void SEGGER_SYSVIEW_Warn(const char* s) {
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + SEGGER_SYSVIEW_MAX_STRING_LEN];
+  U8* pPayload;
+  U8* pPayloadStart;
+
+  pPayloadStart = _PreparePacket(aPacket);
+  pPayload = _EncodeStr(pPayloadStart, s, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  ENCODE_U32(pPayload, SEGGER_SYSVIEW_WARNING);
+  ENCODE_U32(pPayload, 0);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_Error()
+*
+*  Function description
+*    Print an error string to the host.
+*
+*  Parameters
+*    s        - String to sent.
+*/
+void SEGGER_SYSVIEW_Error(const char* s) {
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + SEGGER_SYSVIEW_MAX_STRING_LEN];
+  U8* pPayload;
+  U8* pPayloadStart;
+
+  pPayloadStart = _PreparePacket(aPacket);
+  pPayload = _EncodeStr(pPayloadStart, s, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  ENCODE_U32(pPayload, SEGGER_SYSVIEW_ERROR);
+  ENCODE_U32(pPayload, 0);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED);
 }
 
 /****** End Of File *************************************************/

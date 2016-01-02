@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20a                                    *
+*       SystemView version: V2.26                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -92,6 +92,9 @@ Purpose     : SEGGER SysView configuration.
 *
 *       SysView buffer configuration
 */
+/* maximum number of tasks to report */
+#define SEGGER_SYSVIEW_MAX_NOF_TASKS      %SysViewMaxNofTasks
+
 // Number of bytes that SysView uses for a buffer.
 #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
 

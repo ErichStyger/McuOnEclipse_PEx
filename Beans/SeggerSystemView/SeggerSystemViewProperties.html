@@ -245,6 +245,10 @@ LI.EXP {
 <b>ID Shift</b></a> - Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
 </li>
 <li>
+<a name="SysViewMaxNofTasks">
+<b>Number of tasks</b></a> - Number of tasks to handle. The SystemViewer needs to send the task information in _cbSendTaskList(). To avoid a dynamic memory allocation, a fixed maximum number of tasks needs to be specified.
+</li>
+<li>
 <a name="RTTChannelGroup">
 <b>RTT Channel</b></a> - Settings for the Segger RTT channel
 <ul>

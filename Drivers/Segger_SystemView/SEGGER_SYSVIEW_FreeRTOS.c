@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20a                                    *
+*       SystemView version: V2.26                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -51,6 +51,7 @@ Purpose : Interface between FreeRTOS and System View.
 #include "task.h"
 #include "SEGGER_SYSVIEW.h"
 #include "SEGGER_SYSVIEW_FreeRTOS.h"
+#include "SEGGER_SYSVIEW_Conf.h"
 #include "string.h" // Required for memset
 
 /********************************************************************* 
@@ -62,24 +63,32 @@ Purpose : Interface between FreeRTOS and System View.
 *    Called from SystemView when asked by the host, it uses SYSVIEW
 *    functions to send the entire task list to the host.
 */
+#define USE_STATIC_MEMORY_ALLOC   1
+
 static void _cbSendTaskList(void) {
+#if USE_STATIC_MEMORY_ALLOC
+  static TaskStatus_t pxTaskStatusArray[SEGGER_SYSVIEW_MAX_NOF_TASKS];
+#else
   TaskStatus_t*         pxTaskStatusArray;
+#endif
   UBaseType_t           uxArraySize;
   UBaseType_t           x;
-
 #if INCLUDE_xTaskGetIdleTaskHandle
   TaskHandle_t          hIdle;
   hIdle = xTaskGetIdleTaskHandle();
 #endif
 
+#if USE_STATIC_MEMORY_ALLOC
+  uxArraySize = SEGGER_SYSVIEW_MAX_NOF_TASKS;
+#else
   /* Take a snapshot of the number of tasks in case it changes while this
   function is executing. */
   uxArraySize = uxTaskGetNumberOfTasks();
 
   /* Allocate an array index for each task. */
   pxTaskStatusArray = pvPortMalloc( uxArraySize * sizeof( TaskStatus_t ) );
-
   if( pxTaskStatusArray != NULL ) {
+#endif
     /* Generate the (binary) data. */
     uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
 
@@ -112,9 +121,11 @@ static void _cbSendTaskList(void) {
       }
     }
 
+#if !USE_STATIC_MEMORY_ALLOC
     /* Free the array again. */
     vPortFree( pxTaskStatusArray );
   }
+#endif
 }
 
 /********************************************************************* 
@@ -129,8 +140,9 @@ static void _cbSendTaskList(void) {
 static U64 _cbGetTime(void) {
   U64 Time;
 
-  Time = xTaskGetTickCount();
-  Time *= 1000;
+  Time = xTaskGetTickCountFromISR();
+  Time *= portTICK_PERIOD_MS; /* scale to effective milli-seconds */
+  Time *= 1000; /* scale to micro seconds */
   return Time;
 }
 

@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.20a                                    *
+*       SystemView version: V2.26                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -110,6 +110,14 @@ extern "C" {
 
 #ifndef   SEGGER_SYSVIEW_GET_INTERRUPT_ID
   #error "SEGGER_SYSVIEW_GET_INTERRUPT_ID has to be defined in SEGGER_SYSVIEW_Conf.h!"
+#endif
+
+#ifndef   SEGGER_SYSVIEW_MAX_ARGUMENTS
+  #define SEGGER_SYSVIEW_MAX_ARGUMENTS      16
+#endif
+
+#ifndef   SEGGER_SYSVIEW_MAX_STRING_LEN
+  #define SEGGER_SYSVIEW_MAX_STRING_LEN     128
 #endif
 
 // Lock SysView (nestable)
