@@ -416,7 +416,7 @@ extern void vPortYieldFromISR(void);
 /*-----------------------------------------------------------*/
 
 #ifdef configASSERT
-#if 0 /* NYI */ && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
   void vPortValidateInterruptPriority( void );
   #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID() 	vPortValidateInterruptPriority()
 #else

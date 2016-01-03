@@ -376,9 +376,7 @@ static unsigned portBASE_TYPE uxCriticalNesting = 0xaaaaaaaa;
   #error "undefined target %CPUfamily!"
 %endif
 
-#define configUSE_TASK_END_SCHEDULER   1
-
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
 #include <setjmp.h>
 static jmp_buf xJumpBuf; /* Used to restore the original context when the scheduler is ended. */
 #endif
@@ -1174,12 +1172,33 @@ __asm void vPortEnableVFP(void) {
 #endif /* GNU or Keil */
 #endif /* configCPU_FAMILY_ARM_M4F */
 /*-----------------------------------------------------------*/
+/*
+ * Used by the portASSERT_IF_INTERRUPT_PRIORITY_INVALID() macro to ensure
+ * FreeRTOS API functions are not called from interrupts that have been assigned
+ * a priority above configMAX_SYSCALL_INTERRUPT_PRIORITY.
+ */
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) && (configASSERT_DEFINED == 1)
+  /* Constants required to check the validity of an interrupt priority. */
+  #define portFIRST_USER_INTERRUPT_NUMBER   ( 16 )
+  #define portNVIC_IP_REGISTERS_OFFSET_16   ( 0xE000E3F0 )
+  #define portAIRCR_REG           ( * ( ( volatile uint32_t * ) 0xE000ED0C ) )
+  #define portMAX_8_BIT_VALUE         ( ( uint8_t ) 0xff )
+  #define portTOP_BIT_OF_BYTE         ( ( uint8_t ) 0x80 )
+  #define portMAX_PRIGROUP_BITS       ( ( uint8_t ) 7 )
+  #define portPRIORITY_GROUP_MASK       ( 0x07UL << 8UL )
+  #define portPRIGROUP_SHIFT          ( 8UL )
+
+  static uint8_t ucMaxSysCallPriority = 0;
+  static uint32_t ulMaxPRIGROUPValue = 0;
+  static const volatile uint8_t * const pcInterruptPriorityRegisters = ( const volatile uint8_t * const ) portNVIC_IP_REGISTERS_OFFSET_16;
+#endif /* configASSERT_DEFINED */
+
 BaseType_t xPortStartScheduler(void) {
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
   uxCriticalNesting = 0;
   vPortInitTickTimer();
   vPortStartTickTimer();
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
   if (setjmp(xJumpBuf)!=0) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1196,7 +1215,7 @@ BaseType_t xPortStartScheduler(void) {
      which does use the CODE_SEG pragma. */
   vPortInitTickTimer();
   vPortStartTickTimer();
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
   if(setjmp(xJumpBuf) != 0 ) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1208,48 +1227,48 @@ BaseType_t xPortStartScheduler(void) {
   See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html */
   configASSERT( configMAX_SYSCALL_INTERRUPT_PRIORITY );
 
-#if 0 /* NYI */ && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
-  #if(configASSERT_DEFINED == 1 )
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
+  #if( configASSERT_DEFINED == 1 )
   {
-      volatile uint32_t ulOriginalPriority;
-      volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( portNVIC_IP_REGISTERS_OFFSET_16 + portFIRST_USER_INTERRUPT_NUMBER );
-      volatile uint8_t ucMaxPriorityValue;
+    volatile uint32_t ulOriginalPriority;
+    volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( portNVIC_IP_REGISTERS_OFFSET_16 + portFIRST_USER_INTERRUPT_NUMBER );
+    volatile uint8_t ucMaxPriorityValue;
 
-      /* Determine the maximum priority from which ISR safe FreeRTOS API
-      functions can be called.  ISR safe functions are those that end in
-      "FromISR".  FreeRTOS maintains separate thread and ISR API functions to
-      ensure interrupt entry is as fast and simple as possible.
+    /* Determine the maximum priority from which ISR safe FreeRTOS API
+    functions can be called.  ISR safe functions are those that end in
+    "FromISR".  FreeRTOS maintains separate thread and ISR API functions to
+    ensure interrupt entry is as fast and simple as possible.
 
-      Save the interrupt priority value that is about to be clobbered. */
-      ulOriginalPriority = *pucFirstUserPriorityRegister;
+    Save the interrupt priority value that is about to be clobbered. */
+    ulOriginalPriority = *pucFirstUserPriorityRegister;
 
-      /* Determine the number of priority bits available.  First write to all
-      possible bits. */
-      *pucFirstUserPriorityRegister = portMAX_8_BIT_VALUE;
+    /* Determine the number of priority bits available.  First write to all
+    possible bits. */
+    *pucFirstUserPriorityRegister = portMAX_8_BIT_VALUE;
 
-      /* Read the value back to see how many bits stuck. */
-      ucMaxPriorityValue = *pucFirstUserPriorityRegister;
+    /* Read the value back to see how many bits stuck. */
+    ucMaxPriorityValue = *pucFirstUserPriorityRegister;
 
-      /* Use the same mask on the maximum system call priority. */
-      ucMaxSysCallPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY & ucMaxPriorityValue;
+    /* Use the same mask on the maximum system call priority. */
+    ucMaxSysCallPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY & ucMaxPriorityValue;
 
-      /* Calculate the maximum acceptable priority group value for the number
-      of bits read back. */
-      ulMaxPRIGROUPValue = portMAX_PRIGROUP_BITS;
-      while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
-      {
-          ulMaxPRIGROUPValue--;
-          ucMaxPriorityValue <<= ( uint8_t ) 0x01;
-      }
+    /* Calculate the maximum acceptable priority group value for the number
+    of bits read back. */
+    ulMaxPRIGROUPValue = portMAX_PRIGROUP_BITS;
+    while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+    {
+      ulMaxPRIGROUPValue--;
+      ucMaxPriorityValue <<= ( uint8_t ) 0x01;
+    }
 
-      /* Shift the priority group value back to its position within the AIRCR
-      register. */
-      ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
-      ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
+    /* Shift the priority group value back to its position within the AIRCR
+    register. */
+    ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
+    ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
 
-      /* Restore the clobbered interrupt priority register to its original
-      value. */
-      *pucFirstUserPriorityRegister = ulOriginalPriority;
+    /* Restore the clobbered interrupt priority register to its original
+    value. */
+    *pucFirstUserPriorityRegister = ulOriginalPriority;
   }
   #endif /* conifgASSERT_DEFINED */
 #endif /* configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) */ /* ARM M4(F) core */
@@ -1268,7 +1287,7 @@ BaseType_t xPortStartScheduler(void) {
   vPortEnableVFP(); /* Ensure the VFP is enabled - it should be anyway */
   *(portFPCCR) |= portASPEN_AND_LSPEN_BITS; /* Lazy register save always */
 #endif
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
     if(setjmp(xJumpBuf) != 0 ) {
       /* here we will get in case of call to vTaskEndScheduler() */
       return pdFALSE;
@@ -1281,7 +1300,7 @@ BaseType_t xPortStartScheduler(void) {
   uxCriticalNesting = 0; /* initialize critical nesting count */
   vPortInitTickTimer(); /* initialize tick timer */
   vPortStartTickTimer(); /* start tick timer */
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
   if(setjmp(xJumpBuf) != 0 ) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1301,7 +1320,7 @@ void vPortEndScheduler(void) {
   /* Jump back to the processor state prior to starting the
      scheduler.  This means we are not going to be using a
      task stack frame so the task can be deleted. */
-#if configUSE_TASK_END_SCHEDULER
+#if INCLUDE_TASK_END_SCHEDULER
   longjmp(xJumpBuf, 1);
 #else
   for(;;){} /* wait here */
@@ -1342,11 +1361,25 @@ void vPortEnterCritical(void) {
   portPOST_ENABLE_DISABLE_INTERRUPTS();
   uxCriticalNesting++;
   %if (CPUfamily = "Kinetis")
-  %if %Compiler="CodeWarriorARM" %- not supported by Freescale ARM compiler
-  %else
+    %if %Compiler="CodeWarriorARM" %- not supported by legacy Freescale ARM compiler
+    %else
+#if 0 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M7(configCPU_FAMILY)
+  /* This is not the interrupt safe version of the enter critical function so
+  assert() if it is being called from an interrupt context.  Only API
+  functions that end in "FromISR" can be used in an interrupt.  Only assert if
+  the critical nesting count is 1 to protect against recursive calls if the
+  assert function also uses a critical section. */
+  if( uxCriticalNesting == 1 )
+  {
+    /* Masks off all bits but the VECTACTIVE bits in the ICSR register. */
+    #define portVECTACTIVE_MASK         (0xFFUL)
+
+    configASSERT(((*portNVIC_INT_CTRL) & portVECTACTIVE_MASK)==0);
+  }
+#endif
   __asm volatile("dsb");
   __asm volatile("isb");
-  %endif
+    %endif
   %endif
 %else
   %warning "unsupported target %CPUfamily!"
@@ -2140,75 +2173,66 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
 
 #endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */
 /*-----------------------------------------------------------*/
-#if 0 /* NYI */ && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
 #if( configASSERT_DEFINED == 1 )
 
-/*
- * Used by the portASSERT_IF_INTERRUPT_PRIORITY_INVALID() macro to ensure
- * FreeRTOS API functions are not called from interrupts that have been assigned
- * a priority above configMAX_SYSCALL_INTERRUPT_PRIORITY.
- */
-#if ( configASSERT_DEFINED == 1 )
-     static uint8_t ucMaxSysCallPriority = 0;
-     static uint32_t ulMaxPRIGROUPValue = 0;
-     static const volatile uint8_t * const pcInterruptPriorityRegisters = ( const volatile uint8_t * const ) portNVIC_IP_REGISTERS_OFFSET_16;
-#endif /* configASSERT_DEFINED */
+  void vPortValidateInterruptPriority( void )
+  {
+  uint32_t ulCurrentInterrupt;
+  uint8_t ucCurrentPriority;
 
-    void vPortValidateInterruptPriority( void )
+    /* Obtain the number of the currently executing interrupt. */
+    __asm volatile( "mrs %%0, ipsr" : "=r"( ulCurrentInterrupt ) );
+
+    /* Is the interrupt number a user defined interrupt? */
+    if( ulCurrentInterrupt >= portFIRST_USER_INTERRUPT_NUMBER )
     {
-    uint32_t ulCurrentInterrupt;
-    uint8_t ucCurrentPriority;
+      /* Look up the interrupt's priority. */
+      ucCurrentPriority = pcInterruptPriorityRegisters[ ulCurrentInterrupt ];
 
-        /* Obtain the number of the currently executing interrupt. */
-        __asm volatile( "mrs %%0, ipsr" : "=r"( ulCurrentInterrupt ) );
+      /* The following assertion will fail if a service routine (ISR) for
+      an interrupt that has been assigned a priority above
+      configMAX_SYSCALL_INTERRUPT_PRIORITY calls an ISR safe FreeRTOS API
+      function.  ISR safe FreeRTOS API functions must *only* be called
+      from interrupts that have been assigned a priority at or below
+      configMAX_SYSCALL_INTERRUPT_PRIORITY.
 
-        /* Is the interrupt number a user defined interrupt? */
-        if( ulCurrentInterrupt >= portFIRST_USER_INTERRUPT_NUMBER )
-        {
-            /* Look up the interrupt's priority. */
-            ucCurrentPriority = pcInterruptPriorityRegisters[ ulCurrentInterrupt ];
+      Numerically low interrupt priority numbers represent logically high
+      interrupt priorities, therefore the priority of the interrupt must
+      be set to a value equal to or numerically *higher* than
+      configMAX_SYSCALL_INTERRUPT_PRIORITY.
 
-            /* The following assertion will fail if a service routine (ISR) for
-            an interrupt that has been assigned a priority above
-            configMAX_SYSCALL_INTERRUPT_PRIORITY calls an ISR safe FreeRTOS API
-            function.  ISR safe FreeRTOS API functions must *only* be called
-            from interrupts that have been assigned a priority at or below
-            configMAX_SYSCALL_INTERRUPT_PRIORITY.
+      Interrupts that use the FreeRTOS API must not be left at their
+      default priority of zero as that is the highest possible priority,
+      which is guaranteed to be above configMAX_SYSCALL_INTERRUPT_PRIORITY,
+      and therefore also guaranteed to be invalid.
 
-            Numerically low interrupt priority numbers represent logically high
-            interrupt priorities, therefore the priority of the interrupt must
-            be set to a value equal to or numerically *higher* than
-            configMAX_SYSCALL_INTERRUPT_PRIORITY.
+      FreeRTOS maintains separate thread and ISR API functions to ensure
+      interrupt entry is as fast and simple as possible.
 
-            Interrupts that use the FreeRTOS API must not be left at their
-            default priority of zero as that is the highest possible priority,
-            which is guaranteed to be above configMAX_SYSCALL_INTERRUPT_PRIORITY,
-            and therefore also guaranteed to be invalid.
-
-            FreeRTOS maintains separate thread and ISR API functions to ensure
-            interrupt entry is as fast and simple as possible.
-
-            The following links provide detailed information:
-            http://www.freertos.org/RTOS-Cortex-M3-M4.html
-            http://www.freertos.org/FAQHelp.html */
-            configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
-        }
-
-        /* Priority grouping:  The interrupt controller (NVIC) allows the bits
-        that define each interrupt's priority to be split between bits that
-        define the interrupt's pre-emption priority bits and bits that define
-        the interrupt's sub-priority.  For simplicity all bits must be defined
-        to be pre-emption priority bits.  The following assertion will fail if
-        this is not the case (if some bits represent a sub-priority).
-
-        If the application only uses CMSIS libraries for interrupt
-        configuration then the correct setting can be achieved on all Cortex-M
-        devices by calling NVIC_SetPriorityGrouping( 0 ); before starting the
-        scheduler.  Note however that some vendor specific peripheral libraries
-        assume a non-zero priority group setting, in which cases using a value
-        of zero will result in unpredicable behaviour. */
-        configASSERT( ( portAIRCR_REG & portPRIORITY_GROUP_MASK ) <= ulMaxPRIGROUPValue );
+      The following links provide detailed information:
+      http://www.freertos.org/RTOS-Cortex-M3-M4.html
+      http://www.freertos.org/FAQHelp.html */
+      configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
     }
 
+    /* Priority grouping:  The interrupt controller (NVIC) allows the bits
+    that define each interrupt's priority to be split between bits that
+    define the interrupt's pre-emption priority bits and bits that define
+    the interrupt's sub-priority.  For simplicity all bits must be defined
+    to be pre-emption priority bits.  The following assertion will fail if
+    this is not the case (if some bits represent a sub-priority).
+
+    If the application only uses CMSIS libraries for interrupt
+    configuration then the correct setting can be achieved on all Cortex-M
+    devices by calling NVIC_SetPriorityGrouping( 0 ); before starting the
+    scheduler.  Note however that some vendor specific peripheral libraries
+    assume a non-zero priority group setting, in which cases using a value
+    of zero will result in unpredicable behaviour. */
+    configASSERT( ( portAIRCR_REG & portPRIORITY_GROUP_MASK ) <= ulMaxPRIGROUPValue );
+  }
+
 #endif /* configASSERT_DEFINED */
+
+
 #endif /* ARM M4(F) core */ 

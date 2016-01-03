@@ -197,7 +197,7 @@
 #define configGENERATE_RUN_TIME_STATS                            %>50 1 /* 1: generate runtime statistics; 0: no runtime statistics */
 %if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCount() /* default: use Tick counter as runtime counter */
+#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
 %else
 %if defined(RuntimeCntr)
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 {%'ModuleName'%.RunTimeCounter = 0; (void)%@RuntimeCntr@'ModuleName'%.Enable();}
@@ -441,6 +441,12 @@ point support. */
 
 /* Set the following definitions to 1 to include the API function, or zero
    to exclude the API function. */
+%- --------------------------------------------------------------------
+%ifdef vTaskEndScheduler
+#define INCLUDE_vTaskEndScheduler                                %>50 1
+%else
+#define INCLUDE_vTaskEndScheduler                                %>50 0
+%endif
 %- --------------------------------------------------------------------
 %ifdef vTaskPrioritySet
 #define INCLUDE_vTaskPrioritySet                                 %>50 1

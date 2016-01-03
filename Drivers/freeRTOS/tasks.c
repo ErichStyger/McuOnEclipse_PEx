@@ -1652,7 +1652,7 @@ BaseType_t xReturn;
 	}
 }
 /*-----------------------------------------------------------*/
-
+#if INCLUDE_vTaskEndScheduler /* << EST */
 void vTaskEndScheduler( void )
 {
 	/* Stop the scheduler interrupts and call the portable scheduler end
@@ -1662,6 +1662,7 @@ void vTaskEndScheduler( void )
 	xSchedulerRunning = pdFALSE;
 	vPortEndScheduler();
 }
+#endif
 /*----------------------------------------------------------*/
 
 void vTaskSuspendAll( void )
