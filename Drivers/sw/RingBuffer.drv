@@ -521,11 +521,11 @@ uint8_t %'ModuleName'%.%Compare(%'ModuleName'_BufSizeType index, %'ModuleName'_E
   while(nof>0) {
     res = %'ModuleName'%.%Peek(index, &val);
     if (res!=ERR_OK) { /* general failure? */
-      cmpResult = -1; /* no match */
+      cmpResult = (uint8_t)-1; /* no match */
       break;
     }
     if (val!=*elemP) { /* mismatch */
-      cmpResult = -1; /* no match */
+      cmpResult = (uint8_t)-1; /* no match */
       break;
     }
     elemP++; index++; nof--;
