@@ -8,6 +8,7 @@
   #include <MCF52259.h>
 #else
   #include "%ProcessorModule.h"
+  #include "MCF52259_USB_OTG.h"
 #endif
 #include "psptypes.h"
 #define _Stop asm ( mov3q #4,d0; bclr.b d0,SOPT1; stop #0x2000; )

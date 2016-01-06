@@ -43,7 +43,11 @@
 #include "usb_classes.h"
 /* Global variables */
 #pragma define_section usb_bdt ".usb_bdt" RW
+#if 0
 __declspec(usb_bdt) static uint_8 bdt[512];
+#else /* << EST */
+__declspec(usb_bdt) uint_8 g_Mem[512];
+#endif
 #define MCF522X_USBOTG_BD_BC(n)                 ((n & 0x3ff) << 16)
 #define MCF522X_USBOTG_ADDR_ADDR(x)             (((x)&0x7F)<<0)
 #define MCF522X_USBOTG_BD_OWN                   0x80
@@ -52,7 +56,11 @@ __declspec(usb_bdt) static uint_8 bdt[512];
 #define _int_enable() USB_unlock()
 #define HWTICKS_PER_MSEC     12500
 #define HWTICKS_PER_TICK     62500
+#if 0
 #define BDT_BASE              ((uint_32*)(bdt))
+#else /* << EST */
+#define BDT_BASE              ((uint_32*)(g_Mem))
+#endif
 #define BD_PTR(ep, rxtx, odd)      (((uint_32)BDT_BASE) & 0xfffffe00 | ((ep & 0x0f) << 5) | ((rxtx & 1) << 4) | ((odd & 1) << 3))
 /* FIXME: actually, only endpoint_data[0] is used in atom transaction */
 static EP_STRUCT endpoint_data[16];

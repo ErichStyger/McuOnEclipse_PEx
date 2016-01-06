@@ -167,6 +167,13 @@
   %include FSL_USB_Stack\Host\examples\msd\cw10\kinetis_k64f\derivative.h
   %FILE? %'DirRel_Code'khci_kinetis.c
   %include FSL_USB_Stack\Host\source\driver\kinetis\khci_kinetis.c
+%elif CPUDevice="MCF52259"
+  %FILE? %'DirRel_Code'derivative.h
+  %include FSL_USB_Stack\Host\examples\msd\cw10\m52259evb\derivative.h
+  %FILE? %'DirRel_Code'MCF52259_USB_OTG.h
+  %include FSL_USB_Stack\Host\examples\msd\cw10\m52259evb\MCF52259_USB_OTG.h
+  %FILE? %'DirRel_Code'khci_cfv2.c
+  %include FSL_USB_Stack\Host\source\driver\cfv2\khci_cfv2.c
 %else
   %error No or unknow (%CPUDevice) device selected in component in file FSL_USB_Stack_Files_Host.prg?
 %endif
