@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.079</Version>
+    <Version>01.080</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -458,9 +458,9 @@
               <Hint>Maximum current used by the device. Configured in usb_descriptor.c (structure g_config_descriptor).</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>50</DefaultValue>
+              <DefaultValue>100</DefaultValue>
               <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
+              <MaxValue>512</MaxValue>
               <Bases>DEC</Bases>
               <DefaultBase>DEC</DefaultBase>
               <ExtraHintDisabled>false</ExtraHintDisabled>
