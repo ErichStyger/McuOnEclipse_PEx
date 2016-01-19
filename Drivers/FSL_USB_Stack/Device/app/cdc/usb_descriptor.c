@@ -132,7 +132,7 @@ uint_8 USB_DESC_CONST g_config_descriptor[CONFIG_DESC_SIZE] =
     (REMOTE_WAKEUP_SUPPORT<<REMOTE_WAKEUP_SHIFT),
 #endif
               /*  Attributes.support RemoteWakeup and self power*/
-    0x32,                   /*  Current draw from bus -- 100mA*/
+    (%USBCurrentDraw_mA>>1), /*  Current draw from bus, e.g. is in 2 mA units */
 
     /* CIC INTERFACE DESCRIPTOR */
     IFACE_ONLY_DESC_SIZE,

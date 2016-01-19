@@ -230,6 +230,7 @@ uint_8 USB_Class_CDC_PSTN_Set_Ctrl_Line_State (
 #endif
     if(g_pstn_callback != NULL)
     {
+#if 1 /* original implementation */
         if(g_dte_status & CARRIER_ACTIVATION_CHECK)
         {
             g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_ACTIVATED, 
@@ -240,6 +241,16 @@ uint_8 USB_Class_CDC_PSTN_Set_Ctrl_Line_State (
             g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_DEACTIVATED,
                 NULL);
         }
+#else /* contribution from Joe Serdenkovski, see https://community.freescale.com/message/605537?et=watches.email.thread# */
+        if(g_dte_status & CARRIER_ACTIVATION_CHECK)
+        {
+             if (g_dte_present) {
+                  g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_ACTIVATED,NULL);
+             } else {
+                  g_pstn_callback(controller_ID, USB_APP_CDC_CARRIER_DEACTIVATED,NULL);
+             }
+        }
+#endif
     }
     return USB_OK;
 }

@@ -349,6 +349,24 @@ void %'ModuleName'%.%StdIOSendChar(uint8_t ch);
 
 %endif %- StdIOSendChar
 %-BW_METHOD_END StdIOSendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ApplicationStarted
+%ifdef ApplicationStarted
+bool %'ModuleName'%.%ApplicationStarted(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceApplicationStarted.Inc
+
+%endif %- ApplicationStarted
+%-BW_METHOD_END ApplicationStarted
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TransactionsStarted
+%ifdef TransactionsStarted
+bool %'ModuleName'%.%TransactionsStarted(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceTransactionsStarted.Inc
+
+%endif %- TransactionsStarted
+%-BW_METHOD_END TransactionsStarted
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -660,7 +678,9 @@ void %'ModuleName'%.%Notify_Callback(uint8_t controller_ID, uint8_t event_type, 
       start_transactions = FALSE;
     }
   }
+#if 1 /* not needed any more? see https://community.freescale.com/message/605537?et=watches.email.thread# */
   start_transactions = TRUE; /* ??? see http://forums.freescale.com/t5/Freescale-MQX-trade-USB-Host/Cant-get-CDC-virtual-com-demo-to-work-with-VB2005-on-xp-sp3/m-p/92713#M302 */
+#endif
 }
 
 %endif %- Notify_Callback
@@ -926,6 +946,30 @@ void %'ModuleName'%.%StdIOSendChar(uint8_t ch)
 
 %endif %- StdIOSendChar
 %-BW_METHOD_END StdIOSendChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ApplicationStarted
+%ifdef ApplicationStarted
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceApplicationStarted.Inc
+bool %'ModuleName'%.%ApplicationStarted(void)
+{
+  return start_app; /* TRUE if CDC is running */
+}
+
+%endif %- ApplicationStarted
+%-BW_METHOD_END ApplicationStarted
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TransactionsStarted
+%ifdef TransactionsStarted
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceTransactionsStarted.Inc
+bool %'ModuleName'%.%TransactionsStarted(void)
+{
+  return start_transactions; /* port open on host */
+}
+
+%endif %- TransactionsStarted
+%-BW_METHOD_END TransactionsStarted
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
