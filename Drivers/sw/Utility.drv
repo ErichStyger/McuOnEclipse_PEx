@@ -613,7 +613,7 @@ uint8_t %'ModuleName'%.%ScanHex8uNumber(const unsigned char **str, uint8_t *val)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN strtailcmp
 %ifdef strtailcmp
-byte %'ModuleName'%.%strtailcmp(const uint8_t *str, const uint8_t *tail);
+uint8_t %'ModuleName'%.%strtailcmp(const uint8_t *str, const uint8_t *tail);
 %define! Parstr
 %define! Partail
 %define! RetVal
@@ -2458,7 +2458,7 @@ uint8_t %'ModuleName'%.%ScanHex8uNumberNoPrefix(const unsigned char **str, uint8
 %define! Partail
 %define! RetVal
 %include Common\Utilitystrtailcmp.Inc
-byte %'ModuleName'%.%strtailcmp(const uint8_t *str, const uint8_t *tail)
+uint8_t %'ModuleName'%.%strtailcmp(const uint8_t *str, const uint8_t *tail)
 {
   int i, j;
 

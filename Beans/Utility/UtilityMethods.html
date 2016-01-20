@@ -589,12 +589,12 @@ LI.EXP {
  - Returns the weekday for a given date &gt;= 1.Jan.1900
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WeekDay(uint16_t year, uint8_t month, uint8_t day)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WeekDay(uint16_t year, uint8_t month, uint8_t day)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>year:uint16_t</i> - year in YYYY format</li>
 <li><i>month:uint8_t</i> - month of the year (1: January, 2: February, etc)</li>
 <li><i>day:uint8_t</i> - day of the moth (starting with 1)</li>
-<li><i>Return value:byte</i> - Returns the weekday, 0 for Sunday, 1 for Monday, 2 for Tuesday, etc.
+<li><i>Return value:uint8_t</i> - Returns the weekday, 0 for Sunday, 1 for Monday, 2 for Tuesday, etc.
 </li>
 </ul><br />
 </li>
@@ -603,7 +603,7 @@ LI.EXP {
  - Scans an escaped name from a string. This is useful e.g. for double quoted file names.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadEscapedName(const unsigned char *filename, uint8_t *destname, size_t maxlen, size_t *lenRead, size_t *lenWritten, const char *terminators)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadEscapedName(const unsigned char *filename, uint8_t *destname, size_t maxlen, size_t *lenRead, size_t *lenWritten, const char *terminators)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>filename: Pointer to uint8_t</i> - the name to be copied. Names may be in quoted format</li>
 <li><i>destname: Pointer to uint8_t</i> - the destination of the copy. Names are not in quoted format. destname may be NULL to get the other return values only</li>
@@ -611,7 +611,7 @@ LI.EXP {
 <li><i>lenRead: Pointer to char</i> - length read in filename to copy the whole name. Note that filenames maybe space terminated, so *lenRead &lt; strlen(filename)</li>
 <li><i>lenWritten:uint8_t</i> - the size written in destname. In case of overflows in destname, lenWritten is still increased but destname no longer written. The have the string length in these cases use strlen(destname)</li>
 <li><i>terminators:uint8_t</i> - additional characters where a name should terminate. May be NULL</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -620,11 +620,11 @@ LI.EXP {
  - Custom atoi() (ascii to int) implementation by Elm Chan
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte xatoi(const unsigned char **str, int32_t *res)<br />
+<br /><i>ANSIC prototype:</i> uint8_t xatoi(const unsigned char **str, int32_t *res)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str: Pointer to uint8_t</i> - Pointer to string to scan. Returns until where it has scanned.</li>
 <li><i>res: Pointer to long</i> - Pointer to where to store the result</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -633,13 +633,13 @@ LI.EXP {
  - Scans a date in the format &quot;dd.mm.yyyy&quot; or &quot;dd-mm-yyyy&quot;. For yy it will expand it to 20yy.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDate(const unsigned char **str, uint8_t *day, uint8_t *month, uint16_t *year)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDate(const unsigned char **str, uint8_t *day, uint8_t *month, uint16_t *year)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str: Pointer to uint8_t</i> - Pointer to the string to be scanned. The function advances the pointer.</li>
 <li><i>day: Pointer to uint8_t</i> - Pointer to where to store the day value</li>
 <li><i>month: Pointer to uint8_t</i> - Pointer to where to store the month value</li>
 <li><i>year: Pointer to uint16_t</i> - Pointer to where to store the year value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -648,14 +648,14 @@ LI.EXP {
  - Scans a time string in the format &quot;hh:mm:ss,hh&quot; with the part for the &quot;,hh&quot; is optional.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanTime(const unsigned char **str, uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanTime(const unsigned char **str, uint8_t *hour, uint8_t *minute, uint8_t *second, uint8_t *hSecond)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - Pointer to the string to be scanned. The function advances the pointer.</li>
 <li><i>hour: Pointer to uint8_t</i> - Pointer to where to store the hour value</li>
 <li><i>minute: Pointer to uint8_t</i> - Pointer to where to store the minute value</li>
 <li><i>second: Pointer to uint8_t</i> - Pointer to where to store the second value</li>
 <li><i>hSecond: Pointer to uint8_t</i> - Pointer to scans the hundreds of second part. If not present in string, zero is stored</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -664,11 +664,11 @@ LI.EXP {
  - Scans a decimal 8bit unsigned number
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDecimal8uNumber(const unsigned char **str, uint8_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal8uNumber(const unsigned char **str, uint8_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint8_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -677,11 +677,11 @@ LI.EXP {
  - Scans a decimal 8bit signed number
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDecimal8sNumber(const unsigned char **str, signed char *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal8sNumber(const unsigned char **str, signed char *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to signed char</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -690,11 +690,11 @@ LI.EXP {
  - Scans a decimal 16bit unsigned number
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDecimal16uNumber(const unsigned char **str, uint16_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal16uNumber(const unsigned char **str, uint16_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint16_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -703,11 +703,11 @@ LI.EXP {
  - Scans a decimal 16bit signed number
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDecimal16sNumber(const unsigned char **str, int16_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal16sNumber(const unsigned char **str, int16_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to int16_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -716,11 +716,11 @@ LI.EXP {
  - Scans a decimal 32bit unsigned number
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDecimal32uNumber(const unsigned char **str, uint32_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanDecimal32uNumber(const unsigned char **str, uint32_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - string to scan. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint32_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -757,11 +757,11 @@ LI.EXP {
  - Scans a hexadecimal 8bit number, starting with 0x
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanHex8uNumber(const unsigned char **str, uint8_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanHex8uNumber(const unsigned char **str, uint8_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan, starting with 0x. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint8_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -770,11 +770,11 @@ LI.EXP {
  - Scans a hexadecimal 8bit number, without 0x
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanHex8uNumberNoPrefix(const unsigned char **str, uint8_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanHex8uNumberNoPrefix(const unsigned char **str, uint8_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan, starting with 0x. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint8_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -783,11 +783,11 @@ LI.EXP {
  - Scans a hexadecimal 16bit number, starting with 0x
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanHex16uNumber(const unsigned char **str, uint16_t *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ScanHex16uNumber(const unsigned char **str, uint16_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - String to scan, starting with 0x.. It returns as well until where it has scanned</li>
 <li><i>val: Pointer to uint16_t</i> - Pointer to value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -879,11 +879,11 @@ LI.EXP {
  - Compares the tail of a string and returns 0 if it matches, 1 otherwise
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte strtailcmp(const uint8_t *str, const uint8_t *tail)<br />
+<br /><i>ANSIC prototype:</i> uint8_t strtailcmp(const uint8_t *str, const uint8_t *tail)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str: Pointer to uint8_t</i> - Pointer to string. This string is compared if it contains the tail.</li>
 <li><i>tail: Pointer to uint8_t</i> - Pointer to tail string.</li>
-<li><i>Return value:byte</i> - returns 0 if tail matches, -1 otherwise
+<li><i>Return value:uint8_t</i> - returns 0 if tail matches, -1 otherwise
 </li>
 </ul><br />
 </li>
@@ -892,10 +892,10 @@ LI.EXP {
  - Wrapper to the standard strlen() function.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> word strlen(const char *)<br />
+<br /><i>ANSIC prototype:</i> uint16_t strlen(const char *)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str:uint8_t</i> - no hint</li>
-<li><i>Return value:word</i> - size of strinig
+<li><i>Return value:uint16_t</i> - size of strinig
 </li>
 </ul><br />
 </li>
@@ -904,11 +904,11 @@ LI.EXP {
  - Removes a tailing substring from a string. The string passed will be modified (the tail is cut by writing a zero byte to the string!)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte strCutTail(uint8_t *str, uint8_t *tail)<br />
+<br /><i>ANSIC prototype:</i> uint8_t strCutTail(uint8_t *str, uint8_t *tail)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>str: Pointer to uint8_t</i> - Pointer to string where to remove the tail</li>
 <li><i>tail: Pointer to uint8_t</i> - Pointer to substring to remove</li>
-<li><i>Return value:byte</i> - Error code, ERR_OK if no error, otherwise ERR_FAIL if tail is not found
+<li><i>Return value:uint8_t</i> - Error code, ERR_OK if no error, otherwise ERR_FAIL if tail is not found
 </li>
 </ul><br />
 </li>
