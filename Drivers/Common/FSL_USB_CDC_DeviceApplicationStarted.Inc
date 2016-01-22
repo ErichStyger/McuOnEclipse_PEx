@@ -3,10 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (TransactionsOnGoing)
+%include Common\GeneralMethod.inc (ApplicationStarted)
 %;**     Description :
-%;**         Returns true if USB transactions are going on. Means that
-%;**         the COM port is open on the host.
+%;**         Returns true if USB ApplicationStarted has been started.
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
