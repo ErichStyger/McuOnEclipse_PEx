@@ -14,7 +14,8 @@
 %;**         bufSize%ParbufSize %>27 - size of buffer
 %;**       * io%Pario %>27 - Pointer to I/O callbacks
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - TRUE if something has been read, FALSE
+%;** %>29 otherwise
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
