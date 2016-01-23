@@ -545,6 +545,7 @@ void %'ModuleName'%.%GiveLCD(void)
 uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
   Adafruit_NeoMatrix_drawPixel(x, y, 0xff/4, 0xff/4, 0xff/4);
+  return ERR_OK;
 }
 
 %endif %- SetPixel
@@ -559,6 +560,7 @@ uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
   Adafruit_NeoMatrix_drawPixel(x, y, 0, 0, 0);
+  return ERR_OK;
 }
 
 %endif %- ClrPixel
@@ -574,6 +576,7 @@ uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
 {
   Adafruit_NeoMatrix_drawPixel(x, y, (color&0xff0000)>>16, (color&0xff00)>>8, color&0xff);
+  return ERR_OK;
 }
 
 %endif %- PutPixel
@@ -591,6 +594,7 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 uint8_t %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color)
 {
   /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  return ERR_FAILED;
 }
 
 %endif %- DrawFilledBox
