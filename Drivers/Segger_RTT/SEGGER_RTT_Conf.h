@@ -62,6 +62,15 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 *
 **********************************************************************
 */
+/* << EST: Additional setting to check for FreeRTOS: need to use FreeRTOS with proper BASEPRI mask to create critical sections */
+%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' %- << EST Check if we are using FreeRTOS
+#define SEGGER_RTT_FREERTOS_PRESENT   1 /* 1: FreeRTOS enabled in project, 0: bare metal */
+%else
+#define SEGGER_RTT_FREERTOS_PRESENT   0 /* 1: FreeRTOS enabled in project, 0: bare metal */
+%endif
+#if SEGGER_RTT_FREERTOS_PRESENT
+  #include "portmacro.h" /* include FreeRTOS port header file for critical section handling */
+#endif
 
 #define SEGGER_RTT_MAX_NUM_UP_BUFFERS             (%RTTBufferNofUp)     // Max. number of up-buffers (T->H) available on this target    (Default: 2)
 #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (%RTTBufferNofDown)     // Max. number of down-buffers (H->T) available on this target  (Default: 2)
@@ -96,6 +105,10 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 *       RTT lock configuration for SEGGER Embedded Studio, 
 *       Rowley CrossStudio and GCC
 */
+#if SEGGER_RTT_FREERTOS_PRESENT /* << EST: Need to use FreeRTOS critical sections with proper interrupt handling */
+  #define SEGGER_RTT_LOCK()     portENTER_CRITICAL()
+  #define SEGGER_RTT_UNLOCK()   portEXIT_CRITICAL()
+#else
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
     #define SEGGER_RTT_LOCK() {                                                 \
@@ -165,7 +178,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                   }  
   #endif
 #endif
-
+#endif /* << EST: SEGGER_RTT_FREERTOS_PRESENT */
 /*********************************************************************
 *
 *       RTT lock configuration fallback
