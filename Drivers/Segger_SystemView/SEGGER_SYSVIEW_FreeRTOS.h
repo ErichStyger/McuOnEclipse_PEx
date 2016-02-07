@@ -215,7 +215,9 @@ Purpose : Interface between FreeRTOS and SystemView.
                                                                       &(pxNewTCB->pcTaskName[0]),                       \
                                                                       pxNewTCB->uxPriority,                             \
                                                                       (U32)pxNewTCB->pxStack,                           \
-                                                                      0                                                 \
+                                                                      (portSTACK_GROWTH<0)?                             \
+                                                                        (U32)(pxNewTCB->pxTopOfStack-pxNewTCB->pxStack) \
+                                                                       :(U32)(pxNewTCB->pxStack-pxNewTCB->pxTopOfStack) \
                                                                       );                                                \
                                                     }
 
@@ -228,7 +230,9 @@ Purpose : Interface between FreeRTOS and SystemView.
                                                                            &(pxTask->pcTaskName[0]),                    \
                                                                            uxNewPriority,                               \
                                                                            (U32)pxTask->pxStack,                        \
-                                                                           0                                            \
+                                                                           (portSTACK_GROWTH<0)?                        \
+                                                                             (U32)(pxTask->pxTopOfStack-pxTask->pxStack)\
+                                                                            :(U32)(pxTask->pxStack-pxTask->pxTopOfStack)\
                                                                           );                                            \
                                                       }
 //

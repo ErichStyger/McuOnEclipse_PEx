@@ -81,6 +81,9 @@ static void _cbSendTaskList(void) {
   unsigned n;
      
   for (n = 0; n < _NumTasks; n++) {
+#if INCLUDE_uxTaskGetStackHighWaterMark /* << EST: update task stack size */
+    _aTasks[n].uStackHighWaterMark = uxTaskGetStackHighWaterMark((TaskHandle_t)_aTasks[n].xHandle);
+#endif
     SYSVIEW_SendTaskInfo((U32)_aTasks[n].xHandle, _aTasks[n].pcTaskName, (unsigned)_aTasks[n].uxCurrentPriority, (U32)_aTasks[n].pxStack, (unsigned)_aTasks[n].uStackHighWaterMark);
   }
 }
@@ -118,7 +121,7 @@ static U64 _cbGetTime(void) {
 */
 void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack, unsigned uStackHighWaterMark) {
   if (_NumTasks >= SYSVIEW_FREERTOS_MAX_NOF_TASKS) {
-    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task informaiton. Maximum number of tasks reached.");
+    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks reached.");
     return;
   }
 
