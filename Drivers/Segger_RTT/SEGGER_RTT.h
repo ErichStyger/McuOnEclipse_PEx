@@ -186,44 +186,44 @@ int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...);
 // Control sequences, based on ANSI.
 // Can be used to control color, and clear the screen
 //
-#define RTT_CTRL_RESET                "\e[0m"         // Reset to default colors
-#define RTT_CTRL_CLEAR                "\e[2J"         // Clear screen, reposition cursor to top left
+#define RTT_CTRL_RESET                "[0m"         // Reset to default colors
+#define RTT_CTRL_CLEAR                "[2J"         // Clear screen, reposition cursor to top left
 
-#define RTT_CTRL_TEXT_BLACK           "\e[2;30m"
-#define RTT_CTRL_TEXT_RED             "\e[2;31m"
-#define RTT_CTRL_TEXT_GREEN           "\e[2;32m"
-#define RTT_CTRL_TEXT_YELLOW          "\e[2;33m"
-#define RTT_CTRL_TEXT_BLUE            "\e[2;34m"
-#define RTT_CTRL_TEXT_MAGENTA         "\e[2;35m"
-#define RTT_CTRL_TEXT_CYAN            "\e[2;36m"
-#define RTT_CTRL_TEXT_WHITE           "\e[2;37m"
+#define RTT_CTRL_TEXT_BLACK           "[2;30m"
+#define RTT_CTRL_TEXT_RED             "[2;31m"
+#define RTT_CTRL_TEXT_GREEN           "[2;32m"
+#define RTT_CTRL_TEXT_YELLOW          "[2;33m"
+#define RTT_CTRL_TEXT_BLUE            "[2;34m"
+#define RTT_CTRL_TEXT_MAGENTA         "[2;35m"
+#define RTT_CTRL_TEXT_CYAN            "[2;36m"
+#define RTT_CTRL_TEXT_WHITE           "[2;37m"
 
-#define RTT_CTRL_TEXT_BRIGHT_BLACK    "\e[1;30m"
-#define RTT_CTRL_TEXT_BRIGHT_RED      "\e[1;31m"
-#define RTT_CTRL_TEXT_BRIGHT_GREEN    "\e[1;32m"
-#define RTT_CTRL_TEXT_BRIGHT_YELLOW   "\e[1;33m"
-#define RTT_CTRL_TEXT_BRIGHT_BLUE     "\e[1;34m"
-#define RTT_CTRL_TEXT_BRIGHT_MAGENTA  "\e[1;35m"
-#define RTT_CTRL_TEXT_BRIGHT_CYAN     "\e[1;36m"
-#define RTT_CTRL_TEXT_BRIGHT_WHITE    "\e[1;37m"
+#define RTT_CTRL_TEXT_BRIGHT_BLACK    "[1;30m"
+#define RTT_CTRL_TEXT_BRIGHT_RED      "[1;31m"
+#define RTT_CTRL_TEXT_BRIGHT_GREEN    "[1;32m"
+#define RTT_CTRL_TEXT_BRIGHT_YELLOW   "[1;33m"
+#define RTT_CTRL_TEXT_BRIGHT_BLUE     "[1;34m"
+#define RTT_CTRL_TEXT_BRIGHT_MAGENTA  "[1;35m"
+#define RTT_CTRL_TEXT_BRIGHT_CYAN     "[1;36m"
+#define RTT_CTRL_TEXT_BRIGHT_WHITE    "[1;37m"
 
-#define RTT_CTRL_BG_BLACK             "\e[24;40m"
-#define RTT_CTRL_BG_RED               "\e[24;41m"
-#define RTT_CTRL_BG_GREEN             "\e[24;42m"
-#define RTT_CTRL_BG_YELLOW            "\e[24;43m"
-#define RTT_CTRL_BG_BLUE              "\e[24;44m"
-#define RTT_CTRL_BG_MAGENTA           "\e[24;45m"
-#define RTT_CTRL_BG_CYAN              "\e[24;46m"
-#define RTT_CTRL_BG_WHITE             "\e[24;47m"
+#define RTT_CTRL_BG_BLACK             "[24;40m"
+#define RTT_CTRL_BG_RED               "[24;41m"
+#define RTT_CTRL_BG_GREEN             "[24;42m"
+#define RTT_CTRL_BG_YELLOW            "[24;43m"
+#define RTT_CTRL_BG_BLUE              "[24;44m"
+#define RTT_CTRL_BG_MAGENTA           "[24;45m"
+#define RTT_CTRL_BG_CYAN              "[24;46m"
+#define RTT_CTRL_BG_WHITE             "[24;47m"
 
-#define RTT_CTRL_BG_BRIGHT_BLACK      "\e[4;40m"
-#define RTT_CTRL_BG_BRIGHT_RED        "\e[4;41m"
-#define RTT_CTRL_BG_BRIGHT_GREEN      "\e[4;42m"
-#define RTT_CTRL_BG_BRIGHT_YELLOW     "\e[4;43m"
-#define RTT_CTRL_BG_BRIGHT_BLUE       "\e[4;44m"
-#define RTT_CTRL_BG_BRIGHT_MAGENTA    "\e[4;45m"
-#define RTT_CTRL_BG_BRIGHT_CYAN       "\e[4;46m"
-#define RTT_CTRL_BG_BRIGHT_WHITE      "\e[4;47m"
+#define RTT_CTRL_BG_BRIGHT_BLACK      "[4;40m"
+#define RTT_CTRL_BG_BRIGHT_RED        "[4;41m"
+#define RTT_CTRL_BG_BRIGHT_GREEN      "[4;42m"
+#define RTT_CTRL_BG_BRIGHT_YELLOW     "[4;43m"
+#define RTT_CTRL_BG_BRIGHT_BLUE       "[4;44m"
+#define RTT_CTRL_BG_BRIGHT_MAGENTA    "[4;45m"
+#define RTT_CTRL_BG_BRIGHT_CYAN       "[4;46m"
+#define RTT_CTRL_BG_BRIGHT_WHITE      "[4;47m"
 
 
 #endif
