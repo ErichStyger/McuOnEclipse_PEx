@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -92,9 +92,6 @@ Purpose     : SEGGER SysView configuration.
 *
 *       SysView buffer configuration
 */
-/* maximum number of tasks to report */
-#define SEGGER_SYSVIEW_MAX_NOF_TASKS      %SysViewMaxNofTasks
-
 // Number of bytes that SysView uses for a buffer.
 #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
 

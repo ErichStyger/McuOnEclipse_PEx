@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -98,10 +98,12 @@ extern "C" {
 #define   SEGGER_SYSVIEW_EVENT_ID_TIMER_ENTER       19
 #define   SEGGER_SYSVIEW_EVENT_ID_TIMER_EXIT        20
 #define   SEGGER_SYSVIEW_EVENT_ID_STACK_INFO        21
+#define   SEGGER_SYSVIEW_EVENT_ID_MODULEDESC        22
 
 #define   SEGGER_SYSVIEW_EVENT_ID_INIT              24
 #define   SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE     25
 #define   SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED   26
+#define   SEGGER_SYSVIEW_EVENT_ID_NUMMODULES        27
 
 //
 // Commands that Host can send to target
@@ -112,6 +114,10 @@ typedef enum {
   SEGGER_SYSVIEW_COMMAND_ID_GET_SYSTIME,
   SEGGER_SYSVIEW_COMMAND_ID_GET_TASKLIST,
   SEGGER_SYSVIEW_COMMAND_ID_GET_SYSDESC,
+  SEGGER_SYSVIEW_COMMAND_ID_GET_NUMMODULES,
+  SEGGER_SYSVIEW_COMMAND_ID_GET_MODULEDESC,
+  // Extended commands: Commands >= 128 have a second parameter
+  SEGGER_SYSVIEW_COMMAND_ID_GET_MODULE = 128,
 } SEGGER_SYSVIEW_COMMAND_ID;
 
 #ifdef __cplusplus

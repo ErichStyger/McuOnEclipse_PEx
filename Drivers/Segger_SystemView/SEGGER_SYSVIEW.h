@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -105,6 +105,16 @@ typedef struct {
   U32          StackSize;
 } SEGGER_SYSVIEW_TASKINFO;
 
+typedef struct SEGGER_SYSVIEW_MODULE SEGGER_SYSVIEW_MODULE;
+
+struct SEGGER_SYSVIEW_MODULE {
+  const char*                   sModule;
+        U32                     NumEvents;
+        U32                     EventOffset;
+        void                    (*pfSendModuleDesc)(void);
+        SEGGER_SYSVIEW_MODULE*  pNext;
+};
+
 typedef void (SEGGER_SYSVIEW_SEND_SYS_DESC_FUNC)(void);
 
 /*********************************************************************
@@ -170,24 +180,35 @@ U8*  SEGGER_SYSVIEW_EncodeString                  (U8* pPayload, const char* s, 
 U8*  SEGGER_SYSVIEW_EncodeId                      (U8* pPayload, unsigned Id);
 unsigned SEGGER_SYSVIEW_ShrinkId                  (unsigned Id);
 
+
+/*********************************************************************
+*
+*       Middleware module registration
+*/
+void SEGGER_SYSVIEW_RegisterModule                (SEGGER_SYSVIEW_MODULE* pModule);
+void SEGGER_SYSVIEW_RecordModuleDescription       (const SEGGER_SYSVIEW_MODULE* pModule, const char* sDescription);
+void SEGGER_SYSVIEW_SendModule                    (U8 ModuleId);
+void SEGGER_SYSVIEW_SendModuleDescription         (void);
+void SEGGER_SYSVIEW_SendNumModules                (void);
+
 /*********************************************************************
 *
 *       printf-Style functions
 */
-void SEGGER_SYSVIEW_PrintfHostEx(const char* s, U32 Options, ...);
-void SEGGER_SYSVIEW_PrintfTargetEx(const char* s, U32 Options, ...);
+#ifndef SEGGER_SYSVIEW_EXCLUDE_PRINTF // Define in project to avoid warnings about variable parameter list
+void SEGGER_SYSVIEW_PrintfHostEx                  (const char* s, U32 Options, ...);
+void SEGGER_SYSVIEW_PrintfTargetEx                (const char* s, U32 Options, ...);
+void SEGGER_SYSVIEW_PrintfHost                    (const char* s, ...);
+void SEGGER_SYSVIEW_PrintfTarget                  (const char* s, ...);
+void SEGGER_SYSVIEW_WarnfHost                     (const char* s, ...);
+void SEGGER_SYSVIEW_WarnfTarget                   (const char* s, ...);
+void SEGGER_SYSVIEW_ErrorfHost                    (const char* s, ...);
+void SEGGER_SYSVIEW_ErrorfTarget                  (const char* s, ...);
+#endif
 
-void SEGGER_SYSVIEW_PrintfHost(const char* s, ...);
-void SEGGER_SYSVIEW_PrintfTarget(const char* s, ...);
-void SEGGER_SYSVIEW_Print(const char* s);
-
-void SEGGER_SYSVIEW_WarnfHost(const char* s, ...);
-void SEGGER_SYSVIEW_WarnfTarget(const char* s, ...);
-void SEGGER_SYSVIEW_Warn(const char* s);
-
-void SEGGER_SYSVIEW_ErrorfHost(const char* s, ...);
-void SEGGER_SYSVIEW_ErrorfTarget(const char* s, ...);
-void SEGGER_SYSVIEW_Error(const char* s);
+void SEGGER_SYSVIEW_Print                         (const char* s);
+void SEGGER_SYSVIEW_Warn                          (const char* s);
+void SEGGER_SYSVIEW_Error                         (const char* s);
 
 /*********************************************************************
 *

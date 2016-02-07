@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -51,8 +51,22 @@ Purpose : Interface between FreeRTOS and System View.
 #include "task.h"
 #include "SEGGER_SYSVIEW.h"
 #include "SEGGER_SYSVIEW_FreeRTOS.h"
-#include "SEGGER_SYSVIEW_Conf.h"
 #include "string.h" // Required for memset
+
+
+
+typedef struct SYSVIEW_FREERTOS_TASK_STATUS SYSVIEW_FREERTOS_TASK_STATUS;
+
+struct SYSVIEW_FREERTOS_TASK_STATUS {
+  U32         xHandle;
+  const char* pcTaskName;
+  unsigned    uxCurrentPriority;
+  U32         pxStack;
+  unsigned    uStackHighWaterMark;
+};
+
+static SYSVIEW_FREERTOS_TASK_STATUS _aTasks[SYSVIEW_FREERTOS_MAX_NOF_TASKS];
+static unsigned _NumTasks;
 
 /********************************************************************* 
 * 
@@ -63,69 +77,12 @@ Purpose : Interface between FreeRTOS and System View.
 *    Called from SystemView when asked by the host, it uses SYSVIEW
 *    functions to send the entire task list to the host.
 */
-#define USE_STATIC_MEMORY_ALLOC   1
-
 static void _cbSendTaskList(void) {
-#if USE_STATIC_MEMORY_ALLOC
-  static TaskStatus_t pxTaskStatusArray[SEGGER_SYSVIEW_MAX_NOF_TASKS];
-#else
-  TaskStatus_t*         pxTaskStatusArray;
-#endif
-  UBaseType_t           uxArraySize;
-  UBaseType_t           x;
-#if INCLUDE_xTaskGetIdleTaskHandle
-  TaskHandle_t          hIdle;
-  hIdle = xTaskGetIdleTaskHandle();
-#endif
-
-#if USE_STATIC_MEMORY_ALLOC
-  uxArraySize = SEGGER_SYSVIEW_MAX_NOF_TASKS;
-#else
-  /* Take a snapshot of the number of tasks in case it changes while this
-  function is executing. */
-  uxArraySize = uxTaskGetNumberOfTasks();
-
-  /* Allocate an array index for each task. */
-  pxTaskStatusArray = pvPortMalloc( uxArraySize * sizeof( TaskStatus_t ) );
-  if( pxTaskStatusArray != NULL ) {
-#endif
-    /* Generate the (binary) data. */
-    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
-
-#if INCLUDE_xTaskGetIdleTaskHandle
-    /* only get Idle task handle if scheduler has been started */
-    if (xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED) {
-      hIdle = xTaskGetIdleTaskHandle();
-    } else {
-      hIdle = NULL;
-    }
-#endif
-    
-    /* Create a human readable table from the binary data. */
-    for( x = 0; x < uxArraySize; x++ ) {
-      uint8_t* pStack;
-#if INCLUDE_pxTaskGetStackStart
-      extern uint8_t* pxTaskGetStackStart( TaskHandle_t xTask); /* << EST: prototype */
-
-      pStack = pxTaskGetStackStart(pxTaskStatusArray[x].xHandle);
-#else
-      pStack = (uint8_t*)0;
-#endif
-
-#if INCLUDE_xTaskGetIdleTaskHandle
-      if (pxTaskStatusArray[x].xHandle != hIdle) {
-#else
-      if (memcmp(pxTaskStatusArray[x].pcTaskName, "IDLE", 5) != 0) {
-#endif
-        SYSVIEW_SendTaskInfo((unsigned)pxTaskStatusArray[x].xHandle, pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[x].uxCurrentPriority, (unsigned int)pStack, pxTaskStatusArray[x].usStackHighWaterMark);
-      }
-    }
-
-#if !USE_STATIC_MEMORY_ALLOC
-    /* Free the array again. */
-    vPortFree( pxTaskStatusArray );
+  unsigned n;
+     
+  for (n = 0; n < _NumTasks; n++) {
+    SYSVIEW_SendTaskInfo((U32)_aTasks[n].xHandle, _aTasks[n].pcTaskName, (unsigned)_aTasks[n].uxCurrentPriority, (U32)_aTasks[n].pxStack, (unsigned)_aTasks[n].uStackHighWaterMark);
   }
-#endif
 }
 
 /********************************************************************* 
@@ -141,8 +98,8 @@ static U64 _cbGetTime(void) {
   U64 Time;
 
   Time = xTaskGetTickCountFromISR();
-  Time *= portTICK_PERIOD_MS; /* scale to effective milli-seconds */
-  Time *= 1000; /* scale to micro seconds */
+  Time *= portTICK_PERIOD_MS;
+  Time *= 1000;
   return Time;
 }
 
@@ -154,6 +111,58 @@ static U64 _cbGetTime(void) {
 */
 /********************************************************************* 
 *
+*       SYSVIEW_AddTask()
+*
+*  Function description
+*    Add a task to the internal list and record its information.
+*/
+void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack, unsigned uStackHighWaterMark) {
+  if (_NumTasks >= SYSVIEW_FREERTOS_MAX_NOF_TASKS) {
+    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task informaiton. Maximum number of tasks reached.");
+    return;
+  }
+
+  _aTasks[_NumTasks].xHandle = xHandle;
+  _aTasks[_NumTasks].pcTaskName = pcTaskName;
+  _aTasks[_NumTasks].uxCurrentPriority = uxCurrentPriority;
+  _aTasks[_NumTasks].pxStack = pxStack;
+  _aTasks[_NumTasks].uStackHighWaterMark = uStackHighWaterMark;
+
+  _NumTasks++;
+
+  SYSVIEW_SendTaskInfo(xHandle, pcTaskName,uxCurrentPriority, pxStack, uStackHighWaterMark);
+
+}
+
+/********************************************************************* 
+*
+*       SYSVIEW_UpdateTask()
+*
+*  Function description
+*    Update a task in the internal list and record its information.
+*/
+void SYSVIEW_UpdateTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32 pxStack, unsigned uStackHighWaterMark) {
+  unsigned n;
+
+  for (n = 0; n < _NumTasks; n++) {
+    if (_aTasks[n].xHandle == xHandle) {
+      break;
+    }
+  }
+  if (n < _NumTasks) {
+    _aTasks[n].pcTaskName = pcTaskName;
+    _aTasks[n].uxCurrentPriority = uxCurrentPriority;
+    _aTasks[n].pxStack = pxStack;
+    _aTasks[n].uStackHighWaterMark = uStackHighWaterMark;
+
+    SYSVIEW_SendTaskInfo(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+  } else {
+    SYSVIEW_AddTask(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+  }
+}
+
+/********************************************************************* 
+*
 *       SYSVIEW_SendTaskInfo()
 *
 *  Function description
@@ -162,7 +171,6 @@ static U64 _cbGetTime(void) {
 void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned StackSize) {
   SEGGER_SYSVIEW_TASKINFO TaskInfo;
 
-  taskENTER_CRITICAL();                   // No scheduling to make sure the task list does not change while we are transmitting it
   memset(&TaskInfo, 0, sizeof(TaskInfo)); // Fill all elements with 0 to allow extending the structure in future version without breaking the code
   TaskInfo.TaskID     = TaskID;
   TaskInfo.sName      = sName;  
@@ -170,7 +178,6 @@ void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 Stac
   TaskInfo.StackBase  = StackBase;
   TaskInfo.StackSize  = StackSize;
   SEGGER_SYSVIEW_SendTaskInfo(&TaskInfo);
-  taskEXIT_CRITICAL ();                   // No scheduling to make sure the task list does not change while we are transmitting it
 }
 
 /********************************************************************* 

@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -190,6 +190,8 @@ Additional information:
 #define FORMAT_FLAG_PRINT_SIGN     (1u << 2)
 #define FORMAT_FLAG_ALTERNATE      (1u << 3)
 
+#define MODULE_EVENT_OFFSET        (512)
+
 /*********************************************************************
 *
 *       Types
@@ -210,21 +212,7 @@ typedef struct {
 *
 **********************************************************************
 */
-#if 0 /* not used */
-//
-// 10 Zero bytes are used as synchronization mark periodically
-//
-static const U8 _abSync[10] = { SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP,
-                                SEGGER_SYSVIEW_EVENT_ID_NOP};
-#endif
+
 /*********************************************************************
 *
 *       Static data
@@ -248,6 +236,9 @@ static struct {
         SEGGER_SYSVIEW_SEND_SYS_DESC_FUNC*   pfSendSysDesc;
 } _SYSVIEW_Globals;
 
+static SEGGER_SYSVIEW_MODULE* _pFirstModule;
+static U8                     _NumModules;
+
 /*********************************************************************
 *
 *       Static code
@@ -255,19 +246,19 @@ static struct {
 **********************************************************************
 */
 
-#define ENCODE_U32(pDest, Value) {                                \
-                                   U8* p;                         \
-                                   U32 Data;                      \
-                                   p = pDest;                     \
-                                   Data = Value;                  \
-                                   /*lint -save -e681 Loop is not entered */\
-                                   while(Data > 0x7F) {           \
-                                     *p++ = (U8)(Data | 0x80);    \
-                                     Data >>= 7;                  \
-                                   };                             \
-                                   /*lint -restore */              \
-                                   *p++ = (U8)Data;               \
-                                   pDest = p;                     \
+#define ENCODE_U32(pDest, Value) {                                                  \
+                                   U8* pSysviewPointer;                             \
+                                   U32 SysViewData;                                 \
+                                   pSysviewPointer = pDest;                         \
+                                   SysViewData = Value;                             \
+                                   /*lint -save -e681 Loop is not entered */        \
+                                   while(SysViewData > 0x7F) {                      \
+                                     *pSysviewPointer++ = (U8)(SysViewData | 0x80); \
+                                     SysViewData >>= 7;                             \
+                                   };                                               \
+                                   /*lint -restore */                               \
+                                   *pSysviewPointer++ = (U8)SysViewData;            \
+                                   pDest = pSysviewPointer;                         \
                                  };
 
 /*********************************************************************
@@ -391,6 +382,23 @@ static void _HandleIncomingPacket(void) {
       break;
     case SEGGER_SYSVIEW_COMMAND_ID_GET_SYSDESC:
       SEGGER_SYSVIEW_GetSysDesc();
+      break;
+    case SEGGER_SYSVIEW_COMMAND_ID_GET_NUMMODULES:
+      SEGGER_SYSVIEW_SendNumModules();
+      break;
+    case SEGGER_SYSVIEW_COMMAND_ID_GET_MODULEDESC:
+      SEGGER_SYSVIEW_SendModuleDescription();
+      break;
+    case SEGGER_SYSVIEW_COMMAND_ID_GET_MODULE:
+      Status = SEGGER_RTT_ReadNoLock(CHANNEL_ID_DOWN, &Cmd, 1);
+      if (Status > 0) {
+        SEGGER_SYSVIEW_SendModule(Cmd);
+      }
+      break;
+    default:
+      if (Cmd >= 128) { // Unknown extended command. Dummy read its parameter.
+        SEGGER_RTT_ReadNoLock(CHANNEL_ID_DOWN, &Cmd, 1);
+      }
       break;
     }
   }
@@ -547,6 +555,7 @@ SendDone:
   SEGGER_SYSVIEW_UNLOCK();  // We are done. Unlock and return
 }
 
+#ifndef SEGGER_SYSVIEW_EXCLUDE_PRINTF // Define in project to avoid warnings about variable parameter list
 /*********************************************************************
 *
 *       _APrintHost()
@@ -943,6 +952,7 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
   }
   SEGGER_SYSVIEW_UNLOCK();
 }
+#endif // SEGGER_SYSVIEW_EXCLUDE_PRINTF
 
 /*********************************************************************
 *
@@ -1140,6 +1150,7 @@ void SEGGER_SYSVIEW_Start(void) {
     }
     SEGGER_SYSVIEW_RecordSystime();
     SEGGER_SYSVIEW_SendTaskList();
+    SEGGER_SYSVIEW_SendNumModules();
   }
 }
 
@@ -1249,19 +1260,19 @@ void SEGGER_SYSVIEW_SendTaskList(void) {
 *    sSysDesc - Pointer to the 0-terminated system description string.
 *
 *  Additional information
-*    One system description string may not exceed 128 characters.
+*    One system description string may not exceed SEGGER_SYSVIEW_MAX_STRING_LEN characters.
 *
 *    The Following items can be described in a system description string.
 *    Each item is identified by its identifier, followed by '=' and the value.
 *    Items are separated by ','.
 */
 void SEGGER_SYSVIEW_SendSysDesc(const char *sSysDesc) {
-  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 1 + 128];
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN];
   U8* pPayload;
   U8* pPayloadStart;
 
   pPayloadStart = _PreparePacket(aPacket);
-  pPayload = _EncodeStr(pPayloadStart, sSysDesc, 128);
+  pPayload = _EncodeStr(pPayloadStart, sSysDesc, SEGGER_SYSVIEW_MAX_STRING_LEN);
   _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_SYSDESC);
 }
 
@@ -1559,16 +1570,16 @@ void SEGGER_SYSVIEW_OnUserStop(unsigned UserId) {
 *
 *  Parameters
 *    ResourceId - Id of the resource to be named. i.e. its address.
-*    sName      - Pointer to the resource name. (Max. 128 Bytes)
+*    sName      - Pointer to the resource name. (Max. SEGGER_SYSVIEW_MAX_STRING_LEN Bytes)
 */
 void SEGGER_SYSVIEW_NameResource(U32 ResourceId, const char* sName) {
-  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32 + 1 + 128];
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32 + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN];
   U8* pPayload;
   U8* pPayloadStart;
 
   pPayload = pPayloadStart = _PreparePacket(aPacket);
   ENCODE_U32(pPayload, SHRINK_ID(ResourceId));
-  pPayload = _EncodeStr(pPayload, sName, 128);
+  pPayload = _EncodeStr(pPayload, sName, SEGGER_SYSVIEW_MAX_STRING_LEN);
   _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE);
 }
 
@@ -1722,6 +1733,181 @@ U8* SEGGER_SYSVIEW_EncodeId(U8* pPayload, unsigned Id) {
 unsigned SEGGER_SYSVIEW_ShrinkId(unsigned Id) {
   return SHRINK_ID(Id);
 }
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RegisterModule()
+*
+*  Function description
+*    Register a middleware module for recording its events.
+*
+*  Parameters
+*    pModule  - The middleware module information.
+*
+*  Additional information
+*    pModule->sDescription      - Pointer to a string containing the module
+*                                 name and optionally the module event 
+*                                 description.
+*    pModule->NumEvents         - Number of events the module wants to 
+*                                 register.
+*    pModule->EventOffset       - Offset to be added to the event Ids.
+*                                 Out parameter, set by this function.
+*                                 Do not modify after calling this function.
+*    pModule->pfSendModuleDesc  - Callback function pointer to send 
+*                                 more detailed module description
+*                                 to SystemViewer.
+*    pModule->pNext             - Pointer to next registered module.
+*                                 Out parameter, set by this function.
+*                                 Do not modify after calling this function.
+*/
+void SEGGER_SYSVIEW_RegisterModule(SEGGER_SYSVIEW_MODULE* pModule) {
+  SEGGER_SYSVIEW_LOCK();
+  if (_pFirstModule == 0) {
+    //
+    // No module registered, yet.
+    // Start list with new module.
+    // EventOffset is the base offset for modules
+    //
+    pModule->EventOffset = MODULE_EVENT_OFFSET;
+    pModule->pNext = 0;
+    _pFirstModule = pModule;
+    _NumModules = 1;
+  } else {
+    //
+    // Registreded module(s) present.
+    // Prepend new module in list.
+    // EventOffset set from number of events and offset of previous module.
+    //
+    pModule->EventOffset = _pFirstModule->EventOffset + _pFirstModule->NumEvents;
+    pModule->pNext = _pFirstModule;
+    _pFirstModule = pModule;
+    _NumModules++;
+  }
+  SEGGER_SYSVIEW_SendModule(0);
+  if (pModule->pfSendModuleDesc) {
+    pModule->pfSendModuleDesc();
+  }
+  SEGGER_SYSVIEW_UNLOCK();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordModuleDescription()
+*
+*  Function description
+*    Sends detailed information of a registered module to the host.
+*
+*  Parameters
+*    pModule      - Pointer to the described module.
+*    sDescription - Pointer to a description string.
+*/
+void SEGGER_SYSVIEW_RecordModuleDescription(const SEGGER_SYSVIEW_MODULE* pModule, const char* sDescription) {
+  U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN];
+  U8* pPayload;
+  U8* pPayloadStart;
+  U8  ModuleId;
+  SEGGER_SYSVIEW_MODULE* p;
+
+  p = _pFirstModule;
+  ModuleId = 0;
+  do {
+    if (p == pModule) {
+      break;
+    }
+    ModuleId++;
+    p = p->pNext;
+  } while (p);
+  //
+  // Send module description
+  // Send event offset and number of events
+  //
+  pPayload = pPayloadStart = _PreparePacket(aPacket);
+  ENCODE_U32(pPayload, ModuleId);
+  ENCODE_U32(pPayload, (pModule->EventOffset));
+  pPayload = _EncodeStr(pPayload, sDescription, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_MODULEDESC);
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_SendModule()
+*
+*  Function description
+*    Sends the information of a registered module to the host.
+*
+*  Parameters
+*    ModuleId   - Id of the requested module.
+*/
+void SEGGER_SYSVIEW_SendModule(U8 ModuleId) {
+  SEGGER_SYSVIEW_MODULE* pModule;
+  U32 n;
+
+  if (_pFirstModule != 0) {
+    pModule = _pFirstModule;
+    for (n = 0; n < ModuleId; n++) {
+      pModule = pModule->pNext;
+      if (pModule == 0) {
+        break;
+      }
+    }
+    if (pModule != 0) {
+      //
+      // Send module description
+      // Send event offset and number of events
+      //
+      U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN];
+      U8* pPayload;
+      U8* pPayloadStart;
+
+      pPayload = pPayloadStart = _PreparePacket(aPacket);
+      ENCODE_U32(pPayload, ModuleId);
+      ENCODE_U32(pPayload, (pModule->EventOffset));
+      pPayload = _EncodeStr(pPayload, pModule->sModule, SEGGER_SYSVIEW_MAX_STRING_LEN);
+      _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_MODULEDESC);
+    }
+  }
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_SendModuleDescription()
+*
+*  Function description
+*    Triggers a send of the registered module descriptions.
+*
+*/
+void SEGGER_SYSVIEW_SendModuleDescription(void) {
+  SEGGER_SYSVIEW_MODULE* pModule;
+
+  if (_pFirstModule != 0) {
+    pModule = _pFirstModule;
+    do {
+      if (pModule->pfSendModuleDesc) {
+        pModule->pfSendModuleDesc();
+      }
+      pModule = pModule->pNext;
+    } while (pModule);
+  }
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_SendNumModules()
+*
+*  Function description
+*    Send the number of registered modules to the host.
+*/
+void SEGGER_SYSVIEW_SendNumModules(void) {
+    U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 2*SEGGER_SYSVIEW_QUANTA_U32];
+    U8* pPayload;
+    U8* pPayloadStart;
+
+    pPayload = pPayloadStart = _PreparePacket(aPacket);
+    ENCODE_U32(pPayload, _NumModules);
+    _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_NUMMODULES);
+}
+
+#ifndef SEGGER_SYSVIEW_EXCLUDE_PRINTF // Define in project to avoid warnings about variable parameter list
 
 /*********************************************************************
 *
@@ -1887,6 +2073,7 @@ void SEGGER_SYSVIEW_ErrorfTarget(const char* s, ...) {
   _VPrintTarget(s, SEGGER_SYSVIEW_ERROR, &ParamList);
   va_end(ParamList);
 }
+#endif // SEGGER_SYSVIEW_EXCLUDE_PRINTF
 
 /*********************************************************************
 *

@@ -4,7 +4,7 @@
     <Name>SeggerSystemView</Name>
     <Description>Segger System View Component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.031</Version>
+    <Version>01.033</Version>
     <Icon>SeggerSystemView</Icon>
     <TypesFiles>PE,SeggerSystemView\SeggerSystemView</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -44,7 +44,7 @@
         <Hint>Identifies the SEGGER SystemView Version</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V2.26</DefaultValue>
+        <DefaultValue>V2.30</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -131,7 +131,7 @@
       <TIntgItem>
         <Name>Number of tasks</Name>
         <Symbol>SysViewMaxNofTasks</Symbol>
-        <Hint>Number of tasks to handle. The SystemViewer needs to send the task information in _cbSendTaskList(). To avoid a dynamic memory allocation, a fixed maximum number of tasks needs to be specified.</Hint>
+        <Hint>Number of tasks to handle (SYSVIEW_FREERTOS_MAX_NOF_TASKS). The SystemViewer needs to send the task information in _cbSendTaskList(). To avoid a dynamic memory allocation, a fixed maximum number of tasks needs to be specified.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>6</DefaultValue>

@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       SystemView version: V2.30                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -54,6 +54,14 @@ Purpose : Interface between FreeRTOS and SystemView.
 #define SYSVIEW_FREERTOS_H
 
 #include "SEGGER_SYSVIEW.h"
+
+/*********************************************************************
+*
+*       Defines, configurable
+*
+**********************************************************************
+*/
+#define SYSVIEW_FREERTOS_MAX_NOF_TASKS    %SysViewMaxNofTasks
 
 /*********************************************************************
 *
@@ -203,12 +211,12 @@ Purpose : Interface between FreeRTOS and SystemView.
 
 #define traceTASK_CREATE(pxNewTCB)                  if (pxNewTCB != NULL) {                                             \
                                                       SEGGER_SYSVIEW_OnTaskCreate((U32)pxNewTCB);                       \
-                                                      SYSVIEW_SendTaskInfo( (U32)pxNewTCB,                              \
-                                                                            &(pxNewTCB->pcTaskName[0]),                 \
-                                                                            pxNewTCB->uxPriority,                       \
-                                                                            (U32)pxNewTCB->pxStack,                     \
-                                                                            0                                           \
-                                                                           );                                           \
+                                                      SYSVIEW_AddTask((U32)pxNewTCB,                                    \
+                                                                      &(pxNewTCB->pcTaskName[0]),                       \
+                                                                      pxNewTCB->uxPriority,                             \
+                                                                      (U32)pxNewTCB->pxStack,                           \
+                                                                      0                                                 \
+                                                                      );                                                \
                                                     }
 
 #define traceTASK_PRIORITY_SET(pxTask, uxNewPriority) {                                                                 \
@@ -216,12 +224,12 @@ Purpose : Interface between FreeRTOS and SystemView.
                                                                                    SEGGER_SYSVIEW_ShrinkId((U32)pxTCB), \
                                                                                    uxNewPriority                        \
                                                                                   );                                    \
-                                                        SYSVIEW_SendTaskInfo( (U32)pxTask,                              \
-                                                                              &(pxTask->pcTaskName[0]),                 \
-                                                                              uxNewPriority,                            \
-                                                                              (U32)pxTask->pxStack,                     \
-                                                                              0                                         \
-                                                                            );                                          \
+                                                        SYSVIEW_UpdateTask((U32)pxTask,                                 \
+                                                                           &(pxTask->pcTaskName[0]),                    \
+                                                                           uxNewPriority,                               \
+                                                                           (U32)pxTask->pxStack,                        \
+                                                                           0                                            \
+                                                                          );                                            \
                                                       }
 //
 // Define INCLUDE_xTaskGetIdleTaskHandle as 1 in FreeRTOSConfig.h to allow identification of Idle state.
@@ -270,10 +278,11 @@ Purpose : Interface between FreeRTOS and SystemView.
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned StackSize);
-void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3);
-void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4);
+void SYSVIEW_AddTask      (U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack, unsigned uStackHighWaterMark);
+void SYSVIEW_UpdateTask   (U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32 pxStack, unsigned uStackHighWaterMark);
+void SYSVIEW_SendTaskInfo (U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned StackSize);
+void SYSVIEW_RecordU32x4  (unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3);
+void SYSVIEW_RecordU32x5  (unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4);
 
 #ifdef __cplusplus
 }
