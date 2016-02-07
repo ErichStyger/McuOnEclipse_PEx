@@ -131,14 +131,19 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                  }                                             
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
+    /* >> EST */
+    #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL         %SeggerRTTMaxBlockedInterruptLevel /* Interrupts at this level and below will be blocked (valid values 1-15) */
+    #define SEGGER_RTT_PRIO_BITS                    4 /* Kinetis has 4 interrupt priority bits */
+    #define SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY   (SEGGER_RTT_LOCK_INTERRUPT_LEVEL<<(8-SEGGER_RTT_PRIO_BITS))
+    /* >> EST */
     #define SEGGER_RTT_LOCK() {                                                 \
                                      /*lint -save -e529 Symbol 'LockState' not subsequently referenced  */ \
                                    unsigned int LockState;                     \
                                   __asm volatile ("mrs   %%0, basepri  \n\t"     \
-                                                  "mov   r1, $128     \n\t"     \
+                                                  "mov   r1, %%1     \n\t"     \
                                                   "msr   basepri, r1  \n\t"     \
                                                   : "=r" (LockState)            \
-                                                  :                             \
+                                                  : "i"(SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY) /* input */\
                                                   : "r1"                        \
                                                   );                            
     

@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.063</Version>
+    <Version>01.064</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -77,6 +77,23 @@
         <DefaultValue>1</DefaultValue>
         <MinValue>1</MinValue>
         <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Max Blocked Interrupt Level</Name>
+        <Symbol>SeggerRTTMaxBlockedInterruptLevel</Symbol>
+        <Hint>Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>3</DefaultValue>
+        <MinValue>1</MinValue>
+        <MaxValue>15</MaxValue>
         <Bases>DEC</Bases>
         <DefaultBase>DEC</DefaultBase>
         <ExtraHintDisabled>false</ExtraHintDisabled>
