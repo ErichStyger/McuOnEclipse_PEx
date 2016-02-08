@@ -340,6 +340,7 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
+#ifdef SIM_UIDMH /* 80 bit UUID: SIM_UIDMH, SIM_UIDML and SIM_UIDL */
   uid->id[0] = (SIM_UIDMH>>8)&0xff;
   uid->id[1] = SIM_UIDMH&0xff;
   uid->id[2] = (SIM_UIDML>>24)&0xff;
@@ -350,6 +351,18 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[7] = (SIM_UIDL>>16)&0xff;
   uid->id[8] = (SIM_UIDL>>8)&0xff;
   uid->id[9] = SIM_UIDL&0xff;
+#else /* some devices like the KE02Z only have 64bit UUID: only SIM_UUIDH and SIM_UUIDL */
+  uid->id[0] = 0;
+  uid->id[1] = 0;
+  uid->id[2] = (SIM_UUIDH>>24)&0xff;
+  uid->id[3] = (SIM_UUIDH>>16)&0xff;
+  uid->id[4] = (SIM_UUIDH>>8)&0xff;
+  uid->id[5] = SIM_UUIDH&0xff;
+  uid->id[6] = (SIM_UUIDL>>24)&0xff;
+  uid->id[7] = (SIM_UUIDL>>16)&0xff;
+  uid->id[8] = (SIM_UUIDL>>8)&0xff;
+  uid->id[9] = SIM_UUIDL&0xff;
+#endif
   return ERR_OK;
 }
 
@@ -453,10 +466,17 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void)
 {
 #if %'ModuleName'%.CPU_IS_M0_PLUS
+#ifdef SIM_SDID /* normal Kinetis define this */
   int32_t val;
 
   val = (SIM_SDID>>28)&0x3; /* bits 30..28 */
   return KinetisM0FamilyStrings[val];
+#elif defined(SIM_SRSID_FAMID) /* MKE02Z4 defines this, hopefully all other KE too... */
+  return "KE0x Family"; /* 0000 only KE0x supported */
+#else
+  #error "Unknown architecture!"
+  return "ERROR";
+#endif
 #elif %'ModuleName'%.CPU_IS_M4
   int32_t val;
 
