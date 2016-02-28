@@ -555,6 +555,9 @@ void %OnAfterIterateCmd(const uint8_t *cmd);
   static uint8_t %'ModuleName'_history[%'ModuleName'%.NOF_HISTORY][%'ModuleName'%.HIST_LEN];%>40/* History buffers */
   static uint8_t %'ModuleName'_history_index = 0;                %>40/* Selected command */
 #endif
+#if %'ModuleName'%.ECHO_ENABLED
+  static bool %'ModuleName'_EchoEnabled = TRUE;
+#endif
 
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
 #include "FreeRTOS.h"
@@ -736,8 +739,21 @@ uint8_t %'ModuleName'%.%ParseCommand(const uint8_t *cmd, bool *handled, %'Module
 %else %- only help
     %'ModuleName'%.%SendHelpStr((unsigned char*)"  help", (const unsigned char*)"Prints help\r\n", io->stdOut);
 %endif
+#if %'ModuleName'%.ECHO_ENABLED
+    %'ModuleName'%.%SendHelpStr((unsigned char*)"  echo (on|off)", (const unsigned char*)"Turn echo on or off\r\n", io->stdOut);
+#endif
     *handled = TRUE;
     return ERR_OK;
+#if %'ModuleName'%.ECHO_ENABLED
+  } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' echo on")==0)) {
+    *handled = TRUE;
+    %'ModuleName'%.EchoEnabled = TRUE;
+    return ERR_OK;
+  } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' echo off")==0)) {
+    *handled = TRUE;
+    %'ModuleName'%.EchoEnabled = FALSE;
+    return ERR_OK;
+#endif
 %if defined(PrintStatus)
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
@@ -839,9 +855,11 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
       if (c=='\b' || c=='\177') {                                %>40/* check for backspace */
         if (buf > bufStart) {                                    %>40/* Avoid buffer underflow */
 #if %'ModuleName'%.ECHO_ENABLED
-           io->stdOut('\b');                                     %>40/* delete character on terminal */
-           io->stdOut(' ');
-           io->stdOut('\b');
+           if (%'ModuleName'_EchoEnabled) {
+             io->stdOut('\b');                                   %>40/* delete character on terminal */
+             io->stdOut(' ');
+             io->stdOut('\b');
+           }
 #endif
            buf--;                                                %>40/* delete last character in buffer */
            *buf = '\0';
@@ -890,20 +908,26 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         buf = bufStart + %@Utility@'ModuleName'%.strlen(bufStart);
 #endif
 #if %'ModuleName'%.ECHO_ENABLED
-        %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
-        %'ModuleName'%.%PrintPrompt(io);
-        %'ModuleName'%.%SendStr(bufStart, io->stdOut);
+        if (%'ModuleName'_EchoEnabled) {
+          %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
+          %'ModuleName'%.%PrintPrompt(io);
+          %'ModuleName'%.%SendStr(bufStart, io->stdOut);
+        }
 #endif
       } else {
 #if %'ModuleName'%.ECHO_ENABLED
-        io->stdOut(c);                                           %>40/* echo character */
+        if (%'ModuleName'_EchoEnabled) {
+          io->stdOut(c);                                         %>40/* echo character */
+        }
 #endif
         *buf = (uint8_t)c;                                       %>40/* append character to the string */
         buf++;
         bufSize--;
         if ((c=='\r') || (c=='\n')) {
 #if %'ModuleName'%.ECHO_ENABLED
-          %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
+          if (%'ModuleName'_EchoEnabled) {
+            %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
+          }
 #endif
 #if %'ModuleName'%.HISTORY_ENABLED
           if ((bufStart[0] != '\0') && (bufStart[0] != '\r') && (bufStart[0] != '\n')) {
@@ -945,15 +969,14 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
 %include Common\ShellPrintStatus.Inc
 uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 {
-  %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
-  %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.DASH_LINE, io->stdOut);
-  %'ModuleName'%.%SendStr((unsigned char*)"\r\nSYSTEM STATUS\r\n", io->stdOut);
-  %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.DASH_LINE, io->stdOut);
-  %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
-  %'ModuleName'%.%SendStatusStr((const unsigned char*)"Firmware", (const unsigned char*)__DATE__, io->stdOut);
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"%'ModuleName'", (const unsigned char*)"\r\n", io->stdOut);
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  Build", (const unsigned char*)__DATE__, io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)" ", io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)__TIME__, io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
+#if %'ModuleName'%.ECHO_ENABLED
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  echo", %'ModuleName'_EchoEnabled?(const unsigned char*)"On\r\n":(const unsigned char*)"Off\r\n", io->stdOut);
+#endif
   return ERR_OK;
 }
 
@@ -991,6 +1014,9 @@ uint8_t %'ModuleName'%.%IterateTable(const uint8_t *cmd, bool *handled, %'Module
   uint8_t res = ERR_OK;
 
   if (parserTable==NULL) { /* no table??? */
+    return ERR_FAILED;
+  }
+  if (io==NULL) { /* no IO handler??? */
     return ERR_FAILED;
   }
   /* iterate through all parser functions in table */
@@ -1032,6 +1058,9 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
   bool parseBuffer, finished;
 #endif
 
+  if (io==NULL) { /* no I/O handler? */
+    return ERR_FAILED;
+  }
   if (*cmd=='\0') { /* empty command */
     return ERR_OK;
   }
@@ -1137,10 +1166,13 @@ uint8_t %'ModuleName'%.%SetStdio(%'ModuleName'_ConstStdIOTypePtr stdio)
 %include Common\ShellReadAndParseWithCommandTable.Inc
 uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)
 {
+  /* IMPORTANT NOTE: this function *appends* to the buffer, so the buffer needs to be initialized first! */
   uint8_t res = ERR_OK;
   size_t len;
 
-  /* IMPORTANT NOTE: this function *appends* to the buffer, so the buffer needs to be initialized first! */
+  if (io==NULL) { /* no I/O handler? */
+    return ERR_FAILED;
+  }
   len = %@Utility@'ModuleName'%.strlen((const char*)cmdBuf);
   if (%'ModuleName'%.ReadLine(cmdBuf, cmdBuf+len, cmdBufSize-len, io)) {
     len = %@Utility@'ModuleName'%.strlen((const char*)cmdBuf);   %>40/* length of buffer string */
@@ -1410,6 +1442,9 @@ void %'ModuleName'%.%Init(void)
       %'ModuleName'_history[i][0] = '\0';
     }
   }
+#endif
+#if %'ModuleName'%.ECHO_ENABLED
+  %'ModuleName'_EchoEnabled = FALSE;
 #endif
 }
 
