@@ -212,10 +212,10 @@ LI.EXP {
  - If any data received, this method returns one character, otherwise it returns an error code (it does not wait for data).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte RecvChar(byte *Chr)<br />
+<br /><i>ANSIC prototype:</i> uint8_t RecvChar(uint8_t *Chr)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Chr: Pointer to byte</i> - A pointer to the received character.</li>
-<li><i>Return value:byte</i> - Error code, possible codes:<br />     ERR_OK - OK<br />     ERR_RXEMPTY - No data in receiver<br />     ERR_OVERRUN - Overrun error is detected
+<li><i>Chr: Pointer to uint8_t</i> - A pointer to the received character.</li>
+<li><i>Return value:uint8_t</i> - Error code, possible codes:<br />     ERR_OK - OK<br />     ERR_RXEMPTY - No data in receiver<br />     ERR_OVERRUN - Overrun error is detected
 </li>
 </ul><br />
 </li>
@@ -224,10 +224,10 @@ LI.EXP {
  - Sends one character to the channel.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SendChar(byte val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SendChar(uint8_t val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>val:byte</i> - Character to send.</li>
-<li><i>Return value:byte</i> - Error code, possible codes:<br />     ERR_OK - OK
+<li><i>val:uint8_t</i> - Character to send.</li>
+<li><i>Return value:uint8_t</i> - Error code, possible codes:<br />     ERR_OK - OK
 </li>
 </ul><br />
 </li>
@@ -236,9 +236,9 @@ LI.EXP {
  - Returns number of characters in the input buffer.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte CharsInRxBuf(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t CharsInRxBuf(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Returns number of characters in the input buffer.
+<li><i>Return value:uint8_t</i> - Returns number of characters in the input buffer.
 </li>
 </ul><br />
 </li>
@@ -247,9 +247,9 @@ LI.EXP {
  - Returns number of characters in the output buffer.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte CharsInTxBuf(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t CharsInTxBuf(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Returns number of characters in the output buffer.
+<li><i>Return value:uint8_t</i> - Returns number of characters in the output buffer.
 </li>
 </ul><br />
 </li>
@@ -258,10 +258,10 @@ LI.EXP {
  - Sets the shift clock polarity at runtime. Output data will be shifted on the selected edge polarity.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetShiftClockPolarity(byte Edge)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetShiftClockPolarity(uint8_t Edge)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Edge:byte</i> - Edge polarity, possible values:<br />    0-falling edge,<br />    1-rising edge.</li>
-<li><i>Return value:byte</i> - Error code, possible codes:<br />     ERR_OK - OK
+<li><i>Edge:uint8_t</i> - Edge polarity, possible values:<br />    0-falling edge,<br />    1-rising edge.</li>
+<li><i>Return value:uint8_t</i> - Error code, possible codes:<br />     ERR_OK - OK
 </li>
 </ul><br />
 </li>
@@ -270,10 +270,10 @@ LI.EXP {
  - Set the idle clock polarity at runtime. If communication does not run, the clock signal will be set to the required level.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetIdleClockPolarity(byte Level)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetIdleClockPolarity(uint8_t Level)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Level:byte</i> - Idle clock polarity:<br />  0-low<br />  1-high</li>
-<li><i>Return value:byte</i> - Error code, possible codes:<br />     ERR_OK - OK
+<li><i>Level:uint8_t</i> - Idle clock polarity:<br />  0-low<br />  1-high</li>
+<li><i>Return value:uint8_t</i> - Error code, possible codes:<br />     ERR_OK - OK
 </li>
 </ul><br />
 </li>
@@ -282,9 +282,9 @@ LI.EXP {
  - Writes to the bus, but does not read.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Write_ReadDummy(byte val)<br />
+<br /><i>ANSIC prototype:</i> void Write_ReadDummy(uint8_t val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>val:byte</i> - value to put on the bus</li>
+<li><i>val:uint8_t</i> - value to put on the bus</li>
 </ul><br />
 </li>
 <li><a name="SetSlowMode">

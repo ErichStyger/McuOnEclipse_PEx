@@ -210,16 +210,10 @@ void %'ModuleName'%.%SetSlowMode(void);
 
 %-ENDUSRTYPES
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
-#ifndef __BWUserType_TPtrByte
-#define __BWUserType_TPtrByte
-  typedef byte* TPtrByte ; /* Pointer to byte */
-#endif
-
 %-ENDUSRTYPES
 %-BW_METHOD_BEGIN Write_ReadDummy
 %ifdef Write_ReadDummy
-void %'ModuleName'%.%Write_ReadDummy(byte val);
+void %'ModuleName'%.%Write_ReadDummy(uint8_t val);
 %define! Parval
 %include Common\GenericSWSPIWrite_ReadDummy.Inc
 
@@ -227,16 +221,16 @@ void %'ModuleName'%.%Write_ReadDummy(byte val);
 %-BW_METHOD_END Write_ReadDummy
 %-BW_METHOD_BEGIN RecvChar
 %ifdef RecvChar
-byte %'ModuleName'_%RecvChar(byte *Chr);
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr);
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWSPIRecvChar.Inc
 
-%endif RecvChar
+%endif %- RecvChar
 %-BW_METHOD_END RecvChar
 %-BW_METHOD_BEGIN SendChar
 %ifdef SendChar
-byte %'ModuleName'%.%SendChar(byte val);
+uint8_t %'ModuleName'%.%SendChar(uint8_t val);
 %define! Parval
 %define! RetVal
 %include Common\GenericSWSPISendChar.Inc
@@ -245,7 +239,7 @@ byte %'ModuleName'%.%SendChar(byte val);
 %-BW_METHOD_END SendChar
 %-BW_METHOD_BEGIN CharsInRxBuf
 %ifdef CharsInRxBuf
-byte %'ModuleName'%.%CharsInRxBuf(void);
+uint8_t %'ModuleName'%.%CharsInRxBuf(void);
 %define! RetVal
 %include Common\GenericSWSPICharsInRxBuf.Inc
 
@@ -261,16 +255,16 @@ byte %'ModuleName'%.%CharsInRxBuf(void);
 %-BW_METHOD_END CharsInTxBuf
 %-BW_METHOD_BEGIN SetShiftClockPolarity
 %ifdef SetShiftClockPolarity
-byte %'ModuleName'_%SetShiftClockPolarity(byte Edge);
+uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge);
 %define! ParEdge
 %define! RetVal
 %include Common\GenericSWSPISetShiftClockPolarity.Inc
 
-%endif %-SetShiftClockPolarity
+%endif %- SetShiftClockPolarity
 %-BW_METHOD_END SetShiftClockPolarity
 %-BW_METHOD_BEGIN SetIdleClockPolarity
 %ifdef SetIdleClockPolarity
-byte %'ModuleName'%.%SetIdleClockPolarity(byte Level);
+uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level);
 %define! ParLevel
 %define! RetVal
 %include Common\GenericSWSPISetIdleClockPolarity.Inc
@@ -402,7 +396,7 @@ void %'ModuleName'%.%SetSlowMode(void)
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWSPIRecvChar.Inc
-byte %'ModuleName'_%RecvChar(byte *Chr)
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr)
 {
   if(!(SerFlag & CHAR_IN_RX)) {                                  %>>/* Is char. received */
     return ERR_RXEMPTY;
@@ -417,13 +411,13 @@ byte %'ModuleName'_%RecvChar(byte *Chr)
   }
 }
 
-%endif RecvChar
+%endif %- RecvChar
 %-BW_METHOD_END RecvChar
 %-BW_METHOD_BEGIN Write_ReadDummy
 %ifdef Write_ReadDummy
 %define! Parval
 %include Common\GenericSWSPIWrite_ReadDummy.Inc
-void %'ModuleName'%.%Write_ReadDummy(byte val)
+void %'ModuleName'%.%Write_ReadDummy(uint8_t val)
 {
   byte i;
 
@@ -460,7 +454,7 @@ void %'ModuleName'%.%Write_ReadDummy(byte val)
 %define! Parval
 %define! RetVal
 %include Common\GenericSWSPISendChar.Inc
-byte %'ModuleName'%.%SendChar(byte val)
+uint8_t %'ModuleName'%.%SendChar(uint8_t val)
 {
   byte i;
 
@@ -508,7 +502,7 @@ byte %'ModuleName'%.%SendChar(byte val)
 %ifdef CharsInRxBuf
 %define! RetVal
 %include Common\GenericSWSPICharsInRxBuf.Inc
-byte %'ModuleName'%.%CharsInRxBuf(void)
+uint8_t %'ModuleName'%.%CharsInRxBuf(void)
 {
   return (byte)((SerFlag & CHAR_IN_RX)?(byte)1:(byte)0);         %>>/* Return number of chars in receive buffer */
 }
@@ -520,7 +514,7 @@ byte %'ModuleName'%.%CharsInRxBuf(void)
 %define! RetVal
 %include Common\GenericSWSPICharsInTxBuf.Inc
 #if 0 /* implemented as macro in the header file */
-byte %'ModuleName'%.%CharsInTxBuf(void)
+uint8_t %'ModuleName'%.%CharsInTxBuf(void)
 {
   return 0;                                                      %>>/* Return number of chars in transmit buffer */
 }
@@ -532,7 +526,7 @@ byte %'ModuleName'%.%CharsInTxBuf(void)
 %define! ParEdge
 %define! RetVal
 %include Common\GenericSWSPISetShiftClockPolarity.Inc
-byte %'ModuleName'_%SetShiftClockPolarity(byte Edge)
+uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge)
 {
   CLKshift = (byte)(Edge?(byte)1:(byte)0);                       %>>/* Set shift value */
   CLKsampl = (byte)(CLKshift ^ (byte)%#h1);                      %>>/* Set sample value */
@@ -546,7 +540,7 @@ byte %'ModuleName'_%SetShiftClockPolarity(byte Edge)
 %define! ParLevel
 %define! RetVal
 %include Common\GenericSWSPISetIdleClockPolarity.Inc
-byte %'ModuleName'%.%SetIdleClockPolarity(byte Level)
+uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level)
 {
   %@Clk@'ModuleName'%.PutVal((byte)Level);                       %>>/* Set CLK to (new) idle value */
   return ERR_OK;

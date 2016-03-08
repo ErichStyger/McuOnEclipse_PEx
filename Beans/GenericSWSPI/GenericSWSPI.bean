@@ -4,7 +4,7 @@
     <Name>GenericSWSPI</Name>
     <Description>Software synchronous serial communication</Description>
     <Author>Erich Styger</Author>
-    <Version>01.024</Version>
+    <Version>01.026</Version>
     <Icon>GenericSWSPI</Icon>
     <TypesFiles>PE,GenericSWSPI\GenericSWSPI</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -22,9 +22,9 @@
     <BeanStatus>PROPOSAL</BeanStatus>
     <GroupCategory>Communications</GroupCategory>
     <BeanLevel>High</BeanLevel>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
-    <Copyright>License : Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014-2015, all rights reserved.\nWeb       : www.mcuoneclipse.com\n\nThis an open source software implemented with using Processor Expert.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License : Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014-2016, all rights reserved.\nWeb       : www.mcuoneclipse.com\n\nThis an open source software implemented with using Processor Expert.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
   </Options>
   <PropertyList>
     <Property>
@@ -244,18 +244,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\n     ERR_OK - OK\n     ERR_RXEMPTY - No data in receiver\n     ERR_OVERRUN - Overrun error is detected</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Chr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the received character.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -278,18 +278,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\n     ERR_OK - OK</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>val</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Character to send.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte val)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t val)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -312,12 +312,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Returns number of characters in the input buffer.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -340,12 +340,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Returns number of characters in the output buffer.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -368,18 +368,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\n     ERR_OK - OK</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Edge</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Edge polarity, possible values:\n    0-falling edge,\n    1-rising edge.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte Edge)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t Edge)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -402,18 +402,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\n     ERR_OK - OK</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Level</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Idle clock polarity:\n  0-low\n  1-high</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte Level)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t Level)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -441,13 +441,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>val</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>value to put on the bus</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte val)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t val)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
