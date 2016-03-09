@@ -4,7 +4,7 @@
     <Name>KinetisSDK</Name>
     <Description>Kinetis SDK Support for Processor Expert components </Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.003</Version>
     <Icon>SHARED_LDD</Icon>
     <TypesFiles>PE,KinetisSDK\KinetisSDK</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -15,7 +15,7 @@
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedTps>yes</BW_NeedTps>
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
@@ -36,6 +36,22 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>SDK Version</Name>
+        <Symbol>SDKVersion</Symbol>
+        <TypeSpec>typeSDKVersion</TypeSpec>
+        <Hint>Version of SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
     </Property>
   </PropertyList>
   <Links>

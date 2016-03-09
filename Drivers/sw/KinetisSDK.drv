@@ -67,7 +67,23 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include <stdbool.h>
 
+/* Identifiers used to identify the SDK selected */
+#define %'ModuleName'%.SDK_VERSION_NONE    0
+#define %'ModuleName'%.SDK_VERSION_1_3    13
+#define %'ModuleName'%.SDK_VERSION_2_0    20
+
+/* SDK version used */
+%if %SDKVersion='none'
+#define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_NONE
+%elif %SDKVersion='1.3'
+#define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_1.3
+%elif %SDKVersion='2.0'
+#define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_2_0
+%endif
+
+#if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
@@ -80,6 +96,7 @@
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -93,8 +110,9 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
+#if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
+  #include "%ProcessorModule.h"
+#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -107,8 +125,6 @@
 %-    typedef int TMyInteger;
 %-
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
 %-BW_DEFINITION_END
 /* END %ModuleName. */
