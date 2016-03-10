@@ -89,8 +89,7 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
+  #include "%ProcessorModule.h"
 #endif
 
 %include sw\CommonSupport.prg
@@ -187,11 +186,7 @@ extern uint16_t %'ModuleName'%.currPWM; /* current 16bit PWM value */
 %-BW_METHOD_END Get
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-%if LEDonWithInitialization = 'yes'
-#define %'ModuleName'%.Init() %'ModuleName'%.%On()
-%else
-#define %'ModuleName'%.Init() %'ModuleName'%.%Off()
-%endif
+void %'ModuleName'%.%Init(void);
 %include Common\LEDInit.Inc
 
 %endif %- Init
@@ -416,18 +411,6 @@ uint8_t %'ModuleName'%.%Get(void)
 
 %endif %- Get
 %-BW_METHOD_END Get
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\LEDInit.Inc
-/*
-void %'ModuleName'%.%Init(void)
-{
-  *** This method is implemented as macro in the header file
-}
-*/
-
-%endif %- Init
-%-BW_METHOD_END Init
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Put
 %ifdef Put
@@ -443,11 +426,32 @@ void %'ModuleName'%.%Put(uint8_t val)
 %endif %- Put
 %-BW_METHOD_END Put
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\LEDInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  %@LEDPin@'ModuleName'%.Init();
+#endif
+%if LEDonWithInitialization = 'yes'
+  %'ModuleName'%.%On();
+%else
+  %'ModuleName'%.%Off();
+%endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
 %include Common\LEDDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  %@LEDPin@'ModuleName'%.Deinit();
+#endif
 }
 
 %endif %- Deinit

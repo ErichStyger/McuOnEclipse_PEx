@@ -64,17 +64,18 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
+  %endfor
+%endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%ifdef SharedModules
+  /* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -86,9 +87,8 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
+  #include "%ProcessorModule.h"
+#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -102,19 +102,19 @@
 %-
 %-BW_CUSTOM_USERTYPE_END
 
-
 %-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDir
 %ifdef GetDir
-#define %'ModuleName'%.%GetDir() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%GetDir() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
   (%DirectionBitName)
  %elif %UseDirectionPort='yes'
   ((%DirectionPortName&(1<<%DirectionPortBitNumber))!=0)
  %elif %UseDirectionAddress='yes'
-  (((*(byte*)%DirectionPortAddress)&(1<<%DirectionPortAddressBitNumber))!=0)
+  (((*(uint8_t*)%DirectionPortAddress)&(1<<%DirectionPortAddressBitNumber))!=0)
  %endif
 %else
  %if %UseDirectionBit='yes'
@@ -122,9 +122,12 @@
  %elif %UseDirectionPort='yes'
   (!((%DirectionPortName&(1<<%DirectionPortBitNumber))!=0))
  %elif %UseDirectionAddress='yes'
-  (!(((*(byte*)%DirectionPortAddress)&(1<<%DirectionPortAddressBitNumber))!=0))
+  (!(((*(uint8_t*)%DirectionPortAddress)&(1<<%DirectionPortAddressBitNumber))!=0))
  %endif
 %endif
+#else
+  bool %'ModuleName'%.%GetDir(void);
+#endif
 
 %define! RetVal
 %include Common\GenericBitIOGetDir.Inc
@@ -134,8 +137,12 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetDir
 %ifdef SetDir
-#define %'ModuleName'%.%SetDir(Dir) \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%SetDir(Dir) \
   ((Dir)==0?%'ModuleName'%.%SetInput():%'ModuleName'%.%SetOutput())
+#else
+  void %'ModuleName'%.%SetDir(bool Dir);
+#endif
 %define! ParDir
 %include Common\GenericBitIOSetDir.Inc
 
@@ -144,14 +151,15 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetInput
 %ifdef SetInput
-#define %'ModuleName'%.%SetInput() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%SetInput() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
   (%DirectionBitName = 0)
  %elif %UseDirectionPort='yes'
   (%DirectionPortName &= ~(1<<%DirectionPortBitNumber))
  %elif %UseDirectionAddress='yes'
-  ((*(byte*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber))
+  ((*(uint8_t*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber))
  %endif
 %else
  %if %UseDirectionBit='yes'
@@ -159,10 +167,12 @@
  %elif %UseDirectionPort='yes'
   (%DirectionPortName |= (1<<%DirectionPortBitNumber))
  %elif %UseDirectionAddress='yes'
-  ((*(byte*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber))
+  ((*(uint8_t*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber))
  %endif
 %endif
-
+#else
+  void %'ModuleName'%.%SetInput(void);
+#endif
 %include Common\GenericBitIOSetInput.Inc
 
 %endif %- SetInput
@@ -170,14 +180,15 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetOutput
 %ifdef SetOutput
-#define %'ModuleName'%.%SetOutput() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%SetOutput() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
   (%DirectionBitName = 1)
  %elif %UseDirectionPort='yes'
   (%DirectionPortName |= (1<<%DirectionPortBitNumber))
  %elif %UseDirectionAddress='yes'
-  ((*(byte*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber))
+  ((*(uint8_t*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber))
  %endif
 %else
  %if %UseDirectionBit='yes'
@@ -185,10 +196,12 @@
  %elif %UseDirectionPort='yes'
   (%DirectionPortName &= ~(1<<%DirectionPortBitNumber))
  %elif %UseDirectionAddress='yes'
-  ((*(byte*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber))
+  ((*(uint8_t*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber))
  %endif
 %endif
-
+#else
+  void %'ModuleName'%.%SetOutput();
+#endif
 %include Common\GenericBitIOSetOutput.Inc
 
 %endif %- SetOutput
@@ -196,17 +209,20 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetVal
 %ifdef GetVal
-#define %'ModuleName'%.%GetVal() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%GetVal() \
 %if %UseDataBit='yes'
   %DataBitName
 %elif %UseDataPort='yes'
   ((%DataPortName&(1<<%DataPortBitNumber))!=0)
 %elif %UseDataAddress='yes'
-  (((*(byte*)%DataPortAddress)&(1<<%DataPortAddressBitNumber))!=0)
+  (((*(uint8_t*)%DataPortAddress)&(1<<%DataPortAddressBitNumber))!=0)
 %elif %UseSetClearDataPort='yes'
   %'ModuleName'%.%GetDir()?(%GetDataPortNameOutput&=(1<<%SetClrDataPortBitNumber)):(%GetDataPortNameInput&=(1<<%SetClrDataPortBitNumber))
 %endif
-
+#else
+  bool %'ModuleName'%.%GetVal(void);
+#endif
 %define! RetVal
 %include Common\GenericBitIOGetVal.Inc
 
@@ -215,9 +231,12 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutVal
 %ifdef PutVal
-#define %'ModuleName'%.%PutVal(Val) \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%PutVal(Val) \
   (((Val)!=0)?%'ModuleName'%.SetVal():%'ModuleName'%.ClrVal())
-
+#else
+  void %'ModuleName'%.%PutVal(bool Val);
+#endif
 %define! ParVal
 %include Common\GenericBitIOPutVal.Inc
 
@@ -226,17 +245,20 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClrVal
 %ifdef ClrVal
-#define %'ModuleName'%.%ClrVal() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%ClrVal() \
 %if %UseDataBit='yes'
   (%DataBitName = 0)
 %elif %UseDataPort='yes'
   (%DataPortName &= ~(1<<%DataPortBitNumber))
 %elif %UseDataAddress='yes'
-  ((*(byte*)%DataPortAddress) &= ~(1<<%DataPortAddressBitNumber))
+  ((*(uint8_t*)%DataPortAddress) &= ~(1<<%DataPortAddressBitNumber))
 %elif %UseSetClearDataPort='yes'
   (%ClrDataPortName |= (1<<%SetClrDataPortBitNumber))
 %endif
-
+#else
+  void %'ModuleName'%.%ClrVal(void);
+#endif
 %include Common\GenericBitIOClrVal.Inc
 
 %endif %- ClrVal
@@ -244,17 +266,20 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetVal
 %ifdef SetVal
-#define %'ModuleName'%.%SetVal() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%SetVal() \
 %if %UseDataBit='yes'
   (%DataBitName = 1)
 %elif %UseDataPort='yes'
   (%DataPortName |= (1<<%DataPortBitNumber))
 %elif %UseDataAddress='yes'
-  ((*(byte*)%DataPortAddress) |= (1<<%DataPortAddressBitNumber))
+  ((*(uint8_t*)%DataPortAddress) |= (1<<%DataPortAddressBitNumber))
 %elif %UseSetClearDataPort='yes'
   (%SetDataPortName |= (1<<%SetClrDataPortBitNumber))
 %endif
-
+#else
+  void %'ModuleName'%.%SetVal(void);
+#endif
 %include Common\GenericBitIOSetVal.Inc
 
 %endif %- SetVal
@@ -262,17 +287,20 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN NegVal
 %ifdef NegVal
-#define %'ModuleName'%.%NegVal() \
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  #define %'ModuleName'%.%NegVal() \
 %if %UseDataBit='yes'
   (%DataBitName ^= 1)
 %elif %UseDataPort='yes'
   (%DataPortName ^= (1<<%DataPortBitNumber))
 %elif %UseDataAddress='yes'
-  ((*(byte*)%DataPortAddress) ^= (1<<%DataPortAddressBitNumber))
+  ((*(uint8_t*)%DataPortAddress) ^= (1<<%DataPortAddressBitNumber))
 %elif %UseSetClearDataPort='yes'
   (%NegDataPortName ^= (1<<%SetClrDataPortBitNumber))
 %endif
-
+#else
+  void %'ModuleName'%.%NegVal(void);
+#endif
 %include Common\GenericBitIONegVal.Inc
 
 %endif %- NegVal
@@ -285,6 +313,14 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GenericBitIODeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -328,11 +364,13 @@ void %'ModuleName'%.%Init(void);
 %ifdef GetDir
 %define! RetVal
 %include Common\GenericBitIOGetDir.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 bool %'ModuleName'%.%GetDir(void)
 {
+  return %@sdkbitio@'ModuleName'%.GetDir();
 }
-*/
+#endif
+
 %endif %- GetDir
 %-BW_METHOD_END GetDir
 %-************************************************************************************************************
@@ -340,22 +378,25 @@ bool %'ModuleName'%.%GetDir(void)
 %ifdef SetDir
 %define! ParDir
 %include Common\GenericBitIOSetDir.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetDir(bool Dir)
 {
+  %@sdkbitio@'ModuleName'%.SetDir(Dir);
 }
-*/
+#endif
+
 %endif %- SetDir
 %-BW_METHOD_END SetDir
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetInput
 %ifdef SetInput
 %include Common\GenericBitIOSetInput.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetInput(void)
 {
+  %@sdkbitio@'ModuleName'%.SetInput();
 }
-*/
+#endif
 
 %endif %- SetInput
 %-BW_METHOD_END SetInput
@@ -363,11 +404,13 @@ void %'ModuleName'%.%SetInput(void)
 %-BW_METHOD_BEGIN SetOutput
 %ifdef SetOutput
 %include Common\GenericBitIOSetOutput.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetOutput(void)
 {
+  %@sdkbitio@'ModuleName'%.SetOutput();
 }
-*/
+#endif
+
 %endif %- SetOutput
 %-BW_METHOD_END SetOutput
 %-************************************************************************************************************
@@ -375,11 +418,12 @@ void %'ModuleName'%.%SetOutput(void)
 %ifdef GetVal
 %define! RetVal
 %include Common\GenericBitIOGetVal.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 bool %'ModuleName'%.%GetVal(void)
 {
+  return %@sdkbitio@'ModuleName'%.GetVal();
 }
-*/
+#endif
 
 %endif %- GetVal
 %-BW_METHOD_END GetVal
@@ -388,11 +432,12 @@ bool %'ModuleName'%.%GetVal(void)
 %ifdef PutVal
 %define! ParVal
 %include Common\GenericBitIOPutVal.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%PutVal(bool Val)
 {
+  %@sdkbitio@'ModuleName'%.PutVal(Val);
 }
-*/
+#endif
 
 %endif %- PutVal
 %-BW_METHOD_END PutVal
@@ -400,11 +445,12 @@ void %'ModuleName'%.%PutVal(bool Val)
 %-BW_METHOD_BEGIN ClrVal
 %ifdef ClrVal
 %include Common\GenericBitIOClrVal.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%ClrVal(void)
 {
+  %@sdkbitio@'ModuleName'%.ClrVal();
 }
-*/
+#endif
 
 %endif %- ClrVal
 %-BW_METHOD_END ClrVal
@@ -412,11 +458,12 @@ void %'ModuleName'%.%ClrVal(void)
 %-BW_METHOD_BEGIN SetVal
 %ifdef SetVal
 %include Common\GenericBitIOSetVal.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetVal(void)
 {
+  %@sdkbitio@'ModuleName'%.SetVal();
 }
-*/
+#endif
 
 %endif %- SetVal
 %-BW_METHOD_END SetVal
@@ -424,11 +471,12 @@ void %'ModuleName'%.%SetVal(void)
 %-BW_METHOD_BEGIN NegVal
 %ifdef NegVal
 %include Common\GenericBitIONegVal.Inc
-/* This method is implemented as macro in header file %'ModuleName'.h
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%NegVal(void)
 {
+  %@sdkbitio@'ModuleName'%.NegVal();
 }
-*/
+#endif
 
 %endif %- NegVal
 %-BW_METHOD_END NegVal
@@ -438,65 +486,82 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\GenericBitIOInit.Inc
 void %'ModuleName'%.%Init(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  %@sdkbitio@'ModuleName'%.Init();
+#else
 %if %Direction='1' %- Output
  %if %InitValue='0'
-   %'ModuleName'%.%ClrVal(); /* clear bit to set data to 0 */
+  %'ModuleName'%.%ClrVal(); /* clear bit to set data to 0 */
  %else
-   %'ModuleName'%.%SetVal(); /* set bit to set data to 1 */
+  %'ModuleName'%.%SetVal(); /* set bit to set data to 1 */
  %endif
  %- cannot use %'ModuleName'%.%SetOutput(); as method is disabled in this mode.
  %if %1meansOutput='yes'
   %if %UseDirectionBit='yes'
-   %DirectionBitName = 1; /* set bit for output mode */
+  %DirectionBitName = 1; /* set bit for output mode */
   %elif %UseDirectionPort='yes'
-   %DirectionPortName |= (1<<%DirectionPortBitNumber); /* set bit for output mode */
+  %DirectionPortName |= (1<<%DirectionPortBitNumber); /* set bit for output mode */
   %elif %UseDirectionAddress='yes'
-   (*(byte*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber); /* set bit for output mode */
+  (*(uint8_t*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber); /* set bit for output mode */
   %endif
  %else
   %if %UseDirectionBit='yes'
-   %DirectionBitName = 0; /* clear bit */
+  %DirectionBitName = 0; /* clear bit */
   %elif %UseDirectionPort='yes'
-   %DirectionPortName &= ~(1<<%DirectionPortBitNumber); /* clear bit for output mode */
+  %DirectionPortName &= ~(1<<%DirectionPortBitNumber); /* clear bit for output mode */
   %elif %UseDirectionAddress='yes'
-   (*(byte*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber); /* clear bit for output mode */
+  (*(uint8_t*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber); /* clear bit for output mode */
   %endif
  %endif
 %elif %Direction='0' %- Input
  %- cannot use %'ModuleName'%.%SetInput(); as this method is disabled in this mode
  %if %1meansOutput='yes'
   %if %UseDirectionBit='yes'
-   %DirectionBitName = 0; /* clear bit for input mode */
+  %DirectionBitName = 0; /* clear bit for input mode */
   %elif %UseDirectionPort='yes'
-   %DirectionPortName &= ~(1<<%DirectionPortBitNumber); /* clear bit for input mode */
+  %DirectionPortName &= ~(1<<%DirectionPortBitNumber); /* clear bit for input mode */
   %elif %UseDirectionAddress='yes'
-   (*(byte*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber); /* clear bit for input mode */
+  (*(uint8_t*)%DirectionPortAddress) &= ~(1<<%DirectionPortAddressBitNumber); /* clear bit for input mode */
   %endif
  %else
   %if %UseDirectionBit='yes'
-   %DirectionBitName = 1; /* set bit for input mode */
+  %DirectionBitName = 1; /* set bit for input mode */
   %elif %UseDirectionPort='yes'
-   %DirectionPortName |= (1<<%DirectionPortBitNumber); /* set bit for input mode */
+  %DirectionPortName |= (1<<%DirectionPortBitNumber); /* set bit for input mode */
   %elif %UseDirectionAddress='yes'
-   (*(byte*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber); /* set bit for input mode */
+  (*(uint8_t*)%DirectionPortAddress) |= (1<<%DirectionPortAddressBitNumber); /* set bit for input mode */
   %endif
  %endif
 %elif %Direction='2' %- Input/Output
  %if %InitDirection='output'
   %if %InitValue='0'
-   %'ModuleName'%.%ClrVal(); /* clear bit to set data to 0 */
+  %'ModuleName'%.%ClrVal(); /* clear bit to set data to 0 */
   %else
-   %'ModuleName'%.%SetVal(); /* set bit to set data to 1 */
+  %'ModuleName'%.%SetVal(); /* set bit to set data to 1 */
   %endif
-   %'ModuleName'%.%SetOutput(); /* set direction to output */
+  %'ModuleName'%.%SetOutput(); /* set direction to output */
  %else
-   %'ModuleName'%.%SetInput(); /* set direction to input */
+  %'ModuleName'%.%SetInput(); /* set direction to input */
  %endif
 %endif
+#endif
 }
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GenericBitIODeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  %@sdkbitio@'ModuleName'%.Deinit();
+#endif
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

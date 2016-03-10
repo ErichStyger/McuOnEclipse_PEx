@@ -75,7 +75,7 @@
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
-#include "%'var'.h"
+  #include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -87,8 +87,7 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
+  #include "%ProcessorModule.h"
 #endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -154,6 +153,49 @@ bool %'ModuleName'%.%GetVal(void);
 
 %endif %- GetVal
 %-BW_METHOD_END GetVal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetDir
+%ifdef GetDir
+bool %'ModuleName'%.%GetDir(void);
+%define! RetVal
+%include Common\SDK_BitIOGetDir.Inc
+
+%endif %- GetDir
+%-BW_METHOD_END GetDir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetDir
+%ifdef SetDir
+void %'ModuleName'%.%SetDir(bool Dir);
+%define! ParDir
+%include Common\SDK_BitIOSetDir.Inc
+
+%endif %- SetDir
+%-BW_METHOD_END SetDir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetInput
+%ifdef SetInput
+void %'ModuleName'%.%SetInput(void);
+%include Common\SDK_BitIOSetInput.Inc
+
+%endif %- SetInput
+%-BW_METHOD_END SetInput
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetOutput
+%ifdef SetOutput
+void %'ModuleName'%.%SetOutput(void);
+%include Common\SDK_BitIOSetOutput.Inc
+
+%endif %- SetOutput
+%-BW_METHOD_END SetOutput
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutVal
+%ifdef PutVal
+void %'ModuleName'%.%PutVal(bool Val);
+%define! ParVal
+%include Common\SDK_BitIOPutVal.Inc
+
+%endif %- PutVal
+%-BW_METHOD_END PutVal
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -180,6 +222,8 @@ bool %'ModuleName'%.%GetVal(void);
 %-     #include "header_name.h"
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+  #error "This component only works with the Kinetis SDK!"
 #endif
 %-
 %-BW_CUSTOM_INCLUDE_END_M
@@ -201,23 +245,14 @@ static const gpio_pin_config_t %'ModuleName'%.configInput = {
   kGPIO_DigitalInput,  /* use as input pin */
   0,  /* initial value */
 };
+
+static bool %'ModuleName'%.isOutput = false;
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\SDK_BitIOInit.Inc
-void %'ModuleName'%.%Init(void)
-{
-  GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
-}
-
-%endif %- Init
-%-BW_METHOD_END Init
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClrVal
 %ifdef ClrVal
@@ -252,6 +287,97 @@ void %'ModuleName'%.%NegVal(void)
 %endif %- NegVal
 %-BW_METHOD_END NegVal
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN GetVal
+%ifdef GetVal
+%define! RetVal
+%include Common\SDK_BitIOGetVal.Inc
+bool %'ModuleName'%.%GetVal(void)
+{
+  return GPIO_ReadPinInput(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber)!=0;
+}
+
+%endif %- GetVal
+%-BW_METHOD_END GetVal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetDir
+%ifdef GetDir
+%define! RetVal
+%include Common\SDK_BitIOGetDir.Inc
+bool %'ModuleName'%.%GetDir(void)
+{
+  return %'ModuleName'%.isOutput;
+}
+
+%endif %- GetDir
+%-BW_METHOD_END GetDir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetDir
+%ifdef SetDir
+%define! ParDir
+%include Common\SDK_BitIOSetDir.Inc
+void %'ModuleName'%.%SetDir(bool Dir)
+{
+  if (Dir) {
+    %'ModuleName'%.%SetOutput();
+  } else {
+    %'ModuleName'%.%SetInput();
+  }
+}
+
+%endif %- SetDir
+%-BW_METHOD_END SetDir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetInput
+%ifdef SetInput
+%include Common\SDK_BitIOSetInput.Inc
+void %'ModuleName'%.%SetInput(void)
+{
+  GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
+  %'ModuleName'%.isOutput = false;
+}
+
+%endif %- SetInput
+%-BW_METHOD_END SetInput
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetOutput
+%ifdef SetOutput
+%include Common\SDK_BitIOSetOutput.Inc
+void %'ModuleName'%.%SetOutput(void)
+{
+  GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
+  %'ModuleName'%.isOutput = true;
+}
+
+%endif %- SetOutput
+%-BW_METHOD_END SetOutput
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutVal
+%ifdef PutVal
+%define! ParVal
+%include Common\SDK_BitIOPutVal.Inc
+void %'ModuleName'%.%PutVal(bool Val)
+{
+  if (Val) {
+    GPIO_SetPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+  } else {
+    GPIO_ClearPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+  }
+}
+
+%endif %- PutVal
+%-BW_METHOD_END PutVal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\SDK_BitIOInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  %'ModuleName'%.%SetOutput();
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
 %include Common\SDK_BitIODeinit.Inc
@@ -263,17 +389,6 @@ void %'ModuleName'%.%Deinit(void)
 %endif %- Deinit
 %-BW_METHOD_END Deinit
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetVal
-%ifdef GetVal
-%define! RetVal
-%include Common\SDK_BitIOGetVal.Inc
-bool %'ModuleName'%.%GetVal(void)
-{
-  return GPIO_ReadPinInput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber)!=0;
-}
-
-%endif %- GetVal
-%-BW_METHOD_END GetVal
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -1,3 +1,14 @@
+%if defined(SDKEnabled) & SDKEnabled='yes'
+  %set DataGroup Value Disabled
+  %set DirectionGroup Value Disabled
+  %set DataGroup      ReadOnly yes
+  %set DirectionGroup ReadOnly yes
+%else
+  %set DataGroup Value Enabled
+  %set DirectionGroup Value Enabled
+  %set DataGroup      ReadOnly no
+  %set DirectionGroup ReadOnly no
+%endif
 %if defined(DataRegDeclaration)
   %if %DataRegDeclaration='bitname'
     %set UseDataBit          Value Enabled

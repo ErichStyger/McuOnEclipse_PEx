@@ -206,6 +206,66 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
+<li><a name="GetDir">
+<b>GetDir</b></a>
+ - Return the direction of the pin (input/output)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool GetDir(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:bool</i> - FALSE if port is input, TRUE if port is output
+</li>
+</ul><br />
+</li>
+<li><a name="SetDir">
+<b>SetDir</b></a>
+ - Sets the direction of the pin (input or output)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetDir(bool Dir)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Dir:bool</i> - FALSE: input, TRUE: output</li>
+</ul><br />
+</li>
+<li><a name="SetInput">
+<b>SetInput</b></a>
+ - Sets the pin as input
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetInput(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="SetOutput">
+<b>SetOutput</b></a>
+ - Sets the pin as output
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetOutput(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="GetVal">
+<b>GetVal</b></a>
+ - Returns the pin value
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> bool GetVal(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:bool</i> - Returns the value of the pin: FALSE/logical level '0' or TRUE/logical level '1'
+</li>
+</ul><br />
+</li>
+<li><a name="PutVal">
+<b>PutVal</b></a>
+ - Sets the pin value
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void PutVal(bool Val)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Val:bool</i> - Value to set. FALSE/logical '0' or TRUE/logical '1'</li>
+</ul><br />
+</li>
 <li><a name="ClrVal">
 <b>ClrVal</b></a>
  - Clears the pin value (sets it to a low level)
@@ -233,15 +293,13 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
-<li><a name="GetVal">
-<b>GetVal</b></a>
- - Returns the pin value
+<li><a name="Init">
+<b>Init</b></a>
+ - Driver initialization method
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetVal(void)<br />
+<br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:bool</i> - Returns the value of the pin: FALSE/logical level '0' or TRUE/logical level '1'
-</li>
 </ul><br />
 </li>
 <li><a name="Deinit">
@@ -250,15 +308,6 @@ LI.EXP {
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void Deinit(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="Init">
-<b>Init</b></a>
- - Driver initialization method
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>

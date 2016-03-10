@@ -4,7 +4,7 @@
     <Name>GenericBitIO</Name>
     <Description>Generic BitIO Bean</Description>
     <Author>Erich Styger</Author>
-    <Version>01.066</Version>
+    <Version>01.073</Version>
     <Icon>GenericBitIO</Icon>
     <TypesFiles>PE,GenericBitIO\GenericBitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -51,6 +51,56 @@
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
       </TEnumItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>GenericBitIO\sdk</TypeSpec>
+        <Hint>Link to Kinetis SDK</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>SDK</Name>
+        <Symbol>SDKEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>If </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>BitIO</Name>
+              <Symbol>sdkbitio</Symbol>
+              <TypeSpec>GenericBitIO\sdkbitio</TypeSpec>
+              <Hint>Implementation of BitIO with SDK</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
     <Property>
       <TGrupItem>
@@ -864,6 +914,34 @@
         <Symbol>Init</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Initializes the driver</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>De-Initializes the driver</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

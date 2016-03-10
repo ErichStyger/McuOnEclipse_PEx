@@ -4,7 +4,7 @@
     <Name>SDK_BitIO</Name>
     <Description>BitIO component for Kinetis SDK</Description>
     <Author>Erich Styger</Author>
-    <Version>01.004</Version>
+    <Version>01.010</Version>
     <Icon>SDK_BitIO</Icon>
     <TypesFiles>PE,SDK_BitIO\SDK_BitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -82,6 +82,186 @@
     </Property>
   </PropertyList>
   <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>GetDir</Name>
+        <Symbol>GetDir</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Return the direction of the pin (input/output)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>FALSE if port is input, TRUE if port is output</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetDir</Name>
+        <Symbol>SetDir</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the direction of the pin (input or output)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Dir</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>FALSE: input, TRUE: output</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(bool Dir)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetInput</Name>
+        <Symbol>SetInput</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the pin as input</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetOutput</Name>
+        <Symbol>SetOutput</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the pin as output</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetVal</Name>
+        <Symbol>GetVal</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the pin value</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>Returns the value of the pin: FALSE/logical level '0' or TRUE/logical level '1'</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>PutVal</Name>
+        <Symbol>PutVal</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the pin value</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Val</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Value to set. FALSE/logical '0' or TRUE/logical '1'</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(bool Val)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
     <Method>
       <TMthdItem>
         <Name>ClrVal</Name>
@@ -168,38 +348,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>GetVal</Name>
-        <Symbol>GetVal</Symbol>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the pin value</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>Returns the value of the pin: FALSE/logical level '0' or TRUE/logical level '1'</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Deinit</Name>
-        <Symbol>Deinit</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Driver de-initialization method</Hint>
+        <Hint>Driver initialization method</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -224,10 +376,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Driver initialization method</Hint>
+        <Hint>Driver de-initialization method</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
