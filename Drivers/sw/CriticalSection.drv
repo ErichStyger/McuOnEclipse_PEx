@@ -65,16 +65,18 @@
 
 /* MODULE %ModuleName. */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
+  %endfor
+%endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -86,9 +88,8 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
+  #include "%ProcessorModule.h"
+#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES

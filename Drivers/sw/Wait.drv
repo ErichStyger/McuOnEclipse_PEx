@@ -65,16 +65,18 @@
 
 /* MODULE %ModuleName. */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
+  %endfor
+%endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -86,8 +88,8 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
+  #include "%ProcessorModule.h"
+#endif
 %include sw\CommonSupport.prg
 %-
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
@@ -128,11 +130,16 @@ extern "C" {
 #pragma MESSAGE DISABLE C4001 /* Condition always FALSE */
 %endif
 %-
-%if (CPU_FAMILY = "Kinetis")
-#define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_CORE_CLK_HZ   %>%CTAB /* for Kinetis, use core clock as base for instruction execution */
-%else
-#define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_BUS_CLK_HZ    %>%CTAB /* for none-Kinetis, use buse clock as base for instruction execution */
-%endif
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+  extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
+  #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
+#else
+  %if (CPU_FAMILY = "Kinetis")
+  #define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_CORE_CLK_HZ   %>%CTAB /* for Kinetis, use core clock as base for instruction execution */
+  %else
+  #define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_BUS_CLK_HZ    %>%CTAB /* for none-Kinetis, use buse clock as base for instruction execution */
+  %endif
+#endif
 #define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/1000))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
 %- ColdFire is too fast for a single instruction range: add plus 1 cycle to keep timing accurate enough
