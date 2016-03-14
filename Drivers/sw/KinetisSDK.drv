@@ -75,9 +75,6 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include <stdbool.h>
-#include <stdint.h>
-
 /* Identifiers used to identify the SDK selected */
 #define %'ModuleName'%.SDK_VERSION_NONE    0
 #define %'ModuleName'%.SDK_VERSION_1_3    13
@@ -92,6 +89,9 @@
 #define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_2_0
 %endif
 
+#if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
+  #include "PE_KSDK_Types.h"
+#endif
 #if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
