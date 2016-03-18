@@ -758,7 +758,8 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
 %include Common\FSL_USB_CDC_DeviceApp_Task.Inc
 uint8_t %'ModuleName'%.%App_Task(uint8_t *txBuf, size_t txBufSize)
 {
-  uint8_t i, res;
+  size_t i;
+  uint8_t res;
 
   /* device is %CPUDevice */
   /*lint -save -e522 function lacks side-effects */
