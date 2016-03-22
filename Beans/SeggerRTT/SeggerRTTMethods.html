@@ -241,9 +241,22 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> unsigned WriteString(unsigned BufferIndex, const char* s)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>BufferIndex:byte</i> - Buffer/channel to be used. 0 for terminal.</li>
+<li><i>BufferIndex:unsigned</i> - Buffer/channel to be used. 0 for terminal.</li>
 <li><i>s: Pointer to byte</i> - Pointer to </li>
 <li><i>Return value:unsigned</i> - Number of bytes which have been stored in the &quot;Up&quot;-buffer.
+</li>
+</ul><br />
+</li>
+<li><a name="printf">
+<b>printf</b></a>
+ - Stores a formatted string in SEGGER RTT control block. This data is sent to the host.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int printf(unsigned BufferIndex, const char* sFormat, ...)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>BufferIndex:unsigned</i> - Index of &quot;Up&quot;-buffer to be used. (e.g. 0 for &quot;Terminal&quot;)</li>
+<li><i>sFormat:byte</i> - Pointer to format string, followed by the arguments for conversion</li>
+<li><i>Return value:int</i> - Error code
 </li>
 </ul><br />
 </li>

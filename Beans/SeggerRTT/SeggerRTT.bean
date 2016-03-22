@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.064</Version>
+    <Version>01.065</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -516,7 +516,7 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>BufferIndex</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Buffer/channel to be used. 0 for terminal.</ParHint>
           <ParUserDeclaration>unsigned BufferIndex</ParUserDeclaration>
@@ -531,6 +531,47 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>unsigned #M#_#C#(unsigned BufferIndex, const char* s)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>printf</Name>
+        <Symbol>printf</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Stores a formatted string in SEGGER RTT control block. This data is sent to the host.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>BufferIndex</ParName>
+          <ParType>unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Index of "Up"-buffer to be used. (e.g. 0 for "Terminal")</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>sFormat</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to format string, followed by the arguments for conversion</ParHint>
+          <ParUserDeclaration>const char* sFormat, ...</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(unsigned BufferIndex, const char* sFormat, ...)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

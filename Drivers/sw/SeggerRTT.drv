@@ -310,6 +310,19 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- ConfigDownBuffer
 %-BW_METHOD_END ConfigDownBuffer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printf
+%ifdef printf
+#define %'ModuleName'%.%printf \
+  SEGGER_RTT_printf
+
+%define! ParBufferIndex
+%define! ParsFormat
+%define! RetVal
+%include Common\SeggerRTTprintf.Inc
+
+%endif %- printf
+%-BW_METHOD_END printf
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -645,6 +658,22 @@ int %'ModuleName'%.%ConfigDownBuffer(unsigned BufferIndex, const char* sName, ch
 
 %endif %- ConfigDownBuffer
 %-BW_METHOD_END ConfigDownBuffer
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printf
+%ifdef printf
+%define! ParBufferIndex
+%define! ParsFormat
+%define! RetVal
+%include Common\SeggerRTTprintf.Inc
+/**
+int %'ModuleName'%.%printf(unsigned BufferIndex, const char* sFormat, ...)
+{
+  Function is implemented as macro in the header file
+}
+*/
+
+%endif %- printf
+%-BW_METHOD_END printf
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
