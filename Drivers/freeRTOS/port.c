@@ -1363,7 +1363,7 @@ void vPortEnterCritical(void) {
   %if (CPUfamily = "Kinetis")
     %if %Compiler="CodeWarriorARM" %- not supported by legacy Freescale ARM compiler
     %else
-#if 0 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M7(configCPU_FAMILY)
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M7(configCPU_FAMILY)
   /* This is not the interrupt safe version of the enter critical function so
   assert() if it is being called from an interrupt context.  Only API
   functions that end in "FromISR" can be used in an interrupt.  Only assert if
