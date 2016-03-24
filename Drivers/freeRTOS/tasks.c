@@ -1086,6 +1086,7 @@ StackType_t *pxTopOfStack;
 	UBaseType_t uxTaskPriorityGet( TaskHandle_t xTask )
 	{
   	TCB_t *pxTCB;
+	UBaseType_t uxReturn;
 
 		taskENTER_CRITICAL();
 		{
