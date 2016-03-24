@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.30                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -68,8 +68,8 @@ struct SYSVIEW_FREERTOS_TASK_STATUS {
 static SYSVIEW_FREERTOS_TASK_STATUS _aTasks[SYSVIEW_FREERTOS_MAX_NOF_TASKS];
 static unsigned _NumTasks;
 
-/********************************************************************* 
-* 
+/*********************************************************************
+*
 *       _cbSendTaskList()
 *
 *  Function description
@@ -79,22 +79,22 @@ static unsigned _NumTasks;
 */
 static void _cbSendTaskList(void) {
   unsigned n;
-     
+
   for (n = 0; n < _NumTasks; n++) {
-#if INCLUDE_uxTaskGetStackHighWaterMark /* << EST: update task stack size */
+#if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
     _aTasks[n].uStackHighWaterMark = uxTaskGetStackHighWaterMark((TaskHandle_t)_aTasks[n].xHandle);
 #endif
     SYSVIEW_SendTaskInfo((U32)_aTasks[n].xHandle, _aTasks[n].pcTaskName, (unsigned)_aTasks[n].uxCurrentPriority, (U32)_aTasks[n].pxStack, (unsigned)_aTasks[n].uStackHighWaterMark);
   }
 }
 
-/********************************************************************* 
-* 
+/*********************************************************************
+*
 *       _cbGetTime()
 *
 *  Function description
 *    This function is part of the link between FreeRTOS and SYSVIEW.
-*    Called from SystemView when asked by the host, returns the 
+*    Called from SystemView when asked by the host, returns the
 *    current system time in micro seconds.
 */
 static U64 _cbGetTime(void) {
@@ -112,7 +112,7 @@ static U64 _cbGetTime(void) {
 *
 **********************************************************************
 */
-/********************************************************************* 
+/*********************************************************************
 *
 *       SYSVIEW_AddTask()
 *
@@ -120,6 +120,11 @@ static U64 _cbGetTime(void) {
 *    Add a task to the internal list and record its information.
 */
 void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack, unsigned uStackHighWaterMark) {
+  
+  if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+    return;
+  }
+  
   if (_NumTasks >= SYSVIEW_FREERTOS_MAX_NOF_TASKS) {
     SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks reached.");
     return;
@@ -137,7 +142,7 @@ void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPrio
 
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       SYSVIEW_UpdateTask()
 *
@@ -146,6 +151,10 @@ void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPrio
 */
 void SYSVIEW_UpdateTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32 pxStack, unsigned uStackHighWaterMark) {
   unsigned n;
+  
+  if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+    return;
+  }
 
   for (n = 0; n < _NumTasks; n++) {
     if (_aTasks[n].xHandle == xHandle) {
@@ -164,7 +173,7 @@ void SYSVIEW_UpdateTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentP
   }
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       SYSVIEW_SendTaskInfo()
 *
@@ -176,21 +185,21 @@ void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 Stac
 
   memset(&TaskInfo, 0, sizeof(TaskInfo)); // Fill all elements with 0 to allow extending the structure in future version without breaking the code
   TaskInfo.TaskID     = TaskID;
-  TaskInfo.sName      = sName;  
-  TaskInfo.Prio       = Prio;   
+  TaskInfo.sName      = sName;
+  TaskInfo.Prio       = Prio;
   TaskInfo.StackBase  = StackBase;
   TaskInfo.StackSize  = StackSize;
   SEGGER_SYSVIEW_SendTaskInfo(&TaskInfo);
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       SYSVIEW_RecordU32x4()
 *
 *  Function description
 *    Record an event with 4 parameters
 */
-void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3) { 
+void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3) {
       U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32];
       U8* pPayload;
       //
@@ -203,14 +212,14 @@ void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3
       SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       SYSVIEW_RecordU32x5()
 *
 *  Function description
 *    Record an event with 5 parameters
 */
-void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) { 
+void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) {
       U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32];
       U8* pPayload;
       //

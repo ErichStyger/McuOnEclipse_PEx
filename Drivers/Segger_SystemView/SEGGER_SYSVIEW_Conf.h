@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.30                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ Purpose     : SEGGER SysView configuration.
 #ifndef SEGGER_SYSVIEW_CONF_H
 #define SEGGER_SYSVIEW_CONF_H
 
-#include "SEGGER_RTT_Conf.h"
+#include "SEGGER_RTT_Conf.h" /* << EST */
 /*********************************************************************
 *
 *       Defines, fixed
@@ -76,6 +76,12 @@ Purpose     : SEGGER SysView configuration.
   #elif ((defined (__ARM7M__) && (__CORE__ == __ARM7M__)) || (defined (__ARM7EM__) && (__CORE__ == __ARM7EM__)))
     #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
   #endif
+#elif defined(__CC_ARM)
+  #if (defined(__TARGET_ARCH_6S_M))
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
+  #elif (defined(__TARGET_ARCH_7_M) || defined(__TARGET_ARCH_7E_M))
+    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3	
+  #endif
 #endif
 
 #ifndef   SEGGER_SYSVIEW_CORE
@@ -94,13 +100,21 @@ Purpose     : SEGGER SysView configuration.
 */
 // Number of bytes that SysView uses for a buffer.
 #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
-
-// The RTT channel that SysView will use.
 #define SEGGER_SYSVIEW_RTT_CHANNEL        %RttChannelIndex
 #if SEGGER_SYSVIEW_RTT_CHANNEL>=SEGGER_RTT_MAX_NUM_UP_BUFFERS
   #error "Not enough RTT buffers allocated in SEGGER_RTT_Conf.h!"
 #endif
 
+%if SeggerSysviewStaticBuffer='yes'
+#define SEGGER_SYSVIEW_USE_STATIC_BUFFER    1                                   // Use a static buffer to generate events instead of a buffer on the stack
+%else
+#define SEGGER_SYSVIEW_USE_STATIC_BUFFER    0                                   // Use a static buffer to generate events instead of a buffer on the stack
+%endif
+%if SeggerSysviewPostMortem='yes'
+#define SEGGER_SYSVIEW_POST_MORTEM_MODE     1                                   // 1: Enable post mortem analysis mode
+%else
+#define SEGGER_SYSVIEW_POST_MORTEM_MODE     0                                   // 1: Enable post mortem analysis mode
+%endif
 
 /*********************************************************************
 *

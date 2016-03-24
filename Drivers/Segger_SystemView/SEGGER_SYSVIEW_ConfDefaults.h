@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.30                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -118,6 +118,26 @@ extern "C" {
 
 #ifndef   SEGGER_SYSVIEW_MAX_STRING_LEN
   #define SEGGER_SYSVIEW_MAX_STRING_LEN     128
+#endif
+
+// Use a static buffer instead of a buffer on the stack for packets
+#ifndef   SEGGER_SYSVIEW_USE_STATIC_BUFFER
+  #define SEGGER_SYSVIEW_USE_STATIC_BUFFER  1
+#endif
+
+// Maximum packet size used by SystemView for the static buffer
+#ifndef   SEGGER_SYSVIEW_MAX_PACKET_SIZE
+  #define SEGGER_SYSVIEW_MAX_PACKET_SIZE   SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_MAX_STRING_LEN + 2 * SEGGER_SYSVIEW_QUANTA_U32 + SEGGER_SYSVIEW_MAX_ARGUMENTS * SEGGER_SYSVIEW_QUANTA_U32
+#endif
+
+// Use post-mortem analysis instead of real-time analysis
+#ifndef   SEGGER_SYSVIEW_POST_MORTEM_MODE
+  #define SEGGER_SYSVIEW_POST_MORTEM_MODE   0
+#endif
+
+// Configure how frequently syncronization is sent
+#ifndef   SEGGER_SYSVIEW_SYNC_PERIOD_SHIFT
+  #define SEGGER_SYSVIEW_SYNC_PERIOD_SHIFT  8
 #endif
 
 // Lock SysView (nestable)

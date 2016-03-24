@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.30                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -154,7 +154,7 @@ void SEGGER_SYSVIEW_RecordSystime                 (void);
 void SEGGER_SYSVIEW_RecordEnterISR                (void);
 void SEGGER_SYSVIEW_RecordExitISR                 (void);
 void SEGGER_SYSVIEW_RecordExitISRToScheduler      (void);
-void SEGGER_SYSVIEW_RecordEnterTimer              (unsigned TimerId);
+void SEGGER_SYSVIEW_RecordEnterTimer              (U32 TimerId);
 void SEGGER_SYSVIEW_RecordExitTimer               (void);
 
 void SEGGER_SYSVIEW_OnIdle                        (void);
@@ -178,7 +178,7 @@ U8*  SEGGER_SYSVIEW_EncodeU32                     (U8* pPayload, unsigned Value)
 U8*  SEGGER_SYSVIEW_EncodeData                    (U8* pPayload, const char* pSrc, unsigned Len);
 U8*  SEGGER_SYSVIEW_EncodeString                  (U8* pPayload, const char* s, unsigned MaxLen);
 U8*  SEGGER_SYSVIEW_EncodeId                      (U8* pPayload, unsigned Id);
-unsigned SEGGER_SYSVIEW_ShrinkId                  (unsigned Id);
+U32  SEGGER_SYSVIEW_ShrinkId                      (U32 Id);
 
 
 /*********************************************************************
@@ -216,6 +216,7 @@ void SEGGER_SYSVIEW_Error                         (const char* s);
 */
 void SEGGER_SYSVIEW_Conf                          (void);
 U32  SEGGER_SYSVIEW_X_GetTimestamp                (void);
+U32  SEGGER_SYSVIEW_X_GetInterruptId              (void);
 
 #ifdef __cplusplus
 }

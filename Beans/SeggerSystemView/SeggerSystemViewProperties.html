@@ -249,6 +249,14 @@ LI.EXP {
 <b>Number of tasks</b></a> - Number of tasks to handle (SYSVIEW_FREERTOS_MAX_NOF_TASKS). The SystemViewer needs to send the task information in _cbSendTaskList(). To avoid a dynamic memory allocation, a fixed maximum number of tasks needs to be specified.
 </li>
 <li>
+<a name="SeggerSysviewStaticBuffer">
+<b>Static Buffer</b></a> - If set to 'yes', it will use a static buffer instead of using space on the stack
+</li>
+<li>
+<a name="SeggerSysviewPostMortem">
+<b>Post Mortem</b></a> - If set to 'yes', the buffer will be used in post mortem mode
+</li>
+<li>
 <a name="RTTChannelGroup">
 <b>RTT Channel</b></a> - Settings for the Segger RTT channel
 <ul>

@@ -4,7 +4,7 @@
     <Name>SeggerSystemView</Name>
     <Description>Segger System View Component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.034</Version>
+    <Version>01.039</Version>
     <Icon>SeggerSystemView</Icon>
     <TypesFiles>PE,SeggerSystemView\SeggerSystemView</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -44,7 +44,7 @@
         <Hint>Identifies the SEGGER SystemView Version</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V2.30</DefaultValue>
+        <DefaultValue>V2.32a</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -143,6 +143,42 @@
         <ChangeValueIntoRange>false</ChangeValueIntoRange>
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Static Buffer</Name>
+        <Symbol>SeggerSysviewStaticBuffer</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If set to 'yes', it will use a static buffer instead of using space on the stack</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Post Mortem</Name>
+        <Symbol>SeggerSysviewPostMortem</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If set to 'yes', the buffer will be used in post mortem mode</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
     <Property>
       <TGrupItem>
