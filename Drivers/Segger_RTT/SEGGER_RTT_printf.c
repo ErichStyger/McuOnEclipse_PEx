@@ -1,18 +1,53 @@
 /*********************************************************************
-*              SEGGER MICROCONTROLLER GmbH & Co. KG                  *
-*        Solutions for real time microcontroller applications        *
+*               SEGGER MICROCONTROLLER GmbH & Co. KG                 *
+*       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*        (c) 2014-2014 SEGGER Microcontroller GmbH & Co. KG          *
+*       (c) 2014 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
-*       Internet: www.segger.com Support: support@segger.com         *
+*       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
-----------------------------------------------------------------------
-File    : SEGGER_RTT_printf.c
-Date    : 17 Dec 2014
-Purpose : Replacement for printf to write formatted data via RTT
+*                                                                    *
+*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*                                                                    *
+**********************************************************************
+*                                                                    *
+* All rights reserved.                                               *
+*                                                                    *
+* * This software may in its unmodified form be freely redistributed *
+*   in source form.                                                  *
+* * The source code may be modified, provided the source code        *
+*   retains the above copyright notice, this list of conditions and  *
+*   the following disclaimer.                                        *
+* * Modified versions of this software in source or linkable form    *
+*   may not be distributed without prior consent of SEGGER.          *
+* * This software may only be used for communication with SEGGER     *
+*   J-Link debug probes.                                             *
+*                                                                    *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
+* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
+* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
+* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
+* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
+* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
+* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
+* DAMAGE.                                                            *
+*                                                                    *
+**********************************************************************
+*                                                                    *
+*       RTT version: 5.10u                                           *
+*                                                                    *
+**********************************************************************
 ---------------------------END-OF-HEADER------------------------------
+File    : SEGGER_RTT_printf.c
+Purpose : Replacement for printf to write formatted data via RTT
+----------------------------------------------------------------------
 */
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
@@ -32,10 +67,10 @@ Purpose : Replacement for printf to write formatted data via RTT
 #include <stdarg.h>
 
 
-#define FORMAT_FLAG_LEFT_JUSTIFY   (1 << 0)
-#define FORMAT_FLAG_PAD_ZERO       (1 << 1)
-#define FORMAT_FLAG_PRINT_SIGN     (1 << 2)
-#define FORMAT_FLAG_ALTERNATE      (1 << 3)
+#define FORMAT_FLAG_LEFT_JUSTIFY   (1u << 0)
+#define FORMAT_FLAG_PAD_ZERO       (1u << 1)
+#define FORMAT_FLAG_PRINT_SIGN     (1u << 2)
+#define FORMAT_FLAG_ALTERNATE      (1u << 3)
 
 /*********************************************************************
 *
@@ -45,9 +80,9 @@ Purpose : Replacement for printf to write formatted data via RTT
 */
 
 typedef struct {
-  char* pBuffer;
-  int   BufferSize;
-  int   Cnt;
+  char*     pBuffer;
+  unsigned  BufferSize;
+  unsigned  Cnt;
 
   int   ReturnValue;
 
@@ -73,12 +108,12 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 *       _StoreChar
 */
 static void _StoreChar(SEGGER_RTT_PRINTF_DESC * p, char c) {
-  int Cnt;
+  unsigned Cnt;
 
   Cnt = p->Cnt;
-  if ((Cnt + 1) <= p->BufferSize) {
+  if ((Cnt + 1u) <= p->BufferSize) {
     *(p->pBuffer + Cnt) = c;
-    p->Cnt = Cnt + 1;
+    p->Cnt = Cnt + 1u;
     p->ReturnValue++;
   }
   //
@@ -88,7 +123,7 @@ static void _StoreChar(SEGGER_RTT_PRINTF_DESC * p, char c) {
     if (SEGGER_RTT_Write(p->RTTBufferIndex, p->pBuffer, p->Cnt) != p->Cnt) {
       p->ReturnValue = -1;
     } else {
-      p->Cnt = 0;
+      p->Cnt = 0u;
     }
   }
 }
@@ -97,72 +132,86 @@ static void _StoreChar(SEGGER_RTT_PRINTF_DESC * p, char c) {
 *
 *       _PrintUnsigned
 */
-static void _PrintUnsigned(SEGGER_RTT_PRINTF_DESC * pBufferDesc, unsigned v, unsigned Base, int NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+static void _PrintUnsigned(SEGGER_RTT_PRINTF_DESC * pBufferDesc, unsigned v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
   static const char _aV2C[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
   unsigned Div;
-  unsigned Digit = 1;
+  unsigned Digit;
   unsigned Number;
   unsigned Width;
   char c;
 
   Number = v;
-
+  Digit = 1u;
   //
   // Get actual field width
   //
-  Width = 1;
+  Width = 1u;
   while (Number >= Base) {
     Number = (Number / Base);
     Width++;
   }
-  if ((unsigned)NumDigits > Width) {
+  if (NumDigits > Width) {
     Width = NumDigits;
   }
   //
   // Print leading chars if necessary
   //
-  if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0) {
-    if (FieldWidth != 0) {
-      if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && (NumDigits == 0)) {
+  if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u) {
+    if (FieldWidth != 0u) {
+      if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && (NumDigits == 0u)) {
         c = '0';
       } else {
         c = ' ';
       }
-      while ((FieldWidth != 0) && (Width < FieldWidth--)) {
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
         _StoreChar(pBufferDesc, c);
         if (pBufferDesc->ReturnValue < 0) {
-          return;
+          break;
         }
       }
     }
   }
-  //
-  // Count how many digits are required by precision
-  //
-  while (((v / Digit) >= Base) | (NumDigits-- > 1)) {
-    Digit *= Base;
-  }
-  //
-  // Output digits
-  //
-  do {
-    Div = v / Digit;
-    v -= Div * Digit;
-    _StoreChar(pBufferDesc, _aV2C[Div]);
-    if (pBufferDesc->ReturnValue < 0) {
-      break;
+  if (pBufferDesc->ReturnValue >= 0) {
+    //
+    // Compute Digit.
+    // Loop until Digit has the value of the highest digit required.
+    // Example: If the output is 345 (Base 10), loop 2 times until Digit is 100.
+    //
+    while (1) {
+      if (NumDigits > 1u) {       // User specified a min number of digits to print? => Make sure we loop at least that often, before checking anything else (> 1 check avoids problems with NumDigits being signed / unsigned)
+        NumDigits--;
+      } else {
+        Div = v / Digit;
+        if (Div < Base) {        // Is our divider big enough to extract the highest digit from value? => Done
+          break;
+        }
+      }
+      Digit *= Base;
     }
-    Digit /= Base;
-  } while (Digit);
-  //
-  // Print trailing spaces if necessary
-  //
-  if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == FORMAT_FLAG_LEFT_JUSTIFY) {
-    if (FieldWidth != 0) {
-      while ((FieldWidth != 0) && (Width < FieldWidth--)) {
-        _StoreChar(pBufferDesc, ' ');
-        if (pBufferDesc->ReturnValue < 0) {
-          return;
+    //
+    // Output digits
+    //
+    do {
+      Div = v / Digit;
+      v -= Div * Digit;
+      _StoreChar(pBufferDesc, _aV2C[Div]);
+      if (pBufferDesc->ReturnValue < 0) {
+        break;
+      }
+      Digit /= Base;
+    } while (Digit);
+    //
+    // Print trailing spaces if necessary
+    //
+    if ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == FORMAT_FLAG_LEFT_JUSTIFY) {
+      if (FieldWidth != 0u) {
+        while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+          FieldWidth--;
+          _StoreChar(pBufferDesc, ' ');
+          if (pBufferDesc->ReturnValue < 0) {
+            break;
+          }
         }
       }
     }
@@ -175,34 +224,35 @@ static void _PrintUnsigned(SEGGER_RTT_PRINTF_DESC * pBufferDesc, unsigned v, uns
 */
 static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
   unsigned Width;
-  unsigned Number;
+  int Number;
 
   Number = (v < 0) ? -v : v;
 
   //
   // Get actual field width
   //
-  Width = 1;
-  while (Number >= Base) {
-    Number = (Number / Base);
+  Width = 1u;
+  while (Number >= (int)Base) {
+    Number = (Number / (int)Base);
     Width++;
   }
   if (NumDigits > Width) {
     Width = NumDigits;
   }
-  if ((FieldWidth > 0) && ((v < 0) || ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN))) {
+  if ((FieldWidth > 0u) && ((v < 0) || ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN))) {
     FieldWidth--;
   }
 
   //
   // Print leading spaces if necessary
   //
-  if ((((FormatFlags & FORMAT_FLAG_PAD_ZERO) == 0) || (NumDigits != 0)) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0)) {
-    if (FieldWidth != 0) {
-      while ((FieldWidth != 0) && (Width < FieldWidth--)) {
+  if ((((FormatFlags & FORMAT_FLAG_PAD_ZERO) == 0u) || (NumDigits != 0u)) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u)) {
+    if (FieldWidth != 0u) {
+      while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+        FieldWidth--;
         _StoreChar(pBufferDesc, ' ');
         if (pBufferDesc->ReturnValue < 0) {
-          return;
+          break;
         }
       }
     }
@@ -210,36 +260,38 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base
   //
   // Print sign if necessary
   //
-  if (v < 0) {
-    v = -v;
-    _StoreChar(pBufferDesc, '-');
-    if (pBufferDesc->ReturnValue < 0) {
-      return;
+  if (pBufferDesc->ReturnValue >= 0) {
+    if (v < 0) {
+      v = -v;
+      _StoreChar(pBufferDesc, '-');
+    } else if ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN) {
+      _StoreChar(pBufferDesc, '+');
+    } else {
+
     }
-  } else if ((FormatFlags & FORMAT_FLAG_PRINT_SIGN) == FORMAT_FLAG_PRINT_SIGN) {
-    _StoreChar(pBufferDesc, '+');
-    if (pBufferDesc->ReturnValue < 0) {
-      return;
-    }
-  }
-  //
-  // Print leading zeros if necessary
-  //
-  if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0) && (NumDigits == 0)) {
-    if (FieldWidth != 0) {
-      while ((FieldWidth != 0) && (Width < FieldWidth--)) {
-        _StoreChar(pBufferDesc, '0');
-        if (pBufferDesc->ReturnValue < 0) {
-          return;
+    if (pBufferDesc->ReturnValue >= 0) {
+      //
+      // Print leading zeros if necessary
+      //
+      if (((FormatFlags & FORMAT_FLAG_PAD_ZERO) == FORMAT_FLAG_PAD_ZERO) && ((FormatFlags & FORMAT_FLAG_LEFT_JUSTIFY) == 0u) && (NumDigits == 0u)) {
+        if (FieldWidth != 0u) {
+          while ((FieldWidth != 0u) && (Width < FieldWidth)) {
+            FieldWidth--;
+            _StoreChar(pBufferDesc, '0');
+            if (pBufferDesc->ReturnValue < 0) {
+              break;
+            }
+          }
         }
+      }
+      if (pBufferDesc->ReturnValue >= 0) {
+        //
+        // Print number without sign
+        //
+        _PrintUnsigned(pBufferDesc, (unsigned)v, Base, NumDigits, FieldWidth, FormatFlags);
       }
     }
   }
-
-  //
-  // Print number without sign
-  //
-  _PrintUnsigned(pBufferDesc, v, Base, NumDigits, FieldWidth, FormatFlags);
 }
 
 /*********************************************************************
@@ -276,20 +328,22 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 
   BufferDesc.pBuffer        = acBuffer;
   BufferDesc.BufferSize     = SEGGER_RTT_PRINTF_BUFFER_SIZE;
-  BufferDesc.Cnt            = 0;
+  BufferDesc.Cnt            = 0u;
   BufferDesc.RTTBufferIndex = BufferIndex;
   BufferDesc.ReturnValue    = 0;
 
   do {
-    c = *sFormat++;
-    if (c == 0) {
+    c = *sFormat;
+    sFormat++;
+    if (c == 0u) {
       break;
     }
     if (c == '%%') {
       //
       // Filter out flags
       //
-      FormatFlags = 0;
+      FormatFlags = 0u;
+      v = 1;
       do {
         c = *sFormat;
         switch (c) {
@@ -297,37 +351,36 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
         case '0': FormatFlags |= FORMAT_FLAG_PAD_ZERO;     sFormat++; break;
         case '+': FormatFlags |= FORMAT_FLAG_PRINT_SIGN;   sFormat++; break;
         case '#': FormatFlags |= FORMAT_FLAG_ALTERNATE;    sFormat++; break;
-        default:  goto FilterFieldWidth;                   break;
+        default:  v = 0; break;
         }
-      } while (1);
+      } while (v);
       //
       // filter out field with
       //
-FilterFieldWidth:
-      FieldWidth = 0;
+      FieldWidth = 0u;
       do {
         c = *sFormat;
-        if (c < '0' || c > '9') {
+        if ((c < '0') || (c > '9')) {
           break;
         }
         sFormat++;
-        FieldWidth = FieldWidth * 10 + (c - '0');
+        FieldWidth = (FieldWidth * 10u) + ((unsigned)c - '0');
       } while (1);
 
       //
       // Filter out precision (number of digits to display)
       //
-      NumDigits = 0;
+      NumDigits = 0u;
       c = *sFormat;
       if (c == '.') {
         sFormat++;
         do {
           c = *sFormat;
-          if (c < '0' || c > '9') {
+          if ((c < '0') || (c > '9')) {
             break;
           }
           sFormat++;
-          NumDigits = NumDigits * 10 + (c - '0');
+          NumDigits = NumDigits * 10u + ((unsigned)c - '0');
         } while (1);
       }
       //
@@ -335,11 +388,12 @@ FilterFieldWidth:
       //
       c = *sFormat;
       do {
-        if (c == 'l' || c == 'h') {
-          c = *sFormat++;
-          continue;
+        if ((c == 'l') || (c == 'h')) {
+          c = *sFormat;
+          sFormat++;
+        } else {
+          break;
         }
-        break;
       } while (1);
       //
       // Handle specifiers
@@ -354,23 +408,24 @@ FilterFieldWidth:
       }
       case 'd':
         v = va_arg(*pParamList, int);
-        _PrintInt(&BufferDesc, v, 10, NumDigits, FieldWidth, FormatFlags);
+        _PrintInt(&BufferDesc, v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'u':
         v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, v, 10, NumDigits, FieldWidth, FormatFlags);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'x':
       case 'X':
         v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, v, 16, NumDigits, FieldWidth, FormatFlags);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 's':
         {
           const char * s = va_arg(*pParamList, const char *);
           do {
-            c = *s++;
-            if (c == 0) {
+            c = *s;
+            s++;
+            if (c == '\0') {
               break;
             }
            _StoreChar(&BufferDesc, c);
@@ -379,10 +434,12 @@ FilterFieldWidth:
         break;
       case 'p':
         v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, v, 16, 8, 8, 0);
+        _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, 8u, 8u, 0u);
         break;
       case '%%':
         _StoreChar(&BufferDesc, '%%');
+        break;
+      default:
         break;
       }
       sFormat++;
@@ -395,10 +452,10 @@ FilterFieldWidth:
     //
     // Write remaining data, if any
     //
-    if (BufferDesc.Cnt != 0) {
+    if (BufferDesc.Cnt != 0u) {
       SEGGER_RTT_Write(BufferIndex, acBuffer, BufferDesc.Cnt);
     }
-    BufferDesc.ReturnValue += BufferDesc.Cnt;
+    BufferDesc.ReturnValue += (int)BufferDesc.Cnt;
   }
   return BufferDesc.ReturnValue;
 }

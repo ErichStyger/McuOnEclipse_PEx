@@ -3,13 +3,13 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
+*       (c) 2014 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER SystemView * Real-time application analysis           *
+*       SEGGER RTT * Real Time Transfer for embedded targets         *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -22,23 +22,26 @@
 *   the following disclaimer.                                        *
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
+* * This software may only be used for communication with SEGGER     *
+*   J-Link debug probes.                                             *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
-* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
-* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
-* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
-* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
-* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
-* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
+* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
+* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
+* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
+* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
+* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
+* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
+* DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32a                                    *
+*       RTT version: 5.10u                                           *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -54,16 +57,6 @@ Additional information:
 
           RTT channel 0 is always present and reserved for Terminal usage.
           Name is fixed to "Terminal"
-
-          Effective buffer size: SizeOfBuffer - 1
-
-          WrOff == RdOff:       Buffer is empty
-          WrOff == (RdOff - 1): Buffer is full
-          WrOff >  RdOff:       Free space includes wrap-around
-          WrOff <  RdOff:       Used space includes wrap-around
-          (WrOff == (SizeOfBuffer - 1)) && (RdOff == 0):  
-                                Buffer full and wrap-around after next byte
-
 
 ----------------------------------------------------------------------
 */

@@ -3,13 +3,13 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2015  SEGGER Microcontroller GmbH & Co. KG               *
+*       (c) 2014 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER SystemView * Real-time application analysis           *
+*       SEGGER RTT * Real Time Transfer for embedded targets         *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -22,23 +22,26 @@
 *   the following disclaimer.                                        *
 * * Modified versions of this software in source or linkable form    *
 *   may not be distributed without prior consent of SEGGER.          *
+* * This software may only be used for communication with SEGGER     *
+*   J-Link debug probes.                                             *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
-* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
-* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
-* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
-* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
-* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
-* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
+* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
+* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
+* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
+* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
+* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
+* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
+* DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.26                                    *
+*       RTT version: 5.10u                                           *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -105,10 +108,6 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 *       RTT lock configuration for SEGGER Embedded Studio, 
 *       Rowley CrossStudio and GCC
 */
-#if SEGGER_RTT_FREERTOS_PRESENT /* << EST: Need to use FreeRTOS critical sections with proper interrupt handling */
-  #define SEGGER_RTT_LOCK()     portENTER_CRITICAL()
-  #define SEGGER_RTT_UNLOCK()   portEXIT_CRITICAL()
-#else
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
     #define SEGGER_RTT_LOCK() {                                                 \
@@ -132,8 +131,12 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     /* >> EST */
-    #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL         %SeggerRTTMaxBlockedInterruptLevel /* Interrupts at this level and below will be blocked (valid values 1-15) */
-    #define SEGGER_RTT_PRIO_BITS                    4 /* Kinetis has 4 interrupt priority bits */
+    #if SEGGER_RTT_FREERTOS_PRESENT
+       #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL        configMAX_SYSCALL_INTERRUPT_PRIORITY /* Interrupts at this level and below will be blocked (valid values 1-15) */
+    #else
+      #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL         %SeggerRTTMaxBlockedInterruptLevel /* Interrupts at this level and below will be blocked (valid values 1-15) */
+    #endif
+    #define SEGGER_RTT_PRIO_BITS                    4 /* NXP Kinetis M4(F) has 4 interrupt priority bits */
     #define SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY   (SEGGER_RTT_LOCK_INTERRUPT_LEVEL<<(8-SEGGER_RTT_PRIO_BITS))
     /* >> EST */
     #define SEGGER_RTT_LOCK() {                                                 \
@@ -183,7 +186,6 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                   }  
   #endif
 #endif
-#endif /* << EST: SEGGER_RTT_FREERTOS_PRESENT */
 /*********************************************************************
 *
 *       RTT lock configuration fallback
