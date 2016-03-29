@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.080</Version>
+    <Version>01.081</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -330,9 +330,9 @@
               <ItemLevel>BASIC</ItemLevel>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <Description>Disabled</Description>
-              <Expanded>No</Expanded>
-              <DefaultValue>false</DefaultValue>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
@@ -357,7 +357,7 @@
                     <Hint>The App_Task() is sending data to the CDC. However, if there is no terminal open on the host, then the App_Task() function could be stalled.  A timeout can be specified here. Using a zero value disables the timeout.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
-                    <DefaultValue>0</DefaultValue>
+                    <DefaultValue>20</DefaultValue>
                     <MinValue>0</MinValue>
                     <MaxValue>-1</MaxValue>
                     <Bases>DEC</Bases>
@@ -377,7 +377,7 @@
               <Hint>Time to wait wait with WaitOSms() and polling if still a transaction is going on. Use a value of zero to diasble waiting.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>0</DefaultValue>
+              <DefaultValue>10</DefaultValue>
               <MinValue>0</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
