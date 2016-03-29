@@ -1109,9 +1109,10 @@ void vPortInitTickTimer(void) {
   *(portNVIC_SYSPRI3) |= portNVIC_SYSTICK_PRI; /* set priority of SysTick interrupt */
 #endif
   /* Configure timer to interrupt at the requested rate. */
-  SET_TICK_DURATION(TIMER_COUNTS_FOR_ONE_TICK-1UL);
-  RESET_TICK_COUNTER_VAL();
-  ENABLE_TICK_COUNTER();
+  DISABLE_TICK_COUNTER(); /* disable the timer, just in case it is already running */
+  SET_TICK_DURATION(TIMER_COUNTS_FOR_ONE_TICK-1UL); /* set tick period */
+  RESET_TICK_COUNTER_VAL(); /* reset counter so it starts properly */
+  ENABLE_TICK_COUNTER(); /* let it run */
 %endif
 }
 /*-----------------------------------------------------------*/
