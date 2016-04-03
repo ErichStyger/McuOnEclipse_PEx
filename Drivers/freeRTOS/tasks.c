@@ -3382,8 +3382,7 @@ TCB_t *pxNewTCB;
 #if (INCLUDE_pxTaskGetStackStart == 1)
 	uint8_t* pxTaskGetStackStart( TaskHandle_t xTask)
 	{
-	TCB_t *pxTCB;
-	UBaseType_t uxReturn;
+  	TCB_t *pxTCB;
 
 		pxTCB = prvGetTCBFromHandle( xTask );
 		return ( uint8_t * ) pxTCB->pxStack;
