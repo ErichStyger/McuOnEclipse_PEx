@@ -228,6 +228,7 @@ int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...);
 #define RTT_CTRL_BG_BRIGHT_CYAN       "[4;46m"
 #define RTT_CTRL_BG_BRIGHT_WHITE      "[4;47m"
 
+void SEGGER_RTT_WriteWithOverwriteNoLock(unsigned BufferIndex, const void* pBuffer, unsigned NumBytes); /* << EST */
 
 #endif
 

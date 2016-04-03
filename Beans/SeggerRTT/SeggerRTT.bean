@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.067</Version>
+    <Version>01.068</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -88,7 +88,7 @@
       <TIntgItem>
         <Name>Max Blocked Interrupt Level</Name>
         <Symbol>SeggerRTTMaxBlockedInterruptLevel</Symbol>
-        <Hint>Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below.</Hint>
+        <Hint>Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below. If FreeRTOS is present, then configMAX_SYSCALL_INTERRUPT_PRIORITY is used.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>3</DefaultValue>

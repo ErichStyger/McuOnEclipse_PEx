@@ -234,7 +234,7 @@ LI.EXP {
 </li>
 <li>
 <a name="SeggerRTTMaxBlockedInterruptLevel">
-<b>Max Blocked Interrupt Level</b></a> - Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below.
+<b>Max Blocked Interrupt Level</b></a> - Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below. If FreeRTOS is present, then configMAX_SYSCALL_INTERRUPT_PRIORITY is used.
 </li>
 <li>
 <a name="RTTChannel0Enabled">
