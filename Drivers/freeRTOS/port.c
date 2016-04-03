@@ -1206,7 +1206,7 @@ BaseType_t xPortStartScheduler(void) {
   }
 #endif
   /* Kick off the scheduler by setting up the context of the first task. */
-  vPortStartFirstTask();     %>40/* start the first task executing. Note that we will not return here */
+  vPortStartFirstTask(); /* start the first task executing. Note that we will not return here */
   return pdFALSE;
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
   /* xPortStartScheduler() does not start the scheduler directly because
@@ -1720,6 +1720,13 @@ __asm void vPortStartFirstTask(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 void vPortStartFirstTask(void) {
+#if 1 /* only needed for openOCD thread awareness. It needs the symbol uxTopUsedPriority present after linking */
+  {
+    extern volatile const int uxTopUsedPriority;
+    uint8_t dummy_value_for_openocd;
+    dummy_value_for_openocd = uxTopUsedPriority;
+  }
+#endif
   __asm volatile (
     " ldr r0, =0xE000ED08 \n" /* Use the NVIC offset register to locate the stack. */
     " ldr r0, [r0]        \n" /* load address of vector table */
@@ -2035,6 +2042,22 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
   );
 #endif
 }
+
+/* This is only really needed for debugging with openOCD:
+ * Since at least FreeRTOS V7.5.3 uxTopUsedPriority is no longer
+ * present in the kernel, so it has to be supplied by other means for
+ * OpenOCD's threads awareness.
+ *
+ * Add this file to your project, and, if you're using --gc-sections,
+ * ``--undefined=uxTopUsedPriority'' (or
+ * ``-Wl,--undefined=uxTopUsedPriority'' when using gcc for final
+ * linking) to your LDFLAGS; same with all the other symbols you need.
+ */
+volatile const int
+#ifdef __GNUC__
+__attribute__((used))
+#endif
+uxTopUsedPriority = configMAX_PRIORITIES;
 
 #if configGDB_HELPER /* if GDB debug helper is enabled */
 /* Credits to:
