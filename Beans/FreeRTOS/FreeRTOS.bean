@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.451</Version>
+    <Version>01.452</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1657,11 +1657,11 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
         <Symbol>RTOSAdaptorGrp</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>Contains the RTOS specific settings. RTOS adaptor is a part of RTOS component which handles the integration of HAL into specific RTOS.</Hint>
-        <ItemLevel>@ HIDDEN @</ItemLevel>
+        <ItemLevel>EXPERT</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Configures the RTOS adapter settings</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
             <TGrupItem>
@@ -1762,7 +1762,7 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
                     <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
                     <Description>no</Description>
-                    <Expanded>No</Expanded>
+                    <Expanded>Yes</Expanded>
                     <DefaultValue>false</DefaultValue>
                     <DefineSymbol>YES_NO</DefineSymbol>
                     <IfDisabled>setNOTHING</IfDisabled>
@@ -1793,7 +1793,7 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
                     <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
                     <Description>no</Description>
-                    <Expanded>No</Expanded>
+                    <Expanded>Yes</Expanded>
                     <DefaultValue>false</DefaultValue>
                     <DefineSymbol>YES_NO</DefineSymbol>
                     <IfDisabled>setNOTHING</IfDisabled>

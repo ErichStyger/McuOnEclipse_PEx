@@ -804,6 +804,72 @@ The following items are available only if the group is enabled (the value is "En
 </ul>
 </li>
 <li>
+<a name="RTOSAdaptorGrp">
+<b>RTOS Adaptor</b></a> - Contains the RTOS specific settings. RTOS adaptor is a part of RTOS component which handles the integration of HAL into specific RTOS.
+<ul>
+  <li>
+  <a name="MemoryAllocationGroup">
+  <b>Memory allocation</b></a> - Definition of the RTOS API which provides the memory allocation functionality for HAL driver code.
+  <ul>
+    <li>
+    <a name="hasUserMallocFun">
+    <b>User function for memory allocation</b></a> - The memory allocation function should allocate the specified number of bytes of memory and return the address of the allocated space. The allocated memory area type should be suitable for usage by RTOS component. If there is an error, it should return NULL pointer.<br />
+The following items are available only if the group is enabled (the value is "yes"):<br />
+
+    <ul>
+      <li>
+      <a name="userMallocFunName">
+      <b>User function name</b></a> - The name of the user function (see above for description).
+      </li>
+    </ul>
+    </li>
+    <li>
+    <a name="hasUserDeallocFun">
+    <b>User function for memory deallocation</b></a> - The memory deallocation function should free the memory area allocated by the memory allocation function. The function can be called only for areas allocated by a pair memory allocation function (see property hasUserMallocFun User function for memory allocation.<br />
+The following items are available only if the group is enabled (the value is "yes"):<br />
+
+    <ul>
+      <li>
+      <a name="userDeallocFunName">
+      <b>User function name</b></a> - The name of the user function (see above for description).
+      </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="CriticalSectionGroup">
+  <b>Critical section</b></a> - Definition of the RTOS API which provides the critical section handling for HAL driver code.
+  <ul>
+    <li>
+    <a name="hasUserEnterCriticalFun">
+    <b>User function for entering critical section</b></a> - The open critical section function should introduce the code what cannot be interrupted by the ISRs. Such function can be also called from ISRs and/or within context where ISRs are already disabled. In this situation the function has no effect (except that the pair call to critical section close function will be also ignored - see property hasUserExitCriticalFun. The function has no parameters and returns no value.<br />
+The following items are available only if the group is enabled (the value is "yes"):<br />
+
+    <ul>
+      <li>
+      <a name="userEnterCriticalFunName">
+      <b>User function name</b></a> - The name of the user function (see above for description).
+      </li>
+    </ul>
+    </li>
+    <li>
+    <a name="hasUserExitCriticalFun">
+    <b>User function for exiting critical section</b></a> - The close critical section function should terminate the code what cannot be interrupted by the ISRs. Such function need always to have a pair open critical section call (see property hasUserEnterCriticalFun. If call to the pair open critical section was ignored, the respective close should be also ignored. The function has no parameters and returns no value.<br />
+The following items are available only if the group is enabled (the value is "yes"):<br />
+
+    <ul>
+      <li>
+      <a name="userExitCriticalFunName">
+      <b>User function name</b></a> - The name of the user function (see above for description).
+      </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+</li>
+<li>
 <a name="ShellEnabled">
 <b>Shell</b></a> - If shell support shall be added or not. If enabled, will enable 'Use Trace Facility' (configUSE_TRACE_FACILITY).<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />

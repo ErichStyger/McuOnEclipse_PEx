@@ -26,9 +26,6 @@
 %---------------------------------------------------------------------
 %-RTOS_DEFINITIONS_START
 %if defined(IsClassicCW) & %IsClassicCW='no' %- need to protect this, as classic does not have this
-%- %inclSUB RTOSAdap_defineRTOSFunction(EnterCritical,hasUserEnterCriticalFun,userEnterCriticalFunName,void,(),taskENTER_CRITICAL)
-%- %inclSUB RTOSAdap_defineRTOSFunction(ExitCritical,hasUserExitCriticalFun,userExitCriticalFunName,void,(void),taskEXIT_CRITICAL)
-%- Using normal EnterCritical() and ExitCritical(), as for Cortex-M4 we shall *not* call the task critical section functions from an ISR!
 %inclSUB RTOSAdap_defineRTOSFunction(EnterCritical,hasUserEnterCriticalFun,userEnterCriticalFunName,void,(),EnterCritical)
 %inclSUB RTOSAdap_defineRTOSFunction(ExitCritical,hasUserExitCriticalFun,userExitCriticalFunName,void,(void),ExitCritical)
 
