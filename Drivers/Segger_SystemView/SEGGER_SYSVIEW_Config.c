@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.30                                    *
+*       SystemView version: V2.34                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -102,7 +102,7 @@ Purpose     : Setup configuration of SystemView.
 #endif /* SYSVIEW_USING_KINETIS_SDK */
 
 // Frequency of the timestamp. Must match SEGGER_SYSVIEW_Conf.h
-#define SYSVIEW_TIMESTAMP_FREQ  (SYSVIEW_CPU_FREQ >> 4)
+#define SYSVIEW_TIMESTAMP_FREQ  configSYSTICK_CLOCK_HZ /* use FreeRTOS Systick frequency value, as this might depend on prescalers */
 
 // The lowest RAM address used for IDs (pointers)
 #define SYSVIEW_RAM_BASE        (0x%#l%SysViewRamBase)
