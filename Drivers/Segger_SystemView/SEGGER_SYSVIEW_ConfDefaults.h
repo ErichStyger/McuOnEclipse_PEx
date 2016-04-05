@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32a                                    *
+*       SystemView version: V2.34                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -86,6 +86,11 @@ extern "C" {
   #error "SEGGER_RTT_MAX_NUM_UP_BUFFERS in SEGGER_RTT_Conf.h has to be > 1!"
 #elif (SEGGER_SYSVIEW_RTT_CHANNEL >= SEGGER_RTT_MAX_NUM_UP_BUFFERS)
   #error "SEGGER_RTT_MAX_NUM_UP_BUFFERS  in SEGGER_RTT_Conf.h has to be > SEGGER_SYSVIEW_RTT_CHANNEL!"
+#endif
+
+// Place the SystemView buffer into its own/the RTT section
+#if !(defined SEGGER_SYSVIEW_BUFFER_SECTION) && (defined SEGGER_RTT_SECTION)
+  #define SEGGER_SYSVIEW_BUFFER_SECTION            SEGGER_RTT_SECTION
 #endif
 
 // Retrieve a system timestamp.  This gets the Cortex-M cycle counter.
