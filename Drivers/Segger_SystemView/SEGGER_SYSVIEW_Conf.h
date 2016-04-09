@@ -121,10 +121,12 @@ Purpose     : SEGGER SysView configuration.
 *       SysView timestamp configuration
 */
 #if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(U32 *)(0xE0001004)) >> 4)     // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
+  #define SEGGER_SYSVIEW_TIMESTAMP_SHIFT      4 /* << EST */
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(U32 *)(0xE0001004))>>SEGGER_SYSVIEW_TIMESTAMP_SHIFT)     // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
   #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                // Define number of valid bits low-order delivered by clock source
 #else
-  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      SEGGER_SYSVIEW_X_GetTimestamp()   // Retrieve a system timestamp via user-defined function
+  #define SEGGER_SYSVIEW_TIMESTAMP_SHIFT      0 /* << EST */
+  #define SEGGER_SYSVIEW_GET_TIMESTAMP()      (SEGGER_SYSVIEW_X_GetTimestamp())   // Retrieve a system timestamp via user-defined function
   #define SEGGER_SYSVIEW_TIMESTAMP_BITS       32                                // Define number of valid bits low-order delivered by SEGGER_SYSVIEW_X_GetTimestamp()
 #endif
 

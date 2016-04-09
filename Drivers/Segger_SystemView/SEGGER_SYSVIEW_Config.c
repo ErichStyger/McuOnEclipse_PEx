@@ -75,7 +75,7 @@ Purpose     : Setup configuration of SystemView.
 #endif
 
 // The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        %SysViewAppName
+#define SYSVIEW_APP_NAME        %SysViewAppName /* application name, configured in properties */
 
 // The operating system, if any
 #if SYSVIEW_USING_FREERTOS
@@ -88,7 +88,7 @@ Purpose     : Setup configuration of SystemView.
 #endif
 
 // The target device name
-#define SYSVIEW_DEVICE_NAME     %SysViewDeviceName
+#define SYSVIEW_DEVICE_NAME     %SysViewDeviceName /* device name, configured in properties */
 
 // System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
 #if SYSVIEW_USING_KINETIS_SDK
@@ -102,10 +102,10 @@ Purpose     : Setup configuration of SystemView.
 #endif /* SYSVIEW_USING_KINETIS_SDK */
 
 // Frequency of the timestamp. Must match SEGGER_SYSVIEW_Conf.h
-#define SYSVIEW_TIMESTAMP_FREQ  configSYSTICK_CLOCK_HZ /* use FreeRTOS Systick frequency value, as this might depend on prescalers */
+#define SYSVIEW_TIMESTAMP_FREQ  (configSYSTICK_CLOCK_HZ>>SEGGER_SYSVIEW_TIMESTAMP_SHIFT) /* use FreeRTOS Systick frequency value, as this might depend on prescalers */
 
 // The lowest RAM address used for IDs (pointers)
-#define SYSVIEW_RAM_BASE        (0x%#l%SysViewRamBase)
+#define SYSVIEW_RAM_BASE        (0x%#l%SysViewRamBase) /* RAM base, configured in properties */
 
 #if 1 /* << EST */
 #define portNVIC_SYSTICK_LOAD_REG           (*((volatile unsigned long *)0xe000e014)) /* SYST_RVR, SysTick reload value register */
