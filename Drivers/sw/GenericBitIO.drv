@@ -367,7 +367,11 @@ void %'ModuleName'%.%Deinit(void);
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 bool %'ModuleName'%.%GetDir(void)
 {
+%if defined(sdkbitio)
   return %@sdkbitio@'ModuleName'%.GetDir();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -381,7 +385,11 @@ bool %'ModuleName'%.%GetDir(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetDir(bool Dir)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.SetDir(Dir);
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -394,7 +402,11 @@ void %'ModuleName'%.%SetDir(bool Dir)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetInput(void)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.SetInput();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -407,7 +419,11 @@ void %'ModuleName'%.%SetInput(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetOutput(void)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.SetOutput();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -421,7 +437,11 @@ void %'ModuleName'%.%SetOutput(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 bool %'ModuleName'%.%GetVal(void)
 {
+%if defined(sdkbitio)
   return %@sdkbitio@'ModuleName'%.GetVal();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -435,7 +455,11 @@ bool %'ModuleName'%.%GetVal(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%PutVal(bool Val)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.PutVal(Val);
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -448,7 +472,11 @@ void %'ModuleName'%.%PutVal(bool Val)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%ClrVal(void)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.ClrVal();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -461,7 +489,11 @@ void %'ModuleName'%.%ClrVal(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%SetVal(void)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.SetVal();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -474,7 +506,11 @@ void %'ModuleName'%.%SetVal(void)
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
 void %'ModuleName'%.%NegVal(void)
 {
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.NegVal();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 }
 #endif
 
@@ -487,7 +523,11 @@ void %'ModuleName'%.%NegVal(void)
 void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.Init();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 #else
 %if %Direction='1' %- Output
  %if %InitValue='0'
@@ -556,7 +596,11 @@ void %'ModuleName'%.%Init(void)
 void %'ModuleName'%.%Deinit(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.Deinit();
+%else
+  #error "Need to enable SDK inherited component in settings!"
+%endif
 #endif
 }
 
