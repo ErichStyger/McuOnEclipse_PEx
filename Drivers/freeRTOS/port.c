@@ -1723,7 +1723,7 @@ void vPortStartFirstTask(void) {
 #if 1 /* only needed for openOCD thread awareness. It needs the symbol uxTopUsedPriority present after linking */
   {
     extern volatile const int uxTopUsedPriority;
-    uint8_t dummy_value_for_openocd;
+    __attribute__((__unused__)) volatile uint8_t dummy_value_for_openocd;
     dummy_value_for_openocd = uxTopUsedPriority;
   }
 #endif
