@@ -132,12 +132,12 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     /* >> EST */
     #if SEGGER_RTT_FREERTOS_PRESENT
-       #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL        configMAX_SYSCALL_INTERRUPT_PRIORITY /* Interrupts at this level and below will be blocked (valid values 1-15) */
+       #define SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY  configMAX_SYSCALL_INTERRUPT_PRIORITY /* Interrupts at this level and below will be blocked (valid values 1-15) */
     #else
-      #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL         %SeggerRTTMaxBlockedInterruptLevel /* Interrupts at this level and below will be blocked (valid values 1-15) */
+      #define SEGGER_RTT_LOCK_INTERRUPT_LEVEL         %SeggerRTTMaxBlockedInterruptLevel /* Interrupts at this level and below will be blocked (valid values 1-15 for Kinetis) */
+      #define SEGGER_RTT_PRIO_BITS                    4 /* NXP Kinetis M4(F) has 4 interrupt priority bits */
+      #define SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY   (SEGGER_RTT_LOCK_INTERRUPT_LEVEL<<(8-SEGGER_RTT_PRIO_BITS))
     #endif
-    #define SEGGER_RTT_PRIO_BITS                    4 /* NXP Kinetis M4(F) has 4 interrupt priority bits */
-    #define SEGGER_RTT_BLOCKED_INTERRUPT_PRIORITY   (SEGGER_RTT_LOCK_INTERRUPT_LEVEL<<(8-SEGGER_RTT_PRIO_BITS))
     /* >> EST */
     #define SEGGER_RTT_LOCK() {                                                 \
                                      /*lint -save -e529 Symbol 'LockState' not subsequently referenced  */ \
