@@ -432,7 +432,11 @@ void %'ModuleName'%.%Put(uint8_t val)
 void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%if defined(LEDPin)
   %@LEDPin@'ModuleName'%.Init();
+%else
+  #warning "PWM mode not yet implemented with the SDK!"
+%endif
 #endif
 %if LEDonWithInitialization = 'yes'
   %'ModuleName'%.%On();
@@ -450,7 +454,11 @@ void %'ModuleName'%.%Init(void)
 void %'ModuleName'%.%Deinit(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+%if defined(LEDPin)
   %@LEDPin@'ModuleName'%.Deinit();
+%else
+  #warning "PWM mode not yet implemented with the SDK!"
+%endif
 #endif
 }
 
