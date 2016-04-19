@@ -7,6 +7,7 @@
 %;**%>12 Blocking Send %>60: %get(BlockingSend,Text)
 %if %get(BlockingSend, Bool) = 'yes'
 %;**%>14 Wait %>60: %get(Wait,Text)
+%;**%>14 Timeout (ms) %>60: %get(ShellBlockingSendTimeoutMs,Text)
 %;**%>14 Wait Time (ms) %>60: %get(WaitTimeMs,Text)
 %;**%>14 RTOS Wait %>60: %get(RTOSWait,Text)
 %else %- BlockingSend
@@ -35,4 +36,4 @@
 %;**%>14 Char for Previous %>60: %get(PrevHistoryChar,Text)
 %else %- HistoryEnabled
 %endif %- HistoryEnabled
-%;**%>12 Kinetis SDK %>60: %get(KinetisSDK,Text)
+%;**%>12 Kinetis SDK %>60: %get(sdk,Text)
