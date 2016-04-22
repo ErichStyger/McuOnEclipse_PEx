@@ -89,19 +89,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+%endif
+  #include "%ProcessorModule.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -112,7 +115,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
 #include "FreeRTOS.h"
 #include "task.h"                                                %>40/* task API */
 #include "semphr.h"                                              %>40/* semaphore API */
@@ -1659,12 +1661,13 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
-
-%for var from EventModules
-#include "%var.h"
-%endfor
 #include "%'ModuleName'.h"
 #include "portTicks.h"                                           %>40/* interface to tick counter */
+#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
+%for var from EventModules
+  #include "%var.h"
+%endfor
+#endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:

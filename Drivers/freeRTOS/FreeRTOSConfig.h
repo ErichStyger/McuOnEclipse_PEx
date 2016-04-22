@@ -183,7 +183,7 @@
 %else
 #define configGENERATE_STATIC_SOURCES                            %>50 0 /* 1: it will create 'static' sources to be used without Processor Expert; 0: Processor Expert code generated */
 %endif
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') | (defined(KinetisSDKenabled) & %KinetisSDKenabled='yes') %- TRUE/FALSE not defined for SDK projects
+%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') | (defined(KinetisSDKGroup) & %KinetisSDKGroup='yes') %- TRUE/FALSE not defined for SDK projects
 #define configPEX_KINETIS_SDK                                    %>50 1 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 %else
 #define configPEX_KINETIS_SDK                                    %>50 0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
@@ -225,13 +225,17 @@
 %endif
 %ifdef vApplicationIdleHook
 #define configUSE_IDLE_HOOK                                      %>50 1 /* 1: use Idle hook; 0: no Idle hook */
+#define configUSE_IDLE_HOOK_NAME                                 %>50 %vApplicationIdleHook
 %else
 #define configUSE_IDLE_HOOK                                      %>50 0 /* 1: use Idle hook; 0: no Idle hook */
+#define configUSE_IDLE_HOOK_NAME                                 %>50 vApplicationIdleHook
 %endif
 %ifdef vApplicationTickHook
 #define configUSE_TICK_HOOK                                      %>50 1 /* 1: use Tick hook; 0: no Tick hook */
+#define configUSE_TICK_HOOK_NAME                                 %>50 %vApplicationTickHook
 %else
 #define configUSE_TICK_HOOK                                      %>50 0 /* 1: use Tick hook; 0: no Tick hook */
+#define configUSE_TICK_HOOK_NAME                                 %>50 vApplicationTickHook
 %endif
 %ifdef vApplicationMallocFailedHook
 #define configUSE_MALLOC_FAILED_HOOK                             %>50 1 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
@@ -250,22 +254,24 @@
 %endif
 #if configPEX_KINETIS_SDK
 /* The SDK variable SystemCoreClock contains the current clock speed */
-#define configCPU_CLOCK_HZ                                       %>50 SystemCoreClock /* CPU clock frequency */
-#define configBUS_CLOCK_HZ                                       %>50 SystemCoreClock /* Bus clock frequency */
+  #include <stdint.h>
+  extern uint32_t SystemCoreClock;
+  #define configCPU_CLOCK_HZ                                       %>50 SystemCoreClock /* CPU clock frequency */
+  #define configBUS_CLOCK_HZ                                       %>50 SystemCoreClock /* Bus clock frequency */
 #else
 %if defined(configCPU_CLOCK_HZ)
-#define configCPU_CLOCK_HZ                                       %>50 %configCPU_CLOCK_HZ /* CPU clock frequency */
+  #define configCPU_CLOCK_HZ                                       %>50 %configCPU_CLOCK_HZ /* CPU clock frequency */
 %else
-#if configCPU_FAMILY_IS_ARM(configCPU_FAMILY) /* Kinetis defines this one in Cpu.h */
-#define configCPU_CLOCK_HZ                                       %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
-#else
-#define configCPU_CLOCK_HZ                                       %>50 CPU_INSTR_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
-#endif
+  #if configCPU_FAMILY_IS_ARM(configCPU_FAMILY) /* Kinetis defines this one in Cpu.h */
+    #define configCPU_CLOCK_HZ                                       %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
+  #else
+    #define configCPU_CLOCK_HZ                                       %>50 CPU_INSTR_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
+  #endif
 %endif
 %if defined(configBUS_CLOCK_HZ)
-#define configBUS_CLOCK_HZ                                       %>50 %configBUS_CLOCK_HZ /* Bus clock frequency */
+  #define configBUS_CLOCK_HZ                                       %>50 %configBUS_CLOCK_HZ /* Bus clock frequency */
 %else
-#define configBUS_CLOCK_HZ                                       %>50 CPU_BUS_CLK_HZ /* CPU bus clock defined in %ProcessorModule.h */
+  #define configBUS_CLOCK_HZ                                       %>50 CPU_BUS_CLK_HZ /* CPU bus clock defined in %ProcessorModule.h */
 %endif
 #endif /* configPEX_KINETIS_SDK */
 %if defined(useARMSysTickUseCoreClock) & useARMSysTickUseCoreClock='no'
@@ -360,8 +366,10 @@
 %-
 %ifdef vApplicationStackOverflowHook
 #define configCHECK_FOR_STACK_OVERFLOW                           %>50 %StackOverflowCheckingMethodNumber /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */
+#define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 %vApplicationStackOverflowHook
 %else
 #define configCHECK_FOR_STACK_OVERFLOW                           %>50 0 /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */  
+#define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 vApplicationStackOverflowHook
 %endif
 %-
 %if %UseRecursiveMutexes='yes'

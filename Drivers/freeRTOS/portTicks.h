@@ -77,6 +77,9 @@
  *  That way the a module can interface this wrapper header file instead
  *  of one of the standard FreeRTOS header files.
  */
+%if defined(KinetisSDK)
+#include "%KinetisSDK.h" /* include interface to SDK */
+%endif
 
 %ifdef TickCntr %- non-LDD version
 /* support for trace and access to tick counter */
@@ -122,7 +125,9 @@ portLONG uxGetTickCounterValue(void);
 %elif defined(useARMSysTickTimer) & useARMSysTickTimer='yes'
 %if defined(UseManualClockValues) & UseManualClockValues='yes'  %- have provided manual clock values: no need for Cpu.h
 %else
-#include "%ProcessorModule.h" /* include CPU module because of dependency to CPU clock rate */
+#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
+  #include "%ProcessorModule.h" /* include CPU module because of dependency to CPU clock rate */
+#endif
 %endif
 #include "FreeRTOSConfig.h"
 #include "portmacro.h"

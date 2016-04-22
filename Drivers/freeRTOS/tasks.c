@@ -83,9 +83,6 @@ task.h is included from an application file. */
 #include "StackMacros.h"
 
 %- EST: Modification for Processor Expert port
-%for var from EventModules
-#include "%var.h"
-%endfor
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS == 1 ) )
 #include "%'Utility'.h" /* interface to utility because used for safe string routines */ /* << EST */
 #endif
@@ -442,11 +439,11 @@ to its original value when it is released. */
 
 /* Callback function prototypes. --------------------------*/
 #if configCHECK_FOR_STACK_OVERFLOW > 0
-	extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
+	extern void configCHECK_FOR_STACK_OVERFLOW_NAME( TaskHandle_t xTask, char *pcTaskName );
 #endif
 
 #if configUSE_TICK_HOOK > 0
-	extern void vApplicationTickHook( void );
+	extern void configUSE_TICK_HOOK_NAME( void );
 #endif
 
 /* File private functions. --------------------------------*/
@@ -2106,13 +2103,8 @@ BaseType_t xSwitchRequired = pdFALSE;
 			count is being unwound (when the scheduler is being unlocked). */
 			if( uxPendedTicks == ( UBaseType_t ) 0U )
 			{
-%- EST: Modification for Processor Expert port
-    %if defined(vApplicationTickHook)
-      extern void vApplicationTickHook( void );
-      %vApplicationTickHook();
-    %else
-      vApplicationTickHook();
-    %endif
+        /* EST: Using configuration macro name */
+        configUSE_TICK_HOOK_NAME();
 			}
 			else
 			{
@@ -2129,13 +2121,9 @@ BaseType_t xSwitchRequired = pdFALSE;
 		scheduler is locked. */
 		#if ( configUSE_TICK_HOOK == 1 )
 		{
-%- EST: Modification for Processor Expert port
-%if defined(vApplicationTickHook)
-      %vApplicationTickHook();
-%else
-      extern void vApplicationTickHook(void);
-      vApplicationTickHook();
-%endif		
+		  /* << EST: using configuration name macro */
+      extern void configUSE_TICK_HOOK_NAME(void);
+      configUSE_TICK_HOOK_NAME();
 		}
 		#endif
 	}
@@ -2789,23 +2777,15 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 		#if ( configUSE_IDLE_HOOK == 1 )
 		{
-		  %- EST: Modification for Processor Expert port
-		  %ifdef vApplicationIdleHook
-		  %else
-		  extern void vApplicationIdleHook( void );
-		  %endif
+		  /* EST: Use user hook name */
+		  extern void configUSE_IDLE_HOOK_NAME( void );
 
 			/* Call the user defined function from within the idle task.  This
 			allows the application designer to add background functionality
 			without the overhead of a separate task.
 			NOTE: vApplicationIdleHook() MUST NOT, UNDER ANY CIRCUMSTANCES,
 			CALL A FUNCTION THAT MIGHT BLOCK. */
-		  %- EST: Modification for Processor Expert port
-		  %ifdef vApplicationIdleHook
-		        %vApplicationIdleHook();
-		  %else
-		  vApplicationIdleHook();
-		  %endif
+		  configUSE_IDLE_HOOK_NAME();
 		}
 		#endif /* configUSE_IDLE_HOOK */
 

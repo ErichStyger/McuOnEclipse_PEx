@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.453</Version>
+    <Version>01.454</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -52,6 +52,20 @@
       </TStrgItem>
     </Property>
     <Property>
+      <TInhrLinkItem>
+        <Name>Kinetis SDK</Name>
+        <Symbol>KinetisSDK</Symbol>
+        <TypeSpec>FreeRTOS\KinetisSDK</TypeSpec>
+        <Hint>Link to Kinetis SDK component which maps Processor Expert types like byte to uint8_t.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
       <TBoolGrupItem>
         <Name>Kinetis SDK</Name>
         <Symbol>KinetisSDKGroup</Symbol>
@@ -61,7 +75,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -101,20 +115,6 @@
               <DefaultValue>false</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Kinetis SDK</Name>
-              <Symbol>KinetisSDK</Symbol>
-              <TypeSpec>FreeRTOS\KinetisSDK</TypeSpec>
-              <Hint>Link to Kinetis SDK component which maps Processor Expert types like byte to uint8_t.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>
@@ -1230,7 +1230,7 @@ To use this method in combination with method 1 set configCHECK_FOR_STACK_OVERFL
                     <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
                     <Description>Disabled</Description>
-                    <Expanded>Yes</Expanded>
+                    <Expanded>No</Expanded>
                     <DefaultValue>false</DefaultValue>
                     <DefineSymbol>YES_NO</DefineSymbol>
                     <IfDisabled>setNOTHING</IfDisabled>
