@@ -64,19 +64,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+%endif
+  #include "%ProcessorModule.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,17 +90,15 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_CounterType
 #define __BWUserType_%'ModuleName'_CounterType
-  typedef int16_t %'ModuleName'_CounterType ;                    %>40/* Base type of counter which holds the counting value */
+  typedef uint8_t %'ModuleName'_CounterType ;                    %>40/* Base type of counter which holds the counting value */
 #endif
 #ifndef __BWUserType_%'ModuleName'_CounterHandle
 #define __BWUserType_%'ModuleName'_CounterHandle
-  typedef byte %'ModuleName'_CounterHandle ;                     %>40/* Type for the timeout counter handle. */
+  typedef uint8_t %'ModuleName'_CounterHandle ;                  %>40/* Type for the timeout counter handle. */
 #endif
 
 %-ENDUSRTYPES
@@ -309,7 +310,7 @@ bool %'ModuleName'%.%CounterExpired(%'ModuleName'_CounterHandle handle)
 %include Common\TimeoutAddTick.Inc
 void %'ModuleName'%.%AddTick(void)
 {
-  byte i;
+  uint8_t i;
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
   %@CriticalSection@'ModuleName'%.EnterCritical();
@@ -329,7 +330,7 @@ void %'ModuleName'%.%AddTick(void)
 %include Common\TimeoutInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-  byte i;
+  uint8_t i;
 
   for(i=0;i<%'ModuleName'%.NOF_COUNTERS;i++) {
     %'ModuleName'%.Counters[i] = 0;

@@ -4,7 +4,7 @@
     <Name>Timeout</Name>
     <Description>Component to manage timeouts, e.g. to be used in loops.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.030</Version>
+    <Version>01.032</Version>
     <Icon>Timeout</Icon>
     <TypesFiles>PE,Timeout\Timeout</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,10 +16,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>2</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2011-2015, all rights reserved.\n\nThis an open source software implementing timeout routines using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for   personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2011-2016, all rights reserved.\n\nThis an open source software implementing timeout routines using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for   personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -35,6 +35,20 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>Timeout\sdk</TypeSpec>
+        <Hint>Link to SDK</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TInhrLinkItem>

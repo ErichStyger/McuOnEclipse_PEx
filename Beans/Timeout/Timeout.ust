@@ -8,9 +8,9 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>  typedef int16_t %'ModuleName'_CounterType ;/* Base type of counter which holds the counting value */\n
+    <PreparedHint>  typedef uint8_t %'ModuleName'_CounterType ;/* Base type of counter which holds the counting value */\n
 </PreparedHint>
-    <Type>16bit signed</Type>
+    <Type>uint8_t</Type>
   </Type>
   <Type>
     <UsrType>TRetypeType</UsrType>
@@ -19,7 +19,18 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>  typedef byte %'ModuleName'_CounterHandle ;/* Type for the timeout counter handle. */\n
+    <PreparedHint>  typedef uint8_t %'ModuleName'_CounterHandle ;/* Type for the timeout counter handle. */\n
+</PreparedHint>
+    <Type>uint8_t</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint8_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef byte uint8_t ;\n
 </PreparedHint>
     <Type>8bit unsigned</Type>
   </Type>

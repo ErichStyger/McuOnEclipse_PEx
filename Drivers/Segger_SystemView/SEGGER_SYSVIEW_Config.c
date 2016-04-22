@@ -56,16 +56,9 @@ Purpose     : Setup configuration of SystemView.
 *
 **********************************************************************
 */
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') | (defined(KinetisSDKenabled) & %KinetisSDKenabled='yes') %- TRUE/FALSE not defined for SDK projects
-#define SYSVIEW_USING_KINETIS_SDK                                    %>50 1 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
-%else
-#define SYSVIEW_USING_KINETIS_SDK                                    %>50 0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
-%endif
-%if defined(OperatingSystemId) & %OperatingSystemId='FreeRTOS'
-#define SYSVIEW_USING_FREERTOS                                       %>50 1 /* 1: using FreeRTOS; 0: Bare metal */
-%else
-#define SYSVIEW_USING_FREERTOS                                       %>50 0 /* 1: using FreeRTOS; 0: Bare metal */
-%endif
+#include "%sdk.h"
+#define SYSVIEW_USING_KINETIS_SDK                                    %>50 (%@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
+#define SYSVIEW_USING_FREERTOS                                       %>50 SEGGER_RTT_FREERTOS_PRESENT /* 1: using FreeRTOS; 0: Bare metal */
 
 #if !SYSVIEW_USING_KINETIS_SDK
   #include "%ProcessorModule.h"
@@ -93,7 +86,7 @@ Purpose     : Setup configuration of SystemView.
 // System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
 #if SYSVIEW_USING_KINETIS_SDK
   /* The SDK variable SystemCoreClock contains the current clock speed */
-  extern unsigned int SystemCoreClock;
+  extern uint32_t SystemCoreClock;
   #define SYSVIEW_CPU_FREQ                                       %>50 (SystemCoreClock) /* CPU clock frequency */
 #elif SYSVIEW_USING_FREERTOS
   #define SYSVIEW_CPU_FREQ                                       %>50 configCPU_CLOCK_HZ
