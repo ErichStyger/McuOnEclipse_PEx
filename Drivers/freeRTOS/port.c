@@ -75,7 +75,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "portTicks.h" /* for CPU_CORE_CLK_HZ used in configSYSTICK_CLOCK_HZ */
-#include <stdbool.h>
+#ifndef __HIWARE__ /* S08/S12 compiler only supports C89 */
+  #include <stdbool.h>
+#endif
 #if configSYSTICK_USE_LOW_POWER_TIMER
   #include "LPTMR_PDD.h" /* PDD interface to low power timer */
   #include "SIM_PDD.h"   /* PDD interface to system integration module */

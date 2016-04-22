@@ -135,7 +135,7 @@
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules

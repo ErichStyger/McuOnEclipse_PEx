@@ -89,8 +89,10 @@
 #define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_2_0
 %endif
 
-#include <stdint.h> /* uint8_t, int16_t, ... */
-#include <stdbool.h> /* bool, true, false, ... */
+#ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
+  #include <stdint.h> /* uint8_t, int16_t, ... */
+  #include <stdbool.h> /* bool, true, false, ... */
+#endif
 #if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
   #include "PE_KSDK_Types.h"
 #endif

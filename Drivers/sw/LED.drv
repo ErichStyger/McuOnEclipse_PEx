@@ -64,8 +64,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include <stdint.h>
-
+#ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
+  #include <stdint.h>
+#endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -73,11 +74,11 @@
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
-#include "%'var'.h"
+  #include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -431,7 +432,7 @@ void %'ModuleName'%.%Put(uint8_t val)
 %include Common\LEDInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %if defined(LEDPin)
   %@LEDPin@'ModuleName'%.Init();
 %else
@@ -453,7 +454,7 @@ void %'ModuleName'%.%Init(void)
 %include Common\LEDDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.KSDK1_SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %if defined(LEDPin)
   %@LEDPin@'ModuleName'%.Deinit();
 %else
