@@ -378,7 +378,7 @@ static unsigned portBASE_TYPE uxCriticalNesting = 0xaaaaaaaa;
   #error "undefined target %CPUfamily!"
 %endif
 
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
 #include <setjmp.h>
 static jmp_buf xJumpBuf; /* Used to restore the original context when the scheduler is ended. */
 #endif
@@ -1201,7 +1201,7 @@ BaseType_t xPortStartScheduler(void) {
   uxCriticalNesting = 0;
   vPortInitTickTimer();
   vPortStartTickTimer();
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
   if (setjmp(xJumpBuf)!=0) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1218,7 +1218,7 @@ BaseType_t xPortStartScheduler(void) {
      which does use the CODE_SEG pragma. */
   vPortInitTickTimer();
   vPortStartTickTimer();
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
   if(setjmp(xJumpBuf) != 0 ) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1290,7 +1290,7 @@ BaseType_t xPortStartScheduler(void) {
   vPortEnableVFP(); /* Ensure the VFP is enabled - it should be anyway */
   *(portFPCCR) |= portASPEN_AND_LSPEN_BITS; /* Lazy register save always */
 #endif
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
     if(setjmp(xJumpBuf) != 0 ) {
       /* here we will get in case of call to vTaskEndScheduler() */
       return pdFALSE;
@@ -1303,7 +1303,7 @@ BaseType_t xPortStartScheduler(void) {
   uxCriticalNesting = 0; /* initialize critical nesting count */
   vPortInitTickTimer(); /* initialize tick timer */
   vPortStartTickTimer(); /* start tick timer */
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
   if(setjmp(xJumpBuf) != 0 ) {
     /* here we will get in case of call to vTaskEndScheduler() */
     return pdFALSE;
@@ -1323,7 +1323,7 @@ void vPortEndScheduler(void) {
   /* Jump back to the processor state prior to starting the
      scheduler.  This means we are not going to be using a
      task stack frame so the task can be deleted. */
-#if INCLUDE_TASK_END_SCHEDULER
+#if INCLUDE_vTaskEndScheduler
   longjmp(xJumpBuf, 1);
 #else
   for(;;){} /* wait here */
