@@ -64,27 +64,27 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+%endif
+  #include "%ProcessorModule.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
-#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
 
-%endif
 %ifdef ParseCommand
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %else
@@ -113,8 +113,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
