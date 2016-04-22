@@ -412,7 +412,7 @@
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
 #define configTASK_RETURN_ADDRESS   0  /* return address of task is zero */
 %else
-/* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwritt task return address for port.c */
+/* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwrite task return address for port.c */
 %endif
 
 /* Software timer definitions. */
@@ -437,7 +437,6 @@ if floating point hardware is otherwise supported by the FreeRTOS port in use.
 This constant is not supported by all FreeRTOS ports that include floating
 point support. */
 #define configUSE_TASK_FPU_SUPPORT                               %>50 1
-
 
 /* Set the following definitions to 1 to include the API function, or zero
    to exclude the API function. */
