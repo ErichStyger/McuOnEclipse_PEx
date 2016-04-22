@@ -64,19 +64,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+%endif
+  #include "%ProcessorModule.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -86,8 +89,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -105,9 +106,6 @@
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSpeed
 %ifdef GetSpeed
 int16_t %'ModuleName'%.%GetSpeed(void);
@@ -121,7 +119,7 @@ int16_t %'ModuleName'%.%GetSpeed(void);
 %ifdef GetVal
 #define %'ModuleName'%.%GetVal() %'ModuleName'%.%GetSpeed()
 /* function is implemented as macro
-word %'ModuleName'%.%GetVal(void);
+int16_t %'ModuleName'%.%GetVal(void);
 */
 %define! RetVal
 %include Common\TachoGetVal.Inc
@@ -173,10 +171,10 @@ void %'ModuleName'%.%Sample(void);
 %if %RPMenabled = 'yes'
 #define NOF_ROUND_PULSE   (%PulseCount)    /* number of pluses per round, given by encoder hardware, and we are detecting 4 steps for each period */
 %endif
-#define SPEED_CALC_PERIOD ((word)%SamplePeriodMs)     /* speed sample period in ms. Make sure that speed is sampled at the given rate. */
+#define SPEED_CALC_PERIOD ((uint16_t)%SamplePeriodMs)     /* speed sample period in ms. Make sure that speed is sampled at the given rate. */
 #define NOF_HISTORY (%NofSamples+1U) /* number of samples for speed calculation (>0):the more, the better, but the slower. For efficient code, make it a (power of 2)+1 */
 static volatile uint16_t %'ModuleName'%.PosHistory[NOF_HISTORY]; /* for better accuracy, we calculate the speed over some samples */
-static volatile byte %'ModuleName'%.PosHistory_Index = 0;
+static volatile uint8_t %'ModuleName'%.PosHistory_Index = 0;
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -278,9 +276,9 @@ int16_t %'ModuleName'%.%GetSpeed(void)
     %endif
   %endfor
   %-
-  %- speed = ((word)delta)*(%TicksTimeMs/(%SamplePeriodMs*%NofSamples));
-  %- speed = ((word)delta)* (%a/%c);
-  speed = ((word)delta)
+  %- speed = ((uint16_t)delta)*(%TicksTimeMs/(%SamplePeriodMs*%NofSamples));
+  %- speed = ((uint16_t)delta)* (%a/%c);
+  speed = ((uint16_t)delta)
   %if %a <> '1'
     %+ *%a
   %endif
@@ -305,7 +303,7 @@ int16_t %'ModuleName'%.%GetSpeed(void)
 %define! RetVal
 %include Common\TachoGetVal.Inc
 /* this function is implemented as macro in the header file
-word %'ModuleName'%.%GetVal(void)
+int16_t %'ModuleName'%.%GetVal(void)
 {
   return %'ModuleName'%.%GetSpeed();
 }

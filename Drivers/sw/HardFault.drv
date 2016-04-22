@@ -65,19 +65,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+%endif
+  #include "%ProcessorModule.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,8 +90,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -116,9 +117,9 @@ void %'ModuleName'%.%HardFaultHandler(void);
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG HandlerC
 #ifdef __GNUC__ /* 'used' attribute needed for GNU LTO (Link Time Optimization) */
-void %'ModuleName'%.HandlerC(dword *hardfault_args) __attribute__((used));
+void %'ModuleName'%.HandlerC(uint32_t *hardfault_args);
 #else
-void %'ModuleName'%.HandlerC(dword *hardfault_args);
+void %'ModuleName'%.HandlerC(uint32_t *hardfault_args);
 #endif
 %define! Parhardfault_args
 %include Common\GeneralInternal.inc (HandlerC)
@@ -202,7 +203,7 @@ void %'ModuleName'%.HandlerC(dword *hardfault_args);
 %if %Compiler = "GNUC"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 %endif
-void %'ModuleName'%.HandlerC(dword *hardfault_args)
+void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
 {
   /*lint -save  -e550 Symbol not accessed. */
 %if (%Compiler = "IARARM")
