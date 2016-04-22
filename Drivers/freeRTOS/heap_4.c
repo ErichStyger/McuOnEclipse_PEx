@@ -81,11 +81,6 @@
  */
 #include <stdlib.h>
 
-%- EST: Modification for Processor Expert port
-%for var from EventModules
-#include "%var.h"
-%endfor
-
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
 task.h is included from an application file. */
@@ -300,13 +295,9 @@ void *pvReturn = NULL;
 	{
 		if( pvReturn == NULL )
 		{
-%- EST: Modification for Processor Expert port
-%if defined(vApplicationMallocFailedHook)
-      %vApplicationMallocFailedHook();
-%else
-			extern void vApplicationMallocFailedHook( void );
-			vApplicationMallocFailedHook();
-%endif
+      /* EST: Using configuration macro name for hook */
+			extern void configUSE_MALLOC_FAILED_HOOK_NAME( void );
+      configUSE_MALLOC_FAILED_HOOK_NAME();
 		}
 		else
 		{
