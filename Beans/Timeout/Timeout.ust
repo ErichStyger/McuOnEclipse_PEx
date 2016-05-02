@@ -8,9 +8,20 @@
     <Generate>yes</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>  typedef uint8_t %'ModuleName'_CounterType ;/* Base type of counter which holds the counting value */\n
+    <PreparedHint>  typedef uint32_t %'ModuleName'_CounterType ;/* Base type of counter which holds the counting value */\n
 </PreparedHint>
-    <Type>uint8_t</Type>
+    <Type>uint32_t</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint16_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef word uint16_t ;\n
+</PreparedHint>
+    <Type>16bit unsigned</Type>
   </Type>
   <Type>
     <UsrType>TRetypeType</UsrType>
@@ -22,6 +33,17 @@
     <PreparedHint>  typedef uint8_t %'ModuleName'_CounterHandle ;/* Type for the timeout counter handle. */\n
 </PreparedHint>
     <Type>uint8_t</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint32_t</Name>
+    <Hint/>
+    <Generate>yes</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef dword uint32_t ;\n
+</PreparedHint>
+    <Type>32bit unsigned</Type>
   </Type>
   <Type>
     <UsrType>TRetypeType</UsrType>

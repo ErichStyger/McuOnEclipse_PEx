@@ -94,11 +94,15 @@
 
 #ifndef __BWUserType_%'ModuleName'_CounterType
 #define __BWUserType_%'ModuleName'_CounterType
-  typedef uint8_t %'ModuleName'_CounterType ;                    %>40/* Base type of counter which holds the counting value */
+  typedef uint32_t %'ModuleName'_CounterType ;                   %>40/* Base type of counter which holds the counting value */
 #endif
 #ifndef __BWUserType_%'ModuleName'_CounterHandle
 #define __BWUserType_%'ModuleName'_CounterHandle
   typedef uint8_t %'ModuleName'_CounterHandle ;                  %>40/* Type for the timeout counter handle. */
+#endif
+#ifndef __BWUserType_uint32_t
+#define __BWUserType_uint32_t
+  typedef dword uint32_t ;                                       %>40/*  */
 #endif
 
 %-ENDUSRTYPES
