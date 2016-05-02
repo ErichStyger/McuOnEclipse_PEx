@@ -106,14 +106,29 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+%if %C1C2swapped='yes'
+#define %'ModuleName'%.SWAP_PINS  1 /* 1: C1 and C2 are swapped */
+%else
+#define %'ModuleName'%.SWAP_PINS  0 /* 1: C1 and C2 are swapped */
+%endif
+%ifdef SwapPins
+#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  1 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is availble */
+%else
+#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  0 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is availble */
+%endif %- SwapPins
+#if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
+  static bool %'ModuleName'%.swappedPins = FALSE;
+#endif
 %if %SamplingMethod='yes'
 #define %'ModuleName'%.GET_C1_PIN()      (%@C1@'ModuleName'%.GetVal())
 #define %'ModuleName'%.GET_C2_PIN()      (%@C2@'ModuleName'%.GetVal())
-%if %C1C2swapped='yes'
-#define %'ModuleName'%.GET_C1_C2_PINS()  ((%'ModuleName'%.GET_C2_PIN()!=0?2:0)|(%'ModuleName'%.GET_C1_PIN()!=0?1:0))
-%else
-#define %'ModuleName'%.GET_C1_C2_PINS()  ((%'ModuleName'%.GET_C1_PIN()!=0?2:0)|(%'ModuleName'%.GET_C2_PIN()!=0?1:0))
-%endif
+#if %'ModuleName'%.SWAP_PINS
+  #define %'ModuleName'%.GET_C1_C2_PINS()               ((%'ModuleName'%.GET_C2_PIN()!=0?2:0)|(%'ModuleName'%.GET_C1_PIN()!=0?1:0))
+  #define %'ModuleName'%.GET_C1_C2_PINS_SWAPPED()       ((%'ModuleName'%.GET_C1_PIN()!=0?2:0)|(%'ModuleName'%.GET_C2_PIN()!=0?1:0))
+#else
+  #define %'ModuleName'%.GET_C1_C2_PINS()               ((%'ModuleName'%.GET_C1_PIN()!=0?2:0)|(%'ModuleName'%.GET_C2_PIN()!=0?1:0))
+  #define %'ModuleName'%.GET_C1_C2_PINS_SWAPPED()       ((%'ModuleName'%.GET_C2_PIN()!=0?2:0)|(%'ModuleName'%.GET_C1_PIN()!=0?1:0))
+#endif
 
 %if %CounterType='16'
 typedef uint16_t %'ModuleName'%.QuadCntrType;
@@ -210,14 +225,22 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetVal
 %ifdef GetVal
-#define %'ModuleName'%.%GetVal() \
-  %'ModuleName'%.GET_C1_C2_PINS()
-
+uint8_t %'ModuleName'%.%GetVal(void);
 %define! RetVal
 %include Common\QuadCounterGetVal.Inc
 
 %endif %- GetVal
 %-BW_METHOD_END GetVal
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SwapPins
+%ifdef SwapPins
+uint8_t %'ModuleName'%.%SwapPins(bool swap);
+%define! Parswap
+%define! RetVal
+%include Common\QuadCounterSwapPins.Inc
+
+%endif %- SwapPins
+%-BW_METHOD_END SwapPins
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -430,18 +453,6 @@ void %'ModuleName'%.%SetPos(%'ModuleName'_QuadCntrType pos)
 %endif %- SetPos
 %-BW_METHOD_END SetPos
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetPos
-%ifdef GetPos
-%define! RetVal
-%include Common\QuadCounterGetPos.Inc
-%'ModuleName'_QuadCntrType %'ModuleName'%.%GetPos(void)
-{
-  return %'ModuleName'%.currPos;
-}
-
-%endif %- GetPos
-%-BW_METHOD_END GetPos
-%-************************************************************************************************************
 %-INHERITED_EVENT_BEGIN EventCounterC1 OnEnd
 %if InputCaptureMethod='yes'
 %ifdef @EventCounterC1@OnEnd
@@ -459,6 +470,38 @@ void %@EventCounterC1@OnEnd(void)
 %endif
 %-INHERITED_EVENT_END EventCounterC1 OnEnd
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN GetPos
+%ifdef GetPos
+%define! RetVal
+%include Common\QuadCounterGetPos.Inc
+%'ModuleName'_QuadCntrType %'ModuleName'%.%GetPos(void)
+{
+  return %'ModuleName'%.currPos;
+}
+
+%endif %- GetPos
+%-BW_METHOD_END GetPos
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetVal
+%ifdef GetVal
+%define! RetVal
+%include Common\QuadCounterGetVal.Inc
+uint8_t %'ModuleName'%.%GetVal(void)
+{
+#if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
+  if (%'ModuleName'%.swappedPins) {
+    return %'ModuleName'%.GET_C1_C2_PINS();
+  } else {
+    return %'ModuleName'%.GET_C1_C2_PINS_SWAPPED();
+  }
+#else
+  return %'ModuleName'%.GET_C1_C2_PINS();
+#endif
+}
+
+%endif %- GetVal
+%-BW_METHOD_END GetVal
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Sample
 %ifdef Sample
 %include Common\QuadCounterSample.Inc
@@ -467,7 +510,7 @@ void %'ModuleName'%.%Sample(void)
   signed char new_step;
   uint8_t c12; /* value of the two sensor input */
 
-  c12 = %'ModuleName'%.GET_C1_C2_PINS();
+  c12 = %'ModuleName'%.GetVal();
 %if %ErrorCorrection = 'yes'
   new_step = %'ModuleName'%.Quad_Table[%'ModuleName'%.prevlast_quadrature_value][%'ModuleName'%.last_quadrature_value][c12];
   %'ModuleName'%.prevlast_quadrature_value = %'ModuleName'%.last_quadrature_value;
@@ -528,6 +571,9 @@ void %'ModuleName'%.%Init(void)
 %ifdef NofErrors
   %'ModuleName'%.nofErrors = 0;
 %endif %- NofErrors
+#if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
+  %'ModuleName'%.swappedPins = FALSE;
+#endif
 }
 
 %endif %- Init
@@ -605,19 +651,19 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetVal
-%ifdef GetVal
+%-BW_METHOD_BEGIN SwapPins
+%ifdef SwapPins
+%define! Parswap
 %define! RetVal
-%include Common\QuadCounterGetVal.Inc
-/*
-uint8_t %'ModuleName'%.%GetVal(void)
+%include Common\QuadCounterSwapPins.Inc
+uint8_t %'ModuleName'%.%SwapPins(bool swap)
 {
-  *** Implemented as macro on the header file.
+  %'ModuleName'%.swappedPins = swap;
+  return ERR_OK;
 }
-*/
 
-%endif %- GetVal
-%-BW_METHOD_END GetVal
+%endif %- SwapPins
+%-BW_METHOD_END SwapPins
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

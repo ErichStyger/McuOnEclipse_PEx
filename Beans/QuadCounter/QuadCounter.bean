@@ -4,7 +4,7 @@
     <Name>QuadCounter</Name>
     <Description>Counter/Decoder for a Digital Quadrature Encoder</Description>
     <Author>Erich Styger</Author>
-    <Version>01.027</Version>
+    <Version>01.030</Version>
     <Icon>QuadEncoder</Icon>
     <TypesFiles>PE,QuadCounter\QuadCounter</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -432,6 +432,40 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SwapPins</Name>
+        <Symbol>SwapPins</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Swap the two pins</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>swap</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>if C1 and C2 pins shall be swapped.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(bool swap)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
