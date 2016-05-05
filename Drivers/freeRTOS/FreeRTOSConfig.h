@@ -427,19 +427,19 @@
 
 /* Software timer definitions. */
 %if %TimersEnabled='yes'
-#define configUSE_TIMERS                                         %>50 1
-#define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority
-#define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength
-#define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth
+#define configUSE_TIMERS                                         %>50 1 /* set to 1 to enable sofware timers */
+#define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority /* e.g. (configMAX_PRIORITIES-1U) */
+#define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* e.g. 10U */
+#define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth /* e.g. (configMINIMAL_STACK_SIZE) */
 #define INCLUDE_xEventGroupSetBitFromISR                         %>50 1
 #define INCLUDE_xTimerPendFunctionCall                           %>50 1
 %else
-#define configUSE_TIMERS                                         %>50 0
-#define configTIMER_TASK_PRIORITY                                %>50 0
-#define configTIMER_QUEUE_LENGTH                                 %>50 0
-#define configTIMER_TASK_STACK_DEPTH                             %>50 0
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 0
-#define INCLUDE_xTimerPendFunctionCall                           %>50 0
+#define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable sofware timers */
+#define configTIMER_TASK_PRIORITY                                %>50 (configMAX_PRIORITIES-1U)
+#define configTIMER_QUEUE_LENGTH                                 %>50 10U
+#define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
+#define INCLUDE_xEventGroupSetBitFromISR                         %>50 1
+#define INCLUDE_xTimerPendFunctionCall                           %>50 1
 %endif
 
 /* Set configUSE_TASK_FPU_SUPPORT to 0 to omit floating point support even

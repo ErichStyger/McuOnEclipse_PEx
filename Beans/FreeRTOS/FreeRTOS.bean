@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.455</Version>
+    <Version>01.459</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -156,7 +156,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -186,7 +186,7 @@
                     <Hint>RTOS source files are generated into this sub folder name. The name can be empty.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
-                    <DefaultValue>FreeRTOS\src</DefaultValue>
+                    <DefaultValue>FreeRTOS\Source</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>
@@ -199,7 +199,7 @@
                     <Hint>RTOS header files are generated into this sub folder name. The name can be empty.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
-                    <DefaultValue>FreeRTOS\include</DefaultValue>
+                    <DefaultValue>FreeRTOS\Source\include</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>
@@ -212,7 +212,20 @@
                     <Hint>RTOS port depending sources files are generated into this sub folder name. The name can be empty.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
-                    <DefaultValue>FreeRTOS\port</DefaultValue>
+                    <DefaultValue>FreeRTOS\Source\portable\GCC\ARM_CM4F</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>MemMang Folder</Name>
+                    <Symbol>RTOSMemMangFolderName</Symbol>
+                    <Hint>RTOS port depending sources files are generated into this sub folder name. The name can be empty.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>FreeRTOS\Source\portable\MemMang</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>

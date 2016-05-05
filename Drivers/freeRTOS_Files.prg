@@ -6,6 +6,11 @@
 %else
   %define  RTOSSrcDirFolder 
 %endif
+%if defined(RTOSMemMangFolderName)
+  %define  RTOSMemMangDirFolder /%'RTOSMemMangFolderName'/
+%else
+  %define  RTOSMemMangDirFolder
+%endif
 %if defined(RTOSHeaderFolderName)
   %define  RTOSHeaderDirFolder /%'RTOSHeaderFolderName'/
 %else
@@ -34,19 +39,19 @@
 %FILE %'DirRel_Code'%'RTOSConfigDirFolder'FreeRTOSConfig.h
 %include freeRTOS\FreeRTOSConfig.h
 
-%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_1.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_1.c
 %include freeRTOS\heap_1.c
 
-%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_2.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_2.c
 %include freeRTOS\heap_2.c
 
-%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_3.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_3.c
 %include freeRTOS\heap_3.c
 
-%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_4.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_4.c
 %include freeRTOS\heap_4.c
 
-%FILE %'DirRel_Code'%'RTOSSrcDirFolder'heap_5.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_5.c
 %include freeRTOS\heap_5.c
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'FreeRTOS_license.txt
