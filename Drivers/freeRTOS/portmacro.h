@@ -384,6 +384,7 @@ extern void vPortExitCritical(void);
 extern void vPortYieldFromISR(void);
 #define portYIELD()                             vPortYieldFromISR()
 #define portEND_SWITCHING_ISR(xSwitchRequired)  if(xSwitchRequired) vPortYieldFromISR()
+#define portYIELD_FROM_ISR(x)                   portEND_SWITCHING_ISR(x)
 /*-----------------------------------------------------------*/
 
 /* Architecture specific optimizations. */
