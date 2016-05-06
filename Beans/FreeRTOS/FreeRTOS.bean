@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.460</Version>
+    <Version>01.464</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -156,7 +156,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -502,22 +502,18 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
-            <TInhrItem>
-              <Name>FreeRTOS Trace</Name>
+            <TInhrLinkItem>
+              <Name>Percepio FreeRTOS+Trace</Name>
               <Symbol>FRTrace</Symbol>
-              <TypeSpec>FreeRTOS\FreeRTOSTraceInterface</TypeSpec>
-              <Hint>Interface to the trace hooks.</Hint>
+              <TypeSpec>FreeRTOS\FRTrace</TypeSpec>
+              <Hint>Link to Percepio Trace component. Only one trace method (Segger or Percepio) can be used.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>-1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
+              <DefaultValue/>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <InhrBeanBaseName>RTOSTRC</InhrBeanBaseName>
-              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-            </TInhrItem>
+              <SortStyle/>
+            </TInhrLinkItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>
