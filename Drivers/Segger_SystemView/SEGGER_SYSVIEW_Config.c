@@ -219,7 +219,7 @@ static void _cbSendSystemDesc(void) {
 void SEGGER_SYSVIEW_Conf(void) {
 #if SYSVIEW_USING_FREERTOS
   #if configUSE_TRACE_HOOKS /* using Percepio Trace */
-    #error "Percepio Trace is enabled, this might conflict with Segger System View."
+    #warning "Percepio Trace is enabled, this might conflict with Segger System View."
   #endif
 #endif
   SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
