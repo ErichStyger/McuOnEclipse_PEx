@@ -438,8 +438,8 @@
 #define configTIMER_TASK_PRIORITY                                %>50 (configMAX_PRIORITIES-1U)
 #define configTIMER_QUEUE_LENGTH                                 %>50 10U
 #define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 1
-#define INCLUDE_xTimerPendFunctionCall                           %>50 1
+#define INCLUDE_xEventGroupSetBitFromISR                         %>50 0
+#define INCLUDE_xTimerPendFunctionCall                           %>50 0
 %endif
 
 /* Set configUSE_TASK_FPU_SUPPORT to 0 to omit floating point support even
