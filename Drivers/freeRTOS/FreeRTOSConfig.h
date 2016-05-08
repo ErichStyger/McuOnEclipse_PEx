@@ -210,7 +210,7 @@
 %else
 #define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCount() /* default: use Tick counter as runtime counter */
+#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
 %endif
 %-
 %if UsePreemption = 'yes'
