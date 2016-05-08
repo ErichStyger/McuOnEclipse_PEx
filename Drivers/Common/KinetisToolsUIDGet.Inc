@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (UIDGet)
 %;**     Description :
-%;**         Return the 80bit UID of the device
+%;**         Return the 128bit UID of the device
 %include Common\GeneralParameters.inc(27)
 %;**       * uid%Paruid %>27 - Pointer to 
 %;**     Returns     :
