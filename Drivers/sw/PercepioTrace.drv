@@ -85,9 +85,15 @@
   #include "%ProcessorModule.h"
 #else
   /* prototypes for events */
+%if defined(OnTraceStart)
   void %OnTraceStart(void);
+%endif
+%if defined(OnTraceStop)
   void %OnTraceStop(void);
+%endif
+%if defined(OnTraceWrap)
   void %OnTraceWrap(void);
+%endif
 #endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -474,7 +480,7 @@ void %'ModuleName'%.%vTraceSetTimerFrequency(dword frequency)
 %-BW_METHOD_BEGIN uiTraceStart
 %ifdef uiTraceStart
 %define! RetVal
-%include Common\PercepioTraceuiTraceStart.Inc
+  %include Common\PercepioTraceuiTraceStart.Inc
 /*
 dword %'ModuleName'%.%uiTraceStart(void)
 {
