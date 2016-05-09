@@ -1701,12 +1701,12 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks);
 
 /* MODULE %ModuleName. */
 #include "%'ModuleName'.h"
-#include "portTicks.h"                                           %>40/* interface to tick counter */
 #if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
 %for var from EventModules
   #include "%var.h"
 %endfor
 #endif
+#include "portTicks.h"                                           %>40/* interface to tick counter */
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
