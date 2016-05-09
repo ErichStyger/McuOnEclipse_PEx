@@ -185,14 +185,14 @@
 #if 1 /* << EST: HC12 and HC08 */
   /* CPUfamily is %CPUfamily */
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
-#define IRQ_PRIORITY_ORDER 1 /* ColdFire V1/V2: (higher irq priority values are more significant) */
+  #define IRQ_PRIORITY_ORDER 1 /* ColdFire V1/V2: (higher irq priority values are more significant) */
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") 
-#define IRQ_PRIORITY_ORDER 0 /* S08/S12: (lower irq priority values are more significant) */
+  #define IRQ_PRIORITY_ORDER 0 /* S08/S12: (lower irq priority values are more significant) */
 %- %elif (CPUfamily = "56800")
 %elif (CPUfamily = "Kinetis")
-#define IRQ_PRIORITY_ORDER 0 /* Kinetis: (lower irq priority values are more significant) */
+  #define IRQ_PRIORITY_ORDER 0 /* Kinetis: (lower irq priority values are more significant) */
 %else
-#error "unsupported architecture '%CPUfamily'"
+  #error "unsupported architecture '%CPUfamily'"
 %endif
 #else
   #define IRQ_PRIORITY_ORDER 0
