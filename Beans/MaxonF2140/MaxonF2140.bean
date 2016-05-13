@@ -4,7 +4,7 @@
     <Name>MaxonF2140</Name>
     <Description>Maxon F2140 DC-Motor</Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.004</Version>
     <Icon>MaxonF2140</Icon>
     <TypesFiles>PE,MaxonF2140\MaxonF2140</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all rights reserved.\n\nThis an open source software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012-2016, all rights reserved.\n\nThis an open source software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Shortcut>MAX</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -86,6 +86,24 @@
         </Children>
       </TGrupItem>
     </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Motor PWM is LOW active</Name>
+        <Symbol>MotorPWMLowActive</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If set to yes (default), the PWM for the motor is treated as low active in the driver.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
   </PropertyList>
   <MethodList>
     <Method>
@@ -146,13 +164,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ratio</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>PWM ratio value, in the range from 0 (stop) to 0xffff (full speed)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(word ratio)</ANSIC>
+          <ANSIC>void #M#_#C#(uint16_t ratio)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
