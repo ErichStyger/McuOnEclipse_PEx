@@ -100,11 +100,13 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+%if defined(MotorPWMLowActive) & %MotorPWMLowActive='yes'
+#define %'ModuleName'%.MOTOR_PWM_IS_LOW_ACTIVE  1  /* 1: Motor PWM is LOW active */
+%else
+#define %'ModuleName'%.MOTOR_PWM_IS_LOW_ACTIVE  0  /* 1: Motor PWM is LOW active */
+%endif
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetDirection
 %ifdef SetDirection
@@ -117,7 +119,7 @@ void %'ModuleName'%.%SetDirection(bool forward);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetVal
 %ifdef SetVal
-void %'ModuleName'%.%SetVal(word ratio);
+void %'ModuleName'%.%SetVal(uint16_t ratio);
 %define! Parratio
 %include Common\MaxonF2140SetVal.Inc
 
@@ -172,7 +174,6 @@ static word %'ModuleName'%.ratio;
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetDirection
 %ifdef SetDirection
 %define! Parforward
@@ -193,10 +194,14 @@ void %'ModuleName'%.%SetDirection(bool forward)
 %ifdef SetVal
 %define! Parratio
 %include Common\MaxonF2140SetVal.Inc
-void %'ModuleName'%.%SetVal(word ratio)
+void %'ModuleName'%.%SetVal(uint16_t ratio)
 {
   %'ModuleName'%.ratio = ratio;
+#if %'ModuleName'%.MOTOR_PWM_IS_LOW_ACTIVE
+  (void)%@PWM@'ModuleName'%.SetRatio16(0xFFFF-ratio);
+#else
   (void)%@PWM@'ModuleName'%.SetRatio16(ratio);
+#endif
 }
 
 %endif %- SetVal

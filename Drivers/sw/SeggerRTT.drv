@@ -325,6 +325,14 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- printf
 %-BW_METHOD_END printf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\SeggerRTTDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -577,21 +585,6 @@ uint16_t %'ModuleName'%.%GetCharsInRxBuf(void)
 %endif %- GetCharsInRxBuf
 %-BW_METHOD_END GetCharsInRxBuf
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\SeggerRTTInit.Inc
-void %'ModuleName'%.%Init(void)
-{
-  SEGGER_RTT_Init();
-#if %'ModuleName'%.RTT_CHANNEL_0_ENABLED
-  (void)%'ModuleName'%.ConfigUpBuffer(0, NULL, NULL, 0, %UpBufferMode);
-  (void)%'ModuleName'%.ConfigDownBuffer(0, NULL, NULL, 0, %DownBufferMode);
-#endif
-}
-
-%endif %- Init
-%-BW_METHOD_END Init
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN TerminalOut
 %ifdef TerminalOut
 %define! ParTerminalId
@@ -676,6 +669,40 @@ int %'ModuleName'%.%printf(unsigned BufferIndex, const char* sFormat, ...)
 
 %endif %- printf
 %-BW_METHOD_END printf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\SeggerRTTDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* noting to de-initialize */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\SeggerRTTInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  int i;
+
+  SEGGER_RTT_Init();
+  for (i=0;i<SEGGER_RTT_MAX_NUM_UP_BUFFERS;i++) { /* configure channels with defaults */
+    (void)%'ModuleName'%.ConfigUpBuffer(i, "", NULL, 0, %UpBufferMode);
+  }
+  for (i=0;i<SEGGER_RTT_MAX_NUM_DOWN_BUFFERS;i++) { /* configure channels with defaults */
+    (void)%'ModuleName'%.ConfigDownBuffer(i, "", NULL, 0, %DownBufferMode);
+  }
+#if 0 && %'ModuleName'%.RTT_CHANNEL_0_ENABLED
+  (void)%'ModuleName'%.ConfigUpBuffer(0, SEGGER_RTT_CHANNEL_0_NAME, NULL, 0, %UpBufferMode);
+  (void)%'ModuleName'%.ConfigDownBuffer(0, SEGGER_RTT_CHANNEL_0_NAME, NULL, 0, %DownBufferMode);
+#endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

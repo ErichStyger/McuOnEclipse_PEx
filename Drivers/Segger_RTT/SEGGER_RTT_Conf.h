@@ -75,6 +75,13 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
   #include "portmacro.h" /* include FreeRTOS port header file for critical section handling */
 #endif
 
+/* Channel 0 settings from properties */ /* << EST */
+#define SEGGER_RTT_CHANNEL_0_NAME                 %NameChannel0
+#define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_UP       (%RTTBufferSizeUp)
+#define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_DOWN     (%RTTBufferSizeDown)
+#define SEGGER_RTT_CHANNEL_0_MODE_UP              %UpBufferMode
+#define SEGGER_RTT_CHANNEL_0_MODE_DOWN            %DownBufferMode
+
 #define SEGGER_RTT_MAX_NUM_UP_BUFFERS             (%RTTBufferNofUp)     // Max. number of up-buffers (T->H) available on this target    (Default: 2)
 #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (%RTTBufferNofDown)     // Max. number of down-buffers (H->T) available on this target  (Default: 2)
 
