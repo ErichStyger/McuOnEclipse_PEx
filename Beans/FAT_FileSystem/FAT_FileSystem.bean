@@ -4,7 +4,7 @@
     <Name>FAT_FileSystem</Name>
     <Description>FAT file system module</Description>
     <Author>ChaN, adopted by Erich Styger for Processor Expert</Author>
-    <Version>01.168</Version>
+    <Version>01.180</Version>
     <Icon>FAT_FileSystem</Icon>
     <TypesFiles>PE,FAT_FileSystem\FAT_FileSystem</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,7 +17,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>6</BW_NeedUst>
+    <BW_NeedUst>8</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012-2015, all rights reserved.\nWeb       : www.mcuoneclipse.com\nFatFS: Copyright (C) 2014, ChaN, all right reserved. (see copyright notice and license in the FatFS implementation).\n\nThis an open source software implementing an interface to the ChaN FatFS using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -958,14 +958,14 @@ You need to implement your own 'DWORD get_fattime (void)', see the implementatio
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>fs</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>pointer to the new file system object (NULL for unmount)</ParHint>
           <ParUserDeclaration>FATFS *fs</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>path</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Logical drive number to be mounted/unmounted</ParHint>
           <ParUserDeclaration>const TCHAR* path</ParUserDeclaration>
@@ -1131,13 +1131,13 @@ You need to implement your own 'DWORD get_fattime (void)', see the implementatio
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>drvStr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to drive string, e.g. "" or "0"</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte *drvStr)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *drvStr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1165,13 +1165,13 @@ You need to implement your own 'DWORD get_fattime (void)', see the implementatio
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>drvStr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>drive string, "" or "0" or "1"</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte *drvStr)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *drvStr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1199,7 +1199,7 @@ You need to implement your own 'DWORD get_fattime (void)', see the implementatio
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>path</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Name of directory to be created</ParHint>
           <ParUserDeclaration>const XCHAR *path</ParUserDeclaration>
@@ -1246,19 +1246,19 @@ AM_HID	Hidden</Hint>
         </Parameter>
         <Parameter>
           <ParName>Attribute</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Attribute flags. Attribute flags to be set in one or more combination of the following flags. The specified flags are set and others are cleard.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>AttributeMask</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Attribute mask. Attribute mask that specifies which attribute is changed. The specified aattributes are set or cleard.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>FRESULT #M#_#C#(const TCHAR* FileName, byte Attribute, byte AttributeMask)</ANSIC>
+          <ANSIC>FRESULT #M#_#C#(const TCHAR* FileName, uint8_t Attribute, uint8_t AttributeMask)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1412,7 +1412,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Parameter>
           <ParName>PartitioningRule</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>When 0 is given, a partition table is created into the master boot record and a primary DOS partition is created and then an FAT volume is created on the partition. This is called FDISK format and used for harddisk and memory cards. When 1 is given, the FAT volume starts from the first sector on the drive without partition table. This is called SFD format and used for floppy disk and most optical disk</ParHint>
         </Parameter>
@@ -1425,7 +1425,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>FRESULT #M#_#C#(byte drive, byte PartitioningRule, UINT  AllocSize)</ANSIC>
+          <ANSIC>FRESULT #M#_#C#(byte drive, uint8_t PartitioningRule, UINT  AllocSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1544,13 +1544,13 @@ The truncate() function truncates the file size to the current file read/write p
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Drive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Logical drive number</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>FRESULT #M#_#C#(byte Drive)</ANSIC>
+          <ANSIC>FRESULT #M#_#C#(uint8_t Drive)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1578,14 +1578,14 @@ The truncate() function truncates the file size to the current file read/write p
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>Buffer</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to the buffer to receive the current directory string.</ParHint>
           <ParUserDeclaration>TCHAR* Buffer</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>BufferLen</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of the buffer in unit of TCHAR.</ParHint>
           <ParUserDeclaration>UINT BufferLen</ParUserDeclaration>
@@ -1902,19 +1902,19 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>fp</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to file object</ParHint>
           <ParUserDeclaration>FIL *fil</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(FIL *fil)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(FIL *fil)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2007,12 +2007,12 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2035,12 +2035,12 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2091,7 +2091,7 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -2116,7 +2116,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2139,7 +2139,7 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>4</ParamCount>
         <Parameter>
@@ -2150,7 +2150,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Parameter>
           <ParName>drive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>drive string, or ""</ParHint>
         </Parameter>
@@ -2169,7 +2169,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(bool *cardMounted, byte *drive, FATFS *fileSystemObject, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(bool *cardMounted, uint8_t *drive, FATFS *fileSystemObject, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2192,7 +2192,7 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -2203,7 +2203,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Parameter>
           <ParName>logicalDrive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the drive string, or ""</ParHint>
         </Parameter>
@@ -2216,7 +2216,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(FATFS *fileSystemObject, byte *logicalDrive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(FATFS *fileSystemObject, uint8_t *logicalDrive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2239,25 +2239,25 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>logicalDrive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the drive string, or ""</ParHint>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to I/O handler</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *logicalDrive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *logicalDrive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2280,26 +2280,26 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>dirName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Directory folder to be printed</ParHint>
-          <ParUserDeclaration>const byte *dirName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *dirName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to I/O handler</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2322,22 +2322,22 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>srcFileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Source file name</ParHint>
-          <ParUserDeclaration>const byte *srcFileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t*srcFileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>dstFileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Destination file name</ParHint>
-          <ParUserDeclaration>const byte *dstFileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *dstFileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2348,7 +2348,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *srcFileName, const byte *dstFileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t*srcFileName, const uint8_t *dstFileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2371,26 +2371,26 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>fileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Filename of file to be deleted</ParHint>
-          <ParUserDeclaration>const byte *fileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *fileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to I/O handler</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *fileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *fileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2413,15 +2413,15 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>fileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Name of file to be printed</ParHint>
-          <ParUserDeclaration>const byte *fileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *fileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2432,7 +2432,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *fileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *fileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2455,7 +2455,7 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -2463,7 +2463,7 @@ The truncate() function truncates the file size to the current file read/write p
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Directory name</ParHint>
-          <ParUserDeclaration>const byte *dirName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *dirName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2474,7 +2474,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2497,15 +2497,15 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>dirName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Directory name</ParHint>
-          <ParUserDeclaration>const byte *dirName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *dirName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2516,7 +2516,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *dirName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2539,22 +2539,22 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>srcFileName</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Source file name</ParHint>
-          <ParUserDeclaration>const byte *srcFileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *srcFileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>dstFileName</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Destination file name</ParHint>
-          <ParUserDeclaration>const byte *dstFileName</ParUserDeclaration>
+          <ParUserDeclaration>const uint8_t *dstFileName</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2565,7 +2565,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const byte *srcFileName, const byte *dstFileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *srcFileName, const uint8_t *dstFileName, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2588,18 +2588,18 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>drive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>drive number, starting with zero</ParHint>
         </Parameter>
         <Parameter>
           <ParName>sectorNo</ParName>
-          <ParType>32bit unsigned</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>sector number</ParHint>
         </Parameter>
@@ -2612,7 +2612,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte drive, dword sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t drive, uint32_t sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2635,25 +2635,25 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>drive</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>drive number, starting with zero</ParHint>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to I/O handler</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte drive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t drive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2676,19 +2676,19 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to I/O handler</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
