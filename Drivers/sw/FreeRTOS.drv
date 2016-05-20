@@ -1633,6 +1633,14 @@ void %@FRTrace@OnTraceWrap(void);
 %endif %- @FRTrace@OnTraceWrap
 %endif
 %-INHERITED_EVENT_END FRTrace OnTraceWrap
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\FreeRTOSDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3940,6 +3948,17 @@ void %@FRTrace@OnTraceWrap(void)
 %endif %- @FRTrace@OnTraceWrap
 %endif
 %-INHERITED_EVENT_END FRTrace OnTraceWrap
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\FreeRTOSDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
