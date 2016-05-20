@@ -279,7 +279,11 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
 %if %Compiler = "GNUC"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 __attribute__((naked))
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+void HardFault_Handler(void)
+#else
 void %'ModuleName'%.%HardFaultHandler(void)
+#endif
 {
   __asm volatile (
     " movs r0,#4      \n"  /* load bit mask into R0 */
@@ -296,7 +300,11 @@ void %'ModuleName'%.%HardFaultHandler(void)
   );
 }
 %elif (%Compiler = "ARM_CC") %- Keil/ARM compiler
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+__asm void HardFault_Handler(void)
+#else
 __asm void %'ModuleName'%.%HardFaultHandler(void)
+#endif
 {
   EXTERN %'ModuleName'%.HandlerC [CODE]
 
@@ -317,7 +325,11 @@ _GetPC              /* find out where the hard fault happened */
   /* %'ModuleName'%.HardFaultHandler() is implemented in assembly in %'ModuleName'%.HardFaultHandler.s */
 %elif (%Compiler = "CodeWarriorARM")
 /* legacy Freescale ARM compiler */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+asm void HardFault_Handler(void) {
+#else
 asm void %'ModuleName'%.%HardFaultHandler(void)
+#endif
 {
     movs r0,#4       /* load bit mask into R0 */
     movs r1, lr      /* load link register into R1 */
