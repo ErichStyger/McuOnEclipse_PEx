@@ -751,6 +751,17 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io);
 
 %endif %- Benchmark
 %-BW_METHOD_END Benchmark
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintHexFile
+%ifdef PrintHexFile
+uint8_t %'ModuleName'%.%PrintHexFile(const uint8_t *fileName, const %@Shell@'ModuleName'%.StdIOType *io);
+%define! ParfileName
+%define! Pario
+%define! RetVal
+%include Common\FAT_FileSystemPrintHexFile.Inc
+
+%endif %- PrintHexFile
+%-BW_METHOD_END PrintHexFile
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1151,7 +1162,7 @@ static uint8_t DirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Cons
 #endif
   }
   if (res == ERR_OK) {
-uint8_t %'ModuleName'%.%PrintDirectory(const uint8_t *dirName, const %@Shell@'ModuleName'%.StdIOType *io);
+    res = %'ModuleName'%.%PrintDirectory(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   }
   %'ModuleName'%.FREE_NAMEBUF(fileName);
   return res;
@@ -1181,7 +1192,7 @@ static uint8_t CopyCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Con
           %'ModuleName'%.SIZE_NAMEBUF(fileName2), NULL, NULL, NULL)==ERR_OK)
      )
   {
-uint8_t %'ModuleName'%.%CopyFile(const uint8_t*srcFileName, const uint8_t *dstFileName, const %@Shell@'ModuleName'%.StdIOType *io);
+    res = %'ModuleName'%.%CopyFile(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.PTR_NAMEBUF(fileName2), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"copy srcFileName dstFileName", io);
     res = ERR_FAILED;
@@ -1208,7 +1219,7 @@ static uint8_t DeleteCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-uint8_t %'ModuleName'%.%DeleteFile(const uint8_t *fileName, const %@Shell@'ModuleName'%.StdIOType *io);
+    res = %'ModuleName'%.%DeleteFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"delete fileName", io);
     res = ERR_FAILED;
@@ -1234,7 +1245,7 @@ static uint8_t MkdirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Co
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-uint8_t %'ModuleName'%.%MakeDirectory(const uint8_t *dirName, const %@Shell@'ModuleName'%.StdIOType *io);
+    res = %'ModuleName'%.%MakeDirectory(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"mkdir directoryName", io);
     res = ERR_FAILED;
@@ -1312,7 +1323,29 @@ static uint8_t PrintCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Co
   %'ModuleName'%.FREE_NAMEBUF(fileName);
   return res;
 }
+
 %endif %-defined(PrintFile)
+%if defined(PrintHexFile)
+static uint8_t PrintHexCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.ConstStdIOType *io) {
+  /* precondition: cmd starts with "printhex" */
+  uint8_t res = ERR_OK;
+  %'ModuleName'%.DEF_NAMEBUF(fileName);
+
+  %'ModuleName'%.INIT_NAMEBUF(fileName);
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("printhex"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+        %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
+     )
+  {
+    res = %'ModuleName'%.%PrintHexFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+  } else {
+    CmdUsageError(cmd, (unsigned char*)"printhex fileName", io);
+    res = ERR_FAILED;
+  }
+  %'ModuleName'%.FREE_NAMEBUF(fileName);
+  return res;
+}
+
+%endif %-defined(PrintHexFile)
 %if defined(ChangeDirectory)
 
 static uint8_t CdCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.ConstStdIOType *io) {
@@ -1392,8 +1425,10 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %endif %- RenameFile
 %ifdef PrintFile
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  print <filename>", (const unsigned char*)"Print a file\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printhex <filename>", (const unsigned char*)"Print a file as hexdump\r\n", io->stdOut);
 %endif %- PrintFile
+%ifdef PrintHexFile
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printhex <filename>", (const unsigned char*)"Print a file as hexdump\r\n", io->stdOut);
+%endif %- PrintHexFile
 %ifdef PrintSector
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sector <number>", (const unsigned char*)"Print disk sector\r\n", io->stdOut);
 %endif %- PrintSector
@@ -2303,11 +2338,11 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     *handled = TRUE;
     return DirCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintDirectory
-%ifdef PrintFile
+%ifdef CopyFile
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' copy", sizeof("%'ModuleName' copy")-1)==0) {
     *handled = TRUE;
     return CopyCmd(cmd+sizeof("%'ModuleName'"), io);
-%endif %- PrintFile
+%endif %- CopyFile
 %ifdef DeleteFile
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' delete", sizeof("%'ModuleName' delete")-1)==0) {
     *handled = TRUE;
@@ -2323,11 +2358,13 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     *handled = TRUE;
     return RenameCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- RenameFile
+%ifdef PrintHexFile
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printhex", sizeof("%'ModuleName' printhex")-1)==0) {
+    *handled = TRUE;
+    return PrintHexCmd(cmd+sizeof("%'ModuleName'"), io);
+%endif %- PrintHexFile
 %ifdef PrintFile
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' print", sizeof("%'ModuleName' print")-1)==0) {
-    *handled = TRUE;
-    return PrintCmd(cmd+sizeof("%'ModuleName'"), io);
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printhex", sizeof("%'ModuleName' printhex")-1)==0) {
     *handled = TRUE;
     return PrintCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintFile
@@ -2644,6 +2681,80 @@ uint8_t %'ModuleName'%.%PrintFile(const uint8_t *fileName, const %@Shell@'Module
 
 %endif %- PrintFile
 %-BW_METHOD_END PrintFile
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintHexFile
+%ifdef PrintHexFile
+%define! ParfileName
+%define! Pario
+%define! RetVal
+%include Common\FAT_FileSystemPrintHexFile.Inc
+uint8_t %'ModuleName'%.%PrintHexFile(const uint8_t *fileName, const %@Shell@'ModuleName'%.StdIOType *io)
+{
+  %'ModuleName'%.FIL file;
+  %'ModuleName'%.FRESULT fres;
+  UINT nofRead = 0;
+  #define PRINT_HEX_NOF_BYTES_PER_LINE 16
+  uint8_t filebuf[PRINT_HEX_NOF_BYTES_PER_LINE];
+  uint8_t buf[16];
+  uint8_t ch, res = ERR_OK;
+  UINT i;
+
+  fres = %'ModuleName'%.open(&file, (const TCHAR *)fileName, FA_READ);
+  if (fres == FR_OK) {
+    do {
+      nofRead = 0;
+      fres=%'ModuleName'%.read(&file, filebuf, sizeof(filebuf), &nofRead); /* read one byte less for zero byte */
+      if (fres != FR_OK) {
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"fread failed\r\n", io->stdErr);
+        res = ERR_FAILED;
+      } else if (nofRead>0) {
+        for(i=0; i<nofRead; i++) {
+          if ((i%%PRINT_HEX_NOF_BYTES_PER_LINE)==0) { /* new line to make things readable */
+            %@Shell@'ModuleName'%.SendStr((unsigned char*)"0x", io->stdOut);
+            buf[0] = '\0';
+            %@Utility@'ModuleName'%.strcatNum32Hex(buf, sizeof(buf), i);
+            %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+            %@Shell@'ModuleName'%.SendStr((unsigned char*)": ", io->stdOut);
+          }
+          buf[0] = '\0';
+          %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), filebuf[i]);
+          %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+          %@Shell@'ModuleName'%.SendStr((unsigned char*)" ", io->stdOut);
+        }
+        /* fill up line if not a full line */
+        for (/*empty*/; i<PRINT_HEX_NOF_BYTES_PER_LINE; i++) {
+          %@Shell@'ModuleName'%.SendStr((unsigned char*)"-- ", io->stdOut);
+        }
+        /* print in ASCII */
+        %@Shell@'ModuleName'%.SendCh(' ', io->stdOut);
+        for (i=0; i<nofRead; i++) {
+          ch = filebuf[i];
+          if (ch >= ' ' && ch <= 0x7f) {
+            %@Shell@'ModuleName'%.SendCh(ch, io->stdOut);
+          } else {
+            %@Shell@'ModuleName'%.SendCh('.', io->stdOut); /* place holder */
+          }
+        }
+        for (/*empty*/; i<PRINT_HEX_NOF_BYTES_PER_LINE; i++) { /* fill up line */
+          %@Shell@'ModuleName'%.SendCh('-', io->stdOut);
+        }
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+      }
+    } while(nofRead>0 && fres==FR_OK);
+    fres=%'ModuleName'%.close(&file);
+    if (fres != FR_OK) {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"fclose failed\r\n", io->stdErr);
+      res = ERR_FAILED;
+    }
+  } else {
+    FatFsFResultMsg((unsigned char*)"open file failed\r\n", fres, io);
+    res = ERR_FAILED;
+  }
+  return res;
+}
+
+%endif %- PrintHexFile
+%-BW_METHOD_END PrintHexFile
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN MakeDirectory
 %ifdef MakeDirectory
