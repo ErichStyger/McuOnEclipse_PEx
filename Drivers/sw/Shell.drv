@@ -506,6 +506,16 @@ bool %'ModuleName'%.%IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdB
 
 %endif %- IsHistoryCharacter
 %-BW_METHOD_END IsHistoryCharacter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendCh
+%ifdef SendCh
+void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io);
+%define! Parch
+%define! Pario
+%include Common\ShellSendCh.Inc
+
+%endif %- SendCh
+%-BW_METHOD_END SendCh
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -602,9 +612,19 @@ static void SendSeparatedStrings(const uint8_t *strA, const uint8_t *strB, uint8
 
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
-%-*****************************************************************************************************
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendCh
+%ifdef SendCh
+%define! Parch
+%define! Pario
+%include Common\ShellSendCh.Inc
+void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io)
+{
+  io(ch);
+}
 
-
+%endif %- SendCh
+%-BW_METHOD_END SendCh
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendStr
 %ifdef SendStr
