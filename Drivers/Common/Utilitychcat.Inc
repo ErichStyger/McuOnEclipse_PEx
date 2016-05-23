@@ -5,8 +5,8 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (chcat)
 %;**     Description :
-%;**         Adds a single character to a zero byte terminated buffer. It
-%;**         cares about buffer overflow.
+%;**         Adds a single character to a zero byte terminated string
+%;**         buffer. It cares about buffer overflow.
 %include Common\GeneralParameters.inc(27)
 %;**       * dst%Pardst %>27 - Pointer to destination string
 %;**         dstSize%PardstSize %>27 - Size of the destination buffer (in

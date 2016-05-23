@@ -5,8 +5,8 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (strcatNum24Hex)
 %;**     Description :
-%;**         Appends a 32bit unsigned value to a buffer as hex number
-%;**         (without a 0x prefix). Only 24bits are used.
+%;**         Appends a 32bit unsigned value to a string buffer as hex
+%;**         number (without a 0x prefix). Only 24bits are used.
 %include Common\GeneralParameters.inc(27)
 %;**       * dst%Pardst %>27 - Pointer to destination string
 %;**         dstSize%PardstSize %>27 - Size of the destination buffer (in

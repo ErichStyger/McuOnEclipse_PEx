@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.119</Version>
+    <Version>01.120</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -213,7 +213,7 @@
         <Name>chcat</Name>
         <Symbol>chcat</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Adds a single character to a zero byte terminated buffer. It cares about buffer overflow.</Hint>
+        <Hint>Adds a single character to a zero byte terminated string buffer. It cares about buffer overflow.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1342,7 +1342,7 @@
         <Name>strcatNum8Hex</Name>
         <Symbol>strcatNum8Hex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Appends a 8bit unsigned value to a buffer as hex number (without a 0x prefix).</Hint>
+        <Hint>Appends a 8bit unsigned value to a string buffer as hex number (without a 0x prefix).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1389,7 +1389,7 @@
         <Name>strcatNum16Hex</Name>
         <Symbol>strcatNum16Hex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Appends a 16bit unsigned value to a buffer as hex number (without a 0x prefix).</Hint>
+        <Hint>Appends a 16bit unsigned value to a string buffer as hex number (without a 0x prefix).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1436,7 +1436,7 @@
         <Name>strcatNum24Hex</Name>
         <Symbol>strcatNum24Hex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Appends a 32bit unsigned value to a buffer as hex number (without a 0x prefix). Only 24bits are used.</Hint>
+        <Hint>Appends a 32bit unsigned value to a string buffer as hex number (without a 0x prefix). Only 24bits are used.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1483,7 +1483,7 @@
         <Name>strcatNum32Hex</Name>
         <Symbol>strcatNum32Hex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Appends a 16bit unsigned value to a buffer as hex number (without a 0x prefix).</Hint>
+        <Hint>Appends a 16bit unsigned value to a string buffer as hex number (without a 0x prefix).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1530,7 +1530,7 @@
         <Name>strcatNum32sDotValue100</Name>
         <Symbol>strcatNum32sDotValue100</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Appends a 32bit signed value to a buffer. The value is in 1/100 units.  For example for the value -13456 it will append the string "-134.56"</Hint>
+        <Hint>Appends a 32bit signed value to a string buffer. The value is in 1/100 units.  For example for the value -13456 it will append the string "-134.56"</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

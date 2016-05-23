@@ -246,7 +246,7 @@ LI.EXP {
 </li>
 <li><a name="chcat">
 <b>chcat</b></a>
- - Adds a single character to a zero byte terminated buffer. It cares about buffer overflow.
+ - Adds a single character to a zero byte terminated string buffer. It cares about buffer overflow.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void chcat(uint8_t *dst, size_t dstSize, uint8_t ch)<br />
@@ -514,7 +514,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum8Hex">
 <b>strcatNum8Hex</b></a>
- - Appends a 8bit unsigned value to a buffer as hex number (without a 0x prefix).
+ - Appends a 8bit unsigned value to a string buffer as hex number (without a 0x prefix).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum8Hex(uint8_t *dst, size_t dstSize, uint8_t num)<br />
@@ -526,7 +526,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum16Hex">
 <b>strcatNum16Hex</b></a>
- - Appends a 16bit unsigned value to a buffer as hex number (without a 0x prefix).
+ - Appends a 16bit unsigned value to a string buffer as hex number (without a 0x prefix).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum16Hex(uint8_t *dst, size_t dstSize, uint16_t num)<br />
@@ -538,7 +538,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum24Hex">
 <b>strcatNum24Hex</b></a>
- - Appends a 32bit unsigned value to a buffer as hex number (without a 0x prefix). Only 24bits are used.
+ - Appends a 32bit unsigned value to a string buffer as hex number (without a 0x prefix). Only 24bits are used.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum24Hex(uint8_t *dst, size_t dstSize, uint32_t num)<br />
@@ -550,7 +550,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum32Hex">
 <b>strcatNum32Hex</b></a>
- - Appends a 16bit unsigned value to a buffer as hex number (without a 0x prefix).
+ - Appends a 16bit unsigned value to a string buffer as hex number (without a 0x prefix).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum32Hex(uint8_t *dst, size_t dstSize, uint32_t num)<br />
@@ -562,7 +562,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum32sDotValue100">
 <b>strcatNum32sDotValue100</b></a>
- - Appends a 32bit signed value to a buffer. The value is in 1/100 units.  For example for the value -13456 it will append the string &quot;-134.56&quot;
+ - Appends a 32bit signed value to a string buffer. The value is in 1/100 units.  For example for the value -13456 it will append the string &quot;-134.56&quot;
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum32sDotValue100(uint8_t *dst, size_t dstSize, int32_t num)<br />

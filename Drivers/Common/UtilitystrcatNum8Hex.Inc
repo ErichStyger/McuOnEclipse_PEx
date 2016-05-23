@@ -5,8 +5,8 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (strcatNum8Hex)
 %;**     Description :
-%;**         Appends a 8bit unsigned value to a buffer as hex number
-%;**         (without a 0x prefix).
+%;**         Appends a 8bit unsigned value to a string buffer as hex
+%;**         number (without a 0x prefix).
 %include Common\GeneralParameters.inc(27)
 %;**       * dst%Pardst %>27 - Pointer to destination string
 %;**         dstSize%PardstSize %>27 - Size of the destination buffer (in

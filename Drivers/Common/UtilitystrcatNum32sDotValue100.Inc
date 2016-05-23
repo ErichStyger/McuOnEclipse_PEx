@@ -5,8 +5,8 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (strcatNum32sDotValue100)
 %;**     Description :
-%;**         Appends a 32bit signed value to a buffer. The value is in
-%;**         1/100 units.  For example for the value -13456 it will
+%;**         Appends a 32bit signed value to a string buffer. The value
+%;**         is in 1/100 units.  For example for the value -13456 it will
 %;**         append the string "-134.56"
 %include Common\GeneralParameters.inc(27)
 %;**       * dst%Pardst %>27 - Pointer to destination string

@@ -809,7 +809,7 @@ static void ShiftRightAndFill(uint8_t *dst, uint8_t fill, uint8_t nofFill);
      - does not zero out the remaining part in dst.
      Note: dstSize is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] src The source string to copy
 */
@@ -836,7 +836,7 @@ void %'ModuleName'%.%strcpy(uint8_t *dst, size_t dstSize, const unsigned char *s
   \brief Concat the string src into dst. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] src The source string to add
   */
@@ -1059,7 +1059,7 @@ static void ShiftRightAndFill(uint8_t *dst, uint8_t fill, uint8_t nofFill)
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize Size of the destination buffer, in uint8_ts.
   \param[in] val The 16bit signed number to add
   \param[in] fill Fill character, typically ' ' (like for "%%2d" or '0' (for "%%02d")
@@ -1087,7 +1087,7 @@ void %'ModuleName'%.%Num16sToStrFormatted(uint8_t *dst, size_t dstSize, int16_t 
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize Size of the destination buffer, in uint8_ts.
   \param[in] val The 16bit unsigned number to add
   \param[in] fill Fill character, typically ' ' (like for "%%2d" or '0' (for "%%02d")
@@ -1115,7 +1115,7 @@ void %'ModuleName'%.%Num16uToStrFormatted(uint8_t *dst, size_t dstSize, uint16_t
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize Size of the destination buffer, in uint8_ts.
   \param[in] val The 32bit unsigned number to add
   \param[in] fill Fill character, typically ' ' (like for "%%2d" or '0' (for "%%02d")
@@ -1143,7 +1143,7 @@ void %'ModuleName'%.%Num32uToStrFormatted(uint8_t *dst, size_t dstSize, uint32_t
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize Size of the destination buffer, in uint8_ts.
   \param[in] val The 32bit signed number to add
   \param[in] fill Fill character, typically ' ' (like for "%%2d" or '0' (for "%%02d")
@@ -1168,7 +1168,7 @@ void %'ModuleName'%.%Num32sToStrFormatted(uint8_t *dst, size_t dstSize, int32_t 
   \brief appends a 8bit unsigned number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 8bit unsigned number to add
   */
@@ -1193,7 +1193,7 @@ void %'ModuleName'%.%strcatNum8u(uint8_t *dst, size_t dstSize, uint8_t val)
   \brief appends a 8bit signed number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 8bit signed number to add
   */
@@ -1218,7 +1218,7 @@ void %'ModuleName'%.%strcatNum8s(uint8_t *dst, size_t dstSize, signed char val)
   \brief appends a 16bit unsigned number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 16bit unsigned number to add
   */
@@ -1243,7 +1243,7 @@ void %'ModuleName'%.%strcatNum16u(uint8_t *dst, size_t dstSize, uint16_t val)
   \brief appends a 16bit signed number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 16bit signed number to add
   */
@@ -1271,7 +1271,7 @@ void %'ModuleName'%.%strcatNum16s(uint8_t *dst, size_t dstSize, int16_t val)
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 16bit unsigned number to add
   \param[in] fill Fill character
@@ -1301,7 +1301,7 @@ void %'ModuleName'%.%strcatNum16uFormatted(uint8_t *dst, size_t dstSize, uint16_
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 16bit signed number to add
   \param[in] fill Fill character
@@ -1331,7 +1331,7 @@ void %'ModuleName'%.%strcatNum16sFormatted(uint8_t *dst, size_t dstSize, int16_t
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 32bit unsigned number to add
   \param[in] fill Fill character
@@ -1361,7 +1361,7 @@ void %'ModuleName'%.%strcatNum32uFormatted(uint8_t *dst, size_t dstSize, uint32_
      Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 32bit signed number to add
   \param[in] fill Fill character
@@ -1386,7 +1386,7 @@ void %'ModuleName'%.%strcatNum32sFormatted(uint8_t *dst, size_t dstSize, int32_t
 %include Common\UtilitystrcatNum8Hex.Inc
 /*!
   \brief Adds a 8bit number as hex value to a string.
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] num The 8bit number to add
   */
@@ -1414,7 +1414,7 @@ void %'ModuleName'%.%strcatNum8Hex(uint8_t *dst, size_t dstSize, uint8_t num)
 %include Common\UtilitystrcatNum16Hex.Inc
 /*!
   \brief Adds a 16bit number as hex value to a string.
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] num The 16bit number to add
   */
@@ -1446,7 +1446,7 @@ void %'ModuleName'%.%strcatNum16Hex(uint8_t *dst, size_t dstSize, uint16_t num)
 %include Common\UtilitystrcatNum24Hex.Inc
 /*!
   \brief Adds a 24bit number as hex value to a string.
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] num The 24bit number to add
   */
@@ -1478,7 +1478,7 @@ void %'ModuleName'%.%strcatNum24Hex(uint8_t *dst, size_t dstSize, uint32_t num)
 %include Common\UtilitystrcatNum32Hex.Inc
 /*!
   \brief Adds a 32bit number as hex value to a string.
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] num The 32bit number to add
   */
@@ -1512,7 +1512,7 @@ void %'ModuleName'%.%strcatNum32Hex(uint8_t *dst, size_t dstSize, uint32_t num)
   \brief appends a 32bit (long) number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 32bit number to add
   */
@@ -1537,7 +1537,7 @@ void %'ModuleName'%.%strcatNum32s(uint8_t *dst, size_t dstSize, int32_t val)
   \brief appends a 32bit (unsigned long) number to a string. Always terminates the result string.
      Note: count is the size of dst INCLUDING zero byte.
      Precondition: src, dst != NULL
-  \param[in,out] dst Start of buffer, where to append the number string
+  \param[in,out] dst Start of string buffer, where to append the number string
   \param[in] dstSize The size of the buffer, including the zero byte
   \param[in] val The 32bit unsigned number to add
   */
