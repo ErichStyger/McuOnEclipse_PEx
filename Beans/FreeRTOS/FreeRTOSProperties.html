@@ -773,8 +773,12 @@ The following items are available only if the group is enabled (the value is "En
 <b>Memory</b></a> - This group controls the heap and memory settings
 <ul>
   <li>
-  <a name="ApplicationAllocatedHeap">
-  <b>Application allocated Heap</b></a> - Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.
+  <a name="DynamicAllocation">
+  <b>Dynamic Allocation</b></a> - Configures configSUPPORT_DYNAMIC_ALLOCATION which makes the functions available to allocate RTOS and task structures dynamically
+  </li>
+  <li>
+  <a name="StaticAllocation">
+  <b>Static Allocation</b></a> - Configures configSUPPORT_STATIC_ALLOCATION which makes the functions available to allocate RTOS and task structures statically
   </li>
   <li>
   <a name="MemoryScheme">
@@ -788,6 +792,10 @@ There are 5 options:<br />
   <li><u>Scheme 5: multiple regions</u>: This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().</li>
 </ul><br />
 
+  </li>
+  <li>
+  <a name="ApplicationAllocatedHeap">
+  <b>Application allocated Heap</b></a> - Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.
   </li>
   <li>
   <a name="UserHeapSectionEnabled">

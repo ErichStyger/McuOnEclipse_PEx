@@ -1759,7 +1759,7 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
 %endif
 
 %if defined(Shell)
-#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
 static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   UBaseType_t nofTasks, nof, i;
   TaskStatus_t *pxTaskStatusArray;
@@ -1931,7 +1931,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), 1000/configTICK_RATE_HZ);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)" ms\r\n", io->stdOut);
-#if configFRTOS_MEMORY_SCHEME!=3 /* wrapper to malloc() does not have xPortGetFreeHeapSize() */
+#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=3 /* wrapper to malloc() does not have xPortGetFreeHeapSize() */
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Free heap", (const unsigned char*)"", io->stdOut);
   %@Utility@'ModuleName'%.Num32uToStr(buf, sizeof(buf), %'ModuleName'%.xPortGetFreeHeapSize());
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
@@ -1943,7 +1943,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
-#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  tasklist", (unsigned char*)"Print tasklist\r\n", io->stdOut);
 #endif
   return ERR_OK;
@@ -2966,7 +2966,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
-#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' tasklist")==0) {
     *handled = TRUE;
     return PrintTaskList(io);

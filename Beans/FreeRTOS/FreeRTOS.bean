@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.465</Version>
+    <Version>01.468</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -45,7 +45,7 @@
         <Hint>Identifies the RTOS version</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V8.2.3</DefaultValue>
+        <DefaultValue>V9.0.0</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -1564,19 +1564,37 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
         <Children>
           <GrupItem>
             <TBoolItem>
-              <Name>Application allocated Heap</Name>
-              <Symbol>ApplicationAllocatedHeap</Symbol>
+              <Name>Dynamic Allocation</Name>
+              <Symbol>DynamicAllocation</Symbol>
               <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.</Hint>
+              <Hint>Configures configSUPPORT_DYNAMIC_ALLOCATION which makes the functions available to allocate RTOS and task structures dynamically</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>1</DefaultIndex>
+              <DefaultIndex>0</DefaultIndex>
               <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <DefaultValue>false</DefaultValue>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Static Allocation</Name>
+              <Symbol>StaticAllocation</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configSUPPORT_STATIC_ALLOCATION which makes the functions available to allocate RTOS and task structures statically</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
@@ -1608,6 +1626,24 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
             </TEnumItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Application allocated Heap</Name>
+              <Symbol>ApplicationAllocatedHeap</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
           </GrupItem>
           <GrupItem>
             <TBoolGrupItem>

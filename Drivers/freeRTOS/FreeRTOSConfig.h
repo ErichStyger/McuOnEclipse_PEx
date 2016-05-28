@@ -325,6 +325,16 @@
 %else
 #define configAPPLICATION_ALLOCATED_HEAP                         %>50 0 /* set to one if application is defining heap ucHeap[] variable, 0 otherwise */
 %endif
+%if defined(DynamicAllocation) & %DynamicAllocation='yes'
+#define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 1 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
+%else
+#define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 0 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
+%endif
+%if defined(StaticAllocation) & %StaticAllocation='yes'
+#define configSUPPORT_STATIC_ALLOCATION                          %>50 1 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
+%else
+#define configSUPPORT_STATIC_ALLOCATION                          %>50 0 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
+%endif
 /*----------------------------------------------------------*/
 #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
 %if %UseTraceFacility='yes'
