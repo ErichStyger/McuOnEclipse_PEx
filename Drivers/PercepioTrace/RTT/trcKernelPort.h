@@ -380,7 +380,7 @@ uint32_t prvIsNewTCB(void* pNewTCB);
 
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
-#define traceTASK_DELAY_UNTIL() \
+#define traceTASK_DELAY_UNTIL(xTimeToWake) \
 	vTraceStoreEvent1(PSF_EVENT_TASK_DELAY_UNTIL, xTimeToWake);
 
 /* Called on vTaskDelete */
@@ -857,7 +857,7 @@ switch (pxQueue->ucQueueType) \
 
 #undef traceTASK_NOTIFY_TAKE
 #define traceTASK_NOTIFY_TAKE() \
-	if (pxCurrentTCB->eNotifyState == eNotified) \
+	if (pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED) \
 		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_TAKE, (uint32_t)pxCurrentTCB, xTicksToWait); \
 	else \
 		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_TAKE_FAILED, (uint32_t)pxCurrentTCB, xTicksToWait);
@@ -868,7 +868,7 @@ switch (pxQueue->ucQueueType) \
 
 #undef traceTASK_NOTIFY_WAIT
 #define traceTASK_NOTIFY_WAIT() \
-	if (pxCurrentTCB->eNotifyState == eNotified) \
+	if (pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED) \
 		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_WAIT, (uint32_t)pxCurrentTCB, xTicksToWait); \
 	else \
 		vTraceStoreEvent2(PSF_EVENT_TASK_NOTIFY_WAIT_FAILED, (uint32_t)pxCurrentTCB, xTicksToWait);
