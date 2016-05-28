@@ -49,21 +49,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%ifdef FRTrace
-  %ifdef @FRTrace@OnTraceStop
-    %define! Description_%@FRTrace@OnTraceStop Called if the library calls vTraceStop(). Useful to dump the trace if 'stop when recorder is full' mode is selected. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @FRTrace@OnTraceStop
-%endif %- FRTrace
-%ifdef FRTrace
-  %ifdef @FRTrace@OnTraceStart
-    %define! Description_%@FRTrace@OnTraceStart Called when vTraceStart() gets called. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @FRTrace@OnTraceStart
-%endif %- FRTrace
-%ifdef FRTrace
-  %ifdef @FRTrace@OnTraceWrap
-    %define! Description_%@FRTrace@OnTraceWrap Called for trace ring buffer wrap around. This gives the application a chance to dump the trace buffer. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @FRTrace@OnTraceWrap
-%endif %- FRTrace
 %ifdef RuntimeCntrLDD
   %ifdef @RuntimeCntrLDD@OnCounterRestart
     %define! Description_%@RuntimeCntrLDD@OnCounterRestart Called if counter overflow/underflow or counter is reinitialized by modulo or compare register matching. OnCounterRestart event and Timer unit must be enabled. See <a href="TimerUnit_LDDMethods.html#SetEventMask">SetEventMask</a> and <a href="TimerUnit_LDDMethods.html#GetEventMask">GetEventMask</a> methods.This event is available only if a <a href="TimerUnit_LDDProperties.html#IntServiceCounter">Interrupt</a> is enabled. The event services the event of the inherited component and eventually invokes other events.
@@ -1609,30 +1594,6 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- xTaskNotifyStateClear
 %-BW_METHOD_END xTaskNotifyStateClear
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceStop
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceStop
-void %@FRTrace@OnTraceStop(void);
-
-%endif %- @FRTrace@OnTraceStop
-%endif %-FRTrace
-%-INHERITED_EVENT_END FRTrace OnTraceStop
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceStart
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceStart
-void %@FRTrace@OnTraceStart(void);
-
-%endif %- @FRTrace@OnTraceStart
-%endif
-%-INHERITED_EVENT_END FRTrace OnTraceStart
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceWrap
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceWrap
-void %@FRTrace@OnTraceWrap(void);
-
-%endif %- @FRTrace@OnTraceWrap
-%endif
-%-INHERITED_EVENT_END FRTrace OnTraceWrap
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -3949,42 +3910,6 @@ BaseType_t %'ModuleName'%.%xTaskNotifyStateClear(TaskHandle_t xTask)
 
 %endif %- xTaskNotifyStateClear
 %-BW_METHOD_END xTaskNotifyStateClear
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceStop
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceStop
-%include Common\GeneralInternal.inc (OnTraceStop)
-void %@FRTrace@OnTraceStop(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @FRTrace@OnTraceStop
-%endif
-%-INHERITED_EVENT_END FRTrace OnTraceStop
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceStart
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceStart
-%include Common\GeneralInternal.inc (OnTraceStart)
-void %@FRTrace@OnTraceStart(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @FRTrace@OnTraceStart
-%endif
-%-INHERITED_EVENT_END FRTrace OnTraceStart
-%-INHERITED_EVENT_BEGIN FRTrace OnTraceWrap
-%ifdef FRTrace
-%ifdef @FRTrace@OnTraceWrap
-%include Common\GeneralInternal.inc (OnTraceWrap)
-void %@FRTrace@OnTraceWrap(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @FRTrace@OnTraceWrap
-%endif
-%-INHERITED_EVENT_END FRTrace OnTraceWrap
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
