@@ -1709,8 +1709,8 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
 
 %endif %- defaultvApplicationGetIdleTaskMemory
 %if defined(defaultvApplicationGetTimerTaskMemory) & defaultvApplicationGetTimerTaskMemory='yes'
-/* static memory allocation for the Timer task */
 #if configSUPPORT_STATIC_ALLOCATION && configUSE_TIMERS
+/* static memory allocation for the Timer task */
 static StaticTask_t SECTION xTimerTaskTCBBuffer;
 static StackType_t SECTION xTimerStack[configTIMER_TASK_STACK_DEPTH];
 
