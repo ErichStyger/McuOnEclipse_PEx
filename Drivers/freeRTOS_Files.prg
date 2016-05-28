@@ -28,94 +28,94 @@
 %endif
 %-
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'croutine.h
-%include freeRTOS\croutine.h
+%include freeRTOS\Source\include\croutine.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'croutine.c
-%include freeRTOS\croutine.c
+%include freeRTOS\Source\croutine.c
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'FreeRTOS.h
-%include freeRTOS\FreeRTOS.h
+%include freeRTOS\Source\include\FreeRTOS.h
 
 %FILE %'DirRel_Code'%'RTOSConfigDirFolder'FreeRTOSConfig.h
-%include freeRTOS\FreeRTOSConfig.h
+%include freeRTOS\Source\include\FreeRTOSConfig.h
 
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_1.c
-%include freeRTOS\heap_1.c
+%include freeRTOS\Source\portable\MemMang\heap_1.c
 
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_2.c
-%include freeRTOS\heap_2.c
+%include freeRTOS\Source\portable\MemMang\heap_2.c
 
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_3.c
-%include freeRTOS\heap_3.c
+%include freeRTOS\Source\portable\MemMang\heap_3.c
 
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_4.c
-%include freeRTOS\heap_4.c
+%include freeRTOS\Source\portable\MemMang\heap_4.c
 
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_5.c
-%include freeRTOS\heap_5.c
+%include freeRTOS\Source\portable\MemMang\heap_5.c
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'FreeRTOS_license.txt
-%include freeRTOS\license.txt
+%include freeRTOS\License\license.txt
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'list.h
-%include freeRTOS\list.h
+%include freeRTOS\Source\include\list.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'list.c
-%include freeRTOS\list.c
+%include freeRTOS\Source\list.c
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'port.c
-%include freeRTOS\port.c
+%include freeRTOS\Source\portable\GCC\ARM_CM4F\port.c
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'portTicks.h
-%include freeRTOS\portTicks.h
+%include freeRTOS\Source\portable\GCC\ARM_CM4F\portTicks.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'portable.h
-%include freeRTOS\portable.h
+%include freeRTOS\Source\include\portable.h
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'portasm.s
-%include freeRTOS\portasm.s
+%include freeRTOS\Source\portable\GCC\ARM_CM4F\portasm.s
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'portmacro.h
-%include freeRTOS\portmacro.h
+%include freeRTOS\Source\portable\GCC\ARM_CM4F\portmacro.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'deprecated_definitions.h
-%include freeRTOS\deprecated_definitions.h
+%include freeRTOS\Source\include\deprecated_definitions.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'projdefs.h
-%include freeRTOS\projdefs.h
+%include freeRTOS\Source\include\projdefs.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'queue.c
-%include freeRTOS\queue.c
+%include freeRTOS\Source\queue.c
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'queue.h
-%include freeRTOS\queue.h
+%include freeRTOS\Source\include\queue.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'semphr.h
-%include freeRTOS\semphr.h
+%include freeRTOS\Source\include\semphr.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'StackMacros.h
-%include freeRTOS\StackMacros.h
+%include freeRTOS\Source\include\StackMacros.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'task.h
-%include freeRTOS\task.h
+%include freeRTOS\Source\include\task.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'tasks.c
-%include freeRTOS\tasks.c
+%include freeRTOS\Source\tasks.c
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_wrappers.h
-%include freeRTOS\mpu_wrappers.h
+%include freeRTOS\Source\include\mpu_wrappers.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'timers.h
-%include freeRTOS\timers.h
+%include freeRTOS\Source\include\timers.h
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'timers.c
-%include freeRTOS\timers.c
+%include freeRTOS\Source\timers.c
 
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'event_groups.c
-%include freeRTOS\event_groups.c
+%include freeRTOS\Source\event_groups.c
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'event_groups.h
-%include freeRTOS\event_groups.h
+%include freeRTOS\Source\include\event_groups.h
 
 %- -----------------------------------------
 %- GDB thread debug helpers
