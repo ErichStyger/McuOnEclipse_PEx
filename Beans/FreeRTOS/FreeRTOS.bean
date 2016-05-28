@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.477</Version>
+    <Version>01.480</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -6377,6 +6377,75 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void* #M#_#C#(TaskHandle_t xTaskToQuery, BaseType_t xIndex)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xTaskGetHandle</Name>
+        <Symbol>xTaskGetHandle</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Looks up the handle of a task from the task's name. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>TaskHandle_t</ReturnType>
+        <RetHint>If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>pcNameToQuery</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</ParHint>
+          <ParUserDeclaration>const char *pcNameToQuery </ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>TaskHandle_t #M#_#C#(const char *pcNameToQuery )</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>pcTaskGetName</Name>
+        <Symbol>pcTaskGetName</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Looks up the name of a task from the task's handle. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>string</ReturnType>
+        <RetHint>A pointer to the subject task's name, which is a standard NULL terminated C string.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xTaskToQuery</ParName>
+          <ParType>TaskHandle_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The handle of the task being queried. xTaskToQuery can be set to NULL to query the name of the calling task.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>char* #M#_#C#(TaskHandle_t xTaskToQuery)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

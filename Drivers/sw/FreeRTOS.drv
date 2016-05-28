@@ -1602,6 +1602,30 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskGetHandle
+%ifdef xTaskGetHandle
+#define %'ModuleName'%.%xTaskGetHandle(pcNameToQuery) \
+  xTaskGetHandle(pcNameToQuery)
+
+%define! ParpcNameToQuery
+%define! RetVal
+%include Common\FreeRTOSxTaskGetHandle.Inc
+
+%endif %- xTaskGetHandle
+%-BW_METHOD_END xTaskGetHandle
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pcTaskGetName
+%ifdef pcTaskGetName
+#define %'ModuleName'%.%pcTaskGetName(xTaskToQuery) \
+  pcTaskGetName(xTaskToQuery)
+
+%define! ParxTaskToQuery
+%define! RetVal
+%include Common\FreeRTOSpcTaskGetName.Inc
+
+%endif %- pcTaskGetName
+%-BW_METHOD_END pcTaskGetName
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3921,6 +3945,36 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskGetHandle
+%ifdef xTaskGetHandle
+%define! ParpcNameToQuery
+%define! RetVal
+%include Common\FreeRTOSxTaskGetHandle.Inc
+/*
+TaskHandle_t %'ModuleName'%.%xTaskGetHandle(const char *pcNameToQuery )
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskGetHandle
+%-BW_METHOD_END xTaskGetHandle
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN pcTaskGetName
+%ifdef pcTaskGetName
+%define! ParxTaskToQuery
+%define! RetVal
+%include Common\FreeRTOSpcTaskGetName.Inc
+/*
+char* %'ModuleName'%.%pcTaskGetName(TaskHandle_t xTaskToQuery)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- pcTaskGetName
+%-BW_METHOD_END pcTaskGetName
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

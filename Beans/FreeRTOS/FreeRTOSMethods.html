@@ -1527,6 +1527,30 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xTaskGetHandle">
+<b>xTaskGetHandle</b></a>
+ - Looks up the handle of a task from the task's name. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> TaskHandle_t xTaskGetHandle(const char *pcNameToQuery )<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pcNameToQuery: Pointer to byte</i> - The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</li>
+<li><i>Return value:TaskHandle_t</i> - If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. 
+</li>
+</ul><br />
+</li>
+<li><a name="pcTaskGetName">
+<b>pcTaskGetName</b></a>
+ - Looks up the name of a task from the task's handle. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> char* pcTaskGetName(TaskHandle_t xTaskToQuery)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTaskToQuery:TaskHandle_t</i> - The handle of the task being queried. xTaskToQuery can be set to NULL to query the name of the calling task.</li>
+<li><i>Return value:char*</i> - A pointer to the subject task's name, which is a standard NULL terminated C string.
+</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line Parser
