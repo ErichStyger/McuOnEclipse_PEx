@@ -581,10 +581,10 @@ void* prvTraceGetCurrentTaskHandle(void);
 /* Called on vTaskDelayUntil - note the use of FreeRTOS variable xTimeToWake */
 #undef traceTASK_DELAY_UNTIL
 %if defined(vTaskDelayUntilEventGenerated) & %vTaskDelayUntilEventGenerated='no'  %- << EST
-#define traceTASK_DELAY_UNTIL() \
+#define traceTASK_DELAY_UNTIL(xTimeToWake) \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 %else  %- << EST
-#define traceTASK_DELAY_UNTIL() \
+#define traceTASK_DELAY_UNTIL(xTimeToWake) \
 	trcKERNEL_HOOKS_TASK_DELAY(TASK_DELAY_UNTIL, pxCurrentTCB, xTimeToWake); \
 	trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED();
 %endif  %- << EST
@@ -839,7 +839,7 @@ else \
 
 #undef traceTASK_NOTIFY_TAKE
 #define traceTASK_NOTIFY_TAKE() \
-	if (pxCurrentTCB->eNotifyState == eNotified) \
+	if (pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED) \
 		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_TAKE, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
 	else \
 		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_TAKE_FAILED, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait);
@@ -851,7 +851,7 @@ else \
 
 #undef traceTASK_NOTIFY_WAIT
 #define traceTASK_NOTIFY_WAIT() \
-	if (pxCurrentTCB->eNotifyState == eNotified) \
+	if (pxCurrentTCB->ucNotifyState == taskNOTIFICATION_RECEIVED) \
 		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait); \
 	else \
 		vTraceStoreKernelCallWithParam(TRACE_TASK_NOTIFY_WAIT_FAILED, TRACE_CLASS_TASK, uxTaskGetTaskNumber(pxCurrentTCB), xTicksToWait);
