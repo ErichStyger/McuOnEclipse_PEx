@@ -235,7 +235,7 @@ _vPortStartFirstTask:
 %if ((%configCOMPILER='automatic') & (%Compiler="IARARM")) | (%configCOMPILER='configCOMPILER_ARM_IAR')
 /* IAR ARM Compiler */
 /*
-    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -541,7 +541,7 @@ vPortEnableVFP:
 %if ((%configCOMPILER='automatic') & (%Compiler="CodeWarriorARM")) | (%configCOMPILER='configCOMPILER_ARM_FSL')
 /* legacy Freescale ARM compiler */
 /*
-    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
