@@ -150,15 +150,23 @@
 %endif %- TimersEnabled
 %;**%>12 Memory %>60: %get(MemoryGroup,Text)
 %;**%>14 Dynamic Allocation %>60: %get(DynamicAllocation,Text)
+%if %get(DynamicAllocation, Bool) = 'yes'
+%;**%>16 Heap Size %>60: %get(TotalHeapSize,Text)
+%;**%>16 Application allocated Heap %>60: %get(ApplicationAllocatedHeap,Text)
+%;**%>16 Memory Allocation Scheme %>60: %get(MemoryScheme,Text)
+%else %- DynamicAllocation
+%endif %- DynamicAllocation
 %;**%>14 Static Allocation %>60: %get(StaticAllocation,Text)
-%;**%>14 Memory Allocation Scheme %>60: %get(MemoryScheme,Text)
-%;**%>14 Application allocated Heap %>60: %get(ApplicationAllocatedHeap,Text)
-%;**%>14 User Heap Section %>60: %get(UserHeapSectionEnabled,Text)
+%if %get(StaticAllocation, Bool) = 'yes'
+%;**%>16 Default vApplicationGetIdleTaskMemory() %>60: %get(defaultvApplicationGetIdleTaskMemory,Text)
+%;**%>16 Default vApplicationGetTimerTaskMemory() %>60: %get(defaultvApplicationGetTimerTaskMemory,Text)
+%else %- StaticAllocation
+%endif %- StaticAllocation
+%;**%>14 User Memory Section %>60: %get(UserHeapSectionEnabled,Text)
 %if %get(UserHeapSectionEnabled, Bool) = 'yes'
 %;**%>16 Heap Section Name %>60: %get(HeapSectionName,Text)
 %else %- UserHeapSectionEnabled
 %endif %- UserHeapSectionEnabled
-%;**%>14 Total Heap Size %>60: %get(TotalHeapSize,Text)
 %;**%>12 RTOS Adaptor %>60: %get(RTOSAdaptorGrp,Text)
 %;**%>14 Memory allocation %>60: %get(MemoryAllocationGroup,Text)
 %;**%>16 User function for memory allocation %>60: %get(hasUserMallocFun,Text)

@@ -4083,7 +4083,7 @@ TCB_t *pxTCB;
 
 #if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
 
-	void vTaskGetRunTimeStats( char *pcWriteBuffer )
+	void vTaskGetRunTimeStats( char *pcWriteBuffer, size_t bufSize)
 	{
 	TaskStatus_t *pxTaskStatusArray;
 	volatile UBaseType_t uxArraySize, x;

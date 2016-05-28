@@ -1,5 +1,5 @@
 /*
-    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
+    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
     All rights reserved
 
     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
@@ -296,6 +296,7 @@
 #define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
 /*----------------------------------------------------------*/
 /* Heap Memory */
+%if defined(MemoryScheme)
 %if MemoryScheme = "Scheme1"
 #define configFRTOS_MEMORY_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %elif MemoryScheme = "Scheme2"
@@ -307,7 +308,14 @@
 %elif MemoryScheme = "Scheme5"
 #define configFRTOS_MEMORY_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
 %endif
+%else
+#define configFRTOS_MEMORY_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+%endif
+%if defined(TotalHeapSize)
 #define configTOTAL_HEAP_SIZE                                    %>50 ((size_t)(%TotalHeapSize)) /* size of heap in bytes */
+%else
+#define configTOTAL_HEAP_SIZE                                    %>50 ((size_t)(4096)) /* size of heap in bytes */
+%endif
 %if defined(HeapSectionName)
 #define configUSE_HEAP_SECTION_NAME                              %>50 1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
 %else
