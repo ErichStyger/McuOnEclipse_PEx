@@ -3947,7 +3947,7 @@ TCB_t *pxTCB;
 /*-----------------------------------------------------------*/
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
-
+#if 0 /* << EST: not used */
 	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
 	{
 	size_t x;
@@ -3968,7 +3968,7 @@ TCB_t *pxTCB;
 		/* Return the new end of string. */
 		return &( pcBuffer[ x ] );
 	}
-
+#endif /* << EST not used */
 #endif /* ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) */
 
 /*-----------------------------------------------------------*/
