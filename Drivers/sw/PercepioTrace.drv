@@ -411,10 +411,11 @@ void %OnTraceWrap(void);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
-
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %for var from EventModules
-#include "%var.h"
+  #include "%var.h"
 %endfor
+#endif
 #include "%'ModuleName'.h"
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...

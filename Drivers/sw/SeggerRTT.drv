@@ -686,8 +686,6 @@ void %'ModuleName'%.%Deinit(void)
 %include Common\SeggerRTTInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-  int i;
-
   SEGGER_RTT_Init();
 #if 0 /* not doing this, as this might overwrite already configured channels, e.g. by Percepio */
   for (i=0;i<SEGGER_RTT_MAX_NUM_UP_BUFFERS;i++) { /* configure channels with defaults */
