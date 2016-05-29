@@ -1626,6 +1626,105 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- pcTaskGetName
 %-BW_METHOD_END pcTaskGetName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskCreateStatic
+%ifdef xTaskCreateStatic
+#define %'ModuleName'%.%xTaskCreateStatic(pvTaskCode, pcName, usStackDepth, pvParameters, uxPriority, puxStackBuffer, pxTaskBuffer) \
+  xTaskCreateStatic(pvTaskCode, pcName, usStackDepth, pvParameters, uxPriority, puxStackBuffer, pxTaskBuffer)
+
+%define! ParpvTaskCode
+%define! ParpcName
+%define! ParusStackDepth
+%define! ParpvParameters
+%define! ParuxPriority
+%define! ParpuxStackBuffer
+%define! ParpxTaskBuffer
+%define! RetVal
+%include Common\FreeRTOSxTaskCreateStatic.Inc
+
+%endif %- xTaskCreateStatic
+%-BW_METHOD_END xTaskCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xQueueCreateStatic
+%ifdef xQueueCreateStatic
+#define %'ModuleName'%.%xQueueCreateStatic(uxQueueLength, uxItemSize, pucQueueStorageBuffer, pxQueueBuffer) \
+  xQueueCreateStatic(uxQueueLength, uxItemSize, pucQueueStorageBuffer, pxQueueBuffer)
+
+%define! ParuxQueueLength
+%define! ParuxItemSize
+%define! ParpucQueueStorageBuffer
+%define! ParpxQueueBuffer
+%define! RetVal
+%include Common\FreeRTOSxQueueCreateStatic.Inc
+
+%endif %- xQueueCreateStatic
+%-BW_METHOD_END xQueueCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xEventGroupCreateStatic
+%ifdef xEventGroupCreateStatic
+#define %'ModuleName'%.%xEventGroupCreateStatic(pxEventGroupBuffer) \
+  xEventGroupCreateStatic(pxEventGroupBuffer)
+
+%define! ParpxEventGroupBuffer
+%define! RetVal
+%include Common\FreeRTOSxEventGroupCreateStatic.Inc
+
+%endif %- xEventGroupCreateStatic
+%-BW_METHOD_END xEventGroupCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerCreateStatic
+%ifdef xTimerCreateStatic
+#define %'ModuleName'%.%xTimerCreateStatic(pcTimerName, xTimerPeriod, uxAutoReload, pvTimerID, pxCallbackFunction, pxTimerBuffer) \
+  xTimerCreateStatic(pcTimerName, xTimerPeriod, uxAutoReload, pvTimerID, pxCallbackFunction, pxTimerBuffer)
+
+%define! ParpcTimerName
+%define! ParxTimerPeriod
+%define! ParuxAutoReload
+%define! ParpvTimerID
+%define! ParpxCallbackFunction
+%define! ParpxTimerBuffer
+%define! RetVal
+%include Common\FreeRTOSxTimerCreateStatic.Inc
+
+%endif %- xTimerCreateStatic
+%-BW_METHOD_END xTimerCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateBinaryStatic
+%ifdef xSemaphoreCreateBinaryStatic
+#define %'ModuleName'%.%xSemaphoreCreateBinaryStatic(pxSemaphoreBuffer) \
+  xSemaphoreCreateBinaryStatic(pxSemaphoreBuffer)
+
+%define! ParpxSemaphoreBuffer
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateBinaryStatic.Inc
+
+%endif %- xSemaphoreCreateBinaryStatic
+%-BW_METHOD_END xSemaphoreCreateBinaryStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateCountingStatic
+%ifdef xSemaphoreCreateCountingStatic
+#define %'ModuleName'%.%xSemaphoreCreateCountingStatic(uxMaxCount, uxInitialCount, pxSempahoreBuffer) \
+  xSemaphoreCreateCountingStatic(uxMaxCount, uxInitialCount, pxSempahoreBuffer)
+%define! ParuxMaxCount
+%define! ParuxInitialCount
+%define! ParpxSempahoreBuffer
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateCountingStatic.Inc
+
+%endif %- xSemaphoreCreateCountingStatic
+%-BW_METHOD_END xSemaphoreCreateCountingStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateMutexStatic
+%ifdef xSemaphoreCreateMutexStatic
+#define %'ModuleName'%.%xSemaphoreCreateMutexStatic(pxMutexBuffer) \
+  xSemaphoreCreateMutexStatic(pxMutexBuffer)
+
+%define! ParVariable_1
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateMutexStatic.Inc
+
+%endif %- xSemaphoreCreateMutexStatic
+%-BW_METHOD_END xSemaphoreCreateMutexStatic
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3975,6 +4074,127 @@ char* %'ModuleName'%.%pcTaskGetName(TaskHandle_t xTaskToQuery)
 
 %endif %- pcTaskGetName
 %-BW_METHOD_END pcTaskGetName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskCreateStatic
+%ifdef xTaskCreateStatic
+%define! ParpvTaskCode
+%define! ParpcName
+%define! ParusStackDepth
+%define! ParpvParameters
+%define! ParuxPriority
+%define! ParpuxStackBuffer
+%define! ParpxTaskBuffer
+%define! RetVal
+%include Common\FreeRTOSxTaskCreateStatic.Inc
+/*
+TaskHandle_t %'ModuleName'%.%xTaskCreateStatic(pdTASK_CODE pvTaskCode, const portCHAR * const pcName, unsigned portSHORT usStackDepth, void *pvParameters, unsigned portBASE_TYPE uxPriority, StackType_t * const puxStackBuffer, StaticTask_t * const pxTaskBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskCreateStatic
+%-BW_METHOD_END xTaskCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xQueueCreateStatic
+%ifdef xQueueCreateStatic
+%define! ParuxQueueLength
+%define! ParuxItemSize
+%define! ParpucQueueStorageBuffer
+%define! ParpxQueueBuffer
+%define! RetVal
+%include Common\FreeRTOSxQueueCreateStatic.Inc
+/*
+xQueueHandle %'ModuleName'%.%xQueueCreateStatic(unsigned_portBASE_TYPE uxQueueLength, unsigned_portBASE_TYPE uxItemSize, uint8_t *pucQueueStorageBuffer, StaticQueue_t *pxQueueBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xQueueCreateStatic
+%-BW_METHOD_END xQueueCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xEventGroupCreateStatic
+%ifdef xEventGroupCreateStatic
+%define! ParpxEventGroupBuffer
+%define! RetVal
+%include Common\FreeRTOSxEventGroupCreateStatic.Inc
+/*
+EventGroupHandle_t %'ModuleName'%.%xEventGroupCreateStatic(StaticEventGroup_t *pxEventGroupBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xEventGroupCreateStatic
+%-BW_METHOD_END xEventGroupCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTimerCreateStatic
+%ifdef xTimerCreateStatic
+%define! ParpcTimerName
+%define! ParxTimerPeriod
+%define! ParuxAutoReload
+%define! ParpvTimerID
+%define! ParpxCallbackFunction
+%define! ParpxTimerBuffer
+%define! RetVal
+%include Common\FreeRTOSxTimerCreateStatic.Inc
+/*
+TimerHandle_t %'ModuleName'%.%xTimerCreateStatic(const char * const pcTimerName, const TickType_t xTimerPeriod, const UBaseType_t uxAutoReload, void *const pvTimerID, TimerCallbackFunction_t pxCallbackFunction, StaticTimer_t *pxTimerBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTimerCreateStatic
+%-BW_METHOD_END xTimerCreateStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateBinaryStatic
+%ifdef xSemaphoreCreateBinaryStatic
+%define! ParpxSemaphoreBuffer
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateBinaryStatic.Inc
+/*
+SemaphoreHandle_t %'ModuleName'%.%xSemaphoreCreateBinaryStatic(StaticSemaphore_t *pxSemaphoreBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xSemaphoreCreateBinaryStatic
+%-BW_METHOD_END xSemaphoreCreateBinaryStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateCountingStatic
+%ifdef xSemaphoreCreateCountingStatic
+%define! ParuxMaxCount
+%define! ParuxInitialCount
+%define! ParpxSempahoreBuffer
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateCountingStatic.Inc
+/*
+xSemaphoreHandle %'ModuleName'%.%xSemaphoreCreateCountingStatic(unsigned_portBASE_TYPE uxMaxCount, unsigned_portBASE_TYPE uxInitialCount, StaticSemaphore_t pxSempahoreBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xSemaphoreCreateCountingStatic
+%-BW_METHOD_END xSemaphoreCreateCountingStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateMutexStatic
+%ifdef xSemaphoreCreateMutexStatic
+%define! ParVariable_1
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateMutexStatic.Inc
+/*
+xSemaphoreHandle %'ModuleName'%.%xSemaphoreCreateMutexStatic(StaticSemaphore_t *pxMutexBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xSemaphoreCreateMutexStatic
+%-BW_METHOD_END xSemaphoreCreateMutexStatic
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

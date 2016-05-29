@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.480</Version>
+    <Version>01.485</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -21,7 +21,7 @@
     <BW_NeedUst>21</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License : Open Source (LGPL)\nFreeRTOS (c) Copyright 2003-2015 Richard Barry, http: www.FreeRTOS.org\nFreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2015\nProcessor Expert and CodeWarrior (c) Copyright Freescale Semiconductor, 2013-2015, all rights reserved\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License : Open Source (LGPL)\nFreeRTOS (c) Copyright 2003-2016 Richard Barry, http: www.FreeRTOS.org\nFreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2015\nProcessor Expert and CodeWarrior (c) Copyright Freescale Semiconductor, 2013-2015, all rights reserved\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Shortcut>FRTOS</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -2021,6 +2021,83 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
     </Method>
     <Method>
       <TMthdItem>
+        <Name>xTaskCreateStatic</Name>
+        <Symbol>xTaskCreateStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Create a new task and add it to the list of tasks that are ready to run.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>TaskHandle_t</ReturnType>
+        <RetHint>Task handle if the task was successfully created and added to a ready list, otherwise Null.</RetHint>
+        <ParamCount>7</ParamCount>
+        <Parameter>
+          <ParName>pvTaskCode</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the task entry function. Tasks must be implemented to never return (i.e. continuous loop).</ParHint>
+          <ParUserDeclaration>pdTASK_CODE pvTaskCode</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pcName</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A descriptive name for the task. This is mainly used to facilitate debugging. Max length defined by configMAX_TASK_NAME_LEN.</ParHint>
+          <ParUserDeclaration>const portCHAR * const pcName</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>usStackDepth</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The size of the task stack specified as the number of variables the stack can hold - not the number of bytes. For example, if the stack is 16 bits wide and usStackDepth is defined as 100, 200 bytes will be allocated for stack storage. The stack depth multiplied by the stack width must not exceed the maximum value that can be contained in a variable of type size_t.</ParHint>
+          <ParUserDeclaration>unsigned portSHORT usStackDepth</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pvParameters</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer that will be used as the parameter for the task being created.</ParHint>
+          <ParUserDeclaration>void *pvParameters</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>uxPriority</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The priority at which the task should run.</ParHint>
+          <ParUserDeclaration>unsigned portBASE_TYPE uxPriority</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>puxStackBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a StackType_t array that has at least ulStackDepth indexes (see the ulStackDepth parameter above) - the array will be used as the task's stack, so must be persistent (not declared on the stack of a function)</ParHint>
+          <ParUserDeclaration>StackType_t * const puxStackBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pxTaskBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticTask_t. The variable will be used to hold the new task's data structures (TCB), so it must be persistent (not declared on the stack of a function). </ParHint>
+          <ParUserDeclaration>StaticTask_t * const pxTaskBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>TaskHandle_t #M#_#C#(pdTASK_CODE pvTaskCode, const portCHAR * const pcName, unsigned portSHORT usStackDepth, void *pvParameters, unsigned portBASE_TYPE uxPriority, StackType_t * const puxStackBuffer, StaticTask_t * const pxTaskBuffer)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>vTaskDelete</Name>
         <Symbol>vTaskDelete</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -2586,46 +2663,6 @@ This function must not be called while the scheduler has been suspended by a cal
     </Method>
     <Method>
       <TMthdItem>
-        <Name>vTaskPrioritySet</Name>
-        <Symbol>vTaskPrioritySet</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Set the priority of any task.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>pxTask</ParName>
-          <ParType>xTaskHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Handle to the task for which the priority is being set. Passing a NULL handle results in the priority of the calling task being set.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>uxNewPriority</ParName>
-          <ParType>unsigned_portBASE_TYPE</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>The priority to which the task will be set.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(xTaskHandle pxTask, unsigned_portBASE_TYPE uxNewPriority)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>xTaskGetTickCount</Name>
         <Symbol>xTaskGetTickCount</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -2682,6 +2719,471 @@ This function must not be called while the scheduler has been suspended by a cal
     </Method>
     <Method>
       <TMthdItem>
+        <Name>vTaskPrioritySet</Name>
+        <Symbol>vTaskPrioritySet</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Set the priority of any task.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>pxTask</ParName>
+          <ParType>xTaskHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Handle to the task for which the priority is being set. Passing a NULL handle results in the priority of the calling task being set.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>uxNewPriority</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The priority to which the task will be set.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(xTaskHandle pxTask, unsigned_portBASE_TYPE uxNewPriority)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>vSemaphoreCreateBinary</Name>
+        <Symbol>vSemaphoreCreateBinary</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore. The data size is 0 as we don't want to actually store any data - we just want to know if the queue is empty or full.\n
+\n
+Binary semaphores and mutexes are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
+\n
+This old vSemaphoreCreateBinary() macro is now deprecated in favour of the xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
+\n
+A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
+\n
+The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
+\n
+Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
+        <ItemLevel>@ HIDDEN @</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>void</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xSemaphore</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Handle to the created semaphore. Should be of type xSemaphoreHandle.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateBinary</Name>
+        <Symbol>xSemaphoreCreateBinary</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>The old vSemaphoreCreateBinary() macro is now deprecated in favour of this xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
+\n
+Function that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore.  The data size is 0 as nothing is actually stored - all that is important is whether the queue is empty or full (the binary semaphore is available or not).\n
+\n
+This type of semaphore can be used for pure synchronisation between tasks or between an interrupt and a task.  The semaphore need not be given back once obtained, so one task/interrupt can continuously 'give' the semaphore while another continuously 'takes' the semaphore.  For this reason this type of semaphore does not use a priority inheritance mechanism.  For an alternative that does use priority inheritance see xSemaphoreCreateMutex().</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>SemaphoreHandle_t</ReturnType>
+        <RetHint>Handle to the created semaphore.</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>SemaphoreHandle_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateBinaryStatic</Name>
+        <Symbol>xSemaphoreCreateBinaryStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>The old vSemaphoreCreateBinary() macro is now deprecated in favour of this xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
+\n
+Function that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore.  The data size is 0 as nothing is actually stored - all that is important is whether the queue is empty or full (the binary semaphore is available or not).\n
+\n
+This type of semaphore can be used for pure synchronisation between tasks or between an interrupt and a task.  The semaphore need not be given back once obtained, so one task/interrupt can continuously 'give' the semaphore while another continuously 'takes' the semaphore.  For this reason this type of semaphore does not use a priority inheritance mechanism.  For an alternative that does use priority inheritance see xSemaphoreCreateMutex().</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>SemaphoreHandle_t</ReturnType>
+        <RetHint>Handle to the created semaphore.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>pxSemaphoreBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticSemaphore_t, which will be used to hold the semaphore's state.</ParHint>
+          <ParUserDeclaration>StaticSemaphore_t *pxSemaphoreBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>SemaphoreHandle_t #M#_#C#(StaticSemaphore_t *pxSemaphoreBuffer)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateCounting</Name>
+        <Symbol>xSemaphoreCreateCounting</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a counting semaphore by using the existing queue mechanism.\n
+\n
+Counting semaphores are typically used for two things:\n
+\n
+1. Counting events.\n
+In this usage scenario an event handler will 'give' a semaphore each time an event occurs (incrementing the semaphore count value), and a handler task will 'take' a semaphore each time it processes an event (decrementing the semaphore count value). The count value is therefore the difference between the number of events that have occurred and the number that have been processed. In this case it is desirable for the initial count value to be zero.\n
+\n
+2. Resource management.\n
+In this usage scenario the count value indicates the number of resources available. To obtain control of a resource a task must first obtain a semaphore - decrementing the semaphore count value. When the count value reaches zero there are no free resources. When a task finishes with the resource it 'gives' the semaphore back - incrementing the semaphore count value. In this case it is desirable for the initial count value to be equal to the maximum count value, indicating that all resources are free.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>xSemaphoreHandle handle</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>uxMaxCount</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The maximum count value that can be reached. When the semaphore reaches this value it can no longer be 'given'.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>uxInitialCount</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The count value assigned to the semaphore when it is created.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(unsigned_portBASE_TYPE uxMaxCount, unsigned_portBASE_TYPE uxInitialCount)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateCountingStatic</Name>
+        <Symbol>xSemaphoreCreateCountingStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a counting semaphore by using the existing queue mechanism.\n
+\n
+Counting semaphores are typically used for two things:\n
+\n
+1. Counting events.\n
+In this usage scenario an event handler will 'give' a semaphore each time an event occurs (incrementing the semaphore count value), and a handler task will 'take' a semaphore each time it processes an event (decrementing the semaphore count value). The count value is therefore the difference between the number of events that have occurred and the number that have been processed. In this case it is desirable for the initial count value to be zero.\n
+\n
+2. Resource management.\n
+In this usage scenario the count value indicates the number of resources available. To obtain control of a resource a task must first obtain a semaphore - decrementing the semaphore count value. When the count value reaches zero there are no free resources. When a task finishes with the resource it 'gives' the semaphore back - incrementing the semaphore count value. In this case it is desirable for the initial count value to be equal to the maximum count value, indicating that all resources are free.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>xSemaphoreHandle handle</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>uxMaxCount</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The maximum count value that can be reached. When the semaphore reaches this value it can no longer be 'given'.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>uxInitialCount</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The count value assigned to the semaphore when it is created.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pxSempahoreBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticSemaphore_t, which is then used to hold the semaphore's data structures.</ParHint>
+          <ParUserDeclaration>StaticSemaphore_t pxSempahoreBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(unsigned_portBASE_TYPE uxMaxCount, unsigned_portBASE_TYPE uxInitialCount, StaticSemaphore_t pxSempahoreBuffer)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreGive</Name>
+        <Symbol>xSemaphoreGive</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro to release a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary(), xSemaphoreCreateMutex() or xSemaphoreCreateCounting(), and obtained using sSemaphoreTake().\n
+\n
+This must not be used from an ISR. See xSemaphoreGiveFromISR() for an alternative which can be used from an ISR.\n
+\n
+This macro must also not be used on semaphores created using xSemaphoreCreateRecursiveMutex().\n
+\n
+xSemaphoreGive() is part of the fully featured intertask communications API. xSemaphoreAltGive() is the alternative API equivalent. Both versions require the same parameters and return the same values. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xMutex</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A handle to the mutex being released, or 'given'.  This is the handle returned by xSemaphoreCreateMutex();</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(xSemaphoreHandle xMutex)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreTake</Name>
+        <Symbol>xSemaphoreTake</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro to obtain a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary(), xSemaphoreCreateMutex() or xSemaphoreCreateCounting().\n
+\n
+This macro must not be called from an ISR. xQueueReceiveFromISR() can be used to take a semaphore from within an interrupt if required, although this would not be a normal operation. Semaphores use queues as their underlying mechanism, so functions are to some extent interoperable.\n
+\n
+xSemaphoreTake() is part of the fully featured intertask communications API. xSemaphoreAltTake() is the alternative API equivalent. Both versions require the same parameters and return the same values.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>Returns pdTRUE if the semaphore was obtained.  pdFALSE if xBlockTime expired without the semaphore becoming available.</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>xMutex</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A handle to the mutex being obtained.  This is the handle returned by xSemaphoreCreateMutex();</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>xBlockTime</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The time in ticks to wait for the semaphore to become available.  The macro portTICK_RATE_MS can be used to convert this to a real time.  A block time of zero can be used to poll the semaphore.  If the task already owns the semaphore then xSemaphoreTakeRecursive() will return immediately no matter what the value of xBlockTime. Specifying the block time as portMAX_DELAY will cause the task to block indefinitely (without a timeout).</ParHint>
+          <ParUserDeclaration>portTickType xBlockTime</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(xSemaphoreHandle xMutex, portTickType xBlockTime)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreGiveFromISR</Name>
+        <Symbol>xSemaphoreGiveFromISR</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro to release a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary() or xSemaphoreCreateCounting().\n
+\n
+Mutex type semaphores (those created using a call to xSemaphoreCreateMutex()) must not be used with this macro.\n
+\n
+This macro can be used from an ISR.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>xSemaphore</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A handle to the semaphore being released. This is the handle returned when the semaphore was created.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pxHigherPriorityTaskWoken</ParName>
+          <ParType>signed_portBASE_TYPE</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>xSemaphoreGiveFromISR() will set *pxHigherPriorityTaskWoken to pdTRUE if giving the semaphoree caused a task to unblock, and the unblocked task has a priority higher than the currently running task. If xSemaphoreGiveFromISR() sets this value to pdTRUE then a context switch should be requested before the interrupt is exited.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(xSemaphoreHandle xSemaphore, signed_portBASE_TYPE *pxHigherPriorityTaskWoken)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreTakeFromISR</Name>
+        <Symbol>xSemaphoreTakeFromISR</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro to take a semaphore from an ISR. The semaphore must have previously been created with a call to vSemaphoreCreateBinary() or xSemaphoreCreateCounting().\n
+\n
+Mutex type semaphores (those created using a call to xSemaphoreCreateMutex()) must not be used with this macro.\n
+\n
+This macro can be used from an ISR, however taking a semaphore from an ISR is not a common operation.  It is likely to only be useful when taking a counting semaphore when an interrupt is obtaining an object from a resource pool (when the semaphore count indicates the number of resources available).</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>xSemaphore</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A handle to the semaphore being taken. This is the handle returned when the semaphore was created.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pxHigherPriorityTaskWoken</ParName>
+          <ParType>signed_portBASE_TYPE</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>xSemaphoreTakeFromISR() will set *pxHigherPriorityTaskWoken to pdTRUE if taking the semaphore caused a task to unblock, and the unblocked task has a priority higher than the currently running task.  If xSemaphoreTakeFromISR() sets this value to pdTRUE then a context switch should be requested before the interrupt is exited.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(xSemaphoreHandle xSemaphore, signed_portBASE_TYPE *pxHigherPriorityTaskWoken)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreGetMutexHolder</Name>
+        <Symbol>xSemaphoreGetMutexHolder</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the holder of a mutex or semaphore. If xMutex is indeed a mutex type semaphore, return the current mutex holder. If xMutex is not a mutex type semaphore, or the mutex is available (not held by a task), return NULL. Note: This Is is a good way of determining if the calling task is the mutex holder, but not a good way of determining the identity of the mutex holder as the holder may change between the function exiting and the returned value being tested.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>pointer</ReturnType>
+        <RetHint>Not NULL if the calling task is the holder of the mutex, NULL otherwise.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xSemaphore</ParName>
+          <ParType>xSemaphoreHandle</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>A handle to the semaphore.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void* #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>xSemaphoreCreateRecursiveMutex</Name>
         <Symbol>xSemaphoreCreateRecursiveMutex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -2690,6 +3192,44 @@ Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursi
 A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.\n
 This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.\n
 See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateMutex</Name>
+        <Symbol>xSemaphoreCreateMutex</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a mutex semaphore by using the existing queue mechanism.\n
+\n
+Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.\n
+\n
+Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
+\n
+The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
+\n
+A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
+\n
+Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -2791,341 +3331,6 @@ This macro must not be used on mutexes created using xSemaphoreCreateMutex(). A 
     </Method>
     <Method>
       <TMthdItem>
-        <Name>xSemaphoreCreateMutex</Name>
-        <Symbol>xSemaphoreCreateMutex</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro that creates a mutex semaphore by using the existing queue mechanism.\n
-\n
-Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.\n
-\n
-Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
-\n
-The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
-\n
-A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
-\n
-Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>xSemaphoreHandle</ReturnType>
-        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>xSemaphoreHandle #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreTake</Name>
-        <Symbol>xSemaphoreTake</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro to obtain a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary(), xSemaphoreCreateMutex() or xSemaphoreCreateCounting().\n
-\n
-This macro must not be called from an ISR. xQueueReceiveFromISR() can be used to take a semaphore from within an interrupt if required, although this would not be a normal operation. Semaphores use queues as their underlying mechanism, so functions are to some extent interoperable.\n
-\n
-xSemaphoreTake() is part of the fully featured intertask communications API. xSemaphoreAltTake() is the alternative API equivalent. Both versions require the same parameters and return the same values.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>Returns pdTRUE if the semaphore was obtained.  pdFALSE if xBlockTime expired without the semaphore becoming available.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>xMutex</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>A handle to the mutex being obtained.  This is the handle returned by xSemaphoreCreateMutex();</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>xBlockTime</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>The time in ticks to wait for the semaphore to become available.  The macro portTICK_RATE_MS can be used to convert this to a real time.  A block time of zero can be used to poll the semaphore.  If the task already owns the semaphore then xSemaphoreTakeRecursive() will return immediately no matter what the value of xBlockTime. Specifying the block time as portMAX_DELAY will cause the task to block indefinitely (without a timeout).</ParHint>
-          <ParUserDeclaration>portTickType xBlockTime</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(xSemaphoreHandle xMutex, portTickType xBlockTime)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreGive</Name>
-        <Symbol>xSemaphoreGive</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro to release a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary(), xSemaphoreCreateMutex() or xSemaphoreCreateCounting(), and obtained using sSemaphoreTake().\n
-\n
-This must not be used from an ISR. See xSemaphoreGiveFromISR() for an alternative which can be used from an ISR.\n
-\n
-This macro must also not be used on semaphores created using xSemaphoreCreateRecursiveMutex().\n
-\n
-xSemaphoreGive() is part of the fully featured intertask communications API. xSemaphoreAltGive() is the alternative API equivalent. Both versions require the same parameters and return the same values. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>xMutex</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>A handle to the mutex being released, or 'given'.  This is the handle returned by xSemaphoreCreateMutex();</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(xSemaphoreHandle xMutex)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>vSemaphoreCreateBinary</Name>
-        <Symbol>vSemaphoreCreateBinary</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore. The data size is 0 as we don't want to actually store any data - we just want to know if the queue is empty or full.\n
-\n
-Binary semaphores and mutexes are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
-\n
-This old vSemaphoreCreateBinary() macro is now deprecated in favour of the xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
-\n
-A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
-\n
-The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
-\n
-Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
-        <ItemLevel>@ HIDDEN @</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>void</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>xSemaphore</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Handle to the created semaphore. Should be of type xSemaphoreHandle.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreCreateBinary</Name>
-        <Symbol>xSemaphoreCreateBinary</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>The old vSemaphoreCreateBinary() macro is now deprecated in favour of this xSemaphoreCreateBinary() function.  Note that binary semaphores created using the vSemaphoreCreateBinary() macro are created in a state such that the first call to 'take' the semaphore would pass, whereas binary semaphores created using xSemaphoreCreateBinary() are created in a state such that the the semaphore must first be 'given' before it can be 'taken'.\n
-\n
-Function that creates a semaphore by using the existing queue mechanism. The queue length is 1 as this is a binary semaphore.  The data size is 0 as nothing is actually stored - all that is important is whether the queue is empty or full (the binary semaphore is available or not).\n
-\n
-This type of semaphore can be used for pure synchronisation between tasks or between an interrupt and a task.  The semaphore need not be given back once obtained, so one task/interrupt can continuously 'give' the semaphore while another continuously 'takes' the semaphore.  For this reason this type of semaphore does not use a priority inheritance mechanism.  For an alternative that does use priority inheritance see xSemaphoreCreateMutex().</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>SemaphoreHandle_t</ReturnType>
-        <RetHint>Handle to the created semaphore.</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>SemaphoreHandle_t #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreCreateCounting</Name>
-        <Symbol>xSemaphoreCreateCounting</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro that creates a counting semaphore by using the existing queue mechanism.\n
-\n
-Counting semaphores are typically used for two things:\n
-\n
-1. Counting events.\n
-In this usage scenario an event handler will 'give' a semaphore each time an event occurs (incrementing the semaphore count value), and a handler task will 'take' a semaphore each time it processes an event (decrementing the semaphore count value). The count value is therefore the difference between the number of events that have occurred and the number that have been processed. In this case it is desirable for the initial count value to be zero.\n
-\n
-2. Resource management.\n
-In this usage scenario the count value indicates the number of resources available. To obtain control of a resource a task must first obtain a semaphore - decrementing the semaphore count value. When the count value reaches zero there are no free resources. When a task finishes with the resource it 'gives' the semaphore back - incrementing the semaphore count value. In this case it is desirable for the initial count value to be equal to the maximum count value, indicating that all resources are free.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>xSemaphoreHandle</ReturnType>
-        <RetHint>xSemaphoreHandle handle</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>uxMaxCount</ParName>
-          <ParType>unsigned_portBASE_TYPE</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>The maximum count value that can be reached. When the semaphore reaches this value it can no longer be 'given'.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>uxInitialCount</ParName>
-          <ParType>unsigned_portBASE_TYPE</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>The count value assigned to the semaphore when it is created.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>xSemaphoreHandle #M#_#C#(unsigned_portBASE_TYPE uxMaxCount, unsigned_portBASE_TYPE uxInitialCount)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreGiveFromISR</Name>
-        <Symbol>xSemaphoreGiveFromISR</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro to release a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary() or xSemaphoreCreateCounting().\n
-\n
-Mutex type semaphores (those created using a call to xSemaphoreCreateMutex()) must not be used with this macro.\n
-\n
-This macro can be used from an ISR.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>xSemaphore</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>A handle to the semaphore being released. This is the handle returned when the semaphore was created.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pxHigherPriorityTaskWoken</ParName>
-          <ParType>signed_portBASE_TYPE</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>xSemaphoreGiveFromISR() will set *pxHigherPriorityTaskWoken to pdTRUE if giving the semaphoree caused a task to unblock, and the unblocked task has a priority higher than the currently running task. If xSemaphoreGiveFromISR() sets this value to pdTRUE then a context switch should be requested before the interrupt is exited.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(xSemaphoreHandle xSemaphore, signed_portBASE_TYPE *pxHigherPriorityTaskWoken)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreTakeFromISR</Name>
-        <Symbol>xSemaphoreTakeFromISR</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro to take a semaphore from an ISR. The semaphore must have previously been created with a call to vSemaphoreCreateBinary() or xSemaphoreCreateCounting().\n
-\n
-Mutex type semaphores (those created using a call to xSemaphoreCreateMutex()) must not be used with this macro.\n
-\n
-This macro can be used from an ISR, however taking a semaphore from an ISR is not a common operation.  It is likely to only be useful when taking a counting semaphore when an interrupt is obtaining an object from a resource pool (when the semaphore count indicates the number of resources available).</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>Returns pdTRUE if the semaphore was given.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>xSemaphore</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>A handle to the semaphore being taken. This is the handle returned when the semaphore was created.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pxHigherPriorityTaskWoken</ParName>
-          <ParType>signed_portBASE_TYPE</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>xSemaphoreTakeFromISR() will set *pxHigherPriorityTaskWoken to pdTRUE if taking the semaphore caused a task to unblock, and the unblocked task has a priority higher than the currently running task.  If xSemaphoreTakeFromISR() sets this value to pdTRUE then a context switch should be requested before the interrupt is exited.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(xSemaphoreHandle xSemaphore, signed_portBASE_TYPE *pxHigherPriorityTaskWoken)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>vSemaphoreDelete</Name>
         <Symbol>vSemaphoreDelete</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -3155,40 +3360,6 @@ This macro can be used from an ISR, however taking a semaphore from an ISR is no
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreGetMutexHolder</Name>
-        <Symbol>xSemaphoreGetMutexHolder</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the holder of a mutex or semaphore. If xMutex is indeed a mutex type semaphore, return the current mutex holder. If xMutex is not a mutex type semaphore, or the mutex is available (not held by a task), return NULL. Note: This Is is a good way of determining if the calling task is the mutex holder, but not a good way of determining the identity of the mutex holder as the holder may change between the function exiting and the returned value being tested.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>pointer</ReturnType>
-        <RetHint>Not NULL if the calling task is the holder of the mutex, NULL otherwise.</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>xSemaphore</ParName>
-          <ParType>xSemaphoreHandle</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>A handle to the semaphore.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void* #M#_#C#(xSemaphoreHandle xSemaphore)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -3821,6 +3992,60 @@ Setting configGENERATE_RUN_TIME_STATS to 1 will result in a total accumulated ex
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>xQueueHandle #M#_#C#(unsigned_portBASE_TYPE uxQueueLength, unsigned_portBASE_TYPE uxItemSize)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xQueueCreateStatic</Name>
+        <Symbol>xQueueCreateStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Creates a queue.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xQueueHandle</ReturnType>
+        <RetHint>A handle to the created queue is returned provided the queue was created successfully. NULL is returned if the queue cannot be created because there is too little heap RAM available.</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>uxQueueLength</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The maximum number of items the queue can hold at any time.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>uxItemSize</ParName>
+          <ParType>unsigned_portBASE_TYPE</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The size in bytes of each item the queue will hold.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pucQueueStorageBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>If uxItemSize is not zero then pucQueueStorageBuffer must point to a uint8_t array that is at least large enough to hold the maximum number of items that can be in the queue at any one time - which is ( uxQueueLength * uxItemSize ) bytes. If uxItemSize is zero then pucQueueStorageBuffer can be NULL. </ParHint>
+          <ParUserDeclaration>uint8_t *pucQueueStorageBuffer</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pxQueueBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticQueue_t, which will be used to hold the queue's data structure.</ParHint>
+          <ParUserDeclaration>StaticQueue_t *pxQueueBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xQueueHandle #M#_#C#(unsigned_portBASE_TYPE uxQueueLength, unsigned_portBASE_TYPE uxItemSize, uint8_t *pucQueueStorageBuffer, StaticQueue_t *pxQueueBuffer)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -4719,6 +4944,43 @@ Event groups are stored in variables of type EventGroupHandle_t. The number of b
     </Method>
     <Method>
       <TMthdItem>
+        <Name>xEventGroupCreateStatic</Name>
+        <Symbol>xEventGroupCreateStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint> Create a new RTOS event group. This function cannot be called from an interrupt.\n
+\n
+Event groups are stored in variables of type EventGroupHandle_t. The number of bits (or flags) implemented within an event group is 8 if configUSE_16_BIT_TICKS is set to 1, or 24 if configUSE_16_BIT_TICKS is set to 0. The dependency on configUSE_16_BIT_TICKS results from the data type used for thread local storage in the internal implementation of RTOS tasks. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>EventGroupHandle_t</ReturnType>
+        <RetHint>Event Group Handle. If the event group was created then a handle to the event group is returned. If there was insufficient FreeRTOS heap available to create the event group then NULL is returned. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>pxEventGroupBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticEventGroup_t, in which the event group data structure will be stored.</ParHint>
+          <ParUserDeclaration>StaticEventGroup_t *pxEventGroupBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>EventGroupHandle_t #M#_#C#(StaticEventGroup_t *pxEventGroupBuffer)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>xEventGroupWaitBits</Name>
         <Symbol>xEventGroupWaitBits</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -5144,6 +5406,76 @@ The function will return before its block time expires if the bits specified by 
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>TimerHandle_t #M#_#C#(const char * const pcTimerName, const TickType_t xTimerPeriod, const UBaseType_t uxAutoReload, void *const pvTimerID, TimerCallbackFunction_t pxCallbackFunction)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xTimerCreateStatic</Name>
+        <Symbol>xTimerCreateStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint> Creates a new software timer instance. This allocates the storage required by the new timer, initialises the new timers internal state, and returns a handle by which the new timer can be referenced.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>TimerHandle_t</ReturnType>
+        <RetHint>Timer handle. If the timer is successfully created then a handle to the newly created timer is returned. If the timer cannot be created (because either there is insufficient FreeRTOS heap remaining to allocate the timer structures, or the timer period was set to 0) then NULL is returned. </RetHint>
+        <ParamCount>6</ParamCount>
+        <Parameter>
+          <ParName>pcTimerName</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Atextnamethatisassignedtothetimer_Thisisdonepurelytoassistdebugging_TheRTOSkernelitselfonlyeverreferencesatimerbyitshandle_andneverbyitsname_</ParHint>
+          <ParUserDeclaration>const char * const pcTimerName</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>xTimerPeriod</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The timer period. The time is defined in tick periods so the constant portTICK_PERIOD_MS can be used to convert a time that has been specified in milliseconds. For example, if the timer must expire after 100 ticks, then xTimerPeriod should be set to 100. Alternatively, if the timer must expire after 500ms, then xPeriod can be set to ( 500 / portTICK_PERIOD_MS ) provided configTICK_RATE_HZ is less than or equal to 1000. </ParHint>
+          <ParUserDeclaration>const TickType_t xTimerPeriod</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>uxAutoReload</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>If uxAutoReload is set to pdTRUE, then the timer will expire repeatedly with a frequency set by the xTimerPeriod parameter. If uxAutoReload is set to pdFALSE, then the timer will be a one-shot and enter the dormant state after it expires. </ParHint>
+          <ParUserDeclaration>const UBaseType_t uxAutoReload</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pvTimerID</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>An identifier that is assigned to the timer being created. Typically this would be used in the timer callback function to identify which timer expired when the same callback function is assigned to more than one timer. </ParHint>
+          <ParUserDeclaration>void *const pvTimerID</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pxCallbackFunction</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The function to call when the timer expires. Callback functions must have the prototype defined by TimerCallbackFunction_t, which is "void vCallbackFunction( TimerHandle_t xTimer );". </ParHint>
+          <ParUserDeclaration>TimerCallbackFunction_t pxCallbackFunction</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pxTimerBuffer</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticTimer_t, which is then used to hold the timer's state. </ParHint>
+          <ParUserDeclaration>StaticTimer_t *pxTimerBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>TimerHandle_t #M#_#C#(const char * const pcTimerName, const TickType_t xTimerPeriod, const UBaseType_t uxAutoReload, void *const pvTimerID, TimerCallbackFunction_t pxCallbackFunction, StaticTimer_t *pxTimerBuffer)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -6550,6 +6882,51 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateMutexStatic</Name>
+        <Symbol>xSemaphoreCreateMutexStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a mutex semaphore by using the existing queue mechanism.\n
+\n
+Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.\n
+\n
+Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
+\n
+The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
+\n
+A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
+\n
+Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Variable_1</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </ParHint>
+          <ParUserDeclaration>StaticSemaphore_t *pxMutexBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(StaticSemaphore_t *pxMutexBuffer)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
