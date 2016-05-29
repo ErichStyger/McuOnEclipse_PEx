@@ -1725,6 +1725,53 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- xSemaphoreCreateMutexStatic
 %-BW_METHOD_END xSemaphoreCreateMutexStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskAbortDelay
+%ifdef xTaskAbortDelay
+#define %'ModuleName'%.%xTaskAbortDelay(xTask) \
+  xTaskAbortDelay(xTask)
+
+%define! ParxTask
+%define! RetVal
+%include Common\FreeRTOSxTaskAbortDelay.Inc
+
+%endif %- xTaskAbortDelay
+%-BW_METHOD_END xTaskAbortDelay
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTaskGetInfo
+%ifdef vTaskGetInfo
+#define %'ModuleName'%.%vTaskGetInfo(xTask, pxTaskStatus, xGetFreeStackSpace, eState) \
+  vTaskGetInfo(xTask, pxTaskStatus, xGetFreeStackSpace, eState)
+%define! ParxTask
+%define! ParpxTaskStatus
+%define! ParxGetFreeStackSpace
+%define! PareState
+%include Common\FreeRTOSvTaskGetInfo.Inc
+
+%endif %- vTaskGetInfo
+%-BW_METHOD_END vTaskGetInfo
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN uxSemaphoreGetCount
+%ifdef uxSemaphoreGetCount
+#define %'ModuleName'%.%uxSemaphoreGetCount(xSemaphore) \
+  uxSemaphoreGetCount(xSemaphore)
+%define! ParxSemaphore
+%define! RetVal
+%include Common\FreeRTOSuxSemaphoreGetCount.Inc
+
+%endif %- uxSemaphoreGetCount
+%-BW_METHOD_END uxSemaphoreGetCount
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateRecursiveMutexStatic
+%ifdef xSemaphoreCreateRecursiveMutexStatic
+#define %'ModuleName'%.%xSemaphoreCreateRecursiveMutexStatic(pxMutexBuffer) \
+  xSemaphoreCreateRecursiveMutexStatic(pxMutexBuffer)
+%define! ParVariable_1
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateRecursiveMutexStatic.Inc
+
+%endif %- xSemaphoreCreateRecursiveMutexStatic
+%-BW_METHOD_END xSemaphoreCreateRecursiveMutexStatic
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -4195,6 +4242,68 @@ xSemaphoreHandle %'ModuleName'%.%xSemaphoreCreateMutexStatic(StaticSemaphore_t *
 
 %endif %- xSemaphoreCreateMutexStatic
 %-BW_METHOD_END xSemaphoreCreateMutexStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xTaskAbortDelay
+%ifdef xTaskAbortDelay
+%define! ParxTask
+%define! RetVal
+%include Common\FreeRTOSxTaskAbortDelay.Inc
+/*
+BaseType_t %'ModuleName'%.%xTaskAbortDelay(TaskHandle_t xTask)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xTaskAbortDelay
+%-BW_METHOD_END xTaskAbortDelay
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTaskGetInfo
+%ifdef vTaskGetInfo
+%define! ParxTask
+%define! ParpxTaskStatus
+%define! ParxGetFreeStackSpace
+%define! PareState
+%include Common\FreeRTOSvTaskGetInfo.Inc
+/*
+void %'ModuleName'%.%vTaskGetInfo(TaskHandle_t xTask, TaskStatus_t *pxTaskStatus, BaseType_t xGetFreeStackSpace, eTaskState eState)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- vTaskGetInfo
+%-BW_METHOD_END vTaskGetInfo
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN uxSemaphoreGetCount
+%ifdef uxSemaphoreGetCount
+%define! ParxSemaphore
+%define! RetVal
+%include Common\FreeRTOSuxSemaphoreGetCount.Inc
+/*
+%'ModuleName'_UBaseType_t %'ModuleName'%.%uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- uxSemaphoreGetCount
+%-BW_METHOD_END uxSemaphoreGetCount
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xSemaphoreCreateRecursiveMutexStatic
+%ifdef xSemaphoreCreateRecursiveMutexStatic
+%define! ParVariable_1
+%define! RetVal
+%include Common\FreeRTOSxSemaphoreCreateRecursiveMutexStatic.Inc
+/*
+xSemaphoreHandle %'ModuleName'%.%xSemaphoreCreateRecursiveMutexStatic(StaticSemaphore_t *pxMutexBuffer)
+{
+  *** Implemented as macro in the header file %'ModuleName'.h
+}
+*/
+
+%endif %- xSemaphoreCreateRecursiveMutexStatic
+%-BW_METHOD_END xSemaphoreCreateRecursiveMutexStatic
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

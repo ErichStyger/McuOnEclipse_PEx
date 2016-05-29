@@ -333,6 +333,18 @@ LI.EXP {
 <li><i>xTicksToJump:portTickType</i> - The number of RTOS ticks that have passed since the tick interrupt was stopped. For correct operation the parameter must be less than or equal to the portSUPPRESS_TICKS_AND_SLEEP() parameter. </li>
 </ul><br />
 </li>
+<li><a name="xTaskAbortDelay">
+<b>xTaskAbortDelay</b></a>
+ - Forces a task to leave the Blocked state, and enter the Ready state, even if the event the task was in the Blocked state to wait for has not occurred, and any specified timeout has not expired. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> BaseType_t xTaskAbortDelay(TaskHandle_t xTask)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTask:TaskHandle_t</i> - The handle of the task that will be forced out of the Blocked state. </li>
+<li><i>Return value:BaseType_t</i> - If the task referenced by xTask was not in the Blocked state then pdFAIL is returned. Otherwise pdPASS is returned. 
+</li>
+</ul><br />
+</li>
 <li><a name="taskYIELD">
 <b>taskYIELD</b></a>
  - Macro for forcing a context switch.
@@ -519,6 +531,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="uxSemaphoreGetCount">
+<b>uxSemaphoreGetCount</b></a>
+ - no hint
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>UBaseType_t uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xSemaphore:SemaphoreHandle_t</i> - The handle of the semaphore being queried. </li>
+<li><i>Return value:<i>ComponentName_</i>UBaseType_t</i> - If the semaphore is a counting semaphore then the semaphores current count value is returned. If the semaphore is a binary semaphore then 1 is returned if the semaphore is available, and 0 is returned if the semaphore is not available. 
+</li>
+</ul><br />
+</li>
 <li><a name="xSemaphoreGiveFromISR">
 <b>xSemaphoreGiveFromISR</b></a>
  - Macro to release a semaphore. The semaphore must have previously been created with a call to vSemaphoreCreateBinary() or xSemaphoreCreateCounting().<br /><br />Mutex type semaphores (those created using a call to xSemaphoreCreateMutex()) must not be used with this macro.<br /><br />This macro can be used from an ISR.
@@ -557,6 +581,29 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xSemaphoreCreateMutex">
+<b>xSemaphoreCreateMutex</b></a>
+ - Macro that creates a mutex semaphore by using the existing queue mechanism.<br /><br />Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.<br /><br />Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.<br /><br />The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.<br /><br />A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.<br /><br />Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> xSemaphoreHandle xSemaphoreCreateMutex(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:xSemaphoreHandle</i> - Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.
+</li>
+</ul><br />
+</li>
+<li><a name="xSemaphoreCreateMutexStatic">
+<b>xSemaphoreCreateMutexStatic</b></a>
+ - Macro that creates a mutex semaphore by using the existing queue mechanism.<br /><br />Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.<br /><br />Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.<br /><br />The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.<br /><br />A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.<br /><br />Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> xSemaphoreHandle xSemaphoreCreateMutexStatic(StaticSemaphore_t *pxMutexBuffer)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Variable_1:byte</i> - Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </li>
+<li><i>Return value:xSemaphoreHandle</i> - Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.
+</li>
+</ul><br />
+</li>
 <li><a name="xSemaphoreCreateRecursiveMutex">
 <b>xSemaphoreCreateRecursiveMutex</b></a>
  - Macro that implements a recursive mutex by using the existing queue mechanism.<br />Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros.  The  xSemaphoreTake() and xSemaphoreGive() macros should not be used.<br />A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.<br />This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.<br />See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.
@@ -568,13 +615,14 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="xSemaphoreCreateMutex">
-<b>xSemaphoreCreateMutex</b></a>
- - Macro that creates a mutex semaphore by using the existing queue mechanism.<br /><br />Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.<br /><br />Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.<br /><br />The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.<br /><br />A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.<br /><br />Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. 
+<li><a name="xSemaphoreCreateRecursiveMutexStatic">
+<b>xSemaphoreCreateRecursiveMutexStatic</b></a>
+ - Macro that implements a recursive mutex by using the existing queue mechanism.<br />Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros.  The  xSemaphoreTake() and xSemaphoreGive() macros should not be used.<br />A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.<br />This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.<br />See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> xSemaphoreHandle xSemaphoreCreateMutex(void)<br />
+<br /><i>ANSIC prototype:</i> xSemaphoreHandle xSemaphoreCreateRecursiveMutexStatic(StaticSemaphore_t *pxMutexBuffer)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Variable_1:byte</i> - Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </li>
 <li><i>Return value:xSemaphoreHandle</i> - Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.
 </li>
 </ul><br />
@@ -1639,6 +1687,19 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="vTaskGetInfo">
+<b>vTaskGetInfo</b></a>
+ - Whereas uxTaskGetSystemState() populates a TaskStatus_t structure for each task in the system, vTaskGetInfo() populates a TaskStatus_t structures for just a single task. The TaskStatus_t structure contains, among other things, members for the task handle, task name, task priority, task state, and total amount of run time consumed by the task. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void vTaskGetInfo(TaskHandle_t xTask, TaskStatus_t *pxTaskStatus, BaseType_t xGetFreeStackSpace, eTaskState eState)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>xTask:TaskHandle_t</i> - The handle of the task being queried. Setting xTask to NULL will return information on the calling task. </li>
+<li><i>pxTaskStatus:byte</i> - The TaskStatus_t structure pointed to by pxTaskStatus will be filled with information about the task referenced by the handle passed in the xTask parameter. </li>
+<li><i>xGetFreeStackSpace:BaseType_t</i> - The TaskStatus_t structure contains a member to report the stack high water mark of the task being queried. The stack high water mark is the minimum amount of stack space that has ever existed, so the closer the number is to zero the closer the task has come to overflowing its stack.Calculating the stack high water mark takes a relatively long time, and can make the system temporarily unresponsive - so the xGetFreeStackSpace parameter is provided to allow the high water mark checking to be skipped. The high watermark value will only be written to the TaskStatus_t structure if xGetFreeStackSpace is not set to pdFALSE. </li>
+<li><i>eState:byte</i> - The TaskStatus_t structure contains a member to report the state of the task being queried. Obtaining the task state is not as fast as a simple assignment - so the eState parameter is provided to allow the state information to be omitted from the TaskStatus_t structure. To obtain state information then set eState to eInvalid - otherwise the value passed in eState will be reported as the task state in the TaskStatus_t structure. </li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line Parser
@@ -1669,18 +1730,6 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void Deinit(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="xSemaphoreCreateMutexStatic">
-<b>xSemaphoreCreateMutexStatic</b></a>
- - Macro that creates a mutex semaphore by using the existing queue mechanism.<br /><br />Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.<br /><br />Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.<br /><br />The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.<br /><br />A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.<br /><br />Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. 
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> xSemaphoreHandle xSemaphoreCreateMutexStatic(StaticSemaphore_t *pxMutexBuffer)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Variable_1:byte</i> - Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </li>
-<li><i>Return value:xSemaphoreHandle</i> - Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.
-</li>
 </ul><br />
 </li>
 

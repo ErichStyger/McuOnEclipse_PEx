@@ -459,6 +459,11 @@
 #define INCLUDE_xEventGroupSetBitFromISR                         %>50 0
 #define INCLUDE_xTimerPendFunctionCall                           %>50 0
 %endif
+%if defined(UseDaemonTaskStartupHook) & %UseDaemonTaskStartupHook='yes'
+#define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 1 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
+%else
+#define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 0 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
+%endif
 
 /* Set configUSE_TASK_FPU_SUPPORT to 0 to omit floating point support even
 if floating point hardware is otherwise supported by the FreeRTOS port in use.

@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.485</Version>
+    <Version>01.489</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -18,7 +18,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>21</BW_NeedUst>
+    <BW_NeedUst>22</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License : Open Source (LGPL)\nFreeRTOS (c) Copyright 2003-2016 Richard Barry, http: www.FreeRTOS.org\nFreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2015\nProcessor Expert and CodeWarrior (c) Copyright Freescale Semiconductor, 2013-2015, all rights reserved\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -1492,7 +1492,7 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -1547,6 +1547,24 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
               <ChangeValueIntoRange>false</ChangeValueIntoRange>
               <RuntimeProperty>false</RuntimeProperty>
             </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Use Daemon Task Startup Hook</Name>
+              <Symbol>UseDaemonTaskStartupHook</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configUSE_DAEMON_TASK_STARTUP_HOOK. If enabled, uses an application specific vApplicationDaemonTaskStartupHook().</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>
@@ -2393,6 +2411,40 @@ If a FreeRTOS port includes a default portSUPPRESS_TICKS_AND_SLEEP() implementat
     </Method>
     <Method>
       <TMthdItem>
+        <Name>xTaskAbortDelay</Name>
+        <Symbol>xTaskAbortDelay</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Forces a task to leave the Blocked state, and enter the Ready state, even if the event the task was in the Blocked state to wait for has not occurred, and any specified timeout has not expired. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>BaseType_t</ReturnType>
+        <RetHint>If the task referenced by xTask was not in the Blocked state then pdFAIL is returned. Otherwise pdPASS is returned. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xTask</ParName>
+          <ParType>TaskHandle_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The handle of the task that will be forced out of the Blocked state. </ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>BaseType_t #M#_#C#(TaskHandle_t xTask)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>taskYIELD</Name>
         <Symbol>taskYIELD</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -3062,6 +3114,40 @@ xSemaphoreTake() is part of the fully featured intertask communications API. xSe
     </Method>
     <Method>
       <TMthdItem>
+        <Name>uxSemaphoreGetCount</Name>
+        <Symbol>uxSemaphoreGetCount</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint/>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>UBaseType_t</ReturnType>
+        <RetHint>If the semaphore is a counting semaphore then the semaphores current count value is returned. If the semaphore is a binary semaphore then 1 is returned if the semaphore is available, and 0 is returned if the semaphore is not available. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>xSemaphore</ParName>
+          <ParType>SemaphoreHandle_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The handle of the semaphore being queried. </ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_UBaseType_t #M#_#C#(SemaphoreHandle_t xSemaphore)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>xSemaphoreGiveFromISR</Name>
         <Symbol>xSemaphoreGiveFromISR</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -3184,38 +3270,6 @@ This macro can be used from an ISR, however taking a semaphore from an ISR is no
     </Method>
     <Method>
       <TMthdItem>
-        <Name>xSemaphoreCreateRecursiveMutex</Name>
-        <Symbol>xSemaphoreCreateRecursiveMutex</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro that implements a recursive mutex by using the existing queue mechanism.\n
-Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros.  The  xSemaphoreTake() and xSemaphoreGive() macros should not be used.\n
-A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.\n
-This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.\n
-See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>xSemaphoreHandle</ReturnType>
-        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>xSemaphoreHandle #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>xSemaphoreCreateMutex</Name>
         <Symbol>xSemaphoreCreateMutex</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -3249,6 +3303,122 @@ Both mutex and binary semaphores are assigned to variables of type xSemaphoreHan
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>xSemaphoreHandle #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateMutexStatic</Name>
+        <Symbol>xSemaphoreCreateMutexStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that creates a mutex semaphore by using the existing queue mechanism.\n
+\n
+Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.\n
+\n
+Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
+\n
+The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
+\n
+A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
+\n
+Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Variable_1</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </ParHint>
+          <ParUserDeclaration>StaticSemaphore_t *pxMutexBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(StaticSemaphore_t *pxMutexBuffer)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateRecursiveMutex</Name>
+        <Symbol>xSemaphoreCreateRecursiveMutex</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that implements a recursive mutex by using the existing queue mechanism.\n
+Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros.  The  xSemaphoreTake() and xSemaphoreGive() macros should not be used.\n
+A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.\n
+This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.\n
+See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xSemaphoreCreateRecursiveMutexStatic</Name>
+        <Symbol>xSemaphoreCreateRecursiveMutexStatic</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Macro that implements a recursive mutex by using the existing queue mechanism.\n
+Mutexes created using this macro can be accessed using the xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros.  The  xSemaphoreTake() and xSemaphoreGive() macros should not be used.\n
+A mutex used recursively can be 'taken' repeatedly by the owner. The mutex doesn't become available again until the owner has called xSemaphoreGiveRecursive() for each successful 'take' request.  For example, if a task successfully 'takes' the same mutex 5 times then the mutex will not be available to any other task until it has also  'given' the mutex back exactly five times.\n
+This type of semaphore uses a priority inheritance mechanism so a task 'taking' a semaphore MUST ALWAYS 'give' the semaphore back once the semaphore it is no longer required. Mutex type semaphores cannot be used from within interrupt service routines.\n
+See vSemaphoreCreateBinary() for an alternative implementation that can be used for pure synchronisation (where one task or interrupt always 'gives' the semaphore and another always 'takes' the semaphore) and from within interrupt service routines.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>xSemaphoreHandle</ReturnType>
+        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>Variable_1</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </ParHint>
+          <ParUserDeclaration>StaticSemaphore_t *pxMutexBuffer</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>xSemaphoreHandle #M#_#C#(StaticSemaphore_t *pxMutexBuffer)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -6783,6 +6953,60 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
     </Method>
     <Method>
       <TMthdItem>
+        <Name>vTaskGetInfo</Name>
+        <Symbol>vTaskGetInfo</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Whereas uxTaskGetSystemState() populates a TaskStatus_t structure for each task in the system, vTaskGetInfo() populates a TaskStatus_t structures for just a single task. The TaskStatus_t structure contains, among other things, members for the task handle, task name, task priority, task state, and total amount of run time consumed by the task. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>xTask</ParName>
+          <ParType>TaskHandle_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The handle of the task being queried. Setting xTask to NULL will return information on the calling task. </ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pxTaskStatus</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The TaskStatus_t structure pointed to by pxTaskStatus will be filled with information about the task referenced by the handle passed in the xTask parameter. </ParHint>
+          <ParUserDeclaration>TaskStatus_t *pxTaskStatus</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>xGetFreeStackSpace</ParName>
+          <ParType>BaseType_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The TaskStatus_t structure contains a member to report the stack high water mark of the task being queried. The stack high water mark is the minimum amount of stack space that has ever existed, so the closer the number is to zero the closer the task has come to overflowing its stack.Calculating the stack high water mark takes a relatively long time, and can make the system temporarily unresponsive - so the xGetFreeStackSpace parameter is provided to allow the high water mark checking to be skipped. The high watermark value will only be written to the TaskStatus_t structure if xGetFreeStackSpace is not set to pdFALSE. </ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>eState</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The TaskStatus_t structure contains a member to report the state of the task being queried. Obtaining the task state is not as fast as a simple assignment - so the eState parameter is provided to allow the state information to be omitted from the TaskStatus_t structure. To obtain state information then set eState to eInvalid - otherwise the value passed in eState will be reported as the task state in the TaskStatus_t structure. </ParHint>
+          <ParUserDeclaration>eTaskState eState</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(TaskHandle_t xTask, TaskStatus_t *pxTaskStatus, BaseType_t xGetFreeStackSpace, eTaskState eState)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>ParseCommand</Name>
         <Symbol>ParseCommand</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -6882,51 +7106,6 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xSemaphoreCreateMutexStatic</Name>
-        <Symbol>xSemaphoreCreateMutexStatic</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Macro that creates a mutex semaphore by using the existing queue mechanism.\n
-\n
-Mutexes created using this macro can be accessed using the xSemaphoreTake() and xSemaphoreGive() macros. The xSemaphoreTakeRecursive() and xSemaphoreGiveRecursive() macros should not be used.\n
-\n
-Mutexes and binary semaphores are very similar but have some subtle differences: Mutexes include a priority inheritance mechanism, binary semaphores do not. This makes binary semaphores the better choice for implementing synchronisation (between tasks or between tasks and an interrupt), and mutexes the better choice for implementing simple mutual exclusion.\n
-\n
-The priority of a task that 'takes' a mutex can potentially be raised if another task of higher priority attempts to obtain the same mutex. The task that owns the mutex 'inherits' the priority of the task attempting to 'take' the same mutex. This means the mutex must always be 'given' back - otherwise the higher priority task will never be able to obtain the mutex, and the lower priority task will never 'disinherit' the priority. An example of a mutex being used to implement mutual exclusion is provided on the xSemaphoreTake() documentation page.\n
-\n
-A binary semaphore need not be given back once obtained, so task synchronisation can be implemented by one task/interrupt continuously 'giving' the semaphore while another continuously 'takes' the semaphore. This is demonstrated by the sample code on the xSemaphoreGiveFromISR() documentation page.\n
-\n
-Both mutex and binary semaphores are assigned to variables of type xSemaphoreHandle and can be used in any API function that takes a parameter of this type. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>xSemaphoreHandle</ReturnType>
-        <RetHint>Handle to the created mutex semaphore.  Should be of type  xSemaphoreHandle.</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>Variable_1</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Must point to a variable of type StaticSemaphore_t, which will be used to hold the mutex type semaphore's state. </ParHint>
-          <ParUserDeclaration>StaticSemaphore_t *pxMutexBuffer</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>xSemaphoreHandle #M#_#C#(StaticSemaphore_t *pxMutexBuffer)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
