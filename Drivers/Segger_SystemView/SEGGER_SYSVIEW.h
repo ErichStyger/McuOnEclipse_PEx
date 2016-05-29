@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -150,12 +150,22 @@ void SEGGER_SYSVIEW_RecordVoid                    (unsigned EventId);
 void SEGGER_SYSVIEW_RecordU32                     (unsigned EventId, U32 Para0);
 void SEGGER_SYSVIEW_RecordU32x2                   (unsigned EventId, U32 Para0, U32 Para1);
 void SEGGER_SYSVIEW_RecordU32x3                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2);
+void SEGGER_SYSVIEW_RecordU32x4                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3);
+void SEGGER_SYSVIEW_RecordU32x5                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4);
+void SEGGER_SYSVIEW_RecordU32x6                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5);
+void SEGGER_SYSVIEW_RecordU32x7                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6);
+void SEGGER_SYSVIEW_RecordU32x8                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7);
+void SEGGER_SYSVIEW_RecordU32x9                   (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8);
+void SEGGER_SYSVIEW_RecordU32x10                  (unsigned EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9);
+void SEGGER_SYSVIEW_RecordString                  (unsigned EventId, const char* pString);
 void SEGGER_SYSVIEW_RecordSystime                 (void);
 void SEGGER_SYSVIEW_RecordEnterISR                (void);
 void SEGGER_SYSVIEW_RecordExitISR                 (void);
 void SEGGER_SYSVIEW_RecordExitISRToScheduler      (void);
 void SEGGER_SYSVIEW_RecordEnterTimer              (U32 TimerId);
 void SEGGER_SYSVIEW_RecordExitTimer               (void);
+void SEGGER_SYSVIEW_RecordEndCall                 (unsigned EventID);
+void SEGGER_SYSVIEW_RecordEndCallReturnValue      (unsigned EventID, unsigned ReturnValue);
 
 void SEGGER_SYSVIEW_OnIdle                        (void);
 void SEGGER_SYSVIEW_OnTaskCreate                  (unsigned TaskId);

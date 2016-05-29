@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -104,6 +104,7 @@ extern "C" {
 #define   SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE     25
 #define   SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED   26
 #define   SEGGER_SYSVIEW_EVENT_ID_NUMMODULES        27
+#define   SEGGER_SYSVIEW_EVENT_ID_END_CALL          28
 
 //
 // Commands that Host can send to target
