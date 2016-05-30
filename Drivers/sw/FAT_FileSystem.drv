@@ -131,6 +131,12 @@
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %endif %- ParseCommand
 
+%if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
+#define %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY  (1 && configSUPPORT_DYNAMIC_ALLOCATION)  /* 1: use RTOS dynamic memory allocation, 0: use static memory */
+%else
+#define %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY  (0 && configSUPPORT_DYNAMIC_ALLOCATION)  /* 1: use RTOS dynamic memory allocation, 0: use static memory */
+%endif
+
 %-BW_CUSTOM_USERTYPE_END
 
 
@@ -1528,10 +1534,18 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj)
 }
 #endif
 %else
+#if configSUPPORT_STATIC_ALLOCATION
+  static StaticSemaphore_t xMutexBuffer[_VOLUMES];
+#endif
+
 int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
   (void)vol; /* argument not used */
 %if defined(RTOS)
-  *sobj = %@RTOS@'ModuleName'%.xSemaphoreCreateMutex(); /* create semaphore */
+#if configSUPPORT_STATIC_ALLOCATION
+  *sobj = xSemaphoreCreateBinaryStatic(&xMutexBuffer[vol]);
+#else
+  *sobj = xSemaphoreCreateMutex(); /* create semaphore */
+#endif
   %if defined(OnCreateSyncObject)
   %OnCreateSyncObject(*sobj);
   %endif
@@ -2925,42 +2939,42 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
 %define! Pario
 %define! RetVal
 %include Common\FAT_FileSystemPrintSector.Inc
-%if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#define PRINT_BUF_SIZE   %'ModuleName'%.MAX_SS
-%else
-static uint8_t print_buf[%'ModuleName'%.MAX_SS];
-#define PRINT_BUF_SIZE   sizeof(print_buf)
-%endif
+#if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
+  #define PRINT_BUF_SIZE   %'ModuleName'%.MAX_SS
+#else
+  static uint8_t print_buf[%'ModuleName'%.MAX_SS];
+  #define PRINT_BUF_SIZE   sizeof(print_buf)
+#endif
 uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   uint16_t i;
   unsigned char buf[8];
   %'ModuleName'%.DRESULT dres;
-%if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-  static unsigned char *print_buf=NULL; /* use global buffer pointer, allocated only once, and not deallocated! */
-#else
-  unsigned char *print_buf;
+#if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
+  #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
+    static unsigned char *print_buf=NULL; /* use global buffer pointer, allocated only once, and not deallocated! */
+  #else
+    unsigned char *print_buf;
+  #endif
 #endif
-%endif
 
   if ((disk_initialize(drive)&STA_NOINIT)!=(DSTATUS)RES_OK) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed\r\n", io->stdErr);
     return ERR_FAILED;
   }
-%if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
+#if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
+  #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
   if (print_buf!=NULL) { /* only if not allocated yet */
     print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
   }
-#else
+  #else
   print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
-#endif
+  #endif
   if (print_buf == NULL) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"allocating memory failed\r\n", io->stdErr);
     return ERR_FAILED;
   }
-%endif
+#endif
   dres = disk_read(drive, &print_buf[0], sectorNo, 1);
   if (dres==RES_OK) { /* read one sector */
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"dumping disk sector: 0x", io->stdOut);
@@ -2984,11 +2998,11 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   } else {
     FatFsDResultMsg((unsigned char*)"disk_read failed", dres, io);
   }
-%if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
-#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
-  %@RTOS@'ModuleName'%.vPortFree(print_buf);
+#if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
+  #if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
+    %@RTOS@'ModuleName'%.vPortFree(print_buf);
+  #endif
 #endif
-%endif
   if (dres==RES_OK) {
     return ERR_OK;
   } else {
