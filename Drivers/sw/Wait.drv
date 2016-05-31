@@ -482,9 +482,9 @@ void %'ModuleName'%.%Wait100Cycles(void)
 %if %Compiler = "GNUC"
   __asm (
    /* bl to here:               [4] */
+   "push {r0}   \n\t"        /* [2] */
    "movs r0, #0 \n\t"        /* [1] */
    "loop:       \n\t"
-   "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
@@ -493,6 +493,13 @@ void %'ModuleName'%.%Wait100Cycles(void)
    "cmp r0,#9   \n\t"        /* [1] */
    "bls loop    \n\t"        /* [3] taken, [1] not taken */
    "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "nop         \n\t"        /* [1] */
+   "pop {r0}    \n\t"        /* [2] */
    "bx lr       \n\t"        /* [3] */
   );
 %elif (%Compiler = "IARARM")
