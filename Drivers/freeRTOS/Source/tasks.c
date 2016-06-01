@@ -315,6 +315,8 @@ typedef struct tskTaskControlBlock
 
 	#if ( portSTACK_GROWTH > 0 )
 		StackType_t		*pxEndOfStack;		/*< Points to the end of the stack on architectures where the stack grows up from low memory. */
+  #else /* << EST: add it for stack growing from high to low memory addresses  */
+    StackType_t   *pxStartOfStack;    /*< Points to the start of stack memory where the stack grows from high to low memory. */
 	#endif
 
 	#if ( portCRITICAL_NESTING_IN_TCB == 1 )
@@ -823,6 +825,10 @@ UBaseType_t x;
 
 		/* Check the alignment of the calculated top of stack is correct. */
 		configASSERT( ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack & ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) == 0UL ) );
+
+#if 1 /* << EST */
+    pxNewTCB->pxStartOfStack = pxNewTCB->pxStack + ( ulStackDepth - ( uint32_t ) 1 );
+#endif
 	}
 	#else /* portSTACK_GROWTH */
 	{
@@ -4866,6 +4872,126 @@ const TickType_t xConstTickCount = xTickCount;
 	}
 	#endif /* INCLUDE_vTaskSuspend */
 }
+
+#if 1 /* << EST: additional functionality to iterathe through task handles. */
+static TCB_t *prvSearchForIdxWithinSingleList( List_t *pxList,  UBaseType_t idx, UBaseType_t *idxCounter)
+{
+  TCB_t *pxNextTCB, *pxFirstTCB, *pxReturn = NULL;
+
+  /* This function is called with the scheduler suspended. */
+  if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
+  {
+    listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList );
+    do
+    {
+      listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList );
+
+      /* Check each character in the name looking for a match or
+      mismatch. */
+      if (*idxCounter==idx) { /* found index entry */
+        pxReturn = pxNextTCB;
+      }
+
+      if( pxReturn != NULL )
+      {
+        /* The handle has been found. */
+        break;
+      }
+      (*idxCounter)++; /* get to next entry */
+    } while( pxNextTCB != pxFirstTCB );
+  }
+  else
+  {
+    mtCOVERAGE_TEST_MARKER();
+  }
+  return pxReturn;
+}
+
+TaskHandle_t xTaskGetHandleForIdx(UBaseType_t idx)
+{
+  UBaseType_t uxQueue = configMAX_PRIORITIES;
+  TCB_t* pxTCB;
+  UBaseType_t idxCounter = 0;
+
+  vTaskSuspendAll();
+  {
+    /* Search the ready lists. */
+    do
+    {
+      uxQueue--;
+      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) &( pxReadyTasksLists[ uxQueue ] ), idx, &idxCounter );
+
+      if( pxTCB != NULL )
+      {
+        /* Found the handle. */
+        break;
+      }
+
+    } while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+
+    /* Search the delayed lists. */
+    if( pxTCB == NULL )
+    {
+      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) pxDelayedTaskList, idx, &idxCounter );
+    }
+
+    if( pxTCB == NULL )
+    {
+      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) pxOverflowDelayedTaskList, idx, &idxCounter );
+    }
+
+    #if ( INCLUDE_vTaskSuspend == 1 )
+    {
+      if( pxTCB == NULL )
+      {
+        /* Search the suspended list. */
+        pxTCB = prvSearchForIdxWithinSingleList( &xSuspendedTaskList, idx, &idxCounter );
+      }
+    }
+    #endif
+
+    #if( INCLUDE_vTaskDelete == 1 )
+    {
+      if( pxTCB == NULL )
+      {
+        /* Search the deleted list. */
+        pxTCB = prvSearchForIdxWithinSingleList( &xTasksWaitingTermination, idx, &idxCounter );
+      }
+    }
+    #endif
+  }
+  ( void ) xTaskResumeAll();
+
+  return ( TaskHandle_t ) pxTCB;
+}
+
+void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated)
+{
+  TCB_t *pxTCB;
+
+  taskENTER_CRITICAL();
+  {
+    /* If null is passed in here then it is the priority of the that
+    called uxTaskPriorityGet() that is being queried. */
+    pxTCB = prvGetTCBFromHandle( xTask );
+#if ( portSTACK_GROWTH > 0 )
+    *ppxStart = pxTCB->pxStack;
+    *ppxEnd = pxTCB->pxEndOfStack;
+#else
+    *ppxStart = pxTCB->pxStartOfStack;
+    *ppxEnd = pxTCB->pxStack;
+#endif
+    *ppxTopOfStack = (StackType_t*)pxTCB->pxTopOfStack;
+#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+    *pucStaticallyAllocated = pxTCB->ucStaticallyAllocated;
+#else
+    *pucStaticallyAllocated = 0;
+#endif
+  }
+  taskEXIT_CRITICAL();
+}
+
+#endif /* << EST end */
 
 
 #ifdef FREERTOS_MODULE_TEST

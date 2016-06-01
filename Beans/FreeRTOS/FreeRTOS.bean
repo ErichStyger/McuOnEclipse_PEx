@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.489</Version>
+    <Version>01.491</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1535,10 +1535,10 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
             <TIntgItem>
               <Name>Stack Depth</Name>
               <Symbol>TimerTaskStackDepth</Symbol>
-              <Hint>configures the value of configTIMER_TASK_STACK_DEPTH which defines the stack size for the timer task</Hint>
+              <Hint>configures the value of configTIMER_TASK_STACK_DEPTH which defines the stack size for the timer task. The units are 'stack units', so 32bits for an ARM.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>200</DefaultValue>
+              <DefaultValue>150</DefaultValue>
               <MinValue>1</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
@@ -1929,11 +1929,28 @@ This scheme allows the heap to be defined across multiple non-contigous blocks a
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Max number of tasks</Name>
+              <Symbol>ShellMaxNofTasks</Symbol>
+              <Hint>Maximum number of tasks, used for the tasklist command.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>16</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
           <GrupItem>
             <TInhrLinkItem>
               <Name>Shell</Name>

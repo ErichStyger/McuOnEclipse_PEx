@@ -2262,6 +2262,18 @@ eSleepModeStatus eTaskConfirmSleepModeStatus( void ) PRIVILEGED_FUNCTION;
  */
 void *pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
 
+#if 1 /* << EST */
+/*!
+  \brief Retrieves a task handle based on an index number. Note that between the different calls it is assumed
+         that no new tasks are created or get deleted (number and order of tasks remain the same.
+  \param idx Task index number, starting with zero.
+  \return Pointer to task handle, NULL if not found.
+ */
+TaskHandle_t xTaskGetHandleForIdx(UBaseType_t idx);
+
+void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

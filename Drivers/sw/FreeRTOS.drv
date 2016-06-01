@@ -1929,124 +1929,211 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
 %if defined(Shell)
 #if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
 static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
-  UBaseType_t nofTasks, nof, i;
-  TaskStatus_t *pxTaskStatusArray;
-  uint8_t buf[32], tmpBuf[16], res;
+  #define SHELL_MAX_NOF_TASKS %ShellMaxNofTasks /* maximum number of tasks, as specified in the properties */
+  UBaseType_t nofTasks, i;
+  TaskHandle_t taskHandles[SHELL_MAX_NOF_TASKS];
+  TaskStatus_t taskStatus;
+  StackType_t *stackBeg, *stackEnd, *topOfStack;
+  uint8_t staticallyAllocated;
+  uint8_t buf[32], tmpBuf[32], res;
+  uint16_t stackSize;
+
+  #define PAD_STAT_TASK_TCB             5
+  #define PAD_STAT_TASK_STATIC          7
+  #define PAD_STAT_TASK_HANDLE          11
+  #define PAD_STAT_TASK_NAME            (configMAX_TASK_NAME_LEN+1)
+  #define PAD_STAT_TASK_STATE           10
+  #define PAD_STAT_TASK_PRIO            8
+  #define PAD_STAT_TASK_RUNTIME         11
+  #define PAD_STAT_TASK_STACK_BEG       11
+  #define PAD_STAT_TASK_STACK_END       11
+  #define PAD_STAT_TASK_STACK_SIZE      8
+  #define PAD_STAT_TASK_STACK_TOP       21
+  #define PAD_STAT_TASK_STACK_MARK      11
 
   res = ERR_OK;
+  /* header */
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"TCB#", ' ', PAD_STAT_TASK_TCB);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Static", ' ', PAD_STAT_TASK_STATIC);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Handle", ' ', PAD_STAT_TASK_HANDLE);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', PAD_STAT_TASK_NAME);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"State", ' ', PAD_STAT_TASK_STATE);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Prio", ' ', PAD_STAT_TASK_PRIO);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Runtime", ' ', PAD_STAT_TASK_RUNTIME);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack Beg", ' ', PAD_STAT_TASK_STACK_BEG);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack End", ' ', PAD_STAT_TASK_STACK_END);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Size", ' ', PAD_STAT_TASK_STACK_SIZE);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack Top", ' ', PAD_STAT_TASK_STACK_TOP);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Unused", ' ', PAD_STAT_TASK_STACK_MARK);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+
   nofTasks = uxTaskGetNumberOfTasks();
-  pxTaskStatusArray = pvPortMalloc(nofTasks*sizeof(TaskStatus_t));
-  if (pxTaskStatusArray!=NULL) {
-    nof = uxTaskGetSystemState(pxTaskStatusArray, nofTasks, NULL);
-    if (nof!=nofTasks) { /* error, array was to small? */
-      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***GetSystemState failed!\r\n", io->stdErr);
-      res = ERR_FAILED; /* out of memory */
-    } else {
-      #define PAD_STAT_TASK_TCB         5
-      #define PAD_STAT_TASK_HANDLE      11
-      #define PAD_STAT_TASK_NAME        (configMAX_TASK_NAME_LEN+1)
-      #define PAD_STAT_TASK_STATE       10
-      #define PAD_STAT_TASK_PRIO        8
-      #define PAD_STAT_TASK_RUNTIME     11
-      #define PAD_STAT_TASK_STACK_MARK  11
-      /* header */
+  if (nofTasks>SHELL_MAX_NOF_TASKS) {
+    buf[0] = '\0';
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (const unsigned char*)"WARNING: more tasks than Shell maximum number of tasks.\r\n");
+    %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
+    nofTasks = SHELL_MAX_NOF_TASKS;
+  }
+  taskDISABLE_INTERRUPTS(); /* suspend all tasks and interrupts, as a context switch might change the task states and their lists */
+  /* get task handles of all tasks. Need to have tick interrupt disable as well because otherwise it might affect the task lists too */
+  for(i=0; i<nofTasks; i++) {
+    taskHandles[i] = xTaskGetHandleForIdx(i);
+  }
+  taskDISABLE_INTERRUPTS();
+  for(i=0;i<nofTasks;i++) {
+    if (taskHandles[i]!=NULL) {
+      vTaskGetInfo(taskHandles[i], &taskStatus, pdTRUE, eInvalid);
+      vTaskGetStackInfo(taskHandles[i], &stackBeg, &stackEnd, &topOfStack, &staticallyAllocated);
+
+      /* TCB */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatNum32u(tmpBuf, sizeof(tmpBuf), (uint32_t)taskStatus.xTaskNumber);
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"TCB#", ' ', PAD_STAT_TASK_TCB);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_TCB);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* Static */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatNum8u(tmpBuf, sizeof(tmpBuf), staticallyAllocated);
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Handle", ' ', PAD_STAT_TASK_HANDLE);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATIC);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* task handle */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)taskStatus.xHandle);
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', PAD_STAT_TASK_NAME);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_HANDLE);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* task name */
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"State", ' ', PAD_STAT_TASK_STATE);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (unsigned char*)taskStatus.pcTaskName, ' ', PAD_STAT_TASK_NAME);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* state */
+      switch(taskStatus.eCurrentState) {
+        case eRunning:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Running"); break;
+        case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Ready"); break;
+        case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Suspended"); break;
+        case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Blocked"); break;
+        default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"UNKNOWN!"); break;
+      }
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Prio", ' ', PAD_STAT_TASK_PRIO);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATE);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* (baseprio,currprio) */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), '(');
+      %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), taskStatus.uxBasePriority);
+      %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ',');
+      %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), taskStatus.uxCurrentPriority);
+      %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ')');
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Runtime", ' ', PAD_STAT_TASK_RUNTIME);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_PRIO);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* runtime */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), taskStatus.ulRunTimeCounter);
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack", ' ', PAD_STAT_TASK_STACK_MARK);
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      /* stack begin */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)stackBeg);
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_BEG);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      /* stack end */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)stackEnd);
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_END);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      /* stack size */
+#if (portSTACK_GROWTH>0)
+      stackSize = (uint16_t)(((uint32_t)stackEnd - (uint32_t)stackBeg)+sizeof(StackType_t));
+#else
+      stackSize = (uint16_t)(((uint32_t)stackBeg - (uint32_t)stackEnd)+sizeof(StackType_t));
+#endif
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), stackSize, ' ', 5);
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" B");
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_SIZE);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      /* stack top */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)topOfStack);
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" (");
+#if (portSTACK_GROWTH>0)
+      %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), (uint16_t)(((uint32_t)topOfStack - (uint32_t)stackBeg))+sizeof(StackType_t), ' ', 5);
+#else
+      %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), (uint16_t)(((uint32_t)stackBeg - (uint32_t)topOfStack))+sizeof(StackType_t), ' ', 5);
+#endif
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" B)");
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_TOP);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
+      /* stack high water mark (the lower the number, the less stack available */
+      tmpBuf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), taskStatus.usStackHighWaterMark*sizeof(portSTACK_TYPE), ' ', 5);
+      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" B");
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_MARK);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-      for(i=0; i<nof; i++) {
-        /* TCB */
-        tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatNum32u(tmpBuf, sizeof(tmpBuf), (uint32_t)pxTaskStatusArray[i].xTaskNumber);
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_TCB);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-        /* task handle */
-        tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
-        %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)pxTaskStatusArray[i].xHandle);
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_HANDLE);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        /* task name */
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (unsigned char*)pxTaskStatusArray[i].pcTaskName, ' ', PAD_STAT_TASK_NAME);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        /* state */
-        switch(pxTaskStatusArray[i].eCurrentState) {
-          case eRunning:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Running"); break;
-          case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Ready"); break;
-          case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Suspended"); break;
-          case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Blocked"); break;
-          default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"UNKNOWN!"); break;
-        }
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATE);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        /* (baseprio,currprio) */
-        tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), '(');
-        %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].uxBasePriority);
-        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ',');
-        %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].uxCurrentPriority);
-        %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ')');
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_PRIO);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        /* runtime */
-        tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
-        %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].ulRunTimeCounter);
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        /* stack high water mark */
-        tmpBuf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatNum16u(tmpBuf, sizeof(tmpBuf), pxTaskStatusArray[i].usStackHighWaterMark);
-        buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_MARK);
-        %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-        %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-      }
-    }
-  } else {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***alloc failed!\r\n", io->stdErr);
-    res = ERR_FAILED; /* out of memory */
-  }
-  if (pxTaskStatusArray!=NULL) { /* free memory */
-    vPortFree(pxTaskStatusArray);
-  }
+    } /* for */
+  } /* if */
   return res;
 }
 #endif /* configFRTOS_MEMORY_SCHEME!=1 */

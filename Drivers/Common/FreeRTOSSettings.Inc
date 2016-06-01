@@ -146,6 +146,7 @@
 %;**%>14 Priority %>60: %get(TimerTaskPriority,Text)
 %;**%>14 Queue Length %>60: %get(TimerTaskQueueLength,Text)
 %;**%>14 Stack Depth %>60: %get(TimerTaskStackDepth,Text)
+%;**%>14 Use Daemon Task Startup Hook %>60: %get(UseDaemonTaskStartupHook,Text)
 %else %- TimersEnabled
 %endif %- TimersEnabled
 %;**%>12 Memory %>60: %get(MemoryGroup,Text)
@@ -192,6 +193,7 @@
 %endif %- hasUserExitCriticalFun
 %;**%>12 Shell %>60: %get(ShellEnabled,Text)
 %if %get(ShellEnabled, Bool) = 'yes'
+%;**%>14 Max number of tasks %>60: %get(ShellMaxNofTasks,Text)
 %;**%>14 Shell %>60: %get(Shell,Text)
 %else %- ShellEnabled
 %endif %- ShellEnabled

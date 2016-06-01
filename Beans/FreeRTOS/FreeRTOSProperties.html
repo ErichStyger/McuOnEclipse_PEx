@@ -764,7 +764,7 @@ The following items are available only if the group is enabled (the value is "En
   </li>
   <li>
   <a name="TimerTaskStackDepth">
-  <b>Stack Depth</b></a> - configures the value of configTIMER_TASK_STACK_DEPTH which defines the stack size for the timer task
+  <b>Stack Depth</b></a> - configures the value of configTIMER_TASK_STACK_DEPTH which defines the stack size for the timer task. The units are 'stack units', so 32bits for an ARM.
   </li>
   <li>
   <a name="UseDaemonTaskStartupHook">
@@ -907,6 +907,10 @@ The following items are available only if the group is enabled (the value is "ye
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
 <ul>
+  <li>
+  <a name="ShellMaxNofTasks">
+  <b>Max number of tasks</b></a> - Maximum number of tasks, used for the tasklist command.
+  </li>
   <li>
   <a name="Shell">
   <b>Shell</b></a> - Interface to shell
