@@ -4874,9 +4874,9 @@ const TickType_t xConstTickCount = xTickCount;
 }
 
 #if 1 /* << EST: additional functionality to iterathe through task handles. */
-static TCB_t *prvSearchForIdxWithinSingleList( List_t *pxList,  UBaseType_t idx, UBaseType_t *idxCounter)
+static void prvCollectTaskHandlesWithinSingleList( List_t *pxList,  TaskHandle_t taskHandleArray[], UBaseType_t noTaskHandlesInArray, UBaseType_t *idxCounter)
 {
-  TCB_t *pxNextTCB, *pxFirstTCB, *pxReturn = NULL;
+  TCB_t *pxNextTCB, *pxFirstTCB;
 
   /* This function is called with the scheduler suspended. */
   if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
@@ -4885,33 +4885,22 @@ static TCB_t *prvSearchForIdxWithinSingleList( List_t *pxList,  UBaseType_t idx,
     do
     {
       listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList );
-
-      /* Check each character in the name looking for a match or
-      mismatch. */
-      if (*idxCounter==idx) { /* found index entry */
-        pxReturn = pxNextTCB;
+      if (*idxCounter<noTaskHandlesInArray) {
+        taskHandleArray[*idxCounter] = pxNextTCB;
       }
-
-      if( pxReturn != NULL )
-      {
-        /* The handle has been found. */
-        break;
-      }
-      (*idxCounter)++; /* get to next entry */
+      (*idxCounter)++; /* use next entry */
     } while( pxNextTCB != pxFirstTCB );
   }
   else
   {
     mtCOVERAGE_TEST_MARKER();
   }
-  return pxReturn;
 }
 
-TaskHandle_t xTaskGetHandleForIdx(UBaseType_t idx)
+UBaseType_t xGetTaskHandles(TaskHandle_t pxTaskHandleArray[], UBaseType_t xNofTaskHandlesInArray)
 {
   UBaseType_t uxQueue = configMAX_PRIORITIES;
-  TCB_t* pxTCB;
-  UBaseType_t idxCounter = 0;
+  UBaseType_t i, idxCounter = 0;
 
   vTaskSuspendAll();
   {
@@ -4919,50 +4908,27 @@ TaskHandle_t xTaskGetHandleForIdx(UBaseType_t idx)
     do
     {
       uxQueue--;
-      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) &( pxReadyTasksLists[ uxQueue ] ), idx, &idxCounter );
-
-      if( pxTCB != NULL )
-      {
-        /* Found the handle. */
-        break;
-      }
-
+      prvCollectTaskHandlesWithinSingleList( ( List_t * ) &( pxReadyTasksLists[ uxQueue ] ), pxTaskHandleArray, xNofTaskHandlesInArray, &idxCounter);
     } while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
 
     /* Search the delayed lists. */
-    if( pxTCB == NULL )
-    {
-      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) pxDelayedTaskList, idx, &idxCounter );
-    }
-
-    if( pxTCB == NULL )
-    {
-      pxTCB = prvSearchForIdxWithinSingleList( ( List_t * ) pxOverflowDelayedTaskList, idx, &idxCounter );
-    }
-
+    prvCollectTaskHandlesWithinSingleList( ( List_t * ) pxDelayedTaskList, pxTaskHandleArray, xNofTaskHandlesInArray, &idxCounter);
+    prvCollectTaskHandlesWithinSingleList( ( List_t * ) pxOverflowDelayedTaskList, pxTaskHandleArray, xNofTaskHandlesInArray, &idxCounter);
     #if ( INCLUDE_vTaskSuspend == 1 )
     {
-      if( pxTCB == NULL )
-      {
-        /* Search the suspended list. */
-        pxTCB = prvSearchForIdxWithinSingleList( &xSuspendedTaskList, idx, &idxCounter );
-      }
+      /* Search the suspended list. */
+      prvCollectTaskHandlesWithinSingleList( &xSuspendedTaskList, pxTaskHandleArray, xNofTaskHandlesInArray, &idxCounter);
     }
     #endif
-
     #if( INCLUDE_vTaskDelete == 1 )
     {
-      if( pxTCB == NULL )
-      {
-        /* Search the deleted list. */
-        pxTCB = prvSearchForIdxWithinSingleList( &xTasksWaitingTermination, idx, &idxCounter );
-      }
+      /* Search the deleted list. */
+      prvCollectTaskHandlesWithinSingleList( &xTasksWaitingTermination, pxTaskHandleArray, xNofTaskHandlesInArray, &idxCounter);
     }
     #endif
   }
   ( void ) xTaskResumeAll();
-
-  return ( TaskHandle_t ) pxTCB;
+  return idxCounter;
 }
 
 void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated)

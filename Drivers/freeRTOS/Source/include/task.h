@@ -2264,13 +2264,21 @@ void *pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
 
 #if 1 /* << EST */
 /*!
-  \brief Retrieves a task handle based on an index number. Note that between the different calls it is assumed
-         that no new tasks are created or get deleted (number and order of tasks remain the same.
-  \param idx Task index number, starting with zero.
-  \return Pointer to task handle, NULL if not found.
+  \brief Collects all the task handles present in the system and stores them in to an array of task handles.
+  \param pxTaskHandleArray Pointer to an array of task handles where the handles will be stored.
+  \param xNofTaskHandlesInArray Number of task handles in the array.
+  \return Number of task handles stored in array.
  */
-TaskHandle_t xTaskGetHandleForIdx(UBaseType_t idx);
+UBaseType_t xGetTaskHandles(TaskHandle_t pxTaskHandleArray[], UBaseType_t xNofTaskHandlesInArray);
 
+/*!
+ * \brief Returns stack information about the given task handle.
+ * \param xTask
+ * @param ppxStart
+ * @param ppxEnd
+ * @param ppxTopOfStack
+ * @param pucStaticallyAllocated
+ */
 void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated);
 #endif
 
