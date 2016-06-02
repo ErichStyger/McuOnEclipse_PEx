@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.120</Version>
+    <Version>01.124</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -580,6 +580,59 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint8_t *dst, size_t dstSize, int32_t val)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>NumFloatToStr</Name>
+        <Symbol>NumFloatToStr</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Converts a float value into a string.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>dst</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to destination string</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dstSize</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of the destination buffer (in bytes).</ParHint>
+          <ParUserDeclaration>size_t dstSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>val</ParName>
+          <ParType>float</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Value to be converted.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>nofFracDigits</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Number of factional digits to print</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1569,6 +1622,59 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint8_t *dst, size_t dstSize, int32_t num)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>strcatNumFloat</Name>
+        <Symbol>strcatNumFloat</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Converts a float value into a string.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>dst</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to destination string</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dstSize</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of the destination buffer (in bytes).</ParHint>
+          <ParUserDeclaration>size_t dstSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>val</ParName>
+          <ParType>float</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Value to be converted.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>nofFracDigits</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Number of factional digits to print</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

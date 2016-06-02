@@ -748,6 +748,30 @@ void %'ModuleName'%.%strcatPad(uint8_t *dst, size_t dstSize, const unsigned char
 
 %endif %- strcatPad
 %-BW_METHOD_END strcatPad
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NumFloatToStr
+%ifdef NumFloatToStr
+void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits);
+%define! Pardst
+%define! PardstSize
+%define! Parval
+%define! ParnofFracDigits
+%include Common\UtilityNumFloatToStr.Inc
+
+%endif %- NumFloatToStr
+%-BW_METHOD_END NumFloatToStr
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatNumFloat
+%ifdef strcatNumFloat
+void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits);
+%define! Pardst
+%define! PardstSize
+%define! Parval
+%define! ParnofFracDigits
+%include Common\UtilitystrcatNumFloat.Inc
+
+%endif %- strcatNumFloat
+%-BW_METHOD_END strcatNumFloat
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2667,6 +2691,64 @@ void %'ModuleName'%.%strcatPad(uint8_t *dst, size_t dstSize, const unsigned char
 
 %endif %- strcatPad
 %-BW_METHOD_END strcatPad
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NumFloatToStr
+%ifdef NumFloatToStr
+%define! Pardst
+%define! PardstSize
+%define! Parval
+%define! ParnofFracDigits
+%include Common\UtilityNumFloatToStr.Inc
+void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)
+{
+  uint32_t integral;
+  uint32_t fractional, shift;
+  int i;
+  bool isNeg;
+
+  isNeg = val<0;
+  if (isNeg) {
+    val = -val; /* make it positive */
+  }
+  integral = (uint32_t)val;
+  val = val-(float)integral; /* get rid of integral part */
+  shift = 1;
+  for(i=0;i<nofFracDigits;i++) {
+    shift *= 10;
+  }
+  fractional = (uint32_t)(val*shift); /* get fractional part */
+  if (isNeg && fractional>0 && nofFracDigits>0) {
+    %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
+    %'ModuleName'%.%strcatNum32s(dst, dstSize, integral);
+  } else {
+    %'ModuleName'%.%Num32sToStr(dst, dstSize, integral);
+  }
+  if (nofFracDigits>0) {
+    %'ModuleName'%.%chcat(dst, dstSize, '.');
+    %'ModuleName'%.%strcatNum32uFormatted(dst, dstSize, fractional, '0', nofFracDigits);
+  }
+}
+
+%endif %- NumFloatToStr
+%-BW_METHOD_END NumFloatToStr
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatNumFloat
+%ifdef strcatNumFloat
+%define! Pardst
+%define! PardstSize
+%define! Parval
+%define! ParnofFracDigits
+%include Common\UtilitystrcatNumFloat.Inc
+void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)
+{
+  uint8_t buf[32];
+
+  %'ModuleName'%.%NumFloatToStr(buf, sizeof(buf), val, nofFracDigits);
+  %'ModuleName'%.%strcat(dst, dstSize, buf);
+}
+
+%endif %- strcatNumFloat
+%-BW_METHOD_END strcatNumFloat
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

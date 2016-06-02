@@ -328,6 +328,19 @@ LI.EXP {
 <li><i>val:int32_t</i> - Value to be converted.</li>
 </ul><br />
 </li>
+<li><a name="NumFloatToStr">
+<b>NumFloatToStr</b></a>
+ - Converts a float value into a string.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dst: Pointer to uint8_t</i> - Pointer to destination string</li>
+<li><i>dstSize:uint8_t</i> - Size of the destination buffer (in bytes).</li>
+<li><i>val:float</i> - Value to be converted.</li>
+<li><i>nofFracDigits:uint8_t</i> - Number of factional digits to print</li>
+</ul><br />
+</li>
 <li><a name="Num16sToStrFormatted">
 <b>Num16sToStrFormatted</b></a>
  - Converts a 16bit signed value to string.
@@ -570,6 +583,19 @@ LI.EXP {
 <li><i>dst: Pointer to uint8_t</i> - Pointer to destination string</li>
 <li><i>dstSize:uint8_t</i> - Size of the destination buffer (in bytes).</li>
 <li><i>num:int32_t</i> - Value to convert.</li>
+</ul><br />
+</li>
+<li><a name="strcatNumFloat">
+<b>strcatNumFloat</b></a>
+ - Converts a float value into a string.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uint8_t nofFracDigits)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dst: Pointer to uint8_t</i> - Pointer to destination string</li>
+<li><i>dstSize:uint8_t</i> - Size of the destination buffer (in bytes).</li>
+<li><i>val:float</i> - Value to be converted.</li>
+<li><i>nofFracDigits:uint8_t</i> - Number of factional digits to print</li>
 </ul><br />
 </li>
 <li><a name="IsLeapYear">
