@@ -2015,7 +2015,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   for(i=0; i<nofTasks; i++) {
     taskHandles[i] = xTaskGetHandleForIdx(i);
   }
-  taskDISABLE_INTERRUPTS();
+  taskENABLE_INTERRUPTS();
   for(i=0;i<nofTasks;i++) {
     if (taskHandles[i]!=NULL) {
       vTaskGetInfo(taskHandles[i], &taskStatus, pdTRUE, eInvalid);
