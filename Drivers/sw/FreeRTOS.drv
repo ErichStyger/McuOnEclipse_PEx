@@ -657,7 +657,7 @@ void vPortTickHandler(void);
 %-INHERITED_EVENT_BEGIN RuntimeCntr OnInterrupt
 %ifdef RuntimeCntr
 %ifdef @RuntimeCntr@OnInterrupt
-extern dword %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
+extern uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
 void %@RuntimeCntr@OnInterrupt(void);
 
 %endif %- @RuntimeCntr@OnInterrupt
@@ -833,7 +833,7 @@ void %@TickTimerLDD@OnCounterRestart(LDD_TUserData *UserDataPtr);
 %-INHERITED_EVENT_BEGIN RuntimeCntrLDD OnCounterRestart
 %ifdef RuntimeCntrLDD
 %ifdef @RuntimeCntrLDD@OnCounterRestart
-extern dword %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
+extern uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
 extern LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle, used for configGENERATE_RUNTIME_STATS */
 void %@RuntimeCntrLDD@OnCounterRestart(LDD_TUserData *UserDataPtr);
 
@@ -1772,6 +1772,23 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- xSemaphoreCreateRecursiveMutexStatic
 %-BW_METHOD_END xSemaphoreCreateRecursiveMutexStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AppConfigureTimerForRuntimeStats
+%ifdef AppConfigureTimerForRuntimeStats
+void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void);
+%include Common\FreeRTOSAppConfigureTimerForRuntimeStats.Inc
+
+%endif %- AppConfigureTimerForRuntimeStats
+%-BW_METHOD_END AppConfigureTimerForRuntimeStats
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AppGetRuntimeCounterValueFromISR
+%ifdef AppGetRuntimeCounterValueFromISR
+dword %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
+%define! RetVal
+%include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
+
+%endif %- AppGetRuntimeCounterValueFromISR
+%-BW_METHOD_END AppGetRuntimeCounterValueFromISR
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1920,14 +1937,13 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
 %endif
 %- NOTE: cannot OR the following two define: MCU6.3 will report an internal error
 %if defined(RuntimeCntr) & defined(@RuntimeCntr@OnInterrupt)
-dword %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
+uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
 %elif defined(RuntimeCntrLDD) & defined(@RuntimeCntrLDD@OnCounterRestart)
-dword %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
+uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
 LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle, used for configGENERATE_RUNTIME_STATS */
 %endif
 
 %if defined(Shell)
-#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
 static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   #define SHELL_MAX_NOF_TASKS %ShellMaxNofTasks /* maximum number of tasks, as specified in the properties */
   UBaseType_t nofTasks, i;
@@ -1937,24 +1953,25 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t staticallyAllocated;
   uint8_t buf[32], tmpBuf[32], res;
   uint16_t stackSize;
+  uint32_t ulTotalTime, ulStatsAsPercentage;
 
-  #define PAD_STAT_TASK_TCB             5
-  #define PAD_STAT_TASK_STATIC          7
-  #define PAD_STAT_TASK_HANDLE          11
+  #define PAD_STAT_TASK_TCB             (sizeof("TCB ")-1)
+  #define PAD_STAT_TASK_STATIC          (sizeof("yes(2) ")-1)
+  #define PAD_STAT_TASK_HANDLE          (sizeof("0x20000398 ")-1)
   #define PAD_STAT_TASK_NAME            (configMAX_TASK_NAME_LEN+1)
-  #define PAD_STAT_TASK_STATE           10
-  #define PAD_STAT_TASK_PRIO            8
-  #define PAD_STAT_TASK_RUNTIME         11
-  #define PAD_STAT_TASK_STACK_BEG       11
-  #define PAD_STAT_TASK_STACK_END       11
-  #define PAD_STAT_TASK_STACK_SIZE      8
-  #define PAD_STAT_TASK_STACK_TOP       21
-  #define PAD_STAT_TASK_STACK_MARK      11
+  #define PAD_STAT_TASK_STATE           (sizeof("Suspended")-1)
+  #define PAD_STAT_TASK_PRIO            (sizeof("(1,1)   ")-1)
+  #define PAD_STAT_TASK_STACK_BEG       (sizeof("0x20000398 ")-1)
+  #define PAD_STAT_TASK_STACK_END       (sizeof("0x20000398 ")-1)
+  #define PAD_STAT_TASK_STACK_SIZE      (sizeof("12000 B ")-1)
+  #define PAD_STAT_TASK_STACK_TOP       (sizeof("0x200006FC (  132 B) ")-1)
+  #define PAD_STAT_TASK_STACK_MARK      (sizeof("0x20000398 ")-1)
+  #define PAD_STAT_TASK_RUNTIME         (sizeof("0x20000398 (100%%)")-1)
 
   res = ERR_OK;
   /* header */
   buf[0] = '\0';
-  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"TCB#", ' ', PAD_STAT_TASK_TCB);
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"TCB", ' ', PAD_STAT_TASK_TCB);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
   buf[0] = '\0';
@@ -1978,10 +1995,6 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
   buf[0] = '\0';
-  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Runtime", ' ', PAD_STAT_TASK_RUNTIME);
-  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
-  buf[0] = '\0';
   %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Stack Beg", ' ', PAD_STAT_TASK_STACK_BEG);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
@@ -2001,11 +2014,17 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Unused", ' ', PAD_STAT_TASK_STACK_MARK);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+  buf[0] = '\0';
+  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Runtime", ' ', PAD_STAT_TASK_RUNTIME);
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+
+  ulTotalTime = portGET_RUN_TIME_COUNTER_VALUE(); /* get total time passed in system */
+  ulTotalTime /= 100UL; /* For percentage calculations. */
 
   nofTasks = uxTaskGetNumberOfTasks();
   if (nofTasks>SHELL_MAX_NOF_TASKS) {
-    buf[0] = '\0';
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (const unsigned char*)"WARNING: more tasks than Shell maximum number of tasks.\r\n");
     %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
     nofTasks = SHELL_MAX_NOF_TASKS;
@@ -2026,14 +2045,19 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 
       /* Static */
       tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatNum8u(tmpBuf, sizeof(tmpBuf), staticallyAllocated);
+      if (staticallyAllocated==0) {
+        %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"no (0)");
+      } else {
+        %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"yes(");
+        %@Utility@'ModuleName'%.strcatNum8u(tmpBuf, sizeof(tmpBuf), staticallyAllocated);
+        %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)")");
+      }
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STATIC);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
       /* task handle */
-      tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
       %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)taskStatus.xHandle);
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_HANDLE);
@@ -2067,25 +2091,15 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_PRIO);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
-      /* runtime */
-      tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
-      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), taskStatus.ulRunTimeCounter);
-      buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
-      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-
       /* stack begin */
-      tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
       %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)stackBeg);
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_BEG);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
       /* stack end */
-      tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
       %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)stackEnd);
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_END);
@@ -2105,8 +2119,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
       /* stack top */
-      tmpBuf[0] = '\0';
-      %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
       %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), (uint32_t)topOfStack);
       %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" (");
 #if (portSTACK_GROWTH>0)
@@ -2127,54 +2140,37 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_STACK_MARK);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 
+      /* runtime */
+      %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"0x");
+      %@Utility@'ModuleName'%.strcatNum32Hex(tmpBuf, sizeof(tmpBuf), taskStatus.ulRunTimeCounter);
+      if (ulTotalTime>0) { /* to avoid division by zero */
+        /* What percentage of the total run time has the task used?
+           This will always be rounded down to the nearest integer.
+           ulTotalRunTime has already been divided by 100. */
+        ulStatsAsPercentage = taskStatus.ulRunTimeCounter/ulTotalTime;
+        if (ulStatsAsPercentage>0) {
+          %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" (");
+          %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), ulStatsAsPercentage, ' ', 3);
+          %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)"%%)");
+        } else {
+          /* If the percentage is zero here then the task has consumed less than 1%% of the total run time. */
+          %@Utility@'ModuleName'%.strcat(tmpBuf, sizeof(tmpBuf), (unsigned char*)" ( <1%%)");
+        }
+      }
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_RUNTIME);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
     } /* for */
   } /* if */
   return res;
 }
-#endif /* configFRTOS_MEMORY_SCHEME!=1 */
 
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-#if configGENERATE_RUN_TIME_STATS && configUSE_STATS_FORMATTING_FUNCTIONS
-{
-#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-  static unsigned char *taskListBufferP=NULL; /* allocated only once, never deallocated! */
-#else
-  unsigned char *taskListBufferP;
-#endif
-  size_t bufSize;
-
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)%@Shell@'ModuleName'%.DASH_LINE, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\nRTOS RUN-TIME STATISTICS:\r\n", io->stdOut);
-  buf[0] = '\0';
-  %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), (const unsigned char*)"Name", ' ', configMAX_TASK_NAME_LEN);
-  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\tTime\t\t%%Time\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)%@Shell@'ModuleName'%.DASH_LINE, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-  /* task list and status */
-  bufSize = 40*uxTaskGetNumberOfTasks();  /* about 40 bytes for a task should be enough */
-#if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-  if (taskListBufferP==NULL) { /* only if not allocated yet */
-    taskListBufferP = %'ModuleName'%.pvPortMalloc(bufSize);
-  }
-#else
-  taskListBufferP = %'ModuleName'%.pvPortMalloc(bufSize);
-#endif
-  if (taskListBufferP != NULL) {
-    %'ModuleName'%.vTaskGetRunTimeStats((char*)taskListBufferP, bufSize);
-    %@Shell@'ModuleName'%.SendStr(taskListBufferP, io->stdOut);
-#if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
-    %'ModuleName'%.vPortFree(taskListBufferP);
-#endif
-  } else {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n*** out of heap! ***\r\n", io->stdErr);
-  }
-}
-#endif
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  RTOS ticks", (const unsigned char*)"", io->stdOut);
   %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), configTICK_RATE_HZ);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
@@ -2194,9 +2190,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
-#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  tasklist", (unsigned char*)"Print tasklist\r\n", io->stdOut);
-#endif
   return ERR_OK;
 }
 
@@ -3217,11 +3211,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
-#if configSUPPORT_DYNAMIC_ALLOCATION && configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' tasklist")==0) {
     *handled = TRUE;
     return PrintTaskList(io);
-#endif
   }
   return ERR_OK;
 }
@@ -4387,6 +4379,36 @@ xSemaphoreHandle %'ModuleName'%.%xSemaphoreCreateRecursiveMutexStatic(StaticSema
 
 %endif %- xSemaphoreCreateRecursiveMutexStatic
 %-BW_METHOD_END xSemaphoreCreateRecursiveMutexStatic
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AppConfigureTimerForRuntimeStats
+%ifdef AppConfigureTimerForRuntimeStats
+%include Common\FreeRTOSAppConfigureTimerForRuntimeStats.Inc
+void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void)
+{
+%if defined(RuntimeCntr)
+  %'ModuleName'%.RunTimeCounter = 0;
+  (void)%@RuntimeCntr@'ModuleName'%.Enable();}
+%elif defined(RuntimeCntrLDD)
+  %'ModuleName'%.RunTimeCounter = 0;
+  %'ModuleName'%.RunTimeCounterHandle = %@RuntimeCntrLDD@'ModuleName'%.Init(NULL);
+  (void)%@RuntimeCntrLDD@'ModuleName'%.Enable(%'ModuleName'%.RunTimeCounterHandle);
+%endif
+}
+
+%endif %- AppConfigureTimerForRuntimeStats
+%-BW_METHOD_END AppConfigureTimerForRuntimeStats
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AppGetRuntimeCounterValueFromISR
+%ifdef AppGetRuntimeCounterValueFromISR
+%define! RetVal
+%include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
+dword %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
+{
+  return %'ModuleName'%.RunTimeCounter;
+}
+
+%endif %- AppGetRuntimeCounterValueFromISR
+%-BW_METHOD_END AppGetRuntimeCounterValueFromISR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

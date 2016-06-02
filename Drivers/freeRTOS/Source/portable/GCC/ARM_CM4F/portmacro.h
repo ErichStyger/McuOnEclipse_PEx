@@ -75,6 +75,12 @@
 extern "C" {
 #endif
 
+/* prototypes must be before FreeRTOSConfig.h, as used there .... */
+#if !configGENERATE_RUN_TIME_STATS_USE_TICKS
+  void %'ModuleName'%.AppConfigureTimerForRuntimeStats(void);
+  unsigned long %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
+#endif
+
 #include "FreeRTOSConfig.h"
 #if configGENERATE_STATIC_SOURCES || configPEX_KINETIS_SDK
   #include <stdint.h>

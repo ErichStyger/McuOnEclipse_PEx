@@ -195,23 +195,16 @@
 %endif
 %if %CollectRuntimeStatisticsGroup='yes'
 #define configGENERATE_RUN_TIME_STATS                            %>50 1 /* 1: generate runtime statistics; 0: no runtime statistics */
-%if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
-%else
-%if defined(RuntimeCntr)
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 {%'ModuleName'%.RunTimeCounter = 0; (void)%@RuntimeCntr@'ModuleName'%.Enable();}
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.RunTimeCounter
-%elif defined(RuntimeCntrLDD)
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 {%'ModuleName'%.RunTimeCounter = 0; %'ModuleName'%.RunTimeCounterHandle = %@RuntimeCntrLDD@'ModuleName'%.Init(NULL); (void)%@RuntimeCntrLDD@'ModuleName'%.Enable(%'ModuleName'%.RunTimeCounterHandle);}
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.RunTimeCounter
-%endif
-%endif %- useARMSysTickUseCoreClock
 %else
 #define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
-#define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
 %endif
+#if configGENERATE_RUN_TIME_STATS_USE_TICKS
+  #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
+  #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
+#else
+  #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
+  #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
+#endif
 %-
 %if UsePreemption = 'yes'
 #define configUSE_PREEMPTION                                     %>50 1 /* 1: pre-emptive mode; 0: cooperative mode */

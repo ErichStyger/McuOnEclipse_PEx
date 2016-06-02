@@ -4900,7 +4900,7 @@ static void prvCollectTaskHandlesWithinSingleList( List_t *pxList,  TaskHandle_t
 UBaseType_t xGetTaskHandles(TaskHandle_t pxTaskHandleArray[], UBaseType_t xNofTaskHandlesInArray)
 {
   UBaseType_t uxQueue = configMAX_PRIORITIES;
-  UBaseType_t i, idxCounter = 0;
+  UBaseType_t idxCounter = 0;
 
   vTaskSuspendAll();
   {

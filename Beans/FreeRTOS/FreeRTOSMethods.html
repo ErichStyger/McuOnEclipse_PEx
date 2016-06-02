@@ -1714,6 +1714,26 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="AppConfigureTimerForRuntimeStats">
+<b>AppConfigureTimerForRuntimeStats</b></a>
+ - Configures the timer for generating runtime statistics
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void AppConfigureTimerForRuntimeStats(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="AppGetRuntimeCounterValueFromISR">
+<b>AppGetRuntimeCounterValueFromISR</b></a>
+ - returns the current runtime counter. Function can be called from an interrupt service routine.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> dword AppGetRuntimeCounterValueFromISR(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:dword</i> - runtime counter value
+</li>
+</ul><br />
+</li>
 <li><a name="Init">
 <b>Init</b></a>
  - Low level initialization routine called from startup code. This method ensures that the tick timer is  not enabled.
