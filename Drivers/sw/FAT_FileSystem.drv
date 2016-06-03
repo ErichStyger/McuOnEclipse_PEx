@@ -1542,7 +1542,7 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
   (void)vol; /* argument not used */
 %if defined(RTOS)
 #if configSUPPORT_STATIC_ALLOCATION
-  *sobj = xSemaphoreCreateBinaryStatic(&xMutexBuffer[vol]);
+  *sobj = xSemaphoreCreateMutexStatic(&xMutexBuffer[vol]);
 #else
   *sobj = xSemaphoreCreateMutex(); /* create semaphore */
 #endif
