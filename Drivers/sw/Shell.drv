@@ -1443,6 +1443,9 @@ bool %'ModuleName'%.%KeyPressed(void)
 void %'ModuleName'%.%Init(void)
 {
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if configSUPPORT_STATIC_ALLOCATION
+  static StaticSemaphore_t xMutexBuffer;
+#endif
   bool schedulerStarted;
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
@@ -1450,7 +1453,11 @@ void %'ModuleName'%.%Init(void)
   if (!schedulerStarted) { /* FreeRTOS not started yet. We are called in PE_low_level_init(), and interrupts are disabled */
     %@CriticalSection@'ModuleName'%.EnterCritical();
   }
+#if configSUPPORT_STATIC_ALLOCATION
+  ShellSem = xSemaphoreCreateRecursiveMutexStatic(&xMutexBuffer);
+#else
   ShellSem = xSemaphoreCreateRecursiveMutex();
+#endif
   if (!schedulerStarted) { /* above RTOS call might have enabled interrupts! Make sure we restore the state */
     %@CriticalSection@'ModuleName'%.ExitCritical();
   }
