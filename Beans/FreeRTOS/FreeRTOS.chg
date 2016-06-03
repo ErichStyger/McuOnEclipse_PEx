@@ -143,19 +143,22 @@
   %endif
   %- %set ARMFamilyType ReadOnly no
   %- %set ARMFamilyType Value Enabled
-  %if defined(ARMFamilyType) & ARMFamilyType="M0+"
-    %set ARMLowestInterrutpPriority Value d:3
-  %elif defined(ARMFamilyType) & ARMFamilyType="M4F"
-    %set ARMLowestInterrutpPriority Value d:15
-  %else %- M4
-    %set ARMLowestInterrutpPriority Value d:15
+  %if defined(ARMFamilyType) & ARMFamilyType="M0+" %- 2 bits, 0..3
+    %set ARMLowestInterruptPriority Value d:3
+    %set ARMLowestInterruptPriority ExtraText 192, 0xC0, 0b1100'0000
+  %elif defined(ARMFamilyType) & ARMFamilyType="M4F" %- 4 bits, 0..15
+    %set ARMLowestInterruptPriority Value d:15
+    %set ARMLowestInterruptPriority ExtraText 240, 0xF0, 0b1111'0000
+  %else %- M4, 4 bits, 0..15
+    %set ARMLowestInterruptPriority Value d:15
+    %set ARMLowestInterruptPriority ExtraText 240, 0xF0, 0b1111'0000
   %endif
   %if defined(TickTimerLDD) & %@TickTimerLDD@MainModule != "SysTick"
     %error FreeRTOS Tick Timer: Only SysTick/SYST_CVR is supported, but %@TickTimerLDD@MainModule is used! Please use SysTick/SYST_CVR for ARM/Kinetis.
   %endif
-  %if defined(KinetisLibraryLowestInterruptPriority) & defined(ARMLowestInterrutpPriority) & defined(KinetisLibraryMaxInterruptPriority)
-    %if KinetisLibraryLowestInterruptPriority >. ARMLowestInterrutpPriority
-      %error "Library Lowest Interrupt Priority (%KinetisLibraryLowestInterruptPriority) is larger than Lowest Interrupt Priority (%ARMLowestInterrutpPriority). Priority shall be <= %ARMLowestInterrutpPriority."
+  %if defined(KinetisLibraryLowestInterruptPriority) & defined(ARMLowestInterruptPriority) & defined(KinetisLibraryMaxInterruptPriority)
+    %if KinetisLibraryLowestInterruptPriority >. ARMLowestInterruptPriority
+      %error "Library Lowest Interrupt Priority (%KinetisLibraryLowestInterruptPriority) is larger than Lowest Interrupt Priority (%ARMLowestInterruptPriority). Priority shall be <= %ARMLowestInterruptPriority."
     %endif
     %if KinetisLibraryMaxInterruptPriority >. KinetisLibraryLowestInterruptPriority
       %error "Max SysCall Interrupt Priority (%KinetisLibraryMaxInterruptPriority) is larger than Lowest Interrupt Priority (%KinetisLibraryLowestInterruptPriority). Priority shall be <= %KinetisLibraryLowestInterruptPriority."

@@ -535,10 +535,10 @@ The highest interrupt priority that can be used by any interrupt service routine
     </li>
     <li>
     <a name="KinetisLibraryLowestInterruptPriority">
-    <b>RTOS Interrupt Priority</b></a> - Used for configLIBRARY_LOWEST_INTERRUPT_PRIORITY. The lowest interrupt priority that can be used in a call to a &quot;set priority&quot; function. This priority is used for the kernel port itself too. Note that 0 is the highest priority for ARM/Kinetis.
+    <b>RTOS Interrupt Priority</b></a> - Used for configLIBRARY_LOWEST_INTERRUPT_PRIORITY. The lowest interrupt priority that can be used in a call to a &quot;set priority&quot; function. This priority is used for the kernel port itself too. Note that 0 is the highest priority for ARM/Kinetis. Note that FreeRTOS has to run with the lowest interrupt priority!
     </li>
     <li>
-    <a name="ARMLowestInterrutpPriority">
+    <a name="ARMLowestInterruptPriority">
     <b>Lowest Interrupt Priority</b></a> - Lowest possible interrupt priority as defined by the CPU, with zero the *highest* priority. This property is informal only.
     </li>
     <li>

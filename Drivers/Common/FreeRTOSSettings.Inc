@@ -82,7 +82,7 @@
 %;**%>16 ARM Family %>60: %get(ARMFamilyType,Text)
 %;**%>16 Max SysCall Interrupt Priority %>60: %get(KinetisLibraryMaxInterruptPriority,Text)
 %;**%>16 RTOS Interrupt Priority %>60: %get(KinetisLibraryLowestInterruptPriority,Text)
-%;**%>16 Lowest Interrupt Priority %>60: %get(ARMLowestInterrutpPriority,Text)
+%;**%>16 Lowest Interrupt Priority %>60: %get(ARMLowestInterruptPriority,Text)
 %;**%>16 Compiler Optimization Level %>60: %get(CompilerOptimizationLevel,Text)
 %;**%>16 SysTick %>60: %get(useARMSysTickTimer,Text)
 %if %get(useARMSysTickTimer, Bool) = 'yes'

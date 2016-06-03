@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.493</Version>
+    <Version>01.494</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -826,7 +826,7 @@ The highest interrupt priority that can be used by any interrupt service routine
                   <TIntgItem>
                     <Name>RTOS Interrupt Priority</Name>
                     <Symbol>KinetisLibraryLowestInterruptPriority</Symbol>
-                    <Hint>Used for configLIBRARY_LOWEST_INTERRUPT_PRIORITY. The lowest interrupt priority that can be used in a call to a "set priority" function. This priority is used for the kernel port itself too. Note that 0 is the highest priority for ARM/Kinetis.</Hint>
+                    <Hint>Used for configLIBRARY_LOWEST_INTERRUPT_PRIORITY. The lowest interrupt priority that can be used in a call to a "set priority" function. This priority is used for the kernel port itself too. Note that 0 is the highest priority for ARM/Kinetis. Note that FreeRTOS has to run with the lowest interrupt priority!</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <DefaultValue>15</DefaultValue>
@@ -842,7 +842,7 @@ The highest interrupt priority that can be used by any interrupt service routine
                 <GrupItem>
                   <TIntgItem>
                     <Name>Lowest Interrupt Priority</Name>
-                    <Symbol>ARMLowestInterrutpPriority</Symbol>
+                    <Symbol>ARMLowestInterruptPriority</Symbol>
                     <Hint>Lowest possible interrupt priority as defined by the CPU, with zero the *highest* priority. This property is informal only.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <ReadOnly>true</ReadOnly>
