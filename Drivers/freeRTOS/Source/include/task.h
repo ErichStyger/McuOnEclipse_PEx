@@ -2273,11 +2273,11 @@ UBaseType_t xGetTaskHandles(TaskHandle_t pxTaskHandleArray[], UBaseType_t xNofTa
 
 /*!
  * \brief Returns stack information about the given task handle.
- * \param xTask
- * @param ppxStart
- * @param ppxEnd
- * @param ppxTopOfStack
- * @param pucStaticallyAllocated
+ * \param xTask Task handle
+ * \param ppxStart Returns the start of the stack area. This is the 'bottom' of the stack, with the stack pointer growing to the 'top'.
+ * \param ppxEnd Returns the end of the stack area. This is the 'top' of the stack where the stack pointer grows to.
+ * \param ppxTopOfStack Returns the current stack pointer value.
+ * \param pucStaticallyAllocated 0, if statically allocated, !=0 if allocated dynamically
  */
 void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated);
 #endif

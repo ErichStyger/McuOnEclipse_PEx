@@ -203,9 +203,10 @@
 
 %endif %- CPUfamily
 
-%if defined(ShellEnabled) & %ShellEnabled='yes'
- %set UseTraceFacility Value yes
- %set UseTraceFacility ReadOnly yes
-%else
- %set UseTraceFacility ReadOnly no
-%endif
+%- disabled for now. In the past the shell needed the trace facility, this is not needed any more
+%- %if defined(ShellEnabled) & %ShellEnabled='yes'
+%- %set UseTraceFacility Value yes
+%- %set UseTraceFacility ReadOnly yes
+%- %else
+%set UseTraceFacility ReadOnly no
+%- %endif

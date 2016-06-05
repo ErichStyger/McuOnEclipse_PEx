@@ -4950,8 +4950,10 @@ void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t *
     *ppxTopOfStack = (StackType_t*)pxTCB->pxTopOfStack;
 #if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
     *pucStaticallyAllocated = pxTCB->ucStaticallyAllocated;
-#else
-    *pucStaticallyAllocated = 0;
+#elif (configSUPPORT_STATIC_ALLOCATION && !configSUPPORT_DYNAMIC_ALLOCATION) /* only static allocation */
+    *pucStaticallyAllocated = tskSTATICALLY_ALLOCATED_STACK_AND_TCB;
+#else /* only configSUPPORT_DYNAMIC_ALLOCATION */
+    *pucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
 #endif
   }
   taskEXIT_CRITICAL();

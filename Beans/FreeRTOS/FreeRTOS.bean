@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.494</Version>
+    <Version>01.496</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -441,7 +441,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <Name>Use Trace Facility</Name>
         <Symbol>UseTraceFacility</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>Set to 1 if you wish the trace visualisation functionality to be available, or 0 if the trace functionality is not going to be used. If you use the trace functionality a trace buffer must also be provided. If using Trace Hooks, this property is automatically enabled. This setting controls the configUSE_TRACE_FACILITY macro.</Hint>
+        <Hint>Configures configUSE_TRACE_FACILITY. Set to 1 if you wish the trace visualisation functionality to be available, or 0 if the trace functionality is not going to be used. If you use the trace functionality a trace buffer must also be provided. If using Trace Hooks, this property is automatically enabled..</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -520,7 +520,7 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
     </Property>
     <Property>
       <TBoolGrupItem>
-        <Name>Collect Runtime Statistics</Name>
+        <Name>Generate Runtime Statistics</Name>
         <Symbol>CollectRuntimeStatisticsGroup</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
         <Hint>If enabled, runtime statistics are collected. This setting configures configGENERATE_RUN_TIME_STATS. A timer with at least  least 10 times faster than the tick counter needs to be provided)</Hint>

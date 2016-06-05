@@ -198,12 +198,17 @@
 %else
 #define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
 %endif
-#if configGENERATE_RUN_TIME_STATS_USE_TICKS
-  #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 /* nothing */ /* default: use Tick counter as runtime counter */
-  #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
-#else
-  #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>50 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
-  #define portGET_RUN_TIME_COUNTER_VALUE()                         %>50 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
+#if configGENERATE_RUN_TIME_STATS
+  #if configGENERATE_RUN_TIME_STATS_USE_TICKS
+    #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
+    #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
+  #else /* use dedicated timer */
+    #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
+    #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
+  #endif
+#else /* no runtime stats, use empty macros */
+  #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                   %>55 /* nothing */
+  #define portGET_RUN_TIME_COUNTER_VALUE()                           %>55 /* nothing */
 #endif
 %-
 %if UsePreemption = 'yes'
