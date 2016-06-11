@@ -3251,7 +3251,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
     return ERR_FAILED;
   }
   /* write benchmark */
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Benchmark: open file, write 10k times 10 bytes (100'000 bytes), close file:\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Benchmark: write/copy/read a 100kB file:\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Deleting existing benchmark files...\r\n", io->stdOut);
   (void)%'ModuleName'%.%DeleteFile((const unsigned char*)"./bench.txt", io);
   (void)%'ModuleName'%.%DeleteFile((const unsigned char*)"./copy.txt", io);
@@ -3262,7 +3262,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  for(i=0;i<10000;i++) {
+  for(i=0;i<10240;i++) {
     if (%'ModuleName'%.%write(&fp, "benchmark ", sizeof("benchmark ")-1, &bw)!=FR_OK) {
       %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed writing file!\r\n", io->stdErr);
       (void)%'ModuleName'%.%close(&fp);
@@ -3274,16 +3274,18 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
   mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms needed for creating.\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for writing (", io->stdOut);
+  %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" kB/s)\r\n", io->stdOut);
 
   /* read benchmark */
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Reading benchmark file...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Reading 100kB benchmark file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   if (%'ModuleName'%.%open(&fp, "./bench.txt", FA_READ)!=FR_OK) {
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  for(i=0;i<10000;i++) {
+  for(i=0;i<10240;i++) {
     if (%'ModuleName'%.%read(&fp, &read_buf[0], sizeof(read_buf), &bw)!=FR_OK) {
       %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed reading file!\r\n", io->stdErr);
       (void)%'ModuleName'%.%close(&fp);
@@ -3295,17 +3297,21 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
   mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms needed for reading.\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for reading (", io->stdOut);
+  %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" kB/s)\r\n", io->stdOut);
 
   /* copy benchmark */
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Copy file (100'000 bytes)...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Copy file (100kB)...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   (void)%'ModuleName'%.%CopyFile((const unsigned char*)"./bench.txt", (const unsigned char*)"./copy.txt", io);
   (void)%@RTC@'ModuleName'%.GetTime(&time);
   start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
   mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms needed for copy.\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for copy (", io->stdOut);
+  %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)" kB/s)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)"done!\r\n", io->stdOut);
   return ERR_OK;
 }
