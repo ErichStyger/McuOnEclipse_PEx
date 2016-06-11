@@ -279,6 +279,48 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="GetPC">
+<b>GetPC</b></a>
+ - returns the program counter
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void* GetPC(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:void*</i> - program counter
+</li>
+</ul><br />
+</li>
+<li><a name="GetSP">
+<b>GetSP</b></a>
+ - returns the stack pointer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void* GetSP(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:void*</i> - stack pointer
+</li>
+</ul><br />
+</li>
+<li><a name="SetPSP">
+<b>SetPSP</b></a>
+ - sets the process stack pointer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetPSP(void *setval)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>setval:byte</i> - new PSP value</li>
+</ul><br />
+</li>
+<li><a name="SetLR">
+<b>SetLR</b></a>
+ - Sets the link register
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetLR(uint32_t setval)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>setval:uint32_t</i> - new LR value</li>
+</ul><br />
+</li>
 
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

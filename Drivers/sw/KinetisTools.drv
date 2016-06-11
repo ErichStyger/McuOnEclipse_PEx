@@ -206,6 +206,42 @@ uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, 
 
 %endif %- GetKinetisFamilyString
 %-BW_METHOD_END GetKinetisFamilyString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetPC
+%ifdef GetPC
+void* %'ModuleName'%.%GetPC(void);
+%define! RetVal
+%include Common\KinetisToolsGetPC.Inc
+
+%endif %- GetPC
+%-BW_METHOD_END GetPC
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetSP
+%ifdef GetSP
+void* %'ModuleName'%.%GetSP(void);
+%define! RetVal
+%include Common\KinetisToolsGetSP.Inc
+
+%endif %- GetSP
+%-BW_METHOD_END GetSP
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetPSP
+%ifdef SetPSP
+void %'ModuleName'%.%SetPSP(void *setval);
+%define! Parsetval
+%include Common\KinetisToolsSetPSP.Inc
+
+%endif %- SetPSP
+%-BW_METHOD_END SetPSP
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetLR
+%ifdef SetLR
+void %'ModuleName'%.%SetLR(uint32_t setval);
+%define! Parsetval
+%include Common\KinetisToolsSetLR.Inc
+
+%endif %- SetLR
+%-BW_METHOD_END SetLR
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -271,9 +307,7 @@ static const unsigned char *KinetisM0FamilyStrings[] =
 };
 #endif
 
-
 %if defined(Shell)
-
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 {
   uint8_t buf[1+(16*5)+1+1]; /* "{0xAA,...0xBB}" */
@@ -527,6 +561,80 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 
 %endif %- GetKinetisFamilyString
 %-BW_METHOD_END GetKinetisFamilyString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetPC
+%ifdef GetPC
+%define! RetVal
+%include Common\KinetisToolsGetPC.Inc
+void* %'ModuleName'%.%GetPC(void)
+{
+#ifdef __GNUC__
+  void *pc;
+
+  __asm__ __volatile__ ("mov %%0, pc" : "=r"(pc));
+  return pc;
+#else
+  #warning "only for GCC"
+  return NULL;
+#endif
+}
+
+%endif %- GetPC
+%-BW_METHOD_END GetPC
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetSP
+%ifdef GetSP
+%define! RetVal
+%include Common\KinetisToolsGetSP.Inc
+void* %'ModuleName'%.%GetSP(void)
+{
+#ifdef __GNUC__
+  void *sp;
+
+  __asm__ __volatile__ ("mrs %%0, msp" : "=r"(sp));
+  return sp;
+#else
+  #warning "only for GCC"
+  return NULL;
+#endif
+}
+
+%endif %- GetSP
+%-BW_METHOD_END GetSP
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetPSP
+%ifdef SetPSP
+%define! Parsetval
+%include Common\KinetisToolsSetPSP.Inc
+void %'ModuleName'%.%SetPSP(void *setval)
+{
+#ifdef __GNUC__
+  __asm__ volatile ("msr psp, %%[value]\n\t""dmb\n\t""dsb\n\t""isb\n\t"::[value]"r"(setval):);
+  __asm__ volatile ("" ::: "memory");
+#else
+  #warning "only for GCC"
+#endif
+}
+
+%endif %- SetPSP
+%-BW_METHOD_END SetPSP
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetLR
+%ifdef SetLR
+%define! Parsetval
+%include Common\KinetisToolsSetLR.Inc
+void %'ModuleName'%.%SetLR(uint32_t setval)
+{
+#ifdef __GNUC__
+  __asm__ volatile ("mov lr, %%[value]\n\t"::[value]"r"(setval):);
+  __asm__ volatile ("" ::: "memory");
+#else
+  #warning "only for GCC"
+#endif
+}
+
+%endif %- SetLR
+%-BW_METHOD_END SetLR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
