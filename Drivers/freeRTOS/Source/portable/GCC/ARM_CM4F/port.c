@@ -1150,7 +1150,8 @@ void vPortStopTickTimer(void) {
 /*-----------------------------------------------------------*/
 #if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
-void vPortEnableVFP(void) {
+/* added noinline attribute to prevent the GNU linker to optimize the following function. That symbol is required for the FreeRTOS GDB thread awareness by Segger */
+void __attribute__ ((noinline)) vPortEnableVFP(void) {
   /* The FPU enable bits are in the CPACR. */
   __asm volatile (
     "  ldr.w r0, =0xE000ED88  \n" /* CAPCR, 0xE000ED88 */
