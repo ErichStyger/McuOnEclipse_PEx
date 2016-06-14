@@ -267,6 +267,17 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
   /* Bus Fault Address Register */
   _BFAR = (*((volatile unsigned long *)(0xE000ED38)));
 
+#if 0 /* experimental, seems not to work properly with GDB in KDS V3.2.0 */
+#ifdef __GNUC__ /* might improve stack, see https://www.element14.com/community/message/199113/l/gdb-assisted-debugging-of-hard-faults#199113 */
+  __asm volatile (
+      "tst lr,#4     \n" /* check which stack pointer we are using */
+      "ite eq        \n"
+      "mrseq r0, msp \n" /* use MSP */
+      "mrsne r0, psp \n" /* use PSP */
+      "mov sp, r0    \n" /* set stack pointer so GDB shows proper stack frame */
+  );
+#endif
+#endif
   __asm("BKPT #0\n") ; /* cause the debugger to stop */
   /*lint -restore */
 }
