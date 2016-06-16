@@ -95,10 +95,13 @@ typedef enum {
 } %'ModuleName'_FileStatus;
 
 typedef enum {
-  %'ModuleName'_INVALID_FILE, /* invalid S19 file */
-  %'ModuleName'_CHECKSUM_ERROR, /* error in checksum */
-  %'ModuleName'_BUF_TOO_SMALL, /* code buffer is too small */
-  %'ModuleName'_FLASHING_FAILED /* Flashing failed */
+  %'ModuleName'_INVALID_FILE,     /* invalid S19 file */
+  %'ModuleName'_CHECKSUM_ERROR,   /* error in checksum */
+  %'ModuleName'_BUF_TOO_SMALL,    /* code buffer is too small */
+  %'ModuleName'_FLASHING_FAILED,  /* Flashing failed */
+  %'ModuleName'_GETCHAR_FAILED,   /* getChar failed */
+  %'ModuleName'_WRONG_CHECKSUM,   /* wrong checksum */
+  %'ModuleName'_LINE_NOT_COMPLETE /* S line not complete */
 } %'ModuleName'_ErrorCode;
 
 typedef struct %'ModuleName'_ParserStruct {
@@ -144,7 +147,7 @@ typedef struct %'ModuleName'_ParserStruct {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Parse
 %ifdef Parse
-byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data);
+uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data);
 %define! PargetChar
 %define! Pardata
 %define! RetVal
@@ -155,7 +158,7 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetCurrentAddress
 %ifdef GetCurrentAddress
-dword %'ModuleName'%.%GetCurrentAddress(void);
+uint32_t %'ModuleName'%.%GetCurrentAddress(void);
 %define! RetVal
 %include Common\S19GetCurrentAddress.Inc
 
@@ -164,7 +167,7 @@ dword %'ModuleName'%.%GetCurrentAddress(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseLine
 %ifdef ParseLine
-byte %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo);
+uint8_t %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo);
 %define! PariteratorInfo
 %define! RetVal
 %include Common\S19ParseLine.Inc
@@ -182,7 +185,7 @@ byte %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo);
 %-BW_METHOD_BEGIN OnSRecord
 %ifdef OnSRecord
 %INTERFACE OnSRecord
-void %OnSRecord(byte *returnCode, byte type, dword addr, byte *dataBuf, byte dataBufSize, void *data);
+void %OnSRecord(uint8_t *returnCode, uint8_t type, uint32_t addr, uint8_t *dataBuf, uint8_t dataBufSize, void *data);
 %define! Partype
 %define! PardataBuf
 %define! Paraddr
@@ -227,7 +230,7 @@ void %OnError(%'ModuleName'_ErrorCode errorCode, %'ModuleName'_ParserStruct *ite
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-static dword S19_currAddress; /* current or last address read from the file */
+static uint32_t S19_currAddress; /* current or last address read from the file */
 #define S19_BUF_NOF_BYTES  %S19BufNofBytes /* size in code bytes for the longest S19 line we expect */
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -236,13 +239,13 @@ static dword S19_currAddress; /* current or last address read from the file */
 %-UNLOCKED
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG TextToHex
-static byte TextToHex(byte ch);
+static uint8_t TextToHex(uint8_t ch);
 %-INTERNAL_LOC_METHOD_END TextToHex
 %-INTERNAL_LOC_METHOD_BEG Get_S
-static byte Get_S(%'ModuleName'_GetCharIterator getChar, void *data, byte *p);
+static uint8_t Get_S(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p);
 %-INTERNAL_LOC_METHOD_END Get_S
 %-INTERNAL_LOC_METHOD_BEG Get_S_Pair
-static byte Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, byte *p);
+static uint8_t Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p);
 %-INTERNAL_LOC_METHOD_END Get_S_Pair
 %-
 
@@ -253,7 +256,7 @@ static byte Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, byte *
 %define! Parch
 %define! RetVal
 %include Common\GeneralInternalGlobal.inc (TextToHex)
-static byte TextToHex(byte ch)
+static uint8_t TextToHex(uint8_t ch)
 {
   switch (ch) {
     case '0':
@@ -266,7 +269,7 @@ static byte TextToHex(byte ch)
     case '7':
     case '8':
     case '9':
-      return (byte)(ch-'0');
+      return (uint8_t)(ch-'0');
     case 'A':
     case 'a':
       return 10;
@@ -298,23 +301,32 @@ static byte TextToHex(byte ch)
 %define! Parp
 %define! RetVal
 %include Common\GeneralInternalGlobal.inc (Get_S)
-static byte Get_S(%'ModuleName'_GetCharIterator getChar, void *data, byte *p)
+static uint8_t Get_S(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p)
 {
   uint8_t c;
 
   for(;;) {
     if (getChar(&c, data)!=ERR_OK) { /* iterator failed? */
+    %if defined(OnError)
+      %OnError(%'ModuleName'_GETCHAR_FAILED, NULL);
+    %endif
       return ERR_FAILED;
     }
     if (c=='S') {
       break;
     }
     if (c=='\0') { /* zero byte? something is wrong or file is not complete */
+    %if defined(OnError)
+      %OnError(%'ModuleName'_LINE_NOT_COMPLETE, NULL);
+    %endif
       return ERR_FAILED;
     }
   }
   /* Get type of S-record */
   if (getChar(&c, data)!=ERR_OK) {
+  %if defined(OnError)
+    %OnError(%'ModuleName'_GETCHAR_FAILED, NULL);
+  %endif
     return ERR_FAILED;
   }
   *p = c; /* store character */
@@ -329,7 +341,7 @@ static byte Get_S(%'ModuleName'_GetCharIterator getChar, void *data, byte *p)
 %define! Parp
 %define! RetVal
 %include Common\GeneralInternalGlobal.inc (Get_S_Pair)
-static byte Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, byte *p)
+static uint8_t Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p)
 {
   unsigned char ch, upper;
 
@@ -338,18 +350,27 @@ static byte Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, byte *
   }
   upper = (unsigned char)(TextToHex(ch));
   if(upper == 0xFF) { /* Not a proper S19 file */
+  %if defined(OnError)
+    %OnError(%'ModuleName'_INVALID_FILE, NULL);
+  %endif
     return ERR_FAILED;
   } else {
-    upper = (byte)(upper << 4);
+    upper = (uint8_t)(upper << 4);
   }
   if (getChar(&ch, data)!=ERR_OK) {
+  %if defined(OnError)
+    %OnError(%'ModuleName'_GETCHAR_FAILED, NULL);
+  %endif
     return ERR_FAILED;
   }
   ch = (unsigned char)(TextToHex(ch));
   if(ch == 0xFF) {   /* Not a proper S19 file */
+  %if defined(OnError)
+    %OnError(%'ModuleName'_INVALID_FILE, NULL);
+  %endif
     return ERR_FAILED;
   }
-  *p = (byte)(upper | ch);
+  *p = (uint8_t)(upper | ch);
   return ERR_OK;
 }
 
@@ -361,12 +382,12 @@ static byte Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, byte *
 %define! Pardata
 %define! RetVal
 %include Common\S19Parse.Inc
-byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
+uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
 {
   static unsigned char srec_buffer[S19_BUF_NOF_BYTES]; /* here we store the data which will be flashed */
   unsigned char length, checksum, val, i, offset, type;
 %if defined(OnSRecord)
-  byte res;
+  uint8_t res;
 %endif
 
   S19_currAddress = 0;
@@ -402,8 +423,8 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
         /* 32-bit cores program flash in 32-bit words */
         /* Therefore S19 address needs to be adjusted to be word aligned */
         /* Pad beginning of buffer if address not word aligned */
-        offset = (byte) (S19_currAddress & 0x0003);
-        S19_currAddress = (dword) (S19_currAddress & 0xFFFFFFFC);
+        offset = (uint8_t)(S19_currAddress & 0x0003);
+        S19_currAddress = (uint32_t)(S19_currAddress & 0xFFFFFFFC);
         length += offset;
         for (i = 0; i < offset; i++) {
           srec_buffer[i] = 0xFF;
@@ -428,6 +449,9 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
           return ERR_FAILED;
         }
         if (((val - ~checksum) & 0x00FF) != 0) {
+        %if defined(OnError)
+          %OnError(%'ModuleName'_WRONG_CHECKSUM, NULL);
+        %endif
           return ERR_FAILED;
         }
       %if %AlignTo32Bit='yes'
@@ -442,7 +466,7 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
         /* NOTE: 8-bit core does not need to pad the end */
       %if defined(OnSRecord)
         res = ERR_OK;
-        %OnSRecord(&res, type+'0', S19_currAddress, &srec_buffer[0], (byte)(i >> 2), data);
+        %OnSRecord(&res, type+'0', S19_currAddress, &srec_buffer[0], (uint8_t)(i >> 2), data);
         if (res!=ERR_OK) {
           return ERR_FAILED;
         }
@@ -475,6 +499,9 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
           return ERR_FAILED;
         }
         if (((val - ~checksum) & 0x00FF) != 0) {
+        %if defined(OnError)
+          %OnError(%'ModuleName'_WRONG_CHECKSUM, NULL);
+        %endif
           return ERR_FAILED;
         } else { /* File completely read successfully */
           return ERR_OK;
@@ -498,7 +525,7 @@ byte %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
 %ifdef GetCurrentAddress
 %define! RetVal
 %include Common\S19GetCurrentAddress.Inc
-dword %'ModuleName'%.%GetCurrentAddress(void)
+uint32_t %'ModuleName'%.%GetCurrentAddress(void)
 {
   return S19_currAddress;
 }
@@ -511,7 +538,7 @@ dword %'ModuleName'%.%GetCurrentAddress(void)
 %define! PariteratorInfo
 %define! RetVal
 %include Common\S19ParseLine.Inc
-byte %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo)
+uint8_t %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo)
 {
   unsigned char length, checksum, val, i, offset, type;
 
@@ -556,8 +583,8 @@ byte %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo)
       /* 32-bit cores program flash in 32-bit words */
       /* Therefore S19 address needs to be adjusted to be word aligned */
       /* Pad beginning of buffer if address not word aligned */
-      offset = (byte) (iteratorInfo->currAddress & 0x0003);
-      iteratorInfo->currAddress = (dword)(iteratorInfo->currAddress&0xFFFFFFFC);
+      offset = (uint8_t) (iteratorInfo->currAddress & 0x0003);
+      iteratorInfo->currAddress = (uint32_t)(iteratorInfo->currAddress&0xFFFFFFFC);
       length += offset;
       for (i=0; i<offset && i<iteratorInfo->codeBufSize; i++) {
         iteratorInfo->codeBuf[i] = 0xFF;
@@ -689,7 +716,7 @@ byte %'ModuleName'%.%ParseLine(%'ModuleName'_ParserStruct *iteratorInfo)
 %define! PardataBufSize
 %define! Pardata
 %include Common\S19OnSRecord.Inc
-void %OnSRecord(byte *returnCode, byte type, dword addr, byte *dataBuf, byte dataBufSize, void *data)
+void %OnSRecord(uint8_t *returnCode, uint8_t type, uint32_t addr, uint8_t *dataBuf, uint8_t dataBufSize, void *data)
 {
   /* Write your code here ... */
 }

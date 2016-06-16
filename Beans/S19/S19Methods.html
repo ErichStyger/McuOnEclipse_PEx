@@ -211,11 +211,11 @@ LI.EXP {
  - Parses an S19 file and calls the callbacks in order to process it.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Parse(<i>ComponentName_</i>GetCharIterator getChar, void *data)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Parse(<i>ComponentName_</i>GetCharIterator getChar, void *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>getChar:<i>ComponentName_</i>GetCharIterator</i> - Iterator to read a character from the input stream</li>
-<li><i>data: Pointer to byte</i> - Pointer to data for the iterator</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>data: Pointer to uint8_t</i> - Pointer to data for the iterator</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -224,10 +224,10 @@ LI.EXP {
  - Parses an S19 input stream line by line and calls the callbacks in order to process it.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ParseLine(<i>ComponentName_</i>ParserStruct *iteratorInfo)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ParseLine(<i>ComponentName_</i>ParserStruct *iteratorInfo)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>iteratorInfo: Pointer to <i>ComponentName_</i>ParserStruct</i> - Pointer to iterator information struct</li>
-<li><i>Return value:byte</i> - Error code, ERR_OK for no error
+<li><i>Return value:uint8_t</i> - Error code, ERR_OK for no error
 </li>
 </ul><br />
 </li>
@@ -236,9 +236,9 @@ LI.EXP {
  - Returns the current/last address read from the S-Record. This can be used for error reporting.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> dword GetCurrentAddress(void)<br />
+<br /><i>ANSIC prototype:</i> uint32_t GetCurrentAddress(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:dword</i> - Error code
+<li><i>Return value:uint32_t</i> - Error code
 </li>
 </ul><br />
 </li>

@@ -216,14 +216,14 @@ LI.EXP {
  - Event called for every S-Record
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OnSRecord(byte *returnCode, byte type, dword addr, byte *dataBuf, byte dataBufSize, void *data)<br />
+<br /><i>ANSIC prototype:</i> void OnSRecord(uint8_t *returnCode, uint8_t type, uint32_t addr, uint8_t *dataBuf, uint8_t dataBufSize, void *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>returnCode:byte</i> - Pointer to error code</li>
-<li><i>type:byte</i> - type of S-Record (as character), e.g. '3'</li>
-<li><i>addr:dword</i> - Address of data</li>
-<li><i>dataBuf:byte</i> - Pointer to buffer of S-Record data (in binary form)</li>
-<li><i>dataBufSize:byte</i> - Size in bytes of the data buffer</li>
-<li><i>data:byte</i> - Pointer to private data</li>
+<li><i>returnCode:uint8_t</i> - Pointer to error code</li>
+<li><i>type:uint8_t</i> - type of S-Record (as character), e.g. '3'</li>
+<li><i>addr:uint32_t</i> - Address of data</li>
+<li><i>dataBuf:uint8_t</i> - Pointer to buffer of S-Record data (in binary form)</li>
+<li><i>dataBufSize:uint8_t</i> - Size in bytes of the data buffer</li>
+<li><i>data:uint8_t</i> - Pointer to private data</li>
 </ul><br />
 </li>
 <li>

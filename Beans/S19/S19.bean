@@ -4,7 +4,7 @@
     <Name>S19</Name>
     <Description>Component to read and parse an S19 file</Description>
     <Author>Erich Styger</Author>
-    <Version>01.034</Version>
+    <Version>01.038</Version>
     <Icon>S19</Icon>
     <TypesFiles>PE,S19\S19</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>3</BW_NeedUst>
+    <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>Note: This component is based on the Freescale Application Note AN3748 created by Derek Snell.\nCopyright : (c) Copyright Freescale, adopted by Erich Styger, 2013, all rights reserved.\nhttp://www.mcuoneclipse.com\n\nThis an open source software in the form of a Processor Expert Embedded Component.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -92,18 +92,18 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>The hexadecimal value</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>text character to be converted</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte ch)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t ch)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -126,7 +126,7 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code or ERR_OK</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -144,13 +144,13 @@
         </Parameter>
         <Parameter>
           <ParName>p</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to where to store the character read</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data, byte *p)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -173,7 +173,7 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code or ERR_OK</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -184,20 +184,20 @@
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to data for the iterator</ParHint>
           <ParUserDeclaration>void *data</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>p</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to where to store the character read</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data, byte *p)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data, uint8_t *p)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -220,7 +220,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -231,14 +231,14 @@
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data for the iterator</ParHint>
           <ParUserDeclaration>void *data</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_GetCharIterator getChar, void *data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -261,7 +261,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, ERR_OK for no error</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -272,7 +272,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_ParserStruct *iteratorInfo)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ParserStruct *iteratorInfo)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -295,12 +295,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>32bit unsigned</ReturnType>
+        <ReturnType>uint32_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>dword #M#_#C#(void)</ANSIC>
+          <ANSIC>uint32_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -337,44 +337,44 @@
         <ParamCount>6</ParamCount>
         <Parameter>
           <ParName>returnCode</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to error code</ParHint>
         </Parameter>
         <Parameter>
           <ParName>type</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>type of S-Record (as character), e.g. '3'</ParHint>
         </Parameter>
         <Parameter>
           <ParName>addr</ParName>
-          <ParType>32bit unsigned</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Address of data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataBuf</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to buffer of S-Record data (in binary form)</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataBufSize</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size in bytes of the data buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to private data</ParHint>
           <ParUserDeclaration>void *data</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte *returnCode, byte type, dword addr, byte *dataBuf, byte dataBufSize, void *data)</ANSIC>
+          <ANSIC>void #C#(uint8_t *returnCode, uint8_t type, uint32_t addr, uint8_t *dataBuf, uint8_t dataBufSize, void *data)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
