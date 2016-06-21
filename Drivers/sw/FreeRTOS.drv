@@ -2236,6 +2236,8 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 
 %endif
 %if defined(GenerateOSAFunctions) & %GenerateOSAFunctions='yes'
+#include "fsl_os_abstraction.h"
+
 /*!
  * \brief Initializes the OS Adapter layer for the Kinetis SDK.
  * \return Error code, kStatus_OSA_Success if everything is ok.
