@@ -536,10 +536,10 @@ LI.EXP {
  - no hint
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>UBaseType_t uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)<br />
+<br /><i>ANSIC prototype:</i> UBaseType_t uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>xSemaphore:SemaphoreHandle_t</i> - The handle of the semaphore being queried. </li>
-<li><i>Return value:<i>ComponentName_</i>UBaseType_t</i> - If the semaphore is a counting semaphore then the semaphores current count value is returned. If the semaphore is a binary semaphore then 1 is returned if the semaphore is available, and 0 is returned if the semaphore is not available. 
+<li><i>Return value:UBaseType_t</i> - If the semaphore is a counting semaphore then the semaphores current count value is returned. If the semaphore is a binary semaphore then 1 is returned if the semaphore is available, and 0 is returned if the semaphore is not available. 
 </li>
 </ul><br />
 </li>
@@ -1728,9 +1728,9 @@ LI.EXP {
  - returns the current runtime counter. Function can be called from an interrupt service routine.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> dword AppGetRuntimeCounterValueFromISR(void)<br />
+<br /><i>ANSIC prototype:</i> UBaseType_t AppGetRuntimeCounterValueFromISR(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:dword</i> - runtime counter value
+<li><i>Return value:UBaseType_t</i> - runtime counter value
 </li>
 </ul><br />
 </li>

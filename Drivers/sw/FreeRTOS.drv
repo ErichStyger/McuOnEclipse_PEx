@@ -1783,7 +1783,7 @@ void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AppGetRuntimeCounterValueFromISR
 %ifdef AppGetRuntimeCounterValueFromISR
-dword %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
+UBaseType_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %define! RetVal
 %include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
 
@@ -4396,7 +4396,7 @@ void %'ModuleName'%.%vTaskGetInfo(TaskHandle_t xTask, TaskStatus_t *pxTaskStatus
 %define! RetVal
 %include Common\FreeRTOSuxSemaphoreGetCount.Inc
 /*
-%'ModuleName'_UBaseType_t %'ModuleName'%.%uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)
+UBaseType_t %'ModuleName'%.%uxSemaphoreGetCount(SemaphoreHandle_t xSemaphore)
 {
   *** Implemented as macro in the header file %'ModuleName'.h
 }
@@ -4447,18 +4447,20 @@ void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void)
 %ifdef AppGetRuntimeCounterValueFromISR
 %define! RetVal
 %include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
-#if configGENERATE_RUN_TIME_STATS
-dword %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
+UBaseType_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
 {
-#if configGENERATE_RUN_TIME_STATS_USE_TICKS
+#if configGENERATE_RUN_TIME_STATS
+  #if configGENERATE_RUN_TIME_STATS_USE_TICKS
   return xTaskGetTickCountFromISR(); /* using RTOS tick counter */
-#else /* using timer counter */
+  #else /* using timer counter */
   return %'ModuleName'%.RunTimeCounter;
+  #endif
+#else
+  return 0; /* dummy value */
 #endif
 }
 
 %endif %- AppGetRuntimeCounterValueFromISR
-#endif /* configGENERATE_RUN_TIME_STATS */
 %-BW_METHOD_END AppGetRuntimeCounterValueFromISR
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
