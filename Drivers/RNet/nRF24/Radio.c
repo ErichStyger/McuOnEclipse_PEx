@@ -296,8 +296,7 @@ static void RADIO_HandleStateMachine(void) {
       case RADIO_WAITING_DATA_SENT:
 #if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
         %@nRF24L01p@'ModuleName'%.PollInterrupt();
-#endif
-#if 1 /* experimental */
+#else /* experimental */
         if (!RADIO_isrFlag) { /* check if we missed an interrupt? */
           %@nRF24L01p@'ModuleName'%.PollInterrupt();
         }
