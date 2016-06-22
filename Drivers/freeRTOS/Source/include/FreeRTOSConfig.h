@@ -124,9 +124,10 @@
 #define configCPU_FAMILY_ARM_M7       %>50 9   /* ARM Cortex-M7 */
 #define configCPU_FAMILY_ARM_M7F      %>50 10  /* ARM Cortex-M7F (with floating point unit) */
 /* Macros to identify set of core families */
-#define configCPU_FAMILY_IS_ARM_M7(fam)   %>50 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
+#define configCPU_FAMILY_IS_ARM_M0(fam)   %>50 ((fam)==configCPU_FAMILY_ARM_M0P)
 #define configCPU_FAMILY_IS_ARM_M4(fam)   %>50 (((fam)==configCPU_FAMILY_ARM_M4)  || ((fam)==configCPU_FAMILY_ARM_M4F))
-#define configCPU_FAMILY_IS_ARM(fam)      %>50 (((fam)==configCPU_FAMILY_ARM_M0P) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
+#define configCPU_FAMILY_IS_ARM_M7(fam)   %>50 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
+#define configCPU_FAMILY_IS_ARM(fam)      %>50 (configCPU_FAMILY_IS_ARM_M0(fam) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
 
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #define configCPU_FAMILY                   %>50 configCPU_FAMILY_S08

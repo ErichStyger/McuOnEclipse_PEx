@@ -303,7 +303,7 @@ _vPortStartFirstTask:
 
 #define VECTOR_TABLE_OFFSET_REG     0xE000ED08 /* Vector Table Offset Register (VTOR) */
 
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   #define COPROCESSOR_ACCESS_REGISTER 0xE000ED88 /* Coprocessor Access Register (CPACR) */
 #endif
 
@@ -329,7 +329,7 @@ _vPortStartFirstTask:
   PUBLIC vPortClearInterruptMask
   PUBLIC vPortStartFirstTask
 
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   PUBLIC vPortEnableVFP
 #endif
 /*-----------------------------------------------------------*/
@@ -364,7 +364,7 @@ vPortPendSVHandler:
     mrs r0, psp
     ldr  r3, =pxCurrentTCB      /* Get the location of the current TCB. */
     ldr  r2, [r3]
-  #if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+  #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
     tst r14, #0x10              /* Is the task using the FPU context?  If so, push high vfp registers. */
     it eq
     vstmdbeq r0!, {s16-s31}
@@ -383,7 +383,7 @@ vPortPendSVHandler:
     ldmia sp!, {r3, r14}
     ldr r1, [r3]               /* The first item in pxCurrentTCB is the task top of stack. */
     ldr r0, [r1]
-  #if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+  #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
     ldmia r0!, {r4-r11, r14}   /* Pop the core registers */
     tst r14, #0x10             /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
     it eq
@@ -471,7 +471,7 @@ vPortSVCHandler:
     ldr r1, [r3]           /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
     ldr r0, [r1]           /* The first item in pxCurrentTCB is the task top of stack. */
     /* pop the core registers */
-  #if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+  #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
     ldmia r0!, {r4-r11, r14}
   #else
     ldmia r0!, {r4-r11}
@@ -479,7 +479,7 @@ vPortSVCHandler:
     msr psp, r0
     mov r0, #0
     msr basepri, r0
-  #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F)
+  #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F)
   #else
     orr r14, r14, #13
   #endif
@@ -521,7 +521,7 @@ vPortStartFirstTask:
   svc 0
   nop
 /*-----------------------------------------------------------*/
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
 vPortEnableVFP:
   /* The FPU enable bits are in the CPACR. */
   ldr.w r0, =COPROCESSOR_ACCESS_REGISTER /* CAPCR, 0xE000ED88 */
@@ -611,7 +611,7 @@ vPortEnableVFP:
 #include "FreeRTOSConfig.h"
 
 #define VECTOR_TABLE_OFFSET_REG     0xE000ED08 /* Vector Table Offset Register (VTOR) */
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
 #define COPROCESSOR_ACCESS_REGISTER 0xE000ED88 /* Coprocessor Access Register (CPACR) */
 #endif
 
@@ -629,7 +629,7 @@ vPortEnableVFP:
   .global vPortSVCHandler
   .global vPortStartFirstTask
   .global vPortTickHandler
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   .global vPortEnableVFP
 #endif
 /*-----------------------------------------------------------*/
@@ -681,7 +681,7 @@ vPortPendSVHandler:
   ldr r2, [r3] /* r2 points now to top-of-stack of the current task */
 
   /* Save the core registers */
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   /* Is the task using the FPU context?  If so, push high vfp registers. */
   tst r14, #0x10
   it eq
@@ -708,7 +708,7 @@ vPortPendSVHandler:
   ldr r0, [r1] /* r0 points now to the top-of-stack of the new task */
 
   /* Pop the registers. */
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   ldmia r0!, {r4-r11, r14} /* Pop the core registers */
   /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
   tst r14, #0x10
@@ -754,7 +754,7 @@ vPortSVCHandler:
   ldr r0, [r1] /* r0 points now to top-of-stack of the new task */
 
   /* pop the core registers */
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
   ldmia r0!, {r4-r11, r14}
 #else
   ldmia r0!, {r4-r11}
@@ -762,7 +762,7 @@ vPortSVCHandler:
   msr psp, r0
   mov r0, #0
   msr basepri, r0
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
 #else
   orr r14, r14, #13
 #endif
@@ -781,7 +781,7 @@ vPortStartFirstTask:
   svc 0
   nop
 /*-----------------------------------------------------------*/
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
 vPortEnableVFP:
   /* The FPU enable bits are in the CPACR. */
   ldr.w r0, =COPROCESSOR_ACCESS_REGISTER /* CAPCR, 0xE000ED88 */

@@ -149,9 +149,12 @@
   %elif defined(ARMFamilyType) & ARMFamilyType="M4F" %- 4 bits, 0..15
     %set ARMLowestInterruptPriority Value d:15
     %set ARMLowestInterruptPriority ExtraText 240, 0xF0, 0b1111'0000
-  %else %- M4, 4 bits, 0..15
+  %elif defined(ARMFamilyType) & ARMFamilyType="M4" %- 4 bits, 0..15
     %set ARMLowestInterruptPriority Value d:15
     %set ARMLowestInterruptPriority ExtraText 240, 0xF0, 0b1111'0000
+  %else %- M7(F), 4 bits, 0..15
+    %set ARMLowestInterruptPriority Value d:15
+    %set ARMLowestInterruptPriority ExtraText 240, 0xF0, 0b1110'1000
   %endif
   %if defined(TickTimerLDD) & %@TickTimerLDD@MainModule != "SysTick"
     %error FreeRTOS Tick Timer: Only SysTick/SYST_CVR is supported, but %@TickTimerLDD@MainModule is used! Please use SysTick/SYST_CVR for ARM/Kinetis.
