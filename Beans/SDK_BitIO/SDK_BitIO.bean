@@ -4,7 +4,7 @@
     <Name>SDK_BitIO</Name>
     <Description>BitIO component for Kinetis SDK</Description>
     <Author>Erich Styger</Author>
-    <Version>01.010</Version>
+    <Version>01.014</Version>
     <Icon>SDK_BitIO</Icon>
     <TypesFiles>PE,SDK_BitIO\SDK_BitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -54,7 +54,7 @@
       <TStrgItem>
         <Name>Port Name</Name>
         <Symbol>PortName</Symbol>
-        <Hint>Name of port, e.g. GPIOA</Hint>
+        <Hint>Name of port, e.g. GPIOA or GPIOB, etc</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>GPIOA</DefaultValue>
@@ -79,6 +79,19 @@
         <ChangeValueIntoRange>false</ChangeValueIntoRange>
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
+    </Property>
+    <Property>
+      <TStrgItem>
+        <Name>Pin Symbol</Name>
+        <Symbol>PinSymbol</Symbol>
+        <Hint>Symbol for pin which can be used in the sources, e.g. LED_RED. Needs to be a valid C/C++ symbol and unique for the application. Used in the SDK v1.3 to identify the pin.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>LED_RED</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
     </Property>
   </PropertyList>
   <MethodList>

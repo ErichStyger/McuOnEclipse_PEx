@@ -100,6 +100,37 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  #include "fsl_gpio_driver.h"
+
+  /* only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported */
+%if %PortName='GPIOA'
+  #define %'ModuleName'%.GPIO_IDX GPIOA_IDX   /* %PortName */
+%elif %PortName='GPIOB'
+  #define %'ModuleName'%.GPIO_IDX GPIOB_IDX   /* %PortName */
+%elif %PortName='GPIOC'
+  #define %'ModuleName'%.GPIO_IDX GPIOC_IDX   /* %PortName */
+%elif %PortName='GPIOD'
+  #define %'ModuleName'%.GPIO_IDX GPIOD_IDX   /* %PortName */
+%elif %PortName='GPIOE'
+  #define %'ModuleName'%.GPIO_IDX GPIOE_IDX   /* %PortName */
+%elif %PortName='GPIOF'
+  #define %'ModuleName'%.GPIO_IDX GPIOF_IDX   /* %PortName */
+%elif %PortName='GPIOG'
+  #define %'ModuleName'%.GPIO_IDX GPIOG_IDX   /* %PortName */
+%else
+  %warning "only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported!"
+  #error "only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported!"
+%endif
+  #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
+
+  enum %'ModuleName'%.pinNames{
+    %'PinSymbol' = GPIO_MAKE_PIN(%'ModuleName'%.GPIO_IDX, %'ModuleName'%.PinNumber),
+  };
+
+  extern const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[];
+  extern const gpio_input_pin_user_config_t %'ModuleName'%.InputConfig[];
+#endif
 %-BW_CUSTOM_USERTYPE_END
 
 
@@ -222,6 +253,8 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-     #include "header_name.h"
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  #include "fsl_gpio_driver.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
   #error "This component only works with the Kinetis SDK!"
 #endif
@@ -233,18 +266,64 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#define %'ModuleName'%.PortName   %PortName /* name of port, is pointer to GPIO_Type */
-#define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  #define %'ModuleName'%.PortName   %PortName /* name of port, is pointer to GPIO_Type */
+  #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
 
-static const gpio_pin_config_t %'ModuleName'%.configOutput = {
-  kGPIO_DigitalOutput,  /* use as output pin */
-  1,  /* initial value */
-};
+  static const gpio_pin_config_t %'ModuleName'%.configOutput = {
+    kGPIO_DigitalOutput,  /* use as output pin */
+    1,  /* initial value */
+  };
 
-static const gpio_pin_config_t %'ModuleName'%.configInput = {
-  kGPIO_DigitalInput,  /* use as input pin */
-  0,  /* initial value */
-};
+  static const gpio_pin_config_t %'ModuleName'%.configInput = {
+    kGPIO_DigitalInput,  /* use as input pin */
+    0,  /* initial value */
+  };
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[] = {
+    {
+      .pinName = %'PinSymbol',
+      .config.outputLogic = 0,
+    #if FSL_FEATURE_PORT_HAS_SLEW_RATE
+      .config.slewRate = kPortSlowSlewRate,
+    #endif
+    #if FSL_FEATURE_PORT_HAS_OPEN_DRAIN
+      .config.isOpenDrainEnabled = true,
+    #endif
+    #if FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
+      .config.driveStrength = kPortLowDriveStrength,
+    #endif
+    },
+    {
+      .pinName = GPIO_PINS_OUT_OF_RANGE,
+    }
+  };
+
+  const gpio_input_pin_user_config_t %'ModuleName'%.InputConfig[] = {
+    {
+      .pinName = %'PinSymbol',
+    #if FSL_FEATURE_PORT_HAS_PULL_ENABLE
+      .config.isPullEnable = true,
+    #endif
+    #if FSL_FEATURE_PORT_HAS_PULL_SELECTION
+      .config.pullSelect = kPortPullDown,
+    #endif
+    #if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
+      .config.isPassiveFilterEnabled = true,
+    #endif
+    #if FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
+      .config.isDigitalFilterEnabled = true,
+    #endif
+    #if FSL_FEATURE_GPIO_HAS_INTERRUPT_VECTOR
+      .config.interrupt = kPortIntDisabled
+    #endif
+    },
+    {
+      .pinName = GPIO_PINS_OUT_OF_RANGE,
+    }
+  };
+
+#endif
 
 static bool %'ModuleName'%.isOutput = false;
 %-
@@ -259,7 +338,11 @@ static bool %'ModuleName'%.isOutput = false;
 %include Common\SDK_BitIOClrVal.Inc
 void %'ModuleName'%.%ClrVal(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   GPIO_ClearPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_ClearPinOutput(%'PinSymbol');
+#endif
 }
 
 %endif %- ClrVal
@@ -270,7 +353,11 @@ void %'ModuleName'%.%ClrVal(void)
 %include Common\SDK_BitIOSetVal.Inc
 void %'ModuleName'%.%SetVal(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   GPIO_SetPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_SetPinOutput(%'PinSymbol');
+#endif
 }
 
 %endif %- SetVal
@@ -281,7 +368,11 @@ void %'ModuleName'%.%SetVal(void)
 %include Common\SDK_BitIONegVal.Inc
 void %'ModuleName'%.%NegVal(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   GPIO_TogglePinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_TogglePinOutput(%'PinSymbol');
+#endif
 }
 
 %endif %- NegVal
@@ -293,7 +384,13 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\SDK_BitIOGetVal.Inc
 bool %'ModuleName'%.%GetVal(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   return GPIO_ReadPinInput(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber)!=0;
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
+#else
+  return FALSE;
+#endif
 }
 
 %endif %- GetVal
@@ -332,7 +429,11 @@ void %'ModuleName'%.%SetDir(bool Dir)
 %include Common\SDK_BitIOSetInput.Inc
 void %'ModuleName'%.%SetInput(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
+#endif
   %'ModuleName'%.isOutput = false;
 }
 
@@ -344,7 +445,11 @@ void %'ModuleName'%.%SetInput(void)
 %include Common\SDK_BitIOSetOutput.Inc
 void %'ModuleName'%.%SetOutput(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
+#endif
   %'ModuleName'%.isOutput = true;
 }
 
@@ -357,11 +462,15 @@ void %'ModuleName'%.%SetOutput(void)
 %include Common\SDK_BitIOPutVal.Inc
 void %'ModuleName'%.%PutVal(bool Val)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   if (Val) {
     GPIO_SetPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
   } else {
     GPIO_ClearPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
   }
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_WritePinOutput(%'PinSymbol', Val);
+#endif
 }
 
 %endif %- PutVal
@@ -372,7 +481,11 @@ void %'ModuleName'%.%PutVal(bool Val)
 %include Common\SDK_BitIOInit.Inc
 void %'ModuleName'%.%Init(void)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   %'ModuleName'%.%SetOutput();
+#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
+#endif
 }
 
 %endif %- Init
