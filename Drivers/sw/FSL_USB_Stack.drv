@@ -88,19 +88,21 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+  %ifdef SharedModules
+  /* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+  #include "%'var'.h"
+  %endfor
+  %endif
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -267,6 +269,9 @@ volatile uint8_t %'ModuleName'%.usb_int_en_copy = 0;
 void %'ModuleName'%.usb_int_dis(void)
 {
   /* %CPUDevice */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+  NVIC_DisableIRQ(USB0_IRQn);
+#else
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
   %'ModuleName'%.usb_int_disable++;
 %elif (CPUDevice="MC9S08JM16") | (CPUDevice="MC9S08JM60")
@@ -302,6 +307,7 @@ void %'ModuleName'%.usb_int_dis(void)
 %else
   /* functionality not needed for %CPUDevice */
 %endif
+#endif
 }
 
 %-INTERNAL_METHOD_END usb_int_dis
@@ -311,6 +317,10 @@ void %'ModuleName'%.usb_int_dis(void)
 void %'ModuleName'%.usb_int_en(void)
 {
   /* %CPUDevice */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+  NVIC_ClearPendingIRQ(USB0_IRQn);
+  NVIC_EnableIRQ(USB0_IRQn);
+#else
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
   volatile uint_8 dummy;
 
@@ -374,6 +384,7 @@ void %'ModuleName'%.usb_int_en(void)
 %else
   /* functionality not needed for %CPUDevice */
 %endif
+#endif
 }
 
 %-INTERNAL_METHOD_END usb_int_en

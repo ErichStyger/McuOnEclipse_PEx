@@ -221,24 +221,8 @@ LI.EXP {
 <b>Freescale USB Stack Version</b></a> - Version of the Freescale USB Stack used
 </li>
 <li>
-<a name="InitUSBFunctionName">
-<b>Init USB Function</b></a> - Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.
-</li>
-<li>
-<a name="InheritedUSBInitEnabled">
-<b>Inherited USB Init</b></a> - If enabled, an inherited USB Init component can be used.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="USBInit">
-  <b>USB Init</b></a> - USB peripheral to initialize. <br />
-For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.<br />
-For ColdFire V2, select 'Init_USB_OTG_MCF'.<br />
-For HCS08, select 'Init_USB_HCS08'.<br />
-For Kinetis, select 'Init_USB_OTG_VAR0'.
-  </li>
-</ul>
+<a name="sdk">
+<b>SDK</b></a> - Link to SDK used
 </li>
 <li>
 <a name="USBDeviceClass">
@@ -322,16 +306,42 @@ The following items are available only if the group is enabled (the value is "En
 <b>DATA_BUFF_SIZE</b></a> - DATA_BUFF_SIZE should be greater than or equal to the endpoint buffer size, otherwise there will be data loss. For MC9S08JS16, maximum DATA_BUFF_SIZE supported is 16 Bytes.
 </li>
 <li>
-<a name="InitializationGroup">
-<b>Initialization</b></a> - Here the initialization of the USB stack can be configured
+<a name="InitializationGrp">
+<b>Initialization</b></a> - Initialization
 <ul>
   <li>
-  <a name="UseUSBStackInitialization">
-  <b>Use USB Stack Inititalization</b></a> - This defines the value of the USB_USER_CONFIG_USE_STACK_INIT macro  in the usb_user_config.h. If set to yes, it uses the USB inititialization of the USB stack. If set to no, it uses the initialization of the Processor Expert USB Init component.
+  <a name="InitUSBFunctionName">
+  <b>Init USB Function</b></a> - Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.
   </li>
   <li>
-  <a name="CallInitMethod">
-  <b>Call Init Method</b></a> - If set to yes, then the Init() method will be called in PE_low_level_init().
+  <a name="InheritedUSBInitEnabled">
+  <b>Inherited USB Init</b></a> - If enabled, an inherited USB Init component can be used.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="USBInit">
+    <b>USB Init</b></a> - USB peripheral to initialize. <br />
+For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.<br />
+For ColdFire V2, select 'Init_USB_OTG_MCF'.<br />
+For HCS08, select 'Init_USB_HCS08'.<br />
+For Kinetis, select 'Init_USB_OTG_VAR0'.
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="InitializationGroup">
+  <b>Initialization</b></a> - Here the initialization of the USB stack can be configured
+  <ul>
+    <li>
+    <a name="UseUSBStackInitialization">
+    <b>Use USB Stack Inititalization</b></a> - This defines the value of the USB_USER_CONFIG_USE_STACK_INIT macro  in the usb_user_config.h. If set to yes, it uses the USB inititialization of the USB stack. If set to no, it uses the initialization of the Processor Expert USB Init component.
+    </li>
+    <li>
+    <a name="CallInitMethod">
+    <b>Call Init Method</b></a> - If set to yes, then the Init() method will be called in PE_low_level_init().
+    </li>
+  </ul>
   </li>
 </ul>
 </li>

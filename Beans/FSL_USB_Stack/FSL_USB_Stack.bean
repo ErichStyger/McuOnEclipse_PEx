@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.041</Version>
+    <Version>01.044</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -51,57 +51,18 @@
       </TStrgItem>
     </Property>
     <Property>
-      <TStrgItem>
-        <Name>Init USB Function</Name>
-        <Symbol>InitUSBFunctionName</Symbol>
-        <Hint>Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.</Hint>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>FSL_USB_Stack\sdk</TypeSpec>
+        <Hint>Link to SDK used</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>USB0_Init</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Inherited USB Init</Name>
-        <Symbol>InheritedUSBInitEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, an inherited USB Init component can be used.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrItem>
-              <Name>USB Init</Name>
-              <Symbol>USBInit</Symbol>
-              <TypeSpec>FSL_USB_Stack\InitUSB</TypeSpec>
-              <Hint>USB peripheral to initialize. \n
-For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.\n
-For ColdFire V2, select 'Init_USB_OTG_MCF'.\n
-For HCS08, select 'Init_USB_HCS08'.\n
-For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>-1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <InhrBeanBaseName>USBInit</InhrBeanBaseName>
-              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-            </TInhrItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TEnumItem>
@@ -337,8 +298,8 @@ For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
     <Property>
       <TGrupItem>
         <Name>Initialization</Name>
-        <Symbol>InitializationGroup</Symbol>
-        <Hint>Here the initialization of the USB stack can be configured</Hint>
+        <Symbol>InitializationGrp</Symbol>
+        <Hint>Initialization</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -346,40 +307,107 @@ For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
-            <TBoolItem>
-              <Name>Use USB Stack Inititalization</Name>
-              <Symbol>UseUSBStackInitialization</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>This defines the value of the USB_USER_CONFIG_USE_STACK_INIT macro  in the usb_user_config.h. If set to yes, it uses the USB inititialization of the USB stack. If set to no, it uses the initialization of the Processor Expert USB Init component.</Hint>
+            <TStrgItem>
+              <Name>Init USB Function</Name>
+              <Symbol>InitUSBFunctionName</Symbol>
+              <Hint>Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
+              <EditLine>true</EditLine>
+              <DefaultValue>USB0_Init</DefaultValue>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
           <GrupItem>
-            <TBoolItem>
-              <Name>Call Init Method</Name>
-              <Symbol>CallInitMethod</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If set to yes, then the Init() method will be called in PE_low_level_init().</Hint>
+            <TBoolGrupItem>
+              <Name>Inherited USB Init</Name>
+              <Symbol>InheritedUSBInitEnabled</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>If enabled, an inherited USB Init component can be used.</Hint>
               <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
+              <Description>Enabled</Description>
+              <Expanded>No</Expanded>
               <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrItem>
+                    <Name>USB Init</Name>
+                    <Symbol>USBInit</Symbol>
+                    <TypeSpec>FSL_USB_Stack\InitUSB</TypeSpec>
+                    <Hint>USB peripheral to initialize. \n
+For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.\n
+For ColdFire V2, select 'Init_USB_OTG_MCF'.\n
+For HCS08, select 'Init_USB_HCS08'.\n
+For Kinetis, select 'Init_USB_OTG_VAR0'.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>-1</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <InhrBeanBaseName>USBInit</InhrBeanBaseName>
+                    <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+                  </TInhrItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TGrupItem>
+              <Name>Initialization</Name>
+              <Symbol>InitializationGroup</Symbol>
+              <Hint>Here the initialization of the USB stack can be configured</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description/>
+              <Expanded>Yes</Expanded>
+              <Children>
+                <GrupItem>
+                  <TBoolItem>
+                    <Name>Use USB Stack Inititalization</Name>
+                    <Symbol>UseUSBStackInitialization</Symbol>
+                    <TypeSpec>typeYesNo</TypeSpec>
+                    <Hint>This defines the value of the USB_USER_CONFIG_USE_STACK_INIT macro  in the usb_user_config.h. If set to yes, it uses the USB inititialization of the USB stack. If set to no, it uses the initialization of the Processor Expert USB Init component.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>0</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <DefaultValue>true</DefaultValue>
+                    <Popup>false</Popup>
+                  </TBoolItem>
+                </GrupItem>
+                <GrupItem>
+                  <TBoolItem>
+                    <Name>Call Init Method</Name>
+                    <Symbol>CallInitMethod</Symbol>
+                    <TypeSpec>typeYesNo</TypeSpec>
+                    <Hint>If set to yes, then the Init() method will be called in PE_low_level_init().</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>0</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <DefaultValue>true</DefaultValue>
+                    <Popup>false</Popup>
+                  </TBoolItem>
+                </GrupItem>
+              </Children>
+            </TGrupItem>
           </GrupItem>
         </Children>
       </TGrupItem>
