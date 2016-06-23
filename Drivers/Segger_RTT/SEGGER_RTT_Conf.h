@@ -107,19 +107,6 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 %endif
 #define SEGGER_RTT_MODE_DEFAULT                   SEGGER_RTT_MODE_NO_BLOCK_SKIP // Mode for pre-initialized terminal channel (buffer 0)
 
-/* macros to identify the core used */
-%if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
-#define SEGGER_RTT_CORE_M0   1
-#define SEGGER_RTT_CORE_M4   0
-%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
-#define SEGGER_RTT_CORE_M0   0
-#define SEGGER_RTT_CORE_M4   1
-%else
-#define SEGGER_RTT_CORE_M0   0
-#define SEGGER_RTT_CORE_M4   0
-#error "unknown ARM core. Only ARM is supported"
-%endif
-
 //
 // Target is not allowed to perform other RTT operations while string still has not been stored completely.
 // Otherwise we would probably end up with a mixed string in the buffer.

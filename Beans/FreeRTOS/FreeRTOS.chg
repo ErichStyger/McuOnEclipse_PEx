@@ -129,9 +129,10 @@
 %endif
 
 %if defined(CPUfamily) & CPUfamily = "Kinetis"
-  %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
+  %- %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
     %- %set ARMFamilyType Value "M0+"
-  %else %- M4 or M4F core
+  %- %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
+  %- %else %- M4 or M4F core
   %- somehow the code below does NOT work???
   %-  %if %CPUDB_prph_has_feature(CPU, FPU) = 'no'
   %-    %set ARMFamilyType Value "M4"
@@ -140,7 +141,7 @@
   %-    %set ARMFamilyType Value "M4F"
   %-    %warning M4F
   %-  %endif
-  %endif
+  %- %endif
   %- %set ARMFamilyType ReadOnly no
   %- %set ARMFamilyType Value Enabled
   %if defined(ARMFamilyType) & ARMFamilyType="M0+" %- 2 bits, 0..3
