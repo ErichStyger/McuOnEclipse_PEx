@@ -2964,7 +2964,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   }
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-  if (print_buf!=NULL) { /* only if not allocated yet */
+  if (print_buf==NULL) { /* only if not allocated yet */
     print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
   }
   #else
