@@ -113,9 +113,11 @@ typedef struct %'ModuleName'_ParserStruct {
   uint8_t currType; /* current S19 record, e.g. 1 for S1 */
   uint32_t currAddress; /* current code address of S19 record */
   uint16_t codeSize; /* size of code in bytes in code buffer */
-  uint8_t *codeBuf; /* code bufffer */
+  uint8_t *codeBuf; /* code buffer */
   uint16_t codeBufSize; /* total size of code buffer, in bytes */
 } %'ModuleName'_ParserStruct;
+
+#define %'ModuleName'_BUF_NOF_BYTES  %S19BufNofBytes /* size in code bytes for the longest S19 line we expect */
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
@@ -231,7 +233,7 @@ void %OnError(%'ModuleName'_ErrorCode errorCode, %'ModuleName'_ParserStruct *ite
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 static uint32_t S19_currAddress; /* current or last address read from the file */
-#define S19_BUF_NOF_BYTES  %S19BufNofBytes /* size in code bytes for the longest S19 line we expect */
+static unsigned char srec_buffer[%'ModuleName'_BUF_NOF_BYTES]; /* here we store the data which will be flashed */
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -384,7 +386,6 @@ static uint8_t Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, uin
 %include Common\S19Parse.Inc
 uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
 {
-  static unsigned char srec_buffer[S19_BUF_NOF_BYTES]; /* here we store the data which will be flashed */
   unsigned char length, checksum, val, i, offset, type;
 %if defined(OnSRecord)
   uint8_t res;
