@@ -38,93 +38,51 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.38                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
-File        : SEGGER_SYSVIEW_Int.h
-Purpose     : SEGGER SysView internal header.
---------  END-OF-HEADER  ---------------------------------------------
+File    : Global.h
+Purpose : Global types
+          In case your application already has a Global.h, you should
+          merge the files. In order to use Segger code, the types
+          U8, U16, U32, I8, I16, I32 need to be defined in Global.h;
+          additional definitions do not hurt.
+---------------------------END-OF-HEADER------------------------------
 */
 
-#ifndef SEGGER_SYSVIEW_INT_H
-#define SEGGER_SYSVIEW_INT_H
+#ifndef GLOBAL_H            // Guard against multiple inclusion
+#define GLOBAL_H
 
-/*********************************************************************
-*
-*       #include Section
-*
-**********************************************************************
-*/
+#define U8    unsigned char
+#define U16   unsigned short
+#define U32   unsigned long
+#define I8    signed char
+#define I16   signed short
+#define I32   signed long
 
-#include "SEGGER_SYSVIEW.h"
-#include "SEGGER_SYSVIEW_Conf.h"
-#include "SEGGER_SYSVIEW_ConfDefaults.h"
-
-#ifdef __cplusplus
-extern "C" {
+#ifdef _WIN32
+  //
+  // Microsoft VC6 compiler related
+  //
+  #define U64   unsigned __int64
+  #define U128  unsigned __int128
+  #define I64   __int64
+  #define I128  __int128
+  #if _MSC_VER <= 1200
+    #define U64_C(x) x##UI64
+  #else
+    #define U64_C(x) x##ULL
+  #endif
+#else 
+  //
+  // C99 compliant compiler
+  //
+  #define U64   unsigned long long
+  #define I64   signed long long
+  #define U64_C(x) x##ULL
 #endif
 
+#endif                      // Avoid multiple inclusion
 
-/*********************************************************************
-*
-*       Private data types
-*
-**********************************************************************
-*/
-
-//
-// SYSVIEW events. First 32 IDs from 0 .. 31 are reserved for these
-//
-#define   SEGGER_SYSVIEW_EVENT_ID_NOP                0  // Dummy packet.
-#define   SEGGER_SYSVIEW_EVENT_ID_OVERFLOW           1
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_ENTER          2
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_EXIT           3
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_START_EXEC    4
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_EXEC     5
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_START_READY   6
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_READY    7
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_CREATE        8
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_INFO          9
-#define   SEGGER_SYSVIEW_EVENT_ID_TRACE_START       10
-#define   SEGGER_SYSVIEW_EVENT_ID_TRACE_STOP        11
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSTIME_CYCLES    12
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSTIME_US        13
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSDESC           14
-#define   SEGGER_SYSVIEW_EVENT_ID_USER_START        15
-#define   SEGGER_SYSVIEW_EVENT_ID_USER_STOP         16
-#define   SEGGER_SYSVIEW_EVENT_ID_IDLE              17
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_TO_SCHEDULER  18
-#define   SEGGER_SYSVIEW_EVENT_ID_TIMER_ENTER       19
-#define   SEGGER_SYSVIEW_EVENT_ID_TIMER_EXIT        20
-#define   SEGGER_SYSVIEW_EVENT_ID_STACK_INFO        21
-#define   SEGGER_SYSVIEW_EVENT_ID_MODULEDESC        22
-
-#define   SEGGER_SYSVIEW_EVENT_ID_INIT              24
-#define   SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE     25
-#define   SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED   26
-#define   SEGGER_SYSVIEW_EVENT_ID_NUMMODULES        27
-#define   SEGGER_SYSVIEW_EVENT_ID_END_CALL          28
-
-//
-// Commands that Host can send to target
-//
-typedef enum {
-  SEGGER_SYSVIEW_COMMAND_ID_START = 1,
-  SEGGER_SYSVIEW_COMMAND_ID_STOP,
-  SEGGER_SYSVIEW_COMMAND_ID_GET_SYSTIME,
-  SEGGER_SYSVIEW_COMMAND_ID_GET_TASKLIST,
-  SEGGER_SYSVIEW_COMMAND_ID_GET_SYSDESC,
-  SEGGER_SYSVIEW_COMMAND_ID_GET_NUMMODULES,
-  SEGGER_SYSVIEW_COMMAND_ID_GET_MODULEDESC,
-  // Extended commands: Commands >= 128 have a second parameter
-  SEGGER_SYSVIEW_COMMAND_ID_GET_MODULE = 128,
-} SEGGER_SYSVIEW_COMMAND_ID;
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-
-/****** End Of File *************************************************/
+/*************************** End of file ****************************/

@@ -38,13 +38,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.38                                    *
 *                                                                    *
 **********************************************************************
-----------------------------------------------------------------------
-File        : SEGGER_SYSVIEW_Conf.h
-Purpose     : SEGGER SysView configuration.
---------  END-OF-HEADER  ---------------------------------------------
+-------------------------- END-OF-HEADER -----------------------------
+
+File    : SEGGER_SYSVIEW_Conf.h
+Purpose : SEGGER SystemView configuration.
+Revision: $Rev: 3735 $
 */
 
 #ifndef SEGGER_SYSVIEW_CONF_H
@@ -63,6 +64,7 @@ Purpose     : SEGGER SysView configuration.
 #define SEGGER_SYSVIEW_CORE_OTHER   0
 #define SEGGER_SYSVIEW_CORE_CM0     1 // Cortex-M0/M0+/M1
 #define SEGGER_SYSVIEW_CORE_CM3     2 // Cortex-M3/M4/M7
+#define SEGGER_SYSVIEW_CORE_RX      3 // Renesas RX
 
 #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__)
   #ifdef __ARM_ARCH_6M__
@@ -82,6 +84,10 @@ Purpose     : SEGGER SysView configuration.
   #elif (defined(__TARGET_ARCH_7_M) || defined(__TARGET_ARCH_7E_M))
     #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3	
   #endif
+#elif defined(__ICCRX__)
+  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_RX
+#elif defined(__RX)
+  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_RX
 #endif
 
 #ifndef   SEGGER_SYSVIEW_CORE
@@ -96,9 +102,9 @@ Purpose     : SEGGER SysView configuration.
 */
 /*********************************************************************
 *
-*       SysView buffer configuration
+*       SystemView buffer configuration
 */
-// Number of bytes that SysView uses for a buffer.
+// Number of bytes that SystemView uses for a buffer.
 #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE    %RttBufferSize
 #define SEGGER_SYSVIEW_RTT_CHANNEL        %RttChannelIndex
 #if SEGGER_SYSVIEW_RTT_CHANNEL>=SEGGER_RTT_MAX_NUM_UP_BUFFERS
@@ -118,12 +124,12 @@ Purpose     : SEGGER SysView configuration.
 
 /*********************************************************************
 *
-*       SysView timestamp configuration
+*       SystemView timestamp configuration
 */
 #if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
   #define SEGGER_SYSVIEW_TIMESTAMP_SHIFT      4 /* << EST */
   #define SEGGER_SYSVIEW_GET_TIMESTAMP()      ((*(U32 *)(0xE0001004))>>SEGGER_SYSVIEW_TIMESTAMP_SHIFT)     // Retrieve a system timestamp. Cortex-M cycle counter. Shifted by 4 to save bandwith.
-  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       28                                // Define number of valid bits low-order delivered by clock source
+  #define SEGGER_SYSVIEW_TIMESTAMP_BITS       (32-SEGGER_SYSVIEW_TIMESTAMP_SHIFT)                          // Define number of valid bits low-order delivered by clock source
 #else
   #define SEGGER_SYSVIEW_TIMESTAMP_SHIFT      0 /* << EST */
   #define SEGGER_SYSVIEW_GET_TIMESTAMP()      (SEGGER_SYSVIEW_X_GetTimestamp())   // Retrieve a system timestamp via user-defined function
@@ -139,16 +145,16 @@ Purpose     : SEGGER SysView configuration.
 
 /*********************************************************************
 *
-*       SysView interrupt configuration
+*       SystemView interrupt configuration
 */
 #if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
   #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x1FF)  // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
 #elif SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM0
   #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   ((*(U32 *)(0xE000ED04)) & 0x3F)   // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[5:0] = active vector)
 #else
-  #error "SEGGER_SYSVIEW_GET_INTERRUPT_ID has to be defined!"
+  #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   SEGGER_SYSVIEW_X_GetInterruptId() // Get the currently active interrupt Id from the user-provided function.
 #endif
 
-#endif
+#endif  // SEGGER_SYSVIEW_CONF_H
 
 /*************************** End of file ****************************/

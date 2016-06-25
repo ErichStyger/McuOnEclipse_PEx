@@ -241,6 +241,28 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- ErrorfTarget
 %-BW_METHOD_END ErrorfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisableEvents
+%ifdef DisableEvents
+#define %'ModuleName'%.%DisableEvents(DisableMask) \
+  SEGGER_SYSVIEW_EnableEvents(DisableMask)
+
+%define! ParDisableMask
+%include Common\SeggerSystemViewDisableEvents.Inc
+
+%endif %- DisableEvents
+%-BW_METHOD_END DisableEvents
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN EnableEvents
+%ifdef EnableEvents
+#define %'ModuleName'%.%EnableEvents(EnableMask) \
+  SEGGER_SYSVIEW_EnableEvents(EnableMask)
+
+%define! ParEnableMask
+%include Common\SeggerSystemViewEnableEvents.Inc
+
+%endif %- EnableEvents
+%-BW_METHOD_END EnableEvents
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -470,6 +492,34 @@ void %'ModuleName'%.%ErrorfTarget(const char *s, ...)
 
 %endif %- ErrorfTarget
 %-BW_METHOD_END ErrorfTarget
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisableEvents
+%ifdef DisableEvents
+%define! ParDisableMask
+%include Common\SeggerSystemViewDisableEvents.Inc
+/*
+void %'ModuleName'%.%DisableEvents(uint32_t DisableMask)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- DisableEvents
+%-BW_METHOD_END DisableEvents
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN EnableEvents
+%ifdef EnableEvents
+%define! ParEnableMask
+%include Common\SeggerSystemViewEnableEvents.Inc
+/*
+void %'ModuleName'%.%EnableEvents(uint32_t EnableMask)
+{
+  Implemented as macro on the header file.
+}
+*/
+
+%endif %- EnableEvents
+%-BW_METHOD_END EnableEvents
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

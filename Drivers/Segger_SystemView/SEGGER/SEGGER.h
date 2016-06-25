@@ -38,62 +38,104 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.38                                    *
 *                                                                    *
 **********************************************************************
--------------------------- END-OF-HEADER -----------------------------
-
-File        : SEGGER_SYSVIEW_Config_FreeRTOS.c
-Purpose     : Sample setup configuration of SystemView with FreeRTOS.
+----------------------------------------------------------------------
+File    : SEGGER.h
+Purpose : Global types etc & general purpose utility functions
+---------------------------END-OF-HEADER------------------------------
 */
-#include "FreeRTOS.h"
-#include "SEGGER_SYSVIEW.h"
 
-extern const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI;
+#ifndef SEGGER_H            // Guard against multiple inclusion
+#define SEGGER_H
+
+#include "Global.h"         // Type definitions: U8, U16, U32, I8, I16, I32
+
+#if defined(__cplusplus)
+extern "C" {     /* Make sure we have C-declarations in C++ programs */
+#endif
 
 /*********************************************************************
 *
-*       Defines, configurable
+*       Keywords/specifiers
 *
 **********************************************************************
 */
-// The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        "FreeRTOS Demo Application"
 
-// The target device name
-#define SYSVIEW_DEVICE_NAME     "Cortex-M4"
-
-// Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_Conf.h
-#define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ >> 4)
-
-// System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
-#define SYSVIEW_CPU_FREQ        configCPU_CLOCK_HZ
-
-// The lowest RAM address used for IDs (pointers)
-#define SYSVIEW_RAM_BASE        (0x10000000)
-
-/********************************************************************* 
-*
-*       _cbSendSystemDesc()
-*
-*  Function description
-*    Sends SystemView description strings.
-*/
-static void _cbSendSystemDesc(void) {
-  SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",D="SYSVIEW_DEVICE_NAME",O=FreeRTOS");
-  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
-}
+#ifndef INLINE
+  #ifdef _WIN32
+    //
+    // Microsoft VC6 and newer.
+    // Force inlining without cost checking.
+    //
+    #define INLINE  __forceinline
+  #else
+    #if (defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__) || defined(__RX) || defined(__ICCRX__))
+      //
+      // Other known compilers.
+      //
+      #define INLINE  inline
+    #else
+      //
+      // Unknown compilers.
+      //
+      #define INLINE
+    #endif
+  #endif
+#endif
 
 /*********************************************************************
 *
-*       Global functions
+*       Function-like macros
 *
 **********************************************************************
 */
-void SEGGER_SYSVIEW_Conf(void) {
-  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
-                      &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
-  SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
-}
+
+#define SEGGER_COUNTOF(a)          (sizeof((a))/sizeof((a)[0]))
+#define SEGGER_MIN(a,b)            (((a) < (b)) ? (a) : (b))
+#define SEGGER_MAX(a,b)            (((a) > (b)) ? (a) : (b))
+
+/*********************************************************************
+*
+*       Types
+*
+**********************************************************************
+*/
+
+typedef struct {
+  char *pBuffer;
+  int   BufferSize;
+  int   Cnt;
+} SEGGER_BUFFER_DESC;
+
+typedef struct {
+  int  CacheLineSize;                                // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
+  void (*pfDMB)       (void);                        // Optional DMB function for Data Memory Barrier to make sure all memory operations are completed.
+  void (*pfClean)     (void *p, unsigned NumBytes);  // Optional clean function for cached memory.
+  void (*pfInvalidate)(void *p, unsigned NumBytes);  // Optional invalidate function for cached memory.
+} SEGGER_CACHE_CONFIG;
+
+/*********************************************************************
+*
+*       Utility functions
+*
+**********************************************************************
+*/
+
+void SEGGER_ARM_memcpy   (void *pDest, const void *pSrc, int NumBytes);
+void SEGGER_memcpy       (void *pDest, const void *pSrc, int NumBytes);
+void SEGGER_memxor       (void *pDest, const void *pSrc, unsigned NumBytes);
+void SEGGER_StoreChar    (SEGGER_BUFFER_DESC *p, char c);
+void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC *pBufferDesc, U32 v, unsigned Base, int NumDigits);
+void SEGGER_PrintInt     (SEGGER_BUFFER_DESC *pBufferDesc, I32 v, unsigned Base, unsigned NumDigits);
+int  SEGGER_snprintf     (char *pBuffer, int BufferSize, const char *sFormat, ...);
+
+
+#if defined(__cplusplus)
+}                /* Make sure we have C-declarations in C++ programs */
+#endif
+
+#endif                      // Avoid multiple inclusion
 
 /*************************** End of file ****************************/

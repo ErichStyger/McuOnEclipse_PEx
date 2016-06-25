@@ -38,15 +38,17 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.38                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_FreeRTOS.h
 Purpose : Interface between FreeRTOS and SystemView.
+Revision: $Rev: 3735 $
 
-          Include this file at the end of FreeRTOSConfig.h
+Notes:
+  (1) Include this file at the end of FreeRTOSConfig.h
 */
 
 #ifndef SYSVIEW_FREERTOS_H
@@ -309,4 +311,4 @@ void SYSVIEW_RecordU32x5  (unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Par
 
 #endif
 
-/****** End Of File *************************************************/
+/*************************** End of file ****************************/

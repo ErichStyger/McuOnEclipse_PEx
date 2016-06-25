@@ -38,13 +38,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.38                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File        : SEGGER_SYSVIEW_Config.c
 Purpose     : Setup configuration of SystemView.
+Revision: $Rev: 3735 $
 */
 #include <stddef.h> /* for NULL */
 #include "SEGGER_SYSVIEW.h"
