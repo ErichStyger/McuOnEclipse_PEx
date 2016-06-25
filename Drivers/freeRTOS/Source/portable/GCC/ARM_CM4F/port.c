@@ -1280,6 +1280,16 @@ BaseType_t xPortStartScheduler(void) {
   #endif /* conifgASSERT_DEFINED */
 #endif /* configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) */ /* ARM M4(F)/M7 core */
 
+#if configCPU_FAMILY==configCPU_FAMILY_ARM_M7F
+  /* Constants used to detect a Cortex-M7 r0p1 core, which should use the ARM_CM7 r0p1 port. */
+  #define portCPUID (*((volatile uint32_t*)0xE000ed00))
+  #define portCORTEX_M7_r0p0_ID (0x410FC270UL)
+  #define portCORTEX_M7_r0p1_ID (0x410FC271UL) /* this one will require a special port! */
+  #define portCORTEX_M7_r0p2_ID (0x410FC272UL) /* is present on the TWR-KV57F220M */
+
+  configASSERT(portCPUID!=portCORTEX_M7_r0p1_ID); /* this one will require a special port! */
+#endif
+
   /* Make PendSV, SVCall and SysTick the lowest priority interrupts. SysTick priority will be set in vPortInitTickTimer(). */
 #if 0 /* do NOT set the SVCall priority */
   /* why: execution of an SVC instruction at a priority equal or higher than SVCall can cause a hard fault (at least on Cortex-M4),
