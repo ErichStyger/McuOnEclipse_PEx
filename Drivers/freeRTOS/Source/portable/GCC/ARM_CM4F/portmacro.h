@@ -117,10 +117,22 @@ extern "C" {
   #define portSTACK_TYPE       unsigned char
 #endif
 typedef portSTACK_TYPE StackType_t;
+
 %if defined(Custom_portBASE_TYPE) & Custom_portBASE_TYPE='yes'
-#define portBASE_TYPE          %portBASE_TYPE /* custom type as specified in properties */
+#define portUSE_CUSTOM_BASE_TYPE  1  /* 1: use custom base type */
 %else
-#if (configCPU_FAMILY==configCPU_FAMILY_CF1) || (configCPU_FAMILY==configCPU_FAMILY_CF2) || configCPU_FAMILY_IS_ARM(configCPU_FAMILY) || (configCPU_FAMILY==configCPU_FAMILY_DSC)
+#define portUSE_CUSTOM_BASE_TYPE  0  /* 1: use custom base type */
+%endif
+
+#if portUSE_CUSTOM_BASE_TYPE
+%if defined(Custom_portBASE_TYPE) & Custom_portBASE_TYPE='yes'
+  #define portBASE_TYPE          %portBASE_TYPE /* custom port base type */
+%else
+  #define portBASE_TYPE          char /* custom port base type */
+%endif
+  typedef portBASE_TYPE BaseType_t;
+  typedef unsigned portBASE_TYPE UBaseType_t;
+#elif (configCPU_FAMILY==configCPU_FAMILY_CF1) || (configCPU_FAMILY==configCPU_FAMILY_CF2) || configCPU_FAMILY_IS_ARM(configCPU_FAMILY) || (configCPU_FAMILY==configCPU_FAMILY_DSC)
   #define portBASE_TYPE        long
   typedef long BaseType_t;
   typedef unsigned long UBaseType_t;
@@ -129,7 +141,6 @@ typedef portSTACK_TYPE StackType_t;
   typedef signed char BaseType_t;
   typedef unsigned char UBaseType_t;
 #endif
-%endif
 
 #if( configUSE_16_BIT_TICKS == 1 )
   typedef uint16_t TickType_t;
@@ -713,8 +724,6 @@ void prvTaskExitError(void);
   void %'ModuleName'%.AppConfigureTimerForRuntimeStats(void);
   UBaseType_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
 #endif
-
-
 
 #ifdef __cplusplus
 }
