@@ -1898,7 +1898,6 @@ __asm void vPortPendSVHandler(void) {
   stmdb r0!, {r4-r11}        /* Save the core registers. */
 #endif
   str r0, [r2]               /* Save the new top of stack into the first member of the TCB. */
-  clrex                      /* Clear exclusive monitor, see https://sourceforge.net/p/freertos/bugs/132/ */
   stmdb sp!, {r3, r14}
   mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
   msr basepri, r0
@@ -1992,7 +1991,6 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " stmdb r0!, {r4-r11}        \n" /* Save the core registers. */
 #endif
     " str r0, [r2]               \n" /* Save the new top of stack into the first member of the TCB. */
-    " clrex                      \n" /* Clear exclusive monitor, see https://sourceforge.net/p/freertos/bugs/132/ */
     " stmdb sp!, {r3, r14}       \n"
     " mov r0, %%0                 \n"
     " msr basepri, r0            \n"
@@ -2130,7 +2128,6 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " stmdb r0!, {r4-r11}        \n" /* Save the core registers. */
 #endif
     " str r0, [r2]               \n" /* Save the new top of stack into the first member of the TCB. */
-    " clrex                      \n" /* Clear exclusive monitor, see https://sourceforge.net/p/freertos/bugs/132/ */
     " stmdb sp!, {r3, r14}       \n"
     " mov r0, %%0                 \n"
     " msr basepri, r0            \n"
