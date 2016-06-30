@@ -11,7 +11,7 @@
 %;**         dstSize%PardstSize %>27 - Size of the destination buffer (in
 %;** %>29 bytes).
 %;**         val%Parval %>27 - Value to be converted.
-%;**         nofFracDigits%ParnofFracDigits %>27 - Number of factional
+%;**         nofFracDigits%ParnofFracDigits %>27 - Number of fractional
 %;** %>29 digits to print
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

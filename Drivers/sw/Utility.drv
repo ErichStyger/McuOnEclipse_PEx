@@ -815,6 +815,9 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG ShiftRightAndFill
 static void ShiftRightAndFill(uint8_t *dst, uint8_t fill, uint8_t nofFill);
+#ifdef __HIWARE__
+  #pragma MESSAGE DISABLE C5919 /* C5919 Conversion of floating to unsigned integral */
+#endif
 %-INTERNAL_LOC_METHOD_END ShiftRightAndFill
 %-
 
