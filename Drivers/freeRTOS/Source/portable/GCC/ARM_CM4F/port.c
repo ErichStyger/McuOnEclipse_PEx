@@ -1284,7 +1284,7 @@ BaseType_t xPortStartScheduler(void) {
   /* Constants used to detect a Cortex-M7 r0p1 core, which should use the ARM_CM7 r0p1 port. */
   #define portCPUID (*((volatile uint32_t*)0xE000ed00))
   #define portCORTEX_M7_r0p0_ID (0x410FC270UL)
-  #define portCORTEX_M7_r0p1_ID (0x410FC271UL) /* this one will require a special port! */
+  #define portCORTEX_M7_r0p1_ID (0x410FC271UL) /* this one will require a special port! Writing to the BASEPRIO is not taking effect immediately, even with memory barrier instructions. Workaround: globally disable interrupts before writing to BASEPRIO, then write, then use memory barrier. */
   #define portCORTEX_M7_r0p2_ID (0x410FC272UL) /* is present on the TWR-KV57F220M */
 
   configASSERT(portCPUID!=portCORTEX_M7_r0p1_ID); /* this one will require a special port! */
