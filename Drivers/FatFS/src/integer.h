@@ -2,19 +2,21 @@
 /* Integer type definitions for FatFs module */
 /*-------------------------------------------*/
 
-#ifndef _INTEGER
-#define _INTEGER
+#ifndef _FF_INTEGER
+#define _FF_INTEGER
 
 #ifdef _WIN32	/* FatFs development platform */
 
 #include <windows.h>
 #include <tchar.h>
+typedef unsigned __int64 QWORD;
+
 
 #else			/* Embedded platform */
 
 #include "PE_Types.h"
 
-/* These types must be 16-bit, 32-bit or larger integer */
+/* These types MUST be 16-bit or 32-bit */
 typedef int				INT;
 typedef unsigned int	UINT;
 

@@ -1,4 +1,4 @@
-FatFs Module Source Files R0.10c                      (C)ChaN, 2014
+FatFs Module Source Files R0.12
 
 
 FILES
