@@ -3252,11 +3252,11 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   }
   /* write benchmark */
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Benchmark: write/copy/read a 100kB file:\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Deleting existing benchmark files...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Delete existing benchmark files...\r\n", io->stdOut);
   (void)%'ModuleName'%.%DeleteFile((const unsigned char*)"./bench.txt", io);
   (void)%'ModuleName'%.%DeleteFile((const unsigned char*)"./copy.txt", io);
 
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Creating benchmark file...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Create benchmark file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   if (%'ModuleName'%.%open(&fp, "./bench.txt", FA_CREATE_ALWAYS|FA_WRITE)!=FR_OK) {
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
@@ -3279,7 +3279,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)" kB/s)\r\n", io->stdOut);
 
   /* read benchmark */
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Reading 100kB benchmark file...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Read 100kB benchmark file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   if (%'ModuleName'%.%open(&fp, "./bench.txt", FA_READ)!=FR_OK) {
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
@@ -3302,7 +3302,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)" kB/s)\r\n", io->stdOut);
 
   /* copy benchmark */
-  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Copy file (100kB)...\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Copy 100kB file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   (void)%'ModuleName'%.%CopyFile((const unsigned char*)"./bench.txt", (const unsigned char*)"./copy.txt", io);
   (void)%@RTC@'ModuleName'%.GetTime(&time);
