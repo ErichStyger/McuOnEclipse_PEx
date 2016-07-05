@@ -144,8 +144,8 @@ typedef struct {
   LDD_SDHC_TCardInfo CardInfo;  /* Initialized card info */
 } TSDData;
 
-#define %'ModuleName'%.BLOCK_SIZE   512            /* user defined block size */
-
+#define %'ModuleName'%.BLOCK_SIZE        512   /* sector size. Values >512 give LDD_SDHC_ERR_BLOCK_LEN_ERROR? So hardcoded for now. */
+#define %'ModuleName'%.WAIT_TIMEOUT_MS   1024  /* wait timeout in millis seconds for commands */
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -271,6 +271,15 @@ void %OnFinished(LDD_TUserData *UserDataPtr);
 
 %endif %- OnFinished
 %-BW_METHOD_END OnFinished
+%-BW_METHOD_BEGIN OnError
+%ifdef OnError
+%INTERFACE OnError
+void %OnError(int errorNo);
+%define! ParerrorNo
+%include Common\FatFsMemSDHCOnError.Inc
+
+%endif %- OnError
+%-BW_METHOD_END OnError
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\FatFsMemSDHCSettings.Inc
@@ -304,9 +313,9 @@ void %OnFinished(LDD_TUserData *UserDataPtr);
 static volatile DSTATUS Stat = STA_NOINIT; /* Disk status */
 static TSDData SD;              /* Application data */
 
-#define %'ModuleName'%.SPEED_INDEX_SLOW    %SpeedIndexSlow    /* set by property, has to correspond to less than 400 kHz. */
-#define %'ModuleName'%.SPEED_INDEX_NORMAL  %SpeedIndexNormal  /* set by property, up to 12 MHz. */
-#define %'ModuleName'%.SPEED_INDEX_FAST    %SpeedIndexFast    /* set by property, depends on card, but could be as high as 48 MHz. */
+#define %'ModuleName'%.SPEED_INDEX_SLOW    %SpeedIndexSlow       %>40/* set by property, has to correspond to less than 400 kHz. */
+#define %'ModuleName'%.SPEED_INDEX_NORMAL  %SpeedIndexNormal     %>40/* set by property, up to 12 MHz. */
+#define %'ModuleName'%.SPEED_INDEX_FAST    %SpeedIndexFast       %>40/* set by property, depends on card, but could be as high as 48 MHz. */
 
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -407,18 +416,30 @@ bool %'ModuleName'%.%CardPresent(void)
 static void SD_Wait(TSDData *SD, bool *ErrorFlag)
 {
   %@Timeout@'ModuleName'%.CounterHandle timeout;
-  bool isTimeout = FALSE;      /* Timeout flag */
-  LDD_SDHC_TError Error;     /* SDHC error */
+  bool isTimeout;      /* Timeout flag */
+  LDD_SDHC_TError err;     /* SDHC error */
 
-  timeout = %@Timeout@'ModuleName'%.GetCounter(1000/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
-  while (!SD->Finished && !isTimeout){
-    isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+  if (!SD->Finished) { /* not finished yet? */
+    isTimeout = FALSE;
+    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.WAIT_TIMEOUT_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
+    while (!SD->Finished && !isTimeout) {
+      %@Wait@'ModuleName'%.WaitOSms(1);
+      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+    }
+    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+    if (isTimeout) {
+    %if defined(OnError)
+      %OnError(0); /* call user error handler */
+    %endif
+      *ErrorFlag = TRUE;
+    }
   }
-  SD->Finished = FALSE;
-  %@Timeout@'ModuleName'%.LeaveCounter(timeout);
-  Error = SDHC1_GetError(SD->SDHCPtr, NULL);
-  if (Error != LDD_SDHC_ERR_OK) {
-    //SD_ErrorHandler(SD, Error);
+  SD->Finished = FALSE; /* reset flag */
+  err = SDHC1_GetError(SD->SDHCPtr, NULL);
+  if (err != LDD_SDHC_ERR_OK) {
+%if defined(OnError)
+    %OnError(err); /* call user error handler */
+%endif
     *ErrorFlag = TRUE;
   }
 }
@@ -568,8 +589,6 @@ bool %'ModuleName'%.%isWriteProtected(void)
 
 %endif %- isWriteProtected
 %-BW_METHOD_END isWriteProtected
-%-BW_IMPLEMENT_END
-/* END %ModuleName. */
 static uint32_t SD_ByteToCardAddress(LDD_SDHC_TCardInfo *CardInfo, uint32_t Address) {
   const uint32_t BlockSizeExp = 9;
 
@@ -578,7 +597,7 @@ static uint32_t SD_ByteToCardAddress(LDD_SDHC_TCardInfo *CardInfo, uint32_t Addr
 
 static bool SD_TransferBlock(TSDData *SD, bool Read, uint32_t Address, uint8_t *Buffer) {
   bool Error = FALSE;
-  const uint16_t BlockSize = 512;
+  const uint16_t BlockSize = %'ModuleName'%.BLOCK_SIZE;
   const uint16_t BlockCount = 1;
   uint32_t CardAddr = SD_ByteToCardAddress(&SD->CardInfo, Address); /* Read block address */
   LDD_SDHC_TBufferDesc BufferDesc;
@@ -588,6 +607,9 @@ static bool SD_TransferBlock(TSDData *SD, bool Read, uint32_t Address, uint8_t *
   BufferDesc.Size = BlockSize;
   /* Read card data block */
   if (%@SDHC@'ModuleName'%.TransferBlocks(SD->SDHCPtr, (Read ? LDD_SDHC_READ : LDD_SDHC_WRITE), CardAddr, &BufferDesc, BlockCount)!=ERR_OK) {
+%if defined(OnError)
+    %OnError(0); /* call user error handler */
+%endif
     return TRUE; /* error */
   }
   SD_Wait(SD, &Error);
@@ -743,7 +765,6 @@ DRESULT %'ModuleName'%.disk_ioctl (
         void *buff                                               %>40 /* Buffer to send/receive control data */
 )
 {
-  bool Error = FALSE;
   DRESULT res = RES_OK;
   uint8_t *ptr = (uint8_t*)buff;
 
@@ -771,10 +792,6 @@ DRESULT %'ModuleName'%.disk_ioctl (
     switch (ctrl) {
       case CTRL_SYNC :                                           %>40 /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
         %'ModuleName'%.%Activate();
-        SD_Wait(&SD, &Error);
-        if (Error) {
-          res = RES_ERROR;
-        }
         break;
       case MMC_GET_READ_BL_LEN:                                  %>40 /* Block Length */
         *(uint16_t*)ptr = SD.CardInfo.BlockLength;
@@ -865,7 +882,8 @@ DRESULT %'ModuleName'%.disk_ioctl (
   }
   return res;
 }
-
+%-BW_IMPLEMENT_END
+/* END %ModuleName. */
 %-BW_METHOD_BEGIN OnCardInserted
 %ifdef OnCardInserted
 %IMPLEMENTATION OnCardInserted
@@ -904,6 +922,18 @@ void %OnFinished(LDD_TUserData *UserDataPtr)
 
 %endif %- OnFinished
 %-BW_METHOD_END OnFinished
+%-BW_METHOD_BEGIN OnError
+%ifdef OnError
+%IMPLEMENTATION OnError
+%define! ParerrorNo
+%include Common\FatFsMemSDHCOnError.Inc
+void %OnError(int errorNo)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnError
+%-BW_METHOD_END OnError
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
