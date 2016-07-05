@@ -4,7 +4,7 @@
     <Name>SD_Card</Name>
     <Description>SD Card</Description>
     <Author>Erich Styger</Author>
-    <Version>01.179</Version>
+    <Version>01.182</Version>
     <Icon>SD_Card</Icon>
     <TypesFiles>PE,SD_Card\SD_Card</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012-2015, all rights reserved.\nWeb       : www.mcuoneclipse.com\n\nThis an open source software implementing an SD card low level driver useful for the the ChaN FatFS, using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012-2016, all rights reserved.\nWeb       : www.mcuoneclipse.com\n\nThis an open source software implementing an SD card low level driver useful for the the ChaN FatFS, using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Shortcut>SD</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -894,98 +894,30 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>command to send</ParHint>
         </Parameter>
         <Parameter>
           <ParName>arg</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to an array of 4 bytes</ParHint>
         </Parameter>
         <Parameter>
           <ParName>response</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Expected response</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte cmd, byte *arg, byte response)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes the driver</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>unused</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>unused parameter</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(void* unused)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Deinit</Name>
-        <Symbol>Deinit</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Driver deinitialization routine.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>unused</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>dummy parameter</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(void* unused)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t cmd, uint8_t *arg, uint8_t response)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1120,12 +1052,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code\n  ERR_OK: device is ready\n  ERR_BUSY: device is still busy</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1153,19 +1085,19 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>nofBytes</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>number of bytes to retrieve, must be a multiple of 4</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte *data, word nofBytes)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *data, uint16_t nofBytes)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1193,25 +1125,25 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data blocks with 512 bytes each</ParHint>
         </Parameter>
         <Parameter>
           <ParName>token</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>data/stop token</ParHint>
         </Parameter>
         <Parameter>
           <ParName>nofBytes</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Number of bytes to send</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte *data, byte token, word nofBytes)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *data, uint8_t token, uint16_t nofBytes)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1234,12 +1166,12 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>data byte</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1262,24 +1194,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>device response</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Command to send</ParHint>
         </Parameter>
         <Parameter>
           <ParName>arg</ParName>
-          <ParType>32bit unsigned</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>command argument</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte cmd, dword arg)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t cmd, uint32_t arg)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1364,6 +1296,74 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver deinitialization routine.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>unused</ParName>
+          <ParType>pointer</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>dummy parameter</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void* unused)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the driver</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>unused</ParName>
+          <ParType>pointer</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>unused parameter</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void* unused)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1478,13 +1478,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>mode</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>0: slow mode, 1: fast mode</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte mode)</ANSIC>
+          <ANSIC>void #C#(uint8_t mode)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -1523,13 +1523,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>mode</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>0: slow mode, 1: fast mode</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte mode)</ANSIC>
+          <ANSIC>void #C#(uint8_t mode)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

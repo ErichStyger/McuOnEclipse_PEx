@@ -206,30 +206,6 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Init">
-<b>Init</b></a>
- - Initializes the driver
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Init(void* unused)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>unused:void*</i> - unused parameter</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="Deinit">
-<b>Deinit</b></a>
- - Driver deinitialization routine.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Deinit(void* unused)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>unused:void*</i> - dummy parameter</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
 <li><a name="Activate">
 <b>Activate</b></a>
  - If multiple devices are used on the same SPI bus, then the device needs to be activated. That way, the different SPI protocol is selected.
@@ -275,9 +251,9 @@ LI.EXP {
  - Wait until the card is ready
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WaitReady(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WaitReady(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code<br />  ERR_OK: device is ready<br />  ERR_BUSY: device is still busy
+<li><i>Return value:uint8_t</i> - Error code<br />  ERR_OK: device is ready<br />  ERR_BUSY: device is still busy
 </li>
 </ul><br />
 </li>
@@ -286,10 +262,10 @@ LI.EXP {
  - Retrieve a data block from the device
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ReceiveDataBlock(byte *data, word nofBytes)<br />
+<br /><i>ANSIC prototype:</i> bool ReceiveDataBlock(uint8_t *data, uint16_t nofBytes)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data: Pointer to byte</i> - Pointer to data buffer</li>
-<li><i>nofBytes:word</i> - number of bytes to retrieve, must be a multiple of 4</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data buffer</li>
+<li><i>nofBytes:uint16_t</i> - number of bytes to retrieve, must be a multiple of 4</li>
 <li><i>Return value:bool</i> - TRUE if reading was going fine, FALSE otherwise.
 </li>
 </ul><br />
@@ -299,11 +275,11 @@ LI.EXP {
  - Send a data block to the device
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SendDataBlock(byte *data, byte token, word nofBytes)<br />
+<br /><i>ANSIC prototype:</i> bool SendDataBlock(uint8_t *data, uint8_t token, uint16_t nofBytes)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data: Pointer to byte</i> - Pointer to data blocks with 512 bytes each</li>
-<li><i>token:byte</i> - data/stop token</li>
-<li><i>nofBytes:word</i> - Number of bytes to send</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data blocks with 512 bytes each</li>
+<li><i>token:uint8_t</i> - data/stop token</li>
+<li><i>nofBytes:uint16_t</i> - Number of bytes to send</li>
 <li><i>Return value:bool</i> - Returns TRUE for success, FALSE for failure.
 </li>
 </ul><br />
@@ -313,11 +289,11 @@ LI.EXP {
  - Sends a command to the device and returns the response
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SendCmd(byte cmd, dword arg)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SendCmd(uint8_t cmd, uint32_t arg)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd:byte</i> - Command to send</li>
-<li><i>arg:dword</i> - command argument</li>
-<li><i>Return value:byte</i> - device response
+<li><i>cmd:uint8_t</i> - Command to send</li>
+<li><i>arg:uint32_t</i> - command argument</li>
+<li><i>Return value:uint8_t</i> - device response
 </li>
 </ul><br />
 </li>
@@ -346,6 +322,30 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void InitCommChannel(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="Deinit">
+<b>Deinit</b></a>
+ - Driver deinitialization routine.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Deinit(void* unused)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>unused:void*</i> - dummy parameter</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="Init">
+<b>Init</b></a>
+ - Initializes the driver
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Init(void* unused)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>unused:void*</i> - unused parameter</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

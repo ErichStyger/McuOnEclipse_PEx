@@ -1007,6 +1007,25 @@ static void CmdUsageError(const unsigned char *cmd, uint8_t *usage, const %@Shel
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdErr);
 }
 
+static void PrintInASCII(uint8_t *buf, size_t bufSize, size_t LineLen, uint8_t nonASCIIchar, uint8_t fillChar, const %@Shell@'ModuleName'%.StdIOType *io) {
+  int i;
+  uint8_t ch;
+
+  /* print in ASCII */
+  %@Shell@'ModuleName'%.SendCh(' ', io->stdOut);
+  for (i=0; i<bufSize; i++) {
+    ch = buf[i];
+    if (ch >= ' ' && ch <= 0x7f) {
+      %@Shell@'ModuleName'%.SendCh(ch, io->stdOut);
+    } else {
+      %@Shell@'ModuleName'%.SendCh(nonASCIIchar, io->stdOut); /* place holder */
+    }
+  }
+  for (/*empty*/; i<LineLen; i++) { /* fill up line */
+    %@Shell@'ModuleName'%.SendCh(fillChar, io->stdOut);
+  }
+}
+
 /*!
  * \brief Writes a directory listing of the given path
  * \param[in] dirPathPtr Pointer to a directory path string. Pass "\\" for the root directory
@@ -1305,7 +1324,7 @@ static uint8_t SectorCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
   /* precondition: cmd starts with "sector" */
   uint8_t res;
   uint32_t sectorNo;
-  const unsigned char *p = cmd+sizeof("sector");
+  const unsigned char *p = cmd+sizeof("printsector");
 
   res = %@Utility@'ModuleName'%.ScanDecimal32uNumber(&p, &sectorNo);
   if (res == ERR_OK) { /* format fine */
@@ -1314,7 +1333,7 @@ static uint8_t SectorCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
       return res;
     }
   } else {
-    CmdUsageError(cmd, (unsigned char*)"sector <number>", io);
+    CmdUsageError(cmd, (unsigned char*)"printsector <number>", io);
     return ERR_FAILED;
   }
   return ERR_OK;
@@ -1471,7 +1490,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printhex <filename>", (const unsigned char*)"Print a file as hexdump\r\n", io->stdOut);
 %endif %- PrintHexFile
 %ifdef PrintSector
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sector <number>", (const unsigned char*)"Print disk sector\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printsector <number>", (const unsigned char*)"Print disk sector\r\n", io->stdOut);
 %endif %- PrintSector
 %ifdef PrintDiskInfo
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  diskinfo", (const unsigned char*)"Print disk information\r\n", io->stdOut);
@@ -2417,6 +2436,11 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     *handled = TRUE;
     return PrintHexCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintHexFile
+%ifdef PrintSector
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printsector", sizeof("%'ModuleName' printsector")-1)==0) {
+    *handled = TRUE;
+    return SectorCmd(cmd+sizeof("%'ModuleName'"), io);
+%endif %- PrintSector
 %ifdef PrintFile
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' print", sizeof("%'ModuleName' print")-1)==0) {
     *handled = TRUE;
@@ -2427,11 +2451,6 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     *handled = TRUE;
     return %'ModuleName'%.%PrintDiskInfo(0, io);
 %endif %- PrintDiskInfo
-%ifdef PrintSector
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' sector", sizeof("%'ModuleName' sector")-1)==0) {
-    *handled = TRUE;
-    return SectorCmd(cmd+sizeof("%'ModuleName'"), io);
-%endif %- PrintSector
 %ifdef Benchmark
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' benchmark")==0) {
     *handled = TRUE;
@@ -2781,11 +2800,13 @@ uint8_t %'ModuleName'%.%PrintHexFile(const uint8_t *fileName, const %@Shell@'Mod
   #define PRINT_HEX_NOF_BYTES_PER_LINE 16
   uint8_t filebuf[PRINT_HEX_NOF_BYTES_PER_LINE];
   uint8_t buf[16];
-  uint8_t ch, res = ERR_OK;
+  uint8_t res = ERR_OK;
+  uint32_t address;
   UINT i;
 
   fres = %'ModuleName'%.open(&file, (const TCHAR *)fileName, FA_READ);
   if (fres == FR_OK) {
+    address = 0;
     do {
       nofRead = 0;
       fres=%'ModuleName'%.read(&file, filebuf, sizeof(filebuf), &nofRead); /* read one byte less for zero byte */
@@ -2797,9 +2818,10 @@ uint8_t %'ModuleName'%.%PrintHexFile(const uint8_t *fileName, const %@Shell@'Mod
           if ((i%%PRINT_HEX_NOF_BYTES_PER_LINE)==0) { /* new line to make things readable */
             %@Shell@'ModuleName'%.SendStr((unsigned char*)"0x", io->stdOut);
             buf[0] = '\0';
-            %@Utility@'ModuleName'%.strcatNum32Hex(buf, sizeof(buf), i);
+            %@Utility@'ModuleName'%.strcatNum32Hex(buf, sizeof(buf), address);
             %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
             %@Shell@'ModuleName'%.SendStr((unsigned char*)": ", io->stdOut);
+            address += PRINT_HEX_NOF_BYTES_PER_LINE;
           }
           buf[0] = '\0';
           %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), filebuf[i]);
@@ -2811,18 +2833,7 @@ uint8_t %'ModuleName'%.%PrintHexFile(const uint8_t *fileName, const %@Shell@'Mod
           %@Shell@'ModuleName'%.SendStr((unsigned char*)"-- ", io->stdOut);
         }
         /* print in ASCII */
-        %@Shell@'ModuleName'%.SendCh(' ', io->stdOut);
-        for (i=0; i<nofRead; i++) {
-          ch = filebuf[i];
-          if (ch >= ' ' && ch <= 0x7f) {
-            %@Shell@'ModuleName'%.SendCh(ch, io->stdOut);
-          } else {
-            %@Shell@'ModuleName'%.SendCh('.', io->stdOut); /* place holder */
-          }
-        }
-        for (/*empty*/; i<PRINT_HEX_NOF_BYTES_PER_LINE; i++) { /* fill up line */
-          %@Shell@'ModuleName'%.SendCh('-', io->stdOut);
-        }
+        PrintInASCII(&filebuf[0], nofRead, PRINT_HEX_NOF_BYTES_PER_LINE, '.', '-', io);
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
       }
     } while(nofRead>0 && fres==FR_OK);
@@ -2951,6 +2962,7 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
 #endif
 uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)
 {
+  #define PRINT_SECTOR_NOF_BYTES_PER_LINE  16
   uint16_t i;
   unsigned char buf[8];
   %'ModuleName'%.DRESULT dres;
@@ -2988,7 +3000,10 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
     %@Shell@'ModuleName'%.SendStr((unsigned char*)", sector size ", io->stdOut);
     %@Shell@'ModuleName'%.SendNum32u(SECTOR_BUF_SIZE0, io->stdOut);
     for(i=0; i<SECTOR_BUF_SIZE0; i++) {
-      if ((i%%16)==0) { /* new line to make things readable */
+      if ((i%%PRINT_SECTOR_NOF_BYTES_PER_LINE)==0) { /* new line to make things readable */
+        if (i!=0) { /* not for first line */
+          PrintInASCII(&print_buf0[i-PRINT_SECTOR_NOF_BYTES_PER_LINE], PRINT_SECTOR_NOF_BYTES_PER_LINE, PRINT_SECTOR_NOF_BYTES_PER_LINE, '.', '-', io);
+        }
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n0x", io->stdOut);
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), i);
@@ -3000,6 +3015,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
       %@Shell@'ModuleName'%.SendStr((unsigned char*)" ", io->stdOut);
     }
+    PrintInASCII(&print_buf0[i-PRINT_SECTOR_NOF_BYTES_PER_LINE], PRINT_SECTOR_NOF_BYTES_PER_LINE, PRINT_SECTOR_NOF_BYTES_PER_LINE, '.', '-', io);
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   } else {
     FatFsDResultMsg((unsigned char*)"disk_read failed", dres, io);

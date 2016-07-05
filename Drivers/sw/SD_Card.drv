@@ -141,6 +141,7 @@ DRESULT %'ModuleName'%.disk_ioctl (
 /* distinguished modes for bus activation/deactivation */
 #define %'ModuleName'%.ACTIVATE_MODE_SLOW   0
 #define %'ModuleName'%.ACTIVATE_MODE_FAST   1
+#define %'ModuleName'%.ACTIVATE_MODE_NONE   2
 
 #define %'ModuleName'%.BLOCK_SIZE   %BlockSize                   %>40 /* user defined block size */
 
@@ -202,7 +203,7 @@ DRESULT %'ModuleName'%.disk_ioctl (
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-byte %'ModuleName'%.%Init(void* unused);
+uint8_t %'ModuleName'%.%Init(void* unused);
 %define! Parunused
 %define! RetVal
 %include Common\SD_CardInit.Inc
@@ -255,7 +256,7 @@ void %'ModuleName'%.%Deactivate(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WaitReady
 %ifdef WaitReady
-byte %'ModuleName'%.%WaitReady(void);
+uint8_t %'ModuleName'%.%WaitReady(void);
 %define! RetVal
 %include Common\SD_CardWaitReady.Inc
 
@@ -264,7 +265,7 @@ byte %'ModuleName'%.%WaitReady(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReceiveDataBlock
 %ifdef ReceiveDataBlock
-bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes);
+bool %'ModuleName'%.%ReceiveDataBlock(uint8_t *data, uint16_t nofBytes);
 %define! Pardata
 %define! ParnofBytes
 %define! RetVal
@@ -275,7 +276,7 @@ bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendCmd
 %ifdef SendCmd
-byte %'ModuleName'%.%SendCmd(byte cmd, dword arg);
+uint8_t %'ModuleName'%.%SendCmd(uint8_t cmd, uint32_t arg);
 %define! Parcmd
 %define! Pararg
 %define! RetVal
@@ -285,7 +286,7 @@ byte %'ModuleName'%.%SendCmd(byte cmd, dword arg);
 %-BW_METHOD_END SendCmd
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG ReceiveByte
-byte %'ModuleName'%.ReceiveByte(void);
+uint8_t %'ModuleName'%.ReceiveByte(void);
 %define! RetVal
 %include Common\GeneralInternal.inc (ReceiveByte)
 
@@ -324,7 +325,7 @@ byte %'ModuleName'%.ReceiveByte(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendDataBlock
 %ifdef SendDataBlock
-bool %'ModuleName'%.%SendDataBlock(byte *data, byte token, word nofBytes);
+bool %'ModuleName'%.%SendDataBlock(uint8_t *data, uint8_t token, uint16_t nofBytes);
 %define! Pardata
 %define! Partoken
 %define! ParnofBytes
@@ -352,7 +353,7 @@ void %'ModuleName'%.%InitCommChannel(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
-byte %'ModuleName'%.%Deinit(void* unused);
+uint8_t %'ModuleName'%.%Deinit(void* unused);
 %define! Parunused
 %define! RetVal
 %include Common\SD_CardDeinit.Inc
@@ -400,7 +401,7 @@ void %OnError(void);
 %-BW_METHOD_BEGIN OnActivate
 %ifdef OnActivate
 %INTERFACE OnActivate
-void %OnActivate(byte mode);
+void %OnActivate(uint8_t mode);
 %define! Parmode
 %include Common\SD_CardOnActivate.Inc
 
@@ -409,7 +410,7 @@ void %OnActivate(byte mode);
 %-BW_METHOD_BEGIN OnDeactivate
 %ifdef OnDeactivate
 %INTERFACE OnDeactivate
-void %OnDeactivate(byte mode);
+void %OnDeactivate(uint8_t mode);
 %define! Parmode
 %include Common\SD_CardOnDeactivate.Inc
 
@@ -452,7 +453,7 @@ void %OnBlockReceived(LDD_TUserData *UserDataPtr);
 %-
 static volatile DSTATUS Stat = STA_NOINIT;                       %>40 /* Disk status */
 static uint8_t CardType = CT_SD1;                                %>40 /* Card type flags */
-static uint8_t speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;    %>40 /* current speed mode */
+static uint8_t currentSpeedMode = %'ModuleName'%.ACTIVATE_MODE_NONE;%>40 /* current speed mode */
 
 enum { /* SD card response codes */
   %'ModuleName'%.OK = 0,
@@ -620,7 +621,7 @@ DRESULT %'ModuleName'%.disk_write (
   }
   if (count == 1) {                                              %>40 /* Single block write */
     if (  (%'ModuleName'%.SendCmd(%'ModuleName'%.CMD24, sector) == 0)%>40 /* WRITE_BLOCK */
-        && %'ModuleName'%.SendDataBlock((byte*)buff, 0xFE, %'ModuleName'%.BLOCK_SIZE))
+        && %'ModuleName'%.SendDataBlock((uint8_t*)buff, 0xFE, %'ModuleName'%.BLOCK_SIZE))
     {
       count = 0;
     }
@@ -630,7 +631,7 @@ DRESULT %'ModuleName'%.disk_write (
     }
     if (%'ModuleName'%.SendCmd(%'ModuleName'%.CMD25, sector) == 0) {%>40 /* WRITE_MULTIPLE_BLOCK */
       do {
-        if (!%'ModuleName'%.SendDataBlock((byte*)buff, 0xFC, %'ModuleName'%.BLOCK_SIZE)) {
+        if (!%'ModuleName'%.SendDataBlock((uint8_t*)buff, 0xFC, %'ModuleName'%.BLOCK_SIZE)) {
           break;
         }
         buff += %'ModuleName'%.BLOCK_SIZE;
@@ -717,7 +718,7 @@ DRESULT %'ModuleName'%.disk_ioctl (
           } else {                                               %>40 /* SDC ver 1.XX or MMC*/
             n = (uint8_t)((csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2);
             csize = (uint16_t)((csd[8] >> 6) + ((uint16_t)csd[7] << 2) + ((uint16_t)(csd[6] & 3) << 10) + 1);
-            *(uint32_t*)buff = (uint32_t)csize << (byte)(n - 9);
+            *(uint32_t*)buff = (uint32_t)csize << (uint8_t)(n - 9);
           }
         }
         break;
@@ -738,7 +739,7 @@ DRESULT %'ModuleName'%.disk_ioctl (
         } else {                                                 %>40 /* SDC ver 1.XX or MMC */
           if ((%'ModuleName'%.SendCmd(%'ModuleName'%.CMD9, 0) == 0) && %'ModuleName'%.ReceiveDataBlock(csd, 16)) {        /* Read CSD */
             if (CardType & CT_SD1) {                             %>40 /* SDC ver 1.XX */
-              *(uint32_t*)buff = (uint32_t)((((csd[10] & 63) << 1) + ((uint16_t)(csd[11] & 128) >> 7) + 1) << (byte)((csd[13] >> 6) - 1));
+              *(uint32_t*)buff = (uint32_t)((((csd[10] & 63) << 1) + ((uint16_t)(csd[11] & 128) >> 7) + 1) << (uint8_t)((csd[13] >> 6) - 1));
             } else {                                             %>40 /* MMC */
               *(uint32_t*)buff = (uint32_t)(((uint16_t)((csd[10] & 124) >> 2) + 1) * (((csd[11] & 3) << 3) + ((csd[11] & 224) >> 5) + 1));
             }
@@ -836,7 +837,7 @@ static void %'ModuleName'%.SPI_WRITE_READ_BLOCK(unsigned char *writeP, unsigned 
 #endif /* %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED */
 
 %if SPI_Read_Write_Macros='no'
-static byte rxDummy; /* dummy byte if we do not need the result. Needed to read from SPI register. */
+static uint8_t rxDummy; /* dummy byte if we do not need the result. Needed to read from SPI register. */
 #define %'ModuleName'%.SPI_WRITE(write)            \
    { \
      while(%@HWSPI@'ModuleName'%.SendChar(write)!=ERR_OK) {} \
@@ -1027,7 +1028,7 @@ static void %'ModuleName'%.SPI_WRITE_READ_BLOCK(unsigned char *writeP, unsigned 
 %-UNLOCKED
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG SendCommand
-static byte SendCommand(byte cmd, byte *arg, byte response);
+static uint8_t SendCommand(uint8_t cmd, uint8_t *arg, uint8_t response);
 %-INTERNAL_LOC_METHOD_END SendCommand
 %-
 
@@ -1043,7 +1044,7 @@ void %'ModuleName'%.%Activate(void)
    * typically defined as well as 'Mode 0' (CPHA=0, CPOL=0). See http://elm-chan.org/docs/mmc/mmc_e.html
    */
 %if defined(OnActivate)
-  %OnActivate(speedMode);
+  %OnActivate(currentSpeedMode);
 %endif
   %'ModuleName'%.%InitCommChannel();
 %if defined(ACT)
@@ -1069,7 +1070,7 @@ void %'ModuleName'%.%Deactivate(void)
   %@LDDACT@'ModuleName'%.ClrVal(%@LDDACT@'ModuleName'%.DeviceData);%>40 /* disable bus driver (low level) */
 %endif
 %if defined(OnDeactivate)
-  %OnDeactivate(speedMode);
+  %OnDeactivate(currentSpeedMode);
 %endif
 }
 
@@ -1080,9 +1081,9 @@ void %'ModuleName'%.%Deactivate(void)
 %ifdef WaitReady
 %define! RetVal
 %include Common\SD_CardWaitReady.Inc
-byte %'ModuleName'%.%WaitReady(void)
+uint8_t %'ModuleName'%.%WaitReady(void)
 {
-  byte tmp;
+  uint8_t tmp;
   %@Timeout@'ModuleName'%.CounterHandle timeout;
 
   %'ModuleName'%.Activate();
@@ -1121,9 +1122,9 @@ byte %'ModuleName'%.%WaitReady(void)
 %define! ParnofBytes
 %define! RetVal
 %include Common\SD_CardReceiveDataBlock.Inc
-bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes)
+bool %'ModuleName'%.%ReceiveDataBlock(uint8_t *data, uint16_t nofBytes)
 {
-  byte tmp;
+  uint8_t tmp;
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   word cnt = 512; /* polling counter */
 
@@ -1193,9 +1194,9 @@ bool %'ModuleName'%.%ReceiveDataBlock(byte *data, word nofBytes)
 %define! ParnofBytes
 %define! RetVal
 %include Common\SD_CardSendDataBlock.Inc
-bool %'ModuleName'%.%SendDataBlock(byte *data, byte token, word nofBytes)
+bool %'ModuleName'%.%SendDataBlock(uint8_t *data, uint8_t token, uint16_t nofBytes)
 {
-  byte resp;
+  uint8_t resp;
 
   if (%'ModuleName'%.WaitReady()!=ERR_OK) {
 %ifdef OnError
@@ -1253,9 +1254,9 @@ bool %'ModuleName'%.%SendDataBlock(byte *data, byte token, word nofBytes)
 %if defined(COMPILER_HIX)
 #pragma MESSAGE DISABLE C1855 /* recursive function call */
 %endif
-byte %'ModuleName'%.%SendCmd(byte cmd, dword arg)
+uint8_t %'ModuleName'%.%SendCmd(uint8_t cmd, uint32_t arg)
 {
-  byte n, res;
+  uint8_t n, res;
   %@Timeout@'ModuleName'%.CounterHandle timeout;
 
   if (cmd&0x80) {                                                %>40 /* ACMD<n> is the command sequence of CMD55-CMD<n> */
@@ -1275,13 +1276,13 @@ byte %'ModuleName'%.%SendCmd(byte cmd, dword arg)
   %'ModuleName'%.Activate();
   /* Send command packet */
   %'ModuleName'%.SPI_WRITE(cmd);                                 %>40 /* Start + Command index */
-  n = (byte)(arg>>24);
+  n = (uint8_t)(arg>>24);
   %'ModuleName'%.SPI_WRITE(n);                                   %>40 /* Argument[31..24] */
-  n = (byte)(arg>>16);
+  n = (uint8_t)(arg>>16);
   %'ModuleName'%.SPI_WRITE(n);                                   %>40 /* Argument[23..16] */
-  n = (byte)(arg>>8);
+  n = (uint8_t)(arg>>8);
   %'ModuleName'%.SPI_WRITE(n);                                   %>40 /* Argument[15..8] */
-  %'ModuleName'%.SPI_WRITE((byte)arg);                           %>40 /* Argument[7..0] */
+  %'ModuleName'%.SPI_WRITE((uint8_t)arg);                        %>40 /* Argument[7..0] */
   if (cmd == %'ModuleName'%.CMD0) {
     n = 0x95;                                                    %>40 /* Valid CRC for CMD0(0) */
   } else if (cmd == %'ModuleName'%.CMD8) {
@@ -1337,11 +1338,11 @@ bool %'ModuleName'%.%isWriteProtected(void)
 %define! Pararg
 %define! RetVal
 %include Common\GeneralInternalGlobal.inc (SendCommand)
-static byte SendCommand(byte cmd, byte *arg, byte response)
+static uint8_t SendCommand(uint8_t cmd, uint8_t *arg, uint8_t response)
 {
   #define NOF_WAIT_ITERATIONS 3
-  byte u8Temp=0;
-  byte u8Counter;
+  uint8_t u8Temp=0;
+  uint8_t u8Counter;
 
   %'ModuleName'%.Activate();
   %'ModuleName'%.SPI_WRITE(cmd);                                 %>40 /* Send Start byte */
@@ -1378,7 +1379,7 @@ static byte SendCommand(byte cmd, byte *arg, byte response)
 %define! Parunused
 %define! RetVal
 %include Common\SD_CardInit.Inc
-byte %'ModuleName'%.%Init(void* unused)
+uint8_t %'ModuleName'%.%Init(void* unused)
 {
   /* The behavior of SD cards in SPI mode is basically the same as for any SPI slave device.
      The maximum transfer rate of the SD card in SPI mode is 25 Mbps, but in the initialization process the
@@ -1391,7 +1392,7 @@ byte %'ModuleName'%.%Init(void* unused)
   dword arg;
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout = FALSE;
-  byte cnt;
+  uint8_t cnt;
 
   (void)unused;
   /* -------------------------------- Init & Slow Mode -------------------------------- */
@@ -1399,7 +1400,7 @@ byte %'ModuleName'%.%Init(void* unused)
   /*lint -save -e522 function lacks side-effects */
   %@Wait@'ModuleName'%.Waitms(1);                                %>40 /* wait at least for 1 ms on insertion and power on */
   /*lint -restore */
-  speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
+  currentSpeedMode = %'ModuleName'%.ACTIVATE_MODE_NONE;
   %'ModuleName'%.Activate();                                     %>40 /* select slave */
   %'ModuleName'%.SetSlowMode();                                  %>40 /* set the SPI clock to 375 kbps. This is required for compatibility across a wide range of SD and MMC cards. */
   %'ModuleName'%.DISABLE_SS();                                   %>40 /* disable slave (CS high) */
@@ -1413,7 +1414,7 @@ byte %'ModuleName'%.%Init(void* unused)
   /* -------------------------------- IDLE Command -------------------------------- */
   arg = 0;
   timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_READY_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS);%>40/* timeout */
-  while (SendCommand(%'ModuleName'%.CMD0, (byte*)&arg, %'ModuleName'%.IDLE) != ERR_OK) {
+  while (SendCommand(%'ModuleName'%.CMD0, (uint8_t*)&arg, %'ModuleName'%.IDLE) != ERR_OK) {
     if (%@Timeout@'ModuleName'%.CounterExpired(timeout)) {
       isTimeout = TRUE;                                          %>40/* indicate a timeout */
       break;
@@ -1443,9 +1444,9 @@ byte %'ModuleName'%.%Init(void* unused)
 %-INTERNAL_METHOD_BEG ReceiveByte
 %define! RetVal
 %include Common\GeneralInternal.inc (ReceiveByte)
-byte %'ModuleName'%.ReceiveByte(void)
+uint8_t %'ModuleName'%.ReceiveByte(void)
 {
-  byte data;
+  uint8_t data;
 
   %'ModuleName'%.Activate();
   %'ModuleName'%.SPI_WRITE_READ(%'ModuleName'%.DUMMY, &data);    %>40 /* send dummy value, poll response */
@@ -1474,26 +1475,29 @@ bool %'ModuleName'%.%CardPresent(void)
 %include Common\SD_CardSetSlowMode.Inc
 void %'ModuleName'%.%SetSlowMode(void)
 {
+  if (currentSpeedMode!=%'ModuleName'%.ACTIVATE_MODE_SLOW) {
+    /* not already in slow mode */
 %ifdef LDDHWSPI
 #if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
 %endif
-  %'ModuleName'%.SPI_Disable();
+    %'ModuleName'%.SPI_Disable();
 %ifdef LDDHWSPI
 #endif
 %endif
 %if defined(HWSPI)
-  (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
-  (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
+    (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);         %>40 /* low idle clock polarity */
+    (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);        %>40 /* shift clock polarity: falling edge */
 %endif
-  %'ModuleName'%.SPI_SetSlowMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
-  speedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
+    %'ModuleName'%.SPI_SetSlowMode();                            %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
+    currentSpeedMode = %'ModuleName'%.ACTIVATE_MODE_SLOW;
 %ifdef LDDHWSPI
 #if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
 %endif
-  %'ModuleName'%.SPI_Enable();
+    %'ModuleName'%.SPI_Enable();
 %ifdef LDDHWSPI
 #endif
 %endif
+  } /* if */
 }
 
 %endif %- SetSlowMode
@@ -1504,26 +1508,29 @@ void %'ModuleName'%.%SetSlowMode(void)
 %include Common\SD_CardSetFastMode.Inc
 void %'ModuleName'%.%SetFastMode(void)
 {
+  if (currentSpeedMode!=%'ModuleName'%.ACTIVATE_MODE_FAST) {
+    /* not already in fast mode */
 %ifdef LDDHWSPI
 #if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
 %endif
-  %'ModuleName'%.SPI_Disable();
+    %'ModuleName'%.SPI_Disable();
 %ifdef LDDHWSPI
 #endif
 %endif
 %if defined(HWSPI)
-  (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);           %>40 /* low idle clock polarity */
-  (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);          %>40 /* shift clock polarity: falling edge */
+    (void)%@HWSPI@'ModuleName'%.SetIdleClockPolarity(0);         %>40 /* low idle clock polarity */
+    (void)%@HWSPI@'ModuleName'%.SetShiftClockPolarity(0);        %>40 /* shift clock polarity: falling edge */
 %endif
-  %'ModuleName'%.SPI_SetFastMode();                              %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
-  speedMode = %'ModuleName'%.ACTIVATE_MODE_FAST;
+    %'ModuleName'%.SPI_SetFastMode();                            %>40 /* the SPI clock is set to the maximum supported by the MCU and allowed by the SD card */
+    currentSpeedMode = %'ModuleName'%.ACTIVATE_MODE_FAST;
 %ifdef LDDHWSPI
 #if 0 /* if using LDD component, do not disable the SPI, as %'ModuleName'%.SPI_SetSlowMode() (SelectConfiguration()) only works with enabled device! */
 %endif
-  %'ModuleName'%.SPI_Enable();
+    %'ModuleName'%.SPI_Enable();
 %ifdef LDDHWSPI
 #endif
 %endif
+  } /* if */
 }
 
 %endif %- SetFastMode
@@ -1540,9 +1547,9 @@ void %'ModuleName'%.%InitCommChannel(void)
     - Shift clock idle polarity: low
     - Clock edge: falling edge
   */
-  if (speedMode==%'ModuleName'%.ACTIVATE_MODE_FAST) {
+  if (currentSpeedMode==%'ModuleName'%.ACTIVATE_MODE_FAST) {
     %'ModuleName'%.SetFastMode(); /* use fast mode. */
-  } else {
+  } else if (currentSpeedMode==%'ModuleName'%.ACTIVATE_MODE_SLOW) {
     %'ModuleName'%.SetSlowMode(); /* use slow mode. */
   }
 }
@@ -1555,7 +1562,7 @@ void %'ModuleName'%.%InitCommChannel(void)
 %define! Parunused
 %define! RetVal
 %include Common\SD_CardDeinit.Inc
-byte %'ModuleName'%.%Deinit(void* unused)
+uint8_t %'ModuleName'%.%Deinit(void* unused)
 {
   (void)unused;
   return ERR_OK;
@@ -1613,7 +1620,7 @@ void %OnError(void)
 %IMPLEMENTATION OnActivate
 %define! Parmode
 %include Common\SD_CardOnActivate.Inc
-void %OnActivate(byte mode)
+void %OnActivate(uint8_t mode)
 {
   /* Write your code here ... */
 }
@@ -1625,7 +1632,7 @@ void %OnActivate(byte mode)
 %IMPLEMENTATION OnDeactivate
 %define! Parmode
 %include Common\SD_CardOnDeactivate.Inc
-void %OnDeactivate(byte mode)
+void %OnDeactivate(uint8_t mode)
 {
   /* Write your code here ... */
 }
