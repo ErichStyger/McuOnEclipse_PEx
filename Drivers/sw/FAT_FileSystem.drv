@@ -2940,10 +2940,14 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
 %define! RetVal
 %include Common\FAT_FileSystemPrintSector.Inc
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
-  #define PRINT_BUF_SIZE   %'ModuleName'%.MAX_SS
+  %for i from [0..%maxDrive]
+  #define SECTOR_BUF_SIZE%i   %@Drive%i@'ModuleName'%.BLOCK_SIZE
+  %endfor
 #else
-  static uint8_t print_buf[%'ModuleName'%.MAX_SS];
-  #define PRINT_BUF_SIZE   sizeof(print_buf)
+  %for i from [0..%maxDrive]
+  static uint8_t print_buf%i[%@Drive%i@'ModuleName'%.BLOCK_SIZE];
+  #define SECTOR_BUF_SIZE%i   sizeof(print_buf%i)
+  %endfor
 #endif
 uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)
 {
@@ -2952,9 +2956,9 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   %'ModuleName'%.DRESULT dres;
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-    static unsigned char *print_buf=NULL; /* use global buffer pointer, allocated only once, and not deallocated! */
+    static unsigned char *print_buf0=NULL; /* use global buffer pointer, allocated only once, and not deallocated! */
   #else
-    unsigned char *print_buf;
+    unsigned char *print_buf0;
   #endif
 #endif
 
@@ -2964,33 +2968,35 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   }
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
-  if (print_buf==NULL) { /* only if not allocated yet */
-    print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
+  if (print_buf0==NULL) { /* only if not allocated yet */
+    print_buf0 = %@RTOS@'ModuleName'%.pvPortMalloc(SECTOR_BUF_SIZE0);
   }
   #else
-  print_buf = %@RTOS@'ModuleName'%.pvPortMalloc(PRINT_BUF_SIZE);
+  print_buf0 = %@RTOS@'ModuleName'%.pvPortMalloc(SECTOR_BUF_SIZE0);
   #endif
-  if (print_buf == NULL) {
+  if (print_buf0 == NULL) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"allocating memory failed\r\n", io->stdErr);
     return ERR_FAILED;
   }
 #endif
-  dres = disk_read(drive, &print_buf[0], sectorNo, 1);
+  dres = disk_read(drive, &print_buf0[0], sectorNo, 1);
   if (dres==RES_OK) { /* read one sector */
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"dumping disk sector: 0x", io->stdOut);
     buf[0] = '\0';
-    %@Utility@'ModuleName'%.strcatNum32Hex(buf, PRINT_BUF_SIZE, sectorNo);
+    %@Utility@'ModuleName'%.strcatNum32Hex(buf, sizeof(buf), sectorNo);
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
-    for(i=0; i<PRINT_BUF_SIZE; i++) {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)", sector size ", io->stdOut);
+    %@Shell@'ModuleName'%.SendNum32u(SECTOR_BUF_SIZE0, io->stdOut);
+    for(i=0; i<SECTOR_BUF_SIZE0; i++) {
       if ((i%%16)==0) { /* new line to make things readable */
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n0x", io->stdOut);
         buf[0] = '\0';
-        %@Utility@'ModuleName'%.strcatNum16Hex(buf, PRINT_BUF_SIZE, i);
+        %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), i);
         %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
         %@Shell@'ModuleName'%.SendStr((unsigned char*)": ", io->stdOut);
       }
       buf[0] = '\0';
-      %@Utility@'ModuleName'%.strcatNum8Hex(buf, PRINT_BUF_SIZE, (uint8_t)print_buf[i]);
+      %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), (uint8_t)print_buf0[i]);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
       %@Shell@'ModuleName'%.SendStr((unsigned char*)" ", io->stdOut);
     }
@@ -3000,7 +3006,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   }
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
-    %@RTOS@'ModuleName'%.vPortFree(print_buf);
+    %@RTOS@'ModuleName'%.vPortFree(print_buf0);
   #endif
 #endif
   if (dres==RES_OK) {

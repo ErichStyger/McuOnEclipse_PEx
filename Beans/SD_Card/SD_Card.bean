@@ -4,7 +4,7 @@
     <Name>SD_Card</Name>
     <Description>SD Card</Description>
     <Author>Erich Styger</Author>
-    <Version>01.178</Version>
+    <Version>01.179</Version>
     <Icon>SD_Card</Icon>
     <TypesFiles>PE,SD_Card\SD_Card</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -43,6 +43,7 @@
         <TypeSpec>typeBlockSize</TypeSpec>
         <Hint>Block size to be used to read/write from/to the device. Only a power of two is allowed. This defines the block size the driver can read in one chunk. If the SD card is used in raw/block mode, then this defines the block size on the device too.</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
