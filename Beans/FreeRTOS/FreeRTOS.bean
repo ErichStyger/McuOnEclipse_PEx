@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.503</Version>
+    <Version>01.504</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -7117,12 +7117,12 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>UBaseType_t</ReturnType>
+        <ReturnType>uint32_t</ReturnType>
         <RetHint>runtime counter value</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>UBaseType_t #M#_#C#(void)</ANSIC>
+          <ANSIC>uint32_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

@@ -204,7 +204,8 @@
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
     #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
   #else /* use dedicated timer */
-    extern UBaseType_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
+    #include <stdint.h>
+    extern uint32_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
     #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
   #endif

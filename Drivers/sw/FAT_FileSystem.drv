@@ -2372,6 +2372,10 @@ uint32_t %'ModuleName'%.%get_fattime(void)
   return 0;
 %endif
 }
+
+uint32_t get_fattime(void) {
+  return %'ModuleName'%.get_fattime();
+}
 #endif /*!_FS_READONLY*/
 
 %if defined(UseTimeDate) & %UseTimeDate='no'

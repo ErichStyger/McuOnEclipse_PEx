@@ -1785,7 +1785,7 @@ void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AppGetRuntimeCounterValueFromISR
 %ifdef AppGetRuntimeCounterValueFromISR
-UBaseType_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
+uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %define! RetVal
 %include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
 
@@ -4451,7 +4451,7 @@ void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void)
 %ifdef AppGetRuntimeCounterValueFromISR
 %define! RetVal
 %include Common\FreeRTOSAppGetRuntimeCounterValueFromISR.Inc
-UBaseType_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
+uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
 {
 #if configGENERATE_RUN_TIME_STATS
   #if configGENERATE_RUN_TIME_STATS_USE_TICKS

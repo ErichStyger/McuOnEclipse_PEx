@@ -721,8 +721,8 @@ void prvTaskExitError(void);
   /* handler to catch task exit errors */
 
 #if !configGENERATE_RUN_TIME_STATS_USE_TICKS
-  void %'ModuleName'%.AppConfigureTimerForRuntimeStats(void);
-  UBaseType_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
+  extern void %'ModuleName'%.AppConfigureTimerForRuntimeStats(void);
+  extern uint32_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
 #endif
 
 #ifdef __cplusplus

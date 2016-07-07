@@ -5,9 +5,9 @@
 #ifndef _DISKIO_DEFINED
 #define _DISKIO_DEFINED
 
-#define _READONLY  _FS_READONLY  /* \todo: remove 1: Remove write functions */
-#define _USE_WRITE	(!_FS_READONLY)	/* 1: Enable disk_write function */
-#define _USE_IOCTL	1	/* 1: Enable disk_ioctl fucntion */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "integer.h"
 
@@ -22,42 +22,40 @@
 #define CT_MMC   (1<<3) /* LDD_SDHC_MMC, MultiMediaCard memory card */
 #define CT_SDC   (1<<4) /* LDD_SDHC_SDCOMBO, Combined Secure Digital memory and IO card */
 #define CT_ATA   (1<<5) /* LDD_SDHC_CE_ATA, Consumer Electronics ATA card */
+/* << EST end */
 
 /* Status of Disk Functions */
-typedef uint8_t  DSTATUS;
+typedef BYTE	DSTATUS;
 
 /* Results of Disk Functions */
 typedef enum {
-  RES_OK = 0,           /* 0: Successful */
-  RES_ERROR,    	/* 1: R/W Error */
-  RES_WRPRT,            /* 2: Write Protected */
-  RES_NOTRDY,           /* 3: Not Ready */
-  RES_PARERR,           /* 4: Invalid Parameter */
-  RES_NOT_ENOUGH_CORE   /* 5: Not enough memory */ /* << EST added */
+	RES_OK = 0,		/* 0: Successful */
+	RES_ERROR,		/* 1: R/W Error */
+	RES_WRPRT,		/* 2: Write Protected */
+	RES_NOTRDY,		/* 3: Not Ready */
+	RES_PARERR		/* 4: Invalid Parameter */
 } DRESULT;
 
 
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
 
-DSTATUS disk_initialize (uint8_t);
-DSTATUS disk_status (uint8_t);
-DRESULT disk_read (uint8_t pdrv, uint8_t* buff, uint32_t sector, unsigned int count);
-#if  _READONLY == 0
-DRESULT disk_write (uint8_t pdrv, const uint8_t* buff, uint32_t sector, unsigned int count);
-#endif
-DRESULT disk_ioctl (uint8_t pdrv, uint8_t cmd, void* buff);
 
+DSTATUS disk_initialize (BYTE pdrv);
+DSTATUS disk_status (BYTE pdrv);
+DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
+DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
+DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 
 
 /* Disk Status Bits (DSTATUS) */
 
-#define STA_NOINIT    0x01  /* Drive not initialized */
-#define STA_NODISK    0x02  /* No medium in the drive */
-#define STA_PROTECT    0x04  /* Write protected */
+#define STA_NOINIT		0x01	/* Drive not initialized */
+#define STA_NODISK		0x02	/* No medium in the drive */
+#define STA_PROTECT		0x04	/* Write protected */
 
 
-/* Command code for disk_ioctrl function */
+/* Command code for disk_ioctrl fucntion */
 
 /* Generic command (Used by FatFs) */
 #define CTRL_SYNC			0	/* Complete pending write process (needed at _FS_READONLY == 0) */
@@ -89,10 +87,19 @@ DRESULT disk_ioctl (uint8_t pdrv, uint8_t cmd, void* buff);
   #define MMC_GET_LLD_CMD_LOW_VOLTAGE    2 /* return 1 byte, 0 for no, 1 for yes */
   #define MMC_GET_LLD_CMD_DATA_WIDTHS    3 /* return 1 byte (bitset), 0x1: 1, 0x2: 4, 0x4: 8 */
   #define MMC_GET_LLD_CMD_OPERATIONS     4 /* return 1 byte (bitset), 0x1: block read, 0x2: block write, 0x4: block erase, 0x8: write protection, 0x10: I/O */
+/* << EST end */
+
+#define ISDIO_READ			55	/* Read data form SD iSDIO register */
+#define ISDIO_WRITE			56	/* Write data to SD iSDIO register */
+#define ISDIO_MRITE			57	/* Masked write data to SD iSDIO register */
 
 /* ATA/CF specific ioctl command */
 #define ATA_GET_REV			20	/* Get F/W revision */
 #define ATA_GET_MODEL		21	/* Get model name */
 #define ATA_GET_SN			22	/* Get serial number */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
