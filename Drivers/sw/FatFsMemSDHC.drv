@@ -474,43 +474,6 @@ uint8_t %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
   SD.SDHCPtr = %@SDHC@'ModuleName'%.Init(&SD);
   SD.Inserted = %'ModuleName'%.%CardPresent();
   SD_Wait(&SD, &Error); /* Wait for card reset to finish */
-  if (!Error && SD.Inserted) {
-    if (%@SDHC@'ModuleName'%.DetectCards(SD.SDHCPtr)!=ERR_OK) {
-      Error = TRUE;
-    }
-    SD_Wait(&SD, &Error);
-    if (!Error && SD.CardId != %@SDHC@'ModuleName'%.NO_CARD) {
-      /* card detected - selecting card... */
-      Error = %@SDHC@'ModuleName'%.SelectCard(SD.SDHCPtr, SD.CardId)!=ERR_OK;
-      SD_Wait(&SD, &Error);
-    }
-    if (!Error) {
-      /* card selected - requesting card info... */
-      Error = %@SDHC@'ModuleName'%.GetCardInfo(SD.SDHCPtr, &SD.CardInfo)!=ERR_OK;
-      SD_Wait(&SD, &Error);
-    }
-    if (!Error) {
-      /* switching gears for higher speed */
-      Error = %@SDHC@'ModuleName'%.SelectBusClock(SD.SDHCPtr, (%@SDHC@'ModuleName'%.TBusClock)%'ModuleName'%.SPEED_INDEX_NORMAL)!=ERR_OK;
-      SD_Wait(&SD, &Error);
-    }
-    if (!Error && SD.CardInfo.Caps.HighSpeed) {
-      Error = %@SDHC@'ModuleName'%.SelectBusClock(SD.SDHCPtr, (%@SDHC@'ModuleName'%.TBusClock)%'ModuleName'%.SPEED_INDEX_FAST)!=ERR_OK;
-      SD_Wait(&SD, &Error);
-      /* running at high speed (high slew rate on all the SDHC pins should be set) */
-    }
-    if (!Error) {
-      if (SD.CardInfo.Caps.DataWidths&LDD_SDHC_CARD_DATA_WIDTH_8_BIT) {
-        Error = %@SDHC@'ModuleName'%.SetDataWidth(SD.SDHCPtr, LDD_SDHC_CARD_DATA_WIDTH_8_BIT)!=ERR_OK;
-      } else if (SD.CardInfo.Caps.DataWidths&LDD_SDHC_CARD_DATA_WIDTH_4_BIT) {
-        Error = %@SDHC@'ModuleName'%.SetDataWidth(SD.SDHCPtr, LDD_SDHC_CARD_DATA_WIDTH_4_BIT)!=ERR_OK;
-      } else if (SD.CardInfo.Caps.DataWidths&LDD_SDHC_CARD_DATA_WIDTH_1_BIT) {
-        Error = %@SDHC@'ModuleName'%.SetDataWidth(SD.SDHCPtr, LDD_SDHC_CARD_DATA_WIDTH_1_BIT)!=ERR_OK;
-      }
-      SD_Wait(&SD, &Error);
-      /* selected highest possible data width */
-    }
-  }
   if (!Error) {
     return ERR_OK;
   } else {
@@ -627,15 +590,14 @@ DSTATUS %'ModuleName'%.disk_initialize (
   if (Stat & STA_NODISK) {
     return Stat;                                                 %>40 /* No card in the socket */
   }
+  if (SD.SDHCPtr!=NULL) { /* deallocate any existing driver structures first */
+    %@SDHC@'ModuleName'%.Deinit(SD.SDHCPtr);
+    SD.SDHCPtr = NULL;
+  }
   if (%'ModuleName'%.%Init(NULL)!=ERR_OK) {
     return STA_NOINIT;
   }
   if (!Error && SD.Inserted) {
-    if (SD.SDHCPtr!=NULL) {
-      %@SDHC@'ModuleName'%.Deinit(SD.SDHCPtr);
-      SD.SDHCPtr = %@SDHC@'ModuleName'%.Init(&SD);
-      SD_Wait(&SD, &Error);
-    }
     if (%@SDHC@'ModuleName'%.DetectCards(SD.SDHCPtr)!=ERR_OK) {
       Error = TRUE;
     }
@@ -657,12 +619,8 @@ DSTATUS %'ModuleName'%.disk_initialize (
     if (!Error) {
       /* switching gears for higher speed */
       Error = %@SDHC@'ModuleName'%.SelectBusClock(SD.SDHCPtr, (%@SDHC@'ModuleName'%.TBusClock)%'ModuleName'%.SPEED_INDEX_NORMAL)!=ERR_OK;
+      %@Wait@'ModuleName'%.WaitOSms(10); /* switching the bus clock needs some time? */
       SD_Wait(&SD, &Error);
-    }
-    if (!Error && SD.CardInfo.Caps.HighSpeed) {
-      Error = %@SDHC@'ModuleName'%.SelectBusClock(SD.SDHCPtr, (%@SDHC@'ModuleName'%.TBusClock)%'ModuleName'%.SPEED_INDEX_FAST)!=ERR_OK;
-      SD_Wait(&SD, &Error);
-      /* running at high speed (high slew rate on all the SDHC pins should be set) */
     }
     if (!Error) {
       if (SD.CardInfo.Caps.DataWidths&LDD_SDHC_CARD_DATA_WIDTH_8_BIT) {
@@ -673,6 +631,12 @@ DSTATUS %'ModuleName'%.disk_initialize (
         Error = %@SDHC@'ModuleName'%.SetDataWidth(SD.SDHCPtr, LDD_SDHC_CARD_DATA_WIDTH_1_BIT)!=ERR_OK;
       }
       SD_Wait(&SD, &Error);
+    }
+    if (!Error && SD.CardInfo.Caps.HighSpeed) {
+      Error = %@SDHC@'ModuleName'%.SelectBusClock(SD.SDHCPtr, (%@SDHC@'ModuleName'%.TBusClock)%'ModuleName'%.SPEED_INDEX_FAST)!=ERR_OK;
+      %@Wait@'ModuleName'%.WaitOSms(10); /* switching the bus clock needs some time? */
+      SD_Wait(&SD, &Error);
+      /* running at high speed (high slew rate on all the SDHC pins should be set) */
     }
   }
   Stat &= ~STA_NOINIT;                                           %>40 /* Clear STA_NOINIT */
