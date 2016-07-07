@@ -7,7 +7,8 @@
 %;**     Description :
 %;**         Prints information about the current disk
 %include Common\GeneralParameters.inc(27)
-%;**         drive%Pardrive %>27 - drive number, starting with zero
+%;**       * drive%Pardrive %>27 - Drive string, can be NULL or e.g.
+%;** %>29 pointing to "0"
 %;**         io%Pario %>27 - Pointer to I/O handler
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code

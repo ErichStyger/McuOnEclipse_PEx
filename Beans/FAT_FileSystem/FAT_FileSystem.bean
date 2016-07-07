@@ -4,7 +4,7 @@
     <Name>FAT_FileSystem</Name>
     <Description>FAT file system module</Description>
     <Author>ChaN, adopted by Erich Styger for Processor Expert</Author>
-    <Version>01.196</Version>
+    <Version>01.197</Version>
     <Icon>FAT_FileSystem</Icon>
     <TypesFiles>PE,FAT_FileSystem\FAT_FileSystem</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -2916,8 +2916,8 @@ The truncate() function truncates the file size to the current file read/write p
         <Parameter>
           <ParName>drive</ParName>
           <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>drive number, starting with zero</ParHint>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Drive string, can be NULL or e.g. pointing to "0"</ParHint>
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
@@ -2928,7 +2928,7 @@ The truncate() function truncates the file size to the current file read/write p
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint8_t drive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *drive, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

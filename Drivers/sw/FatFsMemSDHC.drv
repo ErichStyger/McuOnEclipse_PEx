@@ -192,7 +192,7 @@ bool %'ModuleName'%.%CardPresent(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-byte %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr);
+uint8_t %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr);
 %define! ParUserDataPtr
 %define! RetVal
 %include Common\FatFsMemSDHCInit.Inc
@@ -202,7 +202,7 @@ byte %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
-byte %'ModuleName'%.%Deinit(LDD_TDeviceData *DeviceDataPtr);
+uint8_t %'ModuleName'%.%Deinit(LDD_TDeviceData *DeviceDataPtr);
 %define! ParDeviceDataPtr
 %define! RetVal
 %include Common\FatFsMemSDHCDeinit.Inc
@@ -456,7 +456,7 @@ static void SD_Wait(TSDData *SD, bool *ErrorFlag)
 %else
 /* no user include code provided/enabled */
 %endif
-byte %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
+uint8_t %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
 {
   bool Error = FALSE;
 
@@ -526,7 +526,7 @@ byte %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
 %define! ParDeviceDataPtr
 %define! RetVal
 %include Common\FatFsMemSDHCDeinit.Inc
-byte %'ModuleName'%.%Deinit(LDD_TDeviceData *DeviceDataPtr)
+uint8_t %'ModuleName'%.%Deinit(LDD_TDeviceData *DeviceDataPtr)
 {
   (void)DeviceDataPtr; /* not used */
   /* Deinit components/devices */
@@ -626,6 +626,9 @@ DSTATUS %'ModuleName'%.disk_initialize (
   (void)drv; /* not used */
   if (Stat & STA_NODISK) {
     return Stat;                                                 %>40 /* No card in the socket */
+  }
+  if (%'ModuleName'%.%Init(NULL)!=ERR_OK) {
+    return STA_NOINIT;
   }
   if (!Error && SD.Inserted) {
     if (SD.SDHCPtr!=NULL) {

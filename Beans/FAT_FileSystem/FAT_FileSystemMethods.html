@@ -919,9 +919,9 @@ LI.EXP {
  - Prints information about the current disk
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t PrintDiskInfo(uint8_t drive, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<br /><i>ANSIC prototype:</i> uint8_t PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'%.StdIOType *io)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>drive:uint8_t</i> - drive number, starting with zero</li>
+<li><i>drive: Pointer to uint8_t</i> - Drive string, can be NULL or e.g. pointing to &quot;0&quot;</li>
 <li><i>io:uint8_t</i> - Pointer to I/O handler</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>

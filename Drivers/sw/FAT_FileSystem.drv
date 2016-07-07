@@ -739,7 +739,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PrintDiskInfo
 %ifdef PrintDiskInfo
-uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t drive, const %@Shell@'ModuleName'%.StdIOType *io);
+uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Pardrive
 %define! Pario
 %define! RetVal
@@ -1033,6 +1033,21 @@ static TCHAR %'ModuleName'%.FileName[%'ModuleName'%.MAX_LFN+1];
 #else
   #error Wrong LFN configuration.
 #endif
+
+static uint8_t StrToDriveNumber(uint8_t *drvStr) {
+  uint8_t drv = 0;
+  const unsigned char *p;
+
+  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
+    drv = 0;
+  } else {
+    p = drvStr;
+    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
+      drv = 0; /* error, use default number */
+    }
+  }
+  return drv;
+}
 
 static void FatFsFResultMsg(uint8_t *msg, %'ModuleName'_FRESULT errNo, const %@Shell@'ModuleName'%.StdIOType *io) {
   unsigned char buf[sizeof("1234")];
@@ -2173,17 +2188,9 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
 %if WriteEnabled='no'
   return %'ModuleName'%.FS_READONLY;
 %else
-  uint8_t drv = 0;
-  const unsigned char *p;
+  uint8_t drv;
 
-  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
-    drv = 0;
-  } else {
-    p = drvStr;
-    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
-      return FALSE; /* error */
-    }
-  }
+  drv = StrToDriveNumber(drvStr);
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2206,17 +2213,9 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
 %include Common\FAT_FileSystemisDiskPresent.Inc
 bool %'ModuleName'%.%isDiskPresent(uint8_t *drvStr)
 {
-  uint8_t drv = 0;
-  const unsigned char *p;
+  uint8_t drv;
 
-  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
-    drv = 0;
-  } else {
-    p = drvStr;
-    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
-      return FALSE; /* error */
-    }
-  }
+  drv = StrToDriveNumber(drvStr);
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2516,7 +2515,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %ifdef PrintDiskInfo
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' diskinfo")==0) {
     *handled = TRUE;
-    return %'ModuleName'%.%PrintDiskInfo(0, io);
+    return %'ModuleName'%.%PrintDiskInfo(NULL, io);
 %endif %- PrintDiskInfo
 %ifdef Benchmark
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' benchmark")==0) {
@@ -3114,7 +3113,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
  * \param[in] io IO handler for output
  * \return Error code, ERR_OK for success.
  */
-uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t drive, const %@Shell@'ModuleName'%.StdIOType *io)
+uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   /* see for details:
    * http://www.retroleum.co.uk/electronics-articles/basic-mmc-card-access/
@@ -3126,8 +3125,12 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t drive, const %@Shell@'ModuleName'%
   uint8_t buff[64];
   uint8_t driverVersion; /* 0: SPI, 1: SDHC_LDD */
 
-  if ((disk_initialize(drive)&STA_NOINIT)!=0) {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed\r\n", io->stdErr);
+  if (!%'ModuleName'%.isDiskPresent(drive)) {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk not present!\r\n", io->stdErr);
+    return ERR_FAILED;
+  }
+  if ((disk_initialize(StrToDriveNumber(drive))&STA_NOINIT)!=0) {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed!\r\n", io->stdErr);
     return ERR_FAILED;
   }
   if (disk_ioctl(0, MMC_GET_DRIVER_VERSION, &driverVersion)!=RES_OK) {
