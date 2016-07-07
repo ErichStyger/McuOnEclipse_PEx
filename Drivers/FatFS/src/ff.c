@@ -19,6 +19,17 @@
 #include "ff.h"     /* Declarations of FatFs API */
 #include "diskio.h"   /* Declarations of disk I/O functions */
 
+#ifdef __HIWARE__ /* << EST supress warning for C89 compilers */
+  /* switching off some warnings */
+  #pragma MESSAGE DISABLE C5909 /* assignment in condition */
+  #pragma MESSAGE DISABLE C2705 /* possible loss of data */
+  #pragma MESSAGE DISABLE C4000 /* condition always is false */
+  #pragma MESSAGE DISABLE C4001 /* condition always is true */
+  #pragma MESSAGE DISABLE C5703 /* parameter declared but not used */
+  #pragma MESSAGE DISABLE C5904 /* Division by one */
+  #pragma MESSAGE DISABLE C5905 /* Multiplication with one */
+  #pragma MESSAGE DISABLE C5917 /* Removed dead assignment */
+#endif
 
 /*--------------------------------------------------------------------------
 

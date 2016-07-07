@@ -171,5 +171,24 @@
         <Line>2</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeUseFind</Name>
+      <Items lines_count="3">
+        <Line>Disable (0)</Line>
+        <Line>Enable (1)</Line>
+        <Line>Enable with matching altname[] (2)</Line>
+      </Items>
+      <Hints lines_count="3">
+        <Line>Disabled</Line>
+        <Line>Enabled</Line>
+        <Line>Enable with matching altname[] too</Line>
+      </Hints>
+      <Defines lines_count="3">
+        <Line>0</Line>
+        <Line>1</Line>
+        <Line>2</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>

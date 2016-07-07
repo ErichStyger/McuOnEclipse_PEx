@@ -779,6 +779,69 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
 
 %endif %- CreateFile
 %-BW_METHOD_END CreateFile
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_getlabel
+%ifdef f_getlabel
+#define %'ModuleName'%.%f_getlabel(path, label, vsn) \
+  f_getlabel(path, label, vsn)
+%define! Parpath
+%define! Parlabel
+%define! Parvsn
+%define! RetVal
+%include Common\FAT_FileSystemf_getlabel.Inc
+
+%endif %- f_getlabel
+%-BW_METHOD_END f_getlabel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_setlabel
+%ifdef f_setlabel
+#define %'ModuleName'%.%f_setlabel(label) \
+  f_setlabel(label);
+%define! Parlabel
+%define! RetVal
+%include Common\FAT_FileSystemf_setlabel.Inc
+
+%endif %- f_setlabel
+%-BW_METHOD_END f_setlabel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_expand
+%ifdef f_expand
+#define %'ModuleName'%.%f_expand(fp, fsz, opt) \
+  f_expand(fp, fsz, opt);
+%define! Parfp
+%define! Parfsz
+%define! Paropt
+%define! RetVal
+%include Common\FAT_FileSystemf_expand.Inc
+
+%endif %- f_expand
+%-BW_METHOD_END f_expand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_findfirst
+%ifdef f_findfirst
+#define %'ModuleName'%.%f_findfirst(dp, fno, path, pattern) \
+  f_findfirst(dp, fno, path, pattern)
+%define! Pardp
+%define! Parfno
+%define! Parpath
+%define! Parpattern
+%define! RetVal
+%include Common\FAT_FileSystemf_findfirst.Inc
+
+%endif %- f_findfirst
+%-BW_METHOD_END f_findfirst
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_findnext
+%ifdef f_findnext
+#define %'ModuleName'%.%f_findnext(dp, fno) \
+  f_findnext(dp, fno)
+%define! Pardp
+%define! Parfno
+%define! RetVal
+%include Common\FAT_FileSystemf_findnext.Inc
+
+%endif %- f_findnext
+%-BW_METHOD_END f_findnext
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3345,6 +3408,88 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
 %endif %- Benchmark
 %-BW_METHOD_END Benchmark
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN f_getlabel
+%ifdef f_getlabel
+%define! Parpath
+%define! Parlabel
+%define! Parvsn
+%define! RetVal
+%include Common\FAT_FileSystemf_getlabel.Inc
+/*
+FRESULT %'ModuleName'%.%f_getlabel(const TCHAR* path, TCHAR* label, DWORD* vsn)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_getlabel
+%-BW_METHOD_END f_getlabel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_setlabel
+%ifdef f_setlabel
+%define! Parlabel
+%define! RetVal
+%include Common\FAT_FileSystemf_setlabel.Inc
+/*
+FRESULT %'ModuleName'%.%f_setlabel(const TCHAR* label)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_setlabel
+%-BW_METHOD_END f_setlabel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_expand
+%ifdef f_expand
+%define! Parfp
+%define! Parfsz
+%define! Paropt
+%define! RetVal
+%include Common\FAT_FileSystemf_expand.Inc
+/*
+FRESULT %'ModuleName'%.%f_expand(FIL* fp, FSIZE_t fsz, BYTE opt)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_expand
+%-BW_METHOD_END f_expand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_findfirst
+%ifdef f_findfirst
+%define! Pardp
+%define! Parfno
+%define! Parpath
+%define! Parpattern
+%define! RetVal
+%include Common\FAT_FileSystemf_findfirst.Inc
+/*
+FRESULT %'ModuleName'%.%f_findfirst(DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_findfirst
+%-BW_METHOD_END f_findfirst
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_findnext
+%ifdef f_findnext
+%define! Pardp
+%define! Parfno
+%define! RetVal
+%include Common\FAT_FileSystemf_findnext.Inc
+/*
+FRESULT %'ModuleName'%.%f_findnext(DIR* dp, FILINFO* fno)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_findnext
+%-BW_METHOD_END f_findnext
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

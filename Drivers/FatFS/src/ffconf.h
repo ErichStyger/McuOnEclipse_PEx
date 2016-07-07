@@ -10,9 +10,9 @@
 /---------------------------------------------------------------------------*/
 
 %if %WriteEnabled='yes'
-#define _FS_READONLY        0
+#define _FS_READONLY	0
 %else
-#define _FS_READONLY        1
+#define _FS_READONLY	1
 %endif
 /* This option switches read-only configuration. (0:Read/Write or 1:Read-only)
 /  Read-only configuration removes writing API functions, f_write(), f_sync(),
@@ -20,7 +20,7 @@
 /  and optional writing functions as well. */
 
 
-#define _FS_MINIMIZE	%FS_MINIMIZE	/* 0 to 3 */
+#define _FS_MINIMIZE	%FS_MINIMIZE
 /* This option defines minimization level to remove some basic API functions.
 /
 /   0: All basic functions are enabled.
@@ -38,15 +38,15 @@
 /  1: Enable without LF-CRLF conversion.
 /  2: Enable with LF-CRLF conversion. */
 
-#define _USE_FIND		0
+#define _USE_FIND		%useFind
 /* This option switches filtered directory read functions, f_findfirst() and
 /  f_findnext(). (0:Disable, 1:Enable 2:Enable with matching altname[] too) */
 
 
 %if defined(mkfs)
-#define	_USE_MKFS	1
+#define	_USE_MKFS		1
 %else
-#define	_USE_MKFS	0
+#define	_USE_MKFS		0
 %endif
 /* This option switches f_mkfs() function. (0:Disable or 1:Enable) */
 
@@ -58,15 +58,15 @@
 %endif
 /* This option switches fast seek function. (0:Disable or 1:Enable) */
 
-#define	_USE_EXPAND		0
+#define	_USE_EXPAND		1
 /* This option switches f_expand function. (0:Disable or 1:Enable) */
 
 
-#define _USE_CHMOD		0
+#define _USE_CHMOD		1
 /* This option switches attribute manipulation functions, f_chmod() and f_utime().
 /  (0:Disable or 1:Enable) Also _FS_READONLY needs to be 0 to enable this option. */
 
-#define _USE_LABEL		0
+#define _USE_LABEL		1
 /* This option switches volume label functions, f_getlabel() and f_setlabel().
 /  (0:Disable or 1:Enable) */
 
@@ -129,17 +129,17 @@
 /  memory for the working buffer, memory management functions, ff_memalloc() and
 /  ff_memfree(), must be added to the project. */
 
-#define	_LFN_UNICODE	0
-/* This option switches character encoding on the API. (0:ANSI/OEM or 1:Unicode)
-/  To use Unicode string for the path name, enable LFN and set _LFN_UNICODE = 1.
-/  This option also affects behavior of string I/O functions. */
-
 
 %if LFNUnicode='yes'
 #define	_LFN_UNICODE	1
 %else
 #define	_LFN_UNICODE	0
 %endif
+/* This option switches character encoding on the API. (0:ANSI/OEM or 1:Unicode)
+/  To use Unicode string for the path name, enable LFN and set _LFN_UNICODE = 1.
+/  This option also affects behavior of string I/O functions. */
+
+
 #define _STRF_ENCODE	3
 /* When _LFN_UNICODE == 1, this option selects the character encoding on the file to
 /  be read/written via string I/O functions, f_gets(), f_putc(), f_puts and f_printf().
@@ -165,7 +165,7 @@
 / Drive/Volume Configurations
 /---------------------------------------------------------------------------*/
 
-#define _VOLUMES	       %Volumes
+#define _VOLUMES	%Volumes
 /* Number of volumes (logical drives) to be used. */
 
 #define _STR_VOLUME_ID	0
@@ -178,9 +178,9 @@
 
 
 %if MultiPartitionEnabled='yes'
-#define _MULTI_PARTITION        1
+#define	_MULTI_PARTITION	1
 %else
-#define _MULTI_PARTITION        0
+#define	_MULTI_PARTITION	0
 %endif
 /* This option switches support of multi-partition on a physical drive.
 /  By default (0), each logical drive number is bound to the same physical drive
@@ -205,6 +205,7 @@
 /  To enable Trim function, also CTRL_TRIM command should be implemented to the
 /  disk_ioctl() function. */
 
+
 #define _FS_NOFSINFO	0
 /* If you need to know correct free space on the FAT32 volume, set bit 0 of this
 /  option, and f_getfree() function at first time after volume mount will force
@@ -215,13 +216,6 @@
 /  bit1=0: Use last allocated cluster number in the FSINFO if available.
 /  bit1=1: Do not trust last allocated cluster number in the FSINFO.
 */
-
-%if UseErase='yes'
-#define	_USE_ERASE	0	/* 0:Disable or 1:Enable */
-%else
-#define	_USE_ERASE	0	/* 0:Disable or 1:Enable */
-%endif
-/* To enable sector erase feature, set _USE_ERASE to 1. */
 
 
 
@@ -239,8 +233,11 @@
 /  Instead of private sector buffer eliminated from the file object, common sector
 /  buffer in the file system object (FATFS) is used for the file data transfer. */
 
-
-#define _FS_EXFAT 0
+%if defined(exFATenabled) & %exFATenabled='yes'
+#define _FS_EXFAT	1
+%else
+#define _FS_EXFAT	0
+%endif
 /* This option switches support of exFAT file system in addition to the traditional
 /  FAT file system. (0:Disable or 1:Enable) To enable exFAT, also LFN must be enabled.
 /  Note that enabling exFAT discards C89 compatibility. */
@@ -258,10 +255,6 @@
 /  _NORTC_MDAY and _NORTC_YEAR have no effect. 
 /  These options have no effect at read-only configuration (_FS_READONLY = 1). */
 
-
-#define	_FS_SHARE	%FsShare	/*! \todo Remove  */
-/* To enable file sharing feature, set _FS_SHARE to 1 or greater. The value
-   defines how many files can be opened simultaneously. */
 
 #define	_FS_LOCK	%FsShare
 /* The option _FS_LOCK switches file lock function to control duplicated file open
@@ -304,29 +297,6 @@
 /  SemaphoreHandle_t and etc.. A header file for O/S definitions needs to be
 /  included somewhere in the scope of ff.c. */
 
-
-#define _WORD_ACCESS	0
-/* The _WORD_ACCESS option is an only platform dependent option. It defines
-/  which access method is used to the word data on the FAT volume.
-/
-/   0: Byte-by-byte access. Always compatible with all platforms.
-/   1: Word access. Do not choose this unless under both the following conditions.
-/
-/  * Address misaligned memory access is always allowed to ALL instructions.
-/  * Byte order on the memory is little-endian.
-/
-/  If it is the case, _WORD_ACCESS can also be set to 1 to reduce code size.
-/  Following table shows allowable settings of some processor types.
-/
-/   ARM7TDMI    0           ColdFire    0           V850E       0
-/   Cortex-M3   0           Z80         0/1         V850ES      0/1
-/   Cortex-M0   0           x86         0/1         TLCS-870    0/1
-/   AVR         0/1         RX600(LE)   0/1         TLCS-900    0/1
-/   AVR32       0           RL78        0           R32C        0
-/   PIC18       0/1         SH-2        0           M16C        0/1
-/   PIC24       0           H8S         0           MSP430      0
-/   PIC32       0           H8/300H     0           8051        0/1
-*/
 
 /*--- End of configuration options ---*/
 

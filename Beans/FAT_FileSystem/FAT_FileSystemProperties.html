@@ -306,7 +306,7 @@ There are 26 options:<br />
 </li>
 <li>
 <a name="FsShare">
-<b>File Sharing</b></a> - Enables the file sharing feature if value is greater than zero. The value defines how many files can be open simultaneously. This option sets _FS_SHARE.
+<b>File Sharing</b></a> - Enables the file sharing feature (_FS_LOCK) if value is greater than zero. The value defines how many files can be open simultaneously.
 </li>
 <li>
 <a name="MultiPartitionEnabled">
@@ -317,8 +317,15 @@ There are 26 options:<br />
 <b>Fast Seek</b></a> - Enable or disable the fast seek feature. This option sets the _USE_FASTSEEK define.
 </li>
 <li>
-<a name="UseErase">
-<b>Use Erase</b></a> - To enable sector erase feature, set _USE_ERASE to 1.
+<a name="useFind">
+<b>Use Find</b></a> - Enables f_findfirst() and f_findnext() (_USE_FIND)<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>Disable (0)</u>: Disabled</li>
+  <li><u>Enable (1)</u>: Enabled</li>
+  <li><u>Enable with matching altname[] (2)</u>: Enable with matching altname[] too</li>
+</ul><br />
+
 </li>
 <li>
 <a name="UseStringFunctions">
@@ -346,6 +353,10 @@ There are 4 options:<br />
   <li><u>Enable, dynamic heap buffer</u>: Enable LFN with dynamic working buffer on the HEAP.</li>
 </ul><br />
 
+  </li>
+  <li>
+  <a name="exFATenabled">
+  <b>exFAT</b></a> - This option switches support of exFAT file system in addition to the traditional FAT file system. To enable exFAT, also LFN must be enabled. Note that enabling exFAT discards C89 compatibility.
   </li>
   <li>
   <a name="MaxLFN">

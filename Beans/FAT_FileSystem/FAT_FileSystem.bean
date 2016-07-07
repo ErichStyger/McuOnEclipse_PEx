@@ -4,7 +4,7 @@
     <Name>FAT_FileSystem</Name>
     <Description>FAT file system module</Description>
     <Author>ChaN, adopted by Erich Styger for Processor Expert</Author>
-    <Version>01.188</Version>
+    <Version>01.196</Version>
     <Icon>FAT_FileSystem</Icon>
     <TypesFiles>PE,FAT_FileSystem\FAT_FileSystem</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -180,7 +180,7 @@
       <TIntgItem>
         <Name>File Sharing</Name>
         <Symbol>FsShare</Symbol>
-        <Hint>Enables the file sharing feature if value is greater than zero. The value defines how many files can be open simultaneously. This option sets _FS_SHARE.</Hint>
+        <Hint>Enables the file sharing feature (_FS_LOCK) if value is greater than zero. The value defines how many files can be open simultaneously.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>0</DefaultValue>
@@ -230,22 +230,20 @@
       </TBoolItem>
     </Property>
     <Property>
-      <TBoolItem>
-        <Name>Use Erase</Name>
-        <Symbol>UseErase</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>To enable sector erase feature, set _USE_ERASE to 1.</Hint>
+      <TEnumItem>
+        <Name>Use Find</Name>
+        <Symbol>useFind</Symbol>
+        <TypeSpec>typeUseFind</TypeSpec>
+        <Hint>Enables f_findfirst() and f_findnext() (_USE_FIND)</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
+        <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
+      </TEnumItem>
     </Property>
     <Property>
       <TEnumItem>
@@ -289,6 +287,24 @@
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
             </TEnumItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>exFAT</Name>
+              <Symbol>exFATenabled</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This option switches support of exFAT file system in addition to the traditional FAT file system. To enable exFAT, also LFN must be enabled. Note that enabling exFAT discards C89 compatibility.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>
@@ -1990,10 +2006,10 @@ The truncate() function truncates the file size to the current file read/write p
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
+        <Name>f_getlabel</Name>
+        <Symbol>f_getlabel</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes the device driver.</Hint>
+        <Hint>Get volume label</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -2007,21 +2023,42 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
+        <ReturnType>FRESULT</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>path</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to path name of the logical drive number</ParHint>
+          <ParUserDeclaration>const TCHAR* path</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>label</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to a buffer to return the volume label</ParHint>
+          <ParUserDeclaration>TCHAR* label</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>vsn</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>DWORD* vsn</ParUserDeclaration>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+          <ANSIC>FRESULT #M#_#C#(const TCHAR* path, TCHAR* label, DWORD* vsn)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Deinit</Name>
-        <Symbol>Deinit</Symbol>
+        <Name>f_setlabel</Name>
+        <Symbol>f_setlabel</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Deinitializes the driver.</Hint>
+        <Hint>Set Volume Label </Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -2035,12 +2072,166 @@ The truncate() function truncates the file size to the current file read/write p
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
+        <ReturnType>FRESULT</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>label</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the volume label to set</ParHint>
+          <ParUserDeclaration>const TCHAR* label</ParUserDeclaration>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+          <ANSIC>FRESULT #M#_#C#(const TCHAR* label)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>f_expand</Name>
+        <Symbol>f_expand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Allocate a Contiguous Blocks to the File</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>FRESULT</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>fp</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the file object</ParHint>
+          <ParUserDeclaration>FIL* fp</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>fsz</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>File size to be expanded to</ParHint>
+          <ParUserDeclaration>FSIZE_t fsz</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>opt</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Operation mode 0:Find and prepare or 1:Find and allocate</ParHint>
+          <ParUserDeclaration>BYTE opt</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>FRESULT #M#_#C#(FIL* fp, FSIZE_t fsz, BYTE opt)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>f_findfirst</Name>
+        <Symbol>f_findfirst</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Find FirstFile</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>FRESULT</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>dp</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the open directory object</ParHint>
+          <ParUserDeclaration>DIR* dp</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>fno</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the file information structure</ParHint>
+          <ParUserDeclaration>FILINFO* fno</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>path</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the directory to open</ParHint>
+          <ParUserDeclaration>const TCHAR* path</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pattern</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the matching pattern</ParHint>
+          <ParUserDeclaration>const TCHAR* pattern</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>FRESULT #M#_#C#(DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>f_findnext</Name>
+        <Symbol>f_findnext</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Find Next File</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>FRESULT</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>dp</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the open directory object</ParHint>
+          <ParUserDeclaration>DIR* dp</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>fno</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the file information structure</ParHint>
+          <ParUserDeclaration>FILINFO* fno</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>FRESULT #M#_#C#(DIR* dp, FILINFO* fno)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2662,12 +2853,12 @@ The truncate() function truncates the file size to the current file read/write p
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -2709,12 +2900,12 @@ The truncate() function truncates the file size to the current file read/write p
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -2750,12 +2941,12 @@ The truncate() function truncates the file size to the current file read/write p
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -2773,6 +2964,62 @@ The truncate() function truncates the file size to the current file read/write p
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Deinitializes the driver.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the device driver.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
