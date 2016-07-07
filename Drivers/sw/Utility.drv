@@ -2709,7 +2709,7 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
   int i;
   bool isNeg;
 
-  isNeg = val<0;
+  isNeg = (bool)(val<0);
   if (isNeg) {
     val = -val; /* make it positive */
   }
@@ -2722,9 +2722,9 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
   fractional = (uint32_t)(val*shift); /* get fractional part */
   if (isNeg && fractional>0 && nofFracDigits>0) {
     %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
-    %'ModuleName'%.%strcatNum32s(dst, dstSize, integral);
+    %'ModuleName'%.%strcatNum32s(dst, dstSize, (int32_t)integral);
   } else {
-    %'ModuleName'%.%Num32sToStr(dst, dstSize, integral);
+    %'ModuleName'%.%Num32sToStr(dst, dstSize, (int32_t)integral);
   }
   if (nofFracDigits>0) {
     %'ModuleName'%.%chcat(dst, dstSize, '.');
