@@ -603,7 +603,7 @@ WORD ld_word (const BYTE* ptr)  /*   Load a 2-byte little-endian word */
   WORD rv;
 
   rv = ptr[1];
-  rv = rv << 8 | ptr[0];
+  rv = (WORD)(rv << 8 | ptr[0]);
   return rv;
 }
 
@@ -2840,7 +2840,7 @@ int get_ldnumber (    /* Returns logical drive number (-1:invalid drive) */
     for (tt = *path; (UINT)*tt >= (_USE_LFN ? ' ' : '!') && *tt != ':'; tt++) ; /* Find ':' in the path */
     if (*tt == ':') { /* If a ':' is exist in the path name */
       tp = *path;
-      i = *tp++ - '0';
+      i = (UINT)(*tp++ - '0');
       if (i < 10 && tp == tt) { /* Is there a numeric drive id? */
         if (i < _VOLUMES) { /* If a drive id is found, get the value and strip it */
           vol = (int)i;
@@ -4933,7 +4933,7 @@ FRESULT f_setlabel (
 #else
         w = (BYTE)label[i++];
         if (IsDBCS1(w)) {
-          w = (j < 10 && i < slen && IsDBCS2(label[i])) ? w << 8 | (BYTE)label[i++] : 0;
+          w = (WCHAR)((j < 10 && i < slen && IsDBCS2(label[i])) ? w << 8 | (BYTE)label[i++] : 0);
         }
 #if _USE_LFN != 0
         w = ff_convert(ff_wtoupper(ff_convert(w, 1)), 0);
@@ -4964,7 +4964,7 @@ FRESULT f_setlabel (
     res = dir_read(&dj, 1); /* Get volume label entry */
     if (res == FR_OK) {
       if (_FS_EXFAT && fs->fs_type == FS_EXFAT) {
-        dj.dir[XDIR_NumLabel] = slen / 2; /* Change the volume label */
+        dj.dir[XDIR_NumLabel] = (BYTE)(slen / 2); /* Change the volume label */
         mem_cpy(dj.dir + XDIR_Label, dirvn, slen);
       } else {
         if (slen) {
@@ -4984,7 +4984,7 @@ FRESULT f_setlabel (
             mem_set(dj.dir, 0, SZDIRE); /* Clear the entry */
             if (_FS_EXFAT && fs->fs_type == FS_EXFAT) {
               dj.dir[XDIR_Type] = 0x83;   /* Create 83 entry */
-              dj.dir[XDIR_NumLabel] = slen / 2;
+              dj.dir[XDIR_NumLabel] = (BYTE)(slen / 2);
               mem_cpy(dj.dir + XDIR_Label, dirvn, slen);
             } else {
               dj.dir[DIR_Attr] = AM_VOL;    /* Create volume label entry */

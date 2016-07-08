@@ -891,7 +891,7 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
            *buf = '\0';
            bufSize++;
         }
-      } else if (%'ModuleName'%.%IsHistoryCharacter(c, bufStart, buf-bufStart, &isBackwardHistory)) {
+      } else if (%'ModuleName'%.%IsHistoryCharacter(c, bufStart, (size_t)(buf-bufStart), &isBackwardHistory)) {
 #if %'ModuleName'%.HISTORY_ENABLED
         uint8_t cBuf[3]={'\0','\0','\0'}, cBufIdx = 0;
         bool prevInHistory;
