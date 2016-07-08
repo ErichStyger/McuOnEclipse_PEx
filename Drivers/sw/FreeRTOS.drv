@@ -2116,9 +2116,9 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       /* (baseprio,currprio) */
       tmpBuf[0] = '\0';
       %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), '(');
-      %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), taskStatus.uxBasePriority);
+      %@Utility@'ModuleName'%.strcatNum32u(tmpBuf, sizeof(tmpBuf), taskStatus.uxBasePriority);
       %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ',');
-      %@Utility@'ModuleName'%.strcatNum32s(tmpBuf, sizeof(tmpBuf), taskStatus.uxCurrentPriority);
+      %@Utility@'ModuleName'%.strcatNum32u(tmpBuf, sizeof(tmpBuf), taskStatus.uxCurrentPriority);
       %@Utility@'ModuleName'%.chcat(tmpBuf, sizeof(tmpBuf), ')');
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcatPad(buf, sizeof(buf), tmpBuf, ' ', PAD_STAT_TASK_PRIO);
