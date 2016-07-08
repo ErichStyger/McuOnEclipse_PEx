@@ -900,6 +900,21 @@ void %OnCreateSyncObject(void *sobj);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+/*-----------------------------------------------------------------------*/
+static uint8_t StrToDriveNumber(uint8_t *drvStr) {
+  uint8_t drv = 0;
+  const unsigned char *p;
+
+  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
+    drv = 0;
+  } else {
+    p = drvStr;
+    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
+      drv = 0; /* error, use default number */
+    }
+  }
+  return drv;
+}
 %- -------------------------------------------------------------------------------------------
 %:maxDrive=%DriveSymbolNumItems
 %:maxDrive-=1
@@ -1033,21 +1048,6 @@ static TCHAR %'ModuleName'%.FileName[%'ModuleName'%.MAX_LFN+1];
 #else
   #error Wrong LFN configuration.
 #endif
-
-static uint8_t StrToDriveNumber(uint8_t *drvStr) {
-  uint8_t drv = 0;
-  const unsigned char *p;
-
-  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
-    drv = 0;
-  } else {
-    p = drvStr;
-    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
-      drv = 0; /* error, use default number */
-    }
-  }
-  return drv;
-}
 
 static void FatFsFResultMsg(uint8_t *msg, %'ModuleName'_FRESULT errNo, const %@Shell@'ModuleName'%.StdIOType *io) {
   unsigned char buf[sizeof("1234")];
