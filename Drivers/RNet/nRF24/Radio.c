@@ -161,6 +161,9 @@ static uint8_t CheckTx(void) {
 
 /* called to check if we have something in the RX queue. If so, we queue it */
 static uint8_t CheckRx(void) {
+#if NRF24_DYNAMIC_PAYLOAD
+    uint8_t payloadSize;
+#endif
   uint8_t res = ERR_OK;
   uint8_t RxDataBuffer[RPHY_BUFFER_SIZE];
   uint8_t status;
@@ -191,8 +194,6 @@ static uint8_t CheckRx(void) {
   if (hasRx) { /* data received interrupt */
     hasRxData = TRUE;
 #if NRF24_DYNAMIC_PAYLOAD
-    uint8_t payloadSize;
-    
     (void)%@nRF24L01p@'ModuleName'%.ReadNofRxPayload(&payloadSize);
     if (payloadSize>32) { /* packet with error? */
       %@nRF24L01p@'ModuleName'%.Write(%@nRF24L01p@'ModuleName'%.FLUSH_RX); /* flush old data */
