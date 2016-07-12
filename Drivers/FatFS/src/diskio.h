@@ -33,7 +33,8 @@ typedef enum {
 	RES_ERROR,		/* 1: R/W Error */
 	RES_WRPRT,		/* 2: Write Protected */
 	RES_NOTRDY,		/* 3: Not Ready */
-	RES_PARERR		/* 4: Invalid Parameter */
+	RES_PARERR,		/* 4: Invalid Parameter */
+	RES_NOT_ENOUGH_CORE /* 5: not enough memory */ /* << EST: needed for FatFsMem_USB_MSD */
 } DRESULT;
 
 

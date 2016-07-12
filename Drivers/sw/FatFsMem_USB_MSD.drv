@@ -94,6 +94,8 @@
 /* interface for FatFS low level disk functions */
 #include "diskio.h"
 
+#define %'ModuleName'%.BLOCK_SIZE   512                          %>40 /* block size */
+
 DSTATUS %'ModuleName'%.disk_initialize (
         uint8_t drv                                              %>40 /* Physical drive number (0..) */
 );

@@ -122,6 +122,7 @@ typedef unsigned char  boolean;                                   /* Machine rep
 
 typedef void _PTR_     pointer;                                   /* Machine representation of a pointer */
 
+#if 0 /* << EST: these types conflict with FatFS own types, and are not used anyway */
 typedef union _BYTE                                               /* definition of 8 bit word */
 {
     uint_8 _byte;
@@ -182,6 +183,7 @@ typedef union _DWORD                                              /* definition 
         WORD Word0;
     }_Word;
 } DWORD;
+#endif
 
 #endif
 /* EOF */
