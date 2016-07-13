@@ -102,6 +102,7 @@
 %-    typedef int TMyInteger;
 %if (%useRTOScritical='yes')
 #include "FreeRTOS.h"
+#include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
 
 %endif
 /* workaround macros for wrong EnterCritical()/ExitCritical() in the low level drivers. Will be removed once PEx is fixed */
