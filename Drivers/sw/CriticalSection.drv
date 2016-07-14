@@ -105,7 +105,7 @@
 #include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
 
 %endif
-/* workaround macros for wrong EnterCritical()/ExitCritical() in the low level drivers. Will be removed once PEx is fixed */
+/* workaround macros for wrong EnterCritical()/ExitCritical() in the low level drivers. */
 #define %'ModuleName'%.CriticalVariableDrv() \
   %'ModuleName'%.%CriticalVariable()
 #define %'ModuleName'%.EnterCriticalDrv() \
@@ -137,7 +137,7 @@
 %ifdef EnterCritical
 #define %'ModuleName'%.%EnterCritical() \
 %if (%useRTOScritical='yes')
-  taskENTER_CRITICAL()
+  taskENTER_CRITICAL_FROM_ISR() /* FreeRTOS critical section inside interrupt */
 %elif (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
   do {                                  \
     /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
@@ -162,7 +162,7 @@
 %ifdef ExitCritical
 #define %'ModuleName'%.%ExitCritical() \
 %if (%useRTOScritical='yes')
-  taskEXIT_CRITICAL()
+  taskEXIT_CRITICAL_FROM_ISR(0) /* FreeRTOS critical section inside interrupt */
 %elif (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
   do{                                  \
     __asm (                            \
