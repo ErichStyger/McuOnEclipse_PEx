@@ -76,6 +76,7 @@ extern "C" {
 #endif
 
 #include "FreeRTOSConfig.h"
+#include "projdefs.h" /* for pdFALSE, pdTRUE */
 #if configGENERATE_STATIC_SOURCES || configPEX_KINETIS_SDK
   #include <stdint.h>
 #else
@@ -421,7 +422,7 @@ extern void vPortYieldFromISR(void);
 
 	/*-----------------------------------------------------------*/
 
-	#define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31 - ucPortCountLeadingZeros( ( uxReadyPriorities ) ) )
+  #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31UL - ( uint32_t ) ucPortCountLeadingZeros( ( uxReadyPriorities ) ) )
 
 #endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
 
@@ -711,10 +712,86 @@ void vPortYieldHandler(void);
   void vPortPendSVHandler(void); /* PendSV interrupt handler */
   void vPortTickHandler(void); /* Systick interrupt handler */
 #endif
-%endif
+
+#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)
+#define portINLINE  __inline
+
+#ifndef portFORCE_INLINE
+  #define portFORCE_INLINE inline __attribute__(( always_inline))
+#endif
+
+portFORCE_INLINE static BaseType_t xPortIsInsideInterrupt( void )
+{
+  uint32_t ulCurrentInterrupt;
+  BaseType_t xReturn;
+
+  /* Obtain the number of the currently executing interrupt. */
+  __asm volatile( "mrs %%0, ipsr" : "=r"( ulCurrentInterrupt ) );
+
+  if( ulCurrentInterrupt == 0 )
+  {
+    xReturn = pdFALSE;
+  }
+  else
+  {
+    xReturn = pdTRUE;
+  }
+
+  return xReturn;
+}
+
+/*-----------------------------------------------------------*/
+
+portFORCE_INLINE static void vPortRaiseBASEPRI( void )
+{
+uint32_t ulNewBASEPRI;
+
+  __asm volatile
+  (
+    " mov %%0, %%1                        \n" \
+    " msr basepri, %%0                     \n" \
+    " isb                           \n" \
+    " dsb                           \n" \
+    :"=r" (ulNewBASEPRI) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
+  );
+}
+
+/*-----------------------------------------------------------*/
+
+portFORCE_INLINE static uint32_t ulPortRaiseBASEPRI( void )
+{
+uint32_t ulOriginalBASEPRI, ulNewBASEPRI;
+
+  __asm volatile
+  (
+    " mrs %%0, basepri                     \n" \
+    " mov %%1, %%2                        \n" \
+    " msr basepri, %1                     \n" \
+    " isb                           \n" \
+    " dsb                           \n" \
+    :"=r" (ulOriginalBASEPRI), "=r" (ulNewBASEPRI) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
+  );
+
+  /* This return will not be reached but is necessary to prevent compiler
+  warnings. */
+  return ulOriginalBASEPRI;
+}
+/*-----------------------------------------------------------*/
+
+portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
+{
+  __asm volatile
+  (
+    " msr basepri, %%0 " :: "r" ( ulNewMaskValue )
+  );
+}
+/*-----------------------------------------------------------*/
+
+#endif
+%endif %- Kinetis
 
 #if configUSE_TICKLESS_IDLE_DECISION_HOOK /* << EST */
-BaseType_t configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME(void); /* return pdTRUE if RTOS can enter tickless idle mode, pdFALSE otherwise */
+  BaseType_t configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME(void); /* return pdTRUE if RTOS can enter tickless idle mode, pdFALSE otherwise */
 #endif
 
 void prvTaskExitError(void);

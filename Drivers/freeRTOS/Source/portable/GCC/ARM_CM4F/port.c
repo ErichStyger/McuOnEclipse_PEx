@@ -71,8 +71,8 @@
  * FreeRTOS for 56800EX port by Richy Ye in Jan. 2013.
  *----------------------------------------------------------*/
 /* Scheduler includes. */
-#include "portmacro.h" /* for configCPU_FAMILY */
 #include "FreeRTOS.h"
+#include "portmacro.h" /* for configCPU_FAMILY */
 #include "task.h"
 #include "portTicks.h" /* for CPU_CORE_CLK_HZ used in configSYSTICK_CLOCK_HZ */
 #ifndef __HIWARE__ /* S08/S12 compiler only supports C89 */
