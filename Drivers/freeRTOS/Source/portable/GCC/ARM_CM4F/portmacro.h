@@ -233,7 +233,7 @@ extern void vPortExitCritical(void);
 #define portENTER_CRITICAL()                 vPortEnterCritical()
 #define portEXIT_CRITICAL()                  vPortExitCritical()
 %elif (CPUfamily = "Kinetis")
-#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
   #if (configCOMPILER==configCOMPILER_ARM_KEIL)
     __asm uint32_t ulPortSetInterruptMask(void);
     __asm void vPortClearInterruptMask(uint32_t ulNewMask);
@@ -429,7 +429,7 @@ extern void vPortYieldFromISR(void);
 /*-----------------------------------------------------------*/
 
 #ifdef configASSERT
-#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) /* ARM M4(F) core */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* ARM M4/M7(F) core */
   void vPortValidateInterruptPriority( void );
   #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID() 	vPortValidateInterruptPriority()
 #else
@@ -695,7 +695,7 @@ void vPortStartFirstTask(void);
 void vPortYieldHandler(void);
   /* handler for the SWI interrupt */
 
-#if configCPU_FAMILY==configCPU_FAMILY_ARM_M4F /* floating point unit */
+#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
   void vPortEnableVFP(void);
     /* enables floating point support in the CPU */
 #endif
@@ -713,7 +713,7 @@ void vPortYieldHandler(void);
   void vPortTickHandler(void); /* Systick interrupt handler */
 #endif
 
-#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)
 #define portINLINE  __inline
 
 #ifndef portFORCE_INLINE
