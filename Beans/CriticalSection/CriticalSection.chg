@@ -1,0 +1,3 @@
+%if %UseProcessorExpertDefault='yes' & %useRTOScritical='yes'
+  %error Both 'Use Processor Expert Default' and 'Use FreeRTOS' critical section are enabled: enable only one, not both!
+%endif
