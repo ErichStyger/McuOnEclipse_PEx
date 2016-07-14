@@ -188,7 +188,6 @@ static volatile uint8_t %'ModuleName'%.PosHistory_Index = 0;
 %include Common\TachoGetSpeed.Inc
 int16_t %'ModuleName'%.%GetSpeed(void)
 {
-  %@CriticalSection@'ModuleName'%.CriticalVariable();
 %if %RPMenabled = 'yes'
   /* we calculate the speed as follow:
                            1000                  1
@@ -201,6 +200,7 @@ int16_t %'ModuleName'%.%GetSpeed(void)
 %if %AbsoluteSpeed = 'no'
   bool neg;
 %endif
+  %@CriticalSection@'ModuleName'%.CriticalVariable();
 
   %@CriticalSection@'ModuleName'%.EnterCritical();
   curr = (int16_t)%'ModuleName'%.PosHistory[%'ModuleName'%.PosHistory_Index];
