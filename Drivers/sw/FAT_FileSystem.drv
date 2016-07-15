@@ -2473,42 +2473,42 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     return DirCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintDirectory
 %ifdef CopyFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' copy", sizeof("%'ModuleName' copy")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' copy ", sizeof("%'ModuleName' copy ")-1)==0) {
     *handled = TRUE;
     return CopyCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- CopyFile
 %ifdef DeleteFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' delete", sizeof("%'ModuleName' delete")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' delete ", sizeof("%'ModuleName' delete ")-1)==0) {
     *handled = TRUE;
     return DeleteCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- DeleteFile
 %ifdef CreateFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' create", sizeof("%'ModuleName' create")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' create ", sizeof("%'ModuleName' create ")-1)==0) {
     *handled = TRUE;
     return CreateCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- CreateFile
 %ifdef MakeDirectory
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' mkdir", sizeof("%'ModuleName' mkdir")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' mkdir ", sizeof("%'ModuleName' mkdir ")-1)==0) {
     *handled = TRUE;
     return MkdirCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- MakeDirectory
 %ifdef RenameFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' rename", sizeof("%'ModuleName' rename")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' rename ", sizeof("%'ModuleName' rename ")-1)==0) {
     *handled = TRUE;
     return RenameCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- RenameFile
 %ifdef PrintHexFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printhex", sizeof("%'ModuleName' printhex")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printhex ", sizeof("%'ModuleName' printhex ")-1)==0) {
     *handled = TRUE;
     return PrintHexCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintHexFile
 %ifdef PrintSector
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printsector", sizeof("%'ModuleName' printsector")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' printsector ", sizeof("%'ModuleName' printsector ")-1)==0) {
     *handled = TRUE;
     return SectorCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintSector
 %ifdef PrintFile
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' print", sizeof("%'ModuleName' print")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' print ", sizeof("%'ModuleName' print ")-1)==0) {
     *handled = TRUE;
     return PrintCmd(cmd+sizeof("%'ModuleName'"), io);
 %endif %- PrintFile
