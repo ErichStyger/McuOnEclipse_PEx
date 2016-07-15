@@ -5,10 +5,10 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (CheckRx)
 %;**     Description :
-%;**         Needs to be called after interrupt received from the
-%;**         transceiver to check the state and to create the events.
+%;**         Checks for a received data packet
 %include Common\GeneralParameters.inc(27)
-%;**         sRxPacket%ParsRxPacket %>27 - 
+%;**       * sRxPacket%ParsRxPacket %>27 - Pointer to where to store the
+%;** %>29 data
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

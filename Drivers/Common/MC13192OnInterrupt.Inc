@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnInterrupt)
 %;**     Description :
-%;**         Event raised in case of transceiver interrupt.
+%;**         Event called in case of a transceiver interrupt
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================

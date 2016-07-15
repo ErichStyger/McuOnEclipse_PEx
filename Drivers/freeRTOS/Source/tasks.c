@@ -2510,7 +2510,7 @@ implementations require configUSE_TICKLESS_IDLE to be set to a value other than
 				mtCOVERAGE_TEST_MARKER();
 			}
 		}
-		xTaskResumeAll();
+		(void)xTaskResumeAll();
 
 		return xReturn;
 	}
@@ -3476,7 +3476,7 @@ static void prvCheckTasksWaitingTermination( void )
 						pxTaskStatus->eCurrentState = eBlocked;
 					}
 				}
-				xTaskResumeAll();
+				(void)xTaskResumeAll();
 			}
 		}
 		#endif /* INCLUDE_vTaskSuspend */

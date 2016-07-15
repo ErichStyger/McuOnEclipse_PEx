@@ -4,7 +4,7 @@
     <Name>MC13192</Name>
     <Description>Device Driver for the Freescale MC13192 Transceiver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.008</Version>
     <Icon>MC13192</Icon>
     <TypesFiles>PE,MC13192\MC13192</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -20,7 +20,7 @@
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all rights reserved.\n\nThis an open source software implementing driver using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012-2016, all rights reserved.\n\nThis an open source software implementing driver using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Shortcut>MC131x</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -95,7 +95,7 @@
                     <Name>Tranceiver Type</Name>
                     <Symbol>TransceiverType</Symbol>
                     <TypeSpec>typeTransceiver</TypeSpec>
-                    <Hint>Specifies the transceiver type. Select MPC1320x in case you are using a separate transceiver chip. Using the MPC1320x (external) transceiver then typically Single Port Mode should be enabled.</Hint>
+                    <Hint>Specifies the transceiver type. Select MC1320x in case you are using a separate transceiver chip. Using the MC1320x (external) transceiver then typically Single Port Mode should be enabled.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -369,36 +369,42 @@
                     <DefineList>false</DefineList>
                     <ExternEditorEnabled>false</ExternEditorEnabled>
                     <AcceptNonPrintChars>false</AcceptNonPrintChars>
-                    <DefaultStrgList lines_count="30">
+                    <DefaultStrgList lines_count="36">
                       <Line>/* setting up the IRQ line from the modem:</Line>
                       <Line>* - pull up the signal</Line>
                       <Line>* - trigger on low level and/or falling edge</Line>
                       <Line>*/</Line>
                       <Line>#ifdef __HCS08__</Line>
-                      <Line>/* Macros for the HCS08 core, using the IRQ pin */</Line>
-                      <Line>#define IRQFLAG()         IRQSC_IRQF                                                    /*!&lt; poll IRQ flag */</Line>
-                      <Line>#define IRQInit()       IRQSC = (IRQSC_IRQPE_MASK|IRQSC_IRQACK_MASK)                  /*!&lt; Configures IRQ: IRQ pin enable and acknowledge interrupt */</Line>
-                      <Line>#define IRQACK()        IRQSC |= IRQSC_IRQACK_MASK                                    /*!&lt; IRQ acknowledge */</Line>
-                      <Line>#define IRQPinEnable()  IRQSC = (IRQSC_IRQPE_MASK|IRQSC_IRQACK_MASK|IRQSC_IRQIE_MASK) /*!&lt; IRQ pin enable, acknowledge pending interrrupt and enable IRQ interrupt */</Line>
-                      <Line>#else /* ColdFire */</Line>
-                      <Line>#if 1</Line>
-                      <Line>/* Macros for the MCF52259 using the IRQ on IRQ5 */</Line>
-                      <Line>#define IRQFLAG()</Line>
-                      <Line>#define IRQInit()</Line>
-                      <Line>#define IRQACK()  (EPFR = IRQ1_PIN_MASK)</Line>
-                      <Line>#define IRQPinEnable()</Line>
+                      <Line>  /* Macros for the HCS08 core, using the IRQ pin */</Line>
+                      <Line>  #define IRQFLAG()         IRQSC_IRQF                                                    /*!&lt; poll IRQ flag */</Line>
+                      <Line>  #define IRQInit()       IRQSC = (IRQSC_IRQPE_MASK|IRQSC_IRQACK_MASK)                  /*!&lt; Configures IRQ: IRQ pin enable and acknowledge interrupt */</Line>
+                      <Line>  #define IRQACK()        IRQSC |= IRQSC_IRQACK_MASK                                    /*!&lt; IRQ acknowledge */</Line>
+                      <Line>  #define IRQPinEnable()  IRQSC = (IRQSC_IRQPE_MASK|IRQSC_IRQACK_MASK|IRQSC_IRQIE_MASK) /*!&lt; IRQ pin enable, acknowledge pending interrrupt and enable IRQ interrupt */</Line>
+                      <Line>#elif defined(__GNUC__) /* Kinetis gcc? */</Line>
+                      <Line>  /* IRQ on PTD2 */</Line>
+                      <Line>  #define IRQINIT() \</Line>
+                      <Line>    PORT_PDD_SetPinPullSelect(PORTD_BASE_PTR, 2, PORT_PDD_PULL_UP); \</Line>
+                      <Line>    PORT_PDD_SetPinPullEnable(PORTD_BASE_PTR, 2, PORT_PDD_PULL_ENABLE);</Line>
+                      <Line>  #define IRQACK()  \</Line>
+                      <Line>    PORT_PDD_ClearPinInterruptFlag(PORTD_BASE_PTR, ExtIntLdd1_PIN_INDEX) /* ack the interrupt on PORTA */</Line>
+                      <Line>#elif 1</Line>
+                      <Line>  /* ColdFire */</Line>
+                      <Line>  /* Macros for the MCF52259 using the IRQ on IRQ5 */</Line>
+                      <Line>  #define IRQFLAG()</Line>
+                      <Line>  #define IRQInit()</Line>
+                      <Line>  #define IRQACK()  (EPFR = IRQ1_PIN_MASK)</Line>
+                      <Line>  #define IRQPinEnable()</Line>
                       <Line>#else</Line>
-                      <Line>/* Macros for the MCF51CN128 using the IRQ on PTE4 */</Line>
-                      <Line>#define IRQFLAG()         KBI2SC_KBF       /*!&lt; poll IRQ flag */</Line>
-                      <Line>#define IRQInit()       IRQ1_Disable();  /* disable interrupts */ \</Line>
-                      <Line>KBI2ES_KBEDG4=0; /* falling edge, low level */ \</Line>
-                      <Line>KBI2SC_KBIMOD=0; /* edge only */ \</Line>
-                      <Line>PTEPE_PTEPE4=1;  /* pull up pin */ \</Line>
-                      <Line>KBI2PE_KBIPE4=1; /* pin enable */ \</Line>
-                      <Line>KBI2SC_KBACK=1   /* clear any false interrupts */</Line>
-                      <Line>#define IRQACK()        KBI2SC_KBACK=1                         /*!&lt; IRQ acknowledge */</Line>
-                      <Line>#define IRQPinEnable()  KBI2SC = (KBI2SC_KBACK_MASK|KBI2SC_KBIE) /*!&lt; Acknowledge any false interrupts and enable IRQ pin */</Line>
-                      <Line>#endif</Line>
+                      <Line>  /* Macros for the MCF51CN128 using the IRQ on PTE4 */</Line>
+                      <Line>  #define IRQFLAG()         KBI2SC_KBF       /*!&lt; poll IRQ flag */</Line>
+                      <Line>  #define IRQInit()       IRQ1_Disable();  /* disable interrupts */ \</Line>
+                      <Line>    KBI2ES_KBEDG4=0; /* falling edge, low level */ \</Line>
+                      <Line>    KBI2SC_KBIMOD=0; /* edge only */ \</Line>
+                      <Line>    PTEPE_PTEPE4=1;  /* pull up pin */ \</Line>
+                      <Line>    KBI2PE_KBIPE4=1; /* pin enable */ \</Line>
+                      <Line>    KBI2SC_KBACK=1   /* clear any false interrupts */</Line>
+                      <Line>  #define IRQACK()        KBI2SC_KBACK=1                         /*!&lt; IRQ acknowledge */</Line>
+                      <Line>  #define IRQPinEnable()  KBI2SC = (KBI2SC_KBACK_MASK|KBI2SC_KBIE) /*!&lt; Acknowledge any false interrupts and enable IRQ pin */</Line>
                       <Line>#endif</Line>
                     </DefaultStrgList>
                   </TStrgListItem>
@@ -1123,6 +1129,41 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>CheckRx</Name>
+        <Symbol>CheckRx</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Checks for a received data packet</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>sRxPacket</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the data</ParHint>
+          <ParUserDeclaration>tRxPacket *sRxPacket</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(tRxPacket *sRxPacket)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Restart</Name>
         <Symbol>Restart</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1431,6 +1472,45 @@
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
               <Hint>ResetIndication procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnInterrupt</Name>
+        <Symbol>OnInterrupt</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Event called in case of a transceiver interrupt</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>generate code</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(void)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnInterrupt procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>
