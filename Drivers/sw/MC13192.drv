@@ -49,7 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_Init 
+%define! Description_Init
 %ifdef IRQ
   %ifdef @IRQ@OnInterrupt
     %define! Description_%@IRQ@OnInterrupt This event is called when an active signal edge/level has occurred. The event services the event of the inherited component and eventually invokes other events.
@@ -65,10 +65,6 @@
 %define! Settings Common\MC13192Settings.Inc
 %define! Abstract Common\MC13192Abstract.Inc
 %include Common\Header.h
-
-%if (CPUfamily = "Kinetis")
-%- #include "PE_LDD.h" /* hack for Processor Expert (e.g. in MCU10.3) and LDD: PE_LDD.h includes at the end all shared modules, causing a recursive header file include conflict */
-%endif
 
 #ifndef __%'ModuleName'_H
 #define __%'ModuleName'_H
@@ -149,13 +145,12 @@ typedef struct {
 #define %'ModuleName'%.SCAN_MODE_ED   0x0020
 #define %'ModuleName'%.SCAN_MODE_CCA  0x0010
 
-#define %'ModuleName'%.INITIAL_VALUE    0x0            %>%CTAB /*!< Initial value */
-#define %'ModuleName'%.SUCCESS_STATUS    1             %>%CTAB /*!< Success */
-#define %'ModuleName'%.OVERFLOW_STATUS   2             %>%CTAB /*!< Overflow */
-#define %'ModuleName'%.TIMEOUT_STATUS    3             %>%CTAB /*!< Timeout */
-#define %'ModuleName'%.RESET_STATUS      4             %>%CTAB /*!< Transceiver Reset */
+#define %'ModuleName'%.OVERFLOW          1             %>%CTAB /*!< Overflow */
+#define %'ModuleName'%.SUCCESS         0x77            %>%CTAB /*!< Success */
+#define %'ModuleName'%.INITIAL_VALUE   0x0             %>%CTAB /*!< Initial value */
 
 extern volatile byte %'ModuleName'%.gu8RTxMode;  %>%CTAB /*!< Application can read this variable. This variable reflects the current state of the transceiver. */
+extern tRxPacket *%'ModuleName'%.psDrvRxPacket;   %>%CTAB /*!< Where the packet received will be stored */
 
 /*! Transceiver soft reset */
 #define %'ModuleName'%.RESET                   0x00    %>%CTAB /*!< Reset */
@@ -458,16 +453,6 @@ void %'ModuleName'%.%LeaveRadioSPI(void);
 
 %endif %- LeaveRadioSPI
 %-BW_METHOD_END LeaveRadioSPI
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN CheckRx
-%ifdef CheckRx
-byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket);
-%define! ParsRxPacket
-%define! RetVal
-%include Common\MC13192CheckRx.Inc
-
-%endif %- CheckRx
-%-BW_METHOD_END CheckRx
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -476,6 +461,22 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket);
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
+%-BW_METHOD_BEGIN DataIndication
+%ifdef DataIndication
+%INTERFACE DataIndication
+void %DataIndication(void);
+%include Common\MC13192DataIndication.Inc
+
+%endif %- DataIndication
+%-BW_METHOD_END DataIndication
+%-BW_METHOD_BEGIN ResetIndication
+%ifdef ResetIndication
+%INTERFACE ResetIndication
+void %ResetIndication(void);
+%include Common\MC13192ResetIndication.Inc
+
+%endif %- ResetIndication
+%-BW_METHOD_END ResetIndication
 %-BW_METHOD_BEGIN OnCLKO
 %ifdef OnCLKO
 %INTERFACE OnCLKO
@@ -501,14 +502,6 @@ void %OnLeaveRadioSPI(void);
 
 %endif %- OnLeaveRadioSPI
 %-BW_METHOD_END OnLeaveRadioSPI
-%-BW_METHOD_BEGIN OnInterrupt
-%ifdef OnInterrupt
-%INTERFACE OnInterrupt
-void %OnInterrupt(void);
-%include Common\MC13192OnInterrupt.Inc
-
-%endif %- OnInterrupt
-%-BW_METHOD_END OnInterrupt
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\MC13192Settings.Inc
@@ -533,11 +526,6 @@ void %OnInterrupt(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-%if (CPUfamily = "Kinetis")
-#define %'ModuleName'_CPU_IS_LITTLE_ENDIAN 1 /* Cpu %CPUfamily is little endian */
-%else
-#define %'ModuleName'_CPU_IS_LITTLE_ENDIAN 0 /* Cpu %CPUfamily is big endian */
-%endif
 
 /* macros to deal with the IRQ pin, as configured in the component properties */
 #if 1
@@ -553,25 +541,16 @@ void %OnInterrupt(void);
 #ifdef __HCS08__
   /* Macros for the HCS08 core, using the IRQ pin */
   #define IRQACK()        IRQSC |= IRQSC_IRQACK_MASK   /*!< IRQ acknowledge */
-#else /* not HCS08 */
-  /* %CPUfamily family */
-  #if defined(__GNUC__)  /* Kinetis? using PTD2 below */
-    #define IRQINIT() \
-      PORT_PDD_SetPinPullSelect(PORTD_BASE_PTR, 2, PORT_PDD_PULL_UP); \
-      PORT_PDD_SetPinPullEnable(PORTD_BASE_PTR, 2, PORT_PDD_PULL_ENABLE);
-    #define IRQACK()   PORT_PDD_ClearPinInterruptFlag(PORTD_BASE_PTR, 2) /* ack the interrupt */
-  #elif 0 /* Macros for the MCF52259 using the IRQ on IRQ5 */
+#else /* ColdFire */
+  #if 1 /* Macros for the MCF52259 using the IRQ on IRQ5 */
     #define IRQACK()  (EPFR = IRQ1_PIN_MASK)
   #else  /* Macros for the MCF51CN128 using the IRQ on PTE4 */
     #define IRQACK()        KBI2SC_KBACK=1     /*!< IRQ acknowledge */
   #endif
 #endif
-#endif
-%- PORT_PDD_SetPinPullSelect(%@IRQ@'InheritedComponent'%.PRPH_BASE_ADDRESS, %@IRQ@'InheritedComponent'%.PIN_INDEX, PORT_PDD_PULL_UP); \
 
-#ifndef IRQINIT
-  #define IRQINIT()       %>%CTAB /* assume it is configured in the IRQ properties or by user macro for falling edge */
 #endif
+
 
 #define SPI_GET_DEVICE() \
     %'ModuleName'%.DisableInterrupts();  %>%CTAB /* Necessary to prevent double SPI access during transceiver interrupt */ \
@@ -588,6 +567,7 @@ void %OnInterrupt(void);
     %'ModuleName'%.EnableInterrupts();   %>%CTAB /* Restore transceiver interrupt status */
 
 volatile byte %'ModuleName'%.gu8RTxMode;       %>%CTAB /*!< Needed for SMAC, application can read this variable */
+tRxPacket *%'ModuleName'%.psDrvRxPacket;       %>%CTAB /*!< Where the packet received will be stored */
 
 %ifdef COMPILER_HIX
 #pragma MESSAGE DISABLE C4000 /* condition always true */
@@ -647,12 +627,10 @@ static void SPI_Write_ReadDummy(byte val) {
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CheckRx
-%ifdef CheckRx
-%define! ParsRxPacket
-%define! RetVal
-%include Common\MC13192CheckRx.Inc
-byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
+%-INHERITED_EVENT_BEGIN IRQ OnInterrupt
+%ifdef @IRQ@OnInterrupt
+%include Common\GeneralInternal.inc (OnInterrupt)
+void %@IRQ@OnInterrupt(void)
 {
   word u16StatusContent, u16Reg, u16Temp; /* Result of the status register read */
   /* Data length for the RX packet */
@@ -679,7 +657,7 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
   }
   if ((u16StatusContent & ~(%'ModuleName'%.CRC_VALID_MASK)) == 0) {
     /* If no status bits are set just return. */
-    return ERR_CRC;
+    return;
   }
   /* DOZE Complete Interrupt */
   if ((u16StatusContent & %'ModuleName'%.DOZE_IRQ_MASK) != 0) {
@@ -699,14 +677,11 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
     u16StatusContent &= %'ModuleName'%.RESET_BIT_MASK;
     if (u16StatusContent == 0) {                          %>%CTAB /* Reset */
       %'ModuleName'%.gu8RTxMode = %'ModuleName'%.MC13192_RESET_MODE;     %>%CTAB /* Set the rtx_state mirror to idle with attn. */
-      sRxPacket->u8Status = %'ModuleName'%.RESET;
-%if defined(ResetIndication)
       %ResetIndication();                                 %>%CTAB /* Call reset handler */
-%endif
-      return ERR_OK;
+      return;
     } else {
       %'ModuleName'%.gu8RTxMode = %'ModuleName'%.IDLE_MODE_ATTN;         %>%CTAB /* Set the rtx_state mirror to idle with attn. */
-      return ERR_FAULT;
+      return;
     }
   }
   /* TIMER1 IRQ Handler (Used for receiver timeout notification) */
@@ -720,10 +695,11 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
       %'ModuleName'%.%Write(%'ModuleName'%.T1_HI_ADDR, 0x8000);  %>%CTAB /* Disables TC1 and clears IRQ */
       %'ModuleName'%.%Write(%'ModuleName'%.T1_LO_ADDR, 0x0000);
 #endif
-      sRxPacket->u8Status = %'ModuleName'%.TIMEOUT_STATUS;
+      %'ModuleName'%.psDrvRxPacket->u8Status = %'ModuleName'%.TIMEOUT;
       %'ModuleName'%.RTXENDeAssert();             %>%CTAB /* Forces the Transceiver to idle. */
       %'ModuleName'%.gu8RTxMode = %'ModuleName'%.IDLE_MODE;
-      return ERR_OK;
+      %DataIndication();                          %>%CTAB /* TIMEOUT notification */
+      return;
     }
   }
   /* LO LOCK IRQ - Occurs when Transceiver loses LOCK */
@@ -740,7 +716,7 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
     } else {
       %'ModuleName'%.gu8RTxMode = %'ModuleName'%.IDLE_MODE;
     }
-    return ERR_FAULT;
+    return;
   }
   if (   (%'ModuleName'%.gu8RTxMode == %'ModuleName'%.IDLE_MODE) || ((u16StatusContent & %'ModuleName'%.CCA_IRQ_MASK) != 0)
       || ((u16StatusContent & %'ModuleName'%.TX_IRQ_MASK) != 0)
@@ -756,10 +732,10 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
       #if defined (PA)
       MC13192_PA_CTRL = PA_OFF;       %>%CTAB /* Turn off the PA when TX is complete */
       #endif
-      return ERR_FAULT;
+      return;
     }
     %'ModuleName'%.gu8RTxMode = %'ModuleName'%.IDLE_MODE;
-    return ERR_FAULT;
+    return;
   }
   /* If rx is done */
   if ((u16StatusContent & %'ModuleName'%.RX_IRQ_MASK) != 0) {
@@ -771,7 +747,7 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
       /* Update the trx register */
       %'ModuleName'%.%Write(%'ModuleName'%.MODE_ADDR, u16StatusContent);
       %'ModuleName'%.RTXENAssert();        %>%CTAB /* Forces the Transceiver to enter the receive mode. */
-      return ERR_FAULT;
+      return;
     } else {
       /* Read received packet length register and mask off length bits */
       u8DataLength = (byte) (%'ModuleName'%.%Read(%'ModuleName'%.RX_PKT_LEN) & 0x7F);
@@ -782,7 +758,7 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
         %'ModuleName'%.%Write(%'ModuleName'%.MODE_ADDR, u16StatusContent);
         /* Forces the Transceiver to enter the receive mode. */
         %'ModuleName'%.RTXENAssert();
-        return ERR_FAULT;
+        return;
       }
       /* Test the Byte Codes */
       if (!PHY_PROMISCUOUS_MODE) {
@@ -794,7 +770,7 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
           %'ModuleName'%.%Write(%'ModuleName'%.MODE_ADDR, u16StatusContent);
           /* Forces the Transceiver to enter the receive mode. */
           %'ModuleName'%.RTXENAssert();
-          return ERR_FAULT;
+          return;
         }
       }
       /* A valid packet has been received. */
@@ -805,29 +781,12 @@ byte %'ModuleName'%.%CheckRx(tRxPacket *sRxPacket)
       %'ModuleName'%.%Write(%'ModuleName'%.T1_HI_ADDR, 0x8000);  %>%CTAB /* Disables TC1 and clears the IRQ. */
       %'ModuleName'%.%Write(%'ModuleName'%.T1_LO_ADDR, 0x0000);
 #endif
-      sRxPacket->u8DataLength = u8DataLength;
-      sRxPacket->u8Status = %'ModuleName'%.SUCCESS_STATUS;
-      return ERR_OK;
+      %'ModuleName'%.psDrvRxPacket->u8DataLength = u8DataLength;
+      %'ModuleName'%.psDrvRxPacket->u8Status = %'ModuleName'%.SUCCESS;
+      %DataIndication();                          %>%CTAB /* Notify PHY that there is data available. */
+      return;
     }
   }
-  return ERR_RXEMPTY;
-}
-
-%endif %- CheckRx
-%-BW_METHOD_END CheckRx
-%-************************************************************************************************************
-%-INHERITED_EVENT_BEGIN IRQ OnInterrupt
-%ifdef @IRQ@OnInterrupt
-%include Common\GeneralInternal.inc (OnInterrupt)
-void %@IRQ@OnInterrupt(void)
-{
-%if defined(OnInterrupt)
-  void %OnInterrupt(void); /* prototype */
-
-  %OnInterrupt(); /* call user event */
-%else
-  /* no user event enabled in transceiver properties */
-%endif
 }
 
 %endif %- @IRQ@OnInterrupt
@@ -890,13 +849,8 @@ word %'ModuleName'%.%Read(byte addr)
 
   SPI_GET_DEVICE();   %>%CTAB /* prevent concurrent access to device */
   SPI_Write_ReadDummy((byte)((addr&0x3F)|0x80));  %>%CTAB /* Mask address, 6bit addr. Set read bit. */
-#if %'ModuleName'_CPU_IS_LITTLE_ENDIAN
-  ((byte*)&data)[1] = SPI_WriteDummy_Read();      %>%CTAB /* MSB */
-  ((byte*)&data)[0] = SPI_WriteDummy_Read();      %>%CTAB /* LSB */
-#else
   ((byte*)&data)[0] = SPI_WriteDummy_Read();      %>%CTAB /* MSB */
   ((byte*)&data)[1] = SPI_WriteDummy_Read();      %>%CTAB /* LSB */
-#endif
   SPI_LEAVE_DEVICE();   %>%CTAB /* release device */
   return data;
 }
@@ -922,13 +876,8 @@ word %'ModuleName'%.%Read2(byte addr)
   SPI_Write_ReadDummy((byte)((addr&0x3F)|0x80)); %>%CTAB /* Mask address, 6bit addr. Set read bit. */
   SPI_Write_ReadDummy(0);                        %>%CTAB /* Dummy write. Receive register of SPI will contain MSB */
   SPI_Write_ReadDummy(0);                        %>%CTAB /* Dummy write. Waiting until after reading received data insures no overrun */
-#if %'ModuleName'_CPU_IS_LITTLE_ENDIAN
-  ((byte*)&data)[1] = SPI_WriteDummy_Read();     %>%CTAB /* MSB */
-  ((byte*)&data)[0] = SPI_WriteDummy_Read();     %>%CTAB /* LSB */
-#else
   ((byte*)&data)[0] = SPI_WriteDummy_Read();     %>%CTAB /* MSB */
   ((byte*)&data)[1] = SPI_WriteDummy_Read();     %>%CTAB /* LSB */
-#endif
   SPI_LEAVE_DEVICE();   %>%CTAB /* release device */
   return data;
 }
@@ -1021,12 +970,12 @@ byte %'ModuleName'%.%ReadRx(tRxPacket *psRxPkt)
       psRxPkt->pu8Data[u8TempByte] = SPI_WriteDummy_Read(); %>%CTAB /* Read LSB */
       u8TempByte = (byte)(u8TempByte + 2);            %>%CTAB /* Increment byte counter */
     }
-    psRxPkt->u8Status = %'ModuleName'%.SUCCESS_STATUS;
+    psRxPkt->u8Status = %'ModuleName'%.SUCCESS;
     SPI_LEAVE_DEVICE();   %>%CTAB /* release device */
   }
   /* Check to see if a larger packet than desired is received. */
   if (psRxPkt->u8DataLength > psRxPkt->u8MaxDataLength) {
-    psRxPkt->u8Status = %'ModuleName'%.OVERFLOW_STATUS;
+    psRxPkt->u8Status = %'ModuleName'%.OVERFLOW;
   }
   return u8Status;
 }
@@ -1034,14 +983,25 @@ byte %'ModuleName'%.%ReadRx(tRxPacket *psRxPkt)
 %-BW_METHOD_END ReadRx
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG Init
+%include Common\GeneralInternal.inc (Init)
+void %'ModuleName'%.Init(void)
+{
+  word u16IrqReg = 0;
+  byte u8AttnIrq = FALSE;
 
-static void ResetTransceiver(void) {
-  IRQINIT();                                                     %>%CTAB /* IRQ must be configured to trigger on low level or falling edge, with pull up enabled */
+%- %if SWSPI_Enabled='yes'
+%-   /* initialize SPI */
+%-   %@SWSPI@'ModuleName'%.Init(); /* idle clock polarity low, shift on falling edge */
+%- %elif HWSPI_Enabled='yes'
+%-   /* initialize SPI */
+%-   %@HWSPI@'ModuleName'%.Init(); /* idle clock polarity low, shift on falling edge */
+%- %endif
+%-  %'ModuleName'%.gu8RTxMode = %'ModuleName'%.SYSTEM_RESET_MODE;
   %@IRQ@'ModuleName'%.Disable();   %>%CTAB /* Disable Transceiver interrupt for the sequence below. */
-  %@CE@'ModuleName'%.SetVal();     %>%CTAB /* Disables Transceiver SPI */
+  %@CE@'ModuleName'%.SetVal();    %>%CTAB /* Disables Transceiver SPI */
   %@ATTN@'ModuleName'%.SetVal();
   %@RTXEN@'ModuleName'%.ClrVal();
-  %@RESET@'ModuleName'%.ClrVal();  %>%CTAB /* Do not initially reset Transceiver */
+  %@RESET@'ModuleName'%.ClrVal(); %>%CTAB /* Do not initially reset Transceiver */
 %-  #if defined (ANTENNA_SWITCH)
 %-    MC13192_ANT_CTRL2_PORT = 1;   %>%CTAB /* Output for antenna port RX */
 %-    MC13192_ANT_CTRL_PORT = 1;    %>%CTAB /* Output for antenna port TX */
@@ -1059,26 +1019,7 @@ static void ResetTransceiver(void) {
   %'ModuleName'%.%InitCommChannel();
   %'ModuleName'%.gu8RTxMode = %'ModuleName'%.MC13192_RESET_MODE;
   %@RESET@'ModuleName'%.SetVal(); %>%CTAB /* Take Transceiver out of reset */
-}
-
-%include Common\GeneralInternal.inc (Init)
-void %'ModuleName'%.Init(void)
-{
-  word u16IrqReg = 0;
-  byte u8AttnIrq = FALSE;
-  byte cntr;
-
-%- %if SWSPI_Enabled='yes'
-%-   /* initialize SPI */
-%-   %@SWSPI@'ModuleName'%.Init(); /* idle clock polarity low, shift on falling edge */
-%- %elif HWSPI_Enabled='yes'
-%-   /* initialize SPI */
-%-   %@HWSPI@'ModuleName'%.Init(); /* idle clock polarity low, shift on falling edge */
-%- %endif
-%-  %'ModuleName'%.gu8RTxMode = %'ModuleName'%.SYSTEM_RESET_MODE;
-  cntr = 0;
-  ResetTransceiver();
-  for(;;) { /* will break */
+  while (u8AttnIrq == FALSE) {
     if (%@IRQ@'ModuleName'%.GetVal()==0) {           %>%CTAB /* Check to see if IRQ is asserted */
       u16IrqReg = %'ModuleName'%.%Read(%'ModuleName'%.STATUS_ADDR);  %>%CTAB /* Clear Transceiver interrupts and check for ATTN IRQ from 13192 */
       u16IrqReg &= 0x400;
@@ -1088,16 +1029,7 @@ void %'ModuleName'%.Init(void)
         u8AttnIrq = TRUE;
       }
     }
-    if (u8AttnIrq==TRUE) {
-      break; /* break for loop */
-    }
-    %@Wait@'ModuleName'%.Waitms(1);
-    cntr++;
-    if (cntr==50) { /* did take too long: restart reset sequence */
-      ResetTransceiver();
-      cntr = 0;
-    }
-  } /* for */
+  }
   IRQACK();                       %>%CTAB /* ACK the pending IRQ interrupt */
   %@IRQ@'ModuleName'%.Enable();   %>%CTAB /* Pin Enable, IE, IRQ CLR, negative edge. */
 %if defined(OnCLKO)
@@ -1310,11 +1242,10 @@ void %'ModuleName'%.%RadioInit(void)
   (void)%'ModuleName'%.%Read(%'ModuleName'%.RESIND_ADDR);               %>%CTAB /* Sets the reset indicator bit */
   (void)%'ModuleName'%.%Read(%'ModuleName'%.STATUS_ADDR);               %>%CTAB /* Clear the status register, if set */
   /* CLKO_Ctl - Register 0A */
-  %'ModuleName'%.%Write(%'ModuleName'%.CLKS_ADDR, (word)
-   ( (%xtal_trim<<8)                                                     %>%CTAB /* bit 15..8: xtal_trim bits [7:0] */
-    | 0x80                                                                %>%CTAB /* bit 7..3: reserved, reset value 0x80 */
-    | %CLKOfrequency                                                     %>%CTAB /* bit 2..0: clko_rate[2:0], CLKO frequency */
-   )
+  %'ModuleName'%.%Write(%'ModuleName'%.CLKS_ADDR,
+    (%xtal_trim<<8)                                                     %>%CTAB /* bit 15..8: xtal_trim [7:0] */
+  | 0x80                                                                %>%CTAB /* bit 7..3: reserved, reset value 0x80 */
+  | %CLKOfrequency                                                      %>%CTAB /* bit 2..0: clko_rate[2:0], CLKO frequency */
   );
   %'ModuleName'%.%Write(%'ModuleName'%.MODE2_ADDR,
    %if %CLKOoutOnDoze='yes'
@@ -1358,7 +1289,7 @@ byte %'ModuleName'%.%SetClockRate(byte u8Freq)
   %@Wait@'ModuleName'%.Waitms(1);                                            %>%CTAB /* wait some time to get the clock a chance to settle */
   %OnCLKO(u8Freq);                                                     %>%CTAB /* inform application about changed CLKO */
 %endif
-  return %'ModuleName'%.SUCCESS_STATUS;
+  return %'ModuleName'%.SUCCESS;
 }
 
 %endif %- SetClockRate
@@ -1412,6 +1343,28 @@ void %'ModuleName'%.%LeaveRadioSPI(void)
 %-
 %-
 %-BW_EVENT_IMPLEMENT_START
+%-BW_METHOD_BEGIN DataIndication
+%ifdef DataIndication
+%IMPLEMENTATION DataIndication
+%include Common\MC13192DataIndication.Inc
+void %DataIndication(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- DataIndication
+%-BW_METHOD_END DataIndication
+%-BW_METHOD_BEGIN ResetIndication
+%ifdef ResetIndication
+%IMPLEMENTATION ResetIndication
+%include Common\MC13192ResetIndication.Inc
+void %ResetIndication(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- ResetIndication
+%-BW_METHOD_END ResetIndication
 %-BW_METHOD_BEGIN OnCLKO
 %ifdef OnCLKO
 %IMPLEMENTATION OnCLKO
@@ -1466,17 +1419,6 @@ void %OnLeaveRadioSPI(void)
 
 %endif %- OnLeaveRadioSPI
 %-BW_METHOD_END OnLeaveRadioSPI
-%-BW_METHOD_BEGIN OnInterrupt
-%ifdef OnInterrupt
-%IMPLEMENTATION OnInterrupt
-%include Common\MC13192OnInterrupt.Inc
-void %OnInterrupt(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- OnInterrupt
-%-BW_METHOD_END OnInterrupt
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */

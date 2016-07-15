@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Bean>
   <Header>
     <Name>MC13192</Name>
     <Description>Device Driver for the Freescale MC13192 Transceiver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.169</Version>
+    <Version>01.001</Version>
     <Icon>MC13192</Icon>
     <TypesFiles>PE,MC13192\MC13192</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -20,11 +20,10 @@
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2013, all rights reserved.\n\nThis an open source software implementing driver using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all rights reserved.\n\nThis an open source software implementing driver using Processor Expert.\nThis is a free software and is opened for education,  research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Shortcut>MC131x</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
-    <OnlyForInheritanceSharing>true</OnlyForInheritanceSharing>
   </Options>
   <PropertyList>
     <Property>
@@ -93,10 +92,10 @@
               <Children>
                 <GrupItem>
                   <TEnumItem>
-                    <Name>Transceiver Type</Name>
+                    <Name>Tranceiver Type</Name>
                     <Symbol>TransceiverType</Symbol>
                     <TypeSpec>typeTransceiver</TypeSpec>
-                    <Hint>Specifies the transceiver type. Select MC1320x in case you are using a separate transceiver chip. Using the MC1320x (external) transceiver then typically Single Port Mode should be enabled.</Hint>
+                    <Hint>Specifies the transceiver type. Select MPC1320x in case you are using a separate transceiver chip. Using the MPC1320x (external) transceiver then typically Single Port Mode should be enabled.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -370,7 +369,7 @@
                     <DefineList>false</DefineList>
                     <ExternEditorEnabled>false</ExternEditorEnabled>
                     <AcceptNonPrintChars>false</AcceptNonPrintChars>
-                    <DefaultStrgList lines_count="37">
+                    <DefaultStrgList lines_count="30">
                       <Line>/* setting up the IRQ line from the modem:</Line>
                       <Line>* - pull up the signal</Line>
                       <Line>* - trigger on low level and/or falling edge</Line>
@@ -382,14 +381,7 @@
                       <Line>#define IRQACK()        IRQSC |= IRQSC_IRQACK_MASK                                    /*!&lt; IRQ acknowledge */</Line>
                       <Line>#define IRQPinEnable()  IRQSC = (IRQSC_IRQPE_MASK|IRQSC_IRQACK_MASK|IRQSC_IRQIE_MASK) /*!&lt; IRQ pin enable, acknowledge pending interrrupt and enable IRQ interrupt */</Line>
                       <Line>#else /* ColdFire */</Line>
-                      <Line>#if defined(__GNUC__) /* Kinetis gcc? */</Line>
-                      <Line>/* IRQ on PTD2 */</Line>
-                      <Line>#define IRQINIT() \</Line>
-                      <Line>  PORT_PDD_SetPinPullSelect(PORTD_BASE_PTR, 2, PORT_PDD_PULL_UP); \</Line>
-                      <Line>  PORT_PDD_SetPinPullEnable(PORTD_BASE_PTR, 2, PORT_PDD_PULL_ENABLE);</Line>
-                      <Line>#define IRQACK()  \</Line>
-                      <Line>  PORT_PDD_ClearPinInterruptFlag(PORTD_BASE_PTR, ExtIntLdd1_PIN_INDEX) /* ack the interrupt on PORTA */</Line>
-                      <Line>#elif 1</Line>
+                      <Line>#if 1</Line>
                       <Line>/* Macros for the MCF52259 using the IRQ on IRQ5 */</Line>
                       <Line>#define IRQFLAG()</Line>
                       <Line>#define IRQInit()</Line>
@@ -487,12 +479,12 @@
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>false</EditLine>
                     <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>1</DefaultIndex>
+                    <DefaultIndex>0</DefaultIndex>
                     <TextValueIndex>false</TextValueIndex>
                     <RuntimeProperty>false</RuntimeProperty>
                     <CanDelete>false</CanDelete>
                     <IconPopup>false</IconPopup>
-                    <DefaultValue>false</DefaultValue>
+                    <DefaultValue>true</DefaultValue>
                     <Popup>false</Popup>
                   </TBoolItem>
                 </GrupItem>
@@ -1359,41 +1351,6 @@
         </Declarations>
       </TMthdItem>
     </Method>
-    <Method>
-      <TMthdItem>
-        <Name>CheckRx</Name>
-        <Symbol>CheckRx</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Needs to be called after interrupt received from the transceiver to check the state and to create the events.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>sRxPacket</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint/>
-          <ParUserDeclaration>tRxPacket *sRxPacket</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(tRxPacket *sRxPacket)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
   </MethodList>
   <EventList>
     <Event>
@@ -1411,10 +1368,10 @@
     </Event>
     <Event>
       <TEvntItem>
-        <Name>OnInterrupt</Name>
-        <Symbol>OnInterrupt</Symbol>
+        <Name>DataIndication</Name>
+        <Symbol>DataIndication</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Event raised in case of transceiver interrupt.</Hint>
+        <Hint>Event in case a data packet has been received.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -1434,7 +1391,46 @@
             <TEvntName>
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
-              <Hint>OnInterrupt procedure name</Hint>
+              <Hint>DataIndication procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>ResetIndication</Name>
+        <Symbol>ResetIndication</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Event in case of transceiver reset.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>generate code</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(void)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>ResetIndication procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>
