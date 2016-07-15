@@ -73,8 +73,10 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include <stdint.h>
-#include <stdbool.h>
+#ifndef __HIWARE__
+  #include <stdint.h>
+  #include <stdbool.h>
+#endif
 
 #ifndef bool
   #include "PE_Types.h"
