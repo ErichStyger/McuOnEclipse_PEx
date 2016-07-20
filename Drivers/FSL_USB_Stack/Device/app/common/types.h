@@ -67,10 +67,12 @@
 #define BYTESWAP32(val)	(uint_32)((BYTESWAP16((uint_32)(val) & (uint_32)0xFFFF) << 0x10) |  \
 					(BYTESWAP16((uint_32)((val) >> 0x10))))
 
-#ifdef CPU_LITTLE_ENDIAN /* << EST: defined by Processor Expert CPU.h for Kinetis devices */
+#ifdef CPU_LITTLE_ENDIAN /* << EST: defined by Processor Expert CPU.h for Kinetis devices (but NOT in for SDK 1.x!) */
   #ifndef LITTLE_ENDIAN /* might be defined already on the compiler command line? */
     #define LITTLE_ENDIAN
   #endif
+#elif defined(__GNUC__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) /* GNU/gcc provides these macros */
+  #define LITTLE_ENDIAN
 #endif
 
 #ifndef LITTLE_ENDIAN

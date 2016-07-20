@@ -99,10 +99,12 @@
 #define USB_uint_16_low(x)  ((uint_8)x)       /* lsb byte */
 #define USB_uint_16_high(x) ((uint_8)(x>>8))  /* msb byte */
 
-#ifdef CPU_LITTLE_ENDIAN /* << EST: defined by Processor Expert CPU.h for Kinetis devices */
+#ifdef CPU_LITTLE_ENDIAN /* << EST: defined by Processor Expert CPU.h for Kinetis devices (but NOT in for SDK 1.x!) */
   #ifndef LITTLE_ENDIAN /* might be defined already on the compiler command line? */
     #define LITTLE_ENDIAN
   #endif
+#elif defined(__GNUC__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__) /* GNU/gcc provides these macros */
+  #define LITTLE_ENDIAN
 #endif
 
 #if(defined LITTLE_ENDIAN)
