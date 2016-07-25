@@ -123,8 +123,6 @@
 #endif
 
 %-ENDUSRTYPES
-
-
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
 %-BW_BEAN_CONSTANTS_END
@@ -172,8 +170,8 @@
 #define %'ModuleName'%.HISTORY_ENABLED  0                        %>40/* 1: enabled, 0: disabled */
 #define %'ModuleName'%.NOF_HISTORY      0                        %>40/* number of items in history */
 #define %'ModuleName'%.HIST_LEN         0                        %>40/* history buffer size */
-%endif
 
+%endif
 /* settings for silent prefix char */
 %if %SilentModePrefixChar='' %- empty property
 #define %'ModuleName'%.SILENT_PREFIX_CHAR    ' '                 %>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
@@ -212,6 +210,11 @@
 #define %'ModuleName'%.CMD_HELP   "help"
 #define %'ModuleName'%.CMD_STATUS "status"
 %-BW_CUSTOM_USERTYPE_END
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 %-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendStr
@@ -520,6 +523,10 @@ void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io);
 %-BW_METHOD_END SendCh
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
