@@ -112,6 +112,9 @@ typedef enum {
 } %'ModuleName'_SeparatedNumberType;
 %-BW_CUSTOM_USERTYPE_END
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
@@ -774,6 +777,10 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 %-BW_METHOD_END strcatNumFloat
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
