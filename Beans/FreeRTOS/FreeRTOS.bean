@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.504</Version>
+    <Version>01.505</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -7215,7 +7215,7 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>pxTask</ParName>
-          <ParType>xTaskHandle</ParType>
+          <ParType>TaskHandle_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Task handle</ParHint>
         </Parameter>
@@ -7227,7 +7227,7 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(xTaskHandle pxTask, char *pcTaskName)</ANSIC>
+          <ANSIC>void #C#(TaskHandle_t pxTask, char *pcTaskName)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

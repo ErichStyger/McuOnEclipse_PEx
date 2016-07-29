@@ -276,6 +276,10 @@ void vPortTickHandler(void);
 %-
 %-BW_CUSTOM_USERTYPE_END
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 %-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xTaskCreate
@@ -1794,6 +1798,10 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+
 #endif
 /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
@@ -1802,7 +1810,7 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %-BW_METHOD_BEGIN vApplicationStackOverflowHook
 %ifdef vApplicationStackOverflowHook
 %INTERFACE vApplicationStackOverflowHook
-void %vApplicationStackOverflowHook(xTaskHandle pxTask, char *pcTaskName);
+void %vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName);
 %define! ParpxTask
 %define! ParpcTaskName
 %include Common\FreeRTOSvApplicationStackOverflowHook.Inc
@@ -4479,7 +4487,7 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
 %define! ParpxTask
 %define! ParpcTaskName
 %include Common\FreeRTOSvApplicationStackOverflowHook.Inc
-void %vApplicationStackOverflowHook(xTaskHandle pxTask, char *pcTaskName)
+void %vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
 {
   /* This will get called if a stack overflow is detected during the context
      switch.  Set configCHECK_FOR_STACK_OVERFLOWS to 2 to also check for stack
