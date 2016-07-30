@@ -112,6 +112,9 @@
 %-
 %-BW_CUSTOM_USERTYPE_END
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
@@ -335,6 +338,10 @@ void %'ModuleName'%.%Deinit(void);
 %-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */

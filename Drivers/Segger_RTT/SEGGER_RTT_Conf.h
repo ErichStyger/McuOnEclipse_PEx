@@ -77,6 +77,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 
 /* Channel 0 settings from properties */ /* << EST */
 %if defined(RTTChannel0Enabled) & %RTTChannel0Enabled='yes'
+#define SEGGER_RTT_CHANNEL_0_ENABLED              (1) /* 1: initialize channel; 0: do not initialize channel */
 #define SEGGER_RTT_CHANNEL_0_NAME                 %NameChannel0
 #define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_UP       (%RTTBufferSizeUp)
 #define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_DOWN     (%RTTBufferSizeDown)
@@ -91,6 +92,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 
 #define SEGGER_RTT_PRINTF_BUFFER_SIZE             (%RTTBufferSizePrintf)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
 %else
+#define SEGGER_RTT_CHANNEL_0_ENABLED              (0) /* 1: initialize channel; 0: do not initialize channel */
 #define SEGGER_RTT_CHANNEL_0_NAME                 "Terminal"
 #define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_UP       (512)
 #define SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_DOWN     (64)

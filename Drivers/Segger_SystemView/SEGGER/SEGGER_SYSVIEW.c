@@ -1222,7 +1222,10 @@ void SEGGER_SYSVIEW_Init(U32 SysFreq, U32 CPUFreq, const SEGGER_SYSVIEW_OS_API *
 #if SEGGER_SYSVIEW_RTT_CHANNEL > 0
   SEGGER_RTT_ConfigUpBuffer   (SEGGER_SYSVIEW_RTT_CHANNEL, "SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
   SEGGER_RTT_ConfigDownBuffer (SEGGER_SYSVIEW_RTT_CHANNEL, "SysView", &_DownBuffer[0], sizeof(_DownBuffer), SEGGER_RTT_MODE_NO_BLOCK_SKIP);
-#else
+#elif 1 /* << EST: handle properly buffer usage for RTT channel 0 */
+  _SYSVIEW_Globals.UpChannel = SEGGER_RTT_AllocUpBuffer  ("SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  _SYSVIEW_Globals.DownChannel = SEGGER_RTT_AllocDownBuffer  ("SysView", &_DownBuffer[0],   sizeof(_DownBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+#else /* original SEGGER implementation */
   _SYSVIEW_Globals.UpChannel = SEGGER_RTT_AllocUpBuffer  ("SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
   //
   // TODO: Use SEGGER_RTT_AllocDownBuffer when SystemViewer is able to handle another Down Channel than Up Channel.
