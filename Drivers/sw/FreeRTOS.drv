@@ -2246,6 +2246,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 
 %endif
 %if defined(GenerateOSAFunctions) & %GenerateOSAFunctions='yes'
+#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_1_3
 #include "fsl_os_abstraction.h"
 
 /*!
@@ -2267,6 +2268,8 @@ osa_status_t OSA_Start(void) {
   vTaskStartScheduler(); /* start the RTOS scheduler */
   return kStatus_OSA_Success;
 }
+#endif
+
 %endif
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
