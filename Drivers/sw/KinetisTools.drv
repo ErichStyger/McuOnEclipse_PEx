@@ -64,17 +64,18 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
+  %endfor
+%endif
+
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+%ifdef SharedModules
+/* Include shared modules, which are used for whole project */
+  %for var from IncludeSharedModules
+#include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -87,8 +88,8 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
+  #include "%ProcessorModule.h"
+#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_ConstCharPtr
@@ -124,17 +125,29 @@ typedef enum {
 %else
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %endif %- ParseCommand
+
 %if (CPUfamily = "Kinetis")
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
 #define %'ModuleName'%.CPU_IS_M0_PLUS  1
 #define %'ModuleName'%.CPU_IS_M4       0
-%else
+#define %'ModuleName'%.CPU_IS_M7       0
+%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
 #define %'ModuleName'%.CPU_IS_M0_PLUS  0
 #define %'ModuleName'%.CPU_IS_M4       1
+#define %'ModuleName'%.CPU_IS_M7       0
+%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
+#define %'ModuleName'%.CPU_IS_M0_PLUS  0
+#define %'ModuleName'%.CPU_IS_M4       0
+#define %'ModuleName'%.CPU_IS_M7       1
+%else %- default
+#define %'ModuleName'%.CPU_IS_M0_PLUS  0
+#define %'ModuleName'%.CPU_IS_M4       1
+#define %'ModuleName'%.CPU_IS_M7       0
 %endif
 %else
 #error "Not a Kinetis!"
 %endif
+
 %if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
 #define %'ModuleName'%.IS_USING_KINETIS_SDK   1 /* 1: using Kinetis SDK, 0: not using Kinetis SDK */
 %else
@@ -142,6 +155,10 @@ typedef enum {
 %endif
 
 %-BW_CUSTOM_USERTYPE_END
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
@@ -245,6 +262,10 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+
 #endif
 /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
@@ -267,6 +288,9 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-   Example:
 %-     #include "header_name.h"
 #include <stddef.h> /* for size_t */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  #include "fsl_sim.h" /* system integration module */
+#endif
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -322,8 +346,9 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
   if (res!=ERR_OK) {
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n");
   }
-  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  UID", buf, io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Family", (uint8_t*)%'ModuleName'%.%GetKinetisFamilyString(), io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   return ERR_OK;
@@ -375,6 +400,23 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  sim_uid_t tmp;
+  int i, j;
+
+  SIM_GetUniqueId(&tmp);
+  /* init */
+  for(i=0;i<sizeof(%'ModuleName'_UID);i++) {
+    uid->id[i] = 0;
+  }
+  if (sizeof(sim_uid_t)>sizeof(%'ModuleName'_UID)) {
+    return ERR_OVERFLOW;
+  }
+  /* copy into our own structure, data is right justified */
+  for(i=0,j=sizeof(%'ModuleName'_UID)-sizeof(sim_uid_t);i<sizeof(sim_uid_t)&&i<sizeof(%'ModuleName'_UID);i++,j++) {
+    uid->id[j] = ((uint8_t*)&tmp)[i];
+  }
+#else
 #ifdef SIM_UIDMH /* 80 or 128 bit UUID: SIM_UIDMH, SIM_UIDML and SIM_UIDL */
 #ifdef SIM_UIDH
   uid->id[0] = (SIM_UIDH>>24)&0xff;
@@ -434,6 +476,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[14] = (SIM_UUIDL>>8)&0xff;
   uid->id[15] = SIM_UUIDL&0xff;
 #endif
+#endif /* SDK V2.0 */
   return ERR_OK;
 }
 
@@ -546,16 +589,18 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   return "KE0x Family"; /* 0000 only KE0x supported */
 #else
   #error "Unknown architecture!"
-  return "ERROR";
+  return (%'ModuleName'_ConstCharPtr)"ERROR";
 #endif
 #elif %'ModuleName'%.CPU_IS_M4
   int32_t val;
 
   val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
   return KinetisM4FamilyStrings[val];
+#elif %'ModuleName'%.CPU_IS_M7
+  return (%'ModuleName'_ConstCharPtr)"Cortex-M7";
 #else
   #error "Unknown architecture!"
-  return "ERROR";
+  return (%'ModuleName'_ConstCharPtr)"ERROR";
 #endif
 }
 
