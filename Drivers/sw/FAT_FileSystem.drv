@@ -1120,9 +1120,6 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
 #if !%'ModuleName'%.FS_READONLY
   %'ModuleName'%.FATFS *fs;
 #endif
-#if %'ModuleName'%.USE_LFN
-  %'ModuleName'%.DEF_NAMEBUF(fileName);
-#endif
 
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"Directory of ", io->stdOut);
   %@Shell@'ModuleName'%.SendStr(dirPathPtr, io->stdOut);
@@ -1133,11 +1130,6 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
     return ERR_FAULT;
   }
   p1 = s1 = s2 = 0;
-#if %'ModuleName'%.USE_LFN
-  %'ModuleName'%.INIT_NAMEBUF(fileName);
-  fInfo.lfname = (TCHAR*)%'ModuleName'%.PTR_NAMEBUF(fileName);
-  fInfo.lfsize = %'ModuleName'%.SIZE_NAMEBUF(fileName);
-#endif
   for(;;) {
     fres = %'ModuleName'%.readdir(&dir, &fInfo);
     if (fres != FR_OK) {
@@ -1199,7 +1191,7 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
     %@Shell@'ModuleName'%.SendStr((unsigned char*)fInfo.fname, io->stdOut);
 #if %'ModuleName'%.USE_LFN
     io->stdOut(' ');
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)fInfo.lfname, io->stdOut);
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)fInfo.altname, io->stdOut);
 #endif
     io->stdOut('\r');
     io->stdOut('\n');
@@ -1234,9 +1226,6 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
 #endif
   io->stdOut('\r');
   io->stdOut('\n');
-#if %'ModuleName'%.USE_LFN
-  %'ModuleName'%.FREE_NAMEBUF(fileName);
-#endif
   return ERR_OK;
 }
 
