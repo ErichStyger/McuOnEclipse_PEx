@@ -153,8 +153,10 @@ static unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7'
 //
 // Allocate buffers for channel 0
 //
+#if SEGGER_RTT_CHANNEL_0_ENABLED /* << EST */
 static char _acUpBuffer  [BUFFER_SIZE_UP];
 static char _acDownBuffer[BUFFER_SIZE_DOWN];
+#endif
 //
 // Initialize SEGGER Real-time-Terminal control block (CB)
 //
