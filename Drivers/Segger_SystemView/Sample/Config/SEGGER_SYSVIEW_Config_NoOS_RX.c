@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -46,7 +46,7 @@
 File    : SEGGER_SYSVIEW_Config_NoOS_RX.c
 Purpose : Sample setup configuration of SystemView on Renesas RX 
           systems without an operating system.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3734 $
 */
 #include "RTOS.h"
 #include "SEGGER_SYSVIEW.h"

@@ -38,14 +38,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_FreeRTOS.c
 Purpose : Interface between FreeRTOS and SystemView.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3734 $
 */
 #include "FreeRTOS.h"
 #include "task.h"

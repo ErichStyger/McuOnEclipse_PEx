@@ -38,17 +38,17 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_uCOSIII.c
 Purpose : Interface between Micrium uC/OS-III and SystemView.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3809 $
 */
 
-#include <os_trace.h>
+#include <os_trace_events.h>
 
 #ifndef SYSVIEW_MEMSET
   #include <string.h>

@@ -38,14 +38,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_embOS.c
 Purpose : Interface between embOS and System View.
-Revision: $Rev: 3745 $
+Revision: $Rev: 3808 $
 */
 
 #include "RTOS.h"

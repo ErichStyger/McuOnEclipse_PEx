@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -47,7 +47,7 @@ File    : SEGGER_SYSVIEW_Config_embOS_CM0.c
 Purpose : Sample setup configuration of SystemView with embOS
           on Cortex-M0/Cortex-M0+/Cortex-M1 systems which do not 
           have a cycle counter.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3734 $
               
 Additional information:
   SEGGER_SYSVIEW_TickCnt has to be defined in the module which handles

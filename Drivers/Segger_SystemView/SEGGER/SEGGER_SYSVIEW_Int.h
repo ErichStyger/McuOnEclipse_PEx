@@ -38,13 +38,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 File    : SEGGER_SYSVIEW_Int.h
 Purpose : SEGGER SystemView internal header.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3734 $
 */
 
 #ifndef SEGGER_SYSVIEW_INT_H

@@ -38,13 +38,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.38                                    *
+*       SystemView version: V2.40                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 File    : SEGGER_SYSVIEW.h
 Purpose : System visualization API.
-Revision: $Rev: 3735 $
+Revision: $Rev: 3807 $
 */
 
 #ifndef SEGGER_SYSVIEW_H
@@ -92,85 +92,85 @@ extern "C" {
 //
 // SystemView events. First 32 IDs from 0 .. 31 are reserved for these
 //
-#define   SEGGER_SYSVIEW_EVENT_ID_NOP                0  // Dummy packet.
-#define   SEGGER_SYSVIEW_EVENT_ID_OVERFLOW           1
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_ENTER          2
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_EXIT           3
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_START_EXEC    4
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_EXEC     5
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_START_READY   6
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_READY    7
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_CREATE        8
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_INFO          9
-#define   SEGGER_SYSVIEW_EVENT_ID_TRACE_START       10
-#define   SEGGER_SYSVIEW_EVENT_ID_TRACE_STOP        11
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSTIME_CYCLES    12
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSTIME_US        13
-#define   SEGGER_SYSVIEW_EVENT_ID_SYSDESC           14
-#define   SEGGER_SYSVIEW_EVENT_ID_USER_START        15
-#define   SEGGER_SYSVIEW_EVENT_ID_USER_STOP         16
-#define   SEGGER_SYSVIEW_EVENT_ID_IDLE              17
-#define   SEGGER_SYSVIEW_EVENT_ID_ISR_TO_SCHEDULER  18
-#define   SEGGER_SYSVIEW_EVENT_ID_TIMER_ENTER       19
-#define   SEGGER_SYSVIEW_EVENT_ID_TIMER_EXIT        20
-#define   SEGGER_SYSVIEW_EVENT_ID_STACK_INFO        21
-#define   SEGGER_SYSVIEW_EVENT_ID_MODULEDESC        22
+#define   SYSVIEW_EVTID_NOP                0  // Dummy packet.
+#define   SYSVIEW_EVTID_OVERFLOW           1
+#define   SYSVIEW_EVTID_ISR_ENTER          2
+#define   SYSVIEW_EVTID_ISR_EXIT           3
+#define   SYSVIEW_EVTID_TASK_START_EXEC    4
+#define   SYSVIEW_EVTID_TASK_STOP_EXEC     5
+#define   SYSVIEW_EVTID_TASK_START_READY   6
+#define   SYSVIEW_EVTID_TASK_STOP_READY    7
+#define   SYSVIEW_EVTID_TASK_CREATE        8
+#define   SYSVIEW_EVTID_TASK_INFO          9
+#define   SYSVIEW_EVTID_TRACE_START       10
+#define   SYSVIEW_EVTID_TRACE_STOP        11
+#define   SYSVIEW_EVTID_SYSTIME_CYCLES    12
+#define   SYSVIEW_EVTID_SYSTIME_US        13
+#define   SYSVIEW_EVTID_SYSDESC           14
+#define   SYSVIEW_EVTID_USER_START        15
+#define   SYSVIEW_EVTID_USER_STOP         16
+#define   SYSVIEW_EVTID_IDLE              17
+#define   SYSVIEW_EVTID_ISR_TO_SCHEDULER  18
+#define   SYSVIEW_EVTID_TIMER_ENTER       19
+#define   SYSVIEW_EVTID_TIMER_EXIT        20
+#define   SYSVIEW_EVTID_STACK_INFO        21
+#define   SYSVIEW_EVTID_MODULEDESC        22
 
-#define   SEGGER_SYSVIEW_EVENT_ID_INIT              24
-#define   SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE     25
-#define   SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED   26
-#define   SEGGER_SYSVIEW_EVENT_ID_NUMMODULES        27
-#define   SEGGER_SYSVIEW_EVENT_ID_END_CALL          28
-#define   SEGGER_SYSVIEW_EVENT_ID_TASK_TERMINATE    29
+#define   SYSVIEW_EVTID_INIT              24
+#define   SYSVIEW_EVTID_NAME_RESOURCE     25
+#define   SYSVIEW_EVTID_PRINT_FORMATTED   26
+#define   SYSVIEW_EVTID_NUMMODULES        27
+#define   SYSVIEW_EVTID_END_CALL          28
+#define   SYSVIEW_EVTID_TASK_TERMINATE    29
 
-#define   SEGGER_SYSVIEW_EVENT_ID_EX                31
+#define   SYSVIEW_EVTID_EX                31
 //
 // Event masks to disable/enable events
 //
-#define   SEGGER_SYSVIEW_EVENT_MASK_NOP               (1 << SEGGER_SYSVIEW_EVENT_ID_NOP)
-#define   SEGGER_SYSVIEW_EVENT_MASK_OVERFLOW          (1 << SEGGER_SYSVIEW_EVENT_ID_OVERFLOW)
-#define   SEGGER_SYSVIEW_EVENT_MASK_ISR_ENTER         (1 << SEGGER_SYSVIEW_EVENT_ID_ISR_ENTER)
-#define   SEGGER_SYSVIEW_EVENT_MASK_ISR_EXIT          (1 << SEGGER_SYSVIEW_EVENT_ID_ISR_EXIT)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_START_EXEC   (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_START_EXEC)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_STOP_EXEC    (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_EXEC)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_START_READY  (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_START_READY)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_STOP_READY   (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_STOP_READY)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_CREATE       (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_CREATE)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_INFO         (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_INFO)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TRACE_START       (1 << SEGGER_SYSVIEW_EVENT_ID_TRACE_START)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TRACE_STOP        (1 << SEGGER_SYSVIEW_EVENT_ID_TRACE_STOP)
-#define   SEGGER_SYSVIEW_EVENT_MASK_SYSTIME_CYCLES    (1 << SEGGER_SYSVIEW_EVENT_ID_SYSTIME_CYCLES)
-#define   SEGGER_SYSVIEW_EVENT_MASK_SYSTIME_US        (1 << SEGGER_SYSVIEW_EVENT_ID_SYSTIME_US)
-#define   SEGGER_SYSVIEW_EVENT_MASK_SYSDESC           (1 << SEGGER_SYSVIEW_EVENT_ID_SYSDESC)
-#define   SEGGER_SYSVIEW_EVENT_MASK_USER_START        (1 << SEGGER_SYSVIEW_EVENT_ID_USER_START)
-#define   SEGGER_SYSVIEW_EVENT_MASK_USER_STOP         (1 << SEGGER_SYSVIEW_EVENT_ID_USER_STOP)
-#define   SEGGER_SYSVIEW_EVENT_MASK_IDLE              (1 << SEGGER_SYSVIEW_EVENT_ID_IDLE)
-#define   SEGGER_SYSVIEW_EVENT_MASK_ISR_TO_SCHEDULER  (1 << SEGGER_SYSVIEW_EVENT_ID_ISR_TO_SCHEDULER)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TIMER_ENTER       (1 << SEGGER_SYSVIEW_EVENT_ID_TIMER_ENTER)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TIMER_EXIT        (1 << SEGGER_SYSVIEW_EVENT_ID_TIMER_EXIT)
-#define   SEGGER_SYSVIEW_EVENT_MASK_STACK_INFO        (1 << SEGGER_SYSVIEW_EVENT_ID_STACK_INFO)
-#define   SEGGER_SYSVIEW_EVENT_MASK_MODULEDESC        (1 << SEGGER_SYSVIEW_EVENT_ID_MODULEDESC)
+#define   SYSVIEW_EVTMASK_NOP               (1 << SYSVIEW_EVTID_NOP)
+#define   SYSVIEW_EVTMASK_OVERFLOW          (1 << SYSVIEW_EVTID_OVERFLOW)
+#define   SYSVIEW_EVTMASK_ISR_ENTER         (1 << SYSVIEW_EVTID_ISR_ENTER)
+#define   SYSVIEW_EVTMASK_ISR_EXIT          (1 << SYSVIEW_EVTID_ISR_EXIT)
+#define   SYSVIEW_EVTMASK_TASK_START_EXEC   (1 << SYSVIEW_EVTID_TASK_START_EXEC)
+#define   SYSVIEW_EVTMASK_TASK_STOP_EXEC    (1 << SYSVIEW_EVTID_TASK_STOP_EXEC)
+#define   SYSVIEW_EVTMASK_TASK_START_READY  (1 << SYSVIEW_EVTID_TASK_START_READY)
+#define   SYSVIEW_EVTMASK_TASK_STOP_READY   (1 << SYSVIEW_EVTID_TASK_STOP_READY)
+#define   SYSVIEW_EVTMASK_TASK_CREATE       (1 << SYSVIEW_EVTID_TASK_CREATE)
+#define   SYSVIEW_EVTMASK_TASK_INFO         (1 << SYSVIEW_EVTID_TASK_INFO)
+#define   SYSVIEW_EVTMASK_TRACE_START       (1 << SYSVIEW_EVTID_TRACE_START)
+#define   SYSVIEW_EVTMASK_TRACE_STOP        (1 << SYSVIEW_EVTID_TRACE_STOP)
+#define   SYSVIEW_EVTMASK_SYSTIME_CYCLES    (1 << SYSVIEW_EVTID_SYSTIME_CYCLES)
+#define   SYSVIEW_EVTMASK_SYSTIME_US        (1 << SYSVIEW_EVTID_SYSTIME_US)
+#define   SYSVIEW_EVTMASK_SYSDESC           (1 << SYSVIEW_EVTID_SYSDESC)
+#define   SYSVIEW_EVTMASK_USER_START        (1 << SYSVIEW_EVTID_USER_START)
+#define   SYSVIEW_EVTMASK_USER_STOP         (1 << SYSVIEW_EVTID_USER_STOP)
+#define   SYSVIEW_EVTMASK_IDLE              (1 << SYSVIEW_EVTID_IDLE)
+#define   SYSVIEW_EVTMASK_ISR_TO_SCHEDULER  (1 << SYSVIEW_EVTID_ISR_TO_SCHEDULER)
+#define   SYSVIEW_EVTMASK_TIMER_ENTER       (1 << SYSVIEW_EVTID_TIMER_ENTER)
+#define   SYSVIEW_EVTMASK_TIMER_EXIT        (1 << SYSVIEW_EVTID_TIMER_EXIT)
+#define   SYSVIEW_EVTMASK_STACK_INFO        (1 << SYSVIEW_EVTID_STACK_INFO)
+#define   SYSVIEW_EVTMASK_MODULEDESC        (1 << SYSVIEW_EVTID_MODULEDESC)
 
-#define   SEGGER_SYSVIEW_EVENT_MASK_INIT              (1 << SEGGER_SYSVIEW_EVENT_ID_INIT)
-#define   SEGGER_SYSVIEW_EVENT_MASK_NAME_RESOURCE     (1 << SEGGER_SYSVIEW_EVENT_ID_NAME_RESOURCE)
-#define   SEGGER_SYSVIEW_EVENT_MASK_PRINT_FORMATTED   (1 << SEGGER_SYSVIEW_EVENT_ID_PRINT_FORMATTED)
-#define   SEGGER_SYSVIEW_EVENT_MASK_NUMMODULES        (1 << SEGGER_SYSVIEW_EVENT_ID_NUMMODULES)
-#define   SEGGER_SYSVIEW_EVENT_MASK_END_CALL          (1 << SEGGER_SYSVIEW_EVENT_ID_END_CALL)
-#define   SEGGER_SYSVIEW_EVENT_MASK_TASK_TERMINATE    (1 << SEGGER_SYSVIEW_EVENT_ID_TASK_TERMINATE)
+#define   SYSVIEW_EVTMASK_INIT              (1 << SYSVIEW_EVTID_INIT)
+#define   SYSVIEW_EVTMASK_NAME_RESOURCE     (1 << SYSVIEW_EVTID_NAME_RESOURCE)
+#define   SYSVIEW_EVTMASK_PRINT_FORMATTED   (1 << SYSVIEW_EVTID_PRINT_FORMATTED)
+#define   SYSVIEW_EVTMASK_NUMMODULES        (1 << SYSVIEW_EVTID_NUMMODULES)
+#define   SYSVIEW_EVTMASK_END_CALL          (1 << SYSVIEW_EVTID_END_CALL)
+#define   SYSVIEW_EVTMASK_TASK_TERMINATE    (1 << SYSVIEW_EVTID_TASK_TERMINATE)
 
-#define   SEGGER_SYSVIEW_EVENT_MASK_EX                (1 << SEGGER_SYSVIEW_EVENT_ID_EX)
+#define   SYSVIEW_EVTMASK_EX                (1 << SYSVIEW_EVTID_EX)
 
-#define   SEGGER_SYSVIEW_EVENT_MASK_ALL_INTERRUPTS    ( SEGGER_SYSVIEW_EVENT_MASK_ISR_ENTER           \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_ISR_EXIT            \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_ISR_TO_SCHEDULER)
-#define   SEGGER_SYSVIEW_EVENT_MASK_ALL_TASKS         ( SEGGER_SYSVIEW_EVENT_MASK_TASK_START_EXEC     \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_STOP_EXEC      \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_START_READY    \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_STOP_READY     \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_CREATE         \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_INFO           \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_STACK_INFO          \
-                                                      | SEGGER_SYSVIEW_EVENT_MASK_TASK_TERMINATE)
+#define   SYSVIEW_EVTMASK_ALL_INTERRUPTS    ( SYSVIEW_EVTMASK_ISR_ENTER           \
+                                            | SYSVIEW_EVTMASK_ISR_EXIT            \
+                                            | SYSVIEW_EVTMASK_ISR_TO_SCHEDULER)
+#define   SYSVIEW_EVTMASK_ALL_TASKS         ( SYSVIEW_EVTMASK_TASK_START_EXEC     \
+                                            | SYSVIEW_EVTMASK_TASK_STOP_EXEC      \
+                                            | SYSVIEW_EVTMASK_TASK_START_READY    \
+                                            | SYSVIEW_EVTMASK_TASK_STOP_READY     \
+                                            | SYSVIEW_EVTMASK_TASK_CREATE         \
+                                            | SYSVIEW_EVTMASK_TASK_INFO           \
+                                            | SYSVIEW_EVTMASK_STACK_INFO          \
+                                            | SYSVIEW_EVTMASK_TASK_TERMINATE)
 
 /*********************************************************************
 *
@@ -187,9 +187,9 @@ typedef struct {
   U32          StackSize;
 } SEGGER_SYSVIEW_TASKINFO;
 
-typedef struct SEGGER_SYSVIEW_MODULE SEGGER_SYSVIEW_MODULE;
+typedef struct SEGGER_SYSVIEW_MODULE_STRUCT SEGGER_SYSVIEW_MODULE;
 
-struct SEGGER_SYSVIEW_MODULE {
+struct SEGGER_SYSVIEW_MODULE_STRUCT {
   const char*                   sModule;
         U32                     NumEvents;
         U32                     EventOffset;
