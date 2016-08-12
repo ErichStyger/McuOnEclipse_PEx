@@ -1615,7 +1615,6 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			{
 				mtCOVERAGE_TEST_MARKER();
 			}
-
 			vListInsertEnd( &xSuspendedTaskList, &( pxTCB->xStateListItem ) );
 		}
 		taskEXIT_CRITICAL();
@@ -4796,6 +4795,7 @@ const TickType_t xConstTickCount = xTickCount;
 			/* Add the task to the suspended task list instead of a delayed task
 			list to ensure it is not woken by a timing event.  It will block
 			indefinitely. */
+		  traceMOVED_TASK_TO_SUSPENDED_LIST(pxCurrentTCB);
 			vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xStateListItem ) );
 		}
 		else

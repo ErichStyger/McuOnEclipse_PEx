@@ -1662,6 +1662,7 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
   TICK_INTERRUPT_FLAG_SET();
 #endif
   portSET_INTERRUPT_MASK();   /* disable interrupts */
+  traceISR_ENTER();
 #if (configUSE_TICKLESS_IDLE == 1) && configSYSTICK_USE_LOW_POWER_TIMER
   if (restoreTickInterval > 0) { /* we got interrupted during tickless mode and non-standard compare value: reload normal compare value */
     if (restoreTickInterval == 1) {
@@ -1673,7 +1674,10 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
   }
 #endif
   if (xTaskIncrementTick()!=pdFALSE) { /* increment tick count */
+    traceISR_EXIT_TO_SCHEDULER();
     taskYIELD();
+  } else {
+    traceISR_EXIT();
   }
   portCLEAR_INTERRUPT_MASK(); /* enable interrupts again */
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='no'

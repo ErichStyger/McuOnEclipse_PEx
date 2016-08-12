@@ -395,7 +395,7 @@ extern void vPortExitCritical(void);
 %elif (CPUfamily = "Kinetis")
 extern void vPortYieldFromISR(void);
 #define portYIELD()                             vPortYieldFromISR()
-#define portEND_SWITCHING_ISR(xSwitchRequired)  if(xSwitchRequired) vPortYieldFromISR()
+#define portEND_SWITCHING_ISR(xSwitchRequired) { if( xSwitchRequired != pdFALSE ) { traceISR_EXIT_TO_SCHEDULER(); portYIELD(); } else { traceISR_EXIT(); } }
 #define portYIELD_FROM_ISR(x)                   portEND_SWITCHING_ISR(x)
 /*-----------------------------------------------------------*/
 
