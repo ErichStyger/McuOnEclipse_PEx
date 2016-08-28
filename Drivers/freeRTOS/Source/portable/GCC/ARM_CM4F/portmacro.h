@@ -246,26 +246,26 @@ extern void vPortExitCritical(void);
      * registers.  r0 is clobbered.
      */
     #define portSET_INTERRUPT_MASK()  \
-	  __asm volatile            \
-	  (                         \
-	    "  mov r0, %%0 \n" \
-	    "  msr basepri, r0 \n"  \
-	    : /* no output operands */ \
-	    :"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY) /* input */\
-	    :"r0" /* clobber */    \
-	  )
+      __asm volatile               \
+      (                            \
+        "  mov r0, %%0 \n"         \
+        "  msr basepri, r0 \n"     \
+        : /* no output operands */ \
+        :"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY) /* input */\
+        :"r0" /* clobber */    \
+      )
     /*
      * Set basepri back to 0 without effective other registers.
      * r0 is clobbered.
      */
     #define portCLEAR_INTERRUPT_MASK() \
-	  __asm volatile            \
-	  (                         \
-	   "  mov r0, #0      \n"  \
-	   "  msr basepri, r0 \n"  \
-	   : /* no output */       \
-	   : /* no input */        \
-	   :"r0" /* clobber */     \
+      __asm volatile             \
+      (                          \
+         "  mov r0, #0      \n"  \
+         "  msr basepri, r0 \n"  \
+         : /* no output */       \
+         : /* no input */        \
+         :"r0" /* clobber */     \
       )
   #elif (configCOMPILER==configCOMPILER_ARM_IAR) /* IAR */ || (configCOMPILER==configCOMPILER_ARM_FSL) /* legacy FSL ARM Compiler */
     void vPortSetInterruptMask(void); /* prototype, implemented in portasm.s */
@@ -275,7 +275,7 @@ extern void vPortExitCritical(void);
   #else
     #error "unknown compiler?"
   #endif
-#else /* Cortex-M0+ */
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex-M0+ */
   #if configCOMPILER==configCOMPILER_ARM_KEIL
     #define portSET_INTERRUPT_MASK()              __disable_irq()
     #define portCLEAR_INTERRUPT_MASK()            __enable_irq()
@@ -285,21 +285,26 @@ extern void vPortExitCritical(void);
   #endif
 #endif
 
-#define portSET_INTERRUPT_MASK_FROM_ISR()     0;portSET_INTERRUPT_MASK()
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)  portCLEAR_INTERRUPT_MASK();(void)x
-
+/* Critical section management. */
 extern void vPortEnterCritical(void);
 extern void vPortExitCritical(void);
+#define portSET_INTERRUPT_MASK_FROM_ISR()     0;portSET_INTERRUPT_MASK()
+#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)  portCLEAR_INTERRUPT_MASK();(void)x
+#define portDISABLE_INTERRUPTS()              portSET_INTERRUPT_MASK()
+#define portENABLE_INTERRUPTS()               portCLEAR_INTERRUPT_MASK()
+#define portENTER_CRITICAL()                  vPortEnterCritical()
+#define portEXIT_CRITICAL()                   vPortExitCritical()
+#if configCOMPILER==configCOMPILER_ARM_KEIL
+  #define portDISABLE_ALL_INTERRUPTS()   __disable_irq()
+#else /* IAR, CW ARM or GNU ARM gcc */
+  #define portDISABLE_ALL_INTERRUPTS()   __asm volatile("cpsid i")
+#endif
 
 #if configCOMPILER==configCOMPILER_ARM_KEIL
   #define portDISABLE_ALL_INTERRUPTS()   __disable_irq()
 #else /* IAR, CW ARM or GNU ARM gcc */
   #define portDISABLE_ALL_INTERRUPTS()   __asm volatile("cpsid i")
 #endif
-#define portDISABLE_INTERRUPTS()   portSET_INTERRUPT_MASK()
-#define portENABLE_INTERRUPTS()    portCLEAR_INTERRUPT_MASK()
-#define portENTER_CRITICAL()       vPortEnterCritical()
-#define portEXIT_CRITICAL()        vPortExitCritical()
 
 /* There are an uneven number of items on the initial stack, so
 portALIGNMENT_ASSERT_pxCurrentTCB() will trigger false positive asserts. */

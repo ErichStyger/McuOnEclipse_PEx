@@ -165,6 +165,10 @@ static TickCounter_t currTickDuration; /* holds the modulo counter/tick duration
   #define TIMER_COUNTS_FOR_ONE_TICK     (configSYSTICK_CLOCK_HZ/configTICK_RATE_HZ)
 #endif
 
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configCPU_FAMILY==configCPU_FAMILY_ARM_M0P
+  unsigned int SEGGER_SYSVIEW_TickCnt; /* tick counter for Segger SystemViewer */
+#endif
+
 #if configUSE_TICKLESS_IDLE == 1
 #define UL_TIMER_COUNTS_FOR_ONE_TICK  ((TickCounter_t)(TIMER_COUNTS_FOR_ONE_TICK))
 
@@ -1506,9 +1510,6 @@ portLONG uxGetTickCounterValue(void) {
 }
 /*-----------------------------------------------------------*/
 %endif
-#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configCPU_FAMILY==configCPU_FAMILY_ARM_M0P
-unsigned int SEGGER_SYSVIEW_TickCnt; /* tick counter for Segger SystemViewer */
-#endif
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
 void SysTick_Handler(void) {
@@ -1530,7 +1531,7 @@ void vPortTickHandler(void) {
 #if configUSE_TICKLESS_IDLE == 1
   TICK_INTERRUPT_FLAG_SET();
 #endif
-  portSET_INTERRUPT_MASK();   /* disable interrupts */
+  portDISABLE_INTERRUPTS();   /* disable interrupts */
 #if (configUSE_TICKLESS_IDLE == 1) && configSYSTICK_USE_LOW_POWER_TIMER
   if (restoreTickInterval > 0) { /* we got interrupted during tickless mode and non-standard compare value: reload normal compare value */
     if (restoreTickInterval == 1) {
@@ -1544,7 +1545,7 @@ void vPortTickHandler(void) {
   if (xTaskIncrementTick()!=pdFALSE) { /* increment tick count */
     taskYIELD();
   }
-  portCLEAR_INTERRUPT_MASK(); /* enable interrupts again */
+  portENABLE_INTERRUPTS(); /* enable interrupts again */
 }
 #endif
 /*-----------------------------------------------------------*/
@@ -1661,7 +1662,11 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
 #if configUSE_TICKLESS_IDLE == 1
   TICK_INTERRUPT_FLAG_SET();
 #endif
-  portSET_INTERRUPT_MASK();   /* disable interrupts */
+  /* The SysTick runs at the lowest interrupt priority, so when this interrupt
+    executes all interrupts must be unmasked.  There is therefore no need to
+    save and then restore the interrupt mask value as its value is already
+    known. */
+  portDISABLE_INTERRUPTS();   /* disable interrupts */
   traceISR_ENTER();
 #if (configUSE_TICKLESS_IDLE == 1) && configSYSTICK_USE_LOW_POWER_TIMER
   if (restoreTickInterval > 0) { /* we got interrupted during tickless mode and non-standard compare value: reload normal compare value */
@@ -1679,7 +1684,7 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
   } else {
     traceISR_EXIT();
   }
-  portCLEAR_INTERRUPT_MASK(); /* enable interrupts again */
+  portENABLE_INTERRUPTS(); /* re-enable interrupts */
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='no'
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
   #if __OPTIMIZE_SIZE__ || __OPTIMIZE__
@@ -1940,7 +1945,7 @@ __asm void vPortPendSVHandler(void) {
   bx r14
   nop
 }
-#else /* Cortex M0+ */
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Keil: Cortex M0+ */
 #if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
@@ -2041,7 +2046,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " mrs r0, psp                \n"
     "                            \n"
     " ldr r3, pxCurrentTCBConst  \n" /* Get the location of the current TCB. */
-    " ldr r2, [r3]   \n"
+    " ldr r2, [r3]               \n"
     "                            \n"
     " sub r0, r0, #32            \n" /* Make space for the remaining low registers. */
     " str r0, [r2]               \n" /* Save the new top of stack. */
