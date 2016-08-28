@@ -486,30 +486,15 @@ vPortSVCHandler:
     bx r14
     nop
 #elif configCPU_FAMILY==configCPU_FAMILY_ARM_M0P /* Cortex M0+ */
-    ldr r3, =pxCurrentTCB       /* Restore the context. */
-    ldr r1, [r3]                /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
-    ldr r0, [r1]                /* The first item in pxCurrentTCB is the task top of stack. */
-    adds r0, r0, #16            /* Move to the high registers. */
-    ldmia r0!, {r4-r7}          /* Pop the high registers. */
-    mov r8, r4
-    mov r9, r5
-    mov r10, r6
-    mov r11, r7
-
-    msr psp, r0                 /* Remember the new top of stack for the task. */
-
-    subs r0, r0, #32            /* Go back for the low registers that are not automatically restored. */
-    ldmia r0!, {r4-r7}          /* Pop low registers.  */
-    mov r1, r14                 /* OR R14 with 0x0d. */
-    movs r0, #0x0d
-    orrs r1, r0
-    bx r1
-    nop
+  /* This function is no longer used, but retained for backward
+  compatibility. */
+  bx lr
 #else
   #error "CPU not supported!"
 #endif
 /*-----------------------------------------------------------*/
 vPortStartFirstTask:
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  /* Cortex M4 or M7 */
   /* Use the Vector Table Offset Register to locate the stack. */
   ldr r0, =VECTOR_TABLE_OFFSET_REG  /* (VTOR) 0xE000ED08 */
   ldr r0, [r0]
@@ -520,6 +505,26 @@ vPortStartFirstTask:
   /* Call SVC to start the first task. */
   svc 0
   nop
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ */
+  /* The MSP stack is not reset as, unlike on M3/4 parts, there is no vector
+  table offset register that can be used to locate the initial stack value.
+  Not all M0 parts have the application vector table at address 0. */
+
+  ldr r3, =pxCurrentTCB /* Obtain location of pxCurrentTCB. */
+  ldr r1, [r3]
+  ldr r0, [r1]      /* The first item in pxCurrentTCB is the task top of stack. */
+  adds r0, #32      /* Discard everything up to r0. */
+  msr psp, r0       /* This is now the new top of stack to use in the task. */
+  movs r0, #2       /* Switch to the psp stack. */
+  msr CONTROL, r0
+  isb
+  pop {r0-r5}       /* Pop the registers that are saved automatically. */
+  mov lr, r5        /* lr is now in r5. */
+  pop {r3}        /* The return address is now in r3. */
+  pop {r2}        /* Pop and discard the XPSR. */
+  cpsie i         /* The first task has its context and interrupts can be enabled. */
+  bx r3         /* Jump to the user defined task code. */
+#endif
 /*-----------------------------------------------------------*/
 #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
 vPortEnableVFP:

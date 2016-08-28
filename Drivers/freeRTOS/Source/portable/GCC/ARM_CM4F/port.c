@@ -1722,6 +1722,7 @@ void vPortStartFirstTask(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 __asm void vPortStartFirstTask(void) {
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
   /* Use the NVIC offset register to locate the stack. */
   ldr r0, =0xE000ED08
   ldr r0, [r0]
@@ -1735,6 +1736,35 @@ __asm void vPortStartFirstTask(void) {
   nop
   nop
   nop
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ */
+  /* With the latest FreeRTOS, the port for M0+ does not use the SVC instruction
+   * and does not need vPortSVCHandler() any more.
+   */
+  extern pxCurrentTCB;
+
+  PRESERVE8
+
+  /* The MSP stack is not reset as, unlike on M3/4 parts, there is no vector
+  table offset register that can be used to locate the initial stack value.
+  Not all M0 parts have the application vector table at address 0. */
+
+  ldr r3, =pxCurrentTCB /* Obtain location of pxCurrentTCB. */
+  ldr r1, [r3]
+  ldr r0, [r1]      /* The first item in pxCurrentTCB is the task top of stack. */
+  adds r0, #32      /* Discard everything up to r0. */
+  msr psp, r0       /* This is now the new top of stack to use in the task. */
+  movs r0, #2       /* Switch to the psp stack. */
+  msr CONTROL, r0
+  isb
+  pop {r0-r5}       /* Pop the registers that are saved automatically. */
+  mov lr, r5        /* lr is now in r5. */
+  pop {r3}        /* The return address is now in r3. */
+  pop {r2}        /* Pop and discard the XPSR. */
+  cpsie i         /* The first task has its context and interrupts can be enabled. */
+  bx r3         /* Finally, jump to the user defined task code. */
+
+  ALIGN
+#endif
 }
 #endif
 /*-----------------------------------------------------------*/
@@ -1747,6 +1777,7 @@ void vPortStartFirstTask(void) {
     dummy_value_for_openocd = uxTopUsedPriority;
   }
 #endif
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
   __asm volatile (
     " ldr r0, =0xE000ED08 \n" /* Use the NVIC offset register to locate the stack. */
     " ldr r0, [r0]        \n" /* load address of vector table */
@@ -1756,6 +1787,33 @@ void vPortStartFirstTask(void) {
     " svc 0               \n" /* System call to start first task. */
     " nop                 \n"
   );
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ */
+  /* With the latest FreeRTOS, the port for M0+ does not use the SVC instruction
+   * and does not need vPortSVCHandler() any more.
+   */
+  /* The MSP stack is not reset as, unlike on M3/4 parts, there is no vector
+  table offset register that can be used to locate the initial stack value.
+  Not all M0 parts have the application vector table at address 0. */
+  __asm volatile(
+    " ldr r2, pxCurrentTCBConst2  \n" /* Obtain location of pxCurrentTCB. */
+    " ldr r3, [r2]        \n"
+    " ldr r0, [r3]        \n" /* The first item in pxCurrentTCB is the task top of stack. */
+    " add r0, #32         \n" /* Discard everything up to r0. */
+    " msr psp, r0         \n" /* This is now the new top of stack to use in the task. */
+    " movs r0, #2         \n" /* Switch to the psp stack. */
+    " msr CONTROL, r0     \n"
+    " isb                 \n"
+    " pop {r0-r5}         \n" /* Pop the registers that are saved automatically. */
+    " mov lr, r5          \n" /* lr is now in r5. */
+    " pop {r3}            \n" /* Return address is now in r3. */
+    " pop {r2}            \n" /* Pop and discard XPSR. */
+    " cpsie i             \n" /* The first task has its context and interrupts can be enabled. */
+    " bx r3               \n" /* Finally, jump to the user defined task code. */
+    "                     \n"
+    " .align 4            \n"
+    "pxCurrentTCBConst2: .word pxCurrentTCB"
+          );
+#endif
 }
 #endif
 /*-----------------------------------------------------------*/
@@ -1789,34 +1847,14 @@ __asm void vPortSVCHandler(void) {
   bx r14
 }
 /*-----------------------------------------------------------*/
-#else /* Cortex M0+ */
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ and Keil */
 #if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
 #endif
-  EXTERN pxCurrentTCB
-
-  /* Get the location of the current TCB. */
-  ldr r3, =pxCurrentTCB  /* Restore the context. */
-  ldr r1, [r3]          /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
-  ldr r0, [r1]          /* The first item in pxCurrentTCB is the task top of stack. */
-  adds r0, #16          /* Move to the high registers. */
-  ldmia r0!, {r4-r7}    /* Pop the high registers. */
-  mov r8, r4 
-  mov r9, r5 
-  mov r10, r6
-  mov r11, r7
-
-  msr psp, r0           /* Remember the new top of stack for the task. */
-
-  subs r0, #32          /* Go back for the low registers that are not automatically restored. */
-  ldmia r0!, {r4-r7}    /* Pop low registers.  */
-  mov r1, r14           /* OR R14 with 0x0d. */
-  movs r0, #0x0d
-  orrs r1, r0
-  bx r1
-  nop
+  /* This function is no longer used, but retained for backward
+  compatibility. */
 }
 #endif
 #endif
@@ -1850,30 +1888,9 @@ __asm volatile (
     " .align 2                   \n"
     "pxCurrentTCBConst2: .word pxCurrentTCB \n"
   );
-#else /* Cortex M0+ */
-  __asm volatile (
-    " ldr r3, pxCurrentTCBConst2 \n" /* Restore the context. */
-    " ldr r1, [r3]               \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
-    " ldr r0, [r1]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
-    " add r0, r0, #16            \n" /* Move to the high registers. */
-    " ldmia r0!, {r4-r7}         \n" /* Pop the high registers. */
-    " mov r8, r4                 \n"
-    " mov r9, r5                 \n"
-    " mov r10, r6                \n"
-    " mov r11, r7                \n"
-    "                            \n"
-    " msr psp, r0                \n" /* Remember the new top of stack for the task. */
-    "                            \n"
-    " sub r0, r0, #32            \n" /* Go back for the low registers that are not automatically restored. */
-    " ldmia r0!, {r4-r7}         \n" /* Pop low registers.  */
-    " mov r1, r14                \n" /* OR R14 with 0x0d. */
-    " movs r0, #0x0d             \n"
-    " orr r1, r0                 \n"
-    " bx r1                      \n"
-    "                            \n"
-    ".align 2                    \n"
-    "pxCurrentTCBConst2: .word pxCurrentTCB \n"
-  );
+#elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ */
+  /* This function is no longer used, but retained for backward
+   compatibility. */
 #endif
 }
 #endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */

@@ -199,7 +199,11 @@
 %- =============================================================================
 
 /* Prototypes for interrupt service handlers */
+%if defined(ARMFamilyType) & ARMFamilyType="M0+"
+%- /* not used for Cortex-M0+ using the latest FreeRTOS port */
+%else
 void vPortSVCHandler(void);
+%endif
 void vPortPendSVHandler(void);
 void vPortTickHandler(void);
 
@@ -212,10 +216,10 @@ void vPortTickHandler(void);
 %-
  %for vect from InterruptVectors
    %if %"%'vect'" = 'defaultInt'
-     %if vect = 'ivINT_SVCall'
-       %define_prj %'vect' vPortSVCHandler
-     %elif vect = 'ivINT_PendableSrvReq'
+     %if vect = 'ivINT_PendableSrvReq'
        %define_prj %'vect' vPortPendSVHandler
+     %elif vect = 'ivINT_SVCall' & defined(ARMFamilyType) & ARMFamilyType!="M0+" %- not needed for M0+
+       %define_prj %'vect' vPortSVCHandler
      %elif defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes' & vect = 'ivINT_LPTMR0' %-(PEversionDecimal >=0 '1313')
        %define_prj %'vect' vPortTickHandler
      %elif defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes' & vect = 'ivINT_LPTimer'
