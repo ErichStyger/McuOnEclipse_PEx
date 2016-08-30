@@ -12,17 +12,26 @@
 %;**%>14 .inf SERVICE %>60: %get(CdcServiceString,Text)
 %;**%>14 Bus reported device %>60: %get(CdcBusReportedDeviceDescriptionString,Text)
 %;**%>14 Bus reported vendor %>60: %get(CdcBusReportedVendorString,Text)
+%;**%>14 Serial Number %>60: %get(CdcSerialNumberString,Text)
+%;**%>14 Device Subclass %>60: %get(UsbCdcDeviceSubClass,Text)
 %else %- USBCDCenabled
 %endif %- USBCDCenabled
+%;**%>12 Configuration %>60: %get(Configuration,Text)
+%;**%>14 USB_EP0_SIZE (in) %>60: %get(USB_EP0_SIZE,Text)
+%;**%>14 USB_EP1_SIZE (out) %>60: %get(USB_EP1_SIZE,Text)
+%;**%>14 USB_EP2_SIZE (notify) %>60: %get(USB_EP2_SIZE,Text)
 %;**%>12 Send Buffer %>60: %get(TxBuffer,Text)
 %;**%>12 Receive Buffer %>60: %get(RxBuffer,Text)
-%;**%>12 Use Timeout %>60: %get(TimeoutEnabled,Text)
+%;**%>12 SendDataBlock %>60: %get(SendBlockConfig,Text)
+%;**%>14 Use Timeout %>60: %get(TimeoutEnabled,Text)
 %if %get(TimeoutEnabled, Bool) = 'yes'
-%;**%>14 Timeout %>60: %get(Timeout,Text)
-%;**%>14 App Task Timeout (ms) %>60: %get(AppTaskTimeout,Text)
+%;**%>16 Timeout %>60: %get(Timeout,Text)
+%;**%>16 App Task Timeout (ms) %>60: %get(AppTaskTimeout,Text)
 %else %- TimeoutEnabled
 %endif %- TimeoutEnabled
+%;**%>14 Waiting time (ms) %>60: %get(SendDataBlockWaitms,Text)
+%;**%>14 Wait %>60: %get(Wait,Text)
 %;**%>12 Power Options %>60: %get(PowerOptionsGroup,Text)
 %;**%>14 Bus Powered %>60: %get(ConfigBusPowered,Text)
 %;**%>14 Self Powered %>60: %get(ConfigSelfPowered,Text)
-
+%;**%>14 Current Draw (mA) %>60: %get(USBCurrentDraw_mA,Text)

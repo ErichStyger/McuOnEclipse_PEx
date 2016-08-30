@@ -90,8 +90,13 @@ uint_8 USB_DESC_CONST g_device_descriptor[DEVICE_DESCRIPTOR_SIZE] =
    0x00, 0x02,                           /*  BCD USB version                */
    0x02,                                 /*  Device Class is indicated in
                                              the interface descriptors      */
+%if defined(UsbCdcDeviceSubClass)
+   0x%#b%UsbCdcDeviceSubClass,                                 /*  Device Subclass is indicated
+                                             in the interface descriptors   */
+%else
    0x00,                                 /*  Device Subclass is indicated
                                              in the interface descriptors   */
+%endif
    0x00,                                 /*  Device Protocol                */
    CONTROL_MAX_PACKET_SIZE,              /*  Max Packet size                */
 #if 0 /* << EST */
