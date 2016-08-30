@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.085</Version>
+    <Version>01.086</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -210,7 +210,7 @@
             <TIntgItem>
               <Name>Device Subclass</Name>
               <Symbol>UsbCdcDeviceSubClass</Symbol>
-              <Hint>This configures the device subclass field in the USB descriptor inside usb_descriptor.c. Default is 0.</Hint>
+              <Hint>This configures the device subclass field in the USB descriptor inside usb_descriptor.c. Default is 0. On Windows 10, a subclass code of 2 loades usbsys driver automatically, see https://msdn.microsoft.com/en-us/library/windows/hardware/dn707976(v=vs.85)</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>0</DefaultValue>
