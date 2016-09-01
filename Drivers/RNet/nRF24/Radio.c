@@ -17,8 +17,9 @@
 #include "%@Utility@'ModuleName'.h"
 #include "Events.h" /* for event handler interface */
 
-#define NRF24_DYNAMIC_PAYLOAD  1 /* if set to one, use dynamic payload size */
-#define RADIO_CHANNEL_DEFAULT  RNET_CONFIG_TRANSCEIVER_CHANNEL  /* default communication channel */
+#define NRF24_DYNAMIC_PAYLOAD     1 /* if set to one, use dynamic payload size */
+#define RADIO_CHANNEL_DEFAULT     RNET_CONFIG_TRANSCEIVER_CHANNEL  /* default communication channel */
+#define NRF24_WAITNG_TIMEOUT_MS   20 /* timeout value in milliseconds, used for RADIO_WAITING_DATA_SENT */
 
 /* macros to configure device either for RX or TX operation */
 #define %@nRF24L01p@'ModuleName'%.CONFIG_SETTINGS  (%@nRF24L01p@'ModuleName'%.EN_CRC|%@nRF24L01p@'ModuleName'%.CRCO)
@@ -228,6 +229,9 @@ static uint8_t CheckRx(void) {
 }
 
 static void RADIO_HandleStateMachine(void) {
+#if NRF24_WAITNG_TIMEOUT_MS>0
+  static TickType_t sentTimeTickCntr = 0; /* used for timeout */
+#endif
   uint8_t status, res;
   
   for(;;) { /* will break/return */
@@ -282,6 +286,9 @@ static void RADIO_HandleStateMachine(void) {
       case RADIO_CHECK_TX:
         res = CheckTx();
         if (res==ERR_OK) { /* there was data and it has been sent */
+          #if NRF24_WAITNG_TIMEOUT_MS>0
+          sentTimeTickCntr = xTaskGetTickCount(); /* remember time when it was sent, used for timeout */
+          #endif
           RADIO_AppStatus = RADIO_WAITING_DATA_SENT;
           break; /* process switch again */
         } else if (res==ERR_DISABLED) { /* powered down transceiver */
@@ -318,6 +325,11 @@ static void RADIO_HandleStateMachine(void) {
           }
           break; /* process switch again */
         }
+      #if NRF24_WAITNG_TIMEOUT_MS>0
+        if (pdMS_TO_TICKS((sentTimeTickCntr-xTaskGetTickCount()))>NRF24_WAITNG_TIMEOUT_MS) {
+          RADIO_AppStatus = RADIO_TIMEOUT; /* timeout */
+        }
+      #endif
         return;
         
       case RADIO_TIMEOUT:
