@@ -783,7 +783,7 @@ void %@RuntimeCntr@OnInterrupt(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xQueueReceiveFromISR
 %ifdef xQueueReceiveFromISR
-#define %'ModuleName'%.%xQueueReceivefromISR(xQueue, pvBuffer, pxHigherPriorityTaskWoken) \
+#define %'ModuleName'%.%xQueueReceiveFromISR(xQueue, pvBuffer, pxHigherPriorityTaskWoken) \
   xQueueReceiveFromISR(xQueue, pvBuffer, pxHigherPriorityTaskWoken)
 %define! ParxQueue
 %define! ParpvBuffer

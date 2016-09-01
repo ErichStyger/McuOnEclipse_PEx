@@ -127,5 +127,7 @@
 %- -----------------------------------------
 
 %undef RTOSSrcDirFolder
+%undef RTOSMemMangDirFolder
 %undef RTOSHeaderDirFolder
 %undef RTOSPortDirFolder
+%undef RTOSConfigDirFolder

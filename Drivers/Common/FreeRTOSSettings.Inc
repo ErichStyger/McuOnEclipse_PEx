@@ -33,7 +33,7 @@
 %endif %- Custom_portBASE_TYPE
 %;**%>12 Classic CodeWarrior %>60: %get(IsClassicCW,Text)
 %;**%>12 Disabled Interrupts in Startup %>60: %get(DisabledInterruptsInStartup,Text)
-%;**%>12 configASSERT defined %>60: %get(configASSERTdefined,Text)
+%;**%>12 configASSERT %>60: %get(configASSERTdefined,Text)
 %;**%>12 Enable GDB Debug Helper %>60: %get(EnableGDBDebugHelper,Text)
 %;**%>12 Application Task Tags %>60: %get(UseApplicationTaskTags,Text)
 %;**%>12 Thread Local Storage Pointers %>60: %get(NumThreadLocalStoragePointers,Text)
@@ -48,7 +48,7 @@
 %;**%>14 Percepio FreeRTOS+Trace %>60: %get(FRTrace,Text)
 %else %- UseTraceHooksGroup
 %endif %- UseTraceHooksGroup
-%;**%>12 Collect Runtime Statistics %>60: %get(CollectRuntimeStatisticsGroup,Text)
+%;**%>12 Generate Runtime Statistics %>60: %get(CollectRuntimeStatisticsGroup,Text)
 %if %get(CollectRuntimeStatisticsGroup, Bool) = 'yes'
 %;**%>14 Use Tick Counter %>60: %get(RuntimeCounterUseTickCounter,Text)
 %;**%>14 LDD %>60: %get(LDDRuntimeCounterGroup,Text)
