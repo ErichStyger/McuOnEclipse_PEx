@@ -296,14 +296,10 @@ extern void vPortExitCritical(void);
 #define portEXIT_CRITICAL()                   vPortExitCritical()
 #if configCOMPILER==configCOMPILER_ARM_KEIL
   #define portDISABLE_ALL_INTERRUPTS()   __disable_irq()
+  #define portENABLE_ALL_INTERRUPTS()    __enable_irq()
 #else /* IAR, CW ARM or GNU ARM gcc */
   #define portDISABLE_ALL_INTERRUPTS()   __asm volatile("cpsid i")
-#endif
-
-#if configCOMPILER==configCOMPILER_ARM_KEIL
-  #define portDISABLE_ALL_INTERRUPTS()   __disable_irq()
-#else /* IAR, CW ARM or GNU ARM gcc */
-  #define portDISABLE_ALL_INTERRUPTS()   __asm volatile("cpsid i")
+  #define portENABLE_ALL_INTERRUPTS()    __asm volatile("cpsie i")
 #endif
 
 /* There are an uneven number of items on the initial stack, so
