@@ -497,7 +497,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
  */
 bool %'ModuleName'%.%UIDSame(const %'ModuleName'_UID *src, const %'ModuleName'_UID *dst)
 {
-  int i;
+  unsigned int i;
 
   for(i=0; i<sizeof(%'ModuleName'_UID); i++) {
     if (src->id[i]!=dst->id[i]) {
@@ -525,7 +525,7 @@ bool %'ModuleName'%.%UIDSame(const %'ModuleName'_UID *src, const %'ModuleName'_U
  */
 uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, size_t bufSize)
 {
-  int i;
+  unsigned int i;
 
   %@Utility@'ModuleName'%.strcpy(buf, bufSize, (unsigned char*)"{");
   for(i=0;i<sizeof(%'ModuleName'_UID);i++) {
