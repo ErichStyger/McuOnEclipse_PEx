@@ -826,7 +826,7 @@ bool %'ModuleName'%.%IsHistoryCharacter(uint8_t ch, uint8_t *cmdBuf, size_t cmdB
   *isPrev = FALSE;
 #if %'ModuleName'%.HISTORY_ENABLED
   if (   cmdBufIdx==0 /* first character on command line */
-      || (%@Utility@'ModuleName'%.strcmp(cmdBuf, %'ModuleName'%.history[%'ModuleName'%.history_index])==0) /* pressing prev/next character on previous history element */
+      || (%@Utility@'ModuleName'%.strcmp((const char*)cmdBuf, (const char*)%'ModuleName'%.history[%'ModuleName'%.history_index])==0) /* pressing prev/next character on previous history element */
       )
   {
     if (ch==%'ModuleName'%.HISTORY_PREV_CHAR) {
@@ -939,8 +939,8 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
           }
           %@Utility@'ModuleName'%.strcpy(bufStart, %'ModuleName'%.HIST_LEN, %'ModuleName'_history[%'ModuleName'_history_index]);
         }
-        bufSize = bufSize + buf - bufStart - %@Utility@'ModuleName'%.strlen(bufStart);%>40/* update the buffer */
-        buf = bufStart + %@Utility@'ModuleName'%.strlen(bufStart);
+        bufSize = bufSize + buf - bufStart - %@Utility@'ModuleName'%.strlen((const char*)bufStart);%>40/* update the buffer */
+        buf = bufStart + %@Utility@'ModuleName'%.strlen((const char*)bufStart);
 #endif
 #if %'ModuleName'%.ECHO_ENABLED
         if (%'ModuleName'_EchoEnabled) {

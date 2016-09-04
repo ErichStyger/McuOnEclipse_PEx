@@ -9,28 +9,28 @@
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
     <PreparedHint>  typedef struct { /* Time in binary format */\n
-    byte hour; /* hours */\n
-    byte min; /* minutes */\n
-    byte sec; /* seconds */\n
+    uint8_t hour; /* hours */\n
+    uint8_t min; /* minutes */\n
+    uint8_t sec; /* seconds */\n
     bool mode; /* clock mode, 0 for 12-hour mode, otherwise 0-24 hour mode */\n
-    byte am_pm; /* 0: AM, otherwise PM */\n
+    uint8_t am_pm; /* 0: AM, otherwise PM */\n
   } %'ModuleName'_TTIME;\n
 </PreparedHint>
     <RecordItem>
       <ItemName>hour</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>hours</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>min</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>minutes</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>sec</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>seconds</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
@@ -42,7 +42,7 @@
     </RecordItem>
     <RecordItem>
       <ItemName>am_pm</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>0: AM, otherwise PM</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
@@ -55,33 +55,33 @@
     <Unique>yes</Unique>
     <GenerateHelp>yes</GenerateHelp>
     <PreparedHint>  typedef struct { /* Date in binary format */\n
-    byte year; /* year */\n
-    byte month; /* month */\n
-    byte day; /* day */\n
-    byte dayOfWeek; /* Day of week, where 0 is the first day. In the range of 0..6 */\n
+    uint8_t year; /* year */\n
+    uint8_t month; /* month */\n
+    uint8_t day; /* day */\n
+    uint8_t dayOfWeek; /* Day of week, where 0 is the first day. In the range of 0..6 */\n
   } %'ModuleName'_TDATE;\n
 </PreparedHint>
     <RecordItem>
       <ItemName>year</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>year</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>month</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>month</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>day</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>day</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>dayOfWeek</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>Day of week, where 0 is the first day. In the range of 0..6</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
@@ -107,5 +107,27 @@
     <PreparedHint>  typedef int16_t DATEREC ;\n
 </PreparedHint>
     <Type>16bit signed</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint8_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef byte uint8_t ;\n
+</PreparedHint>
+    <Type>8bit unsigned</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint16_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef word uint16_t ;\n
+</PreparedHint>
+    <Type>16bit unsigned</Type>
   </Type>
 </UserTypes>

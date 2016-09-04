@@ -1086,7 +1086,7 @@ static void CmdUsageError(const unsigned char *cmd, uint8_t *usage, const %@Shel
 }
 
 static void PrintInASCII(uint8_t *buf, size_t bufSize, size_t LineLen, uint8_t nonASCIIchar, uint8_t fillChar, const %@Shell@'ModuleName'%.StdIOType *io) {
-  int i;
+  unsigned int i;
   uint8_t ch;
 
   /* print in ASCII */

@@ -2280,6 +2280,12 @@ UBaseType_t xGetTaskHandles(TaskHandle_t pxTaskHandleArray[], UBaseType_t xNofTa
  * \param pucStaticallyAllocated 0, if statically allocated, !=0 if allocated dynamically
  */
 void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t **ppxEnd, StackType_t **ppxTopOfStack, uint8_t *pucStaticallyAllocated);
+
+/*!
+ * \brief Return a pointer to the task start
+ * \param xTask Task handle
+ */
+uint8_t* pxTaskGetStackStart(TaskHandle_t xTask);
 #endif
 
 #ifdef __cplusplus

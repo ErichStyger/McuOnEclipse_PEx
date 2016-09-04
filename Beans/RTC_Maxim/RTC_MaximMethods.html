@@ -211,11 +211,11 @@ LI.EXP {
  - Returns the time and date from the device.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetRTCTimeDate(<i>ComponentName_</i>TTIME *time, <i>ComponentName_</i>TDATE *date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetRTCTimeDate(<i>ComponentName_</i>TTIME *time, <i>ComponentName_</i>TDATE *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>time: Pointer to <i>ComponentName_</i>TTIME</i> - Pointer to time</li>
 <li><i>date: Pointer to <i>ComponentName_</i>TDATE</i> - Pointer to date</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -224,11 +224,11 @@ LI.EXP {
  - Sets the date and time.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetRTCTimeDate(<i>ComponentName_</i>TTIME *time, <i>ComponentName_</i>TDATE *date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetRTCTimeDate(<i>ComponentName_</i>TTIME *time, <i>ComponentName_</i>TDATE *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>time: Pointer to <i>ComponentName_</i>TTIME</i> - Pointer to time to be set</li>
 <li><i>date: Pointer to <i>ComponentName_</i>TDATE</i> - Pointer to date to be set</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -237,10 +237,10 @@ LI.EXP {
  - Returns the time using the RTC low level information.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetRTCTime(<i>ComponentName_</i>TTIME *time)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetRTCTime(<i>ComponentName_</i>TTIME *time)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>time: Pointer to <i>ComponentName_</i>TTIME</i> - Pointer to time</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -249,10 +249,10 @@ LI.EXP {
  - Sets the time using the RTC low level information.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetRTCTime(<i>ComponentName_</i>TTIME *time)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetRTCTime(<i>ComponentName_</i>TTIME *time)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>time: Pointer to <i>ComponentName_</i>TTIME</i> - Pointer to time to be set</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -261,10 +261,10 @@ LI.EXP {
  - Returns the date from the device using the RTC low level information.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetRTCDate(<i>ComponentName_</i>TDATE *date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetRTCDate(<i>ComponentName_</i>TDATE *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>date: Pointer to <i>ComponentName_</i>TDATE</i> - Pointer to date</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -273,10 +273,10 @@ LI.EXP {
  - Sets the date using the RTC low level information.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetRTCDate(<i>ComponentName_</i>TDATE *date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetRTCDate(<i>ComponentName_</i>TDATE *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>date: Pointer to <i>ComponentName_</i>TDATE</i> - Pointer to date to be set</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -285,10 +285,10 @@ LI.EXP {
  - Returns the time.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetTime(TIMEREC *time)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetTime(TIMEREC *time)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>time: Pointer to TIMEREC</i> - Pointer to time</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -297,13 +297,13 @@ LI.EXP {
  - Sets the time.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetTime(byte Hour, byte Min, byte Sec, byte Sec100)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t Sec100)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Hour:byte</i> - Hours (0 - 23)</li>
-<li><i>Min:byte</i> - Minutes (0 - 59)</li>
-<li><i>Sec:byte</i> - Seconds (0 - 59)</li>
-<li><i>Sec100:byte</i> - Hundredths of seconds (0 - 99)</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Hour:uint8_t</i> - Hours (0 - 23)</li>
+<li><i>Min:uint8_t</i> - Minutes (0 - 59)</li>
+<li><i>Sec:uint8_t</i> - Seconds (0 - 59)</li>
+<li><i>Sec100:uint8_t</i> - Hundredths of seconds (0 - 99)</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -312,10 +312,10 @@ LI.EXP {
  - Returns the time and date from the device.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetDate(DATEREC *date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetDate(DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>date: Pointer to DATEREC</i> - Pointer to date</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -324,12 +324,12 @@ LI.EXP {
  - Sets the date.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetDate(word Year, byte Month, byte Day)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetDate(uint16_t Year, uint8_t Month, uint8_t Day)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Year:word</i> - Year in 2000 format</li>
-<li><i>Month:byte</i> - Month number (1..12)</li>
-<li><i>Day:byte</i> - Day number (1..31)</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Year:uint16_t</i> - Year in 2000 format</li>
+<li><i>Month:uint8_t</i> - Month number (1..12)</li>
+<li><i>Day:uint8_t</i> - Day number (1..31)</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -338,12 +338,12 @@ LI.EXP {
  - Read from the device
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Read(byte addr, byte *buf, byte bufSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Read(uint8_t addr, uint8_t *buf, uint8_t bufSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address</li>
-<li><i>buf: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>bufSize:byte</i> - Size of read buffer</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>bufSize:uint8_t</i> - Size of read buffer</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -352,12 +352,12 @@ LI.EXP {
  - Write from the device
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Write(byte addr, byte *buf, byte bufSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Write(uint8_t addr, uint8_t *buf, uint8_t bufSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address</li>
-<li><i>buf: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>bufSize:byte</i> - no hint</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>bufSize:uint8_t</i> - no hint</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -366,11 +366,11 @@ LI.EXP {
  - Read from the device RAM
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadByte(byte addr, byte *buf)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadByte(uint8_t addr, uint8_t *buf)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address, with zero as the RAM start address</li>
-<li><i>buf: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address, with zero as the RAM start address</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -379,11 +379,11 @@ LI.EXP {
  - Read from the device RAM
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteByte(byte addr, byte buf)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteByte(uint8_t addr, uint8_t buf)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address, with zero as the  RAM memory start address</li>
-<li><i>buf:byte</i> - value to write</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address, with zero as the  RAM memory start address</li>
+<li><i>buf:uint8_t</i> - value to write</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -392,12 +392,12 @@ LI.EXP {
  - Read from the device RAM
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadBlock(byte addr, byte *buf, byte bufSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address, with zero as the RAM start address</li>
-<li><i>buf: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>bufSize:byte</i> - Size of read buffer</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address, with zero as the RAM start address</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>bufSize:uint8_t</i> - Size of read buffer</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -406,12 +406,12 @@ LI.EXP {
  - Read from the device RAM
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteBlock(byte addr, byte *buf, byte bufSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - device memory address, with zero as the  RAM memory start address</li>
-<li><i>buf: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>bufSize:byte</i> - no hint</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - device memory address, with zero as the  RAM memory start address</li>
+<li><i>buf: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>bufSize:uint8_t</i> - no hint</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -420,12 +420,12 @@ LI.EXP {
  - Shell Command Line parser
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd: Pointer to byte</i> - Pointer to command line</li>
+<li><i>cmd: Pointer to uint8_t</i> - Pointer to command line</li>
 <li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
-<li><i>io: Pointer to byte</i> - Pointer to I/O structure</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>io: Pointer to uint8_t</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>

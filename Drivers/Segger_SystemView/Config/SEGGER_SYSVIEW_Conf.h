@@ -155,6 +155,10 @@ Revision: $Rev: 3734 $
   #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()   SEGGER_SYSVIEW_X_GetInterruptId() // Get the currently active interrupt Id from the user-provided function.
 #endif
 
+#if 1 /* << EST */
+  uint32_t SEGGER_uxGetTickCounterValue(void);
+#endif
+
 #endif  // SEGGER_SYSVIEW_CONF_H
 
 /*************************** End of file ****************************/

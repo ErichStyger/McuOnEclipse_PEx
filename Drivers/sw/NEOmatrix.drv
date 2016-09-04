@@ -326,19 +326,6 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawFilledBox
-%ifdef DrawFilledBox
-uint8_t %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color);
-%define! Parx
-%define! Pary
-%define! Parwidth
-%define! Parheight
-%define! Parcolor
-%define! RetVal
-%include Common\NEOmatrixDrawFilledBox.Inc
-
-%endif %- DrawFilledBox
-%-BW_METHOD_END DrawFilledBox
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -585,23 +572,6 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawFilledBox
-%ifdef DrawFilledBox
-%define! Parx
-%define! Pary
-%define! Parwidth
-%define! Parheight
-%define! Parcolor
-%define! RetVal
-%include Common\NEOmatrixDrawFilledBox.Inc
-uint8_t %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color)
-{
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
-  return ERR_FAILED;
-}
-
-%endif %- DrawFilledBox
-%-BW_METHOD_END DrawFilledBox
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -715,66 +715,66 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
   if (%'ModuleName'%.%ReadRegister(VS1053_MODE, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)"\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  MODE", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_STATUS, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)"\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  STATUS", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_BASS, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)"\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  BASS", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_CLOCKF, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), "\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)"\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  CLOCKF", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_DECODE_TIME, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " seconds\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)" seconds\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  DECODE", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_AUDATA, &val)==ERR_OK) {
     buf[0] = '\0';
     %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), val&0xFFFE);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " Hz, ");
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (val&1)?"stereo\r\n":"mono\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)" Hz, ");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (val&1)?(uint8_t*)"stereo\r\n":(uint8_t*)"mono\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  AUDATA", buf, io->stdOut);
 
   if (%'ModuleName'%.%ReadRegister(VS1053_VOL, &val)==ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "0x");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
     %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), val);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), " (0x0000 full, 0xFEFE silence)\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)" (0x0000 full, 0xFEFE silence)\r\n");
   } else {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), "ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"ERROR\r\n");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  VOLUME", buf, io->stdOut);
 
@@ -807,7 +807,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   const uint8_t *p;
-  uint32_t val32u;
+  int32_t val32s;
 
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
     *handled = TRUE;
@@ -820,17 +820,17 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 
     *handled = TRUE;
     p = cmd+sizeof("%'ModuleName' volume ")-1;
-    if (%@Utility@'ModuleName'%.xatoi(&p, &val32u)==ERR_OK) {
-      left = (uint8_t)val32u;
-      if (%@Utility@'ModuleName'%.xatoi(&p, &val32u)==ERR_OK) {
-        right = (uint8_t)val32u;
+    if (%@Utility@'ModuleName'%.xatoi(&p, &val32s)==ERR_OK) {
+      left = (uint8_t)val32s;
+      if (%@Utility@'ModuleName'%.xatoi(&p, &val32s)==ERR_OK) {
+        right = (uint8_t)val32s;
         return %'ModuleName'%.%SetVolume(left, right);
       } else {
-        %@Shell@'ModuleName'%.SendStr("Failed reading right volume", io->stdErr);
+        %@Shell@'ModuleName'%.SendStr((uint8_t*)"Failed reading right volume", io->stdErr);
         return ERR_FAILED;
       }
     } else {
-      %@Shell@'ModuleName'%.SendStr("Failed reading left volume", io->stdErr);
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)"Failed reading left volume", io->stdErr);
       return ERR_FAILED;
     }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' softreset")==0) {
@@ -1105,7 +1105,7 @@ byte %'ModuleName'%.%SendValues(word nofValues, byte value)
 
   %'ModuleName'%.ActivateSPI();
   %'ModuleName'%.DATA_MODE_ON();
-  while(nofValues=0) {
+  while(nofValues!=0) {
     while(!%'ModuleName'%.%IsReady()) {
       %'ModuleName'%.WAIT_IF_NOT_READY_WAIT(); /* wait until pin goes high so we know it is ready */
     }
