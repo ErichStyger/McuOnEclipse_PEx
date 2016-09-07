@@ -1,6 +1,6 @@
 /* << EST */
 #include "FreeRTOSConfig.h"
-#if configFRTOS_MEMORY_SCHEME==4 && configSUPPORT_DYNAMIC_ALLOCATION
+#if !defined(configFRTOS_MEMORY_SCHEME) || (configFRTOS_MEMORY_SCHEME==4 && configSUPPORT_DYNAMIC_ALLOCATION==1)
 
 /*
     FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
