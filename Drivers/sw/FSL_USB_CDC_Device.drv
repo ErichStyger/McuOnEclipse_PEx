@@ -142,6 +142,8 @@ extern volatile uint8_t %'ModuleName'%.usb_int_disable;
 extern volatile uint8_t %'ModuleName'%.usb_int_en_copy;
 
 %endif
+extern %@Shell@'ModuleName'%.ConstStdIOType %'ModuleName'%.stdio; /* default standard I/O */
+extern uint8_t %'ModuleName'%.DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 
 %-BW_CUSTOM_USERTYPE_END
 %-BW_DEFINITION_START
@@ -431,6 +433,15 @@ static volatile boolean start_app = FALSE;
 /* Virtual COM Application Carrier Activate Flag */
 static volatile boolean start_transactions = FALSE;
 static volatile boolean transactionOngoing = FALSE;
+
+/* default standard I/O struct */
+%@Shell@'ModuleName'%.ConstStdIOType %'ModuleName'%.stdio = {
+    (%@Shell@'ModuleName'%.StdIO_In_FctType)%'ModuleName'%.StdIOReadChar, /* stdin */
+    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stdout */
+    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stderr */
+    %'ModuleName'%.StdIOKeyPressed /* if input is not empty */
+  };
+uint8_t %'ModuleName'%.DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START

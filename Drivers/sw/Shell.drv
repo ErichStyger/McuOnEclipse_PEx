@@ -204,6 +204,13 @@
 %else
 #define %'ModuleName'%.DEFAULT_SERIAL  0 /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
 %endif
+#define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %ShellDefaultBufferSize  /* default buffer size for shell command parsing */
+extern uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
+
+#if %'ModuleName'%.DEFAULT_SERIAL
+  extern %'ModuleName'_ConstStdIOType %'ModuleName'%.stdio; /* default standard I/O */
+#endif
+
 
 #define %'ModuleName'%.DASH_LINE "--------------------------------------------------------------"
 /* predefined commands */
@@ -576,6 +583,7 @@ void %OnAfterIterateCmd(const uint8_t *cmd);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 #if %'ModuleName'%.HISTORY_ENABLED
   static uint8_t %'ModuleName'_history[%'ModuleName'%.NOF_HISTORY][%'ModuleName'%.HIST_LEN];%>40/* History buffers */
   static uint8_t %'ModuleName'_history_index = 0;                %>40/* Selected command */
@@ -597,7 +605,7 @@ static xSemaphoreHandle ShellSem = NULL; /* Semaphore to protect shell SCI acces
 %endif
 
 %if defined(Serial)
-static %'ModuleName'_ConstStdIOType %'ModuleName'%.stdio =
+%'ModuleName'_ConstStdIOType %'ModuleName'%.stdio =
 {
   (%'ModuleName'_StdIO_In_FctType)%'ModuleName'_ReadChar, /* stdin */
   (%'ModuleName'_StdIO_OutErr_FctType)%'ModuleName'_SendChar, /* stdout */

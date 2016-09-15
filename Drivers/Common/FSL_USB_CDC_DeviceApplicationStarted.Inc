@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (ApplicationStarted)
 %;**     Description :
-%;**         Returns true if USB ApplicationStarted has been started.
+%;**         Returns true if the CDC application has been started. 
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code

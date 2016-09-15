@@ -305,10 +305,6 @@ There are 2 options:<br />
 </ul><br />
 
   </li>
-  <li>
-  <a name="UseACK">
-  <b>Use ACK</b></a> - If enabled, the NWK layer will respond to ACK requests (only for messages which requests this).
-  </li>
 </ul>
 </li>
 <li>
@@ -332,6 +328,10 @@ There are 2 options:<br />
 <li>
 <a name="MsgSendRetryCount">
 <b>Send Retry Count</b></a> - Number of message send retry if it failed. Set it to zero to disable retry.
+</li>
+<li>
+<a name="WaitingSendTimeoutMs">
+<b>Send Timeout (ms)</b></a> - Timeout value for sending until we receive confirmation from the transceiver that the packet has been sent. Specify zero for no timeout. Configures the macro WAITNG_TIMEOUT_MS in Radio.c
 </li>
 <li>
 <a name="SystemGroup">

@@ -167,6 +167,9 @@ typedef const unsigned char *%'ModuleName'%.TConstStringPtr; /* type for constan
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %endif %- ParseCommand
 
+extern %@Shell@'ModuleName'%.ConstStdIOType %'ModuleName'%.stdio; /* default standard I/O */
+extern uint8_t %'ModuleName'%.DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
+
 /* Either %'ModuleName'%.FIRMWARE_HC05 or %'ModuleName'%.FIRMWARE_HC06 is defined here */
 %if %Firmware='HC05'
 #define %'ModuleName'%.FIRMWARE_HC05 /* firmware which allows master and slave mode */
@@ -822,6 +825,15 @@ byte %'ModuleName'%.%btSetBaud(dword baud);
 #define %'ModuleName'%.SET_DATA_MODE()                         /* do nothing */
 %endif
 #define %'ModuleName'%.CLR_RX_BUF()                            (void)%@Serial@'ModuleName'%.ClearRxBuf() /* clear input buffer */
+
+/* default standard I/O struct */
+%@Shell@'ModuleName'%.ConstStdIOType %'ModuleName'%.stdio = {
+    (%@Shell@'ModuleName'%.StdIO_In_FctType)%'ModuleName'%.StdIOReadChar, /* stdin */
+    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stdout */
+    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stderr */
+    %'ModuleName'%.StdIOKeyPressed /* if input is not empty */
+  };
+uint8_t %'ModuleName'%.DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 
 static %'ModuleName'%.TEnumErrors %'ModuleName'%.lastErr = %'ModuleName'%.NO_ERROR; /* holds the last error */
 

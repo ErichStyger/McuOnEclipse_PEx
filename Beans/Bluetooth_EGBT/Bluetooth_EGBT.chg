@@ -1,8 +1,4 @@
-%ifndef Shell
-  %set ParseCommand Selection never
-%else
-  %set ParseCommand Selection enable
-%endif
+%set ParseCommand Selection enable
 %if defined(Firmware) & %Firmware='HC06'
   %- HC06 firmware is very limited
   %set btResetDevice Selection never

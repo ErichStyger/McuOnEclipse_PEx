@@ -4,6 +4,7 @@
 %;**%>12 Prompt %>60: %get(Prompt,Text)
 %;**%>12 Project Name %>60: %get(ProjectNameStr,Text)
 %;**%>12 Silent Mode Prefix %>60: %get(SilentModePrefixChar,Text)
+%;**%>12 Buffer Size %>60: %get(ShellDefaultBufferSize,Text)
 %;**%>12 Blocking Send %>60: %get(BlockingSend,Text)
 %if %get(BlockingSend, Bool) = 'yes'
 %;**%>14 Wait %>60: %get(Wait,Text)

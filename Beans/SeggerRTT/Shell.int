@@ -1,460 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bean>
-  <Header>
-    <Name>Shell</Name>
-    <Description>Command Line Shell</Description>
-    <Author>Erich Styger</Author>
-    <Version>01.085</Version>
-    <Icon>Shell</Icon>
-    <TypesFiles>PE,Shell\Shell</TypesFiles>
-    <FileVersion>6</FileVersion>
-  </Header>
-  <Options>
-    <BW_HelpType>&lt;none&gt;</BW_HelpType>
-    <BW_HelpFiles>,"Application Notes",Events,Methods,Properties,"User Types"</BW_HelpFiles>
-    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
-    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
-    <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedUst>14</BW_NeedUst>
-    <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * Copyright (c) 2014-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
-    <Category>Software-User Components</Category>
-    <DemoDriver>no</DemoDriver>
-    <BeanLevel>High</BeanLevel>
-    <Shortcut>CLS</Shortcut>
-    <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
-    <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedCns>0</BW_NeedCns>
-  </Options>
-  <PropertyList>
-    <Property>
-      <TCompNameItem>
-        <Name>Component name</Name>
-        <Symbol>DeviceName</Symbol>
-        <Hint>Name of the component.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue/>
-      </TCompNameItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Echo</Name>
-        <Symbol>EchoEnabled</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled, the shell will echo characters read on the terminal. The shell offers the echo command to turn echo on and off.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TStrgItem>
-        <Name>Prompt</Name>
-        <Symbol>Prompt</Symbol>
-        <Hint>Prompt string to be used. Make sure the string is in double quotes. You can use normal C escape characters like \\r or \n
-
-
-
-
-
-
- as well.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>"CMD&gt; "</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Property>
-    <Property>
-      <TStrgItem>
-        <Name>Project Name</Name>
-        <Symbol>ProjectNameStr</Symbol>
-        <Hint>Here you can specify a project name which is shown if you use the help command.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>My Project Name</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Property>
-    <Property>
-      <TStrgItem>
-        <Name>Silent Mode Prefix</Name>
-        <Symbol>SilentModePrefixChar</Symbol>
-        <Hint>If commands start with this prefix character, the command will be executed and no prompt will be written. To disable silent support (for better code efficiency), use an empty char.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>#</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Buffer Size</Name>
-        <Symbol>ShellDefaultBufferSize</Symbol>
-        <Hint>Default buffer size for parsing</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>48</DefaultValue>
-        <MinValue>4</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Blocking Send</Name>
-        <Symbol>BlockingSend</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, then sending using SendChar() to the communication channel will block until success.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Wait</Name>
-              <Symbol>Wait</Symbol>
-              <TypeSpec>Wait_I</TypeSpec>
-              <Hint>Interface to waiting routine</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Timeout (ms)</Name>
-              <Symbol>ShellBlockingSendTimeoutMs</Symbol>
-              <Hint>Timeout used to wait. Use zero for blocking send.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>20</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Wait Time (ms)</Name>
-              <Symbol>WaitTimeMs</Symbol>
-              <Hint>Waiting time in milli seconds if sending was blocked (output buffer full). Use 0 for polling mode.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>5</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>RTOS Wait</Name>
-              <Symbol>RTOSWait</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If set to yes, then it uses the RTOS waiting/delay instead of busy waiting if RTOS is present.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Status Colon Pos</Name>
-        <Symbol>StatusColonPos</Symbol>
-        <Hint>Position of the ':' for the status commands. Used for SendStatusString().</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>13</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Help Semicolon Pos</Name>
-        <Symbol>HelpSemicolonPos</Symbol>
-        <Hint>Position of the ';' in the help commands. Used for SendHelpString().</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>26</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Multi Command</Name>
-        <Symbol>MultiCommandEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Enables execution of multiple commands in a single command, separated with a separation char.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Length</Name>
-              <Symbol>MaxSubCommandStringSize</Symbol>
-              <Hint>Length of possible sub command string. Used as buffer on the stack, so should not be choosen too large</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>32</DefaultValue>
-              <MinValue>2</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TStrgItem>
-              <Name>Separator</Name>
-              <Symbol>MultiCmdSeparationChar</Symbol>
-              <Hint>Multiple commands can be separated using this separation character</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>;</DefaultValue>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-            </TStrgItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Utility</Name>
-        <Symbol>Utility</Symbol>
-        <TypeSpec>Utility_I</TypeSpec>
-        <Hint>Interface to utility</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Default Serial</Name>
-        <Symbol>DefaultSerialEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Console Interface</Name>
-              <Symbol>Serial</Symbol>
-              <TypeSpec>Shell\Serial</TypeSpec>
-              <Hint>Interface to low level asynchroserial component</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Semaphore</Name>
-        <Symbol>ConsoleSempahore</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled and an RTOS is present, a semaphore is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Critical Section</Name>
-        <Symbol>CriticalSection</Symbol>
-        <TypeSpec>CriticalSection_I</TypeSpec>
-        <Hint>Interface to critical section handling</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>History</Name>
-        <Symbol>HistoryEnabled</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled, the component will store up to four entered commands. Recall them by enter a non-alphanumeric key.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>no</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Number of History Items</Name>
-              <Symbol>NofHistoryItems</Symbol>
-              <Hint>Defines the number of history items.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>4</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Stored Characters</Name>
-              <Symbol>HistLength</Symbol>
-              <Hint>Stored caracters for each history line.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>32</DefaultValue>
-              <MinValue>8</MinValue>
-              <MaxValue>128</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TStrgItem>
-              <Name>Char for Next</Name>
-              <Symbol>NextHistoryChar</Symbol>
-              <Hint>Character key for previous item in history.  Use \\t for TAB and \\e for SHIFT+TAB</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>\t</DefaultValue>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-            </TStrgItem>
-          </GrupItem>
-          <GrupItem>
-            <TStrgItem>
-              <Name>Char for Previous</Name>
-              <Symbol>PrevHistoryChar</Symbol>
-              <Hint>Character key for previous item in history. Use \\t for TAB and \\e for SHIFT+TAB</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>\e</DefaultValue>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-            </TStrgItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Kinetis SDK</Name>
-        <Symbol>sdk</Symbol>
-        <TypeSpec>Shell\KinetisSDK</TypeSpec>
-        <Hint>Interface to Kinetis SDK to ensure additional symbols are defined in case Kinetis SDK is used.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-  </PropertyList>
+<Interface>
+  <Name>Shell</Name>
+  <Description>Interface "SeggerRTT\Shell" for component SeggerRTT, generated by Component Wizard</Description>
+  <Author>Author</Author>
+  <Version>01.000</Version>
+  <FileVersion>2</FileVersion>
   <MethodList>
     <Method>
       <TMthdItem>
@@ -475,6 +25,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -486,7 +37,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_ConstStdIOType *io)</ANSIC>
+          <ANSIC>void #M#_#C#(ConstStdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -509,6 +60,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -526,7 +78,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint8_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -549,6 +101,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -566,7 +119,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(int8_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(int8_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -589,6 +142,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -606,7 +160,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint16_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(uint16_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -629,6 +183,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -646,7 +201,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(int16_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(int16_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -669,6 +224,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -686,7 +242,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint32_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(uint32_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -709,6 +265,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
@@ -726,7 +283,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(int32_t val, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(int32_t val, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -749,6 +306,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>2</ParamCount>
@@ -766,7 +324,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t ch, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -789,6 +347,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>2</ParamCount>
@@ -807,7 +366,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *str, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(const uint8_t *str, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -830,6 +389,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>3</ParamCount>
@@ -854,7 +414,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *data, uint16_t dataSize, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(const uint8_t *data, uint16_t dataSize, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -877,6 +437,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -888,7 +449,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ConstStdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(ConstStdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -911,6 +472,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
@@ -935,7 +497,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, bool *handled, %'ModuleName'_ConstStdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, bool *handled, ConstStdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -958,6 +520,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>Boolean</ReturnType>
         <RetHint>TRUE if it is an accepted history character</RetHint>
         <ParamCount>4</ParamCount>
@@ -1011,6 +574,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>Boolean</ReturnType>
         <RetHint>TRUE if something has been read, FALSE otherwise</RetHint>
         <ParamCount>4</ParamCount>
@@ -1041,7 +605,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %'ModuleName'_ConstStdIOType *io)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t *bufStart, uint8_t *buf, size_t bufSize, ConstStdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1064,6 +628,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>2</ParamCount>
@@ -1082,7 +647,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io)</ANSIC>
+          <ANSIC>void #M#_#C#(const uint8_t *cmd, ConstStdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1105,6 +670,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>4</ParamCount>
@@ -1135,7 +701,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, bool *handled, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parserTable)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, bool *handled, ConstStdIOType *io, ConstParseCommandCallback *parserTable)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1158,6 +724,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -1169,7 +736,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ConstStdIOTypePtr stdio)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(ConstStdIOTypePtr stdio)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1192,12 +759,13 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>ConstStdIOTypePtr</ReturnType>
         <RetHint>Pointer to the stdio descriptor</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>%'ModuleName'_ConstStdIOTypePtr #M#_#C#(void)</ANSIC>
+          <ANSIC>ConstStdIOTypePtr #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1220,6 +788,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
@@ -1248,6 +817,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
@@ -1276,6 +846,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>4</ParamCount>
@@ -1306,7 +877,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *cmdBuf, size_t cmdBufSize, ConstStdIOType *io, ConstParseCommandCallback *parseCallback)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1329,6 +900,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
@@ -1353,7 +925,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const uint8_t *cmd, ConstStdIOType *io, ConstParseCommandCallback *parseCallback)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1376,72 +948,13 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>pointer</ReturnType>
         <RetHint>semaphore, or NULL if not used or not allocated.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void* #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SendSeparatedStrings</Name>
-        <Symbol>SendSeparatedStrings</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Prints a string using an I/O function, formated for the 'help' command</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>5</ParamCount>
-        <Parameter>
-          <ParName>strA</ParName>
-          <ParType>char</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to first string</ParHint>
-          <ParUserDeclaration>const uint8_t *strA</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>strB</ParName>
-          <ParType>char</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to second string</ParHint>
-          <ParUserDeclaration>const uint8_t *strB</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>tabChar</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Character to be used as separator</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>tabPos</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Position of the tab character</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>io</ParName>
-          <ParType>StdIO_OutErr_FctType</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>I/O callbacks to be used for printing.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *strA, const uint8_t *strB, uint8_t tabChar, uint8_t tabPos, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1464,6 +977,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>3</ParamCount>
@@ -1489,7 +1003,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *strItem, const uint8_t *strStatus, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(const uint8_t *strItem, const uint8_t *strStatus, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1512,6 +1026,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>3</ParamCount>
@@ -1537,7 +1052,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(const uint8_t *strCmd, const uint8_t *strHelp, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+          <ANSIC>void #M#_#C#(const uint8_t *strCmd, const uint8_t *strHelp, StdIO_OutErr_FctType io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1560,6 +1075,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -1594,6 +1110,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -1628,6 +1145,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>Boolean</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -1656,6 +1174,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
@@ -1684,6 +1203,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
@@ -1695,116 +1215,206 @@
     </Method>
   </MethodList>
   <EventList>
-    <Event>
-      <TStrgItem>
-        <Name>Event module name</Name>
-        <Symbol>EventModule</Symbol>
-        <Hint>Name of the user module (without extension), where the events from this component are placed.</Hint>
-        <ItemLevel>ADVANCED</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>Events</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Event>
-    <Event>
-      <TEvntItem>
-        <Name>OnBeforeIterateCmd</Name>
-        <Symbol>OnBeforeIterateCmd</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Hook called before parsing a command in IterateTable().</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>don't generate code</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <IsAssembler>false</IsAssembler>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>command parsed</ParHint>
-          <ParUserDeclaration>const uint8_t *cmd</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #C#(const uint8_t *cmd)</ANSIC>
-        </Declarations>
-        <Children>
-          <GrupItem>
-            <TEvntName>
-              <Name>Event procedure name</Name>
-              <Symbol>Name</Symbol>
-              <Hint>OnBeforeIterateCmd procedure name</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue/>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-              <ErrorIfNotSet>true</ErrorIfNotSet>
-              <IdentType>EVNT</IdentType>
-            </TEvntName>
-          </GrupItem>
-        </Children>
-      </TEvntItem>
-    </Event>
-    <Event>
-      <TEvntItem>
-        <Name>OnAfterIterateCmd</Name>
-        <Symbol>OnAfterIterateCmd</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Hook called after parsing a command in IterateTable().</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>don't generate code</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <IsAssembler>false</IsAssembler>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>command parsed</ParHint>
-          <ParUserDeclaration>const uint8_t *cmd</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #C#(const uint8_t *cmd)</ANSIC>
-        </Declarations>
-        <Children>
-          <GrupItem>
-            <TEvntName>
-              <Name>Event procedure name</Name>
-              <Symbol>Name</Symbol>
-              <Hint>OnAfterIterateCmd procedure name</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue/>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-              <ErrorIfNotSet>true</ErrorIfNotSet>
-              <IdentType>EVNT</IdentType>
-            </TEvntName>
-          </GrupItem>
-        </Children>
-      </TEvntItem>
-    </Event>
-  </EventList>
-  <Links>
     <EmptySection_DummyValue/>
-  </Links>
-  <Revisions>
-    <RevisionVersion>2</RevisionVersion>
-  </Revisions>
-</Bean>
+  </EventList>
+  <Registration>
+    <Template>Shell</Template>
+  </Registration>
+  <UserTypes>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>StdIO_OutErr_FctType</Name>
+      <Hint>Callback for an output or error I/O function</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef void (*%'ModuleName'%.StdIO_OutErr_FctType)(uint8_t); /* Callback for an output or error I/O function */\n
+</PreparedHint>
+      <Type>typedef void (*%'ModuleName'%.StdIO_OutErr_FctType)(uint8_t);</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>StdIO_In_FctType</Name>
+      <Hint>Callback for an I/O input function.</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef void (*%'ModuleName'%.StdIO_In_FctType)(uint8_t *); /* Callback for an I/O input function. */\n
+</PreparedHint>
+      <Type>typedef void (*%'ModuleName'%.StdIO_In_FctType)(uint8_t *);</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>StdIO_KeyPressed_FctType</Name>
+      <Hint>Callback which returns true if a key has been pressed</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef bool (*%'ModuleName'%.StdIO_KeyPressed_FctType)(void); /* Callback which returns true if a key has been pressed */\n
+</PreparedHint>
+      <Type>typedef bool (*%'ModuleName'%.StdIO_KeyPressed_FctType)(void);</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TRecordType</UsrType>
+      <Name>StdIOType</Name>
+      <Hint>Record containing input, output and error callback (stdin, stdout, stderr).</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>  typedef struct { /* Record containing input, output and error callback (stdin, stdout, stderr). */\n
+    StdIO_In_FctType stdIn; /* standard input */\n
+    StdIO_OutErr_FctType stdOut; /* standard output */\n
+    StdIO_OutErr_FctType stdErr; /* standard error */\n
+    StdIO_KeyPressed_FctType keyPressed; /* key pressed callback */\n
+  } %'ModuleName'_StdIOType;\n
+</PreparedHint>
+      <RecordItem>
+        <ItemName>stdIn</ItemName>
+        <ItemType>StdIO_In_FctType</ItemType>
+        <ItemHint>standard input</ItemHint>
+        <ItemPointer>no</ItemPointer>
+      </RecordItem>
+      <RecordItem>
+        <ItemName>stdOut</ItemName>
+        <ItemType>StdIO_OutErr_FctType</ItemType>
+        <ItemHint>standard output</ItemHint>
+        <ItemPointer>no</ItemPointer>
+      </RecordItem>
+      <RecordItem>
+        <ItemName>stdErr</ItemName>
+        <ItemType>StdIO_OutErr_FctType</ItemType>
+        <ItemHint>standard error</ItemHint>
+        <ItemPointer>no</ItemPointer>
+      </RecordItem>
+      <RecordItem>
+        <ItemName>keyPressed</ItemName>
+        <ItemType>StdIO_KeyPressed_FctType</ItemType>
+        <ItemHint>key pressed callback</ItemHint>
+        <ItemPointer>no</ItemPointer>
+      </RecordItem>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>ConstStdIOType</Name>
+      <Hint>constant StdIOType</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef const %'ModuleName'%.StdIOType %'ModuleName'%.ConstStdIOType; /* constant StdIOType */\n
+</PreparedHint>
+      <Type>typedef const %'ModuleName'%.StdIOType %'ModuleName'%.ConstStdIOType;</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>ParseCommandCallback</Name>
+      <Hint>Callback for parsing a shell command</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef uint8_t (*%'ModuleName'%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const %'ModuleName'%.StdIOType *io); /* Callback for parsing a shell command */\n
+</PreparedHint>
+      <Type>typedef uint8_t (*%'ModuleName'%.ParseCommandCallback)(const uint8_t *cmd, bool *handled, const %'ModuleName'%.StdIOType *io);</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>ConstStdIOTypePtr</Name>
+      <Hint>Pointer to constant standard I/O descriptor</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef const %'ModuleName'%.ConstStdIOType *%'ModuleName'%.ConstStdIOTypePtr; /* Pointer to constant standard I/O descriptor */\n
+</PreparedHint>
+      <Type>typedef const %'ModuleName'%.ConstStdIOType *%'ModuleName'%.ConstStdIOTypePtr;</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>ConstParseCommandCallback</Name>
+      <Hint>Callback for parsing a shell command</Hint>
+      <Generate>yes</Generate>
+      <Unique>yes</Unique>
+      <GenerateHelp>yes</GenerateHelp>
+      <PreparedHint>typedef const %'ModuleName'%.ParseCommandCallback %'ModuleName'%.ConstParseCommandCallback; /* Callback for parsing a shell command */\n
+</PreparedHint>
+      <Type>typedef const %'ModuleName'%.ParseCommandCallback %'ModuleName'%.ConstParseCommandCallback;</Type>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>uint8_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>uint32_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>uint16_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>int8_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>int32_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+    <Type>
+      <UsrType>TUserType</UsrType>
+      <Name>int16_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>\n
+</PreparedHint>
+      <Type/>
+      <HWTestType>pointer</HWTestType>
+    </Type>
+  </UserTypes>
+</Interface>
