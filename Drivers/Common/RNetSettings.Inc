@@ -8,6 +8,7 @@
 %;**%>16 Radio Channel %>60: %get(RadioChannel_nRF,Text)
 %;**%>16 Data Rate %>60: %get(nRF24DataRate,Text)
 %;**%>16 Payload Size %>60: %get(PayloadSize,Text)
+%;**%>16 Address %>60: %get(nRFAddress,Text)
 %else %- nRF24L01pEnabled
 %endif %- nRF24L01pEnabled
 %;**%>14 SMAC %>60: %get(SMACEnabled,Text)
@@ -18,13 +19,13 @@
 %else %- SMACEnabled
 %endif %- SMACEnabled
 %;**%>12 Network %>60: %get(NetworkGroup,Text)
-%;**%>14 Short Address Size %>60: %get(ShortAddrSize,Text)
-%;**%>14 Use ACK %>60: %get(UseACK,Text)
+%;**%>14 Address Size %>60: %get(ShortAddrSize,Text)
 %;**%>12 Queues %>60: %get(QueuesGroup,Text)
 %;**%>14 Rx Message Queue Size %>60: %get(NofRxQueueItems,Text)
 %;**%>14 Tx Message Queue Size %>60: %get(NofTxQueueItems,Text)
 %;**%>14 Message Queue Blocking Time (ms) %>60: %get(MsgQueuePutBlockTimeMs,Text)
 %;**%>12 Send Retry Count %>60: %get(MsgSendRetryCount,Text)
+%;**%>12 Send Timeout (ms) %>60: %get(WaitingSendTimeoutMs,Text)
 %;**%>12 System %>60: %get(SystemGroup,Text)
 %;**%>14 Utility %>60: %get(Utility,Text)
 %;**%>14 RTOS %>60: %get(RTOS,Text)

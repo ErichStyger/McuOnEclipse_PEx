@@ -82,15 +82,6 @@
   /*!< size of short address type. Either 1 or 2 */
 #endif
 
-#ifndef RNET_CONFIG_USE_ACK
-%if defined(UseACK) & %UseACK='yes'
-#define RNET_CONFIG_USE_ACK           (1)
-%else
-#define RNET_CONFIG_USE_ACK           (0)
-%endif
-  /*!< If set to 1, the NWK layer will send an acknowledge message for every data packet received */
-#endif
-
 #ifndef RNET_CONFIG_SEND_RETRY_CNT
 %if defined(MsgSendRetryCount)
 #define RNET_CONFIG_SEND_RETRY_CNT    (%MsgSendRetryCount)

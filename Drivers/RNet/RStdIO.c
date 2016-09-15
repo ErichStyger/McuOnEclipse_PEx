@@ -166,7 +166,7 @@ static uint8_t FlushAndTxQueue(RSTDIO_QueueType queueType, RAPP_MSG_Type msgType
     *p++ = ch;
     i++;
   }
-  res = RAPP_PutPayload(buf, sizeof(buf), i, msgType, RSTDIO_dstAddr, RPHY_PACKET_FLAGS_REQ_ACK);
+  res = RAPP_PutPayload(buf, sizeof(buf), i, msgType, RSTDIO_dstAddr, RPHY_PACKET_FLAGS_NONE);
   if (res!=ERR_OK) {
     %@Shell@'ModuleName'%.ConstStdIOType *io = %@Shell@'ModuleName'%.GetStdio();
 

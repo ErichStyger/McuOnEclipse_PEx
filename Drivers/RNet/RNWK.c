@@ -69,11 +69,9 @@ uint8_t RNWK_OnPacketRx(RPHY_PacketDesc *packet) {
       return ERR_OK; /* no need to process the packet further */
     } else if (RMAC_MSG_TYPE_IS_DATA(type)) { /* data packet received */
       if (RNWK_AppOnRxCallback!=NULL) { /* do we have a callback? */
-#if RNET_CONFIG_USE_ACK
-        if (RMAC_MSG_TYPE_REQ_ACK(type)) {
+        if (RMAC_MSG_TYPE_REQ_ACK(type)) { /* ACK requested */
           (void)RNWK_SendACK(packet, RNWK_GetThisNodeAddr()); /* send ack message back */
         }
-#endif
         return RNWK_AppOnRxCallback(packet); /* call upper layer */
       }
     } else {
