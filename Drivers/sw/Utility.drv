@@ -775,6 +775,66 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 
 %endif %- strcatNumFloat
 %-BW_METHOD_END strcatNumFloat
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue16LE
+%ifdef GetValue16LE
+uint16_t %'ModuleName'%.%GetValue16LE(uint8_t *dataP);
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue16LE.Inc
+
+%endif %- GetValue16LE
+%-BW_METHOD_END GetValue16LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue24LE
+%ifdef GetValue24LE
+uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP);
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue24LE.Inc
+
+%endif %- GetValue24LE
+%-BW_METHOD_END GetValue24LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue32LE
+%ifdef GetValue32LE
+uint32_t %'ModuleName'%.%GetValue32LE(uint8_t *dataP);
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue32LE.Inc
+
+%endif %- GetValue32LE
+%-BW_METHOD_END GetValue32LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue16LE
+%ifdef SetValue16LE
+void %'ModuleName'%.%SetValue16LE(uint16_t data, uint8_t *dataP);
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue16LE.Inc
+
+%endif %- SetValue16LE
+%-BW_METHOD_END SetValue16LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue24LE
+%ifdef SetValue24LE
+void %'ModuleName'%.%SetValue24LE(uint32_t data, uint8_t *dataP);
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue24LE.Inc
+
+%endif %- SetValue24LE
+%-BW_METHOD_END SetValue24LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue32LE
+%ifdef SetValue32LE
+void %'ModuleName'%.%SetValue32LE(uint32_t data, uint8_t *dataP);
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue32LE.Inc
+
+%endif %- SetValue32LE
+%-BW_METHOD_END SetValue32LE
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -822,9 +882,6 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG ShiftRightAndFill
 static void ShiftRightAndFill(uint8_t *dst, uint8_t fill, uint8_t nofFill);
-#ifdef __HIWARE__
-  #pragma MESSAGE DISABLE C5919 /* C5919 Conversion of floating to unsigned integral */
-#endif
 %-INTERNAL_LOC_METHOD_END ShiftRightAndFill
 %-
 
@@ -2759,6 +2816,90 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 
 %endif %- strcatNumFloat
 %-BW_METHOD_END strcatNumFloat
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue16LE
+%ifdef GetValue16LE
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue16LE.Inc
+uint16_t %'ModuleName'%.%GetValue16LE(uint8_t *dataP)
+{
+  return (dataP[1]<<8)+(dataP[0]);
+}
+
+%endif %- GetValue16LE
+%-BW_METHOD_END GetValue16LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue24LE
+%ifdef GetValue24LE
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue24LE.Inc
+uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP)
+{
+  return (dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+}
+
+%endif %- GetValue24LE
+%-BW_METHOD_END GetValue24LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetValue32LE
+%ifdef GetValue32LE
+%define! PardataP
+%define! RetVal
+%include Common\UtilityGetValue32LE.Inc
+uint32_t %'ModuleName'%.%GetValue32LE(uint8_t *dataP)
+{
+  return (dataP[3]<<24)+(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+}
+
+%endif %- GetValue32LE
+%-BW_METHOD_END GetValue32LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue16LE
+%ifdef SetValue16LE
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue16LE.Inc
+void %'ModuleName'%.%SetValue16LE(uint16_t data, uint8_t *dataP)
+{
+  dataP[0] = (uint8_t)(data&0xff); /* LSB */
+  dataP[1] = (uint8_t)((data>>8)&0xff); /* MSB */
+}
+
+%endif %- SetValue16LE
+%-BW_METHOD_END SetValue16LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue24LE
+%ifdef SetValue24LE
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue24LE.Inc
+void %'ModuleName'%.%SetValue24LE(uint32_t data, uint8_t *dataP)
+{
+  dataP[0] = (uint8_t)(data&0xff); /* LSB */
+  dataP[1] = (uint8_t)((data>>8)&0xff);
+  dataP[2] = (uint8_t)((data>>16)&0xff);
+}
+
+%endif %- SetValue24LE
+%-BW_METHOD_END SetValue24LE
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetValue32LE
+%ifdef SetValue32LE
+%define! Pardata
+%define! PardataP
+%include Common\UtilitySetValue32LE.Inc
+void %'ModuleName'%.%SetValue32LE(uint32_t data, uint8_t *dataP)
+{
+  dataP[0] = (uint8_t)(data&0xff); /* LSB */
+  dataP[1] = (uint8_t)((data>>8)&0xff);
+  dataP[2] = (uint8_t)((data>>16)&0xff);
+  dataP[3] = (uint8_t)((data>>24)&0xff);
+}
+
+%endif %- SetValue32LE
+%-BW_METHOD_END SetValue32LE
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
