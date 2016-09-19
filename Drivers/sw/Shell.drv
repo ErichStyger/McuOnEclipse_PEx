@@ -128,6 +128,8 @@
 %-BW_BEAN_CONSTANTS_END
 %-BW_CUSTOM_USERTYPE_START
 
+#define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %ShellDefaultBufferSize  /* default buffer size for shell command parsing */
+
 /* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -204,7 +206,6 @@
 %else
 #define %'ModuleName'%.DEFAULT_SERIAL  0 /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
 %endif
-#define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %ShellDefaultBufferSize  /* default buffer size for shell command parsing */
 extern uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 
 #if %'ModuleName'%.DEFAULT_SERIAL
