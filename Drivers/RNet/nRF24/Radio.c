@@ -19,7 +19,11 @@
 
 #define NRF24_DYNAMIC_PAYLOAD     1 /* if set to one, use dynamic payload size */
 #define RADIO_CHANNEL_DEFAULT     RNET_CONFIG_TRANSCEIVER_CHANNEL  /* default communication channel */
-#define NRF24_WAITNG_TIMEOUT_MS   20 /* timeout value in milliseconds, used for RADIO_WAITING_DATA_SENT */
+%if defined(WaitingSendTimeoutMs)
+#define RADIO_WAITNG_TIMEOUT_MS   %WaitingSendTimeoutMs /* timeout value in milliseconds, used for RADIO_WAITING_DATA_SENT */
+%else
+#define RADIO_WAITNG_TIMEOUT_MS   500 /* timeout value in milliseconds, used for RADIO_WAITING_DATA_SENT */
+%endif
 
 /* macros to configure device either for RX or TX operation */
 #define %@nRF24L01p@'ModuleName'%.CONFIG_SETTINGS  (%@nRF24L01p@'ModuleName'%.EN_CRC|%@nRF24L01p@'ModuleName'%.CRCO)
@@ -229,7 +233,7 @@ static uint8_t CheckRx(void) {
 }
 
 static void RADIO_HandleStateMachine(void) {
-#if NRF24_WAITNG_TIMEOUT_MS>0
+#if RADIO_WAITNG_TIMEOUT_MS>0
   static TickType_t sentTimeTickCntr = 0; /* used for timeout */
 #endif
   uint8_t status, res;
@@ -286,7 +290,7 @@ static void RADIO_HandleStateMachine(void) {
       case RADIO_CHECK_TX:
         res = CheckTx();
         if (res==ERR_OK) { /* there was data and it has been sent */
-          #if NRF24_WAITNG_TIMEOUT_MS>0
+          #if RADIO_WAITNG_TIMEOUT_MS>0
           sentTimeTickCntr = xTaskGetTickCount(); /* remember time when it was sent, used for timeout */
           #endif
           RADIO_AppStatus = RADIO_WAITING_DATA_SENT;
@@ -325,8 +329,8 @@ static void RADIO_HandleStateMachine(void) {
           }
           break; /* process switch again */
         }
-      #if NRF24_WAITNG_TIMEOUT_MS>0
-        if (pdMS_TO_TICKS((sentTimeTickCntr-xTaskGetTickCount()))>NRF24_WAITNG_TIMEOUT_MS) {
+      #if RADIO_WAITNG_TIMEOUT_MS>0
+        if (pdMS_TO_TICKS((xTaskGetTickCount()-sentTimeTickCntr))>RADIO_WAITNG_TIMEOUT_MS) {
           RADIO_AppStatus = RADIO_TIMEOUT; /* timeout */
         }
       #endif
@@ -421,24 +425,29 @@ uint8_t RADIO_PowerUp(void) {
 
 uint8_t RADIO_Process(void) {
   uint8_t res;
+  int i;
   
   RADIO_HandleStateMachine(); /* process state machine */
-  /* process received packets */
-  res = RPHY_GetPayload(&radioRx); /* get message */
-  if (res==ERR_OK) { /* packet received */
-    if (RADIO_isSniffing) {
-      RPHY_SniffPacket(&radioRx, FALSE); /* sniff incoming packet */
-    }
-    if (RPHY_OnPacketRx(&radioRx)==ERR_OK) { /* process incoming packets */
-#if %'ModuleName'%.CREATE_EVENTS
-      if (radioRx.flags&RPHY_PACKET_FLAGS_IS_ACK) { /* it was an ack! */
-        /*lint -save -e522 function lacks side effect */
-        %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_ACK_RECEIVED);
-        /*lint -restore */
+  for(i=0;i<10;i++) { /* breaks, tries to handle multiple incoming messages */
+    /* process received packets */
+    res = RPHY_GetPayload(&radioRx); /* get message */
+    if (res==ERR_OK) { /* packet received */
+      if (RADIO_isSniffing) {
+        RPHY_SniffPacket(&radioRx, FALSE); /* sniff incoming packet */
       }
-#endif
+      if (RPHY_OnPacketRx(&radioRx)==ERR_OK) { /* process incoming packets */
+  #if %'ModuleName'%.CREATE_EVENTS
+        if (radioRx.flags&RPHY_PACKET_FLAGS_IS_ACK) { /* it was an ack! */
+          /*lint -save -e522 function lacks side effect */
+          %'ModuleName'%.OnRadioEvent(%'ModuleName'%.RADIO_ACK_RECEIVED);
+          /*lint -restore */
+        }
+  #endif
+      }
+    } else {
+      break; /* no message, get out of for loop */
     }
-  }
+  } /* for */
   return ERR_OK;
 }
 
@@ -594,6 +603,9 @@ static void RADIO_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  RPD", buf, io->stdOut);
 #endif
+  %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), RNET_CONFIG_SEND_RETRY_CNT);
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Max Retries", buf, io->stdOut);
 }
 
 uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io) {
