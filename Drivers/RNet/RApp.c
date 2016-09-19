@@ -16,13 +16,13 @@
 
 static const RAPP_MsgHandler *RAPP_MsgHandlerTable;
 
-uint8_t RAPP_PutPayload(uint8_t *buf, size_t bufSize, uint8_t payloadSize, RAPP_MSG_Type type, RNWK_ShortAddrType dstAddr, RPHY_FlagsType flags) {
+uint8_t RAPP_PutPayload(uint8_t *buf, size_t bufSize, uint8_t payloadSize, RAPP_MSG_Type type, RAPP_ShortAddrType dstAddr, RAPP_FlagsType flags) {
   RAPP_BUF_TYPE(buf) = (uint8_t)type;
   RAPP_BUF_SIZE(buf) = payloadSize;
   return RNWK_PutPayload(buf, bufSize, payloadSize+RAPP_HEADER_SIZE, dstAddr, flags);
 }
 
-uint8_t RAPP_SendPayloadDataBlock(uint8_t *appPayload, uint8_t appPayloadSize, uint8_t msgType, RNWK_ShortAddrType dstAddr, RPHY_FlagsType flags) {
+uint8_t RAPP_SendPayloadDataBlock(uint8_t *appPayload, uint8_t appPayloadSize, uint8_t msgType, RAPP_ShortAddrType dstAddr, RAPP_FlagsType flags) {
   uint8_t buf[RAPP_BUFFER_SIZE]; /* payload data buffer */
   int i;
   
@@ -37,7 +37,7 @@ uint8_t RAPP_SendPayloadDataBlock(uint8_t *appPayload, uint8_t appPayloadSize, u
   return RAPP_PutPayload(buf, sizeof(buf), appPayloadSize, (RAPP_MSG_Type)msgType, dstAddr, flags);
 }
 
-uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_ShortAddrType srcAddr, bool *handled, RPHY_PacketDesc *packet, const RAPP_MsgHandler *table) {
+uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RAPP_ShortAddrType srcAddr, bool *handled, RAPP_PacketDesc *packet, const RAPP_MsgHandler *table) {
   uint8_t res = ERR_OK;
 
   if (table==NULL) { /* no table??? */
@@ -53,7 +53,7 @@ uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_Short
   return res;
 }
 
-static uint8_t ParseMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNWK_ShortAddrType srcAddr, RPHY_PacketDesc *packet) {
+static uint8_t ParseMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RAPP_ShortAddrType srcAddr, RAPP_PacketDesc *packet) {
   bool handled = FALSE;
   uint8_t res;
   
@@ -64,11 +64,11 @@ static uint8_t ParseMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RNW
   return res;
 }
 
-static uint8_t RAPP_OnPacketRx(RPHY_PacketDesc *packet) {
+static uint8_t RAPP_OnPacketRx(RAPP_PacketDesc *packet) {
   uint8_t size;
   uint8_t *data;
   RAPP_MSG_Type type;
-  RNWK_ShortAddrType srcAddr;
+  RAPP_ShortAddrType srcAddr;
   
   type = (RAPP_MSG_Type)RAPP_BUF_TYPE(packet->phyData);
   size = RAPP_BUF_SIZE(packet->phyData);
@@ -82,21 +82,21 @@ uint8_t RAPP_SetMessageHandlerTable(const RAPP_MsgHandler *table) {
   return ERR_OK;
 }
 
-RNWK_ShortAddrType RAPP_GetThisNodeAddr(void) {
+RAPP_ShortAddrType RAPP_GetThisNodeAddr(void) {
   return RNWK_GetThisNodeAddr();
 }
 
-uint8_t RAPP_SetThisNodeAddr(RNWK_ShortAddrType addr) {
+uint8_t RAPP_SetThisNodeAddr(RAPP_ShortAddrType addr) {
   return RNWK_SetThisNodeAddr(addr);
 }
 
-void RAPP_SniffPacket(RPHY_PacketDesc *packet, bool isTx) {
+void RAPP_SniffPacket(RAPP_PacketDesc *packet, bool isTx) {
 %if defined(Shell)
   uint8_t buf[32];
   const %@Shell@'ModuleName'%.StdIOType *io;
   int i;
   uint8_t dataSize;
-  RNWK_ShortAddrType addr;
+  RAPP_ShortAddrType addr;
   
   io = %@Shell@'ModuleName'%.GetStdio();
   if (isTx) {
