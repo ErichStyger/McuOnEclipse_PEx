@@ -4,7 +4,7 @@
     <Name>GenericI2C</Name>
     <Description>Generic high level I2C Driver on top of the I2C hardware driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.027</Version>
+    <Version>01.028</Version>
     <Icon>Generic2C</Icon>
     <TypesFiles>PE,GenericI2C\GenericI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,10 +16,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>2</BW_NeedUst>
+    <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2013-2015, all rights reserved.\nhttp          : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>* Copyright (c) 2013-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>GI2C</Shortcut>
@@ -287,18 +287,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C Address of device</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -321,12 +321,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -405,7 +405,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -416,20 +416,20 @@
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint/>
         </Parameter>
         <Parameter>
           <ParName>flags</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>flags for the transaction</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -452,7 +452,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -463,20 +463,20 @@
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of read buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>flags</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>flags for the transaction</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -499,7 +499,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>5</ParamCount>
         <Parameter>
@@ -510,34 +510,34 @@
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of read buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>flagsSend</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>flags for the send transaction</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>flagsStart</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Start flags</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumStartFlags flagsStart</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>flagsAck</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Acknowledge flags</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumAckFlags flagsAck</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -560,42 +560,42 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C Address of device</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to device memory address</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddrSize</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>number of address bytes</ParHint>
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to read buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of read buffer</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -618,42 +618,42 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C address of device</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to device memory address</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddrSize</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>number of address bytes</ParHint>
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data write buffer</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of data buffer in bytes</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -676,30 +676,30 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C Address of device</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Device memory address</ParHint>
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to read buffer (single byte)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr, byte memAddr, byte *data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t memAddr, uint8_t *data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -722,30 +722,30 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C address of device</ParHint>
         </Parameter>
         <Parameter>
           <ParName>memAddr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Device memory address</ParHint>
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Data value</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr, byte memAddr, byte data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t memAddr, uint8_t data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -768,7 +768,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>4</ParamCount>
         <Parameter>
@@ -779,26 +779,26 @@
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint/>
         </Parameter>
         <Parameter>
           <ParName>flags</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>flags for the transaction</ParHint>
           <ParUserDeclaration>%'ModuleName'_EnumSendFlags flags</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>WaitTimeUS</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Waiting time in microseconds to wait for the ACK on the bus.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, word WaitTimeUS)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, uint16_t WaitTimeUS)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -832,6 +832,40 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>ScanDevice</Name>
+        <Symbol>ScanDevice</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Checks if a device responds on the bus with an ACK.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>i2cAddr</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>7bit I2C device address</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Deinit</Name>
         <Symbol>Deinit</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -855,40 +889,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>ScanDevice</Name>
-        <Symbol>ScanDevice</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Checks if a device responds on the bus with an ACK.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>i2cAddr</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>7bit I2C device address</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(byte i2cAddr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

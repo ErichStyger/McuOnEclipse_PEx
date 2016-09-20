@@ -182,7 +182,7 @@ void %'ModuleName'%.%Deinit(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadAddress
 %ifdef ReadAddress
-byte %'ModuleName'%.%ReadAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize);
 %define! Pari2cAddr
 %define! ParmemAddr
 %define! ParmemAddrSize
@@ -196,7 +196,7 @@ byte %'ModuleName'%.%ReadAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, 
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteAddress
 %ifdef WriteAddress
-byte %'ModuleName'%.%WriteAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize);
 %define! Pari2cAddr
 %define! ParmemAddr
 %define! ParmemAddrSize
@@ -219,7 +219,7 @@ void* %'ModuleName'%.%GetSemaphore(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadBlock
 %ifdef ReadBlock
-byte %'ModuleName'%.%ReadBlock(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags);
+uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags);
 %define! Pardata
 %define! PardataSize
 %define! Parflags
@@ -231,7 +231,7 @@ byte %'ModuleName'%.%ReadBlock(void* data, word dataSize, %'ModuleName'_EnumSend
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteBlock
 %ifdef WriteBlock
-byte %'ModuleName'%.%WriteBlock(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags);
+uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags);
 %define! Pardata
 %define! PardataSize
 %define! Parflags
@@ -259,7 +259,7 @@ void %'ModuleName'%.%ReleaseBus(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectSlave
 %ifdef SelectSlave
-byte %'ModuleName'%.%SelectSlave(byte i2cAddr);
+uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr);
 %define! Pari2cAddr
 %define! RetVal
 %include Common\GenericI2CSelectSlave.Inc
@@ -269,7 +269,7 @@ byte %'ModuleName'%.%SelectSlave(byte i2cAddr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UnselectSlave
 %ifdef UnselectSlave
-byte %'ModuleName'%.%UnselectSlave(void);
+uint8_t %'ModuleName'%.%UnselectSlave(void);
 %define! RetVal
 %include Common\GenericI2CUnselectSlave.Inc
 
@@ -278,7 +278,7 @@ byte %'ModuleName'%.%UnselectSlave(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadByteAddress8
 %ifdef ReadByteAddress8
-byte %'ModuleName'%.%ReadByteAddress8(byte i2cAddr, byte memAddr, byte *data);
+uint8_t %'ModuleName'%.%ReadByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t *data);
 %define! Pari2cAddr
 %define! ParmemAddr
 %define! Pardata
@@ -290,7 +290,7 @@ byte %'ModuleName'%.%ReadByteAddress8(byte i2cAddr, byte memAddr, byte *data);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteByteAddress8
 %ifdef WriteByteAddress8
-byte %'ModuleName'%.%WriteByteAddress8(byte i2cAddr, byte memAddr, byte data);
+uint8_t %'ModuleName'%.%WriteByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t data);
 %define! Pari2cAddr
 %define! ParmemAddr
 %define! Pardata
@@ -302,7 +302,7 @@ byte %'ModuleName'%.%WriteByteAddress8(byte i2cAddr, byte memAddr, byte data);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ScanDevice
 %ifdef ScanDevice
-byte %'ModuleName'%.%ScanDevice(byte i2cAddr);
+uint8_t %'ModuleName'%.%ScanDevice(uint8_t i2cAddr);
 %define! Pari2cAddr
 %define! RetVal
 %include Common\GenericI2CScanDevice.Inc
@@ -312,7 +312,7 @@ byte %'ModuleName'%.%ScanDevice(byte i2cAddr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ProbeACK
 %ifdef ProbeACK
-byte %'ModuleName'%.%ProbeACK(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, word WaitTimeUS);
+uint8_t %'ModuleName'%.%ProbeACK(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, uint16_t WaitTimeUS);
 %define! Pardata
 %define! PardataSize
 %define! Parflags
@@ -325,7 +325,7 @@ byte %'ModuleName'%.%ProbeACK(void* data, word dataSize, %'ModuleName'_EnumSendF
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadBlockGeneric
 %ifdef ReadBlockGeneric
-byte %'ModuleName'%.%ReadBlockGeneric(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck);
+uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck);
 %define! Pardata
 %define! PardataSize
 %define! ParflagsSend
@@ -336,6 +336,8 @@ byte %'ModuleName'%.%ReadBlockGeneric(void* data, word dataSize, %'ModuleName'_E
 
 %endif %- ReadBlockGeneric
 %-BW_METHOD_END ReadBlockGeneric
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -479,7 +481,7 @@ void %'ModuleName'%.%ReleaseBus(void)
 %define! Pari2cAddr
 %define! RetVal
 %include Common\GenericI2CSelectSlave.Inc
-byte %'ModuleName'%.%SelectSlave(byte i2cAddr)
+uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr)
 {
 %if (defined(OnRequestBus)) | (defined(RTOS) & %UseSemaphore='yes')
   %'ModuleName'%.%RequestBus();
@@ -516,7 +518,7 @@ byte %'ModuleName'%.%SelectSlave(byte i2cAddr)
 %ifdef UnselectSlave
 %define! RetVal
 %include Common\GenericI2CUnselectSlave.Inc
-byte %'ModuleName'%.%UnselectSlave(void)
+uint8_t %'ModuleName'%.%UnselectSlave(void)
 {
 %if (defined(OnReleaseBus)) | (defined(RTOS) & %UseSemaphore='yes')
   %'ModuleName'%.%ReleaseBus();
@@ -536,16 +538,16 @@ byte %'ModuleName'%.%UnselectSlave(void)
 %define! ParflagsAck
 %define! RetVal
 %include Common\GenericI2CReadBlockGeneric.Inc
-byte %'ModuleName'%.%ReadBlockGeneric(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck)
+uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, %'ModuleName'_EnumStartFlags flagsStart, %'ModuleName'_EnumAckFlags flagsAck)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
 %else
-  word nof;
+  uint16_t nof;
 %endif
 
 %if defined(LDD_I2C)
@@ -626,16 +628,16 @@ byte %'ModuleName'%.%ReadBlockGeneric(void* data, word dataSize, %'ModuleName'_E
 %define! Parflags
 %define! RetVal
 %include Common\GenericI2CReadBlock.Inc
-byte %'ModuleName'%.%ReadBlock(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)
+uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
 %else
-  word nof;
+  uint16_t nof;
 %endif
 
 %if defined(LDD_I2C)
@@ -715,16 +717,16 @@ byte %'ModuleName'%.%ReadBlock(void* data, word dataSize, %'ModuleName'_EnumSend
 %define! Parflags
 %define! RetVal
 %include Common\GenericI2CWriteBlock.Inc
-byte %'ModuleName'%.%WriteBlock(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags)
+uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags)
 {
 %if defined(I2C)
-  word nof;
+  uint16_t nof;
 %endif
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
 %if defined(LDD_I2C)
   for(;;) { /* breaks */
@@ -814,16 +816,16 @@ byte %'ModuleName'%.%WriteBlock(void* data, word dataSize, %'ModuleName'_EnumSen
 %define! PardataSize
 %define! RetVal
 %include Common\GenericI2CReadAddress.Inc
-byte %'ModuleName'%.%ReadAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
 %else
-  word nof;
+  uint16_t nof;
 %endif
 
   if (%'ModuleName'%.%SelectSlave(i2cAddr)!=ERR_OK) {
@@ -965,19 +967,19 @@ byte %'ModuleName'%.%ReadAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, 
 %define! PardataSize
 %define! RetVal
 %include Common\GenericI2CWriteAddress.Inc
-byte %'ModuleName'%.%WriteAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)
 {
-  static byte writeBuf[%'ModuleName'%.WRITE_BUFFER_SIZE];
-  byte *p;
-  word i;
+  static uint8_t writeBuf[%'ModuleName'%.WRITE_BUFFER_SIZE];
+  uint8_t *p;
+  uint16_t i;
 %if defined(I2C)
-  word nof;
+  uint16_t nof;
 %endif
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
   if (%'ModuleName'%.%SelectSlave(i2cAddr)!=ERR_OK) {
   %if defined(OnError)
@@ -1180,7 +1182,7 @@ void* %'ModuleName'%.%GetSemaphore(void)
 %define! Pardata
 %define! RetVal
 %include Common\GenericI2CReadByteAddress8.Inc
-byte %'ModuleName'%.%ReadByteAddress8(byte i2cAddr, byte memAddr, byte *data)
+uint8_t %'ModuleName'%.%ReadByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t *data)
 {
   return %'ModuleName'%.ReadAddress(i2cAddr, &memAddr, sizeof(memAddr), data, 1);
 }
@@ -1195,7 +1197,7 @@ byte %'ModuleName'%.%ReadByteAddress8(byte i2cAddr, byte memAddr, byte *data)
 %define! Pardata
 %define! RetVal
 %include Common\GenericI2CWriteByteAddress8.Inc
-byte %'ModuleName'%.%WriteByteAddress8(byte i2cAddr, byte memAddr, byte data)
+uint8_t %'ModuleName'%.%WriteByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t data)
 {
   return %'ModuleName'%.WriteAddress(i2cAddr, &memAddr, sizeof(memAddr), &data, 1);
 }
@@ -1208,9 +1210,9 @@ byte %'ModuleName'%.%WriteByteAddress8(byte i2cAddr, byte memAddr, byte data)
 %define! Pari2cAddr
 %define! RetVal
 %include Common\GenericI2CScanDevice.Inc
-byte %'ModuleName'%.%ScanDevice(byte i2cAddr)
+uint8_t %'ModuleName'%.%ScanDevice(uint8_t i2cAddr)
 {
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
 %if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
@@ -1218,9 +1220,9 @@ byte %'ModuleName'%.%ScanDevice(byte i2cAddr)
 %endif
   LDD_I2C_TErrorMask errMask;
 %else
-  word nof;
+  uint16_t nof;
 %endif
-  byte dummy;
+  uint8_t dummy;
 
   if (%'ModuleName'%.%SelectSlave(i2cAddr)!=ERR_OK) {
     return ERR_FAILED;
@@ -1310,12 +1312,12 @@ byte %'ModuleName'%.%ScanDevice(byte i2cAddr)
 %define! ParWaitTimeUS
 %define! RetVal
 %include Common\GenericI2CProbeACK.Inc
-byte %'ModuleName'%.%ProbeACK(void* data, word dataSize, %'ModuleName'_EnumSendFlags flags, word WaitTimeUS)
+uint8_t %'ModuleName'%.%ProbeACK(void* data, uint16_t dataSize, %'ModuleName'_EnumSendFlags flags, uint16_t WaitTimeUS)
 {
 %if defined(I2C)
-  word nof;
+  uint16_t nof;
 %endif
-  byte res = ERR_OK;
+  uint8_t res = ERR_OK;
 
 %if defined(LDD_I2C)
   %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
@@ -1363,6 +1365,8 @@ byte %'ModuleName'%.%ProbeACK(void* data, word dataSize, %'ModuleName'_EnumSendF
 
 %endif %- ProbeACK
 %-BW_METHOD_END ProbeACK
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

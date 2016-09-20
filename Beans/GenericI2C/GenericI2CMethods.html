@@ -211,10 +211,10 @@ LI.EXP {
  - Selects the slave device on the bus. Method might use a semaphore to protect bus access.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SelectSlave(byte i2cAddr)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SelectSlave(uint8_t i2cAddr)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - I2C Address of device</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -223,9 +223,9 @@ LI.EXP {
  - Unselects the device. Method will release a used a semaphore.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte UnselectSlave(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t UnselectSlave(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -252,12 +252,12 @@ LI.EXP {
  - Write a block to the device.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteBlock(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteBlock(void* data, uint16_t dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data:void*</i> - Data write buffer</li>
-<li><i>dataSize:word</i> - no hint</li>
-<li><i>flags:byte</i> - flags for the transaction</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>dataSize:uint16_t</i> - no hint</li>
+<li><i>flags:uint8_t</i> - flags for the transaction</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -266,12 +266,12 @@ LI.EXP {
  - Read from the device a block.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadBlock(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadBlock(void* data, uint16_t dataSize, <i>ComponentName_</i>EnumSendFlags flags)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data:void*</i> - Read buffer</li>
-<li><i>dataSize:word</i> - Size of read buffer</li>
-<li><i>flags:byte</i> - flags for the transaction</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>dataSize:uint16_t</i> - Size of read buffer</li>
+<li><i>flags:uint8_t</i> - flags for the transaction</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -280,14 +280,14 @@ LI.EXP {
  - Read from the device a block with using additional control and flags.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadBlockGeneric(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags, <i>ComponentName_</i>EnumStartFlags flagsStart, <i>ComponentName_</i>EnumAckFlags flagsAck)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadBlockGeneric(void* data, uint16_t dataSize, <i>ComponentName_</i>EnumSendFlags flags, <i>ComponentName_</i>EnumStartFlags flagsStart, <i>ComponentName_</i>EnumAckFlags flagsAck)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data:void*</i> - Read buffer</li>
-<li><i>dataSize:word</i> - Size of read buffer</li>
-<li><i>flagsSend:byte</i> - flags for the send transaction</li>
-<li><i>flagsStart:byte</i> - Start flags</li>
-<li><i>flagsAck:byte</i> - Acknowledge flags</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>dataSize:uint16_t</i> - Size of read buffer</li>
+<li><i>flagsSend:uint8_t</i> - flags for the send transaction</li>
+<li><i>flagsStart:uint8_t</i> - Start flags</li>
+<li><i>flagsAck:uint8_t</i> - Acknowledge flags</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -296,14 +296,14 @@ LI.EXP {
  - Read from the device. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - I2C Address of device</li>
-<li><i>memAddr: Pointer to byte</i> - Pointer to device memory address</li>
-<li><i>memAddrSize:byte</i> - number of address bytes</li>
-<li><i>data: Pointer to byte</i> - Pointer to read buffer</li>
-<li><i>dataSize:word</i> - Size of read buffer</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>memAddr: Pointer to uint8_t</i> - Pointer to device memory address</li>
+<li><i>memAddrSize:uint8_t</i> - number of address bytes</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>dataSize:uint16_t</i> - Size of read buffer</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -312,14 +312,14 @@ LI.EXP {
  - Write to the device: (S+i2cAddr+0), (memAddr), (data)...(data+P)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteAddress(byte i2cAddr, byte *memAddr, byte memAddrSize, byte *data, word dataSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - I2C address of device</li>
-<li><i>memAddr: Pointer to byte</i> - Pointer to device memory address</li>
-<li><i>memAddrSize:byte</i> - number of address bytes</li>
-<li><i>data: Pointer to byte</i> - Pointer to data write buffer</li>
-<li><i>dataSize:word</i> - Size of data buffer in bytes</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>i2cAddr:uint8_t</i> - I2C address of device</li>
+<li><i>memAddr: Pointer to uint8_t</i> - Pointer to device memory address</li>
+<li><i>memAddrSize:uint8_t</i> - number of address bytes</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data write buffer</li>
+<li><i>dataSize:uint16_t</i> - Size of data buffer in bytes</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -328,12 +328,12 @@ LI.EXP {
  - Read a byte from the device using an 8bit memory address. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadByteAddress8(byte i2cAddr, byte memAddr, byte *data)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - I2C Address of device</li>
-<li><i>memAddr:byte</i> - Device memory address</li>
-<li><i>data: Pointer to byte</i> - Pointer to read buffer (single byte)</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>memAddr:uint8_t</i> - Device memory address</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to read buffer (single byte)</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -342,12 +342,12 @@ LI.EXP {
  - Write a byte to the device using an 8bit memory address: (S+i2cAddr+0), (memAddr), (data)...(data+P)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteByteAddress8(byte i2cAddr, byte memAddr, byte data)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteByteAddress8(uint8_t i2cAddr, uint8_t memAddr, uint8_t data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - I2C address of device</li>
-<li><i>memAddr:byte</i> - Device memory address</li>
-<li><i>data:byte</i> - Data value</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>i2cAddr:uint8_t</i> - I2C address of device</li>
+<li><i>memAddr:uint8_t</i> - Device memory address</li>
+<li><i>data:uint8_t</i> - Data value</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -356,13 +356,13 @@ LI.EXP {
  - Accesses the bus to check if the device responds with an ACK (ACK polling).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ProbeACK(void* data, word dataSize, <i>ComponentName_</i>EnumSendFlags flags, word WaitTimeUS)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ProbeACK(void* data, uint16_t dataSize, <i>ComponentName_</i>EnumSendFlags flags, uint16_t WaitTimeUS)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data:void*</i> - Data write buffer</li>
-<li><i>dataSize:word</i> - no hint</li>
-<li><i>flags:byte</i> - flags for the transaction</li>
-<li><i>WaitTimeUS:word</i> - Waiting time in microseconds to wait for the ACK on the bus.</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>dataSize:uint16_t</i> - no hint</li>
+<li><i>flags:uint8_t</i> - flags for the transaction</li>
+<li><i>WaitTimeUS:uint16_t</i> - Waiting time in microseconds to wait for the ACK on the bus.</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -377,6 +377,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ScanDevice">
+<b>ScanDevice</b></a>
+ - Checks if a device responds on the bus with an ACK.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ScanDevice(uint8_t i2cAddr)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - 7bit I2C device address</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="Deinit">
 <b>Deinit</b></a>
  - Deinitializes the driver.
@@ -384,18 +396,6 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void Deinit(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="ScanDevice">
-<b>ScanDevice</b></a>
- - Checks if a device responds on the bus with an ACK.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ScanDevice(byte i2cAddr)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>i2cAddr:byte</i> - 7bit I2C device address</li>
-<li><i>Return value:byte</i> - Error code
-</li>
 </ul><br />
 </li>
 <li><a name="Init">
