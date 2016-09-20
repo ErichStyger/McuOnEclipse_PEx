@@ -2376,9 +2376,13 @@ uint16_t %'ModuleName'%.%strlen(const char *)
 %endif %- strlen
 %-BW_METHOD_END strlen
 %-************************************************************************************************************
-%if defined(ScanHex8uNumber) | defined(ScanHex16uNumber) | defined(ScanHex32uNumber)
-static uint8_t PreScanHexNumber(const unsigned char **str)
-{
+%if defined(ScanHex8uNumber) | defined(ScanHex16uNumber) | defined(ScanHex32uNumber) | defined(ScanHex8uNumberNoPrefix)
+static bool isHexCharacter(unsigned char ch) {
+  /* returns TRUE if character is a hexadecimal character */
+  return (ch>='0' && ch<='9') || (ch>='a' && ch<='f') || (ch>='A' && ch<='F');
+}
+
+static uint8_t PreScanHexNumber(const unsigned char **str) {
   const unsigned char *p = *str;
 
   while(*p==' ') { /* skip leading spaces */
@@ -2426,21 +2430,21 @@ static uint8_t HexToDec(const unsigned char **p, unsigned char *val) {
 uint8_t %'ModuleName'%.%ScanHex32uNumber(const unsigned char **str, uint32_t *val)
 {
   /* scans a decimal number, and stops at any non-number. Number can have any preceding zeros or spaces. */
-  uint8_t nofDigits = 8+1; /* maximum number of digits to avoid overflow */
+  uint8_t nofDigits = 8; /* maximum number of digits to avoid overflow */
   const unsigned char *p = *str;
   uint8_t v;
 
+  *val = 0;
   if (PreScanHexNumber(&p)!=ERR_OK) { /* skip leading spaces, and scan '0x' */
     return ERR_FAILED;
   }
-  *val = 0;
-  while (HexToDec(&p, &v)==ERR_OK && nofDigits > 0) {
+  if (!isHexCharacter(*p)) { /* not a valid hex number sequence */
+    return ERR_FAILED;
+  }
+  while (nofDigits>0 && HexToDec(&p, &v)==ERR_OK) {
     *val = (uint32_t)((*val)*16 + v);
     nofDigits--;
   } /* while */
-  if (nofDigits==0) {
-    return ERR_OVERFLOW;
-  }
   *str = p;
   return ERR_OK;
 }
@@ -2457,21 +2461,21 @@ uint8_t %'ModuleName'%.%ScanHex32uNumber(const unsigned char **str, uint32_t *va
 uint8_t %'ModuleName'%.%ScanHex16uNumber(const unsigned char **str, uint16_t *val)
 {
   /* scans a decimal number, and stops at any non-number. Number can have any preceding zeros or spaces. */
-  uint8_t nofDigits = 4+1; /* maximum number of digits to avoid overflow */
+  uint8_t nofDigits = 4; /* maximum number of digits to read */
   const unsigned char *p = *str;
   uint8_t v;
 
+  *val = 0;
   if (PreScanHexNumber(&p)!=ERR_OK) { /* skip leading spaces, and scan '0x' */
     return ERR_FAILED;
   }
-  *val = 0;
-  while (HexToDec(&p, &v)==ERR_OK && nofDigits > 0) {
+  if (!isHexCharacter(*p)) { /* not a valid hex number sequence */
+    return ERR_FAILED;
+  }
+  while (nofDigits>0 && HexToDec(&p, &v)==ERR_OK) {
     *val = (uint16_t)((*val)*16 + v);
     nofDigits--;
   } /* while */
-  if (nofDigits==0) {
-    return ERR_OVERFLOW;
-  }
   *str = p;
   return ERR_OK;
 }
@@ -2488,21 +2492,21 @@ uint8_t %'ModuleName'%.%ScanHex16uNumber(const unsigned char **str, uint16_t *va
 uint8_t %'ModuleName'%.%ScanHex8uNumber(const unsigned char **str, uint8_t *val)
 {
   /* scans a hex number with 0x, and stops at any non-number. Number can have any preceding zeros or spaces. */
-  uint8_t nofDigits = 2+1; /* maximum number of digits to avoid overflow */
+  uint8_t nofDigits = 2; /* maximum number of digits to read */
   const unsigned char *p = *str;
   uint8_t v;
 
+  *val = 0;
   if (PreScanHexNumber(&p)!=ERR_OK) { /* skip leading spaces, and scan '0x' */
     return ERR_FAILED;
   }
-  *val = 0;
-  while (HexToDec(&p, &v)==ERR_OK && nofDigits > 0) {
+  if (!isHexCharacter(*p)) { /* not a valid hex number sequence */
+    return ERR_FAILED;
+  }
+  while (nofDigits>0 && HexToDec(&p, &v)==ERR_OK) {
     *val = (uint8_t)((*val)*16 + v);
     nofDigits--;
   } /* while */
-  if (nofDigits==0) {
-    return ERR_OVERFLOW;
-  }
   *str = p;
   return ERR_OK;
 }
@@ -2519,21 +2523,21 @@ uint8_t %'ModuleName'%.%ScanHex8uNumber(const unsigned char **str, uint8_t *val)
 uint8_t %'ModuleName'%.%ScanHex8uNumberNoPrefix(const unsigned char **str, uint8_t *val)
 {
   /* scans a hex number without 0x, and stops at any non-number. Number can have any preceding zeros or spaces. */
-  uint8_t nofDigits = 2+1; /* maximum number of digits to avoid overflow */
+  uint8_t nofDigits = 2; /* maximum number of digits to read */
   const unsigned char *p = *str;
   uint8_t v;
 
+  *val = 0;
   while(*p==' ') { /* skip leading spaces */
     p++; /* skip space */
   }
-  *val = 0;
-  while (HexToDec(&p, &v)==ERR_OK && nofDigits > 0) {
+  if (!isHexCharacter(*p)) { /* not a valid hex number sequence */
+    return ERR_FAILED;
+  }
+  while (nofDigits>0 && HexToDec(&p, &v)==ERR_OK) {
     *val = (uint8_t)((*val)*16 + v);
     nofDigits--;
   } /* while */
-  if (nofDigits==0) {
-    return ERR_OVERFLOW;
-  }
   *str = p;
   return ERR_OK;
 }
