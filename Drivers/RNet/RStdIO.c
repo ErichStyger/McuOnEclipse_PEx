@@ -33,7 +33,12 @@ static xQueueHandle RSTDIO_TxStdInQ, RSTDIO_TxStdOutQ, RSTDIO_TxStdErrQ;
 
 static RNWK_ShortAddrType RSTDIO_dstAddr; /* destination address */
 
-xQueueHandle GetQueueForType(RSTDIO_QueueType queueType) {
+/*!
+ * \brief Returns a queue handle for a Remote Standard I/O type
+ * \param queueType Type of queue
+ * \return Queue handle
+ */
+xQueueHandle RSTDIO_GetQueueForType(RSTDIO_QueueType queueType) {
   switch(queueType) {
     case RSTDIO_QUEUE_RX_IN:  return RSTDIO_RxStdInQ;
     case RSTDIO_QUEUE_RX_OUT: return RSTDIO_RxStdOutQ;
@@ -85,6 +90,11 @@ static unsigned short RSTDIO_NofElements(xQueueHandle queue) {
   return (unsigned short)%@RTOS@'ModuleName'%.uxQueueMessagesWaiting(queue);
 }
 
+/*!
+ * \brief Returns the number of elements in the queue
+ * \param queueType Queue type
+ * \return Number of elements in the queue, 0 if the queue is not known.
+ */
 uint8_t RSTDIO_NofInQueue(RSTDIO_QueueType queueType) {
   switch(queueType) {
     case RSTDIO_QUEUE_RX_IN:  return RSTDIO_NofElements(RSTDIO_RxStdInQ);
@@ -114,6 +124,11 @@ static unsigned char RSTDIO_ReceiveChar(xQueueHandle queue) {
   }
 }
 
+/*!
+ * \brief Returns a character from a queue
+ * \param queueType Queue type
+ * \return Character, or zero byte if queue is empty or unknown
+ */
 uint8_t RSTDIO_ReceiveQueueChar(RSTDIO_QueueType queueType) {
   switch(queueType) {
     case RSTDIO_QUEUE_RX_IN:  return RSTDIO_ReceiveChar(RSTDIO_RxStdInQ);

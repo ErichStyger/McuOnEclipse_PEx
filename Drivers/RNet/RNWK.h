@@ -69,6 +69,14 @@ uint8_t RNWK_SetAppOnPacketRxCallback(RNWK_AppOnRxCallbackType callback);
 uint8_t RNWK_OnPacketRx(RPHY_PacketDesc *packet);
 
 /*!
+ * \brief Sents an ACK packet for a packet received.
+ * \param rxPacket Packet which has been received and for which an ACK should be sent.
+ * \param saddr Address to where to send the ACK back.
+ * \return Error code, ERR_OK for no error.
+ */
+uint8_t RNWK_SendACK(RPHY_PacketDesc *rxPacket, RNWK_ShortAddrType saddr);
+
+/*!
  * \brief Puts a payload into the buffer queue to be sent asynchronously.
  * \param buf Message buffer with payload.
  * \param bufSize Size of message buffer, must be of RNWK_BUFFER_SIZE.

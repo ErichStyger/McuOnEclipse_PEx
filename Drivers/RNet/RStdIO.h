@@ -12,6 +12,7 @@
 
 #include "RNetConf.h"
 %if defined(RStdioEnabled) & %RStdioEnabled='yes'
+#include "%@RTOS@'ModuleName'.h"
 #include "RPHY.h"
 #include "RNWK.h"
 #include "%@Shell@'ModuleName'.h"
@@ -26,6 +27,28 @@ typedef enum RSTDIO_QueueType {
   RSTDIO_QUEUE_TX_OUT,
   RSTDIO_QUEUE_TX_ERR
 } RSTDIO_QueueType;
+
+
+/*!
+ * \brief Returns a queue handle for a Remote Standard I/O type
+ * \param queueType Type of queue
+ * \return Queue handle
+ */
+xQueueHandle RSTDIO_GetQueueForType(RSTDIO_QueueType queueType);
+
+/*!
+ * \brief Returns the number of elements in the queue
+ * \param queueType Queue type
+ * \return Number of elements in the queue, 0 if the queue is not known.
+ */
+uint8_t RSTDIO_NofInQueue(RSTDIO_QueueType queueType);
+
+/*!
+ * \brief Returns a character from a queue
+ * \param queueType Queue type
+ * \return Character, or zero byte if queue is empty or unknown
+ */
+uint8_t RSTDIO_ReceiveQueueChar(RSTDIO_QueueType queueType);
 
 /*!
  * \brief Sends a message to a tx stdio queues and sends it if queue is full or has \n at the end

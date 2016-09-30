@@ -106,16 +106,16 @@
 #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  %'Width'u         %>40/* number of columns in hardware */
 #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS     %'Height'u        %>40/* number of rows in hardware */
 
-extern byte %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+extern uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
-#ifndef __BWUserType_%'ModuleName'_PixelDim
-#define __BWUserType_%'ModuleName'_PixelDim
-  typedef signed char %'ModuleName'_PixelDim ;                   %>40/* One byte is enough to describe an x/y position. */
-#endif
 #ifndef __BWUserType_%'ModuleName'_PixelCount
 #define __BWUserType_%'ModuleName'_PixelCount
-  typedef word %'ModuleName'_PixelCount ;                        %>40/* A word is enough to hold the number of pixels (84x48). */
+  typedef uint16_t %'ModuleName'_PixelCount ;                    %>40/* A word is enough to hold the number of pixels (84x48). */
+#endif
+#ifndef __BWUserType_%'ModuleName'_PixelDim
+#define __BWUserType_%'ModuleName'_PixelDim
+  typedef uint8_t %'ModuleName'_PixelDim ;                       %>40/* One byte is enough to describe an x/y position. */
 #endif
 
 %-ENDUSRTYPES
@@ -222,7 +222,7 @@ void %'ModuleName'%.%Clear(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClearLine
 %ifdef ClearLine
-void %'ModuleName'%.%ClearLine(byte lineNumber);
+void %'ModuleName'%.%ClearLine(uint8_t lineNumber);
 %define! ParlineNumber
 %include Common\PDC8544ClearLine.Inc
 
@@ -239,7 +239,7 @@ void %'ModuleName'%.%Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteChar
 %ifdef WriteChar
-void %'ModuleName'%.%WriteChar(char ch);
+void %'ModuleName'%.%WriteChar(uint8_t ch);
 %define! Parch
 %include Common\PDC8544WriteChar.Inc
 
@@ -248,7 +248,7 @@ void %'ModuleName'%.%WriteChar(char ch);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteString
 %ifdef WriteString
-void %'ModuleName'%.%WriteString(char *str);
+void %'ModuleName'%.%WriteString(uint8_t *str);
 %define! Parstr
 %include Common\PDC8544WriteString.Inc
 
@@ -257,7 +257,7 @@ void %'ModuleName'%.%WriteString(char *str);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteLineStr
 %ifdef WriteLineStr
-void %'ModuleName'%.%WriteLineStr(byte line, char *str);
+void %'ModuleName'%.%WriteLineStr(uint8_t line, uint8_t *str);
 %define! Parline
 %define! Parstr
 %include Common\PDC8544WriteLineStr.Inc
@@ -287,7 +287,7 @@ void %'ModuleName'%.%UpdateFull(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetContrast
 %ifdef SetContrast
-void %'ModuleName'%.%SetContrast(byte contrast);
+void %'ModuleName'%.%SetContrast(uint8_t contrast);
 %define! Parcontrast
 %include Common\PDC8544SetContrast.Inc
 
@@ -448,7 +448,7 @@ void %OnBlockReceived(LDD_TUserData *UserDataPtr);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 
-byte %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 %if defined(RESLDD)
 static LDD_TDeviceData *RES_DeviceData; /* device handle for RES pin */
@@ -619,10 +619,10 @@ static const char table[480] =
 %-UNLOCKED
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG WriteCmd
-static void WriteCmd(byte cmd);
+static void WriteCmd(uint8_t cmd);
 %-INTERNAL_LOC_METHOD_END WriteCmd
 %-INTERNAL_LOC_METHOD_BEG WriteData
-static void WriteData(byte data);
+static void WriteData(uint8_t data);
 %-INTERNAL_LOC_METHOD_END WriteData
 %-
 
@@ -632,7 +632,7 @@ static void WriteData(byte data);
 %-INTERNAL_METHOD_BEG WriteCmd
 %define! Parcmd
 %include Common\GeneralInternalGlobal.inc (WriteCmd)
-static void WriteCmd(byte cmd)
+static void WriteCmd(uint8_t cmd)
 {
 %if defined(SPILDD)
   uint8_t dummy;
@@ -662,7 +662,7 @@ static void WriteCmd(byte cmd)
 %-INTERNAL_METHOD_BEG WriteData
 %define! Pardata
 %include Common\GeneralInternalGlobal.inc (WriteData)
-static void WriteData(byte data)
+static void WriteData(uint8_t data)
 {
 %if defined(SPILDD)
   uint8_t dummy;
@@ -696,8 +696,8 @@ static void WriteData(byte data)
 %include Common\PDC8544SetPos.Inc
 void %'ModuleName'%.%SetPos(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
-  WriteCmd((byte)(0x40|(y&0x07)));                               %>40 /* Y axis */
-  WriteCmd((byte)(0x80|(x&(%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS-1))));%>40 /* X axis */
+  WriteCmd((uint8_t)(0x40|(y&0x07)));                            %>40 /* Y axis */
+  WriteCmd((uint8_t)(0x80|(x&(%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS-1))));%>40 /* X axis */
 }
 
 %endif %- SetPos
@@ -723,9 +723,9 @@ void %'ModuleName'%.%Clear(void)
 %ifdef ClearLine
 %define! ParlineNumber
 %include Common\PDC8544ClearLine.Inc
-void %'ModuleName'%.%ClearLine(byte lineNumber)
+void %'ModuleName'%.%ClearLine(uint8_t lineNumber)
 {
-  byte ddram;
+  uint8_t ddram;
 
   %'ModuleName'%.%SetPos(0, (%'ModuleName'_PixelDim)lineNumber); %>40 /* move cursor to beginning of line */
   for (ddram=%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS; ddram>0; ddram--) {
@@ -792,7 +792,7 @@ void %'ModuleName'%.%Init(void)
 %ifdef WriteChar
 %define! Parch
 %include Common\PDC8544WriteChar.Inc
-void %'ModuleName'%.%WriteChar(char ch)
+void %'ModuleName'%.%WriteChar(uint8_t ch)
 {
   int tablept = 0;
   int count = 0;
@@ -804,7 +804,7 @@ void %'ModuleName'%.%WriteChar(char ch)
   tablept = (%'ModuleName'%.FONT_COLUMNS_PER_CHAR*((int)ch))-160;%>40/* find character bitmap */
   for (count=%'ModuleName'%.FONT_COLUMNS_PER_CHAR;count>0;count--) {%>40/* draw the columns to print the character */
     char_column = table[tablept];
-    WriteData((byte)char_column);
+    WriteData((uint8_t)char_column);
     tablept++;
   }
   for(count=%'ModuleName'%.SPACE_COLUMNS_PER_CHAR;count>0;count--) {
@@ -819,7 +819,7 @@ void %'ModuleName'%.%WriteChar(char ch)
 %ifdef WriteString
 %define! Parstr
 %include Common\PDC8544WriteString.Inc
-void %'ModuleName'%.%WriteString(char *str)
+void %'ModuleName'%.%WriteString(uint8_t *str)
 {
   while(*str != '\0') {
     %'ModuleName'%.%WriteChar(*(str++));                         %>40/*Points to one ASCII to be written one at a time */
@@ -834,9 +834,9 @@ void %'ModuleName'%.%WriteString(char *str)
 %define! Parline
 %define! Parstr
 %include Common\PDC8544WriteLineStr.Inc
-void %'ModuleName'%.%WriteLineStr(byte line, char *str)
+void %'ModuleName'%.%WriteLineStr(uint8_t line, uint8_t *str)
 {
-  byte i;
+  uint8_t i;
 
   if (line==0 || line>%'ModuleName'%.MAX_LINES_FOR_DISPLAY) {
     return; /* invalid line number */
@@ -871,8 +871,8 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %include Common\PDC8544UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
-  word numBytes = sizeof(%'ModuleName'_DisplayBuf);
-  byte *data = (byte*)%'ModuleName'_DisplayBuf;
+  uint16_t numBytes = sizeof(%'ModuleName'_DisplayBuf);
+  uint8_t *data = (uint8_t*)%'ModuleName'_DisplayBuf;
 
   %'ModuleName'%.%SetPos(0, 0);                                  %>40 /* move cursor to beginning of display */
   while(numBytes>0) {
@@ -888,11 +888,11 @@ void %'ModuleName'%.%UpdateFull(void)
 %ifdef SetContrast
 %define! Parcontrast
 %include Common\PDC8544SetContrast.Inc
-void %'ModuleName'%.%SetContrast(byte contrast)
+void %'ModuleName'%.%SetContrast(uint8_t contrast)
 {
   if (contrast < 128) { /* check for valid contrast values */
     WriteCmd(0x21);
-    WriteCmd((byte)(0x80|contrast));
+    WriteCmd((uint8_t)(0x80|contrast));
     WriteCmd(0x20);
   }
 }

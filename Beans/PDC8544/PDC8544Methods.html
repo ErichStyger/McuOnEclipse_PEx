@@ -297,9 +297,9 @@ LI.EXP {
  - Clears a character line on the display
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void ClearLine(byte lineNumber)<br />
+<br /><i>ANSIC prototype:</i> void ClearLine(uint8_t lineNumber)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>lineNumber:byte</i> - the line number of the line to be cleared.</li>
+<li><i>lineNumber:uint8_t</i> - the line number of the line to be cleared.</li>
 </ul><br />
 </li>
 <li><a name="WriteChar">
@@ -307,9 +307,9 @@ LI.EXP {
  - Writes a single character to the display at the current position.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteChar(char ch)<br />
+<br /><i>ANSIC prototype:</i> void WriteChar(uint8_t ch)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:char</i> - Char to be written to the display.</li>
+<li><i>ch:uint8_t</i> - Char to be written to the display.</li>
 </ul><br />
 </li>
 <li><a name="WriteString">
@@ -317,9 +317,9 @@ LI.EXP {
  - Writes a zero byte terminated string to the display at the current cursor position.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteString(char *str)<br />
+<br /><i>ANSIC prototype:</i> void WriteString(uint8_t *str)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>str: Pointer to char</i> - Pointer to string to be written to the display.</li>
+<li><i>str: Pointer to uint8_t</i> - Pointer to string to be written to the display.</li>
 </ul><br />
 </li>
 <li><a name="WriteLineStr">
@@ -327,10 +327,10 @@ LI.EXP {
  - Writes a string to the given line position.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteLineStr(byte line, char *str)<br />
+<br /><i>ANSIC prototype:</i> void WriteLineStr(uint8_t line, uint8_t *str)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>line:byte</i> - The line number, starting with 1.</li>
-<li><i>str: Pointer to char</i> - Pointer to zero byte terminated string</li>
+<li><i>line:uint8_t</i> - The line number, starting with 1.</li>
+<li><i>str: Pointer to uint8_t</i> - Pointer to zero byte terminated string</li>
 </ul><br />
 </li>
 <li><a name="SetContrast">
@@ -338,9 +338,9 @@ LI.EXP {
  - Sets the display contrast.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetContrast(byte contrast)<br />
+<br /><i>ANSIC prototype:</i> void SetContrast(uint8_t contrast)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>contrast:byte</i> - Contrast value, must be in the range of  0 &gt;= x &lt; 128</li>
+<li><i>contrast:uint8_t</i> - Contrast value, must be in the range of  0 &gt;= x &lt; 128</li>
 </ul><br />
 </li>
 <li><a name="SetMode">

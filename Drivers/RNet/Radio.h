@@ -55,6 +55,12 @@ uint8_t RADIO_PowerDown(void);
  */
 uint8_t RADIO_Process(void);
 
+/*!
+ * \brief Flushes the internal radio queues.
+ * \return Error code, ERR_OK for no failure.
+ */
+uint8_t RADIO_FlushQueues(void);
+
 /*! \brief Radio transceiver initialization */
 void RADIO_Init(void);
 

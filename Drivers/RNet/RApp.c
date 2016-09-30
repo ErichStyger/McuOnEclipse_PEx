@@ -37,7 +37,7 @@ uint8_t RAPP_SendPayloadDataBlock(uint8_t *appPayload, uint8_t appPayloadSize, u
   return RAPP_PutPayload(buf, sizeof(buf), appPayloadSize, (RAPP_MSG_Type)msgType, dstAddr, flags);
 }
 
-uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RAPP_ShortAddrType srcAddr, bool *handled, RAPP_PacketDesc *packet, const RAPP_MsgHandler *table) {
+static uint8_t IterateTable(RAPP_MSG_Type type, uint8_t size, uint8_t *data, RAPP_ShortAddrType srcAddr, bool *handled, RAPP_PacketDesc *packet, const RAPP_MsgHandler *table) {
   uint8_t res = ERR_OK;
 
   if (table==NULL) { /* no table??? */

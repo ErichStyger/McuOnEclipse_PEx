@@ -4,7 +4,7 @@
     <Name>PDC8544</Name>
     <Description>Display driver for the Philips PDC8544 display driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.003</Version>
+    <Version>01.004</Version>
     <Icon>PDC8544</Icon>
     <TypesFiles>PE,PDC8544\PDC8544</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>3</BW_NeedUst>
+    <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License : Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014, all rights reserved.\n\nThis an open source software in the form of a Processor Expert Embedded Component.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2014-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>PDC</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -736,13 +736,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>command to write</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte cmd)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t cmd)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -770,13 +770,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The data byte to write.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte data)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -872,13 +872,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>lineNumber</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the line number of the line to be cleared.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte lineNumber)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t lineNumber)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -906,13 +906,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>char</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Char to be written to the display.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(char ch)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t ch)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -940,13 +940,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>str</ParName>
-          <ParType>char</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to string to be written to the display.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(char *str)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t *str)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -974,19 +974,19 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>line</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The line number, starting with 1.</ParHint>
         </Parameter>
         <Parameter>
           <ParName>str</ParName>
-          <ParType>char</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to zero byte terminated string</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte line, char *str)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t line, uint8_t *str)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1014,13 +1014,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>contrast</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Contrast value, must be in the range of  0 &gt;= x &lt; 128</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte contrast)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t contrast)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
