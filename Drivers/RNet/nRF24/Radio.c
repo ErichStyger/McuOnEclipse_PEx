@@ -234,9 +234,9 @@ static uint8_t CheckRx(void) {
 
 static void WaitRandomTime(void) {
   if (configTICK_RATE_HZ<=100) { /* slower tick rate */
-    vTaskDelay(10+(xTaskGetTickCount()%16));
+    vTaskDelay(10+(xTaskGetTickCount()%%16));
   } else { /* higher tick rate: wait between 10 and 10+32 ticks */
-    vTaskDelay(10+(xTaskGetTickCount()%32));
+    vTaskDelay(10+(xTaskGetTickCount()%%32));
   }
 }
 
