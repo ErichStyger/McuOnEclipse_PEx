@@ -686,6 +686,8 @@ void* %'ModuleName'%.%vTraceInitTraceData(void)
 void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t *fileName)
 {
 #if TRC_CONFIG_USE_RTT_STREAMING
+  (void)bufSize; /* not used */
+  (void)fileName; /* not used */
   /* with RTT streaming, there is no trace buffer */
   *buf = '\0';
 #else

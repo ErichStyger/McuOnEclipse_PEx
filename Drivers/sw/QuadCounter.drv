@@ -112,13 +112,10 @@
 #define %'ModuleName'%.SWAP_PINS  0 /* 1: C1 and C2 are swapped */
 %endif
 %ifdef SwapPins
-#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  1 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is availble */
+#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  1 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is available */
 %else
-#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  0 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is availble */
+#define %'ModuleName'%.SWAP_PINS_AT_RUNTIME  0 /* 1: C1 and C2 are swapped at runtime, if SwapPins() method is available */
 %endif %- SwapPins
-#if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
-  static bool %'ModuleName'%.swappedPins = FALSE;
-#endif
 %if %SamplingMethod='yes'
 #define %'ModuleName'%.GET_C1_PIN()      (%@C1@'ModuleName'%.GetVal())
 #define %'ModuleName'%.GET_C2_PIN()      (%@C2@'ModuleName'%.GetVal())
@@ -282,7 +279,11 @@ void %OnError(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
+#if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
+  static bool %'ModuleName'%.swappedPins = FALSE;
+#endif
 %if %SamplingMethod = 'yes'
+
 /* The decoder has 4 different states, together with the previous state the table has 16 entries.
    The value in the table (0,1,-1) indicates the steps taken since previous sample. */
 #define QUAD_ERROR  3 /*!< Value to indicate an error in impulse detection. Has to be different from 0,1,-1 */
