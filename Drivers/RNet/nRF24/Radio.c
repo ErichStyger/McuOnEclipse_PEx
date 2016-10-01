@@ -232,6 +232,14 @@ static uint8_t CheckRx(void) {
   return res;
 }
 
+static void WaitRandomTime(void) {
+  if (configTICK_RATE_HZ<=100) { /* slower tick rate */
+    vTaskDelay(10+(xTaskGetTickCount()%16));
+  } else { /* higher tick rate: wait between 10 and 10+32 ticks */
+    vTaskDelay(10+(xTaskGetTickCount()%32));
+  }
+}
+
 static void RADIO_HandleStateMachine(void) {
 #if RADIO_WAITNG_TIMEOUT_MS>0
   static TickType_t sentTimeTickCntr = 0; /* used for timeout */
@@ -319,6 +327,7 @@ static void RADIO_HandleStateMachine(void) {
           if (status&%@nRF24L01p@'ModuleName'%.STATUS_MAX_RT) { /* retry timeout interrupt */
             %@nRF24L01p@'ModuleName'%.Write(%@nRF24L01p@'ModuleName'%.FLUSH_TX); /* flush old data */
             RADIO_AppStatus = RADIO_TIMEOUT; /* timeout */
+            WaitRandomTime();
           } else {
     #if %'ModuleName'%.CREATE_EVENTS
             /*lint -save -e522 function lacks side effect  */
