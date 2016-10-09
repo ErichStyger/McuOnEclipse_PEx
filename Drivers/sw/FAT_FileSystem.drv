@@ -3036,10 +3036,10 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME==1 /* this scheme does not allow deallocation of memory */
   if (print_buf0==NULL) { /* only if not allocated yet */
-    print_buf0 = %@RTOS@'ModuleName'%.pvPortMalloc(SECTOR_BUF_SIZE0);
+    print_buf0 = pvPortMalloc(SECTOR_BUF_SIZE0);
   }
   #else
-  print_buf0 = %@RTOS@'ModuleName'%.pvPortMalloc(SECTOR_BUF_SIZE0);
+  print_buf0 = pvPortMalloc(SECTOR_BUF_SIZE0);
   #endif
   if (print_buf0 == NULL) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"allocating memory failed\r\n", io->stdErr);
@@ -3077,7 +3077,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
   }
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
   #if configFRTOS_MEMORY_SCHEME!=1 /* this scheme does not allow deallocation of memory */
-    %@RTOS@'ModuleName'%.vPortFree(print_buf0);
+    vPortFree(print_buf0);
   #endif
 #endif
   if (dres==RES_OK) {
