@@ -836,14 +836,16 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
   }
 %if defined(LDD_I2C)
   for(;;) { /* breaks */
-    /* send device address and memory address */
-    %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
-    res = %@LDD_I2C@'ModuleName'%.MasterSendBlock(%'ModuleName'%.deviceData.handle, memAddr, memAddrSize, LDD_I2C_NO_SEND_STOP);
-    if (res!=ERR_OK) {
-    %if defined(OnError)
-      %OnError();
-    %endif
-      break; /* break for(;;) */
+    if(memAddr!=NULL) { /* only if we want to send an address */
+      /* send device address and memory address */
+      %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
+      res = %@LDD_I2C@'ModuleName'%.MasterSendBlock(%'ModuleName'%.deviceData.handle, memAddr, memAddrSize, LDD_I2C_NO_SEND_STOP);
+      if (res!=ERR_OK) {
+      %if defined(OnError)
+        %OnError();
+      %endif
+        break; /* break for(;;) */
+      }
     }
 %if defined(Timeout)
     timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(memAddrSize)); /* set up timeout counter */
