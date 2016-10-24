@@ -140,11 +140,22 @@ made to free the RAM that was allocated statically.
 tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE is only true if it is possible for a
 task to be created using either statically or dynamically allocated RAM.  Note
 that if portUSING_MPU_WRAPPERS is 1 then a protected task can be created with
-a statically allocated stack and a dynamically allocated TCB. */
-#define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE ( ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) || ( portUSING_MPU_WRAPPERS == 1 ) )
+a statically allocated stack and a dynamically allocated TCB.
+!!!NOTE!!! If the definition of tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE is
+changed then the definition of StaticTask_t must also be updated. */
+#define tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE   ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 #define tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB 		( ( uint8_t ) 0 )
 #define tskSTATICALLY_ALLOCATED_STACK_ONLY 			( ( uint8_t ) 1 )
 #define tskSTATICALLY_ALLOCATED_STACK_AND_TCB		( ( uint8_t ) 2 )
+
+/* If any of the following are set then task stacks are filled with a known
+value so the high water mark can be determined.  If none of the following are
+set then don't fill the stack so there is no unnecessary dependency on memset. */
+#if( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) || ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) )
+	#define tskSET_NEW_STACKS_TO_KNOWN_VALUE	1
+#else
+	#define tskSET_NEW_STACKS_TO_KNOWN_VALUE	0
+#endif
 
 /*
  * Macros used by vListTask to indicate which state a task is in.
@@ -325,10 +336,8 @@ typedef struct tskTaskControlBlock
 	StackType_t			*pxStack;			/*< Points to the start of the stack. */
 	char				pcTaskName[ configMAX_TASK_NAME_LEN ];/*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
-	#if ( portSTACK_GROWTH > 0 )
-		StackType_t		*pxEndOfStack;		/*< Points to the end of the stack on architectures where the stack grows up from low memory. */
-  #else /* << EST: add it for stack growing from high to low memory addresses  */
-    StackType_t   *pxStartOfStack;    /*< Points to the start of stack memory where the stack grows from high to low memory. */
+	#if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
+		StackType_t		*pxEndOfStack;		/*< Points to the highest valid address for the stack. */
 	#endif
 
 	#if ( portCRITICAL_NESTING_IN_TCB == 1 )
@@ -350,7 +359,7 @@ typedef struct tskTaskControlBlock
 	#endif
 
 	#if( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
-		void *pvThreadLocalStoragePointers[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
+		void			*pvThreadLocalStoragePointers[ configNUM_THREAD_LOCAL_STORAGE_POINTERS ];
 	#endif
 
 	#if( configGENERATE_RUN_TIME_STATS == 1 )
@@ -375,7 +384,7 @@ typedef struct tskTaskControlBlock
 
 	/* See the comments above the definition of
 	tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE. */
-	#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+	#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 Macro has been consolidated for readability reasons. */
 		uint8_t	ucStaticallyAllocated; 		/*< Set to pdTRUE if the task is a statically allocated to ensure no attempt is made to free the memory. */
 	#endif
 
@@ -389,8 +398,8 @@ typedef struct tskTaskControlBlock
 below to enable the use of older kernel aware debuggers. */
 typedef tskTCB TCB_t;
 
-/*lint -e956 A manual analysis and inspection has been used to determine which
-static variables must be declared volatile. */
+/*lint -save -e956 A manual analysis and inspection has been used to determine
+which static variables must be declared volatile. */
 
 PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 
@@ -444,25 +453,29 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended	= ( UBaseType_t
 
 #endif
 
-/*lint +e956 */
+/*lint -restore */
 
 /*-----------------------------------------------------------*/
 
 /* Callback function prototypes. --------------------------*/
 #if(  configCHECK_FOR_STACK_OVERFLOW > 0 )
 #if 1 /* << EST */
-	extern void configCHECK_FOR_STACK_OVERFLOW_NAME( TaskHandle_t xTask, char *pcTaskName );
+  extern void configCHECK_FOR_STACK_OVERFLOW_NAME( TaskHandle_t xTask, char *pcTaskName );
 #else
-	extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
+  extern void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName );
 #endif
 #endif
 
 #if( configUSE_TICK_HOOK > 0 )
+
 	extern void vApplicationTickHook( void );
+
 #endif
 
 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+
 	extern void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+
 #endif
 
 /* File private functions. --------------------------------*/
@@ -473,7 +486,9 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended	= ( UBaseType_t
  * is in any other state.
  */
 #if ( INCLUDE_vTaskSuspend == 1 )
+
 	static BaseType_t prvTaskIsTaskSuspended( const TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+
 #endif /* INCLUDE_vTaskSuspend */
 
 /*
@@ -584,7 +599,7 @@ static void prvResetNextTaskUnblockTime( void );
 	 * human readable tables of task information.
 	 */
 #if 0 /* << EST: not used */
-	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName );
+	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName ) PRIVILEGED_FUNCTION;
 #endif
 
 #endif
@@ -593,13 +608,13 @@ static void prvResetNextTaskUnblockTime( void );
  * dynamically to fill in the structure's members.
  */
 static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
-									const char * const pcName,
+									const char * const pcName, 		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
 									void * const pvParameters,
 									UBaseType_t uxPriority,
 									TaskHandle_t * const pxCreatedTask,
 									TCB_t *pxNewTCB,
-									const MemoryRegion_t * const xRegions ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+									const MemoryRegion_t * const xRegions ) PRIVILEGED_FUNCTION;
 
 /*
  * Called after a new task has been created and initialised to place the task
@@ -607,23 +622,45 @@ static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
  */
 static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 
+/*
+ * freertos_tasks_c_additions_init() should only be called if the user definable
+ * macro FREERTOS_TASKS_C_ADDITIONS_INIT() is defined, as that is the only macro
+ * called by the function.
+ */
+#ifdef FREERTOS_TASKS_C_ADDITIONS_INIT
+
+	static void freertos_tasks_c_additions_init( void ) PRIVILEGED_FUNCTION;
+
+#endif
+
 /*-----------------------------------------------------------*/
 
 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
 
 	TaskHandle_t xTaskCreateStatic(	TaskFunction_t pxTaskCode,
-									const char * const pcName,
+									const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
 									void * const pvParameters,
 									UBaseType_t uxPriority,
 									StackType_t * const puxStackBuffer,
-									StaticTask_t * const pxTaskBuffer ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+									StaticTask_t * const pxTaskBuffer )
 	{
 	TCB_t *pxNewTCB;
 	TaskHandle_t xReturn;
 
 		configASSERT( puxStackBuffer != NULL );
 		configASSERT( pxTaskBuffer != NULL );
+
+		#if( configASSERT_DEFINED == 1 )
+		{
+			/* Sanity check that the size of the structure used to declare a
+			variable of type StaticTask_t equals the size of the real task
+			structure. */
+			volatile size_t xSize = sizeof( StaticTask_t );
+			configASSERT( xSize == sizeof( TCB_t ) );
+		}
+		#endif /* configASSERT_DEFINED */
+
 
 		if( ( pxTaskBuffer != NULL ) && ( puxStackBuffer != NULL ) )
 		{
@@ -632,7 +669,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 			pxNewTCB = ( TCB_t * ) pxTaskBuffer; /*lint !e740 Unusual cast is ok as the structures are designed to have the same alignment, and the size is checked by an assert. */
 			pxNewTCB->pxStack = ( StackType_t * ) puxStackBuffer;
 
-			#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+			#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 Macro has been consolidated for readability reasons. */
 			{
 				/* Tasks can be created statically or dynamically, so note this
 				task was created statically in case the task is later deleted. */
@@ -654,7 +691,53 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 #endif /* SUPPORT_STATIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
-#if( portUSING_MPU_WRAPPERS == 1 )
+#if( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
+
+	BaseType_t xTaskCreateRestrictedStatic( const TaskParameters_t * const pxTaskDefinition, TaskHandle_t *pxCreatedTask )
+	{
+	TCB_t *pxNewTCB;
+	BaseType_t xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
+
+		configASSERT( pxTaskDefinition->puxStackBuffer != NULL );
+		configASSERT( pxTaskDefinition->pxTaskBuffer != NULL );
+
+		if( ( pxTaskDefinition->puxStackBuffer != NULL ) && ( pxTaskDefinition->pxTaskBuffer != NULL ) )
+		{
+			/* Allocate space for the TCB.  Where the memory comes from depends
+			on the implementation of the port malloc function and whether or
+			not static allocation is being used. */
+			pxNewTCB = ( TCB_t * ) pxTaskDefinition->pxTaskBuffer;
+
+				/* Store the stack location in the TCB. */
+				pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
+
+			#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+			{
+				/* Tasks can be created statically or dynamically, so note this
+				task was created statically in case the task is later deleted. */
+				pxNewTCB->ucStaticallyAllocated = tskSTATICALLY_ALLOCATED_STACK_AND_TCB;
+			}
+			#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
+
+				prvInitialiseNewTask(	pxTaskDefinition->pvTaskCode,
+										pxTaskDefinition->pcName,
+										( uint32_t ) pxTaskDefinition->usStackDepth,
+										pxTaskDefinition->pvParameters,
+										pxTaskDefinition->uxPriority,
+										pxCreatedTask, pxNewTCB,
+										pxTaskDefinition->xRegions );
+
+				prvAddNewTaskToReadyList( pxNewTCB );
+				xReturn = pdPASS;
+			}
+
+		return xReturn;
+	}
+
+#endif /* ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) */
+/*-----------------------------------------------------------*/
+
+#if( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
 	BaseType_t xTaskCreateRestricted( const TaskParameters_t * const pxTaskDefinition, TaskHandle_t *pxCreatedTask )
 	{
@@ -702,11 +785,11 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 #if( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 
 	BaseType_t xTaskCreate(	TaskFunction_t pxTaskCode,
-							const char * const pcName,
+							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 							const uint16_t usStackDepth,
 							void * const pvParameters,
 							UBaseType_t uxPriority,
-							TaskHandle_t * const pxCreatedTask ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+							TaskHandle_t * const pxCreatedTask )
 	{
 	TCB_t *pxNewTCB;
 	BaseType_t xReturn;
@@ -769,7 +852,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 
 		if( pxNewTCB != NULL )
 		{
-			#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+			#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 Macro has been consolidated for readability reasons. */
 			{
 				/* Tasks can be created statically or dynamically, so note this
 				task was created dynamically in case it is later deleted. */
@@ -793,13 +876,13 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 /*-----------------------------------------------------------*/
 
 static void prvInitialiseNewTask( 	TaskFunction_t pxTaskCode,
-									const char * const pcName,
+									const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
 									void * const pvParameters,
 									UBaseType_t uxPriority,
 									TaskHandle_t * const pxCreatedTask,
 									TCB_t *pxNewTCB,
-									const MemoryRegion_t * const xRegions ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+									const MemoryRegion_t * const xRegions )
 {
 StackType_t *pxTopOfStack;
 UBaseType_t x;
@@ -819,12 +902,12 @@ UBaseType_t x;
 	#endif /* portUSING_MPU_WRAPPERS == 1 */
 
 	/* Avoid dependency on memset() if it is not required. */
-	#if( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) || ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) )
+	#if( tskSET_NEW_STACKS_TO_KNOWN_VALUE == 1 )
 	{
 		/* Fill the stack with a known value to assist debugging. */
 		( void ) memset( pxNewTCB->pxStack, ( int ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
 	}
-	#endif /* ( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) || ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) ) ) */
+	#endif /* tskSET_NEW_STACKS_TO_KNOWN_VALUE */
 
 	/* Calculate the top of stack address.  This depends on whether the stack
 	grows from high memory to low (as per the 80x86) or vice versa.
@@ -838,9 +921,13 @@ UBaseType_t x;
 		/* Check the alignment of the calculated top of stack is correct. */
 		configASSERT( ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack & ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) == 0UL ) );
 
-#if 1 /* << EST */
-    pxNewTCB->pxStartOfStack = pxNewTCB->pxStack + ( ulStackDepth - ( uint32_t ) 1 );
-#endif
+		#if( configRECORD_STACK_HIGH_ADDRESS == 1 )
+		{
+			/* Also record the stack's high address, which may assist
+			debugging. */
+			pxNewTCB->pxEndOfStack = pxTopOfStack;
+		}
+		#endif /* configRECORD_STACK_HIGH_ADDRESS */
 	}
 	#else /* portSTACK_GROWTH */
 	{
@@ -1708,7 +1795,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 			{
 				/* Is it in the suspended list because it is in the	Suspended
 				state, or because is is blocked with no timeout? */
-				if( listIS_CONTAINED_WITHIN( NULL, &( pxTCB->xEventListItem ) ) != pdFALSE )
+				if( listIS_CONTAINED_WITHIN( NULL, &( pxTCB->xEventListItem ) ) != pdFALSE ) /*lint !e961.  The cast is only redundant when NULL is used. */
 				{
 					xReturn = pdTRUE;
 				}
@@ -1876,7 +1963,7 @@ BaseType_t xReturn;
 		xIdleTaskHandle = xTaskCreateStatic(	prvIdleTask,
 												"IDLE",
 												ulIdleTaskStackSize,
-												( void * ) NULL,
+												( void * ) NULL, /*lint !e961.  The cast is not redundant for all compilers. */
 												( tskIDLE_PRIORITY | portPRIVILEGE_BIT ),
 												pxIdleTaskStackBuffer,
 												pxIdleTaskTCBBuffer ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
@@ -1916,6 +2003,15 @@ BaseType_t xReturn;
 
 	if( xReturn == pdPASS )
 	{
+		/* freertos_tasks_c_additions_init() should only be called if the user
+		definable macro FREERTOS_TASKS_C_ADDITIONS_INIT() is defined, as that is
+		the only macro called by the function. */
+		#ifdef FREERTOS_TASKS_C_ADDITIONS_INIT
+		{
+			freertos_tasks_c_additions_init();
+		}
+		#endif
+
 		/* Interrupts are turned off here, to ensure a tick does not occur
 		before or during the call to xPortStartScheduler().  The stacks of
 		the created tasks contain a status word with interrupts switched on
@@ -1937,7 +2033,10 @@ BaseType_t xReturn;
 
 		/* If configGENERATE_RUN_TIME_STATS is defined then the following
 		macro must be defined to configure the timer/counter used to generate
-		the run time counter time base. */
+		the run time counter time base.   NOTE:  If configGENERATE_RUN_TIME_STATS
+		is set to 0 and the following line fails to build then ensure you do not
+		have portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() defined in your
+		FreeRTOSConfig.h file. */
 		portCONFIGURE_TIMER_FOR_RUN_TIME_STATS();
 
 		/* Setting up the timer tick is hardware specific and thus in the
@@ -2548,13 +2647,13 @@ BaseType_t xSwitchRequired = pdFALSE;
 	{
 		/* Minor optimisation.  The tick count cannot change in this
 		block. */
-		const TickType_t xConstTickCount = xTickCount + 1;
+		const TickType_t xConstTickCount = xTickCount + ( TickType_t ) 1;
 
 		/* Increment the RTOS tick, switching the delayed and overflowed
 		delayed lists if it wraps to 0. */
 		xTickCount = xConstTickCount;
 
-		if( xConstTickCount == ( TickType_t ) 0U )
+		if( xConstTickCount == ( TickType_t ) 0U ) /*lint !e774 'if' does not always evaluate to false as it is looking for an overflow. */
 		{
 			taskSWITCH_DELAYED_LISTS();
 		}
@@ -3012,10 +3111,9 @@ BaseType_t xReturn;
 }
 /*-----------------------------------------------------------*/
 
-BaseType_t xTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem, const TickType_t xItemValue )
+void vTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem, const TickType_t xItemValue )
 {
 TCB_t *pxUnblockedTCB;
-BaseType_t xReturn;
 
 	/* THIS FUNCTION MUST BE CALLED WITH THE SCHEDULER SUSPENDED.  It is used by
 	the event flags implementation. */
@@ -3038,22 +3136,12 @@ BaseType_t xReturn;
 
 	if( pxUnblockedTCB->uxPriority > pxCurrentTCB->uxPriority )
 	{
-		/* Return true if the task removed from the event list has
-		a higher priority than the calling task.  This allows
-		the calling task to know if it should force a context
-		switch now. */
-		xReturn = pdTRUE;
-
-		/* Mark that a yield is pending in case the user is not using the
-		"xHigherPriorityTaskWoken" parameter to an ISR safe FreeRTOS function. */
+		/* The unblocked task has a priority above that of the calling task, so
+		a context switch is required.  This function is called with the
+		scheduler suspended so xYieldPending is set so the context switch
+		occurs immediately that the scheduler is resumed (unsuspended). */
 		xYieldPending = pdTRUE;
 	}
-	else
-	{
-		xReturn = pdFALSE;
-	}
-
-	return xReturn;
 }
 /*-----------------------------------------------------------*/
 
@@ -3556,7 +3644,7 @@ static void prvCheckTasksWaitingTermination( void )
 
 	static UBaseType_t prvListTasksWithinSingleList( TaskStatus_t *pxTaskStatusArray, List_t *pxList, eTaskState eState )
 	{
-	volatile TCB_t *pxNextTCB, *pxFirstTCB;
+	configLIST_VOLATILE TCB_t *pxNextTCB, *pxFirstTCB;
 	UBaseType_t uxTask = 0;
 
 		if( listCURRENT_LIST_LENGTH( pxList ) > ( UBaseType_t ) 0 )
@@ -3667,7 +3755,7 @@ static void prvCheckTasksWaitingTermination( void )
 			vPortFree( pxTCB->pxStack );
 			vPortFree( pxTCB );
 		}
-		#elif( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE == 1 )
+		#elif( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e731 Macro has been consolidated for readability reasons. */
 		{
 			/* The task could have been allocated statically or dynamically, so
 			check what was statically allocated before trying to free the
@@ -4013,7 +4101,7 @@ TCB_t *pxTCB;
 
 /*-----------------------------------------------------------*/
 
-#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
+#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
 	void vTaskList( char * pcWriteBuffer, size_t bufSize )
 	{
@@ -4118,10 +4206,10 @@ TCB_t *pxTCB;
 		}
 	}
 
-#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) ) */
+#endif /* ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) ) */
 /*----------------------------------------------------------*/
 
-#if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
+#if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
 
 	void vTaskGetRunTimeStats( char *pcWriteBuffer, size_t bufSize)
 	{
@@ -4263,7 +4351,7 @@ TCB_t *pxTCB;
 		}
 	}
 
-#endif /* ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) ) */
+#endif /* ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) ) */
 /*-----------------------------------------------------------*/
 
 TickType_t uxTaskResetEventItemValue( void )
@@ -4347,7 +4435,7 @@ TickType_t uxReturn;
 				}
 				else
 				{
-					pxCurrentTCB->ulNotifiedValue = ulReturn - 1;
+					pxCurrentTCB->ulNotifiedValue = ulReturn - ( uint32_t ) 1;
 				}
 			}
 			else
@@ -4910,6 +4998,28 @@ const TickType_t xConstTickCount = xTickCount;
 	#endif /* INCLUDE_vTaskSuspend */
 }
 
+/* Code below here allows additional code to be inserted into this source file,
+especially where access to file scope functions and data is needed (for example
+when performing module tests). */
+
+#ifdef FREERTOS_MODULE_TEST
+	#include "tasks_test_access_functions.h"
+#endif
+
+
+#if( configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H == 1 )
+
+	#include "freertos_tasks_c_additions.h"
+
+	static void freertos_tasks_c_additions_init( void )
+	{
+		#ifdef FREERTOS_TASKS_C_ADDITIONS_INIT
+			FREERTOS_TASKS_C_ADDITIONS_INIT();
+		#endif
+	}
+
+#endif
+
 #if 1 /* << EST: additional functionality to iterathe through task handles. */
 static void prvCollectTaskHandlesWithinSingleList( List_t *pxList,  TaskHandle_t taskHandleArray[], UBaseType_t noTaskHandlesInArray, UBaseType_t *idxCounter)
 {
@@ -4980,8 +5090,11 @@ void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t *
 #if ( portSTACK_GROWTH > 0 )
     *ppxStart = pxTCB->pxStack;
     *ppxEnd = pxTCB->pxEndOfStack;
-#else
-    *ppxStart = pxTCB->pxStartOfStack;
+#elif (configRECORD_STACK_HIGH_ADDRESS == 1)
+    *ppxStart = pxTCB->pxEndOfStack;
+    *ppxEnd = pxTCB->pxStack;
+#else /* no stack end information, return a zero size */
+    *ppxStart = pxTCB->pxStack;
     *ppxEnd = pxTCB->pxStack;
 #endif
     *ppxTopOfStack = (StackType_t*)pxTCB->pxTopOfStack;
@@ -4995,11 +5108,4 @@ void vTaskGetStackInfo(TaskHandle_t xTask, StackType_t **ppxStart, StackType_t *
   }
   taskEXIT_CRITICAL();
 }
-
 #endif /* << EST end */
-
-
-#ifdef FREERTOS_MODULE_TEST
-	#include "tasks_test_access_functions.h"
-#endif
-

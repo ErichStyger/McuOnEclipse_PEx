@@ -160,6 +160,9 @@ typedef struct xTASK_PARAMETERS
 	UBaseType_t uxPriority;
 	StackType_t *puxStackBuffer;
 	MemoryRegion_t xRegions[ portNUM_CONFIGURABLE_REGIONS ];
+	#if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
+		StaticTask_t * const pxTaskBuffer;
+	#endif
 } TaskParameters_t;
 
 /* Used with the uxTaskGetSystemState() function to return the state of each task
@@ -358,11 +361,11 @@ is used in assert() statements. */
  */
 #if( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
 	BaseType_t xTaskCreate(	TaskFunction_t pxTaskCode,
-							const char * const pcName,
+							const char * const pcName,	/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 							const uint16_t usStackDepth,
 							void * const pvParameters,
 							UBaseType_t uxPriority,
-							TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+							TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -474,12 +477,12 @@ is used in assert() statements. */
  */
 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
 	TaskHandle_t xTaskCreateStatic(	TaskFunction_t pxTaskCode,
-									const char * const pcName,
+									const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 									const uint32_t ulStackDepth,
 									void * const pvParameters,
 									UBaseType_t uxPriority,
 									StackType_t * const puxStackBuffer,
-									StaticTask_t * const pxTaskBuffer ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+									StaticTask_t * const pxTaskBuffer ) PRIVILEGED_FUNCTION;
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 
 /**
@@ -487,12 +490,17 @@ is used in assert() statements. */
  *<pre>
  BaseType_t xTaskCreateRestricted( TaskParameters_t *pxTaskDefinition, TaskHandle_t *pxCreatedTask );</pre>
  *
+ * Only available when configSUPPORT_DYNAMIC_ALLOCATION is set to 1.
+ *
  * xTaskCreateRestricted() should only be used in systems that include an MPU
  * implementation.
  *
  * Create a new task and add it to the list of tasks that are ready to run.
  * The function parameters define the memory regions and associated access
  * permissions allocated to the task.
+ *
+ * See xTaskCreateRestrictedStatic() for a version that does not use any
+ * dynamic memory allocation.
  *
  * @param pxTaskDefinition Pointer to a structure that contains a member
  * for each of the normal xTaskCreate() parameters (see the xTaskCreate() API
@@ -551,6 +559,94 @@ TaskHandle_t xHandle;
  */
 #if( portUSING_MPU_WRAPPERS == 1 )
 	BaseType_t xTaskCreateRestricted( const TaskParameters_t * const pxTaskDefinition, TaskHandle_t *pxCreatedTask ) PRIVILEGED_FUNCTION;
+#endif
+
+/**
+ * task. h
+ *<pre>
+ BaseType_t xTaskCreateRestrictedStatic( TaskParameters_t *pxTaskDefinition, TaskHandle_t *pxCreatedTask );</pre>
+ *
+ * Only available when configSUPPORT_STATIC_ALLOCATION is set to 1.
+ *
+ * xTaskCreateRestrictedStatic() should only be used in systems that include an
+ * MPU implementation.
+ *
+ * Internally, within the FreeRTOS implementation, tasks use two blocks of
+ * memory.  The first block is used to hold the task's data structures.  The
+ * second block is used by the task as its stack.  If a task is created using
+ * xTaskCreateRestricted() then the stack is provided by the application writer,
+ * and the memory used to hold the task's data structure is automatically
+ * dynamically allocated inside the xTaskCreateRestricted() function.  If a task
+ * is created using xTaskCreateRestrictedStatic() then the application writer
+ * must provide the memory used to hold the task's data structures too.
+ * xTaskCreateRestrictedStatic() therefore allows a memory protected task to be
+ * created without using any dynamic memory allocation.
+ *
+ * @param pxTaskDefinition Pointer to a structure that contains a member
+ * for each of the normal xTaskCreate() parameters (see the xTaskCreate() API
+ * documentation) plus an optional stack buffer and the memory region
+ * definitions.  If configSUPPORT_STATIC_ALLOCATION is set to 1 the structure
+ * contains an additional member, which is used to point to a variable of type
+ * StaticTask_t - which is then used to hold the task's data structure.
+ *
+ * @param pxCreatedTask Used to pass back a handle by which the created task
+ * can be referenced.
+ *
+ * @return pdPASS if the task was successfully created and added to a ready
+ * list, otherwise an error code defined in the file projdefs.h
+ *
+ * Example usage:
+   <pre>
+// Create an TaskParameters_t structure that defines the task to be created.
+// The StaticTask_t variable is only included in the structure when
+// configSUPPORT_STATIC_ALLOCATION is set to 1.  The PRIVILEGED_DATA macro can
+// be used to force the variable into the RTOS kernel's privileged data area.
+static PRIVILEGED_DATA StaticTask_t xTaskBuffer;
+static const TaskParameters_t xCheckTaskParameters =
+{
+	vATask,		// pvTaskCode - the function that implements the task.
+	"ATask",	// pcName - just a text name for the task to assist debugging.
+	100,		// usStackDepth	- the stack size DEFINED IN WORDS.
+	NULL,		// pvParameters - passed into the task function as the function parameters.
+	( 1UL | portPRIVILEGE_BIT ),// uxPriority - task priority, set the portPRIVILEGE_BIT if the task should run in a privileged state.
+	cStackBuffer,// puxStackBuffer - the buffer to be used as the task stack.
+
+	// xRegions - Allocate up to three separate memory regions for access by
+	// the task, with appropriate access permissions.  Different processors have
+	// different memory alignment requirements - refer to the FreeRTOS documentation
+	// for full information.
+	{
+		// Base address					Length	Parameters
+        { cReadWriteArray,				32,		portMPU_REGION_READ_WRITE },
+        { cReadOnlyArray,				32,		portMPU_REGION_READ_ONLY },
+        { cPrivilegedOnlyAccessArray,	128,	portMPU_REGION_PRIVILEGED_READ_WRITE }
+	}
+
+	&xTaskBuffer; // Holds the task's data structure.
+};
+
+int main( void )
+{
+TaskHandle_t xHandle;
+
+	// Create a task from the const structure defined above.  The task handle
+	// is requested (the second parameter is not NULL) but in this case just for
+	// demonstration purposes as its not actually used.
+	xTaskCreateRestricted( &xRegTest1Parameters, &xHandle );
+
+	// Start the scheduler.
+	vTaskStartScheduler();
+
+	// Will only get here if there was insufficient memory to create the idle
+	// and/or timer task.
+	for( ;; );
+}
+   </pre>
+ * \defgroup xTaskCreateRestrictedStatic xTaskCreateRestrictedStatic
+ * \ingroup Tasks
+ */
+#if( ( portUSING_MPU_WRAPPERS == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 1 ) )
+	BaseType_t xTaskCreateRestrictedStatic( const TaskParameters_t * const pxTaskDefinition, TaskHandle_t *pxCreatedTask ) PRIVILEGED_FUNCTION;
 #endif
 
 /**
@@ -2141,14 +2237,14 @@ void vTaskPlaceOnEventListRestricted( List_t * const pxEventList, TickType_t xTi
  * Removes a task from both the specified event list and the list of blocked
  * tasks, and places it on a ready queue.
  *
- * xTaskRemoveFromEventList()/xTaskRemoveFromUnorderedEventList() will be called
+ * xTaskRemoveFromEventList()/vTaskRemoveFromUnorderedEventList() will be called
  * if either an event occurs to unblock a task, or the block timeout period
  * expires.
  *
  * xTaskRemoveFromEventList() is used when the event list is in task priority
  * order.  It removes the list item from the head of the event list as that will
  * have the highest priority owning task of all the tasks on the event list.
- * xTaskRemoveFromUnorderedEventList() is used when the event list is not
+ * vTaskRemoveFromUnorderedEventList() is used when the event list is not
  * ordered and the event list items hold something other than the owning tasks
  * priority.  In this case the event list item value is updated to the value
  * passed in the xItemValue parameter.
@@ -2157,7 +2253,7 @@ void vTaskPlaceOnEventListRestricted( List_t * const pxEventList, TickType_t xTi
  * making the call, otherwise pdFALSE.
  */
 BaseType_t xTaskRemoveFromEventList( const List_t * const pxEventList ) PRIVILEGED_FUNCTION;
-BaseType_t xTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem, const TickType_t xItemValue ) PRIVILEGED_FUNCTION;
+void vTaskRemoveFromUnorderedEventList( ListItem_t * pxEventListItem, const TickType_t xItemValue ) PRIVILEGED_FUNCTION;
 
 /*
  * THIS FUNCTION MUST NOT BE USED FROM APPLICATION CODE.  IT IS ONLY

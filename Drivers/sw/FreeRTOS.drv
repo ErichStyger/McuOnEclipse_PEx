@@ -2161,7 +2161,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 #if (portSTACK_GROWTH>0)
       stackSize = (uint16_t)(((uint32_t)stackEnd - (uint32_t)stackBeg)+sizeof(StackType_t));
 #else
-      stackSize = (uint16_t)(((uint32_t)stackBeg - (uint32_t)stackEnd)+sizeof(StackType_t));
+      stackSize = (uint16_t)(((uint32_t)stackBeg - (uint32_t)stackEnd)+ 2*sizeof(StackType_t));
 #endif
       tmpBuf[0] = '\0';
       %@Utility@'ModuleName'%.strcatNum16uFormatted(tmpBuf, sizeof(tmpBuf), stackSize, ' ', 5);

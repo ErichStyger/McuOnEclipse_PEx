@@ -437,13 +437,19 @@
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 0 /* number of tread local storage pointers, 0 to disable functionality */
 %endif
 
-#define configMAX_PRIORITIES                                     %>50 ((unsigned portBASE_TYPE)%MaxPriority)
+#define configMAX_PRIORITIES                                     %>50 %MaxPriority
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities
 
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
 #define configTASK_RETURN_ADDRESS   0  /* return address of task is zero */
 %else
 /* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwrite task return address for port.c */
+%endif
+
+%if defined(RecordStackHighAddress) & %RecordStackHighAddress='yes'
+#define configRECORD_STACK_HIGH_ADDRESS                         %>50 1  /* 1: record stack high address for the debugger, 0: do not record stack high address */
+%else
+#define configRECORD_STACK_HIGH_ADDRESS                         %>50 0  /* 1: record stack high address for the debugger, 0: do not record stack high address */
 %endif
 
 /* Software timer definitions. */
