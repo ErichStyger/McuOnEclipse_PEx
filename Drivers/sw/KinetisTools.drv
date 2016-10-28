@@ -429,14 +429,16 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[2] = 0;
   uid->id[3] = 0;
 #endif
-  uid->id[4] = (SIM_UIDML>>24)&0xff;
-  uid->id[5] = (SIM_UIDML>>16)&0xff;
+  uid->id[4] = (SIM_UIDMH>>24)&0xff;
+  uid->id[5] = (SIM_UIDMH>>16)&0xff;
   uid->id[6] = (SIM_UIDMH>>8)&0xff;
   uid->id[7] = SIM_UIDMH&0xff;
+
   uid->id[8] = (SIM_UIDML>>24)&0xff;
   uid->id[9] = (SIM_UIDML>>16)&0xff;
   uid->id[10] = (SIM_UIDML>>8)&0xff;
   uid->id[11] = SIM_UIDML&0xff;
+
   uid->id[12] = (SIM_UIDL>>24)&0xff;
   uid->id[13] = (SIM_UIDL>>16)&0xff;
   uid->id[14] = (SIM_UIDL>>8)&0xff;
@@ -450,10 +452,12 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[5] = 0;
   uid->id[6] = (SIM_UUIDMH>>8)&0xff;
   uid->id[7] = SIM_UUIDMH&0xff;
+
   uid->id[8] = (SIM_UUIDML>>24)&0xff;
   uid->id[9] = (SIM_UUIDML>>16)&0xff;
   uid->id[10] = (SIM_UUIDML>>8)&0xff;
   uid->id[11] = SIM_UUIDML&0xff;
+
   uid->id[12] = (SIM_UUIDL>>24)&0xff;
   uid->id[13] = (SIM_UUIDL>>16)&0xff;
   uid->id[14] = (SIM_UUIDL>>8)&0xff;
@@ -471,6 +475,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[9] = (SIM_UUIDH>>16)&0xff;
   uid->id[10] = (SIM_UUIDH>>8)&0xff;
   uid->id[11] = SIM_UUIDH&0xff;
+
   uid->id[12] = (SIM_UUIDL>>24)&0xff;
   uid->id[13] = (SIM_UUIDL>>16)&0xff;
   uid->id[14] = (SIM_UUIDL>>8)&0xff;
