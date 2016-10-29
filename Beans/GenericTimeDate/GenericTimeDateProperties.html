@@ -246,7 +246,7 @@ The following items are available only if the group is enabled (the value is "En
   </li>
   <li>
   <a name="InitFromExternalHWRTC">
-  <b>Init from external HW RTC</b></a> - If enabled, it initializes the time and date from the external HW RTC durint Init()
+  <b>Init from external HW RTC</b></a> - If enabled, it initializes the time and date from the external HW RTC durint Init(). If the external RTC requires interrupts for commuinication, you might delay this initialiatzion and use SyncWithExternalRTC() at a time when the interrupts are enabled. 
   </li>
   <li>
   <a name="LDDHWRTC_Enabled">

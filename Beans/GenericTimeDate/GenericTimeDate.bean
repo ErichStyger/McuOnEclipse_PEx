@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.035</Version>
+    <Version>01.032</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -91,7 +91,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -119,7 +119,7 @@
               <Name>Init from external HW RTC</Name>
               <Symbol>InitFromExternalHWRTC</Symbol>
               <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If enabled, it initializes the time and date from the external HW RTC durint Init()</Hint>
+              <Hint>If enabled, it initializes the time and date from the external HW RTC durint Init(). If the external RTC requires interrupts for commuinication, you might delay this initialiatzion and use SyncWithExternalRTC() at a time when the interrupts are enabled. </Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

@@ -534,7 +534,7 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   uint16_t year;
   const unsigned char *p;
   uint8_t res = ERR_OK;
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN || %'ModuleName'%.USE_EXTERNAL_HW_RTC
   DATEREC date;
 #endif
 
@@ -552,9 +552,20 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
       date.Year = year;
       date.Month = month;
       date.Day = day;
+      res = %'ModuleName'%.%SetInternalRTCTimeDate(NULL, &date);
+      if (res != ERR_OK) {
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting internal RTC time\r\n", io->stdErr);
+        res = ERR_FAILED;
+      }
+#endif
+#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+      /* update external hardware real time clock */
+      date.Year = year;
+      date.Month = month;
+      date.Day = day;
       res = %'ModuleName'%.%SetExternalRTCTimeDate(NULL, &date);
       if (res != ERR_OK) {
-        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting HW time\r\n", io->stdErr);
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting external RTC time\r\n", io->stdErr);
         res = ERR_FAILED;
       }
 #endif
@@ -567,7 +578,7 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   } /* has an argument */
   /* print now current date */
   if (res==ERR_OK) {
-    unsigned char buf[sizeof("HW RTC: Wednesday dd:mm:yyyy\\r\\n")];
+    unsigned char buf[sizeof("Ext RTC: Wednesday dd:mm:yyyy\\r\\n")];
 
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"SW RTC: ");
     if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetSWTimeDate)!=ERR_OK) {
@@ -580,7 +591,17 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"HW RTC: ");
     if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
-      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get HW date\r\n", io->stdErr);
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get internal RTC date\r\n", io->stdErr);
+      res = ERR_FAILED;
+    } else {
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+    }
+#endif
+#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"Ex RTC: ");
+    if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetExternalRTCTimeDate)!=ERR_OK) {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get external RTC date\r\n", io->stdErr);
       res = ERR_FAILED;
     } else {
       %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
@@ -595,7 +616,7 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   uint8_t hour, minute, second, hSecond;
   const unsigned char *p;
   uint8_t res = ERR_OK;
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN || %'ModuleName'%.USE_EXTERNAL_HW_RTC
   TIMEREC time;
 #endif
 
@@ -609,16 +630,30 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
         res = ERR_FAILED;
       }
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
-      /* set HW RTC time */
+      /* set internal RTC time */
       time.Hour = hour;
       time.Min = minute;
       time.Sec = second;
-#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
       time.Sec100 = hSecond;
+  #endif
+      res = %'ModuleName'%.%SetInternalRTCTimeDate(&time, NULL);
+      if (res != ERR_OK) {
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting internal RTC time\r\n", io->stdErr);
+        res = ERR_FAILED;
+      }
 #endif
+#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+      /* set external RTC time */
+      time.Hour = hour;
+      time.Min = minute;
+      time.Sec = second;
+  #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+      time.Sec100 = hSecond;
+  #endif
       res = %'ModuleName'%.%SetExternalRTCTimeDate(&time, NULL);
       if (res != ERR_OK) {
-        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting HW time\r\n", io->stdErr);
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting external RTC time\r\n", io->stdErr);
         res = ERR_FAILED;
       }
 #endif
@@ -631,7 +666,7 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
   }
   /* print now current time */
   if (res==ERR_OK) {
-    unsigned char buf[sizeof("HW RTC: hh:mm:ss.hh\\r\\n")+5];
+    unsigned char buf[sizeof("Ext RTC: hh:mm:ss.hh\\r\\n")+5];
 
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"SW RTC: ");
     if (AddTime(buf, sizeof(buf), %'ModuleName'%.%GetSWTimeDate)!=ERR_OK) {
@@ -644,7 +679,17 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"HW RTC: ");
     if (AddTime(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
-      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get HW time\r\n", io->stdErr);
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get internal RTC time\r\n", io->stdErr);
+      res = ERR_FAILED;
+    } else {
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+    }
+#endif
+#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"Ex RTC: ");
+    if (AddTime(buf, sizeof(buf), %'ModuleName'%.%GetExternalRTCTimeDate)!=ERR_OK) {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get external RTC time\r\n", io->stdErr);
       res = ERR_FAILED;
     } else {
       %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
@@ -678,13 +723,30 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  HW RTC", (const unsigned char*)"", io->stdOut);
   buf[0] = '\0';
   if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get date!\r\n", io->stdErr);
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get internal RTC date!\r\n", io->stdErr);
     return ERR_FAILED;
   }
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
   %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)", ");
   if (AddTime(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get time!\r\n", io->stdErr);
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get internal RTC time!\r\n", io->stdErr);
+    return ERR_FAILED;
+  } else {
+    %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+  }
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+#endif
+#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Ext. RTC", (const unsigned char*)"", io->stdOut);
+  buf[0] = '\0';
+  if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetExternalRTCTimeDate)!=ERR_OK) {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get external RTC date!\r\n", io->stdErr);
+    return ERR_FAILED;
+  }
+  %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)", ");
+  if (AddTime(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
+    %@Shell@'ModuleName'%.SendStr((unsigned char*)"***Failed to get external RTC time!\r\n", io->stdErr);
     return ERR_FAILED;
   } else {
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
@@ -1129,8 +1191,13 @@ uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
     *Date = date; /* struct copy */
   }
 #else
-  /* no HW RTC configured, return default time */
-  *Time = %'ModuleName'%.DefaultTime; /* struct copy */
+  /* no HW RTC configured, return default date and time */
+  if (Time!=NULL) {
+    *Time = %'ModuleName'%.DefaultTime; /* struct copy */
+  }
+  if (Date!=NULL) {
+    *Date = %'ModuleName'%.DefaultDate; /* struct copy */
+  }
 #endif
   return ERR_OK;
 }
@@ -1236,16 +1303,22 @@ uint8_t %'ModuleName'%.%SyncWithInternalRTC(void)
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
   TIMEREC time;
   DATEREC date;
+  uint8_t res;
 
-  (void)%'ModuleName'%.%GetInternalRTCTimeDate(&time, &date);
+  res = %'ModuleName'%.%GetInternalRTCTimeDate(&time, &date);
+  if (res!=ERR_OK) {
+    return res;
+  }
   /* update software time from hardware information */
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  (void)%'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, time.Sec100);
+  res = %'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, time.Sec100);
 #else
-  (void)%'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, 0);
+  res = %'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, 0);
 #endif
-  (void)%'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
-  return ERR_OK;
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return %'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
 #else
   return ERR_FAILED; /* no hardware RTC available */
 #endif
@@ -1263,16 +1336,22 @@ uint8_t %'ModuleName'%.%SyncWithExternalRTC(void)
 #if %'ModuleName'%.USE_EXTERNAL_HW_RTC
   TIMEREC time;
   DATEREC date;
+  uint8_t res;
 
-  (void)%'ModuleName'%.%GetExternalRTCTimeDate(&time, &date);
+  res = %'ModuleName'%.%GetExternalRTCTimeDate(&time, &date);
+  if (res!=ERR_OK) {
+    return res;
+  }
   /* update software time from hardware information */
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  (void)%'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, time.Sec100);
+  res = %'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, time.Sec100);
 #else
-  (void)%'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, 0);
+  res = %'ModuleName'%.%SetTime(time.Hour, time.Min, time.Sec, 0);
 #endif
-  (void)%'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
-  return ERR_OK;
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return %'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
 #else
   return ERR_FAILED; /* no external RTC available */
 #endif
