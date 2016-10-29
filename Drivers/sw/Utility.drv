@@ -2828,7 +2828,7 @@ void %'ModuleName'%.%strcatNumFloat(uint8_t *dst, size_t dstSize, float val, uin
 %include Common\UtilityGetValue16LE.Inc
 uint16_t %'ModuleName'%.%GetValue16LE(uint8_t *dataP)
 {
-  return (dataP[1]<<8)+(dataP[0]);
+  return (uint16_t)((dataP[1]<<8)+(dataP[0]));
 }
 
 %endif %- GetValue16LE
@@ -2841,7 +2841,7 @@ uint16_t %'ModuleName'%.%GetValue16LE(uint8_t *dataP)
 %include Common\UtilityGetValue24LE.Inc
 uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP)
 {
-  return (dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+  return (uint32_t)(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
 }
 
 %endif %- GetValue24LE
@@ -2854,7 +2854,7 @@ uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP)
 %include Common\UtilityGetValue32LE.Inc
 uint32_t %'ModuleName'%.%GetValue32LE(uint8_t *dataP)
 {
-  return (dataP[3]<<24)+(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+  return (uint32_t)(dataP[3]<<24)+(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
 }
 
 %endif %- GetValue32LE
