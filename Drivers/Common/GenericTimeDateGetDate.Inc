@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (GetDate)
 %;**     Description :
-%;**         This method returns current date.
+%;**         This method returns current date from the software RTC.
 %include Common\GeneralParameters.inc(27)
 %;**       * Date%ParDate %>27 - Pointer to DATEREC
 %;**     Returns     :

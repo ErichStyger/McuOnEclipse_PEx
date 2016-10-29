@@ -1,8 +1,8 @@
 
 [USED_FACES]
-BeanVersion=01.028
+BeanVersion=01.035
 
-InterfacesCount=5
+InterfacesCount=8
 
 Symbol=CriticalSection
 Link=Yes
@@ -13,6 +13,21 @@ Symbol=sdk
 Link=Yes
 Interface=GenericTimeDate\sdk
 Version=01.000
+
+Symbol=LDDRTC
+Link=Yes
+Interface=GenericTimeDate\LDDHWRTC
+Version=01.002
+
+Symbol=RTC
+Link=Yes
+Interface=GenericTimeDate\HWRTC
+Version=01.002
+
+Symbol=ExternalRTC
+Link=Yes
+Interface=GenericTimeDate\ExtRTC
+Version=01.001
 
 Symbol=RTOS
 Link=Yes

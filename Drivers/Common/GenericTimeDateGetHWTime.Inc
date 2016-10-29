@@ -3,14 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetTime)
+%include Common\GeneralMethod.inc (GetHWTime)
 %;**     Description :
-%;**         This method sets a new actual time of the software RTC.
+%;**         This method returns current time from the hardware RTC.
 %include Common\GeneralParameters.inc(27)
-%;**         Hour%ParHour %>27 - Hours (0 - 23)
-%;**         Min%ParMin %>27 - Minutes (0 - 59)
-%;**         Sec%ParSec %>27 - Seconds (0 - 59)
-%;**         Sec100%ParSec100 %>27 - Hundredth of seconds (0 - 99)
+%;**       * Time%ParTime %>27 - Pointer to the structure TIMEREC. It
+%;** %>29 contains actual number of hours, minutes,
+%;** %>29 seconds and hundredth of seconds.
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

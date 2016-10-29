@@ -3,14 +3,17 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetTime)
+%include Common\GeneralMethod.inc (SetSWTimeDate)
 %;**     Description :
-%;**         This method sets a new actual time of the software RTC.
+%;**         This method sets a new actual time and date of the software
+%;**         RTC.
 %include Common\GeneralParameters.inc(27)
-%;**         Hour%ParHour %>27 - Hours (0 - 23)
-%;**         Min%ParMin %>27 - Minutes (0 - 59)
-%;**         Sec%ParSec %>27 - Seconds (0 - 59)
-%;**         Sec100%ParSec100 %>27 - Hundredth of seconds (0 - 99)
+%;**       * Time%ParTime %>27 - Pointer to struct which contains the
+%;** %>29 time to be set. Can be NULL if time shall
+%;** %>29 not be set.
+%;**       * Date%ParDate %>27 - Pointer to struct which contains the
+%;** %>29 date information to be set. Can be NULL if
+%;** %>29 date shall not be set.
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

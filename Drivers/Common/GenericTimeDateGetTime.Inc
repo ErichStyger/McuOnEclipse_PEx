@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (GetTime)
 %;**     Description :
-%;**         This method returns current time.
+%;**         This method returns current time from the software RTC.
 %include Common\GeneralParameters.inc(27)
 %;**       * Time%ParTime %>27 - Pointer to the structure TIMEREC. It
 %;** %>29 contains actual number of hours, minutes,

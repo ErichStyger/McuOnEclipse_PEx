@@ -5,8 +5,9 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (AddTick)
 %;**     Description :
-%;**         Needs to be called periodically by the application to
-%;**         increase the time tick count.
+%;**         Increments the tick counter of the software RTC. Needs to be
+%;**         called periodically by the application to increase the time
+%;**         tick count.
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

@@ -3,14 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetTime)
+%include Common\GeneralMethod.inc (CalculateDayOfWeek)
 %;**     Description :
-%;**         This method sets a new actual time of the software RTC.
+%;**         Returns the day of the week, Sunday starting as zero. Monday
+%;**         is 1, ...
 %include Common\GeneralParameters.inc(27)
-%;**         Hour%ParHour %>27 - Hours (0 - 23)
-%;**         Min%ParMin %>27 - Minutes (0 - 59)
-%;**         Sec%ParSec %>27 - Seconds (0 - 59)
-%;**         Sec100%ParSec100 %>27 - Hundredth of seconds (0 - 99)
+%;**         Year%ParYear %>27 - Years (16-bit unsigned integer)
+%;**         Month%ParMonth %>27 - Months (8-bit unsigned integer)
+%;**         Day%ParDay %>27 - Days (8-bit unsigned integer)
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

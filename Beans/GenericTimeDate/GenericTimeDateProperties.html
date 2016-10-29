@@ -235,6 +235,58 @@ LI.EXP {
 <b>Tick Time (ms)</b></a> - Tick timer time in milli seconds. This is the frequency at which AddTick() is called.
 </li>
 <li>
+<a name="HWRTCGroup_Enabled">
+<b>Hardware RTC</b></a> - If enabled, it uses a hardware RTC. Only one (non-LDD or LDD) HW RTC can be active.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="InitFromInternalHWRTC">
+  <b>Init from internal HW RTC</b></a> - If enabled, it initializes the time and date from the internal HW RTC durint Init()
+  </li>
+  <li>
+  <a name="InitFromExternalHWRTC">
+  <b>Init from external HW RTC</b></a> - If enabled, it initializes the time and date from the external HW RTC durint Init()
+  </li>
+  <li>
+  <a name="LDDHWRTC_Enabled">
+  <b>Internal LDD RTC</b></a> - Used for LDD (Logical Device Driver) RTC<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="LDDRTC">
+    <b>RTC</b></a> - Link to RTC_LDD component
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="HWRTC_Enabled">
+  <b>Internal non-LDD RTC</b></a> - If enabled, uses a normal (non-LDD) hardware RTC.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="RTC">
+    <b>RTC</b></a> - Link to RTC component. 'Auto Initialization' has to be turned on to have the device handle available.
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="ExternalRTCEnabled">
+  <b>External RTC</b></a> - If enabled, it uses an external RTC<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="ExternalRTC">
+    <b>External RTC</b></a> - Link to external RTC
+    </li>
+  </ul>
+  </li>
+</ul>
+</li>
+<li>
 <a name="RTOSGroup">
 <b>RTOS</b></a> - If enabled, it is using automatically the period of the RTOS tick counter. Still you need to call the AddTick() method from the RTOS tick counter event callback.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />

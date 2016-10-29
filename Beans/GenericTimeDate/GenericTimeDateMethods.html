@@ -210,7 +210,7 @@ LI.EXP {
 <!---USEREND DON'T CHANGE THIS LINE-->
 <li><a name="AddTick">
 <b>AddTick</b></a>
- - Needs to be called periodically by the application to increase the time tick count.
+ - Increments the tick counter of the software RTC. Needs to be called periodically by the application to increase the time tick count.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void AddTick(void)<br />
@@ -227,9 +227,23 @@ LI.EXP {
 <li><i>nofTicks:uint16_t</i> - Number of ticks to be added</li>
 </ul><br />
 </li>
+<li><a name="CalculateDayOfWeek">
+<b>CalculateDayOfWeek</b></a>
+ - Returns the day of the week, Sunday starting as zero. Monday is 1, ...
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t CalculateDayOfWeek(uint16_t Year, uint8_t Month, uint8_t Day)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Year:uint16_t</i> - Years (16-bit unsigned integer)</li>
+<li><i>Month:uint8_t</i> - Months (8-bit unsigned integer)</li>
+<li><i>Day:uint8_t</i> - Days (8-bit unsigned integer)</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="SetTime">
 <b>SetTime</b></a>
- - This method sets a new actual time.
+ - This method sets a new actual time of the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t Sec100)<br />
@@ -244,7 +258,7 @@ LI.EXP {
 </li>
 <li><a name="GetTime">
 <b>GetTime</b></a>
- - This method returns current time.
+ - This method returns current time from the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t GetTime(TIMEREC *Time)<br />
@@ -256,7 +270,7 @@ LI.EXP {
 </li>
 <li><a name="SetDate">
 <b>SetDate</b></a>
- - This method sets a new actual date.
+ - This method sets a new actual date of the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t SetDate(uint16_t Year, uint8_t Month, uint8_t Day)<br />
@@ -270,12 +284,112 @@ LI.EXP {
 </li>
 <li><a name="GetDate">
 <b>GetDate</b></a>
- - This method returns current date.
+ - This method returns current date from the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t GetDate(DATEREC *Date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Date: Pointer to DATEREC</i> - Pointer to DATEREC</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetSWTimeDate">
+<b>SetSWTimeDate</b></a>
+ - This method sets a new actual time and date of the software RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetSWTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetSWTimeDate">
+<b>GetSWTimeDate</b></a>
+ - This method returns current time and date from the software RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetSWTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetInternalRTCTimeDate">
+<b>SetInternalRTCTimeDate</b></a>
+ - This method sets a new actual time and date of the internal hardware RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetInternalRTCTimeDate">
+<b>GetInternalRTCTimeDate</b></a>
+ - This method returns current time and date from the hardware RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SyncWithInternalRTC">
+<b>SyncWithInternalRTC</b></a>
+ - Synchronizes the software RTC with date and time from the internal hardware RTC
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SyncWithInternalRTC(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetExternalRTCTimeDate">
+<b>SetExternalRTCTimeDate</b></a>
+ - This method sets a new actual time and date of the external hardware RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetExternalRTCTimeDate">
+<b>GetExternalRTCTimeDate</b></a>
+ - This method returns current time and date from the external hardware RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SyncWithExternalRTC">
+<b>SyncWithExternalRTC</b></a>
+ - Synchronizes the software RTC with date and time from the hardware RTC. Note that if that RTC interface requires interrupts, this function should be called only when interrupts are enabled.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SyncWithExternalRTC(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -294,21 +408,21 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="Init">
-<b>Init</b></a>
- - Initialization method
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Init(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
 <li><a name="DeInit">
 <b>DeInit</b></a>
  - Deinitializes the driver.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void DeInit(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="Init">
+<b>Init</b></a>
+ - Initialization method
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>

@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (SetDate)
 %;**     Description :
-%;**         This method sets a new actual date.
+%;**         This method sets a new actual date of the software RTC.
 %include Common\GeneralParameters.inc(27)
 %;**         Year%ParYear %>27 - Years (16-bit unsigned integer)
 %;**         Month%ParMonth %>27 - Months (8-bit unsigned integer)

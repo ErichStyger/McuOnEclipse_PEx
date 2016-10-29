@@ -3,9 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetTime)
+%include Common\GeneralMethod.inc (SetHWTime)
 %;**     Description :
-%;**         This method sets a new actual time of the software RTC.
+%;**         This method sets a new actual time of the hardware RTC.
 %include Common\GeneralParameters.inc(27)
 %;**         Hour%ParHour %>27 - Hours (0 - 23)
 %;**         Min%ParMin %>27 - Minutes (0 - 59)
