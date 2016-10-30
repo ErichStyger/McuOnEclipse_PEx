@@ -211,6 +211,7 @@
 
 #define %'ModuleName'%.DYNPD       0x1C /* enable dynamic payload length */
   /* DYNPD register bits: */
+  #define %'ModuleName'%.DYNPD_DPL_ALL (0x3F) /* enable DPL for all pipes */
   #define %'ModuleName'%.DYNPD_DPL_P0  (1<<0) /* enable DPL for pipe 0 */
   #define %'ModuleName'%.DYNPD_DPL_P1  (1<<1) /* enable DPL for pipe 1 */
   #define %'ModuleName'%.DYNPD_DPL_P2  (1<<2) /* enable DPL for pipe 2 */

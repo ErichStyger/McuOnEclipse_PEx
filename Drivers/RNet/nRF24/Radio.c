@@ -18,6 +18,7 @@
 #include "Events.h" /* for event handler interface */
 
 #define NRF24_DYNAMIC_PAYLOAD     1 /* if set to one, use dynamic payload size */
+#define NRF24_AUTO_ACKNOWLEDGE    1 /* if set to one, the transceiver is configured to use auto acknowledge */
 #define RADIO_CHANNEL_DEFAULT     RNET_CONFIG_TRANSCEIVER_CHANNEL  /* default communication channel */
 %if defined(WaitingSendTimeoutMs)
 #define RADIO_WAITNG_TIMEOUT_MS   %WaitingSendTimeoutMs /* timeout value in milliseconds, used for RADIO_WAITING_DATA_SENT */
@@ -32,11 +33,16 @@
 #define POWERDOWN()          %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.CONFIG, %@nRF24L01p@'ModuleName'%.CONFIG_SETTINGS) /* power down */
 
 static bool RADIO_isSniffing = FALSE;
-static const uint8_t RADIO_TADDR[5] = {%nRFAddress}; /* device address, as specified in the properties */
+static const uint8_t RADIO_TADDR_P0[5] = {%nRFAddress}; /* device address for pipe 0 */
+static const uint8_t RADIO_TADDR_P1[5] = {%nRFAddress_Pipe1}; /* device address for pipe 1 */
+static const uint8_t RADIO_TADDR_P2[1] = {%nRFAddress_Pipe2}; /* device address for pipe 2 */
+static const uint8_t RADIO_TADDR_P3[1] = {%nRFAddress_Pipe3}; /* device address for pipe 3 */
+static const uint8_t RADIO_TADDR_P4[1] = {%nRFAddress_Pipe4}; /* device address for pipe 4 */
+static const uint8_t RADIO_TADDR_P5[1] = {%nRFAddress_Pipe5}; /* device address for pipe 5 */
 
 #if RNET_CONFIG_SEND_RETRY_CNT>0
-static uint8_t RADIO_RetryCnt;
-static uint8_t TxDataBuffer[RPHY_BUFFER_SIZE]; /*!< global buffer if using retries */
+  static uint8_t RADIO_RetryCnt;
+  static uint8_t TxDataBuffer[RPHY_BUFFER_SIZE]; /*!< global buffer if using retries */
 #endif
 
 /* Radio state definitions */
@@ -396,28 +402,47 @@ uint8_t RADIO_PowerUp(void) {
   %@nRF24L01p@'ModuleName'%.Init(); /* set CE and CSN to initialization value */
   
   %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.RF_SETUP, %@nRF24L01p@'ModuleName'%.RF_SETUP_RF_PWR_0|RNET_CONFIG_NRF24_DATA_RATE);
-//  %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.RF_SETUP, %@nRF24L01p@'ModuleName'%.RF_SETUP_RF_PWR_18|%@nRF24L01p@'ModuleName'%.RF_SETUP_RF_DR_1000);
 #if NRF24_DYNAMIC_PAYLOAD
   /* enable dynamic payload */
   (void)%@nRF24L01p@'ModuleName'%.WriteFeature(%@nRF24L01p@'ModuleName'%.FEATURE_EN_DPL|%@nRF24L01p@'ModuleName'%.FEATURE_EN_ACK_PAY|%@nRF24L01p@'ModuleName'%.FEATURE_EN_DYN_PAY); /* set EN_DPL for dynamic payload */
-  (void)%@nRF24L01p@'ModuleName'%.EnableDynamicPayloadLength(%@nRF24L01p@'ModuleName'%.DYNPD_DPL_P0); /* set DYNPD register for dynamic payload for pipe0 */
+//  (void)%@nRF24L01p@'ModuleName'%.EnableDynamicPayloadLength(%@nRF24L01p@'ModuleName'%.DYNPD_DPL_P0); /* set DYNPD register for dynamic payload for pipe0 */
+  (void)%@nRF24L01p@'ModuleName'%.EnableDynamicPayloadLength(%@nRF24L01p@'ModuleName'%.DYNPD_DPL_ALL); /* set DYNPD register for dynamic payload for all pipes */
 #else
   (void)%@nRF24L01p@'ModuleName'%.SetStaticPipePayload(0, RPHY_PAYLOAD_SIZE); /* static number of payload bytes we want to send and receive */
 #endif
   (void)RADIO_SetChannel(RADIO_CurrChannel);
 
   /* Set RADDR and TADDR as the transmit address since we also enable auto acknowledgment */
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P0, (uint8_t*)RADIO_TADDR, sizeof(RADIO_TADDR));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.TX_ADDR, (uint8_t*)RADIO_TADDR, sizeof(RADIO_TADDR));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.TX_ADDR, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
+#if 0 /* single pipe */
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P0, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
+#else /* Pipes 0 to 5 */
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P0, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P1, (uint8_t*)RADIO_TADDR_P1, sizeof(RADIO_TADDR_P1));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P2, (uint8_t*)RADIO_TADDR_P2, sizeof(RADIO_TADDR_P2));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P3, (uint8_t*)RADIO_TADDR_P3, sizeof(RADIO_TADDR_P3));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P4, (uint8_t*)RADIO_TADDR_P4, sizeof(RADIO_TADDR_P4));
+  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P5, (uint8_t*)RADIO_TADDR_P5, sizeof(RADIO_TADDR_P5));
+#endif
 
-  /* Enable RX_ADDR_P0 address matching */
+  /* Enable RX_ADDR address matching */
+#if 0
   %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.EN_RXADDR, %@nRF24L01p@'ModuleName'%.EN_RXADDR_ERX_P0); /* enable data pipe 0 */
+#else
+  %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.EN_RXADDR, %@nRF24L01p@'ModuleName'%.EN_RXADDR_ERX_ALL); /* enable all data pipes */
+#endif
   
   /* clear interrupt flags */
   %@nRF24L01p@'ModuleName'%.ResetStatusIRQ(%@nRF24L01p@'ModuleName'%.STATUS_RX_DR|%@nRF24L01p@'ModuleName'%.STATUS_TX_DS|%@nRF24L01p@'ModuleName'%.STATUS_MAX_RT);
   
   /* rx/tx mode */
+#if NRF24_AUTO_ACKNOWLEDGE
+#if 0
   (void)%@nRF24L01p@'ModuleName'%.EnableAutoAck(%@nRF24L01p@'ModuleName'%.EN_AA_ENAA_P0); /* enable auto acknowledge on pipe 0. RX_ADDR_P0 needs to be equal to TX_ADDR! */
+#else
+  (void)%@nRF24L01p@'ModuleName'%.EnableAutoAck(%@nRF24L01p@'ModuleName'%.EN_AA_ENAA_ALL); /* enable auto acknowledge on all pipes. RX_ADDR_P0 needs to be equal to TX_ADDR! */
+#endif
+#endif
   %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.SETUP_RETR, %@nRF24L01p@'ModuleName'%.SETUP_RETR_ARD_750|%@nRF24L01p@'ModuleName'%.SETUP_RETR_ARC_15); /* Important: need 750 us delay between every retry */
   
   RX_POWERUP();  /* Power up in receiving mode */

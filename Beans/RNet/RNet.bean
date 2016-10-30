@@ -4,7 +4,7 @@
     <Name>RNet</Name>
     <Description>RNet (Radio and Remote Network) Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.087</Version>
+    <Version>01.090</Version>
     <Icon>RNet</Icon>
     <TypesFiles>PE,RNet\RNet</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -74,7 +74,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -145,12 +145,77 @@
                 </GrupItem>
                 <GrupItem>
                   <TStrgItem>
-                    <Name>Address</Name>
+                    <Name>Address (data pipe 0)</Name>
                     <Symbol>nRFAddress</Symbol>
                     <Hint>List of 5 8bit values forming the device address. This is used to for the TX_ADDR and RX_ADDR and must be the same for communicating nodes.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <DefaultValue>0x11, 0x22, 0x33, 0x44, 0x55</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address (data pipe 1)</Name>
+                    <Symbol>nRFAddress_Pipe1</Symbol>
+                    <Hint>List of 5 8bit values forming the device address. This is used to for the TX_ADDR and RX_ADDR and must be the same for communicating nodes.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0xB3, 0xB4, 0xB5, 0xB6, 0xF1</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address (data pipe 2)</Name>
+                    <Symbol>nRFAddress_Pipe2</Symbol>
+                    <Hint>List of 1 8bit value forming the data pipe address. The upper four address bytes are taken from the data pipe 1 address.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0xF2</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address (data pipe 3)</Name>
+                    <Symbol>nRFAddress_Pipe3</Symbol>
+                    <Hint>List of 1 8bit value forming the data pipe address. The upper four address bytes are taken from the data pipe 1 address.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0xF3</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address (data pipe 4)</Name>
+                    <Symbol>nRFAddress_Pipe4</Symbol>
+                    <Hint>List of 1 8bit value forming the data pipe address. The upper four address bytes are taken from the data pipe 1 address.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0xF4</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Address (data pipe 5)</Name>
+                    <Symbol>nRFAddress_Pipe5</Symbol>
+                    <Hint>List of 1 8bit value forming the data pipe address. The upper four address bytes are taken from the data pipe 1 address.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0xF5</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>
