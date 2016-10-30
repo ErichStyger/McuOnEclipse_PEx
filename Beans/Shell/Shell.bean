@@ -4,7 +4,7 @@
     <Name>Shell</Name>
     <Description>Command Line Shell</Description>
     <Author>Erich Styger</Author>
-    <Version>01.085</Version>
+    <Version>01.086</Version>
     <Icon>Shell</Icon>
     <TypesFiles>PE,Shell\Shell</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -290,6 +290,20 @@
         <Symbol>Utility</Symbol>
         <TypeSpec>Utility_I</TypeSpec>
         <Hint>Interface to utility</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>XFormat</Name>
+        <Symbol>XFormat</Symbol>
+        <TypeSpec>Shell\XFormat</TypeSpec>
+        <Hint>Interface to XFormat for printf() style support</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>
@@ -808,6 +822,123 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(const uint8_t *str, %'ModuleName'_StdIO_OutErr_FctType io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>printfPutChar</Name>
+        <Symbol>printfPutChar</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Helper routine for printf</Hint>
+        <ItemLevel>@ HIDDEN @</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>arg</ParName>
+          <ParType>pointer</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>argument</ParHint>
+          <ParUserDeclaration>void *arg</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>c</ParName>
+          <ParType>char</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>character to print</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void *arg, char c)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>printfIO</Name>
+        <Symbol>printfIO</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Printf() style function using XFormat component, using a custom I/O handler.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>unsigned</ReturnType>
+        <RetHint>number of characters written</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>io</ParName>
+          <ParType>ConstStdIOType</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to </ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>fmt</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>printf style format string</ParHint>
+          <ParUserDeclaration>const char *fmt, ...</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>unsigned #M#_#C#(%'ModuleName'_ConstStdIOType *io, const char *fmt, ...)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>printf</Name>
+        <Symbol>printf</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Printf() style function using XFormat component, using the shell default I/O handler.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>unsigned</ReturnType>
+        <RetHint>number of characters written</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>fmt</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>printf style format string</ParHint>
+          <ParUserDeclaration>const char *fmt, ...</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>unsigned #M#_#C#(const char *fmt, ...)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

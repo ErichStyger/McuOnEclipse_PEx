@@ -301,6 +301,31 @@ LI.EXP {
 <li><i>io:<a href="ShellUser Types.html#StdIO_OutErr_FctType"><i>ComponentName_</i>StdIO_OutErr_FctType</a></i> - I/O callbacks to be used for printing.</li>
 </ul><br />
 </li>
+<li><a name="printfIO">
+<b>printfIO</b></a>
+ - Printf() style function using XFormat component, using a custom I/O handler.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> unsigned printfIO(<i>ComponentName_</i>ConstStdIOType *io, const char *fmt, ...)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>io: Pointer to <a href="ShellUser Types.html#ConstStdIOType"><i>ComponentName_</i>ConstStdIOType</a></i> - Pointer to </li>
+<li><i>fmt:byte</i> - printf style format string</li>
+<li><i>Return value:unsigned</i> - number of characters written
+</li>
+</ul><br />
+</li>
+<li><a name="printf">
+<b>printf</b></a>
+ - Printf() style function using XFormat component, using the shell default I/O handler.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> unsigned printf(const char *fmt, ...)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>fmt:byte</i> - printf style format string</li>
+<li><i>Return value:unsigned</i> - number of characters written
+</li>
+</ul><br />
+</li>
 <li><a name="SendData">
 <b>SendData</b></a>
  - Sends data using an I/O function. Unlike SendStr(), with this method it is possible to send binary data, including zero bytes.

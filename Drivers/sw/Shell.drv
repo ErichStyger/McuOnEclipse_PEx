@@ -49,6 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
+%define! Description_printfPutChar Helper routine for printf
 %define! Description_SendSeparatedStrings Prints a string using an I/O function, formated for the 'help' command
 %-BW_INTERN_COMMENTS_END
 %-
@@ -529,6 +530,35 @@ void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io);
 
 %endif %- SendCh
 %-BW_METHOD_END SendCh
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printf
+%ifdef printf
+unsigned %'ModuleName'%.%printf(const char *fmt, ...);
+%define! Parfmt
+%define! RetVal
+%include Common\Shellprintf.Inc
+
+%endif %- printf
+%-BW_METHOD_END printf
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG printfPutChar
+void %'ModuleName'%.printfPutChar(void *arg, char c);
+%define! Pararg
+%define! Parc
+%include Common\GeneralInternal.inc (printfPutChar)
+
+%-INTERNAL_METHOD_END printfPutChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printfIO
+%ifdef printfIO
+unsigned %'ModuleName'%.%printfIO(%'ModuleName'_ConstStdIOType *io, const char *fmt, ...);
+%define! Parfmt
+%define! Pario
+%define! RetVal
+%include Common\ShellprintfIO.Inc
+
+%endif %- printfIO
+%-BW_METHOD_END printfIO
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1538,6 +1568,58 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 
 %endif %- SendData
 %-BW_METHOD_END SendData
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG printfPutChar
+%define! Pararg
+%define! Parc
+%include Common\GeneralInternal.inc (printfPutChar)
+void %'ModuleName'%.printfPutChar(void *arg, char c)
+{
+  %'ModuleName'%.StdIO_OutErr_FctType fct = arg;
+
+  fct(c); /* print character */
+}
+
+%-INTERNAL_METHOD_END printfPutChar
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printfIO
+%ifdef printfIO
+%define! Parfmt
+%define! Pario
+%define! RetVal
+%include Common\ShellprintfIO.Inc
+unsigned %'ModuleName'%.%printfIO(%'ModuleName'_ConstStdIOType *io, const char *fmt, ...)
+{
+  va_list args;
+  unsigned int count = 0;
+
+  va_start(args,fmt);
+  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, io->stdOut, fmt, args);
+  va_end(args);
+  return count;
+}
+
+%endif %- printfIO
+%-BW_METHOD_END printfIO
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN printf
+%ifdef printf
+%define! Parfmt
+%define! RetVal
+%include Common\Shellprintf.Inc
+unsigned %'ModuleName'%.%printf(const char *fmt, ...)
+{
+  va_list args;
+  unsigned int count = 0;
+
+  va_start(args,fmt);
+  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, %'ModuleName'%.%GetStdio()->stdOut, fmt, args);
+  va_end(args);
+  return count;
+}
+
+%endif %- printf
+%-BW_METHOD_END printf
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
