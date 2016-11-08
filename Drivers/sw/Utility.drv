@@ -2781,13 +2781,13 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
   if (isNeg) {
     val = -val; /* make it positive */
   }
-  integral = (uint32_t)val;
+  integral = (int32_t)val;
   val = val-(float)integral; /* get rid of integral part */
   shift = 1;
   for(i=0;i<nofFracDigits;i++) {
     shift *= 10;
   }
-  fractional = (uint32_t)(val*shift); /* get fractional part */
+  fractional = ((int32_t)val)*shift; /* get fractional part */
   if (isNeg && fractional>0 && nofFracDigits>0) {
     %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
     %'ModuleName'%.%strcatNum32s(dst, dstSize, (int32_t)integral);
@@ -2841,7 +2841,7 @@ uint16_t %'ModuleName'%.%GetValue16LE(uint8_t *dataP)
 %include Common\UtilityGetValue24LE.Inc
 uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP)
 {
-  return (uint32_t)(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+  return (uint32_t)(((uint32_t)dataP[2])<<16)+(dataP[1]<<8)+(dataP[0]);
 }
 
 %endif %- GetValue24LE
@@ -2854,7 +2854,7 @@ uint32_t %'ModuleName'%.%GetValue24LE(uint8_t *dataP)
 %include Common\UtilityGetValue32LE.Inc
 uint32_t %'ModuleName'%.%GetValue32LE(uint8_t *dataP)
 {
-  return (uint32_t)(dataP[3]<<24)+(dataP[2]<<16)+(dataP[1]<<8)+(dataP[0]);
+  return (uint32_t)(((uint32_t)dataP[3])<<24)+(((uint32_t)dataP[2])<<16)+(dataP[1]<<8)+(dataP[0]);
 }
 
 %endif %- GetValue32LE

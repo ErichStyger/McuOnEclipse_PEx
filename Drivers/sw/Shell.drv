@@ -1575,7 +1575,7 @@ void %'ModuleName'%.%SendData(const uint8_t *data, uint16_t dataSize, %'ModuleNa
 %include Common\GeneralInternal.inc (printfPutChar)
 void %'ModuleName'%.printfPutChar(void *arg, char c)
 {
-  %'ModuleName'%.StdIO_OutErr_FctType fct = arg;
+  %'ModuleName'%.StdIO_OutErr_FctType fct = (%'ModuleName'%.StdIO_OutErr_FctType)arg;
 
   fct(c); /* print character */
 }
