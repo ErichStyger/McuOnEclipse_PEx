@@ -4,7 +4,7 @@
     <Name>SDK_BitIO</Name>
     <Description>BitIO component for Kinetis SDK</Description>
     <Author>Erich Styger</Author>
-    <Version>01.014</Version>
+    <Version>01.015</Version>
     <Icon>SDK_BitIO</Icon>
     <TypesFiles>PE,SDK_BitIO\SDK_BitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -52,12 +52,25 @@
     </Property>
     <Property>
       <TStrgItem>
-        <Name>Port Name</Name>
+        <Name>GPIO Name</Name>
         <Symbol>PortName</Symbol>
-        <Hint>Name of port, e.g. GPIOA or GPIOB, etc</Hint>
+        <Hint>Name of GPIO, e.g. GPIOA or GPIOB, etc</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>GPIOA</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
+    </Property>
+    <Property>
+      <TStrgItem>
+        <Name>PORT Name</Name>
+        <Symbol>PORT_Name</Symbol>
+        <Hint>Name of Port, e.g. PORTA or PORTB, etc</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>PORTA</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>

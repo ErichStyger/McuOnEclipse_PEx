@@ -252,6 +252,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-   Example:
 %-     #include "header_name.h"
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  #include "fsl_port.h" /* include SDK header file for port muxing */
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   #include "fsl_gpio_driver.h" /* include SDK header file for GPIO */
@@ -267,7 +268,8 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  #define %'ModuleName'%.PortName   %PortName /* name of port, is pointer to GPIO_Type */
+  #define %'ModuleName'%.PORTName   %PORT_Name /* name of PORT, is pointer to PORT_Type */
+  #define %'ModuleName'%.GPIOName   %PortName /* name of GPIO, is pointer to GPIO_Type */
   #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
 
   static const gpio_pin_config_t %'ModuleName'%.configOutput = {
@@ -339,7 +341,7 @@ static bool %'ModuleName'%.isOutput = false;
 void %'ModuleName'%.%ClrVal(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  GPIO_ClearPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_ClearPinOutput(%'PinSymbol');
 #endif
@@ -354,7 +356,7 @@ void %'ModuleName'%.%ClrVal(void)
 void %'ModuleName'%.%SetVal(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  GPIO_SetPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_SetPinOutput(%'PinSymbol');
 #endif
@@ -369,7 +371,7 @@ void %'ModuleName'%.%SetVal(void)
 void %'ModuleName'%.%NegVal(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  GPIO_TogglePinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_TogglePinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_TogglePinOutput(%'PinSymbol');
 #endif
@@ -385,7 +387,7 @@ void %'ModuleName'%.%NegVal(void)
 bool %'ModuleName'%.%GetVal(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  return GPIO_ReadPinInput(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber)!=0;
+  return GPIO_ReadPinInput(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber)!=0;
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
 #else
@@ -430,7 +432,7 @@ void %'ModuleName'%.%SetDir(bool Dir)
 void %'ModuleName'%.%SetInput(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
+  GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
 #endif
@@ -446,7 +448,7 @@ void %'ModuleName'%.%SetInput(void)
 void %'ModuleName'%.%SetOutput(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  GPIO_PinInit(%'ModuleName'%.PortName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
+  GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
 #endif
@@ -464,9 +466,9 @@ void %'ModuleName'%.%PutVal(bool Val)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
   if (Val) {
-    GPIO_SetPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+    GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
   } else {
-    GPIO_ClearPinsOutput(%'ModuleName'%.PortName, 1<<%'ModuleName'%.PinNumber);
+    GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
   }
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   GPIO_DRV_WritePinOutput(%'PinSymbol', Val);
@@ -482,8 +484,10 @@ void %'ModuleName'%.%PutVal(bool Val)
 void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  PORT_SetPinMux(%'ModuleName'%.PORTName, %'ModuleName'%.PinNumber, kPORT_MuxAsGpio); /* mux as GPIO */
   %'ModuleName'%.%SetOutput();
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+  /*! \todo Pin Muxing not implemented */
   GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
 #endif
 }
