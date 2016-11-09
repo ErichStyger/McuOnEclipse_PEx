@@ -401,6 +401,7 @@ extern void vPortYieldFromISR(void);
 /*-----------------------------------------------------------*/
 
 /* Architecture specific optimizations. */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
 #if configUSE_PORT_OPTIMISED_TASK_SELECTION == 1
 
 	/* Generic helper function. */
@@ -426,7 +427,7 @@ extern void vPortYieldFromISR(void);
   #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31UL - ( uint32_t ) ucPortCountLeadingZeros( ( uxReadyPriorities ) ) )
 
 #endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
-
+#endif /* configCPU_FAMILY_IS_ARM_M4_M7 */
 /*-----------------------------------------------------------*/
 
 #ifdef configASSERT

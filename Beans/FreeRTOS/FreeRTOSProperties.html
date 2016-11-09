@@ -593,6 +593,10 @@ The following items are available only if the group is enabled (the value is "En
   <b>Preemptive</b></a> - Set to 1 to use the preemptive kernel, or 0 to use the cooperative kernel. (configUSE_PREEMPTION flag)
   </li>
   <li>
+  <a name="configUseOptimizedTaskSelection">
+  <b>Optimized Task Selection</b></a> - If enabled, it enables configUSE_PORT_OPTIMISED_TASK_SELECTION which uses an optimized task selection implemented for ARM. Note that this only supports up to 32 priorirites, and only few ports (like the one for ARM Cortex-M4/M7) has it implemented.
+  </li>
+  <li>
   <a name="UseTimeSlicing">
   <b>Time Slicing</b></a> - Set to 1 (default) time will be time slices among the ready high priority tasks of same priority (configUSE_TIME_SLICING flag)
   </li>

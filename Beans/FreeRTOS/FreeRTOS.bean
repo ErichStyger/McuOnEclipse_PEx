@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.508</Version>
+    <Version>01.510</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -979,6 +979,24 @@ The highest interrupt priority that can be used by any interrupt service routine
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Optimized Task Selection</Name>
+              <Symbol>configUseOptimizedTaskSelection</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, it enables configUSE_PORT_OPTIMISED_TASK_SELECTION which uses an optimized task selection implemented for ARM. Note that this only supports up to 32 priorirites, and only few ports (like the one for ARM Cortex-M4/M7) has it implemented.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>

@@ -370,9 +370,14 @@
 #define configUSE_16_BIT_TICKS                                   %>50 0 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
 %endif
 %if %IdleShouldYield='yes'
-#define configIDLE_SHOULD_YIELD                                  %>50 1
+#define configIDLE_SHOULD_YIELD                                  %>50 1 /* 1: the IDEL task will yield as soon as possible. 0: The IDLE task waits until preemption. */
 %else
 #define configIDLE_SHOULD_YIELD                                  %>50 0
+%endif
+%if defined(configUseOptimizedTaskSelection) & %configUseOptimizedTaskSelection='yes'
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (1 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
+%else
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (0 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
 %endif
 %if %UseCoroutines='yes'
 #define configUSE_CO_ROUTINES                                    %>50 1
