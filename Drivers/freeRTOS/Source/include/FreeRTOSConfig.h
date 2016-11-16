@@ -170,6 +170,7 @@
 #define configGDB_HELPER                   %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)) /* 1: enable special GDB stack backtrace debug helper; 0: disabled */
 %endif
 
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H %>50 1 /* include additional header file to help with debugging in GDB */
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
