@@ -1,6 +1,8 @@
-﻿// freertos_tasks_c_additions.h Rev. 1.1
-//
+
+#if !defined(__HIWARE__)
 #include <stdint.h>
+#endif
+
 #if (configUSE_TRACE_FACILITY == 0)
   #error "configUSE_TRACE_FACILITY must be enabled"
 #endif
@@ -27,11 +29,11 @@
 // heap_1 - the very simplest, does not permit memory to be freed
 // heap_2 - permits memory to be freed, but not does coalescence adjacent free
 //          blocks.
-// heap_3 ‐ simply wraps the standard malloc() and free() for thread safety
+// heap_3 - simply wraps the standard malloc() and free() for thread safety
 // heap_4 - coalesces adjacent free blocks to avoid fragmentation. Includes
 //          absolute address placement option
-// heap_5 ‐ as per heap_4, with the ability to span the heap across
-//          multiple non-­‐adjacent memory areas
+// heap_5 - as per heap_4, with the ability to span the heap across
+//          multiple non-adjacent memory areas
 #ifndef configFRTOS_MEMORY_SCHEME
   #define configFRTOS_MEMORY_SCHEME 3 // thread safe malloc
 #endif
@@ -50,10 +52,12 @@ extern const uint8_t FreeRTOSDebugConfig[];
 //
 #if defined(__GNUC__)
 const uint8_t FreeRTOSDebugConfig[] __attribute__((section(".rodata"))) =
-		#elif defined(__CC_ARM)
+                #elif defined(__CC_ARM)
 const uint8_t FreeRTOSDebugConfig[] __attribute__((used)) =
 #elif defined(__IAR_SYSTEMS_ICC__)
 #pragma required=FreeRTOSDebugConfig
+const uint8_t FreeRTOSDebugConfig[] =
+#else
 const uint8_t FreeRTOSDebugConfig[] =
 #endif
 {
@@ -75,10 +79,11 @@ const uint8_t FreeRTOSDebugConfig[] =
   offsetof(struct tskTaskControlBlock, uxTCBNumber),
   offsetof(struct tskTaskControlBlock, uxTaskNumber),
   configMAX_TASK_NAME_LEN,
-  0, // pad to 32-­‐bit boundary
+  0, // pad to 32-bit boundary
   0
 };
 
 #ifdef __cplusplus
 }
 #endif
+
