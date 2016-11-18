@@ -5007,16 +5007,18 @@ when performing module tests). */
 #endif
 
 
-#if( configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H == 1 )
+#if( configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H == 1 && configUSE_TRACE_FACILITY==1)
 
 	#include "freertos_tasks_c_additions.h"
 
-	static void freertos_tasks_c_additions_init( void )
+#ifdef FREERTOS_TASKS_C_ADDITIONS_INIT
+static void freertos_tasks_c_additions_init( void )
 	{
 		#ifdef FREERTOS_TASKS_C_ADDITIONS_INIT
 			FREERTOS_TASKS_C_ADDITIONS_INIT();
 		#endif
 	}
+#endif
 
 #endif
 
