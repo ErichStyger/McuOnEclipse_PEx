@@ -100,6 +100,12 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+%if defined(DoPinMuxing) & %DoPinMuxing='yes'
+#define %'ModuleName'%.DO_PIN_MUXING  1  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+%else
+#define %'ModuleName'%.DO_PIN_MUXING  0  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+%endif
+
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   #include "fsl_gpio_driver.h"
 
@@ -132,7 +138,6 @@
   extern const gpio_input_pin_user_config_t %'ModuleName'%.InputConfig[];
 #endif
 %-BW_CUSTOM_USERTYPE_END
-
 
 %-BW_DEFINITION_START
 %-************************************************************************************************************
@@ -484,7 +489,9 @@ void %'ModuleName'%.%PutVal(bool Val)
 void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+  #if %'ModuleName'%.DO_PIN_MUXING
   PORT_SetPinMux(%'ModuleName'%.PORTName, %'ModuleName'%.PinNumber, kPORT_MuxAsGpio); /* mux as GPIO */
+  #endif
   %'ModuleName'%.%SetOutput();
 #elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
   /*! \todo Pin Muxing not implemented */

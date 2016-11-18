@@ -4,7 +4,7 @@
     <Name>SDK_BitIO</Name>
     <Description>BitIO component for Kinetis SDK</Description>
     <Author>Erich Styger</Author>
-    <Version>01.015</Version>
+    <Version>01.017</Version>
     <Icon>SDK_BitIO</Icon>
     <TypesFiles>PE,SDK_BitIO\SDK_BitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -105,6 +105,24 @@
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
       </TStrgItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Do Pin Muxing</Name>
+        <Symbol>DoPinMuxing</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled, the Init() function will mux the pin</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
   </PropertyList>
   <MethodList>
