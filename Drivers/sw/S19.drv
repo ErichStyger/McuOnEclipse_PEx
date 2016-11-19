@@ -101,6 +101,8 @@ typedef enum {
   %'ModuleName'_FLASHING_FAILED,  /* Flashing failed */
   %'ModuleName'_GETCHAR_FAILED,   /* getChar failed */
   %'ModuleName'_WRONG_CHECKSUM,   /* wrong checksum */
+  %'ModuleName'_PARSE_FAILED,     /* Parse() call failed */
+  %'ModuleName'_ON_SRECORD,       /* failed during OnSrecord() call */
   %'ModuleName'_LINE_NOT_COMPLETE /* S line not complete */
 } %'ModuleName'_ErrorCode;
 
@@ -348,6 +350,9 @@ static uint8_t Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, uin
   unsigned char ch, upper;
 
   if (getChar(&ch, data)!=ERR_OK) {
+  %if defined(OnError)
+    %OnError(%'ModuleName'_GETCHAR_FAILED, NULL);
+  %endif
     return ERR_FAILED;
   }
   upper = (unsigned char)(TextToHex(ch));
@@ -447,6 +452,9 @@ uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
         }
         /* Get checksum byte */
         if (Get_S_Pair(getChar, data, &val)!=ERR_OK) { /* not a valid S19 file */
+        %if defined(OnError)
+          %OnError(%'ModuleName'_ON_SRECORD, NULL);
+        %endif
           return ERR_FAILED;
         }
         if (((val - ~checksum) & 0x00FF) != 0) {
@@ -469,6 +477,9 @@ uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
         res = ERR_OK;
         %OnSRecord(&res, type+'0', S19_currAddress, &srec_buffer[0], (uint8_t)(i >> 2), data);
         if (res!=ERR_OK) {
+  %if defined(OnError)
+          %OnError(%'ModuleName'_ON_SRECORD, NULL);
+  %endif
           return ERR_FAILED;
         }
       %endif
@@ -516,6 +527,9 @@ uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
         break;
     } /* switch */
   } /* while */
+%if defined(OnError)
+  %OnError(%'ModuleName'_PARSE_FAILED, NULL);
+%endif
   return ERR_FAILED; /* we should exit this method through an S7, S8 or S9 record. This seems not be the case, so something is wrong? */
 }
 
