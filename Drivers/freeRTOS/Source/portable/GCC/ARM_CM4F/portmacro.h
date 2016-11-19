@@ -465,18 +465,8 @@ extern void vPortYield(void);
 #endif
 /*-----------------------------------------------------------*/
 /* Task function macros as described on the FreeRTOS.org WEB site. */
-%if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
-#define portTASK_FUNCTION_PROTO(vFunction, pvParameters)   void vFunction(void *pvParameters) __attribute__((noreturn))
-#define portTASK_FUNCTION(vFunction, pvParameters)         void vFunction(void *pvParameters)
-%elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") | (CPUfamily = "Kinetis")
 #define portTASK_FUNCTION_PROTO(vFunction, pvParameters)   void vFunction(void *pvParameters)
 #define portTASK_FUNCTION(vFunction, pvParameters)         void vFunction(void *pvParameters)
-%elif (CPUfamily = "56800")
-#define portTASK_FUNCTION_PROTO(vFunction, pvParameters)   void vFunction(void *pvParameters)
-#define portTASK_FUNCTION(vFunction, pvParameters)         void vFunction(void *pvParameters)
-%else
-  #error "unsupported target!" %CPUfamily
-%endif
 /*-----------------------------------------------------------*/
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 /*
