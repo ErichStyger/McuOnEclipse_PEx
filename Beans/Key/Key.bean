@@ -4,7 +4,7 @@
     <Name>Key</Name>
     <Description>Debounced keyboard driver for single or multiple keys (up to 8 keys)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.109</Version>
+    <Version>01.113</Version>
     <Icon>Key</Icon>
     <TypesFiles>PE,Key\Key</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,10 +16,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   : Open Source (LGPL)\nCopyright : Erich Styger, 2014, all rights reserved.\nWeb       : www.mcuoneclipse.com\n\nThis an open source software implementing a driver using Processor Expert.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2014-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Category>CPU External Devices-Keypad/Keyboard</Category>
     <Shortcut>KEY</Shortcut>
     <DemoDriver>no</DemoDriver>
@@ -95,7 +95,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -127,7 +127,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -426,12 +426,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>key status</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -496,13 +496,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>keys</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the key(s) pressed, as bitset (e.g. 1 is key 1, 2 is key 2, 4 is key 3, ....)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte keys)</ANSIC>
+          <ANSIC>void #C#(uint8_t keys)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -541,13 +541,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>keys</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the key(s) pressed, as bitset (e.g. 1 is key 1, 2 is key 2, 4 is key 3, ....)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte keys)</ANSIC>
+          <ANSIC>void #C#(uint8_t keys)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -586,13 +586,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>keys</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the key(s) pressed, as bitset (e.g. 1 is key 1, 2 is key 2, 4 is key 3, ....)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte keys)</ANSIC>
+          <ANSIC>void #C#(uint8_t keys)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -631,13 +631,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>keys</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the key(s) hold, as bitset (e.g. 1 is key 1, 2 is key 2, 4 is key 3, ....)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte keys)</ANSIC>
+          <ANSIC>void #C#(uint8_t keys)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
