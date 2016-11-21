@@ -4,7 +4,7 @@
     <Name>Key</Name>
     <Description>Debounced keyboard driver for single or multiple keys (up to 8 keys)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.113</Version>
+    <Version>01.114</Version>
     <Icon>Key</Icon>
     <TypesFiles>PE,Key\Key</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -555,6 +555,51 @@
               <Name>Event procedure name</Name>
               <Symbol>Name</Symbol>
               <Hint>OnKeyReleased procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnKeyPressedLong</Name>
+        <Symbol>OnKeyPressedLong</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Event generated at the time a long key press has been detected.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>generate code</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>false</IsAssembler>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>keys</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>the key(s) pressed, as bitset (e.g. 1 is key 1, 2 is key 2, 4 is key 3, ....)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(uint8_t keys)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnKeyPressedLong procedure name</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue/>

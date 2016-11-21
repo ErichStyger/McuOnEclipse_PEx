@@ -96,22 +96,52 @@
 
 #include "%ProcessorModule.h"
 
-#define %'ModuleName'%.NUMBER_OF_KEYS                            %>40 %NumKeys /* 1: generate key release event, 0: no key release event */
-#define %'ModuleName'%.KEYS_MASK                                 %>40 (0xFFu>>(8-%'ModuleName'%.NUMBER_OF_KEYS)) /*<! Mask with bits set according to number of keys to handle */
+#define %'ModuleName'%.NUMBER_OF_KEYS                            %>50 %NumKeys /* 1: generate key release event, 0: no key release event */
+#define %'ModuleName'%.KEYS_MASK                                 %>50 (0xFFu>>(8-%'ModuleName'%.NUMBER_OF_KEYS)) /*<! Mask with bits set according to number of keys to handle */
 %if PollingEnabled='yes'
 %:maxPollingPins=%ScanKeySymbolNumItems
 %:maxPollingPins-=1
 %endif
 
 %if (LongKeyDetection='yes')
-#define %'ModuleName'%.LONG_KEY_DETECTION                        %>40 1 /* 1: detect long key press, 0: no long key press detction */
+#define %'ModuleName'%.LONG_KEY_DETECTION                        %>50 1 /* 1: detect long key press, 0: no long key press detction */
 %else
-#define %'ModuleName'%.LONG_KEY_DETECTION                        %>40 0 /* 1: detect long key press, 0: no long key press detction */
+#define %'ModuleName'%.LONG_KEY_DETECTION                        %>50 0 /* 1: detect long key press, 0: no long key press detction */
+%endif
+%if defined(OnKeyPressed)
+#define %'ModuleName'%.ON_KEY_PRESSED_EVENT                      %>50 1 /* 1: generate key pressed event, 0: no key pressed event */
+#define %'ModuleName'%.ON_KEY_PRESSED_EVENT_HANDLER              %>50 %OnKeyPressed
+%else
+#define %'ModuleName'%.ON_KEY_PRESSED_EVENT                      %>50 0 /* 1: generate key pressed event, 0: no key pressed event */
+#define %'ModuleName'%.ON_KEY_PRESSED_EVENT_HANDLER              %>50 KEY1_OnKeyPressed
 %endif
 %if defined(OnKeyReleased)
-#define %'ModuleName'%.ON_KEY_RELEASED_EVENT                     %>40 1 /* 1: generate key release event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_EVENT                     %>50 1 /* 1: generate key release event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_EVENT_HANDLER             %>50 %OnKeyReleased
 %else
-#define %'ModuleName'%.ON_KEY_RELEASED_EVENT                     %>40 0 /* 1: generate key release event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_EVENT                     %>50 0 /* 1: generate key release event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_EVENT_HANDLER             %>50 KEY1_OnKeyReleased
+%endif
+%if defined(OnKeyPressedLong)
+#define %'ModuleName'%.ON_KEY_PRESSED_LONG_EVENT                 %>50 (1 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key long pressed event, 0: no key pressed event */
+#define %'ModuleName'%.ON_KEY_PRESSED_LONG_EVENT_HANDLER         %>50 %OnKeyPressedLong
+%else
+#define %'ModuleName'%.ON_KEY_PRESSED_LONG_EVENT                 %>50 (0 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key long pressed event, 0: no key pressed event */
+#define %'ModuleName'%.ON_KEY_PRESSED_LONG_EVENT_HANDLER         %>50 KEY1_OnKeyPressedLong
+%endif
+%if defined(OnKeyReleasedLong)
+#define %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT                %>50 (1 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key release long event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT_HANDLER        %>50 %OnKeyReleasedLong
+%else
+#define %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT                %>50 (0 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key release long event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT_HANDLER        %>50 KEY1_OnKeyReleased
+%endif
+%if defined(OnKeyHold)
+#define %'ModuleName'%.ON_KEY_HOLD_EVENT                         %>50 (1 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key release long event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_HOLD_EVENT_HANDLER                 %>50 %OnKeyHold
+%else
+#define %'ModuleName'%.ON_KEY_HOLD_EVENT                         %>50 (0 && %'ModuleName'%.LONG_KEY_DETECTION) /* 1: generate key release long event, 0: no key release event */
+#define %'ModuleName'%.ON_KEY_HOLD_EVENT_HANDLER                 %>50 KEY1_OnKeyHold
 %endif
 
 typedef uint8_t %'ModuleName'%.KeyStorage; /* we can deal with up to 8 keys */
@@ -247,6 +277,15 @@ void %OnKeyHold(uint8_t keys);
 
 %endif %- OnKeyHold
 %-BW_METHOD_END OnKeyHold
+%-BW_METHOD_BEGIN OnKeyPressedLong
+%ifdef OnKeyPressedLong
+%INTERFACE OnKeyPressedLong
+void %OnKeyPressedLong(uint8_t keys);
+%define! Parkeys
+%include Common\KeyOnKeyPressedLong.Inc
+
+%endif %- OnKeyPressedLong
+%-BW_METHOD_END OnKeyPressedLong
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\KeySettings.Inc
@@ -351,9 +390,9 @@ static void Scan(void)
       DBC_LongKeyCount = 0;
 #endif
       DBC_KeyState = DBC_KEY_PRESSED; /* advance to next state */
-%if defined(OnKeyPressed)
-      %OnKeyPressed(DBC_ScanValue);
-%endif
+  #if %'ModuleName'%.ON_KEY_PRESSED_EVENT
+    %'ModuleName'%.ON_KEY_PRESSED_EVENT_HANDLER(DBC_ScanValue);
+  #endif
       %@Trigger@'ModuleName'%.AddTrigger(%@Trigger@'ModuleName'%.%'ModuleName'%.PRESS, DBC_DEBOUNCE_TIME, Scan);
       break;
 
@@ -362,17 +401,17 @@ static void Scan(void)
       if (keys == DBC_ScanValue) { /* still pressing the same keys */
 #if %'ModuleName'%.LONG_KEY_DETECTION
         DBC_LongKeyCount++;
-        if (DBC_LongKeyCount >= DBC_LONG_KEY_ITERATIONS) {
-          /* yes, long key press detected */
+        if (DBC_LongKeyCount >= DBC_LONG_KEY_ITERATIONS) { /* yes, long key press detected */
+        #if %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT
+          %'ModuleName'%.ON_KEY_PRESSED_LONG_EVENT_HANDLER(DBC_ScanValue);
+        #endif
           DBC_LongKeyCount = DBC_LONG_KEY_ITERATIONS; /* avoid overflow */
           DBC_KeyState = DBC_KEY_WAIT_RELEASE_LONG; /* advance to next state */
           %@Trigger@'ModuleName'%.AddTrigger(%@Trigger@'ModuleName'%.%'ModuleName'%.PRESS, 1, Scan);
         } else {
-  %if (HoldingKeyEvents='yes')
-          %if defined(OnKeyHold)
-          %OnKeyHold(DBC_ScanValue);
-          %endif
-  %endif
+        #if %'ModuleName'%.ON_KEY_HOLD_EVENT
+          %'ModuleName'%.ON_KEY_HOLD_EVENT_HANDLER(DBC_ScanValue);
+        #endif
           %@Trigger@'ModuleName'%.AddTrigger(%@Trigger@'ModuleName'%.%'ModuleName'%.PRESS, 1, Scan); /* continue waiting */
         }
 #else
@@ -398,18 +437,16 @@ static void Scan(void)
       if (keys==0) { /* a zero bit means: key(s) released */
 #if %'ModuleName'%.LONG_KEY_DETECTION
         if (DBC_KeyState == DBC_KEY_WAIT_RELEASE_LONG) {
-          %if defined(OnKeyReleasedLong)
-          %OnKeyReleasedLong(DBC_ScanValue);
-          %endif
-          %if defined(OnKeyReleased)
+      #if %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT
+          %'ModuleName'%.ON_KEY_RELEASED_LONG_EVENT_HANDLER(DBC_ScanValue);
+      #endif
+      #if %'ModuleName'%.ON_KEY_RELEASED_EVENT
         } else {
-          %OnKeyReleased(DBC_ScanValue);
-          %endif
+          %'ModuleName'%.ON_KEY_RELEASED_EVENT_HANDLER(DBC_ScanValue);
+      #endif
         }
 #elif %'ModuleName'%.ON_KEY_RELEASED_EVENT
-        %if defined(OnKeyReleased)
-        %OnKeyReleased(DBC_ScanValue);
-        %endif
+        %'ModuleName'%.ON_KEY_RELEASED_EVENT_HANDLER(DBC_ScanValue);
 #endif
         /* All keys released, go back to idle state. */
         DBC_KeyState = DBC_KEY_IDLE; /* go back to idle */
@@ -569,6 +606,18 @@ void %OnKeyHold(uint8_t keys)
 
 %endif %- OnKeyHold
 %-BW_METHOD_END OnKeyHold
+%-BW_METHOD_BEGIN OnKeyPressedLong
+%ifdef OnKeyPressedLong
+%IMPLEMENTATION OnKeyPressedLong
+%define! Parkeys
+%include Common\KeyOnKeyPressedLong.Inc
+void %OnKeyPressedLong(uint8_t keys)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnKeyPressedLong
+%-BW_METHOD_END OnKeyPressedLong
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
