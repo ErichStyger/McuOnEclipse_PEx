@@ -254,6 +254,12 @@ USB Init Settings for MCF51MM256:
 <div class="text_title">Settings for Kintis K60:</div>
 USB Init Settings for Kinetis:
 <p><img src="FSL_USB_Stack_Init_KinetisK60.png" alt="Init_USB Settings for Kinetis K60" /></p>
+
+<div class="text_title">Disabled Inherited USB Init</div>
+Because of issues with the inherited (inside the component) USB_Init component usage with latest Processor Expert, it is possible to disable the inherited component.
+Then the USB_Init component has to be present in the project. Because the Init() of the Init_USB component gets called from the FSL_USB_Stack, the settings 'Call init method' needs to be set to 'no':
+<p><img src="Init_USB_OTG_standalone.png" alt="Init_USB Settings for Kinetis K60" /></p>
+
 <!---DESCEND DON'T CHANGE THIS-->
             </div>
            <p class="footer">
