@@ -89,10 +89,6 @@
 #define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_2_0
 %endif
 #if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
-  #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
-    #include <stdint.h> /* uint8_t, int16_t, ... */
-    #include <stdbool.h> /* bool, true, false, ... */
-  #endif
   #include "PE_KSDK_Types.h"
 #endif
 #if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
@@ -124,6 +120,13 @@
 
 #if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
   #include "%ProcessorModule.h"
+#endif
+
+#if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
+  #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
+    #include <stdint.h> /* uint8_t, int16_t, ... */
+    #include <stdbool.h> /* bool, true, false, ... */
+  #endif
 #endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
