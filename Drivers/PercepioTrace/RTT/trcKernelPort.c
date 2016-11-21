@@ -215,6 +215,7 @@ static portTASK_FUNCTION( TzCtrl, pvParameters )
 	TracealyzerCommandType msg;
 	int bytes = 0;
 
+	(void)pvParameters; /* << EST */
 	while (1)
 	{
 		bytes = 0;
