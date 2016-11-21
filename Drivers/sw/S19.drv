@@ -392,12 +392,15 @@ static uint8_t Get_S_Pair(%'ModuleName'_GetCharIterator getChar, void *data, uin
 uint8_t %'ModuleName'%.%Parse(%'ModuleName'_GetCharIterator getChar, void *data)
 {
   unsigned char length, checksum, val, i, offset, type;
+  unsigned int lineNo; /* used for error handling: track line number while reading */
 %if defined(OnSRecord)
   uint8_t res;
 %endif
 
   S19_currAddress = 0;
+  lineNo = 0;
   for(;;) {
+    lineNo++;
     /* Get start of S-record */
     if (Get_S(getChar, data, &type)!=ERR_OK) { /* not a valid S19 file */
       return ERR_FAILED;
