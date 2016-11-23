@@ -76,6 +76,10 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#ifndef __HIWARE__
+  #include <stdbool.h>
+  #include <stdint.h>
+#endif
 
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */

@@ -206,6 +206,10 @@ void %AppHandleEvent(uint8_t event);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
+#ifndef __HIWARE__
+  #include <stdbool.h>
+  #include <stdint.h>
+#endif
 #include "%'ModuleName'.h"
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %for var from EventModules
