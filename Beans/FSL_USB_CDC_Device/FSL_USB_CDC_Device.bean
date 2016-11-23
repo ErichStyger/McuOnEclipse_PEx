@@ -4,7 +4,7 @@
     <Name>FSL_USB_CDC_Device</Name>
     <Description>Freescale USB Stack (CDC)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.088</Version>
+    <Version>01.092</Version>
     <Icon>FSL_USB_CDC_Device</Icon>
     <TypesFiles>PE,FSL_USB_CDC_Device\FSL_USB_CDC_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1213,6 +1213,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint8_t ch)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetStdio</Name>
+        <Symbol>GetStdio</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns a pointer to the standard I/O</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>%@Shell@'ModuleName'%.ConstStdIOTypePtr</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%@Shell@'ModuleName'%.ConstStdIOTypePtr #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

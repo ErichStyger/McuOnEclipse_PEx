@@ -369,6 +369,15 @@ bool %'ModuleName'%.%TransactionsStarted(void);
 
 %endif %- TransactionsStarted
 %-BW_METHOD_END TransactionsStarted
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetStdio
+%ifdef GetStdio
+%@Shell@'ModuleName'%.ConstStdIOTypePtr %'ModuleName'%.%GetStdio(void);
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceGetStdio.Inc
+
+%endif %- GetStdio
+%-BW_METHOD_END GetStdio
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -982,6 +991,18 @@ bool %'ModuleName'%.%TransactionsStarted(void)
 
 %endif %- TransactionsStarted
 %-BW_METHOD_END TransactionsStarted
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetStdio
+%ifdef GetStdio
+%define! RetVal
+%include Common\FSL_USB_CDC_DeviceGetStdio.Inc
+%@Shell@'ModuleName'%.ConstStdIOTypePtr %'ModuleName'%.%GetStdio(void)
+{
+  return &%'ModuleName'%.stdio;
+}
+
+%endif %- GetStdio
+%-BW_METHOD_END GetStdio
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
