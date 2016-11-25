@@ -64,32 +64,36 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+#include "%@sdk@ModuleName.h" /* include SDK */
 
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
-/* Include shared modules, which are used for whole project */
+  /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
   #include "%'var'.h"
+  %endfor
+%endif
+#endif
+
+/* Include inherited components */
+%ifdef InhrSymbolList
+  %for var from InhrSymbolList
+#include "%@%var@ModuleName.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-%-
-%-BW_CUSTOM_INCLUDE_END_H
-%-
-%-BW_METHOD_MACROS_START
-%-BW_METHOD_MACROS_END
-  #include "%ProcessorModule.h"
+
+/* other includes needed */
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+  #include "%ProcessorModule.h" /* needed derivative header */
 #endif
+%if (%useRTOScritical='yes')
+#include "FreeRTOS.h"
+#include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
+%endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -100,11 +104,7 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-%if (%useRTOScritical='yes')
-#include "FreeRTOS.h"
-#include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
 
-%endif
 /* workaround macros for wrong EnterCritical()/ExitCritical() in the low level drivers. */
 #define %'ModuleName'%.CriticalVariableDrv() \
   %'ModuleName'%.%CriticalVariable()

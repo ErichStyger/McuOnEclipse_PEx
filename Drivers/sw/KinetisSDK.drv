@@ -88,46 +88,45 @@
 %elif %SDKVersion='2.0'
 #define %'ModuleName'%.SDK_VERSION_USED  %'ModuleName'%.SDK_VERSION_2_0
 %endif
+
 #if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
   #include "PE_KSDK_Types.h"
+  #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
+    #include <stdint.h> /* uint8_t, int16_t, ... */
+    #include <stdbool.h> /* bool, true, false, ... */
+  #endif
 #endif
+
 #if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
-#include "%'var'.h"
+  #include "%'var'.h"
   %endfor
 %endif
-/* Include inherited beans */
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+  #include "%ProcessorModule.h"
 #endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
-#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
-%endif
+%------------------------
+%- %if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
+%- #include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
+%- %endif
+%------------------------
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#if %'ModuleName'%.SDK_VERSION_USED == %'ModuleName'%.SDK_VERSION_NONE
-  #include "%ProcessorModule.h"
-#endif
-
-#if %'ModuleName'%.SDK_VERSION_USED != %'ModuleName'%.SDK_VERSION_NONE
-  #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
-    #include <stdint.h> /* uint8_t, int16_t, ... */
-    #include <stdbool.h> /* bool, true, false, ... */
-  #endif
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES

@@ -76,18 +76,18 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#ifndef __HIWARE__
-  #include <stdbool.h>
-  #include <stdint.h>
-#endif
+#include "%@sdk@ModuleName.h" /* include SDK */
 
+#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
-/* Include shared modules, which are used for whole project */
+  /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
-#include "%'var'.h"
+  #include "%'var'.h"
   %endfor
 %endif
-/* Include inherited beans */
+#endif
+
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
@@ -102,8 +102,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 

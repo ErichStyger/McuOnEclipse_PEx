@@ -8,3 +8,10 @@
 %else
   %set ParseCommand Selection enable
 %endif
+%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
+  %set AddTick Selection enable
+  %set AddTicks Selection enable
+%else
+  %set AddTick Selection enable
+  %set AddTicks Selection enable
+%endif

@@ -64,21 +64,21 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
-  #include <stdint.h>
-#endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+#include "%@sdk@ModuleName.h" /* include SDK */
 
 #if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
 %ifdef SharedModules
   /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
   #include "%'var'.h"
+  %endfor
+%endif
+#endif
+
+/* Include inherited components */
+%ifdef InhrSymbolList
+  %for var from InhrSymbolList
+#include "%@%var@ModuleName.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -90,9 +90,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-  #include "%ProcessorModule.h"
-#endif
-
 %include sw\CommonSupport.prg
 %-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
