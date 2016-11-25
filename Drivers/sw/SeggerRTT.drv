@@ -339,6 +339,15 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetStdio
+%ifdef GetStdio
+%@Shell@'ModuleName'%.ConstStdIOTypePtr %'ModuleName'%.%GetStdio(void);
+%define! RetVal
+%include Common\SeggerRTTGetStdio.Inc
+
+%endif %- GetStdio
+%-BW_METHOD_END GetStdio
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -710,6 +719,18 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetStdio
+%ifdef GetStdio
+%define! RetVal
+%include Common\SeggerRTTGetStdio.Inc
+%@Shell@'ModuleName'%.ConstStdIOTypePtr %'ModuleName'%.%GetStdio(void)
+{
+  return &%'ModuleName'%.stdio;
+}
+
+%endif %- GetStdio
+%-BW_METHOD_END GetStdio
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
