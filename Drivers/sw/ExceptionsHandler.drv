@@ -172,27 +172,21 @@ void MissingCatchInstruction();
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPush
-%ifdef StackPush
 %include Common\ExceptionsHandlerStackPush.inc
-void %'ModuleName'%.%StackPush();
-%endif  %-StackPush
+void %'ModuleName'%.StackPush();
 %-BW_METHOD_END StackPush
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPop
-%ifdef StackPop
 %include Common\ExceptionsHandlerStackPop.inc
-void %'ModuleName'%.%StackPop();
-%endif  %-StackPop
+void %'ModuleName'%.StackPop();
 %-BW_METHOD_END StackPop
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ThrowException
-%ifdef ThrowException
 %include Common\ExceptionsHandlerThrowException.inc
-void %'ModuleName'%.%ThrowException(Exception ex);
+void %'ModuleName'%.ThrowException(Exception ex);
 %define! Parex
-%endif  %-ThrowException
 %-BW_METHOD_END ThrowException
 
 %-*****************************************************************************************************
