@@ -294,6 +294,32 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SetTimeDate">
+<b>SetTimeDate</b></a>
+ - This method sets a new actual time and date of the RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetTimeDate">
+<b>GetTimeDate</b></a>
+ - This method returns current time and date from the RTC.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="SetSWTimeDate">
 <b>SetSWTimeDate</b></a>
  - This method sets a new actual time and date of the software RTC.
@@ -422,8 +448,10 @@ LI.EXP {
  - Initialization method
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Init(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

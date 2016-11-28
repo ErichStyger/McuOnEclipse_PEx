@@ -223,14 +223,6 @@ LI.EXP {
 <b>Component name</b></a> - Name of the component.
 </li>
 <li>
-<a name="CriticalSection">
-<b>Critical Section</b></a> - Interface to critical section handling
-</li>
-<li>
-<a name="sdk">
-<b>SDK</b></a> - Link to SDK
-</li>
-<li>
 <a name="SoftwareRTCEnabled">
 <b>Software RTC</b></a> - If enabled, the component is using a software RTC to keep the time/date.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
@@ -256,39 +248,39 @@ The following items are available only if the group is enabled (the value is "En
 </li>
 <li>
 <a name="HWRTCGroup_Enabled">
-<b>Hardware RTC</b></a> - If enabled, it uses a hardware RTC. Only one (non-LDD or LDD) HW RTC can be active.<br />
+<b>Hardware RTC</b></a> - If enabled, it uses a hardware RTC.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
 <ul>
   <li>
-  <a name="InitFromInternalHWRTC">
-  <b>Init from internal HW RTC</b></a> - If enabled, it initializes the time and date from the internal HW RTC durint Init()
-  </li>
-  <li>
-  <a name="InitFromExternalHWRTC">
-  <b>Init from external HW RTC</b></a> - If enabled, it initializes the time and date from the external HW RTC durint Init(). If the external RTC requires interrupts for commuinication, you might delay this initialiatzion and use SyncWithExternalRTC() at a time when the interrupts are enabled. 
-  </li>
-  <li>
-  <a name="LDDHWRTC_Enabled">
-  <b>Internal LDD RTC</b></a> - Used for LDD (Logical Device Driver) RTC<br />
+  <a name="InternalRTCEnabled">
+  <b>Internal</b></a> - Internal (on-chip) RTC<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
   <ul>
     <li>
-    <a name="LDDRTC">
-    <b>RTC</b></a> - Link to RTC_LDD component
+    <a name="InternalLDDHWRTC_Enabled">
+    <b>Internal LDD RTC</b></a> - Used for LDD (Logical Device Driver) RTC<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+    <ul>
+      <li>
+      <a name="LDDRTC">
+      <b>RTC</b></a> - Link to RTC_LDD component
+      </li>
+    </ul>
     </li>
-  </ul>
-  </li>
-  <li>
-  <a name="HWRTC_Enabled">
-  <b>Internal non-LDD RTC</b></a> - If enabled, uses a normal (non-LDD) hardware RTC.<br />
+    <li>
+    <a name="InternalHWRTC_Enabled">
+    <b>Internal non-LDD RTC</b></a> - If enabled, uses a normal (non-LDD) hardware RTC.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
-  <ul>
-    <li>
-    <a name="RTC">
-    <b>RTC</b></a> - Link to RTC component. 'Auto Initialization' has to be turned on to have the device handle available.
+    <ul>
+      <li>
+      <a name="RTC">
+      <b>RTC</b></a> - Link to RTC component. 'Auto Initialization' has to be turned on to have the device handle available.
+      </li>
+    </ul>
     </li>
   </ul>
   </li>
@@ -307,40 +299,98 @@ The following items are available only if the group is enabled (the value is "En
 </ul>
 </li>
 <li>
-<a name="ShellEnabledGroup">
-<b>Shell</b></a> - Optional shell command line interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
+<a name="SetTimeAndDateGroup">
+<b>Set Time and Date</b></a> - Configures what is set by SetTime() and SetDate()
 <ul>
   <li>
-  <a name="Utility">
-  <b>Utility</b></a> - Interface to utility
+  <a name="SetDateTimeForSoftwareRTC">
+  <b>Software RTC</b></a> - If set to yes and software RTC is available, SetTime() and SetTime() will use the software RTC.
   </li>
   <li>
-  <a name="Shell">
-  <b>Shell</b></a> - Interface to shell
+  <a name="SetDateTimeForInternalRTC">
+  <b>Internal RTC</b></a> - If set to yes and internal RTC is available, SetTime() and SetTime() will use the internal RTC.
+  </li>
+  <li>
+  <a name="SetDateTimeForExternalRTC">
+  <b>External RTC</b></a> - If set to yes and external RTC is available, SetTime() and SetTime() will use the external RTC.
   </li>
 </ul>
 </li>
 <li>
-<a name="InitializationEnabled">
-<b>Initialization</b></a> - If enabled, the component will use initialization values in Init() method.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
+<a name="GetTimeDateMethod">
+<b>Get Time and Date</b></a> - Configures what is set by GetTime() and GetDate()<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>Software RTC</u>: Use software RTC</li>
+  <li><u>Internal RTC</u>: Use internal RTC</li>
+  <li><u>External RTC</u>: Use external RTC</li>
+</ul><br />
 
+</li>
+<li>
+<a name="InitGroup">
+<b>Init()</b></a> - 
 <ul>
   <li>
-  <a name="InitialDate">
-  <b>Date</b></a> - Initial Date
+  <a name="DefaultTimeDate">
+  <b>Defaults</b></a> - Values which can be used for default initialization
+  <ul>
+    <li>
+    <a name="InitialTime">
+    <b>Time</b></a> - Initial Time
+    </li>
+    <li>
+    <a name="InitialDate">
+    <b>Date</b></a> - Initial Date
+    </li>
+  </ul>
   </li>
   <li>
-  <a name="InitialTime">
-  <b>Time</b></a> - Initial Time
+  <a name="InitInStartup">
+  <b>Call Init() in startup</b></a> - If the Init() routine shall be called from PE_low_level_init()
+  </li>
+  <li>
+  <a name="SoftwareRTCInit">
+  <b>Software RTC Initialization</b></a> - How the software RTC shall be initialized.<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>Init from Defaults</u>: Initialize date/time from default values</li>
+  <li><u>Init from Internal RTC</u>: Initialize date/time from internal RTC</li>
+  <li><u>Init from External RTC</u>: Initialize date/time from external RTC</li>
+</ul><br />
+
   </li>
 </ul>
 </li>
 <li>
-<a name="InitInStartup">
-<b>Init in startup</b></a> - If the Init() routine shall be called from PE_low_level_init()
+<a name="SystemGroup">
+<b>System</b></a> - Links to other system modules used.
+<ul>
+  <li>
+  <a name="CriticalSection">
+  <b>Critical Section</b></a> - Interface to critical section handling
+  </li>
+  <li>
+  <a name="sdk">
+  <b>SDK</b></a> - Link to SDK
+  </li>
+  <li>
+  <a name="ShellEnabledGroup">
+  <b>Shell</b></a> - Optional shell command line interface<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="Utility">
+    <b>Utility</b></a> - Interface to utility
+    </li>
+    <li>
+    <a name="Shell">
+    <b>Shell</b></a> - Interface to shell
+    </li>
+  </ul>
+  </li>
+</ul>
 </li>
 
      </ul>

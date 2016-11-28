@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.036</Version>
+    <Version>01.032</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -15,7 +15,7 @@
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedTps>yes</BW_NeedTps>
     <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
@@ -35,34 +35,6 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Critical Section</Name>
-        <Symbol>CriticalSection</Symbol>
-        <TypeSpec>CriticalSection_I</TypeSpec>
-        <Hint>Interface to critical section handling</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>SDK</Name>
-        <Symbol>sdk</Symbol>
-        <TypeSpec>GenericTimeDate\sdk</TypeSpec>
-        <Hint>Link to SDK</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -136,112 +108,94 @@
         <Name>Hardware RTC</Name>
         <Symbol>HWRTCGroup_Enabled</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, it uses a hardware RTC. Only one (non-LDD or LDD) HW RTC can be active.</Hint>
+        <Hint>If enabled, it uses a hardware RTC.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
-            <TBoolItem>
-              <Name>Init from internal HW RTC</Name>
-              <Symbol>InitFromInternalHWRTC</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If enabled, it initializes the time and date from the internal HW RTC durint Init()</Hint>
+            <TBoolGrupItem>
+              <Name>Internal</Name>
+              <Symbol>InternalRTCEnabled</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Internal (on-chip) RTC</Hint>
               <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
               <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Init from external HW RTC</Name>
-              <Symbol>InitFromExternalHWRTC</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If enabled, it initializes the time and date from the external HW RTC durint Init(). If the external RTC requires interrupts for commuinication, you might delay this initialiatzion and use SyncWithExternalRTC() at a time when the interrupts are enabled. </Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>false</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolGrupItem>
-              <Name>Internal LDD RTC</Name>
-              <Symbol>LDDHWRTC_Enabled</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>Used for LDD (Logical Device Driver) RTC</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description>Disabled</Description>
-              <Expanded>No</Expanded>
-              <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
                 <GrupItem>
-                  <TInhrLinkItem>
-                    <Name>RTC</Name>
-                    <Symbol>LDDRTC</Symbol>
-                    <TypeSpec>GenericTimeDate\LDDHWRTC</TypeSpec>
-                    <Hint>Link to RTC_LDD component</Hint>
+                  <TBoolGrupItem>
+                    <Name>Internal LDD RTC</Name>
+                    <Symbol>InternalLDDHWRTC_Enabled</Symbol>
+                    <TypeSpec>typeEnaDis</TypeSpec>
+                    <Hint>Used for LDD (Logical Device Driver) RTC</Hint>
                     <ItemLevel>BASIC</ItemLevel>
+                    <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
-                    <DefaultValue/>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <SortStyle/>
-                  </TInhrLinkItem>
+                    <Description>Disabled</Description>
+                    <Expanded>No</Expanded>
+                    <DefaultValue>false</DefaultValue>
+                    <DefineSymbol>YES_NO</DefineSymbol>
+                    <IfDisabled>setNOTHING</IfDisabled>
+                    <Children>
+                      <GrupItem>
+                        <TInhrLinkItem>
+                          <Name>RTC</Name>
+                          <Symbol>LDDRTC</Symbol>
+                          <TypeSpec>GenericTimeDate\LDDHWRTC</TypeSpec>
+                          <Hint>Link to RTC_LDD component</Hint>
+                          <ItemLevel>BASIC</ItemLevel>
+                          <EditLine>false</EditLine>
+                          <DefaultValue/>
+                          <CanDelete>false</CanDelete>
+                          <IconPopup>false</IconPopup>
+                          <SortStyle/>
+                        </TInhrLinkItem>
+                      </GrupItem>
+                    </Children>
+                  </TBoolGrupItem>
                 </GrupItem>
-              </Children>
-            </TBoolGrupItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolGrupItem>
-              <Name>Internal non-LDD RTC</Name>
-              <Symbol>HWRTC_Enabled</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>If enabled, uses a normal (non-LDD) hardware RTC.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description>Disabled</Description>
-              <Expanded>No</Expanded>
-              <DefaultValue>false</DefaultValue>
-              <DefineSymbol>YES_NO</DefineSymbol>
-              <IfDisabled>setNOTHING</IfDisabled>
-              <Children>
                 <GrupItem>
-                  <TInhrLinkItem>
-                    <Name>RTC</Name>
-                    <Symbol>RTC</Symbol>
-                    <TypeSpec>GenericTimeDate\HWRTC</TypeSpec>
-                    <Hint>Link to RTC component. 'Auto Initialization' has to be turned on to have the device handle available.</Hint>
+                  <TBoolGrupItem>
+                    <Name>Internal non-LDD RTC</Name>
+                    <Symbol>InternalHWRTC_Enabled</Symbol>
+                    <TypeSpec>typeEnaDis</TypeSpec>
+                    <Hint>If enabled, uses a normal (non-LDD) hardware RTC.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
+                    <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
-                    <DefaultValue/>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <SortStyle/>
-                  </TInhrLinkItem>
+                    <Description>Disabled</Description>
+                    <Expanded>No</Expanded>
+                    <DefaultValue>false</DefaultValue>
+                    <DefineSymbol>YES_NO</DefineSymbol>
+                    <IfDisabled>setNOTHING</IfDisabled>
+                    <Children>
+                      <GrupItem>
+                        <TInhrLinkItem>
+                          <Name>RTC</Name>
+                          <Symbol>RTC</Symbol>
+                          <TypeSpec>GenericTimeDate\HWRTC</TypeSpec>
+                          <Hint>Link to RTC component. 'Auto Initialization' has to be turned on to have the device handle available.</Hint>
+                          <ItemLevel>BASIC</ItemLevel>
+                          <EditLine>false</EditLine>
+                          <DefaultValue/>
+                          <CanDelete>false</CanDelete>
+                          <IconPopup>false</IconPopup>
+                          <SortStyle/>
+                        </TInhrLinkItem>
+                      </GrupItem>
+                    </Children>
+                  </TBoolGrupItem>
                 </GrupItem>
               </Children>
             </TBoolGrupItem>
@@ -282,111 +236,263 @@
       </TBoolGrupItem>
     </Property>
     <Property>
-      <TBoolGrupItem>
-        <Name>Shell</Name>
-        <Symbol>ShellEnabledGroup</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Optional shell command line interface</Hint>
+      <TGrupItem>
+        <Name>Set Time and Date</Name>
+        <Symbol>SetTimeAndDateGroup</Symbol>
+        <Hint>Configures what is set by SetTime() and SetDate()</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Utility</Name>
-              <Symbol>Utility</Symbol>
-              <TypeSpec>GenericTimeDate\Utility</TypeSpec>
-              <Hint>Interface to utility</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Shell</Name>
-              <Symbol>Shell</Symbol>
-              <TypeSpec>GenericTimeDate\Shell</TypeSpec>
-              <Hint>Interface to shell</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Initialization</Name>
-        <Symbol>InitializationEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, the component will use initialization values in Init() method.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
+        <Description/>
         <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
-            <TDateItem>
-              <Name>Date</Name>
-              <Symbol>InitialDate</Symbol>
-              <Hint>Initial Date</Hint>
+            <TBoolItem>
+              <Name>Software RTC</Name>
+              <Symbol>SetDateTimeForSoftwareRTC</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If set to yes and software RTC is available, SetTime() and SetTime() will use the software RTC.</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <Date>2012-07-22</Date>
-              <MinDate>1899-12-30</MinDate>
-              <MaxDate>1899-12-30</MaxDate>
-            </TDateItem>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
           </GrupItem>
           <GrupItem>
-            <TTimeItem>
-              <Name>Time</Name>
-              <Symbol>InitialTime</Symbol>
-              <Hint>Initial Time</Hint>
+            <TBoolItem>
+              <Name>Internal RTC</Name>
+              <Symbol>SetDateTimeForInternalRTC</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If set to yes and internal RTC is available, SetTime() and SetTime() will use the internal RTC.</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <Time>0.744112523149</Time>
-              <MinTime>0</MinTime>
-              <MaxTime>0</MaxTime>
-              <TimeFormat>PC_LONG</TimeFormat>
-            </TTimeItem>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>External RTC</Name>
+              <Symbol>SetDateTimeForExternalRTC</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If set to yes and external RTC is available, SetTime() and SetTime() will use the external RTC.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
           </GrupItem>
         </Children>
-      </TBoolGrupItem>
+      </TGrupItem>
     </Property>
     <Property>
-      <TBoolItem>
-        <Name>Init in startup</Name>
-        <Symbol>InitInStartup</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If the Init() routine shall be called from PE_low_level_init()</Hint>
+      <TEnumItem>
+        <Name>Get Time and Date</Name>
+        <Symbol>GetTimeDateMethod</Symbol>
+        <TypeSpec>typeRTCType</TypeSpec>
+        <Hint>Configures what is set by GetTime() and GetDate()</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
+        <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
+        <TextValueIndex>true</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
+      </TEnumItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Init()</Name>
+        <Symbol>InitGroup</Symbol>
+        <Hint/>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TGrupItem>
+              <Name>Defaults</Name>
+              <Symbol>DefaultTimeDate</Symbol>
+              <Hint>Values which can be used for default initialization</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description/>
+              <Expanded>Yes</Expanded>
+              <Children>
+                <GrupItem>
+                  <TTimeItem>
+                    <Name>Time</Name>
+                    <Symbol>InitialTime</Symbol>
+                    <Hint>Initial Time</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <Time>0.744112523149</Time>
+                    <MinTime>0</MinTime>
+                    <MaxTime>0</MaxTime>
+                    <TimeFormat>PC_LONG</TimeFormat>
+                  </TTimeItem>
+                </GrupItem>
+                <GrupItem>
+                  <TDateItem>
+                    <Name>Date</Name>
+                    <Symbol>InitialDate</Symbol>
+                    <Hint>Initial Date</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <Date>2012-07-22</Date>
+                    <MinDate>1899-12-30</MinDate>
+                    <MaxDate>1899-12-30</MaxDate>
+                  </TDateItem>
+                </GrupItem>
+              </Children>
+            </TGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Call Init() in startup</Name>
+              <Symbol>InitInStartup</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If the Init() routine shall be called from PE_low_level_init()</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Software RTC Initialization</Name>
+              <Symbol>SoftwareRTCInit</Symbol>
+              <TypeSpec>typeRTCInit</TypeSpec>
+              <Hint>How the software RTC shall be initialized.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>System</Name>
+        <Symbol>SystemGroup</Symbol>
+        <Hint>Links to other system modules used.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Critical Section</Name>
+              <Symbol>CriticalSection</Symbol>
+              <TypeSpec>CriticalSection_I</TypeSpec>
+              <Hint>Interface to critical section handling</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>GenericTimeDate\sdk</TypeSpec>
+              <Hint>Link to SDK</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>Shell</Name>
+              <Symbol>ShellEnabledGroup</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Optional shell command line interface</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Disabled</Description>
+              <Expanded>No</Expanded>
+              <DefaultValue>false</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>Utility</Name>
+                    <Symbol>Utility</Symbol>
+                    <TypeSpec>GenericTimeDate\Utility</TypeSpec>
+                    <Hint>Interface to utility</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>Shell</Name>
+                    <Symbol>Shell</Symbol>
+                    <TypeSpec>GenericTimeDate\Shell</TypeSpec>
+                    <Hint>Interface to shell</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
@@ -673,12 +779,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -741,6 +847,86 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(DATEREC *Date)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetTimeDate</Name>
+        <Symbol>SetTimeDate</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>This method sets a new actual time and date of the RTC.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>Time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>Date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetTimeDate</Name>
+        <Symbol>GetTimeDate</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>This method returns current time and date from the RTC.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>Time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the structure to return the time. Can be NULL.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>Date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to structure which returns the date information. Can be NULL</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1135,12 +1321,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
