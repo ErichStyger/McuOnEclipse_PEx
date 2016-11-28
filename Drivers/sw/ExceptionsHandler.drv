@@ -460,7 +460,6 @@ void %'ModuleName'%.CatchException() {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN HardFault
-%ifdef HardFault
 %- include Common\ExceptionsHandlerHardFault.inc
 __attribute__((naked))
 void HardFault() {
@@ -482,7 +481,6 @@ void HardFault() {
 	);
 %CODE_END
 }
-%endif %-HardFault
 %-BW_METHOD_END HardFault
 
 %-*****************************************************************************************************
