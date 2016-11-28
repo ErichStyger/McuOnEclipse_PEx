@@ -27,7 +27,7 @@ CTouchScanner			Capacitive touch scanner.
 CTouchSensor			Sensor implementation for capacitive touch sensor.
 DCF77				DCF-77 Radio signal receiver.
 DS18B20				One-temperature sensor (experimental).
-ExceptionsHandler       Implements try, catch and throw for system faults and custom exceptions, only Bare Metal for now.
+ExceptionsHandler		Implements try, catch and throw for system faults and custom exceptions, only Bare Metal for now.
 FAT_FileSystem 			FAT FatFS File System.
 FatFsMem_USB_MSD		Memory Implementation for FatFS using USB MSD.
 FatFsMemSDHC 			Memory Manager for FatFS using SDHC_LDD.
