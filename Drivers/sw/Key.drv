@@ -105,8 +105,10 @@
 
 %if (LongKeyDetection='yes')
 #define %'ModuleName'%.LONG_KEY_DETECTION                        %>50 1 /* 1: detect long key press, 0: no long key press detction */
+#define %'ModuleName'%.LONG_KEY_TIME_MS                          %>50 %LongKeyTime /* Long key detection time in ms */
 %else
 #define %'ModuleName'%.LONG_KEY_DETECTION                        %>50 0 /* 1: detect long key press, 0: no long key press detction */
+#define %'ModuleName'%.LONG_KEY_TIME_MS                          %>50 500 /* Long key detection time in ms */
 %endif
 %if defined(OnKeyPressed)
 #define %'ModuleName'%.ON_KEY_PRESSED_EVENT                      %>50 1 /* 1: generate key pressed event, 0: no key pressed event */
@@ -333,7 +335,7 @@ static %'ModuleName'%.KeyStorage DBC_ScanValue;
 #if %'ModuleName'%.LONG_KEY_DETECTION
   static unsigned short DBC_LongKeyCount;
     /*!< counting how long we press a key */
-  #define DBC_LONG_KEY_TIME_MS     %LongKeyTime  /*!< Long key pressing time, in ms units */
+  #define DBC_LONG_KEY_TIME_MS     (%'ModuleName'%.LONG_KEY_TIME_MS)  /*!< Long key pressing time, in ms units */
   #define DBC_LONG_KEY_ITERATIONS  (DBC_LONG_KEY_TIME_MS/DBC_TRIGGER_TICK_TIME)
     /*!< Number of iterations we need to go for a long key detection. */
 #endif
