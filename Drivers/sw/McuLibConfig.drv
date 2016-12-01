@@ -74,6 +74,8 @@
   %endfor
 %endif
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
+#elif %'ModuleName'%.CONFIG_SDK_VERSION_USED == %'ModuleName'%.CONFIG_SDK_GENERIC
+  /* no specific includes */
 #else /* use non-Processor Expert SDK */
   #include "PE_KSDK_Types.h"
   #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
@@ -186,6 +188,7 @@
 #define __%'ModuleName'CONFIG_H
 
 /* Identifiers used to identify the SDK */
+#define %'ModuleName'%.CONFIG_SDK_GENERIC             0 /* using a generic API/SDK */
 #define %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT    1 /* using Processor Expert SDK */
 #define %'ModuleName'%.CONFIG_SDK_KINETIS_1_3         2 /* using NXP Kinetis SDK V1.3 */
 #define %'ModuleName'%.CONFIG_SDK_KINETIS_2_0         3 /* using NXP Kinetis SDK V2.0 */
@@ -193,7 +196,9 @@
 
 /* specify the SDK and API used */
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_USED
-%if %SDK='ProcessorExpertSDK'
+%if %SDK='Generic'
+  #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_GENERIC
+%elif %SDK='ProcessorExpertSDK'
   #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %elif %SDK='KinetisSDK1.3'
   #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_KINETIS_1_3
