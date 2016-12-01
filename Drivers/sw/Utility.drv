@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_METHOD_BEGIN
@@ -63,24 +63,9 @@
 #ifndef __%'ModuleName'_H
 #define __%'ModuleName'_H
 
-//* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
-
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -108,8 +93,6 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-#include <stddef.h>
-
 typedef enum {
   %'ModuleName'_SEP_NUM_TYPE_UINT8, /* uint8_t number type */
   %'ModuleName'_SEP_NUM_TYPE_UINT8_HEX_NO_PREFIX /* uint8_t hex number type, no 0x prefix */
@@ -855,6 +838,10 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2946,6 +2933,10 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -2963,6 +2954,21 @@ void %'ModuleName'%.%Init(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'CONFIG_H
+#define __%'ModuleName'CONFIG_H
+
+/* no configuration supported yet */
+
+#endif /* __%'ModuleName'CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
