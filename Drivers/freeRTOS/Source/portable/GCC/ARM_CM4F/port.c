@@ -79,10 +79,8 @@
   #include "LPTMR_PDD.h" /* PDD interface to low power timer */
   #include "SIM_PDD.h"   /* PDD interface to system integration module */
 #endif
-%if defined(KinetisSDK)
-#include "%KinetisSDK.h" /* include interface to SDK */
-%endif
-#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
+#include "%KinetisSDK.h" /* include SDK and API used */
+#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #include "%ProcessorModule.h"
 #endif
 /* --------------------------------------------------- */

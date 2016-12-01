@@ -96,14 +96,9 @@ extern "C" {
 /* Application specific configuration options. */
 #include "FreeRTOSConfig.h"
 
-#if configGENERATE_STATIC_SOURCES || configPEX_KINETIS_SDK /* << EST */
-  #include <stdint.h> /* READ COMMENT ABOVE. */
-#else
-  #include "PE_Types.h"
-#endif
+//  #include <stdint.h> /* READ COMMENT ABOVE. */
 #if configSYSTICK_USE_LOW_POWER_TIMER
-  #include "IO_Map.h"
-  #include "SIM_PDD.h"
+  #include "SIM_PDD.h"  /*! \todo this is a PEx header */
 #endif
 
 /* Basic FreeRTOS definitions. */

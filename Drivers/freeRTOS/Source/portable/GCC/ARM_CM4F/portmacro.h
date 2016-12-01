@@ -77,11 +77,6 @@ extern "C" {
 
 #include "FreeRTOSConfig.h"
 #include "projdefs.h" /* for pdFALSE, pdTRUE */
-#if configGENERATE_STATIC_SOURCES || configPEX_KINETIS_SDK
-  #include <stdint.h>
-#else
-  #include "PE_Types.h" /* for int8_t, etc */
-#endif
 /*-----------------------------------------------------------
  * Port specific definitions.
  *

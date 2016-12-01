@@ -70,6 +70,8 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #include <hidef.h>
 %endif
@@ -182,16 +184,7 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
-%if defined(StaticSourcesEnabled) & %StaticSourcesEnabled='yes'
-#define configGENERATE_STATIC_SOURCES                            %>50 1 /* 1: it will create 'static' sources to be used without Processor Expert; 0: Processor Expert code generated */
-%else
-#define configGENERATE_STATIC_SOURCES                            %>50 0 /* 1: it will create 'static' sources to be used without Processor Expert; 0: Processor Expert code generated */
-%endif
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') | (defined(KinetisSDKGroup) & %KinetisSDKGroup='yes') %- TRUE/FALSE not defined for SDK projects
-#define configPEX_KINETIS_SDK                                    %>50 1 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
-%else
-#define configPEX_KINETIS_SDK                                    %>50 0 /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
-%endif
+#define configPEX_KINETIS_SDK                                    %>50 (%@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 %if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
 #define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 1 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
 %else
