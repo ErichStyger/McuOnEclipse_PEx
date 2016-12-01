@@ -420,6 +420,62 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="UnixSecondsToTimeDateCustom">
+<b>UnixSecondsToTimeDateCustom</b></a>
+ - Transforms a given time/date into the Unix time stamp, with the number of seconds from a starting date
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void UnixSecondsToTimeDateCustom(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date, uint16_t baseYear)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>seconds:int32_t</i> - Unix time stamp in seconds after the given base year and base month</li>
+<li><i>offset_hours:int8_t</i> - Optional time zone offset, use 0 for no offset</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to TIMEREC struct where the result is stored. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to DATEREC struct where the result is stored. Can be NULL.</li>
+<li><i>baseYear:uint16_t</i> - Base year from which is used as base to count the seconds, in YYYY format.</li>
+</ul><br />
+</li>
+<li><a name="UnixSecondsToTimeDate">
+<b>UnixSecondsToTimeDate</b></a>
+ - Transforms a given time/date into the Unix time stamp, with the number of seconds after 1-Jan-1970
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void UnixSecondsToTimeDate(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>seconds:int32_t</i> - Unix time stamp in seconds after the given base year and base month</li>
+<li><i>offset_hours:int8_t</i> - Optional time zone offset, use 0 for no offset</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to TIMEREC struct where the result is stored. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to DATEREC struct where the result is stored. Can be NULL.</li>
+</ul><br />
+</li>
+<li><a name="TimeDateToUnixSecondsCustom">
+<b>TimeDateToUnixSecondsCustom</b></a>
+ - Returns for a given time/date the corresponding UNIX time stamp with a custom base date.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t TimeDateToUnixSecondsCustom(TIMEREC *time, DATEREC *date, int8_t offset_hours, uint16_t baseYear)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>time: Pointer to TIMEREC</i> - Pointer to TIMEREC which holds the time to convert</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to DATEREC with the date to convert</li>
+<li><i>offset_hours:int8_t</i> - Optional number of offset hours to adjust for the time zone. Use 0 for no adjustment.</li>
+<li><i>baseYear:uint16_t</i> - Base year from which is used as base to count the seconds, in YYYY format</li>
+<li><i>Return value:int32_t</i> - number of seconds after given base month/year
+</li>
+</ul><br />
+</li>
+<li><a name="TimeDateToUnixSeconds">
+<b>TimeDateToUnixSeconds</b></a>
+ - Returns for a given time/date the corresponding UNIX time stamp, starting at 1-Jan-1970.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t TimeDateToUnixSeconds(TIMEREC *time, DATEREC *date, int8_t offset_hours)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>time: Pointer to TIMEREC</i> - Pointer to TIMEREC which holds the time to convert</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to DATEREC with the date to convert</li>
+<li><i>offset_hours:int8_t</i> - Optional number of offset hours to adjust for the time zone. Use 0 for no adjustment.</li>
+<li><i>Return value:int32_t</i> - number of seconds after given base month/year
+</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line parser

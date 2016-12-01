@@ -517,6 +517,56 @@ uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *Time, DATEREC *Date);
 
 %endif %- GetTimeDate
 %-BW_METHOD_END GetTimeDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UnixSecondsToTimeDateCustom
+%ifdef UnixSecondsToTimeDateCustom
+void %'ModuleName'%.%UnixSecondsToTimeDateCustom(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date, uint16_t baseYear);
+%define! Parseconds
+%define! Paroffset_hours
+%define! Pardate
+%define! Partime
+%define! ParbaseYear
+%include Common\GenericTimeDateUnixSecondsToTimeDateCustom.Inc
+
+%endif %- UnixSecondsToTimeDateCustom
+%-BW_METHOD_END UnixSecondsToTimeDateCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeDateToUnixSecondsCustom
+%ifdef TimeDateToUnixSecondsCustom
+int32_t %'ModuleName'%.%TimeDateToUnixSecondsCustom(TIMEREC *time, DATEREC *date, int8_t offset_hours, uint16_t baseYear);
+%define! Partime
+%define! Pardate
+%define! Paroffset_hours
+%define! ParbaseYear
+%define! RetVal
+%include Common\GenericTimeDateTimeDateToUnixSecondsCustom.Inc
+
+%endif %- TimeDateToUnixSecondsCustom
+%-BW_METHOD_END TimeDateToUnixSecondsCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UnixSecondsToTimeDate
+%ifdef UnixSecondsToTimeDate
+void %'ModuleName'%.%UnixSecondsToTimeDate(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date);
+%define! Parseconds
+%define! Paroffset_hours
+%define! Pardate
+%define! Partime
+%include Common\GenericTimeDateUnixSecondsToTimeDate.Inc
+
+%endif %- UnixSecondsToTimeDate
+%-BW_METHOD_END UnixSecondsToTimeDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeDateToUnixSeconds
+%ifdef TimeDateToUnixSeconds
+int32_t %'ModuleName'%.%TimeDateToUnixSeconds(TIMEREC *time, DATEREC *date, int8_t offset_hours);
+%define! Partime
+%define! Pardate
+%define! Paroffset_hours
+%define! RetVal
+%include Common\GenericTimeDateTimeDateToUnixSeconds.Inc
+
+%endif %- TimeDateToUnixSeconds
+%-BW_METHOD_END TimeDateToUnixSeconds
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -614,18 +664,38 @@ static const uint8_t ULY[12] = {31U,28U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}
 static const uint8_t  LY[12] = {31U,29U,31U,30U,31U,30U,31U,31U,30U,31U,30U,31U}; /* Leap-year */
 
 %ifdef ParseCommand
+static uint8_t AddDateToBuf(uint8_t *buf, uint16_t bufSize, DATEREC *tdate) {
+  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, tdate->Day, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
+  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, tdate->Month, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
+  %@Utility@'ModuleName'%.strcatNum16u(buf, bufSize, (uint16_t)tdate->Year);
+  return ERR_OK;
+}
+
+static uint8_t AddTimeToBuf(uint8_t *buf, uint16_t bufSize, TIMEREC *ttime) {
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime->Hour, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime->Min, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime->Sec, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ',');
+#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime->Sec100, '0', 2);
+#else
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, 0, '0', 2);
+#endif
+  return ERR_OK;
+}
+
+
 static uint8_t AddDate(uint8_t *buf, uint16_t bufSize, uint8_t (*GetTimeDateFn)(TIMEREC*, DATEREC*)) {
   DATEREC tdate;
 
   if (GetTimeDateFn(NULL, &tdate)!=ERR_OK) {
     return ERR_FAILED;
   }
-  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, tdate.Day, '0', 2);
-  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
-  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, tdate.Month, '0', 2);
-  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
-  %@Utility@'ModuleName'%.strcatNum16u(buf, bufSize, (uint16_t)tdate.Year);
-  return ERR_OK;
+  return AddDateToBuf(buf, bufSize, &tdate);
 }
 
 static uint8_t AddTime(uint8_t *buf, uint16_t bufSize, uint8_t (*GetTimeDateFn)(TIMEREC*, DATEREC*)) {
@@ -634,18 +704,7 @@ static uint8_t AddTime(uint8_t *buf, uint16_t bufSize, uint8_t (*GetTimeDateFn)(
   if (GetTimeDateFn(&ttime, NULL)!=ERR_OK) {
     return ERR_FAILED;
   }
-  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime.Hour, '0', 2);
-  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
-  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime.Min, '0', 2);
-  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
-  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime.Sec, '0', 2);
-  %@Utility@'ModuleName'%.chcat(buf, bufSize, ',');
-#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, ttime.Sec100, '0', 2);
-#else
-  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, 0, '0', 2);
-#endif
-  return ERR_OK;
+  return AddTimeToBuf(buf, bufSize, &ttime);
 }
 
 static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdIOType *io) {
@@ -1133,16 +1192,66 @@ uint8_t %'ModuleName'%.%Init(void)
 %include Common\GenericTimeDateParseCommand.Inc
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
+  const uint8_t *p;
+  uint8_t hour, minute, second, hsec;
+  uint8_t month, day;
+  uint16_t year;
+  TIMEREC time;
+  DATEREC date;
+  int32_t unixSecs;
+  uint8_t buf[16];
+
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
     %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
     %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (const unsigned char*)"Print help or status information\r\n", io->stdOut);
     %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  time [hh:mm:ss[,z]]", (const unsigned char*)"Set the current time. Prints the current time if no argument\r\n", io->stdOut);
     %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  date [dd.mm.yyyy]", (const unsigned char*)"Set the current date. Prints the current date if no argument\r\n", io->stdOut);
+    %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  dateToSec <datetime>", (const unsigned char*)"Convert date/time int UNIX timestamp (seconds after 1970)\r\n", io->stdOut);
+    %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  secToDate <secs>", (const unsigned char*)"Convert UNIX timestamp to date/time\r\n", io->stdOut);
     *handled = TRUE;
     return ERR_OK;
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' secToDate ", sizeof("%'ModuleName' secToDate ")-1)==0) {
+    *handled = TRUE;
+    p = cmd+sizeof("%'ModuleName' secToDate ")-1;
+    if (%@Utility@'ModuleName'%.ScanDecimal32sNumber(&p, &unixSecs)==ERR_OK) {
+      %'ModuleName'%.%UnixSecondsToTimeDate(unixSecs, 0, &time, &date);
+      buf[0] = '\0';
+      AddDateToBuf(buf, sizeof(buf), &date);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)" ", io->stdOut);
+      buf[0] = '\0';
+      AddTimeToBuf(buf, sizeof(buf), &time);
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)"\r\n", io->stdOut);
+    } else {
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)"Wrong second format.\r\n", io->stdErr);
+    }
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' dateToSec ", sizeof("%'ModuleName' dateToSec ")-1)==0) {
+    *handled = TRUE;
+    p = cmd+sizeof("%'ModuleName' dateToSec ")-1;
+    if (%@Utility@'ModuleName'%.ScanDate(&p, &day, &month, &year)==ERR_OK) { /* format fine */
+      if (%@Utility@'ModuleName'%.ScanTime(&p, &hour, &minute, &second, &hsec)==ERR_OK) { /* format fine */
+        time.Hour = hour;
+        time.Min = minute;
+        time.Sec = second;
+        time.Sec100 = 0;
+        date.Day = day;
+        date.Month = month;
+        date.Year = year;
+        unixSecs = %'ModuleName'%.%TimeDateToUnixSeconds(&time, &date, 0);
+        %@Shell@'ModuleName'%.SendNum32s(unixSecs, io->stdOut);
+        %@Shell@'ModuleName'%.SendStr((uint8_t*)" sec\r\n", io->stdOut);
+      } else {
+        %@Shell@'ModuleName'%.SendStr((uint8_t*)"Wrong time format.\r\n", io->stdErr);
+        return ERR_FAILED;
+      }
+    } else {
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)"Wrong date format.\r\n", io->stdErr);
+      return ERR_FAILED;
+    }
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' date", sizeof("%'ModuleName' date")-1)==0) {
     *handled = TRUE;
     return DateCmd(cmd, io);
@@ -1598,6 +1707,160 @@ uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *Time, DATEREC *Date)
 
 %endif %- GetTimeDate
 %-BW_METHOD_END GetTimeDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UnixSecondsToTimeDateCustom
+%ifdef UnixSecondsToTimeDateCustom
+%define! Parseconds
+%define! Paroffset_hours
+%define! Pardate
+%define! Partime
+%define! ParbaseYear
+%include Common\GenericTimeDateUnixSecondsToTimeDateCustom.Inc
+void %'ModuleName'%.%UnixSecondsToTimeDateCustom(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date, uint16_t baseYear)
+{
+  /* Implementation based on https://www.experts-exchange.com/questions/26868405/convert-unix-time-stamp-for-8-bit-C-compiler.html */
+  uint8_t daysmonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+  int32_t secs_per_year;
+  int32_t secs_per_month;
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hours;
+  uint8_t minutes;
+
+  /* adjust seconds to localtime */
+  seconds -= (int32_t)offset_hours*3600;
+  /* year */
+  year = baseYear;
+  if (%@Utility@'ModuleName'%.IsLeapYear(year)) {
+    secs_per_year = (365+1)*24*3600;
+  } else {
+    secs_per_year = 365*24*3600;
+  }
+  while (seconds>=secs_per_year) {
+    seconds -= secs_per_year;
+    year++;
+    if (%@Utility@'ModuleName'%.IsLeapYear(year)) {
+      secs_per_year = (365+1)*24*3600;
+    } else {
+      secs_per_year = 365*24*3600;
+    }
+  }
+  /* month update based on leap year */
+  if (%@Utility@'ModuleName'%.IsLeapYear(year)) { /* adjust leap year month days */
+    daysmonth[2] = 29;
+  } else {
+    daysmonth[2] = 28;
+  }
+  /* month */
+  month = 1;
+  secs_per_month = (int32_t)daysmonth[1]*24*3600;
+  while (seconds >= secs_per_month) {
+    seconds -= secs_per_month;
+    month++;
+    secs_per_month = (int32_t)daysmonth[month]*24*3600;
+  }
+  /* day */
+  day = (seconds/(24*3600))+1;
+  seconds = seconds%%(24*3600);
+
+  hours   = seconds/3600;
+  seconds = seconds%%3600;
+
+  minutes = seconds/60;
+  seconds = seconds%%60;
+
+  if (date!=NULL) {
+    date->Day = day;
+    date->Month = month;
+    date->Year = year;
+  }
+  if (time!=NULL) {
+    time->Hour = hours;
+    time->Min = minutes;
+    time->Sec = seconds;
+    time->Sec100 = 0;
+  }
+}
+
+%endif %- UnixSecondsToTimeDateCustom
+%-BW_METHOD_END UnixSecondsToTimeDateCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeDateToUnixSecondsCustom
+%ifdef TimeDateToUnixSecondsCustom
+%define! Partime
+%define! Pardate
+%define! Paroffset_hours
+%define! ParbaseYear
+%define! RetVal
+%include Common\GenericTimeDateTimeDateToUnixSecondsCustom.Inc
+int32_t %'ModuleName'%.%TimeDateToUnixSecondsCustom(TIMEREC *time, DATEREC *date, int8_t offset_hours, uint16_t baseYear)
+{
+  /* implementation based on https://www.experts-exchange.com/questions/26868405/convert-unix-time-stamp-for-8-bit-C-compiler.html */
+  uint8_t daysmonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+  int32_t nofSecs;
+  uint16_t year;
+  uint8_t month;
+
+  /* calculate the seconds for the given day */
+  nofSecs = (int32_t)time->Sec;
+  nofSecs += ((int32_t)time->Min)*60;
+  nofSecs += (int32_t)time->Hour*3600;
+  nofSecs += (int32_t)offset_hours*3600;
+  nofSecs += (int32_t)(date->Day-1)*24*3600;
+  /* month update based on leap year */
+  if (%@Utility@'ModuleName'%.IsLeapYear(date->Year)) { /* adjust leap year month days */
+    daysmonth[2] = 29;
+  } else {
+    daysmonth[2] = 28;
+  }
+  /* calculate the seconds for the months in the given date */
+  for (month = date->Month-1; month>0; month--) {
+    nofSecs += (int32_t)daysmonth[month]*24*3600;
+  }
+  /* count the years back to the base year */
+  for (year=date->Year-1; year>=baseYear; year--) {
+    if (%@Utility@'ModuleName'%.IsLeapYear(year)) {
+      nofSecs += (365+1)*24*3600;
+    } else {
+      nofSecs += 365*24*3600;
+    }
+  }
+  return nofSecs;
+}
+
+%endif %- TimeDateToUnixSecondsCustom
+%-BW_METHOD_END TimeDateToUnixSecondsCustom
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UnixSecondsToTimeDate
+%ifdef UnixSecondsToTimeDate
+%define! Parseconds
+%define! Paroffset_hours
+%define! Pardate
+%define! Partime
+%include Common\GenericTimeDateUnixSecondsToTimeDate.Inc
+void %'ModuleName'%.%UnixSecondsToTimeDate(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date)
+{
+  %'ModuleName'%.%UnixSecondsToTimeDateCustom(seconds, offset_hours, time, date, 1970);
+}
+
+%endif %- UnixSecondsToTimeDate
+%-BW_METHOD_END UnixSecondsToTimeDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN TimeDateToUnixSeconds
+%ifdef TimeDateToUnixSeconds
+%define! Partime
+%define! Pardate
+%define! Paroffset_hours
+%define! RetVal
+%include Common\GenericTimeDateTimeDateToUnixSeconds.Inc
+int32_t %'ModuleName'%.%TimeDateToUnixSeconds(TIMEREC *time, DATEREC *date, int8_t offset_hours)
+{
+  return %'ModuleName'%.%TimeDateToUnixSecondsCustom(time, date, offset_hours, 1970);
+}
+
+%endif %- TimeDateToUnixSeconds
+%-BW_METHOD_END TimeDateToUnixSeconds
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.032</Version>
+    <Version>01.043</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>5</BW_NeedUst>
+    <BW_NeedUst>7</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright> * Copyright (c) 2011-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
@@ -113,7 +113,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -779,12 +779,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -1223,6 +1223,214 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UnixSecondsToTimeDateCustom</Name>
+        <Symbol>UnixSecondsToTimeDateCustom</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Transforms a given time/date into the Unix time stamp, with the number of seconds from a starting date</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>seconds</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Unix time stamp in seconds after the given base year and base month</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>offset_hours</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Optional time zone offset, use 0 for no offset</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to TIMEREC struct where the result is stored. Can be NULL.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to DATEREC struct where the result is stored. Can be NULL.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>baseYear</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Base year from which is used as base to count the seconds, in YYYY format.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date, uint16_t baseYear)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UnixSecondsToTimeDate</Name>
+        <Symbol>UnixSecondsToTimeDate</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Transforms a given time/date into the Unix time stamp, with the number of seconds after 1-Jan-1970</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>seconds</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Unix time stamp in seconds after the given base year and base month</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>offset_hours</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Optional time zone offset, use 0 for no offset</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to TIMEREC struct where the result is stored. Can be NULL.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to DATEREC struct where the result is stored. Can be NULL.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(int32_t seconds, int8_t offset_hours, TIMEREC *time, DATEREC *date)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>TimeDateToUnixSecondsCustom</Name>
+        <Symbol>TimeDateToUnixSecondsCustom</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns for a given time/date the corresponding UNIX time stamp with a custom base date.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>number of seconds after given base month/year</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to TIMEREC which holds the time to convert</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to DATEREC with the date to convert</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>offset_hours</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Optional number of offset hours to adjust for the time zone. Use 0 for no adjustment.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>baseYear</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Base year from which is used as base to count the seconds, in YYYY format</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(TIMEREC *time, DATEREC *date, int8_t offset_hours, uint16_t baseYear)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>TimeDateToUnixSeconds</Name>
+        <Symbol>TimeDateToUnixSeconds</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns for a given time/date the corresponding UNIX time stamp, starting at 1-Jan-1970.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>number of seconds after given base month/year</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to TIMEREC which holds the time to convert</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to DATEREC with the date to convert</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>offset_hours</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Optional number of offset hours to adjust for the time zone. Use 0 for no adjustment.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(TIMEREC *time, DATEREC *date, int8_t offset_hours)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
