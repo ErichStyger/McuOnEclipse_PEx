@@ -39,7 +39,7 @@
 %- readyDEVICE ...
 %-
 %define DriverAuthor  Omar Isai Pinales Ayala
-%define DriverVersion 01.01
+%define DriverVersion 02.00
 %define DriverDate    11/26/2016
 %-
 %-
@@ -86,7 +86,12 @@
 %-
 %-BW_METHOD_MACROS_START
 #define STOP_NON_CLOSED_CATCH()			__asm("bkpt 0 \n mov pc, r7")
+%if %frtos = 'yes'
+#define STOP_NON_CATCHED_EXCEPTION()	__asm("bkpt 0 \n mov pc, r7")
+%else %-frtos
 #define STOP_NON_CATCHED_EXCEPTION()	__asm("bkpt 0 \n mov pc, r6")
+%endif %-frtos
+
 %-BW_METHOD_MACROS_END
 
 #include "%ProcessorModule.h"
@@ -106,7 +111,7 @@ typedef enum {
 } Exception;		%>40/*Exception enum type*/
 #endif
 
-Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExcepResult;
+Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -123,7 +128,11 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExcepResult;
 %-BW_METHOD_BEGIN try
 %ifdef try
 %include Common\ExceptionsHandlertry.inc
+%if %frtos = 'yes'
+#define try %'ModuleName'%.StackPush(); if(!%'ModuleName'%.GlobalExCheck())
+%else %-frtos
 #define try %'ModuleName'%.StackPush(); if(!%'ModuleName'%.GlobalEx)
+%endif %-frtos
 %endif  %-try
 %-BW_METHOD_END try
 
@@ -131,7 +140,11 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExcepResult;
 %-BW_METHOD_BEGIN catch
 %ifdef catch
 %include Common\ExceptionsHandlercatch.inc
-#define catch %'ModuleName'%.StackPop(); if(%'ModuleName'%.ExcepResult)
+%if %frtos = 'yes'
+#define catch %'ModuleName'%.StackPop(); if(%'ModuleName'%.ExceptResultCheck())
+%else %-frtos
+#define catch %'ModuleName'%.StackPop(); if(%'ModuleName'%.ExceptResult)
+%endif %-frtos
 %endif  %-catch
 %-BW_METHOD_END catch
 
@@ -150,25 +163,50 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExcepResult;
 %ifdef GetException
 %include Common\ExceptionsHandlerthrow.inc
 // Exception GetException();
-#define GetException() %'ModuleName'%.ExceptResult
+%if %frtos = 'yes'
+#define GetException() ((int) %'ModuleName'%.ExceptResultCheck())
+%else %-frtos
+#define GetException() ((int) %'ModuleName'%.ExceptResult)
+%endif %-frtos
 %endif  %-GetException
 %-BW_METHOD_END GetException
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN NonCatchedException
-%ifdef NonCatchedException
-%include Common\ExceptionsHandlerNonCatchedException.inc
-void NonCatchedException();
-%endif  %-NonCatchedException
-%-BW_METHOD_END NonCatchedException
+%-BW_METHOD_BEGIN ClearException
+%ifdef ClearException
+%include Common\ExceptionsHandlerClearException.inc
+//void ClearException();
+%if %frtos = 'yes'
+#define ClearException() %'ModuleName'%.DoClearException()
+%else %-frtos
+#define ClearException() %'ModuleName'%.ExceptResult = 0
+%endif %-frtos
+%endif  %-ClearException
+%-BW_METHOD_END ClearException
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN MissingCatchInstruction
-%ifdef MissingCatchInstruction
-%include Common\ExceptionsHandlerMissingCatchInstruction.inc
-void MissingCatchInstruction();
-%endif  %-MissingCatchInstruction
-%-BW_METHOD_END MissingCatchInstruction
+%-BW_METHOD_BEGIN GlobalExCheck
+%if %frtos = 'yes'
+%include Common\ExceptionsHandlerGlobalExCheck.inc
+int * %'ModuleName'%.GlobalExCheck();
+%endif  %-frtos
+%-BW_METHOD_END GlobalExCheck
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN ExceptResultCheck
+%if %frtos = 'yes'
+%include Common\ExceptionsHandlerExceptResultCheck.inc
+int * %'ModuleName'%.ExceptResultCheck();
+%endif  %-frtos
+%-BW_METHOD_END ExceptResultCheck
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN DoClearException
+%if %frtos = 'yes'
+%include Common\ExceptionsHandlerDoClearException.inc
+void %'ModuleName'%.DoClearException();
+%endif  %-frtos
+%-BW_METHOD_END DoClearException
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPush
@@ -188,30 +226,6 @@ void %'ModuleName'%.StackPop();
 void %'ModuleName'%.ThrowException(Exception ex);
 %define! Parex
 %-BW_METHOD_END ThrowException
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN CatchException
-%ifdef CatchException
-%include Common\ExceptionsHandlerCatchException.inc
-void %'ModuleName'%.%CatchException();
-%endif  %-CatchException
-%-BW_METHOD_END CatchException
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN HardFault
-%ifdef HardFault
-%include Common\ExceptionsHandlerHardFault.inc
-void %HardFault();
-%endif  %-HardFault
-%-BW_METHOD_END HardFault
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\ExceptionsHandlerInit.inc
-void %'ModuleName'%.%Init();
-%endif  %-Init
-%-BW_METHOD_END Init
 
 %-************************************************************************************************************
 %-BW_DEFINITION_END
@@ -243,6 +257,9 @@ void %'ModuleName'%.%Init();
 %-   Example:
 %-     #include "header_name.h"
 %-
+%if %frtos = 'yes'
+#include "%@FreeRTOS@ModuleName.h"
+%endif %-frtos
 %-BW_CUSTOM_INCLUDE_END_M
                                                                                                                       
 #ifdef __cplusplus
@@ -255,8 +272,18 @@ extern "C" {
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-int %'ModuleName'%.Exlevel = 0;
-int *%'ModuleName'%.tryStack = 0;
+int * %'ModuleName'%.Exlevel = 0;
+int * %'ModuleName'%.tryStack = 0;
+Exception %'ModuleName'%.GlobalEx = HandledException;
+Exception %'ModuleName'%.ExceptResult = HandledException;
+
+%if %frtos = 'yes'
+#define	Exlevel		0
+#define	tryStack	1
+#define	GlobalEx	2
+#define	ExceptResult	3
+%endif %-frtos
+
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -309,22 +336,20 @@ int *%'ModuleName'%.tryStack = 0;
 %-BW_METHOD_END GetException
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN NonCatchedException
-%- include Common\ExceptionsHandlerNonCatchedException.inc
-void NonCatchedException() {
+%-BW_METHOD_BEGIN ClearException
+%ifdef ClearException
+%include Common\ExceptionsHandlerClearException.inc
+// void ClearException() { }
+	/******Method implemented in the definition module as a macro *******/
 %CODE_BEGIN
-	//System stopped because a non handled exception
-	STOP_NON_CATCHED_EXCEPTION();
-	// To know what is the offending code line:
-	//   - Active "Instruction Stepping Mode"
-	//   - Press F5 two times to go to that Line
 %CODE_END
-}
-%-BW_METHOD_END NonCatchedException
+%endif %-ClearException
+%-BW_METHOD_END ClearException
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN MissingCatchInstruction
 %- include Common\ExceptionsHandlerMissingCatchInstruction.inc
+__attribute__((naked))
 void MissingCatchInstruction() {
 %CODE_BEGIN
 	//System stopped because a non handled exception
@@ -346,11 +371,110 @@ void MissingCatchInstruction() {
 %-BW_METHOD_END MissingCatchInstruction
 
 %-*****************************************************************************************************
+%-BW_METHOD_BEGIN GlobalExCheck
+%if %frtos = 'yes'
+%define! RetVal
+%include Common\ExceptionsHandlerGlobalExCheck.inc
+int * %'ModuleName'%.GlobalExCheck() {
+%CODE_BEGIN
+	xTaskHandle tsk;
+	int *res;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {	//FreeRTOS
+		res = pvTaskGetThreadLocalStoragePointer(NULL, GlobalEx);
+	} else {	//Bare metal
+		res = (int *) %'ModuleName'%.GlobalEx;
+	}
+	return res;
+%CODE_END
+}
+%endif %-frtos
+%-BW_METHOD_END GlobalExCheck
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN ExceptResultCheck
+%if %frtos = 'yes'
+%define! RetVal
+%include Common\ExceptionsHandlerExceptResultCheck.inc
+int * %'ModuleName'%.ExceptResultCheck() {
+%CODE_BEGIN
+	xTaskHandle tsk;
+	int *res;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {	//FreeRTOS
+		res = pvTaskGetThreadLocalStoragePointer(NULL, ExceptResult);
+	} else {	//Bare metal
+		res = (int *) %'ModuleName'%.ExceptResult;
+	}
+	return res;
+%CODE_END
+}
+%endif %-frtos
+%-BW_METHOD_END ExceptResultCheck
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN DoClearException
+%if %frtos = 'yes'
+%define! RetVal
+%include Common\ExceptionsHandlerDoClearException.inc
+void %'ModuleName'%.DoClearException() {
+%CODE_BEGIN
+	xTaskHandle tsk;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {	//FreeRTOS
+		vTaskSetThreadLocalStoragePointer(NULL, ExceptResult, 0);
+	} else {	//Bare metal
+		%'ModuleName'%.ExceptResult = 0;
+	}
+%CODE_END
+}
+%endif %-frtos
+%-BW_METHOD_END DoClearException
+
+%-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPush
 %- include Common\ExceptionsHandlerStackPush.inc
 __attribute__((naked))
 void %'ModuleName'%.StackPush() {
 %CODE_BEGIN
+%if %frtos = 'yes'
+	xTaskHandle tsk;
+	int *level, *stack, ctr, *ret;
+	register int *r4 __asm("r4");
+	register int *r5 __asm("r5");
+	register int *r6 __asm("r6");
+	register int *r7 __asm("r7");
+	register int *sp __asm("sp");
+	register int *lr __asm("lr");
+	ret = lr;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {	//FreeRTOS
+		level = pvTaskGetThreadLocalStoragePointer(NULL, Exlevel);
+		stack = pvTaskGetThreadLocalStoragePointer(NULL, tryStack);
+	} else {	//Bare metal
+		level = %'ModuleName'%.Exlevel;
+		stack = %'ModuleName'%.tryStack;
+	}
+	r4 = ret - 1;
+	r5 = (int *) MissingCatchInstruction;
+	r6 = stack;
+	__asm(
+		"mov sp, r7 \n"
+		"push {r4, r5, r6, r7} \n"
+		"push {r4, r5} \n"
+	);
+	level++;
+	stack = sp;
+	if(tsk) {
+		vTaskSetThreadLocalStoragePointer(NULL, Exlevel, level);
+		vTaskSetThreadLocalStoragePointer(NULL, tryStack, stack);
+	} else {
+		%'ModuleName'%.Exlevel = level;
+		%'ModuleName'%.tryStack = stack;
+	}
+	lr = ret;
+	__asm("mov pc, lr");
+%else %-frtos
 	__asm(
 		"ldr r5, =MissingCatchInstruction \n"
 		"ldr r6, =%'ModuleName'%.tryStack \n"
@@ -370,6 +494,7 @@ void %'ModuleName'%.StackPush() {
 		"str r5, [r4, #0] \n"
 		"mov pc, lr \n"
 	);
+%endif %-frtos
 %CODE_END
 }
 %-BW_METHOD_END StackPush
@@ -380,16 +505,62 @@ void %'ModuleName'%.StackPush() {
 __attribute__((naked))
 void %'ModuleName'%.StackPop() {
 %CODE_BEGIN
+%if %frtos = 'yes'
+	xTaskHandle tsk;
+	int *level, *stack, *global, *res, *ret, *spt;
+	register int *r6 __asm("r6");
+	register int *sp __asm("sp");
+	register int *lr __asm("lr");
+	spt = sp;
+	ret = lr;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {
+		level = pvTaskGetThreadLocalStoragePointer(NULL, Exlevel);
+		global = pvTaskGetThreadLocalStoragePointer(NULL, GlobalEx);
+		level--;
+		vTaskSetThreadLocalStoragePointer(NULL, Exlevel, level);
+		res = global;
+		global = 0;
+		vTaskSetThreadLocalStoragePointer(NULL, GlobalEx, global);
+		vTaskSetThreadLocalStoragePointer(NULL, ExceptResult, res);
+		sp = spt;
+		__asm("pop {r2, r3, r4, r5, r6, r7}");
+		stack = r6;
+		vTaskSetThreadLocalStoragePointer(NULL, tryStack, stack);
+	} else {
+		__asm(
+		//Exlevel--;
+			"ldr r4, =%'ModuleName'%.Exlevel \n"
+			"ldr r5, [r4, #0] \n"
+			"sub r5, #1 \n"
+			"str r5, [r4, #0] \n"
+		//%'ModuleName'%.ExceptResult = %'ModuleName'%.GlobalEx;
+			"ldr r3, =%'ModuleName'%.GlobalEx \n"
+			"ldrb r2, [r3, #0] \n"
+			"ldr r4, =%'ModuleName'%.ExceptResult \n"
+			"strb r2, [r4, #0] \n"
+		//%'ModuleName'%.GlobalEx = %'ModuleName'%.HandledException;
+			"mov r2, #0 \n"
+			"strb r2, [r3, #0] \n"
+			"pop {r2, r3, r4, r5, r6, r7} \n"
+		//%'ModuleName'%.tryStack = r6;
+			"ldr r0, =%'ModuleName'%.tryStack \n"
+			"str r6, [r0, #0] \n"
+		);
+	}
+	lr = ret;
+	__asm("mov pc, lr");
+%else %-frtos
 	__asm(
 	//Exlevel--;
 		"ldr r4, =%'ModuleName'%.Exlevel \n"
 		"ldr r5, [r4, #0] \n"
 		"sub r5, #1 \n"
 		"str r5, [r4, #0] \n"
-	//%'ModuleName'%.ExcepResult = %'ModuleName'%.GlobalEx;
+	//%'ModuleName'%.ExceptResult = %'ModuleName'%.GlobalEx;
 		"ldr r3, =%'ModuleName'%.GlobalEx \n"
 		"ldrb r2, [r3, #0] \n"
-		"ldr r4, =%'ModuleName'%.ExcepResult \n"
+		"ldr r4, =%'ModuleName'%.ExceptResult \n"
 		"strb r2, [r4, #0] \n"
 	//%'ModuleName'%.GlobalEx = %'ModuleName'%.HandledException;
 		"mov r2, #0 \n"
@@ -400,9 +571,25 @@ void %'ModuleName'%.StackPop() {
 		"str r6, [r0, #0] \n"
 		"mov pc, lr \n"
 	);
+%endif %-frtos
 %CODE_END
 }
 %-BW_METHOD_END StackPop
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN NonCatchedException
+%- include Common\ExceptionsHandlerNonCatchedException.inc
+__attribute__((naked))
+void NonCatchedException() {
+%CODE_BEGIN
+	//System stopped because a non handled exception
+	STOP_NON_CATCHED_EXCEPTION();
+	// To know what is the offending code line:
+	//   - Active "Instruction Stepping Mode"
+	//   - Press F5 two times to go to that Line
+%CODE_END
+}
+%-BW_METHOD_END NonCatchedException
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ThrowException
@@ -411,6 +598,46 @@ void %'ModuleName'%.StackPop() {
 __attribute__((naked))
 void %'ModuleName'%.ThrowException(Exception ex) {
 %CODE_BEGIN
+%if %frtos = 'yes'
+	xTaskHandle tsk;
+	int *level, *stack, ctr, *ret;
+	register int *r4 __asm("r4");
+	register int *r5 __asm("r5");
+	register int *r6 __asm("r6");
+	register int *r7 __asm("r7");
+	register int *sp __asm("sp");
+	register int *lr __asm("lr");
+	r6 = lr;
+	tsk = xTaskGetCurrentTaskHandle();
+	if(tsk) {	//FreeRTOS
+		level = pvTaskGetThreadLocalStoragePointer(NULL, Exlevel);
+		stack = pvTaskGetThreadLocalStoragePointer(NULL, tryStack);
+		if(level) {
+			vTaskSetThreadLocalStoragePointer(NULL, GlobalEx, (void *) ex);
+			r6 = stack;
+			__asm(
+				"mov sp, r6 \n"
+				"ldr r7, [r6, #0] \n"
+				"ldr r6, [sp, #0] \n"
+				"add r7, #4 \n"
+				"mov pc, r7 \n"
+			);
+		}
+	} else {	//Bare metal
+		level = %'ModuleName'%.Exlevel;
+		if(level) {
+			%'ModuleName'%.GlobalEx = ex;
+			__asm("b _WithStartTry \n");
+		}
+	}
+	if(level == 0) {
+		__asm(
+			"mov r7, r6 \n"
+			"sub r7, #4 \n"
+			"b NonCatchedException \n"
+		);
+	}
+%else %-frtos
 	__asm(
 		"ldr r6, =%'ModuleName'%.Exlevel \n"
 		"ldr r6, [r6, #0] \n"
@@ -425,21 +652,48 @@ void %'ModuleName'%.ThrowException(Exception ex) {
 		"sub r6, #4 \n"
 		"b NonCatchedException \n"
 	);
+%endif %-frtos
 %CODE_END
 }
 %-BW_METHOD_END ThrowException
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN CatchException
-%- include Common\ExceptionsHandlerCatchException.inc
+%-BW_METHOD_BEGIN CatchExceptionMSP
+%- include Common\ExceptionsHandlerCatchExceptionMSP.inc
 __attribute__((naked))
-void %'ModuleName'%.CatchException() {
+void %'ModuleName'%.CatchExceptionMSP() {
 %CODE_BEGIN
+%if %frtos = 'yes'
+	__asm(
+	//if(%'ModuleName'%.Exlevel == 0) {
+		"ldr r6, =%'ModuleName'%.Exlevel \n"
+		"ldr r6, [r6, #0] \n"
+		"cmp r6, #0 \n"
+	//	NonCatchedException();
+		"beq NonCatchedException \n"
+	//} else {
+	//	%'ModuleName'%.GlobalEx = NullPointerException;
+		"ldr r6, =%'ModuleName'%.GlobalEx \n"
+		"movs r5, #1 \n"
+		"strb r5, [r6, #0] \n"
+	//	sp = tryStack;
+		"_WithStartTry: \n"
+		"ldr r6, =%'ModuleName'%.tryStack \n"
+		"ldr r7, [r6, #0] \n"
+		"mov sp, r7 \n"
+	//	r6 = ((int *) *sp) + 1;
+		"ldr r6, [sp, #0] \n"
+		"add r6, #4 \n"
+	//	return;
+		"mov pc, r6 \n"
+	//}
+	);
+%else %-frtos
 	__asm(
 	//%'ModuleName'%.GlobalEx = NullPointerException;
 		"ldr r6, =%'ModuleName'%.GlobalEx \n"
-		"mov r5, #1 \n"
-		"str r5, [r6, #0] \n"
+		"movs r5, #1 \n"
+		"strb r5, [r6, #0] \n"
 		"_WithStartTry: \n"
 		"ldr r6, =%'ModuleName'%.tryStack \n"
 		"ldr r7, [r6, #0] \n"
@@ -448,9 +702,37 @@ void %'ModuleName'%.CatchException() {
 		"add r6, #4 \n"
 		"mov pc, r6 \n"
 	);
+%endif %-frtos
 %CODE_END
 }
-%-BW_METHOD_END CatchException
+%-BW_METHOD_END CatchExceptionMSP
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN CatchExceptionPSP
+%if %frtos = 'yes'
+%include Common\ExceptionsHandlerCatchExceptionPSP.inc
+__attribute__((naked))
+void %'ModuleName'%.CatchExceptionPSP() {
+%CODE_BEGIN
+	int *level, *stack, global, *res, *ret, *spt;
+	register int *r6 __asm("r6");
+	register int *sp __asm("sp");
+	level = pvTaskGetThreadLocalStoragePointer(NULL, Exlevel);
+	if(level == 0) {
+		__asm("b NonCatchedException");
+	} else {
+		global = (int) pvTaskGetThreadLocalStoragePointer(NULL, GlobalEx);
+		global = NullPointerException;
+		vTaskSetThreadLocalStoragePointer(NULL, GlobalEx, (void *) global);
+		stack = pvTaskGetThreadLocalStoragePointer(NULL, tryStack);
+		sp = stack;
+		r6 = ((int *) *stack) + 1;
+		__asm("mov pc, r6");
+	}
+%CODE_END
+}
+%endif %-frtos
+%-BW_METHOD_END CatchExceptionPSP
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN HardFault
@@ -458,6 +740,25 @@ void %'ModuleName'%.CatchException() {
 __attribute__((naked))
 void HardFault() {
 %CODE_BEGIN
+%if %frtos = 'yes'
+	__asm volatile (
+		" movs r0, #4 \n"
+		" movs r1, lr \n"
+		" tst r0, r1 \n"
+		" beq _MSP \n"
+		" mrs r0, psp \n"
+		"ldr r6, =%'ModuleName'%.CatchExceptionPSP \n"
+		" b _HALT \n"
+		"_MSP: \n"
+		" mrs r0, msp \n"
+		"ldr r6, =%'ModuleName'%.CatchExceptionMSP \n"
+		"_HALT: \n"
+		"ldr r7, [r0, #24] \n"
+		"add r0, #24 \n"
+		"str r6, [r0, #0] \n"
+		"bx lr \n"
+	);
+%else %-frtos
 	__asm(
 		"ldr r6, =%'ModuleName'%.Exlevel \n"
 		"ldr r6, [r6, #0] \n"
@@ -465,7 +766,7 @@ void HardFault() {
 		"beq _WithoutStartTry \n"
 		"mov r0, sp \n"
 		"add r0, #24 \n"
-		"ldr r6, =%'ModuleName'%.CatchException \n"
+		"ldr r6, =%'ModuleName'%.CatchExceptionMSP \n"
 		"str r6, [r0, #0] \n"
 		"bx lr \n"
 		"_WithoutStartTry: \n"
@@ -473,22 +774,10 @@ void HardFault() {
 		"pop {r0, r1, r2, r3, r4, r5, r6} \n"
 		"b NonCatchedException \n"
 	);
+%endif %-frtos
 %CODE_END
 }
 %-BW_METHOD_END HardFault
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\ExceptionsHandlerInit.inc
-void %'ModuleName'%.%Init() {
-%CODE_BEGIN
-	%'ModuleName'%.GlobalEx = HandledException;
-	%'ModuleName'%.ExcepResult = HandledException;
-%CODE_END
-}
-%endif %-Init
-%-BW_METHOD_END Init
 
 %-************************************************************************************************************
 %-BW_IMPLEMENT_END
@@ -504,9 +793,8 @@ void %'ModuleName'%.%Init() {
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
+%-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  %'ModuleName'%.Init();
 %CODE_END
 %-
 %ENABLE
