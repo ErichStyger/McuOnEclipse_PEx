@@ -111,7 +111,7 @@ typedef enum {
 } Exception;		%>40/*Exception enum type*/
 #endif
 
-Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
+extern Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
