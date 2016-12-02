@@ -504,6 +504,7 @@ static void RADIO_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"radio", (unsigned char*)"Group of radio commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows radio help or status\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  channel <number>", (unsigned char*)"Switches to the given channel (0..127)\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  datarate <rate>", (unsigned char*)"Changes the datareate (250, 1000, 2000)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  power <number>", (unsigned char*)"Changes output power (0, -10, -12, -18)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sniff on|off", (unsigned char*)"Turns sniffing on or off\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  writereg 0xReg 0xVal", (unsigned char*)"Write a transceiver register\r\n", io->stdOut);
@@ -701,6 +702,15 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
     }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio printreg")==0) {
     RadioPrintRegisters(io);
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 250")==0) {
+    %@nRF24L01p@'ModuleName'%.SetDataRate(250);
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 1000")==0) {
+    %@nRF24L01p@'ModuleName'%.SetDataRate(1000);
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 2000")==0) {
+    %@nRF24L01p@'ModuleName'%.SetDataRate(2000);
     *handled = TRUE;
   }
   return res;
