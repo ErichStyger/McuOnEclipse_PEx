@@ -2,3 +2,10 @@
 %set @InterruptVector@Vector ReadOnly yes
 %set @InterruptVector@Handle Value HardFault
 %set @InterruptVector@Handle ReadOnly yes
+
+%if %frtos = 'yes'
+	%set pointers Value %get(@FreeRTOS@NumThreadLocalStoragePointers, Value)
+	%if %get(@FreeRTOS@NumThreadLocalStoragePointers, Value) < "4"
+		%error "On %@FreeRTOS@ModuleName: 'Thread Local Storage Pointers' must be greater or equal to 4."
+	%endif
+%endif

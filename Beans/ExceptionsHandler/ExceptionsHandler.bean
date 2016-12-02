@@ -5,7 +5,7 @@
     <UUID>d1f3b52d-c709-42dd-8799-bc3d63f8217e</UUID>
     <Description>To handle exception on runtime.</Description>
     <Author>Omar Isai Pinales Ayala</Author>
-    <Version>01.001</Version>
+    <Version>02.000</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -24,7 +24,7 @@ mail: info@&lt;company&gt;.com</Copyright>
     <OneBeanInstance>!yes</OneBeanInstance>
     <NoModulePrefix>yes</NoModulePrefix>
     <BW_HelpType>Default</BW_HelpType>
-    <BW_HelpFiles>Events,Methods,Properties,"Types and constants"</BW_HelpFiles>
+    <BW_HelpFiles>Events,"Types and constants",Methods,Properties</BW_HelpFiles>
   </Options>
   <PropertyList>
     <Property>
@@ -45,7 +45,7 @@ mail: info@&lt;company&gt;.com</Copyright>
         <Name>InterruptVector</Name>
         <Symbol>InterruptVector</Symbol>
         <TypeSpec>ExceptionsHandler\InterruptVector</TypeSpec>
-        <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+        <Hint>InterruptVector component to Handle HardFault Interrupt.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
@@ -62,45 +62,77 @@ mail: info@&lt;company&gt;.com</Copyright>
         <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
       </TInhrItem>
     </Property>
-  </PropertyList>
-  <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint />
+    <Property>
+      <TBoolGrupItem>
+        <Name>Support for FreeRTOS</Name>
+        <Symbol>frtos</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If 'no' is selected the component only works in BareMetal mode. For get support on FreeRTOS select 'yes'.</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
         <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
-        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint />
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#()</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
+        <UI_GroupStyle>GROUP</UI_GroupStyle>
+        <UI_Layout>DEFAULT</UI_Layout>
+        <UI_NumColumnsInWrappedLayout>4</UI_NumColumnsInWrappedLayout>
+        <UI_ValueSelectionStyle>CHECKBOX</UI_ValueSelectionStyle>
+        <Description>no</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>FreeRTOS</Name>
+              <Symbol>FreeRTOS</Symbol>
+              <TypeSpec>ExceptionsHandler\FreeRTOS</TypeSpec>
+              <Hint>FreeRTOS component.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_EnumStyle>COMBO</UI_EnumStyle>
+              <DefaultValue />
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle />
+              <DefaultComponentSubFolder>Referenced_Components</DefaultComponentSubFolder>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Thread Local Storage Pointers</Name>
+              <Symbol>pointers</Symbol>
+              <Hint>Number of Thread Local Storage Pointers on FreeRTOS component, please left the first 4 for this component.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>true</EditLine>
+              <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+              <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+              <UI_IntegerStyle>EDITBOX</UI_IntegerStyle>
+              <DefaultValue>0</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+  </PropertyList>
+  <MethodList>
     <Method>
       <TMthdItem>
         <Name>try</Name>
         <Symbol>try</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint />
+        <Hint>Starts a try {} catch {} block.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
@@ -131,7 +163,7 @@ mail: info@&lt;company&gt;.com</Copyright>
         <Name>catch</Name>
         <Symbol>catch</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint />
+        <Hint>Starts a catch {} block.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
@@ -162,7 +194,7 @@ mail: info@&lt;company&gt;.com</Copyright>
         <Name>throw</Name>
         <Symbol>throw</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint />
+        <Hint>Throws an custom exception. Otherwise use an integer.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
@@ -199,7 +231,7 @@ mail: info@&lt;company&gt;.com</Copyright>
         <Name>GetException</Name>
         <Symbol>GetException</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint />
+        <Hint>Returns the catched exception.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
@@ -222,6 +254,37 @@ mail: info@&lt;company&gt;.com</Copyright>
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>Exception #M#_#C#()</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ClearException</Name>
+        <Symbol>ClearException</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Clears the exception from the system.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint />
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#()</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -260,6 +323,99 @@ mail: info@&lt;company&gt;.com</Copyright>
       <TMthdItem>
         <Name>MissingCatchInstruction</Name>
         <Symbol>MissingCatchInstruction</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint />
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint />
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#()</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GlobalExCheck</Name>
+        <Symbol>GlobalExCheck</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint />
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void*</ReturnType>
+        <RetHint />
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void* #M#_#C#()</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ExceptResultCheck</Name>
+        <Symbol>ExceptResultCheck</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint />
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void*</ReturnType>
+        <RetHint />
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void* #M#_#C#()</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DoClearException</Name>
+        <Symbol>DoClearException</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint />
         <ItemLevel>BASIC</ItemLevel>
@@ -388,8 +544,39 @@ mail: info@&lt;company&gt;.com</Copyright>
     </Method>
     <Method>
       <TMthdItem>
-        <Name>CatchException</Name>
-        <Symbol>CatchException</Symbol>
+        <Name>CatchExceptionMSP</Name>
+        <Symbol>CatchExceptionMSP</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint />
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <UI_DisplayIn>TABLE_AND_GRAPHICAL_VIEW</UI_DisplayIn>
+        <UI_DisplayExtraText>DISPLAY_AUTO_POSITION</UI_DisplayExtraText>
+        <UI_BoolStyle>DROPDOWN</UI_BoolStyle>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint />
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#()</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>CatchExceptionPSP</Name>
+        <Symbol>CatchExceptionPSP</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint />
         <ItemLevel>BASIC</ItemLevel>
@@ -471,10 +658,10 @@ mail: info@&lt;company&gt;.com</Copyright>
     <EmptySection_DummyValue />
   </Links>
   <Revisions>
-    <RevisionVersion>2</RevisionVersion>
+    <RevisionVersion>20</RevisionVersion>
     <Revision>
       <Date>27-nov-2016</Date>
-      <Version>01.001</Version>
+      <Version>02.000</Version>
       <Level>0</Level>
       <Author>Auto Generated field</Author>
       <Verified />
@@ -482,4 +669,3 @@ mail: info@&lt;company&gt;.com</Copyright>
     </Revision>
   </Revisions>
 </Bean>
-

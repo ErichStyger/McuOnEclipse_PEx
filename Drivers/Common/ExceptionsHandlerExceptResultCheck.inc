@@ -3,12 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%;**     Method      :  catch (component ExceptionsHandler)
+%include Common\GeneralMethod.inc (ExceptResultCheck)
 %;**     @brief
-%;**         Starts a catch {} block.
 %include Common\GeneralParameters.inc(27)
 %;**         @return
-%;**         void %>27 - 
+%;**         void* %>27 - 
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
