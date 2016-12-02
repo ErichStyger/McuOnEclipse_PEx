@@ -1506,7 +1506,7 @@ portLONG uxGetTickCounterValue(void) {
 /*-----------------------------------------------------------*/
 %endif
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 void SysTick_Handler(void) {
 #else
 void vPortTickHandler(void) {
@@ -1546,13 +1546,13 @@ void vPortTickHandler(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='yes'
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 void SysTick_Handler(void) {
 #else
 void vPortTickHandler(void) {
 #endif
 %else
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
   __attribute__ ((naked)) void SysTick_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortTickHandler(void) {
@@ -1819,7 +1819,7 @@ void vPortStartFirstTask(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
@@ -1848,7 +1848,7 @@ __asm void vPortSVCHandler(void) {
 }
 /*-----------------------------------------------------------*/
 #elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ and Keil */
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
@@ -1860,7 +1860,7 @@ __asm void vPortSVCHandler(void) {
 #endif
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void SVC_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortSVCHandler(void) {
@@ -1897,7 +1897,7 @@ __asm volatile (
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4 or M7 */
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
 __asm void vPortPendSVHandler(void) {
@@ -1941,7 +1941,7 @@ __asm void vPortPendSVHandler(void) {
   nop
 }
 #elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Keil: Cortex M0+ */
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
 __asm void vPortPendSVHandler(void) {
@@ -1992,7 +1992,7 @@ __asm void vPortPendSVHandler(void) {
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 #if configGDB_HELPER
 __attribute__ ((naked)) void vPortPendSVHandler_native(void) {
-#elif configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#elif %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {
@@ -2119,7 +2119,7 @@ void __attribute__ ((naked)) PendSV_Handler_jumper(void) {
   __asm volatile("b vPortPendSVHandler_native \n");
 }
 
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {

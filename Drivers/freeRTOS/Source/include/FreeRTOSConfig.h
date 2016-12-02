@@ -184,7 +184,6 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
-#define configPEX_KINETIS_SDK                                    %>50 (%@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 %if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
 #define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 1 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
 %else

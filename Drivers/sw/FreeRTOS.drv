@@ -4641,7 +4641,14 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 #ifndef __%'ModuleName'CONFIG_H
 #define __%'ModuleName'CONFIG_H
 
-/* no configuration supported yet */
+#include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
+
+#ifndef %'ModuleName'%.CONFIG_NXP_SDK_USED
+  #define %'ModuleName'%.CONFIG_NXP_SDK_USED                     %>50    ((%@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_KINETIS_1_3) \
+                                                                 %>50 || (%@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_KINETIS_2_0) \
+                                                                 %>50 || (%@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0))
+  /* 1: project is a NXP/Kinetis SDK project; 0: Normal Processor Expert project or generic project */
+#endif
 
 #endif /* __%'ModuleName'CONFIG_H */
 %-----------------------------------------------------------------------------------------

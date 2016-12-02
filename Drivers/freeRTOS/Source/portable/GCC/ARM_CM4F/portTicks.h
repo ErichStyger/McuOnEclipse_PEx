@@ -132,7 +132,7 @@ portLONG uxGetTickCounterValue(void);
 #include "FreeRTOSConfig.h"
 #include "portmacro.h"
 
-#if configPEX_KINETIS_SDK
+#if %'ModuleName'%.CONFIG_NXP_SDK_USED
 extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
 #endif
 
