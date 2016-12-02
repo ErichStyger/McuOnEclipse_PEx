@@ -3,8 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (throw)
+%;**     Method      :  throw (component ExceptionsHandler)
 %;**     @brief
+%;**         Throws an custom exception. Otherwise use an integer.
 %include Common\GeneralParameters.inc(27)
 %;**         @param
 %;**         @return

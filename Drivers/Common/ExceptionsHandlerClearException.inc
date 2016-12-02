@@ -3,9 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%;**     Method      :  catch (component ExceptionsHandler)
+%;**     Method      :  ClearException (component ExceptionsHandler)
 %;**     @brief
-%;**         Starts a catch {} block.
+%;**         Clears the exception from the system.
 %include Common\GeneralParameters.inc(27)
 %;**         @return
 %;**         void %>27 - 

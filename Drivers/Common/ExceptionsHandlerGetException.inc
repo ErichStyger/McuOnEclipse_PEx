@@ -3,8 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetException)
+%;**     Method      :  GetException (component ExceptionsHandler)
 %;**     @brief
+%;**         Returns the catched exception.
 %include Common\GeneralParameters.inc(27)
 %;**         @return
 %;**         Exception %>27 - 

@@ -3,8 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (try)
+%;**     Method      :  try (component ExceptionsHandler)
 %;**     @brief
+%;**         Starts a try {} catch {} block.
 %include Common\GeneralParameters.inc(27)
 %;**         @return
 %;**         void %>27 - 

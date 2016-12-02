@@ -3,7 +3,7 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (Init)
+%include Common\GeneralMethod.inc (CatchExceptionMSP)
 %;**     @brief
 %include Common\GeneralParameters.inc(27)
 %;**         @return
