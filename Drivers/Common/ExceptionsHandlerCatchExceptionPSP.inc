@@ -3,9 +3,8 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%;**     Method      :  catch (component ExceptionsHandler)
+%include Common\GeneralMethod.inc (CatchExceptionPSP)
 %;**     @brief
-%;**         Starts a catch {} block.
 %include Common\GeneralParameters.inc(27)
 %;**         @return
 %;**         void %>27 - 
