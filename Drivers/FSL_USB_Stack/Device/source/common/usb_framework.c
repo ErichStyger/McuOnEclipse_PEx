@@ -70,6 +70,26 @@ static USB_DEV_EVENT_STRUCT g_f_event;
 static boolean g_control_pending=FALSE;
 #endif
 
+/* << EST:
+ * Setter and Getter for callback function pointers, so the application can overwrite them
+ * See https://mcuoneclipse.com/requests/comment-page-5/#comment-86524
+ */
+USB_CLASS_CALLBACK USB_Get_Framework_Callback(void) {
+  return g_framework_callback;
+}
+
+void USB_Set_Framework_Callback(USB_CLASS_CALLBACK callback) {
+  g_framework_callback = callback;
+}
+
+USB_REQ_FUNC USB_Get_OtherRequest_Callback(void) {
+  return g_other_req_callback;
+}
+
+void USB_Set_OtherRequest_Callback(USB_REQ_FUNC callback) {
+  g_other_req_callback = callback;
+}
+/* << EST end */
 
 boolean const g_validate_request[MAX_STRD_REQ][3] =
 {

@@ -131,6 +131,19 @@ typedef struct _app_data_struct
     USB_PACKET_SIZE data_size;      /* buffer size of endpoint */
 }APP_DATA_STRUCT;
 
+/* << EST:
+ * Setter and Getter for callback function pointers, so the application can overwrite them
+ */
+USB_CLASS_CALLBACK USB_Get_Framework_Callback(void);
+
+void USB_Set_Framework_Callback(USB_CLASS_CALLBACK callback);
+
+USB_REQ_FUNC USB_Get_OtherRequest_Callback(void);
+
+void USB_Set_OtherRequest_Callback(USB_REQ_FUNC callback);
+/* << EST end */
+
+
 extern uint_8 USB_Framework_Init (
     uint_8              controller_ID,
     USB_CLASS_CALLBACK  callback,
