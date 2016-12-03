@@ -56,8 +56,8 @@
   %-
 %-
 %INTERFACE
-%define! Settings Common\ExceptionsHandlerSettings.inc
-%define! Abstract Common\ExceptionsHandlerAbstract.inc
+%define! Settings Common\ExceptionsHandler\Settings.inc
+%define! Abstract Common\ExceptionsHandler\Abstract.inc
 %include Common\Header.h
 
 #ifndef __%'ModuleName'_H
@@ -111,7 +111,7 @@ typedef enum {
 } Exception;		%>40/*Exception enum type*/
 #endif
 
-Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
+extern Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -127,7 +127,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN try
 %ifdef try
-%include Common\ExceptionsHandlertry.inc
+%include Common\ExceptionsHandler\try.inc
 %if %frtos = 'yes'
 #define try %'ModuleName'%.StackPush(); if(!%'ModuleName'%.GlobalExCheck())
 %else %-frtos
@@ -139,7 +139,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN catch
 %ifdef catch
-%include Common\ExceptionsHandlercatch.inc
+%include Common\ExceptionsHandler\catch.inc
 %if %frtos = 'yes'
 #define catch %'ModuleName'%.StackPop(); if(%'ModuleName'%.ExceptResultCheck())
 %else %-frtos
@@ -151,7 +151,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN throw
 %ifdef throw
-%include Common\ExceptionsHandlerthrow.inc
+%include Common\ExceptionsHandler\throw.inc
 // void throw(Exception ex);
 #define throw(ex) %'ModuleName'%.ThrowException(ex)
 %define! Parex
@@ -161,7 +161,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetException
 %ifdef GetException
-%include Common\ExceptionsHandlerthrow.inc
+%include Common\ExceptionsHandler\throw.inc
 // Exception GetException();
 %if %frtos = 'yes'
 #define GetException() ((int) %'ModuleName'%.ExceptResultCheck())
@@ -174,7 +174,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ClearException
 %ifdef ClearException
-%include Common\ExceptionsHandlerClearException.inc
+%include Common\ExceptionsHandler\ClearException.inc
 //void ClearException();
 %if %frtos = 'yes'
 #define ClearException() %'ModuleName'%.DoClearException()
@@ -187,7 +187,7 @@ Exception %'ModuleName'%.GlobalEx, %'ModuleName'%.ExceptResult;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GlobalExCheck
 %if %frtos = 'yes'
-%include Common\ExceptionsHandlerGlobalExCheck.inc
+%include Common\ExceptionsHandler\GlobalExCheck.inc
 int * %'ModuleName'%.GlobalExCheck();
 %endif  %-frtos
 %-BW_METHOD_END GlobalExCheck
@@ -195,7 +195,7 @@ int * %'ModuleName'%.GlobalExCheck();
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ExceptResultCheck
 %if %frtos = 'yes'
-%include Common\ExceptionsHandlerExceptResultCheck.inc
+%include Common\ExceptionsHandler\ExceptResultCheck.inc
 int * %'ModuleName'%.ExceptResultCheck();
 %endif  %-frtos
 %-BW_METHOD_END ExceptResultCheck
@@ -203,26 +203,26 @@ int * %'ModuleName'%.ExceptResultCheck();
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN DoClearException
 %if %frtos = 'yes'
-%include Common\ExceptionsHandlerDoClearException.inc
+%include Common\ExceptionsHandler\DoClearException.inc
 void %'ModuleName'%.DoClearException();
 %endif  %-frtos
 %-BW_METHOD_END DoClearException
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPush
-%include Common\ExceptionsHandlerStackPush.inc
+%include Common\ExceptionsHandler\StackPush.inc
 void %'ModuleName'%.StackPush();
 %-BW_METHOD_END StackPush
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPop
-%include Common\ExceptionsHandlerStackPop.inc
+%include Common\ExceptionsHandler\StackPop.inc
 void %'ModuleName'%.StackPop();
 %-BW_METHOD_END StackPop
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ThrowException
-%include Common\ExceptionsHandlerThrowException.inc
+%include Common\ExceptionsHandler\ThrowException.inc
 void %'ModuleName'%.ThrowException(Exception ex);
 %define! Parex
 %-BW_METHOD_END ThrowException
@@ -242,8 +242,8 @@ void %'ModuleName'%.ThrowException(Exception ex);
 %-BW_EVENT_DEFINITION_START
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
-%define! Settings Common\ExceptionsHandlerSettings.inc
-%define! Abstract Common\ExceptionsHandlerAbstract.inc
+%define! Settings Common\ExceptionsHandler\Settings.inc
+%define! Abstract Common\ExceptionsHandler\Abstract.inc
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
@@ -278,9 +278,9 @@ Exception %'ModuleName'%.GlobalEx = HandledException;
 Exception %'ModuleName'%.ExceptResult = HandledException;
 
 %if %frtos = 'yes'
-#define	Exlevel		0
-#define	tryStack	1
-#define	GlobalEx	2
+#define	Exlevel			0
+#define	tryStack		1
+#define	GlobalEx		2
 #define	ExceptResult	3
 %endif %-frtos
 
@@ -292,7 +292,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN try
 %ifdef try
-%include Common\ExceptionsHandlertry.inc
+%include Common\ExceptionsHandler\try.inc
 // try { ... }
 	/******Instruction implemented in the definition module as a macro *******/
 %CODE_BEGIN
@@ -303,7 +303,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN catch
 %ifdef catch
-%include Common\ExceptionsHandlercatch.inc
+%include Common\ExceptionsHandler\catch.inc
 // catch { ... }
 	/******Instruction implemented in the definition module as a macro *******/
 %CODE_BEGIN
@@ -315,7 +315,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 %-BW_METHOD_BEGIN throw
 %ifdef throw
 %define! Parex
-%include Common\ExceptionsHandlerthrow.inc
+%include Common\ExceptionsHandler\throw.inc
 // void throw(Exception ex) {
 	/******Method implemented in the definition module as a macro *******/
 %CODE_BEGIN
@@ -327,7 +327,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetException
 %ifdef GetException
-%include Common\ExceptionsHandlerGetException.inc
+%include Common\ExceptionsHandler\GetException.inc
 // Exception GetException() { }
 	/******Method implemented in the definition module as a macro *******/
 %CODE_BEGIN
@@ -338,7 +338,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ClearException
 %ifdef ClearException
-%include Common\ExceptionsHandlerClearException.inc
+%include Common\ExceptionsHandler\ClearException.inc
 // void ClearException() { }
 	/******Method implemented in the definition module as a macro *******/
 %CODE_BEGIN
@@ -348,7 +348,7 @@ Exception %'ModuleName'%.ExceptResult = HandledException;
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN MissingCatchInstruction
-%- include Common\ExceptionsHandlerMissingCatchInstruction.inc
+%- include Common\ExceptionsHandler\MissingCatchInstruction.inc
 __attribute__((naked))
 void MissingCatchInstruction() {
 %CODE_BEGIN
@@ -374,7 +374,7 @@ void MissingCatchInstruction() {
 %-BW_METHOD_BEGIN GlobalExCheck
 %if %frtos = 'yes'
 %define! RetVal
-%include Common\ExceptionsHandlerGlobalExCheck.inc
+%include Common\ExceptionsHandler\GlobalExCheck.inc
 int * %'ModuleName'%.GlobalExCheck() {
 %CODE_BEGIN
 	xTaskHandle tsk;
@@ -395,7 +395,7 @@ int * %'ModuleName'%.GlobalExCheck() {
 %-BW_METHOD_BEGIN ExceptResultCheck
 %if %frtos = 'yes'
 %define! RetVal
-%include Common\ExceptionsHandlerExceptResultCheck.inc
+%include Common\ExceptionsHandler\ExceptResultCheck.inc
 int * %'ModuleName'%.ExceptResultCheck() {
 %CODE_BEGIN
 	xTaskHandle tsk;
@@ -416,7 +416,7 @@ int * %'ModuleName'%.ExceptResultCheck() {
 %-BW_METHOD_BEGIN DoClearException
 %if %frtos = 'yes'
 %define! RetVal
-%include Common\ExceptionsHandlerDoClearException.inc
+%include Common\ExceptionsHandler\DoClearException.inc
 void %'ModuleName'%.DoClearException() {
 %CODE_BEGIN
 	xTaskHandle tsk;
@@ -433,7 +433,7 @@ void %'ModuleName'%.DoClearException() {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPush
-%- include Common\ExceptionsHandlerStackPush.inc
+%- include Common\ExceptionsHandler\StackPush.inc
 __attribute__((naked))
 void %'ModuleName'%.StackPush() {
 %CODE_BEGIN
@@ -501,7 +501,7 @@ void %'ModuleName'%.StackPush() {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN StackPop
-%- include Common\ExceptionsHandlerStackPop.inc
+%- include Common\ExceptionsHandler\StackPop.inc
 __attribute__((naked))
 void %'ModuleName'%.StackPop() {
 %CODE_BEGIN
@@ -578,7 +578,7 @@ void %'ModuleName'%.StackPop() {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN NonCatchedException
-%- include Common\ExceptionsHandlerNonCatchedException.inc
+%- include Common\ExceptionsHandler\NonCatchedException.inc
 __attribute__((naked))
 void NonCatchedException() {
 %CODE_BEGIN
@@ -594,7 +594,7 @@ void NonCatchedException() {
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ThrowException
 %define! Parex
-%include Common\ExceptionsHandlerThrowException.inc
+%include Common\ExceptionsHandler\ThrowException.inc
 __attribute__((naked))
 void %'ModuleName'%.ThrowException(Exception ex) {
 %CODE_BEGIN
@@ -659,7 +659,7 @@ void %'ModuleName'%.ThrowException(Exception ex) {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN CatchExceptionMSP
-%- include Common\ExceptionsHandlerCatchExceptionMSP.inc
+%- include Common\ExceptionsHandler\CatchExceptionMSP.inc
 __attribute__((naked))
 void %'ModuleName'%.CatchExceptionMSP() {
 %CODE_BEGIN
@@ -710,7 +710,7 @@ void %'ModuleName'%.CatchExceptionMSP() {
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN CatchExceptionPSP
 %if %frtos = 'yes'
-%include Common\ExceptionsHandlerCatchExceptionPSP.inc
+%include Common\ExceptionsHandler\CatchExceptionPSP.inc
 __attribute__((naked))
 void %'ModuleName'%.CatchExceptionPSP() {
 %CODE_BEGIN
@@ -736,7 +736,7 @@ void %'ModuleName'%.CatchExceptionPSP() {
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN HardFault
-%- include Common\ExceptionsHandlerHardFault.inc
+%- include Common\ExceptionsHandler\HardFault.inc
 __attribute__((naked))
 void HardFault() {
 %CODE_BEGIN
