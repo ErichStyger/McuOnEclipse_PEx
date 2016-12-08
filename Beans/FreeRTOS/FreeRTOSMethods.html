@@ -754,6 +754,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xTaskGetHandle">
+<b>xTaskGetHandle</b></a>
+ - Looks up the handle of a task from the task's name. 
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> TaskHandle_t xTaskGetHandle(const char *pcNameToQuery )<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pcNameToQuery: Pointer to byte</i> - The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</li>
+<li><i>Return value:TaskHandle_t</i> - If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. 
+</li>
+</ul><br />
+</li>
 <li><a name="pcTaskGetTaskName">
 <b>pcTaskGetTaskName</b></a>
  - Returns the name of the task.
@@ -1660,18 +1672,6 @@ LI.EXP {
 <li><i>xTaskToQuery:TaskHandle_t</i> - Task handle from which to get the local thread storage.</li>
 <li><i>xIndex:BaseType_t</i> - Index of thread storage</li>
 <li><i>Return value:void*</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="xTaskGetHandle">
-<b>xTaskGetHandle</b></a>
- - Looks up the handle of a task from the task's name. 
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> TaskHandle_t xTaskGetHandle(const char *pcNameToQuery )<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>pcNameToQuery: Pointer to byte</i> - The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</li>
-<li><i>Return value:TaskHandle_t</i> - If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. 
 </li>
 </ul><br />
 </li>

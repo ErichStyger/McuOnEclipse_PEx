@@ -2453,12 +2453,12 @@ If a FreeRTOS port includes a default portSUPPRESS_TICKS_AND_SLEEP() implementat
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -3843,6 +3843,41 @@ Task hook functions must have type pdTASK_HOOK_CODE, that is take a void * param
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>xTaskHandle #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>xTaskGetHandle</Name>
+        <Symbol>xTaskGetHandle</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Looks up the handle of a task from the task's name. </Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>TaskHandle_t</ReturnType>
+        <RetHint>If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. </RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>pcNameToQuery</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</ParHint>
+          <ParUserDeclaration>const char *pcNameToQuery </ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>TaskHandle_t #M#_#C#(const char *pcNameToQuery )</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -6914,41 +6949,6 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void* #M#_#C#(TaskHandle_t xTaskToQuery, BaseType_t xIndex)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>xTaskGetHandle</Name>
-        <Symbol>xTaskGetHandle</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Looks up the handle of a task from the task's name. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>TaskHandle_t</ReturnType>
-        <RetHint>If a task that has the name passed in pcNameToQuery can be located then the handle of the task is returned, otherwise NULL is returned. </RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>pcNameToQuery</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>The text name (as a standard C NULL terminated string) of the task for which the handle will be returned.</ParHint>
-          <ParUserDeclaration>const char *pcNameToQuery </ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>TaskHandle_t #M#_#C#(const char *pcNameToQuery )</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

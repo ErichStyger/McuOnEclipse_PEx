@@ -547,6 +547,18 @@ point support. */
 #define INCLUDE_xQueueGetMutexHolder                             %>50 0
 %endif
 %- --------------------------------------------------------------------
+%if defined(xTaskGetHandle)
+#define INCLUDE_xTaskGetHandle                                   %>50 1
+%else
+#define INCLUDE_xTaskGetHandle                                   %>50 0
+%endif
+%- --------------------------------------------------------------------
+%if defined(xTaskAbortDelay)
+#define INCLUDE_xTaskAbortDelay                                  %>50 1
+%else
+#define INCLUDE_xTaskAbortDelay                                  %>50 0
+%endif
+%- --------------------------------------------------------------------
 %if defined(xTaskGetCurrentTaskHandle)
 #define INCLUDE_xTaskGetCurrentTaskHandle                        %>50 1
 %else
