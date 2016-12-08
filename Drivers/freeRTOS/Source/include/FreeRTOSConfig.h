@@ -571,6 +571,12 @@ point support. */
 #define INCLUDE_xTaskGetIdleTaskHandle                           %>50 0
 %endif
 %- --------------------------------------------------------------------
+%if defined(xTaskResumeFromISR)
+#define INCLUDE_xTaskResumeFromISR                           %>50 1
+%else
+#define INCLUDE_xTaskResumeFromISR                           %>50 0
+%endif
+%- --------------------------------------------------------------------
 %if defined(eTaskGetState)
 #define INCLUDE_eTaskGetState                                    %>50 1
 %else
