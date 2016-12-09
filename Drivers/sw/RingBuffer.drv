@@ -64,20 +64,16 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,8 +83,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-  #include "%ProcessorModule.h"
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -99,23 +93,16 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-#define %'ModuleName'%.BUF_SIZE    %BufferSize   /* number of elements in the buffer */
-#define %'ModuleName'%.ELEM_SIZE   %ElementSize  /* size of a single element in bytes */
-%if %isReentrant='yes'
-#define %'ModuleName'%.IS_REENTRANT   1  /* 1: Critical section used for accessing shared data, 0 otherwise */
-%else
-#define %'ModuleName'%.IS_REENTRANT   0  /* 0: Critical section NOT used for accessing shared data, 1 otherwise  */
-%endif
-#if %'ModuleName'%.ELEM_SIZE==1
+#if %'ModuleName'%.CONFIG_ELEM_SIZE==1
   typedef uint8_t %'ModuleName'_ElementType; /* type of single element */
-#elif %'ModuleName'%.ELEM_SIZE==2
+#elif %'ModuleName'%.CONFIG_ELEM_SIZE==2
   typedef uint16_t %'ModuleName'_ElementType; /* type of single element */
-#elif %'ModuleName'%.ELEM_SIZE==4
+#elif %'ModuleName'%.CONFIG_ELEM_SIZE==4
   typedef uint32_t %'ModuleName'_ElementType; /* type of single element */
 #else
   #error "illegal element type size in properties"
 #endif
-#if %'ModuleName'%.BUF_SIZE<256
+#if %'ModuleName'%.CONFIG_BUF_SIZE<256
   typedef uint8_t %'ModuleName'_BufSizeType; /* up to 255 elements (index 0x00..0xff) */
 #else
   typedef uint16_t %'ModuleName'_BufSizeType; /* more than 255 elements, up to 2^16 */
@@ -304,7 +291,7 @@ void %OnClear(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#if %'ModuleName'%.IS_REENTRANT
+#if %'ModuleName'%.CONFIG_REENTRANT
   #define %'ModuleName'%.DEFINE_CRITICAL() %@CriticalSection@'ModuleName'%.CriticalVariable()
   #define %'ModuleName'%.ENTER_CRITICAL()  %@CriticalSection@'ModuleName'%.EnterCritical()
   #define %'ModuleName'%.EXIT_CRITICAL()   %@CriticalSection@'ModuleName'%.ExitCritical()
@@ -313,7 +300,7 @@ void %OnClear(void);
   #define %'ModuleName'%.ENTER_CRITICAL()  /* nothing */
   #define %'ModuleName'%.EXIT_CRITICAL()   /* nothing */
 #endif
-static %'ModuleName'_ElementType %'ModuleName'%.buffer[%'ModuleName'%.BUF_SIZE]; /* ring buffer */
+static %'ModuleName'_ElementType %'ModuleName'%.buffer[%'ModuleName'%.CONFIG_BUF_SIZE]; /* ring buffer */
 static %'ModuleName'_BufSizeType %'ModuleName'%.inIdx;  /* input index */
 static %'ModuleName'_BufSizeType %'ModuleName'%.outIdx; /* output index */
 static %'ModuleName'_BufSizeType %'ModuleName'%.inSize; /* size data in buffer */
@@ -335,12 +322,12 @@ uint8_t %'ModuleName'%.%Put(%'ModuleName'_ElementType elem)
   %'ModuleName'%.DEFINE_CRITICAL();
 
   %'ModuleName'%.ENTER_CRITICAL();
-  if (%'ModuleName'%.inSize==%'ModuleName'%.BUF_SIZE) {
+  if (%'ModuleName'%.inSize==%'ModuleName'%.CONFIG_BUF_SIZE) {
     res = ERR_TXFULL;
   } else {
     %'ModuleName'%.buffer[%'ModuleName'%.inIdx] = elem;
     %'ModuleName'%.inIdx++;
-    if (%'ModuleName'%.inIdx==%'ModuleName'%.BUF_SIZE) {
+    if (%'ModuleName'%.inIdx==%'ModuleName'%.CONFIG_BUF_SIZE) {
       %'ModuleName'%.inIdx = 0;
     }
     %'ModuleName'%.inSize++;
@@ -400,7 +387,7 @@ uint8_t %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP)
     *elemP = %'ModuleName'%.buffer[%'ModuleName'%.outIdx];
     %'ModuleName'%.inSize--;
     %'ModuleName'%.outIdx++;
-    if (%'ModuleName'%.outIdx==%'ModuleName'%.BUF_SIZE) {
+    if (%'ModuleName'%.outIdx==%'ModuleName'%.CONFIG_BUF_SIZE) {
       %'ModuleName'%.outIdx = 0;
     }
   }
@@ -437,7 +424,7 @@ uint8_t %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP)
 %include Common\RingBufferNofFreeElements.Inc
 %'ModuleName'_BufSizeType %'ModuleName'%.%NofFreeElements(void)
 {
-  return (%'ModuleName'_BufSizeType)(%'ModuleName'%.BUF_SIZE-%'ModuleName'%.inSize);
+  return (%'ModuleName'_BufSizeType)(%'ModuleName'%.CONFIG_BUF_SIZE-%'ModuleName'%.inSize);
 }
 
 %endif %- NofFreeElements
@@ -487,10 +474,10 @@ uint8_t %'ModuleName'%.%Peek(%'ModuleName'_BufSizeType index, %'ModuleName'_Elem
   %'ModuleName'%.DEFINE_CRITICAL();
 
   %'ModuleName'%.ENTER_CRITICAL();
-  if (index>=%'ModuleName'%.BUF_SIZE) {
+  if (index>=%'ModuleName'%.CONFIG_BUF_SIZE) {
     res = ERR_OVERFLOW; /* asking for an element outside of ring buffer size */
   } else if (index<%'ModuleName'%.inSize) {
-    idx = (%'ModuleName'%.outIdx+index)%%%'ModuleName'%.BUF_SIZE;
+    idx = (%'ModuleName'%.outIdx+index)%%%'ModuleName'%.CONFIG_BUF_SIZE;
     *elemP = %'ModuleName'%.buffer[idx];
   } else { /* asking for an element which does not exist */
     res = ERR_RXEMPTY;
@@ -561,7 +548,7 @@ uint8_t %'ModuleName'%.%Delete(void)
   } else {
     %'ModuleName'%.inSize--;
     %'ModuleName'%.outIdx++;
-    if (%'ModuleName'%.outIdx==%'ModuleName'%.BUF_SIZE) {
+    if (%'ModuleName'%.outIdx==%'ModuleName'%.CONFIG_BUF_SIZE) {
       %'ModuleName'%.outIdx = 0;
     }
   }
@@ -651,6 +638,43 @@ void %OnClear(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_REENTRANT
+%if defined(isReentrant) & %isReentrant='yes'
+  #define %'ModuleName'%.CONFIG_REENTRANT                        %>40 1 /* 1: reentrant implementation; 0: non-reentrant implementation */
+%else
+  #define %'ModuleName'%.CONFIG_REENTRANT                        %>40 0 /* 1: reentrant implementation; 0: non-reentrant implementation */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_BUF_SIZE
+%if defined(BufferSize)
+  #define %'ModuleName'%.CONFIG_BUF_SIZE                         %>40 %BufferSize   /* number of elements in the buffer */
+%else
+  #define %'ModuleName'%.CONFIG_BUF_SIZE                         %>40 64   /* number of elements in the buffer */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_ELEM_SIZE
+%if defined(ElementSize)
+  #define %'ModuleName'%.CONFIG_ELEM_SIZE                        %>40 %ElementSize   /* size of a single element in bytes */
+%else
+  #define %'ModuleName'%.CONFIG_ELEM_SIZE                        %>40 64   /* size of a single element in bytes */
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
