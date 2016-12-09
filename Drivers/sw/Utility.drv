@@ -2934,9 +2934,6 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -2962,12 +2959,13 @@ void %'ModuleName'%.%Init(void)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
-#ifndef __%'ModuleName'CONFIG_H
-#define __%'ModuleName'CONFIG_H
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
 
 /* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
 
-#endif /* __%'ModuleName'CONFIG_H */
+#endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !

@@ -1010,18 +1010,18 @@ int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
-#ifndef __%'ModuleName'CONFIG_H
-#define __%'ModuleName'CONFIG_H
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
 
 #ifndef %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT
 %if defined(FloatingPointEnabled) & %FloatingPointEnabled='yes'
-  #define %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT    1 /* 1: enable, 0: disable floating format (component property) */
+  #define %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT                %>40 1 /* 1: enable, 0: disable floating format (component property) */
 %else
-  #define %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT    0 /* 1: enable, 0: disable floating format (component property) */
+  #define %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT                %>40 0 /* 1: enable, 0: disable floating format (component property) */
 %endif
 #endif
 
-#endif /* __%'ModuleName'CONFIG_H */
+#endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !

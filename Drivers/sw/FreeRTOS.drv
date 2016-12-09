@@ -4638,8 +4638,8 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
-#ifndef __%'ModuleName'CONFIG_H
-#define __%'ModuleName'CONFIG_H
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
 
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
 
@@ -4650,7 +4650,7 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
   /* 1: project is a NXP/Kinetis SDK project; 0: Normal Processor Expert project or generic project */
 #endif
 
-#endif /* __%'ModuleName'CONFIG_H */
+#endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
