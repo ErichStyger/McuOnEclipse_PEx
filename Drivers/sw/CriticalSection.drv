@@ -64,36 +64,19 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
-
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
 
 /* other includes needed */
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-  #include "%ProcessorModule.h" /* needed derivative header */
+#if %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
+  #include "FreeRTOS.h"
+  #include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
 #endif
-%if (%useRTOScritical='yes')
-#include "FreeRTOS.h"
-#include "task.h"  /* FreeRTOS header file for taskENTER_CRITICAL() and taskEXIT_CRITICAL() macros */
-%endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -119,15 +102,13 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN CriticalVariable
 %ifdef CriticalVariable
-#define %'ModuleName'%.%CriticalVariable() \
-%if (%useRTOScritical='yes')
-  /* nothing needed */
-%elif (%UseProcessorExpertDefault='no') & (CPUfamily = "Kinetis") & (%Compiler = "GNUC")
-  uint8_t cpuSR; /* variable to store current status */
-%else
-  /* nothing needed */
-%endif
-
+#if %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
+  #define %'ModuleName'%.%CriticalVariable() /* nothing needed */
+#elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
+  #define %'ModuleName'%.%CriticalVariable() /* nothing needed */
+#elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
+  #define %'ModuleName'%.%CriticalVariable() uint8_t cpuSR; /* variable to store current status */
+#endif
 %include Common\CriticalSectionCriticalVariable.Inc
 
 %endif %- CriticalVariable
@@ -135,24 +116,23 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EnterCritical
 %ifdef EnterCritical
-#define %'ModuleName'%.%EnterCritical() \
-%if (%useRTOScritical='yes')
-  taskENTER_CRITICAL_FROM_ISR() /* FreeRTOS critical section inside interrupt */
-%elif (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
-  do {                                  \
-    /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
-    __asm (                             \
-    "mrs   r0, PRIMASK     \n\t"        \
-    "cpsid i               \n\t"        \
-    "strb r0, %%[output]   \n\t"         \
-    : [output] "=m" (cpuSR) :: "r0");   \
-    __asm ("" ::: "memory");            \
-    /*lint -restore Symbol 'cpuSR' not subsequently referenced. */\
-  } while(0)
-%else
-  EnterCritical()
-%endif
-
+#if %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
+  #define %'ModuleName'%.%EnterCritical()   EnterCritical()
+#elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
+  #define %'ModuleName'%.%EnterCritical()   taskENTER_CRITICAL_FROM_ISR() /* FreeRTOS critical section inside interrupt */
+#elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
+  #define %'ModuleName'%.%EnterCritical() \
+    do {                                  \
+      /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
+      __asm (                             \
+      "mrs   r0, PRIMASK     \n\t"        \
+      "cpsid i               \n\t"        \
+      "strb r0, %%[output]   \n\t"         \
+      : [output] "=m" (cpuSR) :: "r0");   \
+      __asm ("" ::: "memory");            \
+      /*lint -restore Symbol 'cpuSR' not subsequently referenced. */\
+    } while(0)
+#endif
 %include Common\CriticalSectionEnterCritical.Inc
 
 %endif %- EnterCritical
@@ -160,20 +140,19 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ExitCritical
 %ifdef ExitCritical
+#if %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
+  #define %'ModuleName'%.%ExitCritical()   ExitCritical()
+#elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
+  #define %'ModuleName'%.%ExitCritical()   taskEXIT_CRITICAL_FROM_ISR(0) /* FreeRTOS critical section inside interrupt */
+#elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
 #define %'ModuleName'%.%ExitCritical() \
-%if (%useRTOScritical='yes')
-  taskEXIT_CRITICAL_FROM_ISR(0) /* FreeRTOS critical section inside interrupt */
-%elif (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
-  do{                                  \
-    __asm (                            \
-    "ldrb r0, %%[input]    \n\t"        \
-    "msr PRIMASK,r0        \n\t"       \
-    ::[input] "m" (cpuSR) : "r0");     \
-  } while(0)
-%else
-  ExitCritical()
-%endif
-
+   do{                                  \
+     __asm (                            \
+     "ldrb r0, %%[input]    \n\t"        \
+     "msr PRIMASK,r0        \n\t"       \
+     ::[input] "m" (cpuSR) : "r0");     \
+   } while(0)
+#endif
 %include Common\CriticalSectionExitCritical.Inc
 
 %endif %- ExitCritical
@@ -272,6 +251,46 @@ void %'ModuleName'%.%ExitCritical(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* select ONE of the following implementation methods: */
+#ifndef %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
+%if defined(UseProcessorExpertDefault) &  %UseProcessorExpertDefault='yes'
+  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>40 1 /* 1: use Processor Expert default; 0: use alternative implementation */
+%else
+  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>40 0 /* 1: use Processor Expert default; 0: use alternative implementation */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
+%if defined(useRTOScritical) & %useRTOScritical='yes'
+  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>40 1 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
+%else
+  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>40 0 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
+%if (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>40 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+%else
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>40 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
+
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
