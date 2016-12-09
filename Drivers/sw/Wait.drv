@@ -64,16 +64,8 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
 /* Include inherited components */
 %ifdef InhrSymbolList
@@ -87,9 +79,6 @@
 %-     #include "header_name.h"
 
 /* other includes needed */
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-  #include "%ProcessorModule.h" /* needed derivative header */
-#endif
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
 /* include RTOS header files */
 #include "FreeRTOS.h" /* for vTaskDelay() */
@@ -136,15 +125,15 @@ extern "C" {
 #pragma MESSAGE DISABLE C4001 /* Condition always FALSE */
 %endif
 %-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
-  extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
-  #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
-#else
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   %if (CPU_FAMILY = "Kinetis")
   #define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_CORE_CLK_HZ   %>%CTAB /* for Kinetis, use core clock as base for instruction execution */
   %else
   #define %'ModuleName'%.INSTR_CLOCK_HZ       CPU_BUS_CLK_HZ    %>%CTAB /* for none-Kinetis, use buse clock as base for instruction execution */
   %endif
+#else
+  extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
+  #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
 #endif
 #define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/1000))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
@@ -811,6 +800,21 @@ void %'ModuleName'%.%WaitOSms(void)
 /*-----------------------------------------------------------*/
   END
 %endif %- (%Compiler = "IARARM")
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
