@@ -264,27 +264,27 @@ void %'ModuleName'%.%ExitCritical(void)
 #define __%'ModuleName'_CONFIG_H
 
 /* select ONE of the following implementation methods: */
-#ifndef %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
-%if defined(UseProcessorExpertDefault) &  %UseProcessorExpertDefault='yes'
-  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>40 1 /* 1: use Processor Expert default; 0: use alternative implementation */
-%else
-  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>40 0 /* 1: use Processor Expert default; 0: use alternative implementation */
-%endif
-#endif
-
 #ifndef %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
 %if defined(useRTOScritical) & %useRTOScritical='yes'
-  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>40 1 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
+  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>60 1 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
 %else
-  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>40 0 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
+  #define %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION        %>60 0 /* 1: use FreeRTOS critical section; 0: don't use FreeRTOS critical sections */
 %endif
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
 %if (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
-  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>40 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
 %else
-  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>40 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
+%if (defined(UseProcessorExpertDefault) &  %UseProcessorExpertDefault='yes') | !(%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
+  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>60 1 /* 1: use Processor Expert default; 0: use alternative implementation */
+%else
+  #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>60 0 /* 1: use Processor Expert default; 0: use alternative implementation */
 %endif
 #endif
 
