@@ -65,22 +65,8 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-  #include "%ProcessorModule.h"
-#endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -290,7 +276,7 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
 %if %Compiler = "GNUC"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 __attribute__((naked))
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void HardFault_Handler(void)
 #else
 void %'ModuleName'%.%HardFaultHandler(void)
@@ -414,3 +400,19 @@ asm void %'ModuleName'%.%HardFaultHandler(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

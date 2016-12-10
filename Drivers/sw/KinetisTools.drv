@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_METHOD_BEGIN
@@ -64,18 +64,13 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-/* Include inherited beans */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
-  %endfor
-%endif
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
   %endfor
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
@@ -88,8 +83,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-  #include "%ProcessorModule.h"
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_ConstCharPtr
@@ -288,7 +281,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-   Example:
 %-     #include "header_name.h"
 #include <stddef.h> /* for size_t */
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   #include "fsl_sim.h" /* system integration module */
 #endif
 %-
@@ -400,7 +393,7 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   sim_uid_t tmp;
   int i, j;
 
@@ -709,3 +702,19 @@ void %'ModuleName'%.%SetLR(uint32_t setval)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

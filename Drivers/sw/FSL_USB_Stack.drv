@@ -88,28 +88,20 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-/* Include inherited beans */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-  %ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-  %endif
-#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
-#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
-%endif
 #include <stddef.h> /* for size_t */
 %if defined(CDCDevice)
 
@@ -269,7 +261,7 @@ volatile uint8_t %'ModuleName'%.usb_int_en_copy = 0;
 void %'ModuleName'%.usb_int_dis(void)
 {
   /* %CPUDevice */
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   NVIC_DisableIRQ(USB0_IRQn);
 #else
 %if (CPUDevice="MCF51MM256") | (CPUDevice="MCF51JE256")
@@ -317,7 +309,7 @@ void %'ModuleName'%.usb_int_dis(void)
 void %'ModuleName'%.usb_int_en(void)
 {
   /* %CPUDevice */
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   NVIC_ClearPendingIRQ(USB0_IRQn);
   NVIC_EnableIRQ(USB0_IRQn);
 #else
@@ -527,3 +519,20 @@ void %OnError(uint8_t error)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
+

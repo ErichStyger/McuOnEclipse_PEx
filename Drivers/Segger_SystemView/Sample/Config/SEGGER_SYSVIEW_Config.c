@@ -58,7 +58,7 @@ Revision: $Rev: 3735 $
 **********************************************************************
 */
 #include "%sdk.h"
-#define SYSVIEW_USING_KINETIS_SDK                                    %>50 (%@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
+#define SYSVIEW_USING_KINETIS_SDK                                    %>50 (%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 #define SYSVIEW_USING_FREERTOS                                       %>50 SEGGER_RTT_FREERTOS_PRESENT /* 1: using FreeRTOS; 0: Bare metal */
 
 #if !SYSVIEW_USING_KINETIS_SDK

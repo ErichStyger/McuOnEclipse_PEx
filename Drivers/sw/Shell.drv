@@ -74,16 +74,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_StdIO_OutErr_FctType
@@ -1660,3 +1653,19 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

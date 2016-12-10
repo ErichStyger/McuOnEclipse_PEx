@@ -211,6 +211,14 @@
 %endif
 #endif
 
+/* special macro to identify a set of SDKs used */
+#define %'ModuleName'%.CONFIG_NXP_SDK_USED                       %>50(   (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_1_3) \
+                                                                 %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_2_0) \
+                                                                 %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0) \
+                                                                 %>50)
+  /* 1: project is a NXP/Kinetis SDK project; 0: Normal Processor Expert project or generic project */
+
+
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
 

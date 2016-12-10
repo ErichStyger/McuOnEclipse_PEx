@@ -77,9 +77,7 @@
  *  That way the a module can interface this wrapper header file instead
  *  of one of the standard FreeRTOS header files.
  */
-%if defined(KinetisSDK)
-#include "%KinetisSDK.h" /* include interface to SDK */
-%endif
+#include "%KinetisSDK.h" /* include SDK and API used */
 
 %ifdef TickCntr %- non-LDD version
 /* support for trace and access to tick counter */
@@ -132,7 +130,7 @@ portLONG uxGetTickCounterValue(void);
 #include "FreeRTOSConfig.h"
 #include "portmacro.h"
 
-#if %'ModuleName'%.CONFIG_NXP_SDK_USED
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
 extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
 #endif
 

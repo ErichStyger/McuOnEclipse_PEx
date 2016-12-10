@@ -68,16 +68,8 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
 /* Include inherited components */
 %ifdef InhrSymbolList
@@ -86,7 +78,7 @@
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   /* prototypes for user events */
 %if defined(OnTraceStart)
   void %OnTraceStart(void);
@@ -415,7 +407,7 @@ void %OnTraceWrap(void);
 
 /* MODULE %ModuleName. */
 #include "%'ModuleName'.h"
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %for var from EventModules
   #include "%var.h"
 %endfor
@@ -836,6 +828,21 @@ void %OnTraceWrap(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

@@ -53,7 +53,7 @@
 %- List of descriptions of internal methods
 %ifdef nRF24L01p
   %ifdef @nRF24L01p@OnInterrupt
-    %define! Description_%@nRF24L01p@OnInterrupt Called in case of an interrupt from the transcevier The event services the event of the inherited component and eventually invokes other events.
+    %define! Description_%@nRF24L01p@OnInterrupt Called in case of an interrupt from the transceiver The event services the event of the inherited component and eventually invokes other events.
   %endif %- @nRF24L01p@OnInterrupt
 %endif %- nRF24L01p
 %ifdef SMAC
@@ -76,16 +76,8 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-#include "%@sdk@ModuleName.h" /* include SDK */
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
-#endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
 /* Include inherited components */
 %ifdef InhrSymbolList
@@ -399,3 +391,19 @@ void %OnRadioEvent(%'ModuleName'_RadioEvent event)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
