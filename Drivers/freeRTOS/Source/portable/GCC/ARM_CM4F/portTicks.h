@@ -123,7 +123,7 @@ portLONG uxGetTickCounterValue(void);
 %elif defined(useARMSysTickTimer) & useARMSysTickTimer='yes'
 %if defined(UseManualClockValues) & UseManualClockValues='yes'  %- have provided manual clock values: no need for Cpu.h
 %else
-#if %@KinetisSDK@'ModuleName'%.SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.SDK_VERSION_NONE
+#if %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #include "%ProcessorModule.h" /* include CPU module because of dependency to CPU clock rate */
 #endif
 %endif

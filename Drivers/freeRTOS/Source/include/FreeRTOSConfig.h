@@ -72,105 +72,6 @@
 
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
-%if (CPUfamily = "ColdFireV1") | (CPUfamily = "HCS08") | (CPUfamily = "HC08")
-#include <hidef.h>
-%endif
-/* -------------------------------------------------------------------- */
-/* Macros to identify the compiler used: */
-#define configCOMPILER_ARM_GCC     %>50 1 /* GNU ARM gcc compiler */
-#define configCOMPILER_ARM_IAR     %>50 2 /* IAR ARM compiler */
-#define configCOMPILER_ARM_FSL     %>50 3 /* Legacy Freescale ARM compiler */
-#define configCOMPILER_ARM_KEIL    %>50 4 /* ARM/Keil compiler */
-#define configCOMPILER_S08_FSL     %>50 5 /* Freescale HCS08 compiler */
-#define configCOMPILER_S12_FSL     %>50 6 /* Freescale HCS12(X) compiler */
-#define configCOMPILER_CF1_FSL     %>50 7 /* Freescale ColdFire V1 compiler */
-#define configCOMPILER_CF2_FSL     %>50 8 /* Freescale ColdFire V2 compiler */
-#define configCOMPILER_DSC_FSL     %>50 9 /* Freescale DSC compiler */
-
-%if (%configCOMPILER='automatic')
-%if (%Compiler = "IARARM")
-#define configCOMPILER        %>50 configCOMPILER_ARM_IAR
-%elif (%Compiler = "GNUC")
-#define configCOMPILER        %>50 configCOMPILER_ARM_GCC
-%elif (%Compiler = "CodeWarriorARM")
-#define configCOMPILER        %>50 configCOMPILER_ARM_FSL
-%elif (%Compiler = "ARM_CC")
-#define configCOMPILER        %>50 configCOMPILER_ARM_KEIL
-%elif (%Compiler = "MetrowerksHC08CC") | (%Compiler = "MetrowerksHCS08CC")
-#define configCOMPILER        %>50 configCOMPILER_S08_FSL
-%elif (%Compiler = "MetrowerksHC12CC") | (%Compiler = "MetrowerksHC12XCC")
-#define configCOMPILER        %>50 configCOMPILER_S12_FSL
-%elif (%Compiler = "CodeWarriorColdFireV1")
-#define configCOMPILER        %>50 configCOMPILER_CF1_FSL
-%elif (%Compiler = "CodeWarriorMCF")
-#define configCOMPILER        %>50 configCOMPILER_CF2_FSL
-%elif (%Compiler = "MetrowerksDSP")
-#define configCOMPILER        %>50 configCOMPILER_DSC_FSL
-%else
-#define configCOMPILER        %>50 0
-#error "unknown compiler %Compiler?"
-%endif
-%else %- non-automatic compiler selection
-#define configCOMPILER        %>50 %configCompiler
-%endif
-/* -------------------------------------------------------------------- */
-/* CPU family identification */
-#define configCPU_FAMILY_S08          %>50 1   /* S08 core */
-#define configCPU_FAMILY_S12          %>50 2   /* S12(X) core */
-#define configCPU_FAMILY_CF1          %>50 3   /* ColdFire V1 core */
-#define configCPU_FAMILY_CF2          %>50 4   /* ColdFire V2 core */
-#define configCPU_FAMILY_DSC          %>50 5   /* 56800/DSC */
-#define configCPU_FAMILY_ARM_M0P      %>50 6   /* ARM Cortex-M0+ */
-#define configCPU_FAMILY_ARM_M4       %>50 7   /* ARM Cortex-M4 */
-#define configCPU_FAMILY_ARM_M4F      %>50 8   /* ARM Cortex-M4F (with floating point unit) */
-#define configCPU_FAMILY_ARM_M7       %>50 9   /* ARM Cortex-M7 */
-#define configCPU_FAMILY_ARM_M7F      %>50 10  /* ARM Cortex-M7F (with floating point unit) */
-/* Macros to identify set of core families */
-#define configCPU_FAMILY_IS_ARM_M0(fam)   %>50 ((fam)==configCPU_FAMILY_ARM_M0P)
-#define configCPU_FAMILY_IS_ARM_M4(fam)   %>50 (((fam)==configCPU_FAMILY_ARM_M4)  || ((fam)==configCPU_FAMILY_ARM_M4F))
-#define configCPU_FAMILY_IS_ARM_M7(fam)   %>50 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
-#define configCPU_FAMILY_IS_ARM_M4_M7(fam)%>50 (configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
-#define configCPU_FAMILY_IS_ARM_FPU(fam)  %>50 (((fam)==configCPU_FAMILY_ARM_M4F) || ((fam)==configCPU_FAMILY_ARM_M7F))
-#define configCPU_FAMILY_IS_ARM(fam)      %>50 (configCPU_FAMILY_IS_ARM_M0(fam) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
-
-%if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_S08
-%elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_S12
-%elif (CPUfamily = "ColdFireV1")
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_CF1
-%elif (CPUfamily = "MCF")
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_CF2
-%elif (CPUfamily = "56800")
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_DSC
-%elif (CPUfamily = "Kinetis")
-%if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes' %- Note: for IAR this is defined in portasm.s too!
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M0P
-%elif %ARMFamilyType="M7"
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M7
-%elif %ARMFamilyType="M7F"
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M7F
-%else %-M4, M4F or M7
- %if %CPUDB_prph_has_feature(CPU, FPU) = 'no'
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M4
- %else
-#define configCPU_FAMILY                   %>50 configCPU_FAMILY_ARM_M4F
- %endif
-%endif
-%else
-#define configCPU_FAMILY                   %>50 0
-#error "Unknown CPU family %CPUfamily?"
-%endif
-
-/*-----------------------------------------------------------
- * GDB backtrace handler support
- * See http://interactive.freertos.org/entries/23468301-Tasks-backtrace-switcher-viewer-snippet-for-debugger-gcc-gdb-ARM-Cortex-M3-MPU-port-Eclipse-support-
- *----------------------------------------------------------*/
-%if defined(EnableGDBDebugHelper) & %EnableGDBDebugHelper='yes'
-#define configGDB_HELPER                   %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)) /* 1: enable special GDB stack backtrace debug helper; 0: disabled */
-%else
-#define configGDB_HELPER                   %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)) /* 1: enable special GDB stack backtrace debug helper; 0: disabled */
-%endif
 
 #define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H %>50 1 /* include additional header file to help with debugging in GDB */
 /*-----------------------------------------------------------
@@ -199,7 +100,6 @@
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
     #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
   #else /* use dedicated timer */
-    #include <stdint.h>
     extern uint32_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
     #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
@@ -248,9 +148,8 @@
 #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 0 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
 #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1 /* 1 kHz LPO timer. Set to 1 if not used */
 %endif
-#if configPEX_KINETIS_SDK
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
 /* The SDK variable SystemCoreClock contains the current clock speed */
-  #include <stdint.h>
   extern uint32_t SystemCoreClock;
   #define configCPU_CLOCK_HZ                                       %>50 SystemCoreClock /* CPU clock frequency */
   #define configBUS_CLOCK_HZ                                       %>50 SystemCoreClock /* Bus clock frequency */
@@ -269,7 +168,7 @@
 %else
   #define configBUS_CLOCK_HZ                                       %>50 CPU_BUS_CLK_HZ /* CPU bus clock defined in %ProcessorModule.h */
 %endif
-#endif /* configPEX_KINETIS_SDK */
+#endif /* #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED */
 %if defined(useARMSysTickUseCoreClock) & useARMSysTickUseCoreClock='no'
 #define configSYSTICK_USE_CORE_CLOCK                             %>50 0 /* System Tick is using external reference clock clock  */
 %else

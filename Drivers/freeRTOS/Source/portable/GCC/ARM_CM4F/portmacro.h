@@ -690,7 +690,7 @@ void vPortYieldHandler(void);
 %if (CPUfamily = "Kinetis")
 
 /* Prototypes for interrupt service handlers */
-#if configPEX_KINETIS_SDK /* the SDK expects different interrupt handler names */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
   void SVC_Handler(void); /* SVC interrupt handler */
   void PendSV_Handler(void); /* PendSV interrupt handler */
   void SysTick_Handler(void); /* Systick interrupt handler */

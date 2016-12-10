@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_METHOD_BEGIN
@@ -64,20 +64,8 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,8 +75,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-  #include "%ProcessorModule.h"
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -100,13 +86,7 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-%if defined(DoPinMuxing) & %DoPinMuxing='yes'
-#define %'ModuleName'%.DO_PIN_MUXING  1  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
-%else
-#define %'ModuleName'%.DO_PIN_MUXING  0  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
-%endif
-
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "fsl_gpio_driver.h"
 
   /* only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported */
@@ -256,12 +236,12 @@ void %'ModuleName'%.%PutVal(bool Val);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   #include "fsl_port.h" /* include SDK header file for port muxing */
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "fsl_gpio_driver.h" /* include SDK header file for GPIO */
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#else
   #error "This component only works with the Kinetis SDK!"
 #endif
 %-
@@ -272,7 +252,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   #define %'ModuleName'%.PORTName   %PORT_Name /* name of PORT, is pointer to PORT_Type */
   #define %'ModuleName'%.GPIOName   %PortName /* name of GPIO, is pointer to GPIO_Type */
   #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
@@ -286,7 +266,7 @@ void %'ModuleName'%.%PutVal(bool Val);
     kGPIO_DigitalInput,  /* use as input pin */
     0,  /* initial value */
   };
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[] = {
     {
       .pinName = %'PinSymbol',
@@ -345,9 +325,9 @@ static bool %'ModuleName'%.isOutput = false;
 %include Common\SDK_BitIOClrVal.Inc
 void %'ModuleName'%.%ClrVal(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_ClearPinOutput(%'PinSymbol');
 #endif
 }
@@ -360,9 +340,9 @@ void %'ModuleName'%.%ClrVal(void)
 %include Common\SDK_BitIOSetVal.Inc
 void %'ModuleName'%.%SetVal(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinOutput(%'PinSymbol');
 #endif
 }
@@ -375,9 +355,9 @@ void %'ModuleName'%.%SetVal(void)
 %include Common\SDK_BitIONegVal.Inc
 void %'ModuleName'%.%NegVal(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   GPIO_TogglePinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_TogglePinOutput(%'PinSymbol');
 #endif
 }
@@ -391,9 +371,9 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\SDK_BitIOGetVal.Inc
 bool %'ModuleName'%.%GetVal(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   return GPIO_ReadPinInput(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber)!=0;
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
 #else
   return FALSE;
@@ -436,9 +416,9 @@ void %'ModuleName'%.%SetDir(bool Dir)
 %include Common\SDK_BitIOSetInput.Inc
 void %'ModuleName'%.%SetInput(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
 #endif
   %'ModuleName'%.isOutput = false;
@@ -452,9 +432,9 @@ void %'ModuleName'%.%SetInput(void)
 %include Common\SDK_BitIOSetOutput.Inc
 void %'ModuleName'%.%SetOutput(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
 #endif
   %'ModuleName'%.isOutput = true;
@@ -469,13 +449,13 @@ void %'ModuleName'%.%SetOutput(void)
 %include Common\SDK_BitIOPutVal.Inc
 void %'ModuleName'%.%PutVal(bool Val)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
   if (Val) {
     GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
   } else {
     GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
   }
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_WritePinOutput(%'PinSymbol', Val);
 #endif
 }
@@ -488,12 +468,12 @@ void %'ModuleName'%.%PutVal(bool Val)
 %include Common\SDK_BitIOInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_2_0
-  #if %'ModuleName'%.DO_PIN_MUXING
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+  #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
   PORT_SetPinMux(%'ModuleName'%.PORTName, %'ModuleName'%.PinNumber, kPORT_MuxAsGpio); /* mux as GPIO */
   #endif
   %'ModuleName'%.%SetOutput();
-#elif %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_1_3
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   /*! \todo Pin Muxing not implemented */
   GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
 #endif
@@ -537,3 +517,24 @@ void %'ModuleName'%.%Deinit(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_DO_PIN_MUXING
+%if defined(DoPinMuxing) & %DoPinMuxing='yes'
+  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  1  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+%else
+  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  0  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

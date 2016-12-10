@@ -61,7 +61,7 @@
  * Include the necessary header files.
  *****************************************************************************/
 #include "FreeRTOSConfig.h"
-#if !configPEX_KINETIS_SDK /* << EST: PEx interface */
+#if %@sdk@'ModuleName'%.CONFIG_PEX_SDK_USED /* << EST: PEx interface */
   #include "%ProcessorModule.h"
 #else
   #include "board.h"

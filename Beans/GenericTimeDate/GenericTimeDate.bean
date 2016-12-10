@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.044</Version>
+    <Version>01.045</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -433,6 +433,20 @@
           </GrupItem>
           <GrupItem>
             <TInhrLinkItem>
+              <Name>Utility</Name>
+              <Symbol>Utility</Symbol>
+              <TypeSpec>GenericTimeDate\Utility</TypeSpec>
+              <Hint>Interface to utility</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
               <Name>SDK</Name>
               <Symbol>sdk</Symbol>
               <TypeSpec>GenericTimeDate\sdk</TypeSpec>
@@ -455,25 +469,11 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
-                <GrupItem>
-                  <TInhrLinkItem>
-                    <Name>Utility</Name>
-                    <Symbol>Utility</Symbol>
-                    <TypeSpec>GenericTimeDate\Utility</TypeSpec>
-                    <Hint>Interface to utility</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <DefaultValue/>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <SortStyle/>
-                  </TInhrLinkItem>
-                </GrupItem>
                 <GrupItem>
                   <TInhrLinkItem>
                     <Name>Shell</Name>
