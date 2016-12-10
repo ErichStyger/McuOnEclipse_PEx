@@ -96,6 +96,10 @@
 #define %'ModuleName'%.ExitCriticalDrv() \
   %'ModuleName'%.%ExitCritical()
 
+#ifdef __HIWARE__
+  #pragma MESSAGE DISABLE C3303 /* C3303 Implicit concatenation of strings */
+#endif
+
 %-
 %-BW_CUSTOM_USERTYPE_END
 %-BW_DEFINITION_START
@@ -145,7 +149,7 @@
 #elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
   #define %'ModuleName'%.%ExitCritical()   taskEXIT_CRITICAL_FROM_ISR(0) /* FreeRTOS critical section inside interrupt */
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
-#define %'ModuleName'%.%ExitCritical() \
+  #define %'ModuleName'%.%ExitCritical() \
    do{                                  \
      __asm (                            \
      "ldrb r0, %%[input]    \n\t"        \
