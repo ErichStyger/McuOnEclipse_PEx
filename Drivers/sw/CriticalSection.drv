@@ -127,6 +127,7 @@
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
   #define %'ModuleName'%.%EnterCritical() \
     do {                                  \
+%if %CPUfamily="Kinetis" %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
       /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
       __asm (                             \
       "mrs   r0, PRIMASK     \n\t"        \
@@ -135,6 +136,7 @@
       : [output] "=m" (cpuSR) :: "r0");   \
       __asm ("" ::: "memory");            \
       /*lint -restore Symbol 'cpuSR' not subsequently referenced. */\
+%endif
     } while(0)
 #endif
 %include Common\CriticalSectionEnterCritical.Inc
@@ -151,10 +153,12 @@
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
   #define %'ModuleName'%.%ExitCritical() \
    do{                                  \
+%if %CPUfamily="Kinetis" %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
      __asm (                            \
      "ldrb r0, %%[input]    \n\t"        \
      "msr PRIMASK,r0        \n\t"       \
      ::[input] "m" (cpuSR) : "r0");     \
+%endif
    } while(0)
 #endif
 %include Common\CriticalSectionExitCritical.Inc
