@@ -64,20 +64,16 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-/* Include inherited beans */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
 
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%ifdef SharedModules
-  /* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-  #include "%'var'.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,8 +83,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-  #include "%ProcessorModule.h"
-#endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -106,7 +100,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDir
 %ifdef GetDir
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%GetDir() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
@@ -137,7 +131,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetDir
 %ifdef SetDir
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%SetDir(Dir) \
   ((Dir)==0?%'ModuleName'%.%SetInput():%'ModuleName'%.%SetOutput())
 #else
@@ -151,7 +145,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetInput
 %ifdef SetInput
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%SetInput() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
@@ -180,7 +174,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetOutput
 %ifdef SetOutput
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%SetOutput() \
 %if %1meansOutput='yes'
  %if %UseDirectionBit='yes'
@@ -209,7 +203,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetVal
 %ifdef GetVal
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%GetVal() \
 %if %UseDataBit='yes'
   %DataBitName
@@ -231,7 +225,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutVal
 %ifdef PutVal
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%PutVal(Val) \
   (((Val)!=0)?%'ModuleName'%.SetVal():%'ModuleName'%.ClrVal())
 #else
@@ -245,7 +239,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClrVal
 %ifdef ClrVal
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%ClrVal() \
 %if %UseDataBit='yes'
   (%DataBitName = 0)
@@ -266,7 +260,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetVal
 %ifdef SetVal
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%SetVal() \
 %if %UseDataBit='yes'
   (%DataBitName = 1)
@@ -287,7 +281,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN NegVal
 %ifdef NegVal
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #define %'ModuleName'%.%NegVal() \
 %if %UseDataBit='yes'
   (%DataBitName ^= 1)
@@ -364,7 +358,7 @@ void %'ModuleName'%.%Deinit(void);
 %ifdef GetDir
 %define! RetVal
 %include Common\GenericBitIOGetDir.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 bool %'ModuleName'%.%GetDir(void)
 {
 %if defined(sdkbitio)
@@ -382,7 +376,7 @@ bool %'ModuleName'%.%GetDir(void)
 %ifdef SetDir
 %define! ParDir
 %include Common\GenericBitIOSetDir.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%SetDir(bool Dir)
 {
 %if defined(sdkbitio)
@@ -399,7 +393,7 @@ void %'ModuleName'%.%SetDir(bool Dir)
 %-BW_METHOD_BEGIN SetInput
 %ifdef SetInput
 %include Common\GenericBitIOSetInput.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%SetInput(void)
 {
 %if defined(sdkbitio)
@@ -416,7 +410,7 @@ void %'ModuleName'%.%SetInput(void)
 %-BW_METHOD_BEGIN SetOutput
 %ifdef SetOutput
 %include Common\GenericBitIOSetOutput.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%SetOutput(void)
 {
 %if defined(sdkbitio)
@@ -434,7 +428,7 @@ void %'ModuleName'%.%SetOutput(void)
 %ifdef GetVal
 %define! RetVal
 %include Common\GenericBitIOGetVal.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 bool %'ModuleName'%.%GetVal(void)
 {
 %if defined(sdkbitio)
@@ -452,7 +446,7 @@ bool %'ModuleName'%.%GetVal(void)
 %ifdef PutVal
 %define! ParVal
 %include Common\GenericBitIOPutVal.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%PutVal(bool Val)
 {
 %if defined(sdkbitio)
@@ -469,7 +463,7 @@ void %'ModuleName'%.%PutVal(bool Val)
 %-BW_METHOD_BEGIN ClrVal
 %ifdef ClrVal
 %include Common\GenericBitIOClrVal.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%ClrVal(void)
 {
 %if defined(sdkbitio)
@@ -486,7 +480,7 @@ void %'ModuleName'%.%ClrVal(void)
 %-BW_METHOD_BEGIN SetVal
 %ifdef SetVal
 %include Common\GenericBitIOSetVal.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%SetVal(void)
 {
 %if defined(sdkbitio)
@@ -503,7 +497,7 @@ void %'ModuleName'%.%SetVal(void)
 %-BW_METHOD_BEGIN NegVal
 %ifdef NegVal
 %include Common\GenericBitIONegVal.Inc
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void %'ModuleName'%.%NegVal(void)
 {
 %if defined(sdkbitio)
@@ -522,7 +516,7 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\GenericBitIOInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.Init();
 %else
@@ -595,7 +589,7 @@ void %'ModuleName'%.%Init(void)
 %include Common\GenericBitIODeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED != %@sdk@'ModuleName'%.SDK_VERSION_NONE
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %if defined(sdkbitio)
   %@sdkbitio@'ModuleName'%.Deinit();
 %else
@@ -630,3 +624,19 @@ void %'ModuleName'%.%Deinit(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
