@@ -113,5 +113,6 @@
 #define TRC_HARDWARE_PORT_XILINX_MICROBLAZE				13	/*	No			Any					*/
 #define TRC_HARDWARE_PORT_NXP_LPC210X					14	/*	No			Any					*/
 #define TRC_HARDWARE_PORT_ARM_CORTEX_A9					15	/*	Yes			Any					*/
+#define TRC_HARDWARE_PORT_PROCESSOR_EXPERT     16  /*  No          FreeRTOS            */ /* << EST */
 
 #endif /*TRC_PORTDEFINES_H*/

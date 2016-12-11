@@ -57,7 +57,7 @@ extern "C" {
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define TRC_CFG_RTT_UP_BUFFER_INDEX 0
+#define TRC_CFG_RTT_UP_BUFFER_INDEX       %RTTUpBufferIndex
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RTT_DOWN_BUFFER_INDEX
@@ -66,7 +66,7 @@ extern "C" {
  * the PC application has the same setting (File->Settings).
  *
  ******************************************************************************/
-#define TRC_CFG_RTT_DOWN_BUFFER_INDEX 0
+#define TRC_CFG_RTT_DOWN_BUFFER_INDEX     %RTTDownBufferIndex
 
 /*******************************************************************************
  * RTT_MODE

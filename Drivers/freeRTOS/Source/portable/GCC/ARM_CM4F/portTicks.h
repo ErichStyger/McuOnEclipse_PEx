@@ -131,7 +131,7 @@ portLONG uxGetTickCounterValue(void);
 #include "portmacro.h"
 
 #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
-extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
+  extern uint32_t SystemCoreClock; /* in Kinetis SDK, this contains the system core clock speed */
 #endif
 
 /*!
@@ -149,35 +149,41 @@ portLONG uxGetTickCounterValue(void);
 #endif
 %endif %-TickTimerLDD
 
+#define FREERTOS_HWTC_FREQ_HZ            configTICK_RATE_HZ
+
 /* tick information for Percepio Trace */
 
 /* undefine previous values, where dummy anyway: make sure this header file is included last! */
-#undef HWTC_COUNT_DIRECTION
-#undef HWTC_PERIOD
-#undef HWTC_DIVISOR
-#undef HWTC_COUNT
+#undef TRC_HWTC_COUNT_DIRECTION
+#undef TRC_HWTC_PERIOD
+#undef TRC_HWTC_DIVISOR
+#undef TRC_HWTC_COUNT
 
 #if FREERTOS_HWTC_DOWN_COUNTER
-  #define HWTC_COUNT_DIRECTION  DIRECTION_DECREMENTING
-  #define HWTC_PERIOD           FREERTOS_HWTC_PERIOD /* counter is decrementing from this value to zero */
+  #define TRC_HWTC_COUNT_DIRECTION  DIRECTION_DECREMENTING
+  #define TRC_HWTC_PERIOD           FREERTOS_HWTC_PERIOD /* counter is decrementing from this value to zero */
 #else
-  #define HWTC_COUNT_DIRECTION  DIRECTION_INCREMENTING
-  #define HWTC_PERIOD           FREERTOS_HWTC_PERIOD /* counter is incrementing from zero to this value */
+  #define TRC_HWTC_COUNT_DIRECTION  DIRECTION_INCREMENTING
+  #define TRC_HWTC_PERIOD           FREERTOS_HWTC_PERIOD /* counter is incrementing from zero to this value */
 #endif
 %if %CPUfamily="Kinetis"
 #if configSYSTICK_USE_LOW_POWER_TIMER
-  #define HWTC_DIVISOR 1 /* divisor for slow counter tick value */
+  #define TRC_HWTC_DIVISOR 1 /* divisor for slow counter tick value */
 #else
-  #define HWTC_DIVISOR 2 /* divisor for fast counter tick value */
+  #define TRC_HWTC_DIVISOR 2 /* divisor for fast counter tick value */
 #endif
 %else
-#define HWTC_DIVISOR 1
+#define TRC_HWTC_DIVISOR 1
 %endif
 
-#define HWTC_COUNT (uxGetTickCounterValue())
+#define TRC_HWTC_COUNT (uxGetTickCounterValue())
+#define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
+
+#define TRC_IRQ_PRIORITY_ORDER 1
+#define TRC_HWTC_FREQ_HZ  FREERTOS_HWTC_FREQ_HZ
 
 #if configUSE_TICKLESS_IDLE == 1
-extern volatile uint8_t portTickCntr; /* used to find out if we woke up by the tick interrupt */
+  extern volatile uint8_t portTickCntr; /* used to find out if we woke up by the tick interrupt */
 #endif
 
 #endif /* PORTTICKS_H_ */

@@ -61,7 +61,24 @@ extern "C" {
  * required at least for the ARM Cortex-M port, that uses the ARM CMSIS API.
  * Try that in case of build problems. Otherwise, remove the #error line below.
  *****************************************************************************/
-#error "Trace Recorder: Please include your processor´s header file here and remove this line."
+#if 1 /* << EST */
+  #include "%sdk.h" /* include SDK and API used */
+  #include "FreeRTOSConfig.h"
+
+  #if MCUC1_CONFIG_PEX_SDK_USED
+    #ifndef __CORTEX_M
+      #if configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY)
+        #define __CORTEX_M        0
+      #elif configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
+        #define __CORTEX_M        4
+      #elif configCPU_FAMILY_IS_ARM_M7(configCPU_FAMILY)
+        #define __CORTEX_M        7
+      #endif
+    #endif
+  #endif
+#else
+  #error "Trace Recorder: Please include your processors header file here and remove this line."
+#endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_HARDWARE_PORT
@@ -72,7 +89,15 @@ extern "C" {
  * See trcSnapshotHardwarePort.h or trcStreamingHardwarePort.h for available
  * ports and information on how to define your own port, if not already present.
  ******************************************************************************/
-#define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_NOT_SET
+#if 1 /* << EST */
+#if configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
+  #define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_ARM_Cortex_M
+#else
+  #define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_PROCESSOR_EXPERT
+#endif
+#else
+  #define TRC_CFG_HARDWARE_PORT TRC_HARDWARE_PORT_NOT_SET
+#endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RECORDER_MODE
@@ -88,7 +113,11 @@ extern "C" {
  * TRC_RECORDER_MODE_SNAPSHOT
  * TRC_RECORDER_MODE_STREAMING
  ******************************************************************************/
+%if defined(TraceRecorderMode)
+#define TRC_CFG_RECORDER_MODE %TraceRecorderMode
+%else
 #define TRC_CFG_RECORDER_MODE TRC_RECORDER_MODE_SNAPSHOT
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RECORDER_BUFFER_ALLOCATION
@@ -100,7 +129,11 @@ extern "C" {
  * TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC - Allocated in vTraceEnable
  * TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM  - Use vTraceSetRecorderDataBuffer
  ******************************************************************************/
+%if defined(RecorderBufferAllocation)
+#define TRC_CFG_RECORDER_BUFFER_ALLOCATION %RecorderBufferAllocation
+%else
 #define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+%endif
 
 /******************************************************************************
  * TRC_CFG_FREERTOS_VERSION
@@ -128,7 +161,11 @@ extern "C" {
  * 
  * Default value: 8
  *****************************************************************************/
+%if defined(TraceMaxISRNesting)
+#define TRC_CFG_MAX_ISR_NESTING %TraceMaxISRNesting
+%else
 #define TRC_CFG_MAX_ISR_NESTING 8
+%endif
 
 /* Specific configuration, depending on Streaming/Snapshot mode */
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_SNAPSHOT)

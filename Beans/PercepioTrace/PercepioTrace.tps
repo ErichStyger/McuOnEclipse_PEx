@@ -13,8 +13,8 @@
         <Line>Stops recording when buffer is ful</Line>
       </Hints>
       <Defines lines_count="2">
-        <Line>TRACE_STORE_MODE_RING_BUFFER</Line>
-        <Line>TRACE_STORE_MODE_STOP_WHEN_FULL</Line>
+        <Line>TRC_SNAPSHOT_MODE_RING_BUFFER</Line>
+        <Line>TRC_SNAPSHOT_MODE_STOP_WHEN_FULL</Line>
       </Defines>
     </Type>
     <Type>
@@ -35,18 +35,37 @@
     </Type>
     <Type>
       <Type>TEnumSpec</Type>
-      <Name>typeTraceDataAllocation</Name>
-      <Items lines_count="2">
+      <Name>typeRecorderBufferAllocation</Name>
+      <Items lines_count="3">
         <Line>static</Line>
         <Line>dynamic</Line>
+        <Line>custom</Line>
+      </Items>
+      <Hints lines_count="3">
+        <Line>Static allocation</Line>
+        <Line>Allocated in vTraceEnable</Line>
+        <Line>Use vTraceSetRecorderDataBuffer</Line>
+      </Hints>
+      <Defines lines_count="3">
+        <Line>TRC_RECORDER_BUFFER_ALLOCATION_STATIC</Line>
+        <Line>TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC</Line>
+        <Line>TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM</Line>
+      </Defines>
+    </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeRecorderMode</Name>
+      <Items lines_count="2">
+        <Line>Snapshot</Line>
+        <Line>Streaming</Line>
       </Items>
       <Hints lines_count="2">
-        <Line>Static trace data allocation</Line>
-        <Line>Dynamic trace data allocation</Line>
+        <Line>Does snapshot trace into local RAM buffer for later uploade.</Line>
+        <Line>Does continuous trace to the host PC.</Line>
       </Hints>
       <Defines lines_count="2">
-        <Line>TRACE_DATA_ALLOCATION_STATIC</Line>
-        <Line>TRACE_DATA_ALLOCATION_DYNAMIC</Line>
+        <Line>TRC_RECORDER_MODE_SNAPSHOT</Line>
+        <Line>TRC_RECORDER_MODE_STREAMING</Line>
       </Defines>
     </Type>
   </Types>

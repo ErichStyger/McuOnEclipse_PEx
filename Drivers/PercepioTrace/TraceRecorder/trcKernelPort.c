@@ -275,7 +275,7 @@ static void prvCheckRecorderStatus(void)
 {
 	if (NoRoomForSymbol > NoRoomForSymbol_last)
 	{
-		vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_TABLE_SLOTS too small. Add %d slots.",
+		vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_TABLE_SLOTS too small. Add %%d slots.",
 			NoRoomForSymbol);
 
 		NoRoomForSymbol_last = NoRoomForSymbol;
@@ -283,7 +283,7 @@ static void prvCheckRecorderStatus(void)
 
 	if (NoRoomForObjectData > NoRoomForObjectData_last)
 	{
-		vTracePrintF(trcWarningChannel, "TRC_CFG_OBJECT_DATA_SLOTS too small. Add %d slots.",
+		vTracePrintF(trcWarningChannel, "TRC_CFG_OBJECT_DATA_SLOTS too small. Add %%d slots.",
 			NoRoomForObjectData);
 
 		NoRoomForObjectData_last = NoRoomForObjectData;
@@ -293,7 +293,7 @@ static void prvCheckRecorderStatus(void)
 	{
 		if (LongestSymbolName > TRC_CFG_SYMBOL_MAX_LENGTH)
 		{
-			vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_MAX_LENGTH too small. Add %d chars.",
+			vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_MAX_LENGTH too small. Add %%d chars.",
 				LongestSymbolName);
 		}
 		LongestSymbolName_last = LongestSymbolName;
@@ -313,7 +313,7 @@ static void prvCheckRecorderStatus(void)
 		and string characters. For User Events, also the User Event Channel ptr
 		must be squeezed in, if a channel is specified. */
 
-		vTracePrintF(trcWarningChannel, "String event too long, up to %d bytes truncated.",
+		vTracePrintF(trcWarningChannel, "String event too long, up to %%d bytes truncated.",
 			MaxBytesTruncated);
 
 		MaxBytesTruncated_last = MaxBytesTruncated;

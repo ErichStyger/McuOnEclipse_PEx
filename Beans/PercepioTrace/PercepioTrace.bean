@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.075</Version>
+    <Version>01.083</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -44,7 +44,7 @@
         <Hint>Identifies the RTOS+Trace version used from Percepio AB</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V3.0.2</DefaultValue>
+        <DefaultValue>V3.1.0</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -65,32 +65,552 @@
       </TInhrLinkItem>
     </Property>
     <Property>
+      <TInhrLinkItem>
+        <Name>Utility</Name>
+        <Symbol>Utility</Symbol>
+        <TypeSpec>Utility_I</TypeSpec>
+        <Hint>Interface to utility functions</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Recorder Mode</Name>
+        <Symbol>TraceRecorderMode</Symbol>
+        <TypeSpec>typeRecorderMode</TypeSpec>
+        <Hint>Configrue TRC_CFG_RECORDER_MODE to TRC_RECORDER_MODE_SNAPSHOT or TRC_RECORDER_MODE_STREAMING</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Recorder Buffer Allocation</Name>
+        <Symbol>RecorderBufferAllocation</Symbol>
+        <TypeSpec>typeRecorderBufferAllocation</TypeSpec>
+        <Hint>Configure the macro TRC_CFG_RECORDER_BUFFER_ALLOCATION to TRC_RECORDER_BUFFER_ALLOCATION_STATIC, TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC or TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM. Note that CUSTOM is only supported in snapshot mode.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Max ISR Nesting</Name>
+        <Symbol>TraceMaxISRNesting</Symbol>
+        <Hint>Defines the maxium level of ISR nesting</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>8</DefaultValue>
+        <MinValue>1</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Snapshot Mode</Name>
+        <Symbol>SnapshotModeGroup</Symbol>
+        <Hint>Settings for Snapshot mode, stored in trcSnapshotConfig.h</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Recorder store mode</Name>
+              <Symbol>RecorderStoreMode</Symbol>
+              <TypeSpec>typeRecorderStoreMode</TypeSpec>
+              <Hint>This sets TRC_CFG_SNAPSHOT_MODE.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Scheduling only</Name>
+              <Symbol>TraceSchedulingOnly</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This defines TRACE_SCHEDULING_ONLY in trcConfig.h\n
+When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Event buffer size</Name>
+              <Symbol>EventBufferSize</Symbol>
+              <Hint>This sets TRC_CFG_EVENT_BUFFER_SIZE.\n
+Macro which should be defined as an integer value.\n
+This defines the capacity of the event buffer, i.e., the number of records it may store. An event typically use one record (4 byte), but there are exceptions:\n
+In some cases, an XTS event is added if the time since the last event is longer that allowed by the current event's timestamp field. Such events thus use two records. vTracePrintF use a variable number of data records following the event, holding the data arguments. \n
+If RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER, the recorder will wrap around to index 0 when reached EVENT_BUFFER_SIZE. If RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recorder is instead stopped (see RECORDER_STORE_MODE).</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1000</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of tasks</Name>
+              <Symbol>NTask</Symbol>
+              <Hint>This sets NTask in trcConfig.h\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>10</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of ISR</Name>
+              <Symbol>NISR</Symbol>
+              <Hint>This sets TRC_CFG_NISR.\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>4</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of queue</Name>
+              <Symbol>NQueue</Symbol>
+              <Hint>This sets TRC_CFG_NQUEUE.\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>3</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of semaphore</Name>
+              <Symbol>NSemaphore</Symbol>
+              <Hint>This sets TRC_CFG_NSEMAPHORE.\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>4</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of mutex</Name>
+              <Symbol>NMutex</Symbol>
+              <Hint>This sets TRC_CFG_NMUTEX.\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>4</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of Timer</Name>
+              <Symbol>NTimer</Symbol>
+              <Hint>This sets the TRC_CFG_NTIMER define.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>2</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Number of Event Groups</Name>
+              <Symbol>NEventGroup</Symbol>
+              <Hint>This sets the TRC_CFG_NEVENTGROUP macro.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>2</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include memory manager events</Name>
+              <Symbol>IncludeMemManageEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h\n
+This must be enabled (1) if memory allocation and deallocatinon have to be traced.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include user events</Name>
+              <Symbol>IncludeUserEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_USER_EVENTS in trcConfig.h\n
+If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like "printf" but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include ISR tracing</Name>
+              <Symbol>IncludeISRTracing</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_ISR_TRACING in trcConfig.h\n
+If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include ready events</Name>
+              <Symbol>IncludeReadyEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_READY_EVENTS in trcConfig.h\n
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include OS Tick events</Name>
+              <Symbol>IncludeOSTickEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. </Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Float support</Name>
+              <Symbol>floatingPointForvTracePrintF</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If floating point is supported for vTracePrintF()</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include object delete events</Name>
+              <Symbol>IncludeObjectDelete</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_OBJECT_DELETE in trcConfig.h\n
+This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. </Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Symbol table size</Name>
+              <Symbol>SymbolTableSize</Symbol>
+              <Hint>This sets SYMBOL_TABLE_SIZE in trcConfig.h\n
+Macro which should be defined as an integer value.\n
+This defines the capacity of the symbol table, in bytes. This symbol table stores User Events labels and names of deleted tasks, queues, or other kernel objects. Note that the names of active objects not stored here but in the Object Table. Thus, if you don't use User Events or delete any kernel objects you set this to zero (0) to minimize RAM usage.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>400</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Name length for queue</Name>
+              <Symbol>NameLenQueue</Symbol>
+              <Hint>This sets NameLenQueue in trcConfig.h\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>15</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+    <Property>
       <TBoolGrupItem>
-        <Name>Streaming with RTT</Name>
+        <Name>Segger RTT</Name>
         <Symbol>StreamingTraceWithRTT</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>EXPERIMENTAL: using a different trace library which streams using Segger RTT</Hint>
+        <Hint>Streaming trace data over Segger RTT. Enable if using Segger RTT for streaming</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
-            <TStrgItem>
-              <Name>Streaming Recorder Version</Name>
-              <Symbol>StreamingRecorderVersion</Symbol>
-              <Hint>Identifies the RTOS+Trace version used from Percepio AB</Hint>
+            <TInhrLinkItem>
+              <Name>Segger RTT</Name>
+              <Symbol>SeggerRTT</Symbol>
+              <TypeSpec>PercepioTrace\SeggerRTT</TypeSpec>
+              <Hint>Interface to Segger RTT</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Streaming Mode</Name>
+        <Symbol>StreamingModeGroup</Symbol>
+        <Hint>Settings for streaming mode</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Up Buffer Index</Name>
+              <Symbol>RTTUpBufferIndex</Symbol>
+              <Hint>RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>V3.0.2</DefaultValue>
-              <StrDefine>nothing</StrDefine>
-              <MinLength>0</MinLength>
-              <MaxLength>-1</MaxLength>
-            </TStrgItem>
+              <DefaultValue>2</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Up Buffer Size</Name>
+              <Symbol>TraceRTTUpBufferSize</Symbol>
+              <Hint>Up Buffer Size (default 1024), only applicable for buffer index &gt; 0</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1024</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Down Buffer Index</Name>
+              <Symbol>RTTDownBufferIndex</Symbol>
+              <Hint>RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>2</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Down Buffer Size</Name>
+              <Symbol>TraceRTTDownBufferSize</Symbol>
+              <Hint>Down Buffer Size (default 32), only applicable for buffer index &gt; 0</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>32</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>
@@ -147,7 +667,7 @@
             <TStrgItem>
               <Name>Ctrl Task Priority</Name>
               <Symbol>CtrlTaskPrioStr</Symbol>
-              <Hint>TRC_CTRL_TASK_PRIORITY: Priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)</Hint>
+              <Hint>Configures TRC_CFG_CTRL_TASK_PRIORITY, the priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>1</DefaultValue>
@@ -170,122 +690,20 @@
             </TStrgItem>
           </GrupItem>
           <GrupItem>
-            <TInhrLinkItem>
-              <Name>Segger RTT</Name>
-              <Symbol>SeggerRTT</Symbol>
-              <TypeSpec>PercepioTrace\SeggerRTT</TypeSpec>
-              <Hint>Interface to Segger RTT</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Up Buffer Index</Name>
-              <Symbol>RTTUpBufferIndex</Symbol>
-              <Hint>RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
+            <TStrgItem>
+              <Name>Ctrl Task Delay</Name>
+              <Symbol>CtrlTaskDelay</Symbol>
+              <Hint>Configures TRC_CFG_CTRL_TASK_DELAY, the delay between every loop of the TzCtrl task. A high delay will reduce the CPU load, but may cause missed events if the TzCtrl task is performing the trace transfer.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>1</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Up Buffer Size</Name>
-              <Symbol>TraceRTTUpBufferSize</Symbol>
-              <Hint>Up Buffer Size (default 1024), only applicable for buffer index &gt; 0</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>1024</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Down Buffer Index</Name>
-              <Symbol>RTTDownBufferIndex</Symbol>
-              <Hint>RTT_DOWN_BUFFER_INDEX: Defines the RTT buffer to use for reading the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>1</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Down Buffer Size</Name>
-              <Symbol>TraceRTTDownBufferSize</Symbol>
-              <Hint>Down Buffer Size (default 32), only applicable for buffer index &gt; 0</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>32</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <DefaultValue>((10 * configTICK_RATE_HZ) / 1000)</DefaultValue>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
         </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Utility</Name>
-        <Symbol>Utility</Symbol>
-        <TypeSpec>Utility_I</TypeSpec>
-        <Hint>Interface to utility functions</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Scheduling only</Name>
-        <Symbol>TraceSchedulingOnly</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This defines TRACE_SCHEDULING_ONLY in trcConfig.h\n
-When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
+      </TGrupItem>
     </Property>
     <Property>
       <TStrgItem>
@@ -398,123 +816,11 @@ This string is stored in the trace and displayed in FreeRTOS+Trace. Can be used 
     </Property>
     <Property>
       <TBoolItem>
-        <Name>Include user events</Name>
-        <Symbol>IncludeUserEvents</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets INCLUDE_USER_EVENTS in trcConfig.h\n
-If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like "printf" but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Include ISR tracing</Name>
-        <Symbol>IncludeISRTracing</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets INCLUDE_ISR_TRACING in trcConfig.h\n
-If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Max ISR Nesting</Name>
-        <Symbol>TraceMaxISRNesting</Symbol>
-        <Hint>Defines the maxium level of ISR nesting</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>16</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Include object delete events</Name>
-        <Symbol>IncludeObjectDelete</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets INCLUDE_OBJECT_DELETE in trcConfig.h\n
-This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
         <Name>Include new time events</Name>
         <Symbol>IncludeNewTimeEvents</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>This sets INCLUDE_NEW_TIME_EVENTS in trcConfig.h\n
 This must be enabled (1) if it shall be recorded whenever the os clock is increased.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Include ready events</Name>
-        <Symbol>IncludeReadyEvents</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets INCLUDE_READY_EVENTS in trcConfig.h\n
-If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Include memory manager events</Name>
-        <Symbol>IncludeMemManageEvents</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This sets INCLUDE_MEMMANG_EVENTS in trcConfig.h\n
-This must be enabled (1) if memory allocation and deallocatinon have to be traced.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -550,48 +856,6 @@ This must be enabled (1) if memory allocation and deallocatinon have to be trace
         <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
-    </Property>
-    <Property>
-      <TEnumItem>
-        <Name>Trace Data Allocation</Name>
-        <Symbol>TraceDataAllocation</Symbol>
-        <TypeSpec>typeTraceDataAllocation</TypeSpec>
-        <Hint>This defines the macro TRACE_DATA_ALLOCATION. This defines how to allocate the recorder data structure, i.e., using a  static declaration or using a dynamic allocation in runtime (malloc). Should be one of these two options:\n
- - TRACE_DATA_ALLOCATION_STATIC (default)\n
- - TRACE_DATA_ALLOCATION_DYNAMIC\n
-Using static allocation has the benefits of compile-time errors if the buffer is too large (too large constants in trcConfig.h) and no need to call the initialization routine (xTraceInitTraceData). Using dynamic allocation may give more flexibility in some cases.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-      </TEnumItem>
-    </Property>
-    <Property>
-      <TEnumItem>
-        <Name>Recorder store mode</Name>
-        <Symbol>RecorderStoreMode</Symbol>
-        <TypeSpec>typeRecorderStoreMode</TypeSpec>
-        <Hint>This sets RECORDER_STORE_MODE in trcConfig.h\n
-With RECORDER_STORE_MODE set to STORE_MODE_RING_BUFFER, the events are stored in a ring buffer, i.e., where the oldest events are overwritten when the buffer becomes full. This allows you to get the last events leading up to an interesting state, e.g., an error, without having a large trace buffer for string the whole run since startup. In this mode, the recorder can run "forever" as the buffer never gets full, i.e., in the sense that it always has room for more events.\n
-\n
-To fetch the trace in mode STORE_MODE_RING_BUFFER, you need to first halt the system using your debugger and then do a RAM dump, or to explicitly stop the recorder using vTraceStop() and then store/upload the trace data using a FreeRTOS task that you need to provide yourself. The trace data is found in the struct RecorderData, initialized in trcBase.c.\n
-\n
-Note that, if you upload the trace using a RAM dump, i.e., when the system is halted on a breakpoint or by a debugger command, there is no need to stop the recorder first.\n
-\n
-When RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recording is stopped when the buffer becomes full. When the recorder stops itself this way vTracePortEnd() is called which allows for custom actions, such as triggering a task that stores the trace buffer, i.e., in case taking a RAM dump using an on-chip debugger is not possible. In the Windows port, vTracePortEnd saves the trace to file directly, but this is not recommended in a real-time system since the scheduler is blocked during the processing of vTracePortEnd.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-      </TEnumItem>
     </Property>
     <Property>
       <TBoolItem>
@@ -707,198 +971,6 @@ If enabled (1), the recorder will count each type of event, in order to give an 
       </TIntgItem>
     </Property>
     <Property>
-      <TBoolItem>
-        <Name>Float support</Name>
-        <Symbol>floatingPointForvTracePrintF</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If floating point is supported for vTracePrintF()</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Event buffer size</Name>
-        <Symbol>EventBufferSize</Symbol>
-        <Hint>This sets EVENT_BUFFER_SIZE in trcConfig.h\n
-Macro which should be defined as an integer value.\n
-This defines the capacity of the event buffer, i.e., the number of records it may store. An event typically use one record (4 byte), but there are exceptions:\n
-In some cases, an XTS event is added if the time since the last event is longer that allowed by the current event's timestamp field. Such events thus use two records. vTracePrintF use a variable number of data records following the event, holding the data arguments. \n
-If RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER, the recorder will wrap around to index 0 when reached EVENT_BUFFER_SIZE. If RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recorder is instead stopped (see RECORDER_STORE_MODE).</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>1200</DefaultValue>
-        <MinValue>1</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Symbol table size</Name>
-        <Symbol>SymbolTableSize</Symbol>
-        <Hint>This sets SYMBOL_TABLE_SIZE in trcConfig.h\n
-Macro which should be defined as an integer value.\n
-This defines the capacity of the symbol table, in bytes. This symbol table stores User Events labels and names of deleted tasks, queues, or other kernel objects. Note that the names of active objects not stored here but in the Object Table. Thus, if you don't use User Events or delete any kernel objects you set this to zero (0) to minimize RAM usage.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>400</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of tasks</Name>
-        <Symbol>NTask</Symbol>
-        <Hint>This sets NTask in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>10</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of ISR</Name>
-        <Symbol>NISR</Symbol>
-        <Hint>This sets NISR in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>4</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of queue</Name>
-        <Symbol>NQueue</Symbol>
-        <Hint>This sets NQueue in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>3</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of semaphore</Name>
-        <Symbol>NSemaphore</Symbol>
-        <Hint>This sets NSemaphore in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>4</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of mutex</Name>
-        <Symbol>NMutex</Symbol>
-        <Hint>This sets NMutex in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>4</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of Timer</Name>
-        <Symbol>NTimer</Symbol>
-        <Hint>This sets the NTimer define.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>2</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Number of Event Groups</Name>
-        <Symbol>NEventGroup</Symbol>
-        <Hint>This sets the NEventGroup macro.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>2</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
       <TStrgItem>
         <Name>Name length for task</Name>
         <Symbol>NameLenTaskStr</Symbol>
@@ -916,46 +988,6 @@ This does not limit the total amount of objects created, if objects are deleted 
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Name length for ISR</Name>
-        <Symbol>NameLenISR</Symbol>
-        <Hint>This sets NameLenISR in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>10</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
-        <Name>Name length for queue</Name>
-        <Symbol>NameLenQueue</Symbol>
-        <Hint>This sets NameLenQueue in trcConfig.h\n
-A group of Macros which should be defined as an integer value of zero (0) or larger.\n
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>15</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>-1</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
-    </Property>
-    <Property>
-      <TIntgItem>
         <Name>Name length for semaphore</Name>
         <Symbol>NameLenSemaphore</Symbol>
         <Hint>This sets NameLenSemaphore in trcConfig.h\n
@@ -965,6 +997,26 @@ This does not limit the total amount of objects created, if objects are deleted 
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <DefaultValue>15</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Name length for ISR</Name>
+        <Symbol>NameLenISR</Symbol>
+        <Hint>This sets NameLenISR in trcConfig.h\n
+A group of Macros which should be defined as an integer value of zero (0) or larger.\n
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.\n
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>10</DefaultValue>
         <MinValue>0</MinValue>
         <MaxValue>-1</MaxValue>
         <Bases>DEC</Bases>
@@ -1822,6 +1874,40 @@ Example:\n
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the trace. Call this either from the startup or from the application</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>startTracing</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>if tracing shall be started immediately. Note that for streaming trace this will be blocking!</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(bool startTracing)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

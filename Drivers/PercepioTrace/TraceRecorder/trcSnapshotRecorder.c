@@ -50,7 +50,9 @@
 
 #include <string.h>
 #include <stdarg.h>
-#include <stdint.h>
+#ifndef __HIWARE__ /* << EST */
+  #include <stdint.h>
+#endif
 
 /* DO NOT CHANGE */
 #define TRACE_MINOR_VERSION 5
@@ -226,7 +228,7 @@ void vTraceEnable(int startOption)
 	}	
 }
 
-#if (TRC_CFG_TRACE_DATA_ALLOCATION == TRACE_DATA_ALLOCATION_CUSTOM)
+#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM)
 /*******************************************************************************
  * vTraceSetRecorderDataBuffer
  *
@@ -235,7 +237,7 @@ void vTraceEnable(int startOption)
  ******************************************************************************/
 void vTraceSetRecorderDataBuffer(void* pRecorderData)
 {
-	TRACE_ASSERT(pRecorderData != NULL, "vTraceSetRecorderDataBuffer, pRecorderData == NULL", );
+	TRACE_ASSERT(pRecorderData != NULL, "vTraceSetRecorderDataBuffer, pRecorderData == NULL", 0);
 	RecorderDataPtr = pRecorderData;
 }
 #endif
@@ -268,7 +270,7 @@ void vTraceClear(void)
 	RecorderDataPtr->bufferIsFull = 0;
 	traceErrorMessage = NULL;
 	RecorderDataPtr->internalErrorOccured = 0;
-	memset(RecorderDataPtr->eventData, 0, RecorderDataPtr->maxEvents * 4);
+	(void)memset(RecorderDataPtr->eventData, 0, RecorderDataPtr->maxEvents * 4);
 	handle_of_last_logged_task = 0;
 	trcCRITICAL_SECTION_END();
 }
@@ -321,7 +323,13 @@ uint32_t uiTraceStart(void)
 		prvTraceStoreTaskswitch(handle); /* Register the currently running task */
 		trcCRITICAL_SECTION_END();
 	}
+	%if defined(OnTraceStart)  %- /* << EST: added event handling */
+	{
+	  void %OnTraceStart(void);
 
+	  %OnTraceStart();
+	}
+	%endif
 	return RecorderDataPtr->recorderActive;
 }
 
@@ -354,6 +362,13 @@ void vTraceStop(void)
 	{
 		(*vTraceStopHookPtr)();			/* An application call-back function. */
 	}
+	%if defined(OnTraceStop)  %- /* << EST: added event handling */
+	{
+	  void %OnTraceStop(void);
+
+	  %OnTraceStop();
+	}
+	%endif
 }
 
 /*******************************************************************************
@@ -582,7 +597,7 @@ void vTraceStoreISRBegin(traceHandle handle)
 	{
 		uint16_t dts4;
 		
-		TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "vTraceStoreISRBegin: Invalid value for handle", );
+		TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_ISR], "vTraceStoreISRBegin: Invalid value for handle", ;);
 		
 		dts4 = (uint16_t)prvTraceGetDTS(0xFFFF);
 
@@ -751,7 +766,7 @@ static uint8_t writeInt16(void * buffer, uint8_t i, uint16_t value)
 	TRACE_ASSERT(buffer != NULL, "writeInt16: buffer == NULL", 0);
 
 	/* Align to multiple of 2 */
-	while ((i % 2) != 0)
+	while ((i %% 2) != 0)
 	{
 		if (i >= MAX_ARG_SIZE)
 		{
@@ -778,7 +793,7 @@ static uint8_t writeInt32(void * buffer, uint8_t i, uint32_t value)
 	TRACE_ASSERT(buffer != NULL, "writeInt32: buffer == NULL", 0);
 
 	/* A 32 bit value should begin at an even 4-byte address */
-	while ((i % 4) != 0)
+	while ((i %% 4) != 0)
 	{
 		if (i >= MAX_ARG_SIZE)
 		{
@@ -807,7 +822,7 @@ static uint8_t writeFloat(void * buffer, uint8_t i, float value)
 	TRACE_ASSERT(buffer != NULL, "writeFloat: buffer == NULL", 0);
 
 	/* A 32 bit value should begin at an even 4-byte address */
-	while ((i % 4) != 0)
+	while ((i %% 4) != 0)
 	{
 		if (i >= MAX_ARG_SIZE)
 		{
@@ -838,7 +853,7 @@ static uint8_t writeDouble(void * buffer, uint8_t i, double value)
 
 	/* The double is written as two 32 bit values, and should begin at an even
 	4-byte address (to avoid having to align with 8 byte) */
-	while (i % 4 != 0)
+	while (i %% 4 != 0)
 	{
 		if (i >= MAX_ARG_SIZE)
 		{
@@ -877,7 +892,7 @@ static uint8_t prvTraceUserEventFormat(const char* formatStr, va_list vl, uint8_
 
 	while (formatStr[formatStrIndex] != '\0')
 	{
-		if (formatStr[formatStrIndex] == '%')
+		if (formatStr[formatStrIndex] == '%%')
 		{
 			argCounter++;
 
@@ -1012,7 +1027,7 @@ static void prvTraceClearChannelBuffer(uint32_t count)
 	uint32_t slots;
 
 	TRACE_ASSERT(TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE >= count,
-		"prvTraceClearChannelBuffer: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", );
+		"prvTraceClearChannelBuffer: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", 0);
 
 	/* Check if we're close to the end of the buffer */
 	if (RecorderDataPtr->userEventBuffer.nextSlotToWrite + count > TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE)
@@ -1037,7 +1052,7 @@ static void prvTraceCopyToDataBuffer(uint32_t* data, uint32_t count)
 	TRACE_ASSERT(data != NULL,
 		"prvTraceCopyToDataBuffer: data == NULL.", );
 	TRACE_ASSERT(count <= TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE,
-		"prvTraceCopyToDataBuffer: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", );
+		"prvTraceCopyToDataBuffer: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", 0);
 	/* Check if we're close to the end of the buffer */
 	if (RecorderDataPtr->userEventBuffer.nextSlotToWrite + count > TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE)
 	{
@@ -1088,7 +1103,7 @@ static void prvTraceUBHelper2(traceUBChannel channel, uint32_t* data, uint32_t n
 	
 	TRACE_ALLOC_CRITICAL_SECTION();
 
-	TRACE_ASSERT(TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE >= noOfSlots, "prvTraceUBHelper2: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", );
+	TRACE_ASSERT(TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE >= noOfSlots, "prvTraceUBHelper2: TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE is too small to handle this event.", 0);
 
 	trcCRITICAL_SECTION_BEGIN();
 	/* Store the timestamp */
@@ -1107,7 +1122,7 @@ static void prvTraceUBHelper2(traceUBChannel channel, uint32_t* data, uint32_t n
 	prvTraceCopyToDataBuffer(data, noOfSlots); /* Will wrap around the data if necessary */
 
 	old_nextSlotToWrite = RecorderDataPtr->userEventBuffer.nextSlotToWrite; /* Save the index that we want to write the channel data at when we're done */
-	RecorderDataPtr->userEventBuffer.nextSlotToWrite = (RecorderDataPtr->userEventBuffer.nextSlotToWrite + noOfSlots) % TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE; /* Make sure we never end up outside the buffer */
+	RecorderDataPtr->userEventBuffer.nextSlotToWrite = (RecorderDataPtr->userEventBuffer.nextSlotToWrite + noOfSlots) %% TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE; /* Make sure we never end up outside the buffer */
 
 	/* Write to the channel buffer to indicate that this user event is ready to be used */
 	if (channel != 0)
@@ -1178,7 +1193,7 @@ void vTraceUBData(traceUBChannel channelPair, ...)
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 	va_list vl;
 	
-	TRACE_ASSERT(channelPair != 0, "vTraceUBData: Not a valid traceUBChannel!");
+	TRACE_ASSERT(channelPair != 0, "vTraceUBData: Not a valid traceUBChannel!", 0);
 
 	va_start(vl, channelPair);
 	vTraceUBData_Helper(channelPair, vl);
@@ -1192,8 +1207,8 @@ void vTraceUBData_Helper(traceUBChannel channelPair, va_list vl)
 	traceString channel;
 	traceString formatStr;
 
-	TRACE_ASSERT(channelPair != 0, "vTraceUBData_Helper: channelPair == 0", );
-	TRACE_ASSERT(channelPair <= TRC_CFG_UB_CHANNELS, "vTraceUBData_Helper: ", );
+	TRACE_ASSERT(channelPair != 0, "vTraceUBData_Helper: channelPair == 0", 0);
+	TRACE_ASSERT(channelPair <= TRC_CFG_UB_CHANNELS, "vTraceUBData_Helper: ", 0);
 
 	channel = RecorderDataPtr->userEventBuffer.channels[channelPair].name;
 	formatStr = RecorderDataPtr->userEventBuffer.channels[channelPair].defaultFormat;
@@ -1211,8 +1226,8 @@ void vTraceUBEvent(traceUBChannel channelPair)
 #if (TRC_CFG_SCHEDULING_ONLY == 0)
 	uint32_t data[(3 + MAX_ARG_SIZE) / 4];
 
-	TRACE_ASSERT(channelPair != 0, "vTraceUBEvent: channelPair == 0", );
-	TRACE_ASSERT(channelPair <= TRC_CFG_UB_CHANNELS, "vTraceUBEvent: ", );
+	TRACE_ASSERT(channelPair != 0, "vTraceUBEvent: channelPair == 0", 0);
+	TRACE_ASSERT(channelPair <= TRC_CFG_UB_CHANNELS, "vTraceUBEvent: ", 0);
 
 	prvTraceUBHelper2(channelPair, data, 1); /* Only need one slot for timestamp */
 #endif /* TRC_CFG_SCHEDULING_ONLY */
@@ -1233,13 +1248,13 @@ void vTraceUBEvent(traceUBChannel channelPair)
  *	 traceString adc_uechannel = xTraceRegisterString("ADC User Events");
  *	 ...
  *	 vTracePrintF(adc_uechannel,
- *				 "ADC channel %d: %lf volts",
+ *				 "ADC channel %%d: %%lf volts",
  *				 ch, (double)adc_reading/(double)scale);
  *
  * This can be combined into one line, if desired, but this is slower:
  *
  *	 vTracePrintF(xTraceRegisterString("ADC User Events"),
- *				 "ADC channel %d: %lf volts",
+ *				 "ADC channel %%d: %%lf volts",
  *				 ch, (double)adc_reading/(double)scale);
  *
  * Calling xTraceRegisterString multiple times will not create duplicate entries, but
@@ -1248,15 +1263,15 @@ void vTraceUBEvent(traceUBChannel channelPair)
  * better to use vTracePrint - it is faster.
  *
  * Format specifiers supported:
- * %d - 32 bit signed integer
- * %u - 32 bit unsigned integer
- * %f - 32 bit float
- * %s - string (is copied to the recorder symbol table)
- * %hd - 16 bit signed integer
- * %hu - 16 bit unsigned integer
- * %bd - 8 bit signed integer
- * %bu - 8 bit unsigned integer
- * %lf - double-precision float (Note! See below...)
+ * %%d - 32 bit signed integer
+ * %%u - 32 bit unsigned integer
+ * %%f - 32 bit float
+ * %%s - string (is copied to the recorder symbol table)
+ * %%hd - 16 bit signed integer
+ * %%hu - 16 bit unsigned integer
+ * %%bd - 8 bit signed integer
+ * %%bu - 8 bit unsigned integer
+ * %%lf - double-precision float (Note! See below...)
  *
  * Up to 15 data arguments are allowed, with a total size of maximum 32 byte.
  * In case this is exceeded, the user event is changed into an error message.
@@ -1264,13 +1279,13 @@ void vTraceUBEvent(traceUBChannel channelPair)
  * The data is stored in trace buffer, and is packed to allow storing multiple
  * smaller data entries in the same 4-byte record, e.g., four 8-bit values.
  * A string requires two bytes, as the symbol table is limited to 64K. Storing
- * a double (%lf) uses two records, so this is quite costly. Use float (%f)
+ * a double (%%lf) uses two records, so this is quite costly. Use float (%%f)
  * unless the higher precision is really necessary.
  *
- * Note that the double-precision float (%lf) assumes a 64 bit double
+ * Note that the double-precision float (%%lf) assumes a 64 bit double
  * representation. This does not seem to be the case on e.g. PIC24 and PIC32.
- * Before using a %lf argument on a 16-bit MCU, please verify that
- * "sizeof(double)" actually gives 8 as expected. If not, use %f instead.
+ * Before using a %%lf argument on a 16-bit MCU, please verify that
+ * "sizeof(double)" actually gives 8 as expected. If not, use %%f instead.
  ******************************************************************************/
 void vTracePrintF(traceString eventLabel, const char* formatStr, ...)
 {
@@ -1291,7 +1306,7 @@ void vTracePrintF_Helper(traceString eventLabel, const char* formatStr, va_list 
 	uint32_t tempDataBuffer[(3 + MAX_ARG_SIZE) / 4];
 	TRACE_ALLOC_CRITICAL_SECTION();
 
-	TRACE_ASSERT(formatStr != NULL, "vTracePrintF_Helper: formatStr == NULL", );
+	TRACE_ASSERT(formatStr != NULL, "vTracePrintF_Helper: formatStr == NULL", ;);
 
 	trcCRITICAL_SECTION_BEGIN();
 
@@ -1460,7 +1475,7 @@ void vTracePrint(traceString chn, const char* str)
  * Example:
  *	 myEventHandle = xTraceRegisterString("MyUserEvent");
  *	 ...
- *	 vTracePrintF(myEventHandle, "My value is: %d", myValue);
+ *	 vTracePrintF(myEventHandle, "My value is: %%d", myValue);
  *
  ******************************************************************************/
 traceString xTraceRegisterString(const char* label)
@@ -1507,7 +1522,7 @@ void prvTraceStoreTaskReady(traceHandle handle)
 		return;
 	}
 
-	TRACE_ASSERT(handle <= TRC_CFG_NTASK, "prvTraceStoreTaskReady: Invalid value for handle", );
+	TRACE_ASSERT(handle <= TRC_CFG_NTASK, "prvTraceStoreTaskReady: Invalid value for handle", ;);
 
 	if (recorder_busy)
 	{
@@ -1557,7 +1572,7 @@ void prvTraceStoreLowPower(uint32_t flag)
 	LPEvent* lp;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
-	TRACE_ASSERT(flag <= 1, "prvTraceStoreLowPower: Invalid flag value", );
+	TRACE_ASSERT(flag <= 1, "prvTraceStoreLowPower: Invalid flag value", ;);
 
 	if (recorder_busy)
 	{
@@ -1689,9 +1704,9 @@ void prvTraceStoreKernelCall(uint32_t ecode, traceObjectClass objectClass, uint3
 	uint8_t hnd8;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
-	TRACE_ASSERT(ecode < 0xFF, "prvTraceStoreKernelCall: ecode >= 0xFF", );
-	TRACE_ASSERT(objectClass < TRACE_NCLASSES, "prvTraceStoreKernelCall: objectClass >= TRACE_NCLASSES", );
-	TRACE_ASSERT(objectNumber <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectClass], "prvTraceStoreKernelCall: Invalid value for objectNumber", );
+	TRACE_ASSERT(ecode < 0xFF, "prvTraceStoreKernelCall: ecode >= 0xFF", ;);
+	TRACE_ASSERT(objectClass < TRACE_NCLASSES, "prvTraceStoreKernelCall: objectClass >= TRACE_NCLASSES", ;);
+	TRACE_ASSERT(objectNumber <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectClass], "prvTraceStoreKernelCall: Invalid value for objectNumber", ;);
 
 	if (recorder_busy)
 	{
@@ -1759,9 +1774,9 @@ void prvTraceStoreKernelCallWithParam(uint32_t evtcode,
 	uint8_t p8;
 	TRACE_ALLOC_CRITICAL_SECTION();
 
-	TRACE_ASSERT(evtcode < 0xFF, "prvTraceStoreKernelCallWithParam: evtcode >= 0xFF", );
-	TRACE_ASSERT(objectClass < TRACE_NCLASSES, "prvTraceStoreKernelCallWithParam: objectClass >= TRACE_NCLASSES", );
-	TRACE_ASSERT(objectNumber <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectClass], "prvTraceStoreKernelCallWithParam: Invalid value for objectNumber", );
+	TRACE_ASSERT(evtcode < 0xFF, "prvTraceStoreKernelCallWithParam: evtcode >= 0xFF", ;);
+	TRACE_ASSERT(objectClass < TRACE_NCLASSES, "prvTraceStoreKernelCallWithParam: objectClass >= TRACE_NCLASSES", ;);
+	TRACE_ASSERT(objectNumber <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectClass], "prvTraceStoreKernelCallWithParam: Invalid value for objectNumber", ;);
 
 	if (recorder_busy)
 	{
@@ -1857,7 +1872,7 @@ void prvTraceStoreKernelCallWithNumericParamOnly(uint32_t evtcode, uint32_t para
 	restParam = 0;
 
 	TRACE_ASSERT(evtcode < 0xFF,
-		"prvTraceStoreKernelCallWithNumericParamOnly: Invalid value for evtcode", );
+		"prvTraceStoreKernelCallWithNumericParamOnly: Invalid value for evtcode", ;);
 
 	if (recorder_busy)
 	{
@@ -1917,7 +1932,7 @@ void prvTraceStoreTaskswitch(traceHandle task_handle)
 	skipEvent = 0;
 
 	TRACE_ASSERT(task_handle <= TRC_CFG_NTASK,
-		"prvTraceStoreTaskswitch: Invalid value for task_handle", );
+		"prvTraceStoreTaskswitch: Invalid value for task_handle", ;);
 
 	/* Skip the event if the task has been excluded, using vTraceExcludeTask */
 	if (TRACE_GET_TASK_FLAG_ISEXCLUDED(task_handle))
@@ -1998,9 +2013,9 @@ void prvTraceStoreObjectNameOnCloseEvent(traceHandle handle,
 	traceString idx;
 
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
-		"prvTraceStoreObjectNameOnCloseEvent: objectclass >= TRACE_NCLASSES", );
+		"prvTraceStoreObjectNameOnCloseEvent: objectclass >= TRACE_NCLASSES", ;);
 	TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectclass],
-		"prvTraceStoreObjectNameOnCloseEvent: Invalid value for handle", );
+		"prvTraceStoreObjectNameOnCloseEvent: Invalid value for handle", ;);
 
 	if (RecorderDataPtr->recorderActive)
 	{
@@ -2026,9 +2041,9 @@ void prvTraceStoreObjectPropertiesOnCloseEvent(traceHandle handle,
 	ObjClosePropEvent * pe;
 
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
-		"prvTraceStoreObjectPropertiesOnCloseEvent: objectclass >= TRACE_NCLASSES", );
+		"prvTraceStoreObjectPropertiesOnCloseEvent: objectclass >= TRACE_NCLASSES", ;);
 	TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectclass],
-		"prvTraceStoreObjectPropertiesOnCloseEvent: Invalid value for handle", );
+		"prvTraceStoreObjectPropertiesOnCloseEvent: Invalid value for handle", ;);
 
 	if (RecorderDataPtr->recorderActive)
 	{
@@ -2054,9 +2069,9 @@ void prvTraceStoreObjectPropertiesOnCloseEvent(traceHandle handle,
 void prvTraceSetPriorityProperty(uint8_t objectclass, traceHandle id, uint8_t value)
 {
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
-		"prvTraceSetPriorityProperty: objectclass >= TRACE_NCLASSES", );
+		"prvTraceSetPriorityProperty: objectclass >= TRACE_NCLASSES", ;);
 	TRACE_ASSERT(id <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectclass],
-		"prvTraceSetPriorityProperty: Invalid value for id", );
+		"prvTraceSetPriorityProperty: Invalid value for id", ;);
 
 	TRACE_PROPERTY_ACTOR_PRIORITY(objectclass, id) = value;
 }
@@ -2074,9 +2089,9 @@ uint8_t prvTraceGetPriorityProperty(uint8_t objectclass, traceHandle id)
 void prvTraceSetObjectState(uint8_t objectclass, traceHandle id, uint8_t value)
 {
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
-		"prvTraceSetObjectState: objectclass >= TRACE_NCLASSES", );
+		"prvTraceSetObjectState: objectclass >= TRACE_NCLASSES", ;);
 	TRACE_ASSERT(id <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectclass],
-		"prvTraceSetObjectState: Invalid value for id", );
+		"prvTraceSetObjectState: Invalid value for id", ;);
 
 	TRACE_PROPERTY_OBJECT_STATE(objectclass, id) = value;
 }
@@ -2094,7 +2109,7 @@ uint8_t prvTraceGetObjectState(uint8_t objectclass, traceHandle id)
 void prvTraceSetTaskInstanceFinished(traceHandle handle)
 {
 	TRACE_ASSERT(handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[TRACE_CLASS_TASK],
-		"prvTraceSetTaskInstanceFinished: Invalid value for handle", );
+		"prvTraceSetTaskInstanceFinished: Invalid value for handle", ;);
 
 #if (TRC_CFG_USE_IMPLICIT_IFE_RULES == 1)
 	TRACE_PROPERTY_OBJECT_STATE(TRACE_CLASS_TASK, handle) = 0;
@@ -2156,7 +2171,7 @@ uint32_t init_hwtc_count;
  * Remember to replace "name" with the correct section name.
  ******************************************************************************/
 
-#if (TRC_CFG_TRACE_DATA_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC)
+#if (TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC)
 
 #if (TRC_CFG_USE_LINKER_PRAGMA == 1)
 #include "recorderdata_linker_pragma.h"
@@ -2175,11 +2190,11 @@ void prvTraceInitTraceData()
 {	
 	init_hwtc_count = TRC_HWTC_COUNT;
 	
-#if TRC_CFG_TRACE_DATA_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+#if TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_STATIC
 	RecorderDataPtr = &RecorderData;
-#elif TRC_CFG_TRACE_DATA_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
+#elif TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
 	RecorderDataPtr = (RecorderDataType*)TRACE_MALLOC(sizeof(RecorderDataType));
-#elif TRC_CFG_TRACE_DATA_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
+#elif TRC_CFG_RECORDER_BUFFER_ALLOCATION == TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM
 	/* DO NOTHING */
 #endif
 
@@ -2358,9 +2373,9 @@ void prvTraceFreeObjectHandle(traceObjectClass objectclass, traceHandle handle)
 	int indexOfHandle;
 
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES, 
-		"prvTraceFreeObjectHandle: Invalid value for objectclass", );
+		"prvTraceFreeObjectHandle: Invalid value for objectclass", ;);
 	TRACE_ASSERT(handle > 0 && handle <= RecorderDataPtr->ObjectPropertyTable.NumberOfObjectsPerClass[objectclass], 
-		"prvTraceFreeObjectHandle: Invalid value for handle", );
+		"prvTraceFreeObjectHandle: Invalid value for handle", ;);
 
 	/* Check that there is room to push the handle on the stack */
 	if ((objectHandleStacks.indexOfNextAvailableHandle[objectclass] - 1) <
@@ -2389,7 +2404,7 @@ void prvTraceSetObjectName(traceObjectClass objectclass,
 {
 	static uint16_t idx;
 
-	TRACE_ASSERT(name != NULL, "prvTraceSetObjectName: name == NULL", );
+	TRACE_ASSERT(name != NULL, "prvTraceSetObjectName: name == NULL", ;);
 
 	if (objectclass >= TRACE_NCLASSES)
 	{
@@ -2508,7 +2523,7 @@ void prvCheckDataToBeOverwrittenForMultiEntryEvents(uint8_t nofEntriesToCheck)
 	unsigned int e = 0;
 
 	TRACE_ASSERT(nofEntriesToCheck != 0, 
-		"prvCheckDataToBeOverwrittenForMultiEntryEvents: nofEntriesToCheck == 0", );
+		"prvCheckDataToBeOverwrittenForMultiEntryEvents: nofEntriesToCheck == 0", ;);
 
 	while (i < nofEntriesToCheck)
 	{
@@ -2561,6 +2576,13 @@ void prvTraceUpdateCounters(void)
 #if (TRC_CFG_SNAPSHOT_MODE == TRC_SNAPSHOT_MODE_RING_BUFFER)
 		RecorderDataPtr->bufferIsFull = 1;
 		RecorderDataPtr->nextFreeIndex = 0;
+    %if defined(OnTraceWrap)  %- /* << EST: added event handling */
+    {
+      void %OnTraceWrap(void); /* prototype */
+
+      %OnTraceWrap();
+    }
+    %endif
 #else
 		vTraceStop();
 #endif
@@ -2633,7 +2655,7 @@ uint16_t prvTraceGetDTS(uint16_t param_maxDTS)
 			/* More than 1 second has passed */
 			RecorderDataPtr->absTimeLastEventSecond += dts / RecorderDataPtr->frequency;
 			/* The part that is not an entire second is added to absTimeLastEvent */
-			RecorderDataPtr->absTimeLastEvent += dts % RecorderDataPtr->frequency;
+			RecorderDataPtr->absTimeLastEvent += dts %% RecorderDataPtr->frequency;
 		}
 		else
 		{
@@ -2810,9 +2832,9 @@ void prvTraceGetChecksum(const char *pname, uint8_t* pcrc, uint8_t* plength)
 	int length = 1;		/* Should be 1 to account for '\0' */
 	int crc = 0;
 
-	TRACE_ASSERT(pname != NULL, "prvTraceGetChecksum: pname == NULL", );
-	TRACE_ASSERT(pcrc != NULL, "prvTraceGetChecksum: pcrc == NULL", );
-	TRACE_ASSERT(plength != NULL, "prvTraceGetChecksum: plength == NULL", );
+	TRACE_ASSERT(pname != NULL, "prvTraceGetChecksum: pname == NULL", ;);
+	TRACE_ASSERT(pcrc != NULL, "prvTraceGetChecksum: pcrc == NULL", ;);
+	TRACE_ASSERT(plength != NULL, "prvTraceGetChecksum: plength == NULL", ;);
 
 	if (pname != (const char *) 0)
 	{
@@ -2844,7 +2866,7 @@ static void prvTraceStoreXID(traceHandle handle)
 {
 	XPSEvent* xid;
 
-	TRACE_ASSERT(handle >= 256, "prvTraceStoreXID: Handle < 256", );
+	TRACE_ASSERT(handle >= 256, "prvTraceStoreXID: Handle < 256", 0);
 
 	xid = (XPSEvent*)prvTraceNextFreeEventBufferSlot();
 
@@ -2991,7 +3013,7 @@ void prvTracePortGetTimeStamp(uint32_t *pTimestamp)
 		/* Get timestamp from trace ticks. Scale down the period to avoid unwanted overflows. */
 		last_timestamp = traceTickCount * (TRC_HWTC_PERIOD / TRC_HWTC_DIVISOR);
 		/* Increase timestamp by (hwtc_count + "lost hardware ticks from scaling down period") / TRC_HWTC_DIVISOR. */
-		last_timestamp += (hwtc_count + traceTickCount * (TRC_HWTC_PERIOD % TRC_HWTC_DIVISOR)) / TRC_HWTC_DIVISOR;
+		last_timestamp += (hwtc_count + traceTickCount * (TRC_HWTC_PERIOD %% TRC_HWTC_DIVISOR)) / TRC_HWTC_DIVISOR;
 	}
 	/* Store the previous value */
 	last_traceTickCount = traceTickCount;
@@ -3010,7 +3032,7 @@ void prvTracePortGetTimeStamp(uint32_t *pTimestamp)
 	diff_scaled = diff / TRC_HWTC_DIVISOR;
 	
 	/* Find out how many ticks were lost when scaling down, so we can add them the next time */
-	last_hwtc_rest = diff % TRC_HWTC_DIVISOR;
+	last_hwtc_rest = diff %% TRC_HWTC_DIVISOR;
 
 	/* We increase the scaled timestamp by the scaled amount */
 	last_timestamp += diff_scaled;

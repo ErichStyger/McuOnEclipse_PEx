@@ -100,11 +100,7 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-%if defined(StreamingTraceWithRTT) & %StreamingTraceWithRTT='yes'
-#include "trcRecorder.h" /* streaming trace with RTT */
-%else
-#include "trcUser.h" /* traditional recorder, without streaming over RTT */
-%endif
+#include "trcRecorder.h" /* streaming interface */
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -367,6 +363,15 @@ void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t 
 
 %endif %- vTraceTaskInstanceFinishDirect
 %-BW_METHOD_END vTraceTaskInstanceFinishDirect
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(bool startTracing);
+%define! ParstartTracing
+%include Common\PercepioTraceInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -680,7 +685,7 @@ void* %'ModuleName'%.%vTraceInitTraceData(void)
 %include Common\PercepioTracevGetGDBDumpCommand.Inc
 void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t *fileName)
 {
-#if TRC_CONFIG_USE_RTT_STREAMING
+#if TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_STREAMING
   (void)bufSize; /* not used */
   (void)fileName; /* not used */
   /* with RTT streaming, there is no trace buffer */
@@ -772,6 +777,35 @@ void %'ModuleName'%.%vTraceTaskInstanceFinishDirect(void)
 
 %endif %- vTraceTaskInstanceFinishDirect
 %-BW_METHOD_END vTraceTaskInstanceFinishDirect
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%define! ParstartTracing
+%include Common\PercepioTraceInit.Inc
+void %'ModuleName'%.%Init(bool startTracing)
+{
+#if TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_SNAPSHOT
+  if (startTracing) {
+    vTraceEnable(TRC_START); /* snapshot trace, from startup */
+  } else {
+    vTraceEnable(TRC_INIT); /* startup */
+    /* call the thing below later to start trace: */
+    // vTraceEnable(TRC_START); /* e.g., in task context, at some relevant event */
+  }
+#elif TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_STREAMING
+  if (startTracing) {
+    vTraceEnable(TRC_START_AWAIT_HOST); /* from startup, Blocks! */
+  } else {
+    /* call the thing below later to start trace: */
+    // vTraceEnable(TRC_INIT); /* Streaming trace, from a later point */
+  }
+#else
+  #error "invalid configuration!"
+#endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

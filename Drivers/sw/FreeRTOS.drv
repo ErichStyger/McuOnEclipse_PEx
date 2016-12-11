@@ -137,7 +137,7 @@
                                                                  %>>/* RTOS adapter is configured not to disable interrupts */ \
   %endif
   %if %UseTraceHooksGroup='yes'
-                                                                 %>>%@FRTrace@'ModuleName'%.vTraceInitTraceData();/* initialize trace first, as needed by RTOS functions */
+                                                                 %>>%@FRTrace@'ModuleName'%.Init(FALSE);/* initialize trace, but do not start */
   %else
                                                                  %>>/* not Trace Hooks, nothing to do */
   %endif

@@ -47,6 +47,37 @@
 
 #include "trcPortDefines.h"
 
+#if 1 /* << EST */
+#include "FreeRTOSConfig.h"
+
+#if configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
+#if MCUC1_CONFIG_PEX_SDK_USED/* << EST Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
+  /** \brief  Get Priority Mask
+      This function returns the current state of the priority mask bit from the Priority Mask Register.
+      \return               Priority Mask value
+   */
+  __attribute__( ( always_inline ) ) static inline uint32_t __get_PRIMASK(void)
+  {
+    uint32_t result;
+
+    __asm volatile ("MRS %%0, primask" : "=r" (result) );
+    return(result);
+  }
+
+
+  /** \brief  Set Priority Mask
+      This function assigns the given value to the Priority Mask Register.
+      \param [in]    priMask  Priority Mask
+   */
+  __attribute__( ( always_inline ) ) static inline void __set_PRIMASK(uint32_t priMask)
+  {
+    __asm volatile ("MSR primask, %%0" : : "r" (priMask) : "memory");
+  }
+#else
+  #include "fsl_device_registers.h"
+#endif /* #if MCUC1_CONFIG_PEX_SDK_USED */
+#endif /* configCPU_FAMILY_IS_ARM */
+#endif /* << EST */
 
 #if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_NOT_SET)
 	#error "TRC_CFG_HARDWARE_PORT not selected - see trcConfig.h"
@@ -368,6 +399,9 @@
 	#if !( defined (TRC_HWTC_TYPE) && defined (TRC_HWTC_COUNT) && defined (TRC_HWTC_PERIOD) && defined (TRC_HWTC_FREQ_HZ) && defined (TRC_IRQ_PRIORITY_ORDER) )
 		#error "The hardware port is not completely defined!"
 	#endif
+
+#elif (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_PROCESSOR_EXPERT) /* << EST */
+  #include "portTicks.h"
 
 #elif (TRC_CFG_HARDWARE_PORT != TRC_HARDWARE_PORT_NOT_SET)
 

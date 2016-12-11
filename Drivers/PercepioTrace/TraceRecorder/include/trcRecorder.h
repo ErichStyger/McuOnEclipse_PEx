@@ -50,7 +50,9 @@ extern "C" {
 #endif
 
 #include <stdarg.h>
-#include <stdint.h>
+#ifndef __HIWARE__ /* << EST */
+  #include <stdint.h>
+#endif
 #include "trcConfig.h"
 #include "trcPortDefines.h"
 
@@ -170,34 +172,34 @@ void vTraceEnable(int startOption);
  *	 traceString adc_uechannel = xTraceRegisterString("ADC User Events");
  *	 ...
  *	 vTracePrintF(adc_uechannel,
- *				 "ADC channel %d: %d volts",
+ *				 "ADC channel %%d: %%d volts",
  *				 ch, adc_reading);
  *
  * The following format specifiers are supported in both modes:
- * %d - signed integer. 
- * %u - unsigned integer.
- * %X - hexadecimal, uppercase. 
- * %x - hexadecimal, lowercase.
- * %s - string (see comment below)
+ * %%d - signed integer.
+ * %%u - unsigned integer.
+ * %%X - hexadecimal, uppercase.
+ * %%x - hexadecimal, lowercase.
+ * %%s - string (see comment below)
  *
- * For integer formats (%d, %u, %x, %X) you may also use width and padding.
+ * For integer formats (%%d, %%u, %%x, %%X) you may also use width and padding.
  * If using -42 as data argument, two examples are:
- *    "%05d" -> "-0042"
- *     "%5d" -> "  -42".
+ *    "%%05d" -> "-0042"
+ *     "%%5d" -> "  -42".
  *
  * String arguments are supported in both snapshot and streaming, but in streaming
  * mode you need to use xTraceRegisterString and use the returned traceString as
  * the argument. In snapshot you simply provide a char* as argument.
  *
- * Snapshot: vTracePrintF(myChn, "my string: %s", str);
- * Streaming: vTracePrintF(myChn, "my string: %s", xTraceRegisterString(str));
+ * Snapshot: vTracePrintF(myChn, "my string: %%s", str);
+ * Streaming: vTracePrintF(myChn, "my string: %%s", xTraceRegisterString(str));
  * 
  * In snapshot mode you can specify 8-bit or 16-bit arguments to reduce RAM usage:
- *     %hd -> 16 bit (h) signed integer (d).
- *     %bu -> 8 bit (b) unsigned integer (u).
+ *     %%hd -> 16 bit (h) signed integer (d).
+ *     %%bu -> 8 bit (b) unsigned integer (u).
  *
  * However, in streaming mode all data arguments are assumed to be 32 bit wide. 
- * Width specifiers (e.g. %hd) are accepted but ignored (%hd treated like %d).
+ * Width specifiers (e.g. %%hd) are accepted but ignored (%%hd treated like %%d).
  *
  * The maximum event size also differs between the modes. In streaming this is
  * limited by a maximum payload size of 52 bytes, including format string and
@@ -234,7 +236,7 @@ void vTracePrint(traceString chn, const char* str);
 * Example:
 *	 myEventHandle = xTraceRegisterString("MyUserEvent");
 *	 ...
-*	 vTracePrintF(myEventHandle, "My value is: %d", myValue);
+*	 vTracePrintF(myEventHandle, "My value is: %%d", myValue);
 *
 ******************************************************************************/
 traceString xTraceRegisterString(const char* name);

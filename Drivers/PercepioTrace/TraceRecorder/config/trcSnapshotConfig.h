@@ -67,7 +67,11 @@
  * recording is stopped when the buffer becomes full. This is useful for
  * recording events following a specific state, e.g., the startup sequence.
  *****************************************************************************/
+%if defined(RecorderStoreMode)
+#define TRC_CFG_SNAPSHOT_MODE %RecorderStoreMode
+%else
 #define TRC_CFG_SNAPSHOT_MODE TRC_SNAPSHOT_MODE_RING_BUFFER
+%endif
 
 /*******************************************************************************
  * TRC_CFG_SCHEDULING_ONLY
@@ -83,7 +87,11 @@
  * Default value is 0 (store all enabled events).
  *
  ******************************************************************************/
+%if defined(TraceSchedulingOnly) & %TraceSchedulingOnly='yes'
+#define TRC_CFG_SCHEDULING_ONLY 1
+%else
 #define TRC_CFG_SCHEDULING_ONLY 0
+%endif
 
 /*******************************************************************************
  * TRC_CFG_EVENT_BUFFER_SIZE
@@ -98,7 +106,11 @@
  * Default value is 1000, which means that 4000 bytes is allocated for the
  * event buffer.
  ******************************************************************************/
+%if defined(EventBufferSize)
+#define TRC_CFG_EVENT_BUFFER_SIZE %EventBufferSize
+%else
 #define TRC_CFG_EVENT_BUFFER_SIZE 1000
+%endif
 
 /*******************************************************************************
  * TRC_CFG_NTASK, TRC_CFG_NISR, TRC_CFG_NQUEUE, TRC_CFG_NSEMAPHORE, TRC_CFG_NMUTEX
@@ -122,13 +134,41 @@
  * check the actual usage by selecting View menu -> Trace Details -> 
  * Resource Usage -> Object Table. 
  ******************************************************************************/
+%if defined(NTask)
+#define TRC_CFG_NTASK     %NTask
+%else
 #define TRC_CFG_NTASK			10
+%endif
+%if defined(NISR)
+#define TRC_CFG_NISR      %NISR
+%else
 #define TRC_CFG_NISR			5
+%endif
+%if defined(NQueue)
+#define TRC_CFG_NQUEUE      %NQueue
+%else
 #define TRC_CFG_NQUEUE			10
+%endif
+%if defined(NSemaphore)
+#define TRC_CFG_NSEMAPHORE    %NSemaphore
+%else
 #define TRC_CFG_NSEMAPHORE		10
+%endif
+%if defined(NMutex)
+#define TRC_CFG_NMUTEX      %NMutex
+%else
 #define TRC_CFG_NMUTEX			10
+%endif
+%if defined(NTimer)
+#define TRC_CFG_NTIMER      %NTimer
+%else
 #define TRC_CFG_NTIMER			5
+%endif
+%if defined(NEventGroup)
+#define TRC_CFG_NEVENTGROUP   %NEventGroup
+%else
 #define TRC_CFG_NEVENTGROUP		5
+%endif
 
 /******************************************************************************
  * TRC_CFG_INCLUDE_MEMMANG_EVENTS
@@ -140,7 +180,11 @@
  *
  * Default value is 1.
  *****************************************************************************/
+%if defined(IncludeMemManageEvents) & %IncludeMemManageEvents='no'
+#define TRC_CFG_INCLUDE_MEMMANG_EVENTS 0
+%else
 #define TRC_CFG_INCLUDE_MEMMANG_EVENTS 1
+%endif
 
 /******************************************************************************
  * TRC_CFG_INCLUDE_USER_EVENTS
@@ -154,7 +198,11 @@
  * 
  * Default value is 1.
  *****************************************************************************/
+%if defined(IncludeUserEvents) & %IncludeUserEvents='no'
+#define TRC_CFG_INCLUDE_USER_EVENTS 0
+%else
 #define TRC_CFG_INCLUDE_USER_EVENTS 1
+%endif
 
 /*****************************************************************************
  * TRC_CFG_INCLUDE_ISR_TRACING
@@ -169,7 +217,11 @@
  * Note: tracing ISRs requires that you insert calls to vTraceStoreISRBegin
  * and vTraceStoreISREnd in your interrupt handlers.
  *****************************************************************************/
+%if defined(IncludeISRTracing) & %IncludeISRTracing='no'
+#define TRC_CFG_INCLUDE_ISR_TRACING 0
+%else
 #define TRC_CFG_INCLUDE_ISR_TRACING 1
+%endif
 
 /*****************************************************************************
  * TRC_CFG_INCLUDE_READY_EVENTS
@@ -183,7 +235,11 @@
  *
  * Default value is 1.
  *****************************************************************************/
+%if defined(IncludeReadyEvents) & %IncludeReadyEvents='no'
+#define TRC_CFG_INCLUDE_READY_EVENTS 0
+%else
 #define TRC_CFG_INCLUDE_READY_EVENTS 1
+%endif
 
 /*****************************************************************************
  * TRC_CFG_INCLUDE_OSTICK_EVENTS
@@ -195,7 +251,11 @@
  *
  * Default value is 0.
  *****************************************************************************/
+%if defined(IncludeOSTickEvents) & %IncludeOSTickEvents='yes'
+#define TRC_CFG_INCLUDE_OSTICK_EVENTS 1
+%else
 #define TRC_CFG_INCLUDE_OSTICK_EVENTS 0
+%endif
 
 /******************************************************************************
  * TRC_CFG_INCLUDE_FLOAT_SUPPORT
@@ -207,13 +267,17 @@
  * supported by the platform used.
  *
  * Floating point values are only used in vTracePrintF and its subroutines, to 
- * allow for storeíng float (%f) or double (%lf) arguments. 
+ * allow for storeíng float (%%f) or double (%%lf) arguments.
  *
  * vTracePrintF can be used with integer and string arguments in either case.
  *
  * Default value is 0.
  *****************************************************************************/
+%if defined(floatingPointForvTracePrintF) & %floatingPointForvTracePrintF='yes'
+#define TRC_CFG_INCLUDE_FLOAT_SUPPORT 1
+%else
 #define TRC_CFG_INCLUDE_FLOAT_SUPPORT 0
+%endif
 
 /******************************************************************************
  * TRC_CFG_INCLUDE_OBJECT_DELETE
@@ -226,7 +290,11 @@
  *
  * Default value is 1.
  *****************************************************************************/
+%if defined(IncludeObjectDelete) & %IncludeObjectDelete='no'
+#define TRC_CFG_INCLUDE_OBJECT_DELETE 0
+%else
 #define TRC_CFG_INCLUDE_OBJECT_DELETE 1
+%endif
 
 /*******************************************************************************
  * TRC_CFG_SYMBOL_TABLE_SIZE
@@ -242,7 +310,11 @@
  *
  * Default value is 800.
  ******************************************************************************/
+%if defined(SymbolTableSize)
+#define TRC_CFG_SYMBOL_TABLE_SIZE %SymbolTableSize
+%else
 #define TRC_CFG_SYMBOL_TABLE_SIZE 800
+%endif
 
 #if (TRC_CFG_SYMBOL_TABLE_SIZE == 0)
 #error "TRC_CFG_SYMBOL_TABLE_SIZE may not be zero!"
@@ -409,7 +481,7 @@
  *  traceUBChannel UBCh1 = xTraceRegisterUBChannel(chn1, fmt1);
  *						
  *  traceString chn2 = xTraceRegisterString("Channel 2");
- *  traceString fmt2 = xTraceRegisterString("X: %d, Y: %d");
+ *  traceString fmt2 = xTraceRegisterString("X: %%d, Y: %%d");
  *	traceUBChannel UBCh2 = xTraceRegisterUBChannel(chn2, fmt2);
  *	
  *  // Result in "[Channel 1] Event!"
@@ -424,13 +496,13 @@
  * provided channel name and format string, or creates a new UB channel
  * if no match is found. The format string should therefore not contain 
  * "random" messages but mainly format specifiers. Random strings should
- * be stored using %s and with the string as an argument.
+ * be stored using %%s and with the string as an argument.
  *
- *  // Creates a new UB channel ("Channel 2", "%Z: %d")
- *  vTracePrintF(chn2, "%Z: %d", value1);
+ *  // Creates a new UB channel ("Channel 2", "%%Z: %%d")
+ *  vTracePrintF(chn2, "%%Z: %%d", value1);
  *  
  *  // Finds the existing UB channel
- *  vTracePrintF(chn2, "%Z: %d", value2);
+ *  vTracePrintF(chn2, "%%Z: %%d", value2);
  
  ******************************************************************************/
 #define TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER 0

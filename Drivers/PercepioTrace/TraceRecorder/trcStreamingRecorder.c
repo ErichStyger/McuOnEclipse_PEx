@@ -416,16 +416,16 @@ void vTracePrint(traceString chn, const char* str)
  *	 traceString adc_uechannel = xTraceRegisterString("ADC User Events");
  *	 ...
  *	 vTracePrintF(adc_uechannel,
- *				 "ADC channel %d: %d volts",
+ *				 "ADC channel %%d: %%d volts",
  *				 ch, adc_reading);
  *
  * All data arguments are assumed to be 32 bt wide. The following formats are
  * supported in v3.0:
- * %d - signed integer. The following width and padding format is supported: "%05d" -> "-0042" and "%5d" -> "  -42"
- * %u - unsigned integer. The following width and padding format is supported: "%05u" -> "00042" and "%5u" -> "   42"
- * %X - hexadecimal (uppercase). The following width and padding format is supported: "%04X" -> "002A" and "%4X" -> "  2A"
- * %x - hexadecimal (lowercase). The following width and padding format is supported: "%04x" -> "002a" and "%4x" -> "  2a"
- * %s - string (currently, this must be an earlier stored symbol name)
+ * %%d - signed integer. The following width and padding format is supported: "%%05d" -> "-0042" and "%%5d" -> "  -42"
+ * %%u - unsigned integer. The following width and padding format is supported: "%%05u" -> "00042" and "%%5u" -> "   42"
+ * %%X - hexadecimal (uppercase). The following width and padding format is supported: "%%04X" -> "002A" and "%%4X" -> "  2A"
+ * %%x - hexadecimal (lowercase). The following width and padding format is supported: "%%04x" -> "002a" and "%%4x" -> "  2a"
+ * %%s - string (currently, this must be an earlier stored symbol name)
  *
  * Up to 15 data arguments are allowed, with a total size of maximum 60 byte
  * including 8 byte for the base event fields and the format string. So with
@@ -440,17 +440,17 @@ void vTracePrintF(traceString chn, const char* fmt, ...)
 
   int nArgs = 0;
 
-  /* Count the number of arguments in the format string (e.g., %d) */
+  /* Count the number of arguments in the format string (e.g., %%d) */
   for (i = 0; (fmt[i] != 0) && (i < 52); i++)
   {
-    if (fmt[i] == '%')
+    if (fmt[i] == '%%')
     {
-		if (fmt[i + 1] != '%')
+		if (fmt[i + 1] != '%%')
 		{
 			nArgs++;        /* Found an argument */
 		}
 		
-		i++;      /* Move past format specifier or non-argument '%' */
+		i++;      /* Move past format specifier or non-argument '%%' */
     }
   }
 
@@ -794,14 +794,14 @@ static void prvTraceStoreWarnings()
 	{
 		if (NoRoomForSymbol > 0)
 		{
-			vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_TABLE_SLOTS too small. Add %d slots.", NoRoomForSymbol);
+			vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_TABLE_SLOTS too small. Add %%d slots.", NoRoomForSymbol);
 		}
 
 		if (LongestSymbolName > 0)
 		{
 			if (LongestSymbolName > (TRC_CFG_SYMBOL_MAX_LENGTH))
 			{
-				vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_MAX_LENGTH too small. Add %d chars.", LongestSymbolName - (TRC_CFG_SYMBOL_MAX_LENGTH));
+				vTracePrintF(trcWarningChannel, "TRC_CFG_SYMBOL_MAX_LENGTH too small. Add %%d chars.", LongestSymbolName - (TRC_CFG_SYMBOL_MAX_LENGTH));
 			}
 		}
 
@@ -824,7 +824,7 @@ static void prvTraceStoreWarnings()
 			and string characters. For User Events, also the User Event Channel ptr
 			must be squeezed in, if a channel is specified. */
 
-			vTracePrintF(trcWarningChannel, "String event too long, up to %d bytes truncated.", MaxBytesTruncated);
+			vTracePrintF(trcWarningChannel, "String event too long, up to %%d bytes truncated.", MaxBytesTruncated);
 		}
 
 		switch (errorCode)
@@ -1395,11 +1395,11 @@ static int prvAllocateBufferPage(int prevPage)
 	int index;
 	int count = 0;
 
-	index = (prevPage + 1) % TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
+	index = (prevPage + 1) %% TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
 
 	while((PageInfo[index].Status != PAGE_STATUS_FREE) && (count ++ < TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT))
 	{
-		index = (index + 1) % TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
+		index = (index + 1) %% TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
 	}
 
 	if (PageInfo[index].Status == PAGE_STATUS_FREE)
@@ -1430,11 +1430,11 @@ static int prvGetBufferPage(int32_t* bytesUsed)
 {
 	static int8_t lastPage = -1;
 	int count = 0;
-  	int8_t index = (lastPage + 1) % TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
+  	int8_t index = (lastPage + 1) %% TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
 
 	while((PageInfo[index].Status != PAGE_STATUS_READ) && (count++ < TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT))
 	{
-		index = (index + 1) % TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
+		index = (index + 1) %% TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT;
 	}
 
 	if (PageInfo[index].Status == PAGE_STATUS_READ)

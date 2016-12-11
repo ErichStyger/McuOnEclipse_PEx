@@ -229,39 +229,168 @@ LI.EXP {
 <b>SDK</b></a> - Link to SDK
 </li>
 <li>
+<a name="Utility">
+<b>Utility</b></a> - Interface to utility functions
+</li>
+<li>
+<a name="TraceRecorderMode">
+<b>Recorder Mode</b></a> - Configrue TRC_CFG_RECORDER_MODE to TRC_RECORDER_MODE_SNAPSHOT or TRC_RECORDER_MODE_STREAMING<br /><br />
+There are 2 options:<br />
+<ul>
+  <li><u>Snapshot</u>: Does snapshot trace into local RAM buffer for later uploade.</li>
+  <li><u>Streaming</u>: Does continuous trace to the host PC.</li>
+</ul><br />
+
+</li>
+<li>
+<a name="RecorderBufferAllocation">
+<b>Recorder Buffer Allocation</b></a> - Configure the macro TRC_CFG_RECORDER_BUFFER_ALLOCATION to TRC_RECORDER_BUFFER_ALLOCATION_STATIC, TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC or TRC_RECORDER_BUFFER_ALLOCATION_CUSTOM. Note that CUSTOM is only supported in snapshot mode.<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>static</u>: Static allocation</li>
+  <li><u>dynamic</u>: Allocated in vTraceEnable</li>
+  <li><u>custom</u>: Use vTraceSetRecorderDataBuffer</li>
+</ul><br />
+
+</li>
+<li>
+<a name="TraceMaxISRNesting">
+<b>Max ISR Nesting</b></a> - Defines the maxium level of ISR nesting
+</li>
+<li>
+<a name="SnapshotModeGroup">
+<b>Snapshot Mode</b></a> - Settings for Snapshot mode, stored in trcSnapshotConfig.h
+<ul>
+  <li>
+  <a name="RecorderStoreMode">
+  <b>Recorder store mode</b></a> - This sets TRC_CFG_SNAPSHOT_MODE.<br /><br />
+There are 2 options:<br />
+<ul>
+  <li><u>Ring Buffer</u>: Using ring buffer</li>
+  <li><u>Stop when full</u>: Stops recording when buffer is ful</li>
+</ul><br />
+
+  </li>
+  <li>
+  <a name="TraceSchedulingOnly">
+  <b>Scheduling only</b></a> - This defines TRACE_SCHEDULING_ONLY in trcConfig.h<br />
+When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.
+  </li>
+  <li>
+  <a name="EventBufferSize">
+  <b>Event buffer size</b></a> - This sets TRC_CFG_EVENT_BUFFER_SIZE.<br />
+Macro which should be defined as an integer value.<br />
+This defines the capacity of the event buffer, i.e., the number of records it may store. An event typically use one record (4 byte), but there are exceptions:<br />
+In some cases, an XTS event is added if the time since the last event is longer that allowed by the current event's timestamp field. Such events thus use two records. vTracePrintF use a variable number of data records following the event, holding the data arguments. <br />
+If RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER, the recorder will wrap around to index 0 when reached EVENT_BUFFER_SIZE. If RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recorder is instead stopped (see RECORDER_STORE_MODE).
+  </li>
+  <li>
+  <a name="NTask">
+  <b>Number of tasks</b></a> - This sets NTask in trcConfig.h<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+  <li>
+  <a name="NISR">
+  <b>Number of ISR</b></a> - This sets TRC_CFG_NISR.<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+  <li>
+  <a name="NQueue">
+  <b>Number of queue</b></a> - This sets TRC_CFG_NQUEUE.<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+  <li>
+  <a name="NSemaphore">
+  <b>Number of semaphore</b></a> - This sets TRC_CFG_NSEMAPHORE.<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+  <li>
+  <a name="NMutex">
+  <b>Number of mutex</b></a> - This sets TRC_CFG_NMUTEX.<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+  <li>
+  <a name="NTimer">
+  <b>Number of Timer</b></a> - This sets the TRC_CFG_NTIMER define.
+  </li>
+  <li>
+  <a name="NEventGroup">
+  <b>Number of Event Groups</b></a> - This sets the TRC_CFG_NEVENTGROUP macro.
+  </li>
+  <li>
+  <a name="IncludeMemManageEvents">
+  <b>Include memory manager events</b></a> - This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h<br />
+This must be enabled (1) if memory allocation and deallocatinon have to be traced.
+  </li>
+  <li>
+  <a name="IncludeUserEvents">
+  <b>Include user events</b></a> - This sets INCLUDE_USER_EVENTS in trcConfig.h<br />
+If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like &quot;printf&quot; but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.
+  </li>
+  <li>
+  <a name="IncludeISRTracing">
+  <b>Include ISR tracing</b></a> - This sets INCLUDE_ISR_TRACING in trcConfig.h<br />
+If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.
+  </li>
+  <li>
+  <a name="IncludeReadyEvents">
+  <b>Include ready events</b></a> - This sets INCLUDE_READY_EVENTS in trcConfig.h<br />
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.
+  </li>
+  <li>
+  <a name="IncludeOSTickEvents">
+  <b>Include OS Tick events</b></a> - This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. 
+  </li>
+  <li>
+  <a name="floatingPointForvTracePrintF">
+  <b>Float support</b></a> - If floating point is supported for vTracePrintF()
+  </li>
+  <li>
+  <a name="IncludeObjectDelete">
+  <b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
+This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
+  </li>
+  <li>
+  <a name="SymbolTableSize">
+  <b>Symbol table size</b></a> - This sets SYMBOL_TABLE_SIZE in trcConfig.h<br />
+Macro which should be defined as an integer value.<br />
+This defines the capacity of the symbol table, in bytes. This symbol table stores User Events labels and names of deleted tasks, queues, or other kernel objects. Note that the names of active objects not stored here but in the Object Table. Thus, if you don't use User Events or delete any kernel objects you set this to zero (0) to minimize RAM usage.
+  </li>
+  <li>
+  <a name="NameLenQueue">
+  <b>Name length for queue</b></a> - This sets NameLenQueue in trcConfig.h<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+  </li>
+</ul>
+</li>
+<li>
 <a name="StreamingTraceWithRTT">
-<b>Streaming with RTT</b></a> - EXPERIMENTAL: using a different trace library which streams using Segger RTT<br />
+<b>Segger RTT</b></a> - Streaming trace data over Segger RTT. Enable if using Segger RTT for streaming<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
 <ul>
   <li>
-  <a name="StreamingRecorderVersion">
-  <b>Streaming Recorder Version</b></a> - Identifies the RTOS+Trace version used from Percepio AB
-  </li>
-  <li>
-  <a name="SymbolTableSlots">
-  <b>Symbol Table Slots</b></a> - SYMBOL_TABLE_SLOTS: The maximum number of symbols names that can be stored. This includes task names, named ISR's, named kernel objects and user event channels.
-  </li>
-  <li>
-  <a name="SymbolMaxLength">
-  <b>Symbol Max Length</b></a> - SYMBOL_MAX_LENGTH: The maximum length of symbol names.
-  </li>
-  <li>
-  <a name="ObjectDataSlots">
-  <b>Object Data Slots</b></a> - OBJECT_DATA_SLOTS: The maximum number of object data entries (used for task priorities) that can be stored at the same time. Must be sufficient for all tasks, otherwise there will be warnings (as User Events) from TzCtrl task, that monitors this.
-  </li>
-  <li>
-  <a name="CtrlTaskPrioStr">
-  <b>Ctrl Task Priority</b></a> - TRC_CTRL_TASK_PRIORITY: Priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)
-  </li>
-  <li>
-  <a name="CtrlTaskStackSize">
-  <b>Ctrl Task Stack Size</b></a> - CTRL_TASK_STACK_SIZE: The stack size of the Ctrl task, that receive commands.
-  </li>
-  <li>
   <a name="SeggerRTT">
   <b>Segger RTT</b></a> - Interface to Segger RTT
   </li>
+</ul>
+</li>
+<li>
+<a name="StreamingModeGroup">
+<b>Streaming Mode</b></a> - Settings for streaming mode
+<ul>
   <li>
   <a name="RTTUpBufferIndex">
   <b>Up Buffer Index</b></a> - RTT_UP_BUFFER_INDEX: Defines the RTT buffer to use for writing the trace data. Make sure that the PC application has the same setting (File-&gt;Settings).
@@ -278,16 +407,31 @@ The following items are available only if the group is enabled (the value is "En
   <a name="TraceRTTDownBufferSize">
   <b>Down Buffer Size</b></a> - Down Buffer Size (default 32), only applicable for buffer index &gt; 0
   </li>
+  <li>
+  <a name="SymbolTableSlots">
+  <b>Symbol Table Slots</b></a> - SYMBOL_TABLE_SLOTS: The maximum number of symbols names that can be stored. This includes task names, named ISR's, named kernel objects and user event channels.
+  </li>
+  <li>
+  <a name="SymbolMaxLength">
+  <b>Symbol Max Length</b></a> - SYMBOL_MAX_LENGTH: The maximum length of symbol names.
+  </li>
+  <li>
+  <a name="ObjectDataSlots">
+  <b>Object Data Slots</b></a> - OBJECT_DATA_SLOTS: The maximum number of object data entries (used for task priorities) that can be stored at the same time. Must be sufficient for all tasks, otherwise there will be warnings (as User Events) from TzCtrl task, that monitors this.
+  </li>
+  <li>
+  <a name="CtrlTaskPrioStr">
+  <b>Ctrl Task Priority</b></a> - Configures TRC_CFG_CTRL_TASK_PRIORITY, the priority of the Ctrl task which streams the data. Priority can be rather low, except if your system load is very high, then use (configMAX_PRIORITIES-1)
+  </li>
+  <li>
+  <a name="CtrlTaskStackSize">
+  <b>Ctrl Task Stack Size</b></a> - CTRL_TASK_STACK_SIZE: The stack size of the Ctrl task, that receive commands.
+  </li>
+  <li>
+  <a name="CtrlTaskDelay">
+  <b>Ctrl Task Delay</b></a> - Configures TRC_CFG_CTRL_TASK_DELAY, the delay between every loop of the TzCtrl task. A high delay will reduce the CPU load, but may cause missed events if the TzCtrl task is performing the trace transfer.
+  </li>
 </ul>
-</li>
-<li>
-<a name="Utility">
-<b>Utility</b></a> - Interface to utility functions
-</li>
-<li>
-<a name="TraceSchedulingOnly">
-<b>Scheduling only</b></a> - This defines TRACE_SCHEDULING_ONLY in trcConfig.h<br />
-When defined (set to 'yes', disables all events except scheduling. Useful for Free Edition users.
 </li>
 <li>
 <a name="TraceDescriptionString">
@@ -325,38 +469,9 @@ This string is stored in the trace and displayed in FreeRTOS+Trace. Can be used 
 </ul>
 </li>
 <li>
-<a name="IncludeUserEvents">
-<b>Include user events</b></a> - This sets INCLUDE_USER_EVENTS in trcConfig.h<br />
-If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like &quot;printf&quot; but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.
-</li>
-<li>
-<a name="IncludeISRTracing">
-<b>Include ISR tracing</b></a> - This sets INCLUDE_ISR_TRACING in trcConfig.h<br />
-If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.
-</li>
-<li>
-<a name="TraceMaxISRNesting">
-<b>Max ISR Nesting</b></a> - Defines the maxium level of ISR nesting
-</li>
-<li>
-<a name="IncludeObjectDelete">
-<b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
-This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
-</li>
-<li>
 <a name="IncludeNewTimeEvents">
 <b>Include new time events</b></a> - This sets INCLUDE_NEW_TIME_EVENTS in trcConfig.h<br />
 This must be enabled (1) if it shall be recorded whenever the os clock is increased.
-</li>
-<li>
-<a name="IncludeReadyEvents">
-<b>Include ready events</b></a> - This sets INCLUDE_READY_EVENTS in trcConfig.h<br />
-If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.
-</li>
-<li>
-<a name="IncludeMemManageEvents">
-<b>Include memory manager events</b></a> - This sets INCLUDE_MEMMANG_EVENTS in trcConfig.h<br />
-This must be enabled (1) if memory allocation and deallocatinon have to be traced.
 </li>
 <li>
 <a name="HeapSizeBelow16M">
@@ -367,26 +482,6 @@ This must be enabled (1) if memory allocation and deallocatinon have to be trace
 * allocation events (malloc/free). This value should be 1 if the heap size is <br />
 * below 16 MB (2^24 byte), and you can live with addresses truncated to the <br />
 * lower 24 bit. Otherwise set it to 0 to get the full 32-bit addresses.
-</li>
-<li>
-<a name="TraceDataAllocation">
-<b>Trace Data Allocation</b></a> - This defines the macro TRACE_DATA_ALLOCATION. This defines how to allocate the recorder data structure, i.e., using a  static declaration or using a dynamic allocation in runtime (malloc). Should be one of these two options:<br /> - TRACE_DATA_ALLOCATION_STATIC (default)<br /> - TRACE_DATA_ALLOCATION_DYNAMIC<br />Using static allocation has the benefits of compile-time errors if the buffer is too large (too large constants in trcConfig.h) and no need to call the initialization routine (xTraceInitTraceData). Using dynamic allocation may give more flexibility in some cases.<br /><br />
-There are 2 options:<br />
-<ul>
-  <li><u>static</u>: Static trace data allocation</li>
-  <li><u>dynamic</u>: Dynamic trace data allocation</li>
-</ul><br />
-
-</li>
-<li>
-<a name="RecorderStoreMode">
-<b>Recorder store mode</b></a> - This sets RECORDER_STORE_MODE in trcConfig.h<br />With RECORDER_STORE_MODE set to STORE_MODE_RING_BUFFER, the events are stored in a ring buffer, i.e., where the oldest events are overwritten when the buffer becomes full. This allows you to get the last events leading up to an interesting state, e.g., an error, without having a large trace buffer for string the whole run since startup. In this mode, the recorder can run &quot;forever&quot; as the buffer never gets full, i.e., in the sense that it always has room for more events.<br /><br />To fetch the trace in mode STORE_MODE_RING_BUFFER, you need to first halt the system using your debugger and then do a RAM dump, or to explicitly stop the recorder using vTraceStop() and then store/upload the trace data using a FreeRTOS task that you need to provide yourself. The trace data is found in the struct RecorderData, initialized in trcBase.c.<br /><br />Note that, if you upload the trace using a RAM dump, i.e., when the system is halted on a breakpoint or by a debugger command, there is no need to stop the recorder first.<br /><br />When RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recording is stopped when the buffer becomes full. When the recorder stops itself this way vTracePortEnd() is called which allows for custom actions, such as triggering a task that stores the trace buffer, i.e., in case taking a RAM dump using an on-chip debugger is not possible. In the Windows port, vTracePortEnd saves the trace to file directly, but this is not recommended in a real-time system since the scheduler is blocked during the processing of vTracePortEnd.<br /><br />
-There are 2 options:<br />
-<ul>
-  <li><u>Ring Buffer</u>: Using ring buffer</li>
-  <li><u>Stop when full</u>: Stops recording when buffer is ful</li>
-</ul><br />
-
 </li>
 <li>
 <a name="UseImplicitIFErules">
@@ -447,67 +542,6 @@ If enabled (1), the recorder will count each type of event, in order to give an 
 <b>Event Count Size</b></a> - If 'Include event stats' is enabled, then this defines the size of the gloabal event count array. This setting defines the EVENT_COUNT_SIZE macro.
 </li>
 <li>
-<a name="floatingPointForvTracePrintF">
-<b>Float support</b></a> - If floating point is supported for vTracePrintF()
-</li>
-<li>
-<a name="EventBufferSize">
-<b>Event buffer size</b></a> - This sets EVENT_BUFFER_SIZE in trcConfig.h<br />
-Macro which should be defined as an integer value.<br />
-This defines the capacity of the event buffer, i.e., the number of records it may store. An event typically use one record (4 byte), but there are exceptions:<br />
-In some cases, an XTS event is added if the time since the last event is longer that allowed by the current event's timestamp field. Such events thus use two records. vTracePrintF use a variable number of data records following the event, holding the data arguments. <br />
-If RECORDER_STORE_MODE is STORE_MODE_RING_BUFFER, the recorder will wrap around to index 0 when reached EVENT_BUFFER_SIZE. If RECORDER_STORE_MODE is STORE_MODE_STOP_WHEN_FULL, the recorder is instead stopped (see RECORDER_STORE_MODE).
-</li>
-<li>
-<a name="SymbolTableSize">
-<b>Symbol table size</b></a> - This sets SYMBOL_TABLE_SIZE in trcConfig.h<br />
-Macro which should be defined as an integer value.<br />
-This defines the capacity of the symbol table, in bytes. This symbol table stores User Events labels and names of deleted tasks, queues, or other kernel objects. Note that the names of active objects not stored here but in the Object Table. Thus, if you don't use User Events or delete any kernel objects you set this to zero (0) to minimize RAM usage.
-</li>
-<li>
-<a name="NTask">
-<b>Number of tasks</b></a> - This sets NTask in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NISR">
-<b>Number of ISR</b></a> - This sets NISR in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NQueue">
-<b>Number of queue</b></a> - This sets NQueue in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NSemaphore">
-<b>Number of semaphore</b></a> - This sets NSemaphore in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NMutex">
-<b>Number of mutex</b></a> - This sets NMutex in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NTimer">
-<b>Number of Timer</b></a> - This sets the NTimer define.
-</li>
-<li>
-<a name="NEventGroup">
-<b>Number of Event Groups</b></a> - This sets the NEventGroup macro.
-</li>
-<li>
 <a name="NameLenTaskStr">
 <b>Name length for task</b></a> - This sets NameLenTask in trcConfig.h<br />
 A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
@@ -515,22 +549,15 @@ This defines the capacity of the Object Table, in number of objects, of each obj
 This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
 </li>
 <li>
-<a name="NameLenISR">
-<b>Name length for ISR</b></a> - This sets NameLenISR in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
-<a name="NameLenQueue">
-<b>Name length for queue</b></a> - This sets NameLenQueue in trcConfig.h<br />
-A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
-This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
-This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
-</li>
-<li>
 <a name="NameLenSemaphore">
 <b>Name length for semaphore</b></a> - This sets NameLenSemaphore in trcConfig.h<br />
+A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
+This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
+This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.
+</li>
+<li>
+<a name="NameLenISR">
+<b>Name length for ISR</b></a> - This sets NameLenISR in trcConfig.h<br />
 A group of Macros which should be defined as an integer value of zero (0) or larger.<br />
 This defines the capacity of the Object Table, in number of objects, of each object class. The Object Table holds information about the currently active kernel objects (i.e., the ones that have been created but not terminated), such as name and Tracelayzer ID, for Tasks, Queues, Semaphores, Mutexes and user-registered ISRs.<br />
 This does not limit the total amount of objects created, if objects are deleted during runtime. The object table size however limits the number of objects active at any given time, since the slots in the Object Table are reused when objects are deleted.

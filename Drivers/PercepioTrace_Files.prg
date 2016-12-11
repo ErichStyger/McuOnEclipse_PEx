@@ -1,85 +1,86 @@
+%- PEx directory path mapping
+%-
+%- DirRel_Code            -> Project dir->Generated_Code directory
+%- DirRel_Binary          -> Project dir->Source
+%- DirRel_Docs            -> Project dir->Documentation
+%- DirRel_EventToBinary   -> Project dir
+%- DirRel_ProjectSettings -> Project dir->Project_Settings
+%- DirRel_Events          -> Project dir->Sources
+%- DirRel_BinaryToEvents  -> Project dir
 %-
 %- Percepio FreeRTOS Trace source files
 %-
-%if defined(StreamingTraceWithRTT) & %StreamingTraceWithRTT='yes'
-
-%FILE %'DirRel_Code'trcRecorder.h
-%include PercepioTrace\RTT\trcRecorder.h
-
-%FILE %'DirRel_Code'trcRecorder.c
-%include PercepioTrace\RTT\trcRecorder.c
-
-%FILE %'DirRel_Code'trcKernelPort.h
-%include PercepioTrace\RTT\trcKernelPort.h
-
-%FILE %'DirRel_Code'trcKernelPort.c
-%include PercepioTrace\RTT\trcKernelPort.c
-
-%FILE %'DirRel_Code'trcHardwarePort.h
-%include PercepioTrace\RTT\trcHardwarePort.h
-
-%FILE %'DirRel_Code'trcConfig.h
-%include PercepioTrace\RTT\trcConfig.h
-
-%FILE %'DirRel_Code'trcPagedEventBuffer.c
-%include PercepioTrace\RTT\trcPagedEventBuffer.c
-
-%FILE %'DirRel_Code'trcPagedEventBuffer.h
-%include PercepioTrace\RTT\trcPagedEventBuffer.h
-
-%FILE %'DirRel_Code'trcPagedEventBufferConfig.h
-%include PercepioTrace\RTT\trcPagedEventBufferConfig.h
-
-%FILE %'DirRel_Code'trcStreamPort.h
-%include PercepioTrace\RTT\trcStreamPort.h
-
-%- %FILE %'DirRel_Code'trcTCPIP.c
-%- %include PercepioTrace\RTT\trcTCPIP.c
-
-%- %FILE %'DirRel_Code'trcTCPIP.h
-%- %include PercepioTrace\RTT\trcTCPIP.h
-
-%- %FILE %'DirRel_Code'trcTCPIPConfig.h
-%- %include PercepioTrace\RTT\trcTCPIPConfig.h
-
+%if defined(TraceRecorderFolderName)
+  %define  TraceRecorderFolder /%'TraceRecorderFolderName'/
 %else
-%FILE %'DirRel_Code'trcBase.c
-%include PercepioTrace\trcBase.c
+  %define  TraceRecorderFolder 
+%endif
+%if defined(TraceRecorderConfigFolderName)
+  %define  TraceRecorderConfigFolder /%'TraceRecorderConfigFolderName'/
+%else
+  %define  TraceRecorderConfigFolder 
+%endif
+%if defined(TraceRecorderIncludeFolderName)
+  %define  TraceRecorderIncludeFolder /%'TraceRecorderIncludeFolderName'/
+%else
+  %define  TraceRecorderIncludeFolder 
+%endif
+%if defined(TraceRecorderRTTIncludeFolderName)
+  %define  TraceRecorderStreamPortJLinkRTTIncludeFolder /%'TraceRecorderRTTIncludeFolderName'/
+%else
+  %define  TraceRecorderStreamPortJLinkRTTIncludeFolder 
+%endif
 
-%FILE %'DirRel_Code'trcKernel.c
-%include PercepioTrace\trcKernel.c
+%- ---------------------------------------
+%- TraceRecorder
+%- ---------------------------------------
+%FILE %'DirRel_Code'%'TraceRecorderFolder'trc_readme.txt
+%include PercepioTrace\TraceRecorder\readme.txt
 
-%FILE %'DirRel_Code'trcHardwarePort.c
-%include PercepioTrace\trcHardwarePort.c
+%FILE %'DirRel_Code'%'TraceRecorderFolder'trcKernelPort.c
+%include PercepioTrace\TraceRecorder\trcKernelPort.c
 
-%FILE %'DirRel_Code'trcUser.c
-%include PercepioTrace\trcUser.c
+%FILE %'DirRel_Code'%'TraceRecorderFolder'trcSnapshotRecorder.c
+%include PercepioTrace\TraceRecorder\trcSnapshotRecorder.c
 
-%FILE %'DirRel_Code'trcBase.h
-%include PercepioTrace\Include\trcBase.h
+%FILE %'DirRel_Code'%'TraceRecorderFolder'trcStreamingRecorder.c
+%include PercepioTrace\TraceRecorder\trcStreamingRecorder.c
 
-%FILE %'DirRel_Code'trcConfig.h
-%include PercepioTrace\Include\trcConfig.h
+%- ---------------------------------------
+%- TraceRecorder/config
+%- ---------------------------------------
+%FILE %'DirRel_Code'%'TraceRecorderConfigFolder'trcConfig.h
+%include PercepioTrace\TraceRecorder\config\trcConfig.h
 
-%FILE %'DirRel_Code'trcKernelHooks.h
-%include PercepioTrace\Include\trcKernelHooks.h
+%FILE %'DirRel_Code'%'TraceRecorderConfigFolder'trcSnapshotConfig.h
+%include PercepioTrace\TraceRecorder\config\trcSnapshotConfig.h
 
-%FILE %'DirRel_Code'trcKernel.h
-%include PercepioTrace\Include\trcKernel.h
+%FILE %'DirRel_Code'%'TraceRecorderConfigFolder'trcStreamingConfig.h
+%include PercepioTrace\TraceRecorder\config\trcStreamingConfig.h
 
-%FILE %'DirRel_Code'trcHardwarePort.h
-%include PercepioTrace\Include\trcHardwarePort.h
+%- ---------------------------------------
+%- TraceRecorder/include
+%- ---------------------------------------
+%FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcHardwarePort.h
+%include PercepioTrace\TraceRecorder\include\trcHardwarePort.h
 
-%FILE %'DirRel_Code'trcTypes.h
-%include PercepioTrace\Include\trcTypes.h
+%FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcKernelPort.h
+%include PercepioTrace\TraceRecorder\include\trcKernelPort.h
 
-%FILE %'DirRel_Code'trcUser.h
-%include PercepioTrace\Include\trcUser.h
+%FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcPortDefines.h
+%include PercepioTrace\TraceRecorder\include\trcPortDefines.h
 
-%FILE %'DirRel_Code'trcKernelPort.h
-%include PercepioTrace\KernelPorts\FreeRTOS\trcKernelPort.h
+%FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcRecorder.h
+%include PercepioTrace\TraceRecorder\include\trcRecorder.h
 
-%FILE %'DirRel_Code'trcKernelPort.c
-%include PercepioTrace\KernelPorts\FreeRTOS\trcKernelPort.c
+%- ---------------------------------------
+%- TraceRecorder/streamports/Jlink_RTT/include
+%- ---------------------------------------
+%FILE %'DirRel_Code'%'TraceRecorderStreamPortJLinkRTTIncludeFolder'trcStreamingPort.h
+%include PercepioTrace\TraceRecorder\streamports\Jlink_RTT\include\trcStreamingPort.h
 
-%endif %- StreamingWithTraceRTT
+%- ---------------------------------------
+%undef TraceRecorderFolder
+%undef TraceRecorderConfigFolder
+%undef TraceRecorderIncludeFolder
+%undef TraceRecorderStreamPortJLinkRTTIncludeFolder

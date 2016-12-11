@@ -63,7 +63,11 @@ extern "C" {
  * trace display will be affected. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
+%if defined(SymbolTableSlots)
+#define TRC_CFG_SYMBOL_TABLE_SLOTS %SymbolTableSlots
+%else
 #define TRC_CFG_SYMBOL_TABLE_SLOTS 30
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_SYMBOL_MAX_LENGTH
@@ -78,7 +82,11 @@ extern "C" {
  * which will affect the trace display. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
+%if defined(SymbolMaxLength)
+#define TRC_CFG_SYMBOL_MAX_LENGTH %SymbolMaxLength
+%else
 #define TRC_CFG_SYMBOL_MAX_LENGTH 25
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_OBJECT_DATA_SLOTS
@@ -87,7 +95,11 @@ extern "C" {
  * be stored at the same time. Must be sufficient for all tasks, otherwise there
  * will be warnings (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
+%if defined(ObjectDataSlots)
+#define TRC_CFG_OBJECT_DATA_SLOTS %ObjectDataSlots
+%else
 #define TRC_CFG_OBJECT_DATA_SLOTS 20
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_STACK_SIZE
@@ -95,7 +107,11 @@ extern "C" {
  * The stack size of the TzCtrl task, that receive commands.
  * We are aiming to remove this extra task in future versions.
  ******************************************************************************/
+%if defined(CtrlTaskStackSize)
+#define TRC_CFG_CTRL_TASK_STACK_SIZE %CtrlTaskStackSize
+%else
 #define TRC_CFG_CTRL_TASK_STACK_SIZE (configMINIMAL_STACK_SIZE * 2)
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_PRIORITY
@@ -104,7 +120,11 @@ extern "C" {
  * stream ports also rely on this task to transmit the data from the internal
  * buffer to the stream interface (most except for the J-Link port).
  ******************************************************************************/
+%if defined(CtrlTaskPrioStr)
+#define TRC_CFG_CTRL_TASK_PRIORITY %CtrlTaskPrioStr
+%else
 #define TRC_CFG_CTRL_TASK_PRIORITY 1
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_DELAY
@@ -113,7 +133,11 @@ extern "C" {
  * CPU load, but may cause missed events if the TzCtrl task is performing the 
  * trace transfer.
  ******************************************************************************/
+%if defined(CtrlTaskDelay)
+#define TRC_CFG_CTRL_TASK_DELAY %CtrlTaskDelay
+%else
 #define TRC_CFG_CTRL_TASK_DELAY ((10 * configTICK_RATE_HZ) / 1000)
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT

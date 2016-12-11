@@ -137,6 +137,12 @@ void* prvTraceGetCurrentTaskHandle(void);
 	#define TRACE_EXIT_CRITICAL_SECTION() portEXIT_CRITICAL()
 #endif
 
+#if (TRC_CFG_HARDWARE_PORT == TRC_HARDWARE_PORT_PROCESSOR_EXPERT) /* << EST */
+  #define TRACE_ALLOC_CRITICAL_SECTION()
+  #define TRACE_ENTER_CRITICAL_SECTION() portENTER_CRITICAL()
+  #define TRACE_EXIT_CRITICAL_SECTION() portEXIT_CRITICAL()
+#endif
+
 #ifndef TRACE_ENTER_CRITICAL_SECTION
 	#error "This hardware port has no definition for critical sections! See http://percepio.com/2014/10/27/how-to-define-critical-sections-for-the-recorder/"
 #endif
