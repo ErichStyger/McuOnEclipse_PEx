@@ -11,10 +11,11 @@
 %;**         called with interrupts disabled.  Method is always enabled
 %;**         if 'Include ISR tracing' is set to 'yes' in the properties.
 %include Common\GeneralParameters.inc(27)
-%;**         pendingISR%ParpendingISR %>27 - The parameter pendingISR
-%;** %>29 indicates if the interrupt has requested a
-%;** %>29 task-switch (= 1) or if the interrupt
-%;** %>29 returns to the earlier context (= 0)
+%;**         isTaskSwitchRequired%ParisTaskSwitchRequired %>27 - The
+%;** %>29 parameter pendingISR indicates if the
+%;** %>29 interrupt has requested a task-switch (= 1)
+%;** %>29 or if the interrupt returns to the earlier
+%;** %>29 context (= 0)
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

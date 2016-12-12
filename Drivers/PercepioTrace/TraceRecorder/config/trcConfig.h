@@ -62,10 +62,10 @@ extern "C" {
  * Try that in case of build problems. Otherwise, remove the #error line below.
  *****************************************************************************/
 #if 1 /* << EST */
-  #include "%sdk.h" /* include SDK and API used */
+  #include "%@sdk@'ModuleName'.h" /* include SDK and API used */
   #include "FreeRTOSConfig.h"
 
-  #if MCUC1_CONFIG_PEX_SDK_USED
+  #if %@sdk@'ModuleName'_CONFIG_PEX_SDK_USED
     #ifndef __CORTEX_M
       #if configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY)
         #define __CORTEX_M        0

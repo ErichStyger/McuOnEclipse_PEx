@@ -137,10 +137,11 @@
                                                                  %>>/* RTOS adapter is configured not to disable interrupts */ \
   %endif
   %if %UseTraceHooksGroup='yes'
-                                                                 %>>%@FRTrace@'ModuleName'%.Init(FALSE);/* initialize trace, but do not start */
+                                                                 %>>%@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
   %else
-                                                                 %>>/* not Trace Hooks, nothing to do */
+                                                                 %>>/* no Percepio Trace Hooks enabled with configUSE_TRACE_HOOKS */
   %endif
+
   #define PEX_RTOS_START()                                       %>>%'ModuleName'%.%vTaskStartScheduler()
 #endif
 /* macro to identify CPU: 0 for M0+ and 4 for M4 */

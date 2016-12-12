@@ -3,15 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (vTraceExcludeTaskFromSchedulingTrace)
+%include Common\GeneralMethod.inc (vTracePrint)
 %;**     Description :
-%;**         Excludes a task from the recording using a flag in the
-%;**         Object Property Table. This can be useful if some irrelevant
-%;**         task is very frequent and is "eating up the buffer". This
-%;**         should be called the task has been created, but  before
-%;**         starting the FreeRTOS scheduler.
+%;**         Generates a User Event with a text label. The label is
+%;**         created/looked up in the symbol table using
+%;**         xTraceRegisterString.
 %include Common\GeneralParameters.inc(27)
-%;**         name%Parname %>27 - name of the task
+%;**         chn%Parchn %>27 - trace label for the user event
+%;**       * str%Parstr %>27 - Pointer to string
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

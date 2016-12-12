@@ -138,17 +138,6 @@
 %endif %- vTraceGetTraceBuffer
 %-BW_METHOD_END vTraceGetTraceBuffer
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceSetTimerFrequency
-%ifdef vTraceSetTimerFrequency
-#define %'ModuleName'%.%vTraceSetTimerFrequency(frequency) \
-  vTraceSetTimerFrequency(frequency)
-
-%define! Parfrequency
-%include Common\PercepioTracevTraceSetTimerFrequency.Inc
-
-%endif %- vTraceSetTimerFrequency
-%-BW_METHOD_END vTraceSetTimerFrequency
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN uiTraceStart
 %ifdef uiTraceStart
 #define %'ModuleName'%.%uiTraceStart() \
@@ -179,28 +168,29 @@
 %endif %- vTraceClear
 %-BW_METHOD_END vTraceClear
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN xTraceOpenLabel
-%ifdef xTraceOpenLabel
-#define %'ModuleName'%.%xTraceOpenLabel(label) \
-  xTraceOpenLabel(label)
+%-BW_METHOD_BEGIN xTraceRegisterString
+%ifdef xTraceRegisterString
+#define %'ModuleName'%.%xTraceRegisterString (label) \
+  xTraceRegisterString(label)
 
-%define! Parlabel
+%define! Parname
 %define! RetVal
-%include Common\PercepioTracexTraceOpenLabel.Inc
+%include Common\PercepioTracexTraceRegisterString.Inc
 
-%endif %- xTraceOpenLabel
-%-BW_METHOD_END xTraceOpenLabel
+%endif %- xTraceRegisterString
+%-BW_METHOD_END xTraceRegisterString
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceUserEvent
-%ifdef vTraceUserEvent
-#define %'ModuleName'%.%vTraceUserEvent(eventLabel) \
-  vTraceUserEvent(eventLabel)
+%-BW_METHOD_BEGIN vTracePrint
+%ifdef vTracePrint
+#define %'ModuleName'%.%vTracePrint(chn, str) \
+  vTracePrint(chn, str)
 
-%define! PareventLabel
-%include Common\PercepioTracevTraceUserEvent.Inc
+%define! Parchn
+%define! Parstr
+%include Common\PercepioTracevTracePrint.Inc
 
-%endif %- vTraceUserEvent
-%-BW_METHOD_END vTraceUserEvent
+%endif %- vTracePrint
+%-BW_METHOD_END vTracePrint
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTracePrintF
 %ifdef vTracePrintF
@@ -227,25 +217,25 @@
 %endif %- vTraceSetQueueName
 %-BW_METHOD_END vTraceSetQueueName
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceSetISRProperties
-%ifdef vTraceSetISRProperties
-#define %'ModuleName'%.%vTraceSetISRProperties(handle, name, prioritiy) \
-  vTraceSetISRProperties(handle, name, prioritiy)
+%-BW_METHOD_BEGIN xTraceSetISRProperties
+%ifdef xTraceSetISRProperties
+#define %'ModuleName'%.%xTraceSetISRProperties(name, prioritiy) \
+  xTraceSetISRProperties(name, prioritiy)
 
-%define! Parhandle
 %define! Parname
 %define! Parprioritiy
-%include Common\PercepioTracevTraceSetISRProperties.Inc
+%define! RetVal
+%include Common\PercepioTracexTraceSetISRProperties.Inc
 
-%endif %- vTraceSetISRProperties
-%-BW_METHOD_END vTraceSetISRProperties
+%endif %- xTraceSetISRProperties
+%-BW_METHOD_END xTraceSetISRProperties
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISRBegin
 %ifdef vTraceStoreISRBegin
-#define %'ModuleName'%.%vTraceStoreISRBegin(id) \
-  vTraceStoreISRBegin(id)
+#define %'ModuleName'%.%vTraceStoreISRBegin(handle) \
+  vTraceStoreISRBegin(handle)
 
-%define! Parid
+%define! Parhandle
 %include Common\PercepioTracevTraceStoreISRBegin.Inc
 
 %endif %- vTraceStoreISRBegin
@@ -253,56 +243,14 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISREnd
 %ifdef vTraceStoreISREnd
-#define %'ModuleName'%.%vTraceStoreISREnd(pendingISR) \
-  vTraceStoreISREnd(pendingISR)
+#define %'ModuleName'%.%vTraceStoreISREnd(isTaskSwitchRequired) \
+  vTraceStoreISREnd(isTaskSwitchRequired)
 
-%define! ParpendingISR
+%define! ParisTaskSwitchRequired
 %include Common\PercepioTracevTraceStoreISREnd.Inc
 
 %endif %- vTraceStoreISREnd
 %-BW_METHOD_END vTraceStoreISREnd
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskSkipDefaultInstanceFinishedEvents
-%ifdef vTraceTaskSkipDefaultInstanceFinishedEvents
-#define %'ModuleName'%.%vTraceTaskSkipDefaultInstanceFinishedEvents() \
-  vTraceTaskSkipDefaultInstanceFinishedEvents()
-
-%include Common\PercepioTracevTraceTaskSkipDefaultInstanceFinishedEvents.Inc
-
-%endif %- vTraceTaskSkipDefaultInstanceFinishedEvents
-%-BW_METHOD_END vTraceTaskSkipDefaultInstanceFinishedEvents
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceIsFinished
-%ifdef vTraceTaskInstanceIsFinished
-#define %'ModuleName'%.%vTraceTaskInstanceIsFinished() \
-  vTraceTaskInstanceIsFinished()
-
-%include Common\PercepioTracevTraceTaskInstanceIsFinished.Inc
-
-%endif %- vTraceTaskInstanceIsFinished
-%-BW_METHOD_END vTraceTaskInstanceIsFinished
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceExcludeTaskFromSchedulingTrace
-%ifdef vTraceExcludeTaskFromSchedulingTrace
-#define %'ModuleName'%.%vTraceExcludeTaskFromSchedulingTrace(name) \
-  vTraceExcludeTaskFromSchedulingTrace(name)
-
-%define! Parname
-%include Common\PercepioTracevTraceExcludeTaskFromSchedulingTrace.Inc
-
-%endif %- vTraceExcludeTaskFromSchedulingTrace
-%-BW_METHOD_END vTraceExcludeTaskFromSchedulingTrace
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceInitTraceData
-%ifdef vTraceInitTraceData
-#define %'ModuleName'%.%vTraceInitTraceData() \
-  vTraceInitTraceData()
-
-%define! RetVal
-%include Common\PercepioTracevTraceInitTraceData.Inc
-
-%endif %- vTraceInitTraceData
-%-BW_METHOD_END vTraceInitTraceData
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vGetGDBDumpCommand
 %ifdef vGetGDBDumpCommand
@@ -346,32 +294,46 @@ void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t 
 %endif %- vTraceClearError
 %-BW_METHOD_END vTraceClearError
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceFinish
-%ifdef vTraceTaskInstanceFinish
-#define %'ModuleName'%.%vTraceTaskInstanceFinish() \
-  vTraceTaskInstanceFinish() \
-%include Common\PercepioTracevTraceTaskInstanceFinish.Inc
-
-%endif %- vTraceTaskInstanceFinish
-%-BW_METHOD_END vTraceTaskInstanceFinish
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceFinishDirect
-%ifdef vTraceTaskInstanceFinishDirect
-#define %'ModuleName'%.%vTraceTaskInstanceFinishDirect() \
-  vTraceTaskInstanceFinishDirect()
-%include Common\PercepioTracevTraceTaskInstanceFinishDirect.Inc
+%-BW_METHOD_BEGIN vTraceEnable
+%ifdef vTraceEnable
+#define %'ModuleName'%.%vTraceEnable(startOption) \
+  vTraceEnable(startOption)
+%define! Parstartoption
+%include Common\PercepioTracevTraceEnable.Inc
 
-%endif %- vTraceTaskInstanceFinishDirect
-%-BW_METHOD_END vTraceTaskInstanceFinishDirect
+%endif %- vTraceEnable
+%-BW_METHOD_END vTraceEnable
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-void %'ModuleName'%.%Init(bool startTracing);
-%define! ParstartTracing
-%include Common\PercepioTraceInit.Inc
+%-BW_METHOD_BEGIN vTraceSetSemaphoreName
+%ifdef vTraceSetSemaphoreName
+#define %'ModuleName'%.%vTraceSetSemaphoreName(semaphore, name) \
+  vTraceSetSemaphoreName(semaphore, name)
+%define! Parqueue
+%define! Parname
+%include Common\PercepioTracevTraceSetSemaphoreName.Inc
 
-%endif %- Init
-%-BW_METHOD_END Init
+%endif %- vTraceSetSemaphoreName
+%-BW_METHOD_END vTraceSetSemaphoreName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceSetMutexName
+%ifdef vTraceSetMutexName
+#define %'ModuleName'%.%vTraceSetMutexName(mutex, name) \
+  vTraceSetMutexName(mutex, name)
+%define! Parqueue
+%define! Parname
+%include Common\PercepioTracevTraceSetMutexName.Inc
+
+%endif %- vTraceSetMutexName
+%-BW_METHOD_END vTraceSetMutexName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Startup
+%ifdef Startup
+void %'ModuleName'%.%Startup(void);
+%include Common\PercepioTraceStartup.Inc
+
+%endif %- Startup
+%-BW_METHOD_END Startup
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -464,20 +426,6 @@ void* %'ModuleName'%.%vTraceGetTraceBuffer(void)
 %endif %- vTraceGetTraceBuffer
 %-BW_METHOD_END vTraceGetTraceBuffer
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceSetTimerFrequency
-%ifdef vTraceSetTimerFrequency
-%define! Parfrequency
-%include Common\PercepioTracevTraceSetTimerFrequency.Inc
-/*
-void %'ModuleName'%.%vTraceSetTimerFrequency(dword frequency)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceSetTimerFrequency
-%-BW_METHOD_END vTraceSetTimerFrequency
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN uiTraceStart
 %ifdef uiTraceStart
 %define! RetVal
@@ -518,34 +466,35 @@ void %'ModuleName'%.%vTraceClear(void)
 %endif %- vTraceClear
 %-BW_METHOD_END vTraceClear
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN xTraceOpenLabel
-%ifdef xTraceOpenLabel
-%define! Parlabel
+%-BW_METHOD_BEGIN xTraceRegisterString
+%ifdef xTraceRegisterString
+%define! Parname
 %define! RetVal
-%include Common\PercepioTracexTraceOpenLabel.Inc
+%include Common\PercepioTracexTraceRegisterString.Inc
 /*
-traceLabel %'ModuleName'%.%xTraceOpenLabel(char *label)
+traceString %'ModuleName'%.%xTraceRegisterString(const char* name)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- xTraceOpenLabel
-%-BW_METHOD_END xTraceOpenLabel
+%endif %- xTraceRegisterString
+%-BW_METHOD_END xTraceRegisterString
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceUserEvent
-%ifdef vTraceUserEvent
-%define! PareventLabel
-%include Common\PercepioTracevTraceUserEvent.Inc
+%-BW_METHOD_BEGIN vTracePrint
+%ifdef vTracePrint
+%define! Parchn
+%define! Parstr
+%include Common\PercepioTracevTracePrint.Inc
 /*
-void %'ModuleName'%.%vTraceUserEvent(traceLabel eventLabel)
+void %'ModuleName'%.%vTracePrint(traceString chn, const char* str)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- vTraceUserEvent
-%-BW_METHOD_END vTraceUserEvent
+%endif %- vTracePrint
+%-BW_METHOD_END vTracePrint
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTracePrintF
 %ifdef vTracePrintF
@@ -563,7 +512,6 @@ void %'ModuleName'%.%vTracePrintF(traceLabel eventLabel, char *formatStr, ...)
 %endif %- vTracePrintF
 %-BW_METHOD_END vTracePrintF
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceSetQueueName
 %ifdef vTraceSetQueueName
 %define! Parqueue
@@ -579,28 +527,28 @@ void %'ModuleName'%.%vTraceSetQueueName(void *queue, char *name)
 %endif %- vTraceSetQueueName
 %-BW_METHOD_END vTraceSetQueueName
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceSetISRProperties
-%ifdef vTraceSetISRProperties
-%define! Parhandle
+%-BW_METHOD_BEGIN xTraceSetISRProperties
+%ifdef xTraceSetISRProperties
 %define! Parname
 %define! Parprioritiy
-%include Common\PercepioTracevTraceSetISRProperties.Inc
+%define! RetVal
+%include Common\PercepioTracexTraceSetISRProperties.Inc
 /*
-void %'ModuleName'%.%vTraceSetISRProperties(objectHandleType handle, char *name, char prioritiy)
+traceHandle %'ModuleName'%.%xTraceSetISRProperties(char *name, char prioritiy)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- vTraceSetISRProperties
-%-BW_METHOD_END vTraceSetISRProperties
+%endif %- xTraceSetISRProperties
+%-BW_METHOD_END xTraceSetISRProperties
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISRBegin
 %ifdef vTraceStoreISRBegin
-%define! Parid
+%define! Parhandle
 %include Common\PercepioTracevTraceStoreISRBegin.Inc
 /*
-void %'ModuleName'%.%vTraceStoreISRBegin(objectHandleType id)
+void %'ModuleName'%.%vTraceStoreISRBegin(traceHandle handle)
 {
   *** Implemented as macro in the header file
 }
@@ -611,10 +559,10 @@ void %'ModuleName'%.%vTraceStoreISRBegin(objectHandleType id)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vTraceStoreISREnd
 %ifdef vTraceStoreISREnd
-%define! ParpendingISR
+%define! ParisTaskSwitchRequired
 %include Common\PercepioTracevTraceStoreISREnd.Inc
 /*
-void %'ModuleName'%.%vTraceStoreISREnd(int pendingISR)
+void %'ModuleName'%.%vTraceStoreISREnd(int isTaskSwitchRequired)
 {
   *** Implemented as macro in the header file
 }
@@ -622,60 +570,6 @@ void %'ModuleName'%.%vTraceStoreISREnd(int pendingISR)
 
 %endif %- vTraceStoreISREnd
 %-BW_METHOD_END vTraceStoreISREnd
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskSkipDefaultInstanceFinishedEvents
-%ifdef vTraceTaskSkipDefaultInstanceFinishedEvents
-%include Common\PercepioTracevTraceTaskSkipDefaultInstanceFinishedEvents.Inc
-/*
-void %'ModuleName'%.%vTraceTaskSkipDefaultInstanceFinishedEvents(void)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceTaskSkipDefaultInstanceFinishedEvents
-%-BW_METHOD_END vTraceTaskSkipDefaultInstanceFinishedEvents
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceIsFinished
-%ifdef vTraceTaskInstanceIsFinished
-%include Common\PercepioTracevTraceTaskInstanceIsFinished.Inc
-/*
-void %'ModuleName'%.%vTraceTaskInstanceIsFinished(void)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceTaskInstanceIsFinished
-%-BW_METHOD_END vTraceTaskInstanceIsFinished
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceExcludeTaskFromSchedulingTrace
-%ifdef vTraceExcludeTaskFromSchedulingTrace
-%define! Parname
-%include Common\PercepioTracevTraceExcludeTaskFromSchedulingTrace.Inc
-/*
-void %'ModuleName'%.%vTraceExcludeTaskFromSchedulingTrace(const char* name)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceExcludeTaskFromSchedulingTrace
-%-BW_METHOD_END vTraceExcludeTaskFromSchedulingTrace
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceInitTraceData
-%ifdef vTraceInitTraceData
-%define! RetVal
-%include Common\PercepioTracevTraceInitTraceData.Inc
-/*
-void* %'ModuleName'%.%vTraceInitTraceData(void)
-{
-  *** Implemented as macro in the header file
-}
-*/
-
-%endif %- vTraceInitTraceData
-%-BW_METHOD_END vTraceInitTraceData
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN vGetGDBDumpCommand
 %ifdef vGetGDBDumpCommand
@@ -752,60 +646,63 @@ byte %'ModuleName'%.%vTraceClearError(int resetErrorMessage)
 %endif %- vTraceClearError
 %-BW_METHOD_END vTraceClearError
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceFinish
-%ifdef vTraceTaskInstanceFinish
-%include Common\PercepioTracevTraceTaskInstanceFinish.Inc
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN vTraceEnable
+%ifdef vTraceEnable
+%define! Parstartoption
+%include Common\PercepioTracevTraceEnable.Inc
 /*
-void %'ModuleName'%.%vTraceTaskInstanceFinish(void)
+void %'ModuleName'%.%vTraceEnable(int startOption)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- vTraceTaskInstanceFinish
-%-BW_METHOD_END vTraceTaskInstanceFinish
+%endif %- vTraceEnable
+%-BW_METHOD_END vTraceEnable
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceTaskInstanceFinishDirect
-%ifdef vTraceTaskInstanceFinishDirect
-%include Common\PercepioTracevTraceTaskInstanceFinishDirect.Inc
+%-BW_METHOD_BEGIN vTraceSetSemaphoreName
+%ifdef vTraceSetSemaphoreName
+%define! Parqueue
+%define! Parname
+%include Common\PercepioTracevTraceSetSemaphoreName.Inc
 /*
-void %'ModuleName'%.%vTraceTaskInstanceFinishDirect(void)
+void %'ModuleName'%.%vTraceSetSemaphoreName(void *semaphore, char *name)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- vTraceTaskInstanceFinishDirect
-%-BW_METHOD_END vTraceTaskInstanceFinishDirect
+%endif %- vTraceSetSemaphoreName
+%-BW_METHOD_END vTraceSetSemaphoreName
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%define! ParstartTracing
-%include Common\PercepioTraceInit.Inc
-void %'ModuleName'%.%Init(bool startTracing)
+%-BW_METHOD_BEGIN vTraceSetMutexName
+%ifdef vTraceSetMutexName
+%define! Parqueue
+%define! Parname
+%include Common\PercepioTracevTraceSetMutexName.Inc
+/*
+void %'ModuleName'%.%vTraceSetMutexName(void *mutex, char *name)
 {
-#if TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_SNAPSHOT
-  if (startTracing) {
-    vTraceEnable(TRC_START); /* snapshot trace, from startup */
-  } else {
-    vTraceEnable(TRC_INIT); /* startup */
-    /* call the thing below later to start trace: */
-    // vTraceEnable(TRC_START); /* e.g., in task context, at some relevant event */
-  }
-#elif TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_STREAMING
-  if (startTracing) {
-    vTraceEnable(TRC_START_AWAIT_HOST); /* from startup, Blocks! */
-  } else {
-    /* call the thing below later to start trace: */
-    // vTraceEnable(TRC_INIT); /* Streaming trace, from a later point */
-  }
-#else
-  #error "invalid configuration!"
-#endif
+  *** Implemented as macro in the header file
+}
+*/
+
+%endif %- vTraceSetMutexName
+%-BW_METHOD_END vTraceSetMutexName
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Startup
+%ifdef Startup
+%include Common\PercepioTraceStartup.Inc
+void %'ModuleName'%.%Startup(void)
+{
+#if configUSE_TRACE_HOOKS /* FreeRTOS using Percepio Trace */
+  vTraceEnable(%'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE); /* snapshot trace, from startup */
+#endif /* configUSE_TRACE_HOOKS */
 }
 
-%endif %- Init
-%-BW_METHOD_END Init
+%endif %- Startup
+%-BW_METHOD_END Startup
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -873,7 +770,13 @@ void %OnTraceWrap(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
+#ifndef %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE
+%if defined(trcStartupEnableMethod)
+  #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE      %>60 %trcStartupEnableMethod /* trace startup mode used for calling vTraceEnable() from Startup() */
+%else
+  #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE      %>60 TRC_INIT /* trace startup mode used for calling vTraceEnable() from Startup() */
+%endif
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

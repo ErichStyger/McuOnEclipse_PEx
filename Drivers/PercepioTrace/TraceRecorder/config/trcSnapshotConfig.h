@@ -327,14 +327,41 @@
  * kernel objects, such as tasks and queues. If longer names are used, they will
  * be truncated when stored in the recorder.
  *****************************************************************************/
+%if defined(NameLenTaskStr)
+#define TRC_CFG_NAME_LEN_TASK     %NameLenTaskStr
+%else
 #define TRC_CFG_NAME_LEN_TASK			15
+%endif
+%if defined(NameLenISR)
+#define TRC_CFG_NAME_LEN_ISR      %NameLenISR
+%else
 #define TRC_CFG_NAME_LEN_ISR			15
+%endif
+%if defined(NameLenQueue)
+#define TRC_CFG_NAME_LEN_QUEUE      %NameLenQueue
+%else
 #define TRC_CFG_NAME_LEN_QUEUE			15
+%endif
+%if defined(NameLenSemaphore)
+#define TRC_CFG_NAME_LEN_SEMAPHORE    %NameLenSemaphore
+%else
 #define TRC_CFG_NAME_LEN_SEMAPHORE		15
+%endif
+%if defined(NameLenMutex)
+#define TRC_CFG_NAME_LEN_MUTEX      %NameLenMutex
+%else
 #define TRC_CFG_NAME_LEN_MUTEX			15
+%endif
+%if defined(NameLenTimer)
+#define TRC_CFG_NAME_LEN_TIMER      %NameLenTimer
+%else
 #define TRC_CFG_NAME_LEN_TIMER			15
+%endif
+%if defined(NameLenEventGroup)
+#define TRC_CFG_NAME_LEN_EVENTGROUP   %NameLenEventGroup
+%else
 #define TRC_CFG_NAME_LEN_EVENTGROUP 	15
-
+%endif
 /******************************************************************************
  *** ADVANCED SETTINGS ********************************************************
  ******************************************************************************
@@ -353,7 +380,11 @@
 *
 * Default value is 0.
 ******************************************************************************/
+%if defined(HeapSizeBelow16M) & %HeapSizeBelow16M='yes'
+#define TRC_CFG_HEAP_SIZE_BELOW_16M 1
+%else
 #define TRC_CFG_HEAP_SIZE_BELOW_16M 0
+%endif
 
 /******************************************************************************
  * TRC_CFG_USE_LINKER_PRAGMA
@@ -405,7 +436,11 @@
  * For details, see trcSnapshotKernelPort.h and look for references to the 
  * macro trcKERNEL_HOOKS_SET_TASK_INSTANCE_FINISHED.  
  *****************************************************************************/
+%if defined(UseImplicitIFErules) & %UseImplicitIFErules='no'
+#define TRC_CFG_USE_IMPLICIT_IFE_RULES 0
+%else
 #define TRC_CFG_USE_IMPLICIT_IFE_RULES 1
+%endif
 
 /******************************************************************************
  * TRC_CFG_USE_16BIT_OBJECT_HANDLES
@@ -429,7 +464,11 @@
  * the event buffer whenever the object is referenced. Moreover, some internal
  * tables in the recorder gets slightly larger when using 16-bit handles.
  *****************************************************************************/
+%if defined(Use16bitObjectHandles) & %Use16bitObjectHandles='yes'
+#define TRC_CFG_USE_16BIT_OBJECT_HANDLES 1
+%else
 #define TRC_CFG_USE_16BIT_OBJECT_HANDLES 0
+%endif
 
 /******************************************************************************
  * TRC_CFG_USE_TRACE_ASSERT
@@ -557,5 +596,38 @@
  * trcStreamingConfig.h, since it is affected by the recorder mode.
  ******************************************************************************/
 #define TRC_CFG_ISR_TAILCHAINING_THRESHOLD 0
+
+/* << EST: additional configuration item */
+/******************************************************************************
+ * TRC_CFG_TRACE_DESCRIPTION
+ *
+ * Macro which should be defined as a string.
+ *
+ * This string is stored in the trace and displayed in Tracealyzer. Can be
+ * used to store, e.g., system version or build date. This is also used to store
+ * internal error messages from the recorder, which if occurs overwrites the
+ * value defined here. This may be maximum 256 chars.
+ *****************************************************************************/
+%if defined(TraceDescriptionString)
+#define TRC_CFG_TRACE_DESCRIPTION "%TraceDescriptionString"
+%else
+#define TRC_CFG_TRACE_DESCRIPTION "Tracealyzer Recording"
+%endif
+
+/* << EST: additional configuration item */
+/******************************************************************************
+ * TRC_CFG_TRACE_DESCRIPTION_MAX_LENGTH
+ *
+ * The maximum length (including zero termination) for the TRC_CFG_TRACE_DESCRIPTION
+ * string. Since this string also is used for internal error messages from the
+ * recorder do not make it too short, as this may truncate the error messages.
+ * Default is 80.
+ * Maximum allowed length is 256 - the trace will fail to load if longer.
+ *****************************************************************************/
+%if defined(TraceDescriptionMaxLength)
+#define TRC_CFG_TRACE_DESCRIPTION_MAX_LENGTH %TraceDescriptionMaxLength
+%else
+#define TRC_CFG_TRACE_DESCRIPTION_MAX_LENGTH 80
+%endif
 
 #endif /*TRC_SNAPSHOT_CONFIG_H*/

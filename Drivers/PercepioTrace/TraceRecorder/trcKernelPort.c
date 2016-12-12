@@ -43,6 +43,7 @@
  ******************************************************************************/
 
 #include "FreeRTOS.h"
+#if configUSE_TRACE_HOOKS /* << EST: FreeRTOS using Percepio Trace */
 
 #if (configUSE_TRACE_FACILITY == 1 && !defined(TRC_USE_TRACEALYZER_RECORDER))
 #error Trace Recorder: You need to include trcRecorder.h at the end of your FreeRTOSConfig.h!
@@ -557,3 +558,6 @@ uint8_t uiTraceIsObjectExcluded(traceObjectClass objectclass, traceHandle handle
 #endif /* Snapshot mode */
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/
+
+#endif /* configUSE_TRACE_HOOKS */ /* << EST: FreeRTOS using Percepio Trace */
+

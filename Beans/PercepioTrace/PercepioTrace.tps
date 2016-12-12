@@ -68,5 +68,24 @@
         <Line>TRC_RECORDER_MODE_STREAMING</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeTraceEnable</Name>
+      <Items lines_count="3">
+        <Line>TRC_INIT</Line>
+        <Line>TRC_START</Line>
+        <Line>TRC_START_AWAIT_HOST</Line>
+      </Items>
+      <Hints lines_count="3">
+        <Line>Initializes the trace recorder, but does not start the tracing. In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime later.</Line>
+        <Line>Starts the tracing directly. In snapshot mode this allows for starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT) has been called in the startup.</Line>
+        <Line>TRC_START_AWAIT_HOST: For streaming mode only. Initializes the trace recorder if necessary and waits for a Start command from Tracealyzer ("Start Recording" button). This call is intentionally blocking! By calling vTraceEnable with this option from the startup code, you start tracing at this point and capture the early events.</Line>
+      </Hints>
+      <Defines lines_count="3">
+        <Line>TRC_INIT</Line>
+        <Line>TRC_START</Line>
+        <Line>TRC_START_AWAIT_HOST</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>

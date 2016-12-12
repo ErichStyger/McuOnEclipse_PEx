@@ -3,12 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (vTraceSetTimerFrequency)
+%include Common\GeneralMethod.inc (Startup)
 %;**     Description :
-%;**         Use this to define the frequency of the timer/counter used
-%;**         for timestamping (in Hz)
-%include Common\GeneralParameters.inc(27)
-%;**         frequency%Parfrequency %>27 - frequency
+%;**         Routine called during startup. Depending on the mode and
+%;**         settings, it starts tracing and might block!
+%include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

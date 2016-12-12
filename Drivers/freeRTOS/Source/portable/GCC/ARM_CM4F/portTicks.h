@@ -179,8 +179,10 @@ portLONG uxGetTickCounterValue(void);
 #define TRC_HWTC_COUNT (uxGetTickCounterValue())
 #define TRC_HWTC_TYPE TRC_FREE_RUNNING_32BIT_INCR
 
-#define TRC_IRQ_PRIORITY_ORDER 1
-#define TRC_HWTC_FREQ_HZ  FREERTOS_HWTC_FREQ_HZ
+#if !configCPU_FAMILY_IS_ARM(configCPU_FAMILY) /* the defines below are already defined in trcHardwarePort.h for Cortex-M */
+  #define TRC_IRQ_PRIORITY_ORDER 1
+  #define TRC_HWTC_FREQ_HZ  FREERTOS_HWTC_FREQ_HZ
+#endif
 
 #if configUSE_TICKLESS_IDLE == 1
   extern volatile uint8_t portTickCntr; /* used to find out if we woke up by the tick interrupt */

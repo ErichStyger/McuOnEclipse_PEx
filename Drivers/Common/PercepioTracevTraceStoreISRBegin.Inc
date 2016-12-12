@@ -12,7 +12,7 @@
 %;**         enabled if 'Include ISR tracing' is set to 'yes' in the
 %;**         properties.
 %include Common\GeneralParameters.inc(27)
-%;**         id%Parid %>27 - ID of the ISR
+%;**         handle%Parhandle %>27 - trace handle
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

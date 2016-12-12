@@ -1106,7 +1106,7 @@ typedef struct
 	int32_t debugMarker2;
 
 	/* Error messages from the recorder. */
-	char systemInfo[80];
+	char systemInfo[TRC_CFG_TRACE_DESCRIPTION_MAX_LENGTH];
 
 	/* 0xF3F3F3F3 - for control only */
 	int32_t debugMarker3;

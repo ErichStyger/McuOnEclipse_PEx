@@ -51,7 +51,7 @@
 #include "FreeRTOSConfig.h"
 
 #if configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
-#if MCUC1_CONFIG_PEX_SDK_USED/* << EST Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
+#if %@sdk@'ModuleName'_CONFIG_PEX_SDK_USED/* << EST Kinetis SDK is using CMSIS core, therefore the functions below are defined in core_cmFunc.h. For non-SDK projects, define them locally here */
   /** \brief  Get Priority Mask
       This function returns the current state of the priority mask bit from the Priority Mask Register.
       \return               Priority Mask value
@@ -75,7 +75,7 @@
   }
 #else
   #include "fsl_device_registers.h"
-#endif /* #if MCUC1_CONFIG_PEX_SDK_USED */
+#endif /* #if %@sdk@'ModuleName'_CONFIG_PEX_SDK_USED */
 #endif /* configCPU_FAMILY_IS_ARM */
 #endif /* << EST */
 

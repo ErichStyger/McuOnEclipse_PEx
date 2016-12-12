@@ -206,6 +206,16 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
+<li><a name="vTraceEnable">
+<b>vTraceEnable</b></a>
+ - no hint
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void vTraceEnable(int startOption)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>startoption:byte</i> - * TRC_START: Starts the tracing directly. In snapshot mode this allows for <br />* starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT)<br />* has been called in the startup.<br />* Can also be used for streaming without Tracealyzer control, e.g. to a local<br />* flash file system (assuming such a &quot;stream port&quot;, see trcStreamingPort.h).<br />* <br />* TRC_START_AWAIT_HOST: For streaming mode only. Initializes the trace recorder<br />* if necessary and waits for a Start command from Tracealyzer (&quot;Start Recording&quot;<br />* button). This call is intentionally blocking! By calling vTraceEnable with<br />* this option from the startup code, you start tracing at this point and capture<br />* the early events.<br />*<br />* TRC_INIT: Initializes the trace recorder, but does not start the tracing.<br />* In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime<br />* later.</li>
+</ul><br />
+</li>
 <li><a name="uiTraceStart">
 <b>uiTraceStart</b></a>
  - Starts the trace.
@@ -257,36 +267,27 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="vTraceSetTimerFrequency">
-<b>vTraceSetTimerFrequency</b></a>
- - Use this to define the frequency of the timer/counter used for timestamping (in Hz)
+<li><a name="xTraceRegisterString">
+<b>xTraceRegisterString</b></a>
+ - Register strings in the recorder, e.g. for names of user event channels.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceSetTimerFrequency(dword frequency)<br />
+<br /><i>ANSIC prototype:</i> traceString xTraceRegisterString(const char* name)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>frequency:dword</i> - frequency</li>
-</ul><br />
-</li>
-<li><a name="xTraceOpenLabel">
-<b>xTraceOpenLabel</b></a>
- - Open/create symbol to use as user event handle for related user events (conceptually like a file handle)
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> traceLabel xTraceOpenLabel(char *label)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>label: Pointer to char</i> - Pointer to label</li>
-<li><i>Return value:traceLabel</i> - trace label
+<li><i>name: Pointer to char</i> - Pointer to label</li>
+<li><i>Return value:traceString</i> - trace label to be used with vTracePrintF
 </li>
 </ul><br />
 </li>
-<li><a name="vTraceUserEvent">
-<b>vTraceUserEvent</b></a>
- - Simple user event - store a label, created using xTraceOpenLabel
+<li><a name="vTracePrint">
+<b>vTracePrint</b></a>
+ - Generates a User Event with a text label. The label is created/looked up in the symbol table using xTraceRegisterString.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceUserEvent(traceLabel eventLabel)<br />
+<br /><i>ANSIC prototype:</i> void vTracePrint(traceString chn, const char* str)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>eventLabel:traceLabel</i> - trace label for the user event</li>
+<li><i>chn:traceString</i> - trace label for the user event</li>
+<li><i>str: Pointer to char</i> - Pointer to string</li>
 </ul><br />
 </li>
 <li><a name="vTracePrintF">
@@ -312,16 +313,39 @@ LI.EXP {
 <li><i>name: Pointer to char</i> - Pointer to name</li>
 </ul><br />
 </li>
-<li><a name="vTraceSetISRProperties">
-<b>vTraceSetISRProperties</b></a>
+<li><a name="vTraceSetSemaphoreName">
+<b>vTraceSetSemaphoreName</b></a>
+ - Assigns a name to a FreeRTOS Queue, Semaphore or Mutex. This function should  be called right after creation of the queue/mutex/semaphore. If not using this function, the queues/mutexes/semaphores will be presented by their numeric handle only.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void vTraceSetSemaphoreName(void *semaphore, char *name)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>queue: Pointer to byte</i> - Pointer to the semaphore</li>
+<li><i>name: Pointer to char</i> - Pointer to name</li>
+</ul><br />
+</li>
+<li><a name="vTraceSetMutexName">
+<b>vTraceSetMutexName</b></a>
+ - Assigns a name to a FreeRTOS Queue, Semaphore or Mutex. This function should  be called right after creation of the queue/mutex/semaphore. If not using this function, the queues/mutexes/semaphores will be presented by their numeric handle only.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void vTraceSetMutexName(void *mutex, char *name)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>queue: Pointer to byte</i> - Pointer to the mutex</li>
+<li><i>name: Pointer to char</i> - Pointer to name</li>
+</ul><br />
+</li>
+<li><a name="xTraceSetISRProperties">
+<b>xTraceSetISRProperties</b></a>
  - Registers an Interrupt Service Routine in the recorder library, This must be called before using vTraceStoreISRBegin to store ISR events. This is typically called in the startup of the system, before the scheduler is started. Method is always enabled if 'Include ISR tracing' is set to 'yes' in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceSetISRProperties(objectHandleType handle, char *name, char prioritiy)<br />
+<br /><i>ANSIC prototype:</i> traceHandle xTraceSetISRProperties(char *name, char prioritiy)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>handle:byte</i> - handle to be used</li>
 <li><i>name: Pointer to char</i> - Pointer to name</li>
 <li><i>prioritiy:char</i> - priority</li>
+<li><i>Return value:traceHandle</i> - trace handle to be used for vTaceStoreISRBegin()
+</li>
 </ul><br />
 </li>
 <li><a name="vTraceStoreISRBegin">
@@ -329,9 +353,9 @@ LI.EXP {
  - Registers the beginning of an Interrupt Service Routine. This must not be interrupted by another ISR containing recorder library calls, so if allowing nested ISRs this must be called with interrupts disabled.  Method is always enabled if 'Include ISR tracing' is set to 'yes' in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceStoreISRBegin(objectHandleType id)<br />
+<br /><i>ANSIC prototype:</i> void vTraceStoreISRBegin(traceHandle handle)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>id:byte</i> - ID of the ISR</li>
+<li><i>handle:traceHandle</i> - trace handle</li>
 </ul><br />
 </li>
 <li><a name="vTraceStoreISREnd">
@@ -339,48 +363,9 @@ LI.EXP {
  - Registers the end of an Interrupt Service Routine. This must not be interrupted by another ISR containing recorder library calls, so if allowing nested ISRs this must be called with interrupts disabled.  Method is always enabled if 'Include ISR tracing' is set to 'yes' in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceStoreISREnd(int pendingISR)<br />
+<br /><i>ANSIC prototype:</i> void vTraceStoreISREnd(int isTaskSwitchRequired)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>pendingISR:byte</i> - The parameter pendingISR indicates if the interrupt has requested a task-switch (= 1) or if the interrupt returns to the earlier context (= 0)</li>
-</ul><br />
-</li>
-<li><a name="vTraceTaskSkipDefaultInstanceFinishedEvents">
-<b>vTraceTaskSkipDefaultInstanceFinishedEvents</b></a>
- - This is useful if there are implicit Instance Finish Events, such as vTaskDelayUntil or xQueueReceive, in a task where an explicit Instance Finish Event has been defined. This function tells the recorder that only the explicitly defined functions, using vTraceTaskInstanceIsFinished, should be treated as Instance Finish Events for this task. The implicit Instance Finish Events are thus disregarded for this task.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceTaskSkipDefaultInstanceFinishedEvents(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="vTraceTaskInstanceIsFinished">
-<b>vTraceTaskInstanceIsFinished</b></a>
- - This defines an explicit Instance Finish Event for the current task. It tells the recorder that the current instance of this task is finished at the next kernel call of the task, e.g., a taskDelay or a queue receive. This function should be called right before the api function call considered to be the end of the task instance, i.e., the Instance Finish Event.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceTaskInstanceIsFinished(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="vTraceExcludeTaskFromSchedulingTrace">
-<b>vTraceExcludeTaskFromSchedulingTrace</b></a>
- - Excludes a task from the recording using a flag in the Object Property Table. This can be useful if some irrelevant task is very frequent and is &quot;eating up the buffer&quot;. This should be called the task has been created, but  before starting the FreeRTOS scheduler.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceExcludeTaskFromSchedulingTrace(const char* name)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>name:byte</i> - name of the task</li>
-</ul><br />
-</li>
-<li><a name="vTraceInitTraceData">
-<b>vTraceInitTraceData</b></a>
- - Allocates, if necessary, and initializes the recorder data structure, based on the settings.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void* vTraceInitTraceData(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:void*</i> - Pointer to trace data (RecorderDataType*)
-</li>
+<li><i>isTaskSwitchRequired:byte</i> - The parameter pendingISR indicates if the interrupt has requested a task-switch (= 1) or if the interrupt returns to the earlier context (= 0)</li>
 </ul><br />
 </li>
 <li><a name="vGetGDBDumpCommand">
@@ -428,32 +413,13 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="vTraceTaskInstanceFinish">
-<b>vTraceTaskInstanceFinish</b></a>
- - Marks the current task instance as finished on the next kernel call.<br />If that kernel call is blocking, the instance ends after the blocking event<br />and the corresponding return event is then the start of the next instance.<br />If the kernel call is not blocking, the viewer instead splits the current<br />fragment right before the kernel call, which makes this call the first event<br />of the next instance.<br />See also USE_IMPLICIT_IFE_RULES in trcConfig.h<br /> Example:<br />	while(1)<br />	{<br />        	xQueueReceive(CommandQueue, &amp;command, timeoutDuration);<br />		processCommand(command);<br />                 vTraceInstanceFinish();<br />}
+<li><a name="Startup">
+<b>Startup</b></a>
+ - Routine called during startup. Depending on the mode and settings, it starts tracing and might block!
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceTaskInstanceFinish(void)<br />
+<br /><i>ANSIC prototype:</i> void Startup(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="vTraceTaskInstanceFinishDirect">
-<b>vTraceTaskInstanceFinishDirect</b></a>
- - Marks the current task instance as finished at this very instant.<br />This makes the viewer to splits the current fragment at this point and begin<br />a new actor instance.<br />See also USE_IMPLICIT_IFE_RULES in trcConfig.h<br />Example:<br />		This example will generate two instances for each loop iteration.<br />		The first instance ends at vTraceInstanceFinishDirect(), while the second<br />      instance ends at the next xQueueReceive call.<br /><br />		while (1)<br />		{<br />          xQueueReceive(CommandQueue, &amp;command, timeoutDuration);<br />			ProcessCommand(command);<br />			vTraceInstanceFinishDirect();<br />			DoSometingElse();<br />          vTraceInstanceFinish();<br />      }
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vTraceTaskInstanceFinishDirect(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="Init">
-<b>Init</b></a>
- - Initializes the trace. Call this either from the startup or from the application
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Init(bool startTracing)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>startTracing:bool</i> - if tracing shall be started immediately. Note that for streaming trace this will be blocking!</li>
 </ul><br />
 </li>
 
