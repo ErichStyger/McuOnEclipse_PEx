@@ -717,6 +717,8 @@ void %'ModuleName'%.CatchExceptionPSP() {
 	int *level, *stack, global, *res, *ret, *spt;
 	register int *r6 __asm("r6");
 	register int *sp __asm("sp");
+	__asm("mov r7, lr");
+	__asm("sub r7, #3");
 	level = pvTaskGetThreadLocalStoragePointer(NULL, Exlevel);
 	if(level == 0) {
 		__asm("b NonCatchedException");
