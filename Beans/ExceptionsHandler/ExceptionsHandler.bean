@@ -3,13 +3,12 @@
   <Header>
     <Name>ExceptionsHandler</Name>
     <UUID>d1f3b52d-c709-42dd-8799-bc3d63f8217e</UUID>
-    <Description>To handle exception on runtime.</Description>
+    <Description>To handle exceptions at runtime and fix errors at debug time.</Description>
     <Author>Omar Isai Pinales Ayala</Author>
-    <Version>02.000</Version>
+    <Version>02.001</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE</TypesFiles>
     <FileVersion>6</FileVersion>
-    <OriginRepository>file:/${home_ProcessorExpert_loc}/MyComponents</OriginRepository>
   </Header>
   <Options>
     <SaveInspectorTabsViewUIStyle>true</SaveInspectorTabsViewUIStyle>
@@ -23,8 +22,8 @@ http://www.&lt;company&gt;.com
 mail: info@&lt;company&gt;.com</Copyright>
     <OneBeanInstance>!yes</OneBeanInstance>
     <NoModulePrefix>yes</NoModulePrefix>
-    <BW_HelpType>Default</BW_HelpType>
-    <BW_HelpFiles>Events,"Types and constants",Methods,Properties</BW_HelpFiles>
+    <BW_HelpType>&lt;none&gt;</BW_HelpType>
+    <BW_HelpFiles>"Types and constants",Methods,Properties,"Typical Usage"</BW_HelpFiles>
   </Options>
   <PropertyList>
     <Property>
@@ -377,7 +376,7 @@ mail: info@&lt;company&gt;.com</Copyright>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void* #M#_#C#()</ANSIC>
+          <ANSIC>Exception #M#_#C#()</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -403,12 +402,12 @@ mail: info@&lt;company&gt;.com</Copyright>
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void*</ReturnType>
+        <ReturnType>Exception</ReturnType>
         <RetHint />
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void* #M#_#C#()</ANSIC>
+          <ANSIC>Exception #M#_#C#()</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -658,7 +657,7 @@ mail: info@&lt;company&gt;.com</Copyright>
     <EmptySection_DummyValue />
   </Links>
   <Revisions>
-    <RevisionVersion>20</RevisionVersion>
+    <RevisionVersion>21</RevisionVersion>
     <Revision>
       <Date>27-nov-2016</Date>
       <Version>02.000</Version>
