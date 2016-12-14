@@ -474,24 +474,24 @@ void %'ModuleName'%.StackPush() {
 	}
 	lr = ret;
 	__asm("mov pc, lr");
-%else %-frtos
+%else %-no frtos
 	__asm(
-		"ldr r5, =MissingCatchInstruction \n"
+		"ldr r1, =MissingCatchInstruction \n"
 		"ldr r6, =%'ModuleName'%.tryStack \n"
 		"ldr r6, [r6, #0] \n"
-		"mov r4, lr \n"
-		"sub r4, r4, #4 \n"
+		"mov r0, lr \n"
+		"sub r0, r0, #4 \n"
 	//%'ModuleName'%.tryStack-4, MissingCatchInstruction, %'ModuleName'%.tryStack-4, MissingCatchInstruction, %'ModuleName'%.tryStack, sp
 		"mov sp, r7 \n"
-		"push {r4, r5, r6, r7} \n"
-		"push {r4, r5} \n"
+		"push {r0, r1, r6, r7} \n"
+		"push {r0, r1} \n"
 		"mov r1, sp \n"
 		"ldr r0, =%'ModuleName'%.tryStack \n"
 		"str r1, [r0, #0] \n"
-		"ldr r4, =%'ModuleName'%.Exlevel \n"
-		"ldr r5, [r4, #0] \n"
-		"add r5, #1 \n"
-		"str r5, [r4, #0] \n"
+		"ldr r0, =%'ModuleName'%.Exlevel \n"
+		"ldr r1, [r0, #0] \n"
+		"add r1, #1 \n"
+		"str r1, [r0, #0] \n"
 		"mov pc, lr \n"
 	);
 %endif %-frtos
@@ -550,22 +550,24 @@ void %'ModuleName'%.StackPop() {
 	}
 	lr = ret;
 	__asm("mov pc, lr");
-%else %-frtos
+%else %-no frtos
 	__asm(
 	//Exlevel--;
-		"ldr r4, =%'ModuleName'%.Exlevel \n"
-		"ldr r5, [r4, #0] \n"
-		"sub r5, #1 \n"
-		"str r5, [r4, #0] \n"
+		"ldr r0, =%'ModuleName'%.Exlevel \n"
+		"ldr r1, [r0, #0] \n"
+		"sub r1, #1 \n"
+		"str r1, [r0, #0] \n"
 	//%'ModuleName'%.ExceptResult = %'ModuleName'%.GlobalEx;
-		"ldr r3, =%'ModuleName'%.GlobalEx \n"
-		"ldrb r2, [r3, #0] \n"
-		"ldr r4, =%'ModuleName'%.ExceptResult \n"
-		"strb r2, [r4, #0] \n"
+		"ldr r0, =%'ModuleName'%.GlobalEx \n"
+		"ldrb r0, [r0, #0] \n"
+		"ldr r1, =%'ModuleName'%.ExceptResult \n"
+		"strb r0, [r1, #0] \n"
 	//%'ModuleName'%.GlobalEx = %'ModuleName'%.HandledException;
-		"mov r2, #0 \n"
-		"strb r2, [r3, #0] \n"
-		"pop {r2, r3, r4, r5, r6, r7} \n \n"
+		"ldr r0, =%'ModuleName'%.GlobalEx \n"
+		"mov r1, #0 \n"
+		"strb r1, [r0, #0] \n"
+		"pop {r0, r1} \n"
+		"pop {r0, r1, r6, r7} \n \n"
 	//%'ModuleName'%.tryStack = r6;
 		"ldr r0, =%'ModuleName'%.tryStack \n"
 		"str r6, [r0, #0] \n"
@@ -637,7 +639,7 @@ void %'ModuleName'%.ThrowException(Exception ex) {
 			"b NonCatchedException \n"
 		);
 	}
-%else %-frtos
+%else %-no frtos
 	__asm(
 		"ldr r6, =%'ModuleName'%.Exlevel \n"
 		"ldr r6, [r6, #0] \n"
@@ -688,7 +690,7 @@ void %'ModuleName'%.CatchExceptionMSP() {
 		"mov pc, r6 \n"
 	//}
 	);
-%else %-frtos
+%else %-no frtos
 	__asm(
 	//%'ModuleName'%.GlobalEx = NullPointerException;
 		"ldr r6, =%'ModuleName'%.GlobalEx \n"
@@ -760,7 +762,7 @@ void HardFault() {
 		"str r6, [r0, #0] \n"
 		"bx lr \n"
 	);
-%else %-frtos
+%else %-no frtos
 	__asm(
 		"ldr r6, =%'ModuleName'%.Exlevel \n"
 		"ldr r6, [r6, #0] \n"
