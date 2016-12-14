@@ -440,8 +440,8 @@ void %'ModuleName'%.StackPush() {
 %if %frtos = 'yes'
 	xTaskHandle tsk;
 	int *level, *stack, ctr, *ret;
-	register int *r4 __asm("r4");
-	register int *r5 __asm("r5");
+	register int *r0 __asm("r0");
+	register int *r1 __asm("r1");
 	register int *r6 __asm("r6");
 	register int *r7 __asm("r7");
 	register int *sp __asm("sp");
@@ -455,13 +455,13 @@ void %'ModuleName'%.StackPush() {
 		level = %'ModuleName'%.Exlevel;
 		stack = %'ModuleName'%.tryStack;
 	}
-	r4 = ret - 1;
-	r5 = (int *) MissingCatchInstruction;
+	r0 = ret - 1;
+	r1 = (int *) MissingCatchInstruction;
 	r6 = stack;
 	__asm(
 		"mov sp, r7 \n"
-		"push {r4, r5, r6, r7} \n"
-		"push {r4, r5} \n"
+		"push {r0, r1, r6, r7} \n"
+		"push {r0, r1} \n"
 	);
 	level++;
 	stack = sp;
@@ -524,25 +524,28 @@ void %'ModuleName'%.StackPop() {
 		vTaskSetThreadLocalStoragePointer(NULL, GlobalEx, global);
 		vTaskSetThreadLocalStoragePointer(NULL, ExceptResult, res);
 		sp = spt;
-		__asm("pop {r2, r3, r4, r5, r6, r7}");
+		__asm("pop {r0, r1}");
+		__asm("pop {r0, r1, r6, r7}");
 		stack = r6;
 		vTaskSetThreadLocalStoragePointer(NULL, tryStack, stack);
 	} else {
 		__asm(
 		//Exlevel--;
-			"ldr r4, =%'ModuleName'%.Exlevel \n"
-			"ldr r5, [r4, #0] \n"
-			"sub r5, #1 \n"
-			"str r5, [r4, #0] \n"
+			"ldr r0, =%'ModuleName'%.Exlevel \n"
+			"ldr r1, [r0, #0] \n"
+			"sub r1, #1 \n"
+			"str r1, [r0, #0] \n"
 		//%'ModuleName'%.ExceptResult = %'ModuleName'%.GlobalEx;
-			"ldr r3, =%'ModuleName'%.GlobalEx \n"
-			"ldrb r2, [r3, #0] \n"
-			"ldr r4, =%'ModuleName'%.ExceptResult \n"
-			"strb r2, [r4, #0] \n"
+			"ldr r0, =%'ModuleName'%.GlobalEx \n"
+			"ldrb r0, [r0, #0] \n"
+			"ldr r1, =%'ModuleName'%.ExceptResult \n"
+			"strb r0, [r1, #0] \n"
 		//%'ModuleName'%.GlobalEx = %'ModuleName'%.HandledException;
-			"mov r2, #0 \n"
-			"strb r2, [r3, #0] \n"
-			"pop {r2, r3, r4, r5, r6, r7} \n"
+			"ldr r0, =%'ModuleName'%.GlobalEx \n"
+			"mov r1, #0 \n"
+			"strb r1, [r0, #0] \n"
+			"pop {r0, r1} \n"
+			"pop {r0, r1, r6, r7} \n"
 		//%'ModuleName'%.tryStack = r6;
 			"ldr r0, =%'ModuleName'%.tryStack \n"
 			"str r6, [r0, #0] \n"
