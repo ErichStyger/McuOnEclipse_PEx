@@ -910,6 +910,7 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks)
 %include Common\GenericTimeDateSetSWTimeDate.Inc
 uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
 {
+#if %'ModuleName'%.USE_SOFTWARE_RTC
   uint8_t res;
   uint32_t nofTicks;
   bool failed = FALSE;
@@ -937,6 +938,9 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
     return ERR_FAILED;
   }
   return ERR_OK;
+#else
+  return ERR_FAILED;
+#endif
 }
 
 %endif %- SetSWTimeDate
@@ -950,6 +954,7 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
 %include Common\GenericTimeDateGetSWTimeDate.Inc
 uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *Time, DATEREC *Date)
 {
+#if %'ModuleName'%.USE_SOFTWARE_RTC
   uint8_t res;
   uint32_t ticks;
   bool failed = FALSE;
@@ -975,6 +980,9 @@ uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *Time, DATEREC *Date)
     return ERR_FAILED;
   }
   return ERR_OK;
+#else
+  return ERR_FAILED;
+#endif
 }
 
 %endif %- GetSWTimeDate
@@ -1145,7 +1153,7 @@ uint8_t %'ModuleName'%.%GetDate(DATEREC *Date)
   #error "invalid configuration!"
   res = ERR_FAILED;
 #endif
-#if %'ModuleName'%.ON_DATE_GET_EVENT
+#if %'ModuleName'%.ON_DATE_GET_EVENT && %'ModuleName'%.USE_SOFTWARE_RTC
   %'ModuleName'%.ON_DATE_GET_EVENT_NAME(&CntDay, &CntMonth, &CntYear); /* call user event */
 #endif
   return res;
@@ -1756,10 +1764,10 @@ void %'ModuleName'%.%UnixSecondsToTimeDateCustom(int32_t seconds, int8_t offset_
   day = (uint8_t)(seconds/(24*3600))+1;
   seconds = seconds%%(24*3600);
 
-  hours   = (uint8_t)seconds/3600;
+  hours   = (uint8_t)(seconds/3600);
   seconds = seconds%%3600;
 
-  minutes = (uint8_t)seconds/60;
+  minutes = (uint8_t)(seconds/60);
   seconds = seconds%%60;
 
   if (date!=NULL) {
