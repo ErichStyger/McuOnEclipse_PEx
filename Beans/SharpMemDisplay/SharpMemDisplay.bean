@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bean>
+  <Header>
+    <Name>SharpMemDisplay</Name>
+    <Description>Display driver for the Sharp Memory Display LS013B4DN04</Description>
+    <Author>Erich Styger</Author>
+    <Version>01.001</Version>
+    <Icon>SharpMemDisplay</Icon>
+    <TypesFiles>PE,SharpMemDisplay\SharpMemDisplay</TypesFiles>
+    <FileVersion>6</FileVersion>
+  </Header>
+  <Options>
+    <Category>CPU External Devices-Display</Category>
+    <BW_HelpType>BasicPlusUsage</BW_HelpType>
+    <BW_HelpFiles>,Properties,Methods,Events,"Typical Usage"</BW_HelpFiles>
+    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
+    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
+    <BW_DetailedHelp>yes</BW_DetailedHelp>
+    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedUst>4</BW_NeedUst>
+    <BW_NeedCns>0</BW_NeedCns>
+    <BeanStatus>PROPOSAL</BeanStatus>
+    <Copyright> * Copyright (c) 2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
+    <Shortcut>SHM</Shortcut>
+    <DemoDriver>no</DemoDriver>
+    <BeanLevel>Low</BeanLevel>
+  </Options>
+  <PropertyList>
+    <Property>
+      <TCompNameItem>
+        <Name>Component name</Name>
+        <Symbol>DeviceName</Symbol>
+        <Hint>Name of the component.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue/>
+      </TCompNameItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Properties</Name>
+        <Symbol>Properties</Symbol>
+        <Hint>Properties of display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Width</Name>
+              <Symbol>Width</Symbol>
+              <Hint>Width of the display in pixels.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>true</EditLine>
+              <DefaultValue>96</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>true</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Height</Name>
+              <Symbol>Height</Symbol>
+              <Hint>The height of the display in pixels.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>true</EditLine>
+              <DefaultValue>96</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>true</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Bytes in rows</Name>
+              <Symbol>BytesInRows</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If bytes are organized in rows or columns.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Bytes in x direction</Name>
+              <Symbol>BytesInXdirection</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If bytes are increasing in x direction (from left to right). Otherwise bytes are increasing in y direction (from top to down).</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>MSB first</Name>
+              <Symbol>MSBfirst</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If the Most Significant bit/pixel comes first in the byte.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Bits per pixel</Name>
+              <Symbol>BitsPerPixel</Symbol>
+              <Hint>Number of bits per pixel. 1 for B/W displays.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>true</EditLine>
+              <DefaultValue>1</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>true</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Window capability</Name>
+              <Symbol>WindowCapability</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If the display is able to use a window for writing into display memory.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Display Memory Write</Name>
+              <Symbol>DisplayMemoryWrite</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If we can write directly into the display memory</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <ReadOnly>true</ReadOnly>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Invert Display</Name>
+        <Symbol>DisplayInvert</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If the pixels on the display shall be inverted.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TInhrItem>
+        <Name>CS</Name>
+        <Symbol>CS</Symbol>
+        <TypeSpec>SharpMemDisplay\SCE</TypeSpec>
+        <Hint>SPI Chip Enable/Select signal (HIGH active)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>-1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <InhrBeanBaseName>SCEpin</InhrBeanBaseName>
+        <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+      </TInhrItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>HW non-LDD</Name>
+        <Symbol>HardwareGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group controlling the hardware settings.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>SPI</Name>
+              <Symbol>SPIgroup</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Group to control the SPI.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>SPI</Name>
+                    <Symbol>SPI</Symbol>
+                    <TypeSpec>SharpMemDisplay\SPI</TypeSpec>
+                    <Hint>Interface to the SPI communication channel to the display.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>HW LDD</Name>
+        <Symbol>HardwareGroupLDD</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group controlling the hardware settings.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SPI</Name>
+              <Symbol>SPILDD</Symbol>
+              <TypeSpec>SharpMemDisplay\SPILDD</TypeSpec>
+              <Hint>Interface to the SPI communication channel to the display.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>System</Name>
+        <Symbol>SystemGroup</Symbol>
+        <Hint>Group controlling the system settings.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Wait</Name>
+              <Symbol>Wait</Symbol>
+              <TypeSpec>Wait_I</TypeSpec>
+              <Hint>Interface for busy waiting.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Initialize on Init</Name>
+              <Symbol>InitializeOnInit</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If set to 'yes', it will initialize the driver during startup in PE_low_level_init() inside main(). If set to 'no', it is your responsibility to call the  component Init() method.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+  </PropertyList>
+  <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>GetWidth</Name>
+        <Symbol>GetWidth</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the width of the display in pixels</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>PixelDim</ReturnType>
+        <RetHint>width of display</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetHeight</Name>
+        <Symbol>GetHeight</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the height of the display in pixels</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>PixelDim</ReturnType>
+        <RetHint>height of display</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetLongerSide</Name>
+        <Symbol>GetLongerSide</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the longer side of the display in pixels</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>PixelDim</ReturnType>
+        <RetHint>longer side of display</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetShorterSide</Name>
+        <Symbol>GetShorterSide</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the shorter side of the display in pixels</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>PixelDim</ReturnType>
+        <RetHint>shorter side of display</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetDisplayOrientation</Name>
+        <Symbol>SetDisplayOrientation</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets current display orientation</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>newOrientation</ParName>
+          <ParType>DisplayOrientation</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>the new orientation for the display</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_DisplayOrientation newOrientation)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetDisplayOrientation</Name>
+        <Symbol>GetDisplayOrientation</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the current display orientation</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>DisplayOrientation</ReturnType>
+        <RetHint>current display orientation</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_DisplayOrientation #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>WriteData</Name>
+        <Symbol>WriteData</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Write a data byte to the display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>The data byte to write.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t data)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Clear</Name>
+        <Symbol>Clear</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Clears the whole display memory.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetWindow</Name>
+        <Symbol>SetWindow</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Defines a window inside the display we want to write to.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>x0</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>x1</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>y0</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>y1</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim y1)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UpdateFull</Name>
+        <Symbol>UpdateFull</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Updates the whole display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>UpdateRegion</Name>
+        <Symbol>UpdateRegion</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Updates a region of the display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>w</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>width of the region</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>h</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>height of the region</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetLCD</Name>
+        <Symbol>GetLCD</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Method to be called for mutual exclusive access to the LCD</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GiveLCD</Name>
+        <Symbol>GiveLCD</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Method to be called for mutual exclusive access to the LCD</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Display driver initialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Module Deinitialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+  </MethodList>
+  <EventList>
+    <Event>
+      <TStrgItem>
+        <Name>Event module name</Name>
+        <Symbol>EventModule</Symbol>
+        <Hint>Name of the user module (without extension), where the events from this component are placed.</Hint>
+        <ItemLevel>ADVANCED</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>Events</DefaultValue>
+        <StrDefine>nothing</StrDefine>
+        <MinLength>0</MinLength>
+        <MaxLength>-1</MaxLength>
+      </TStrgItem>
+    </Event>
+    <Event>
+      <TEvntItem>
+        <Name>OnBlockReceived</Name>
+        <Symbol>OnBlockReceived</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>This event is called when the requested number of data is moved to the input buffer. This method is available only if the ReceiveBlock method is enabled.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <IsInSimulink>true</IsInSimulink>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>generate code</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>DEF_UNDEF</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <IsAssembler>true</IsAssembler>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>UserDataPtr</ParName>
+          <ParType>LDD_TUserData</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the user or RTOS specific data. The pointer is passed as the parameter of Init method. </ParHint>
+        </Parameter>
+        <Scope>OVERRIDE</Scope>
+        <Declarations>
+          <ANSIC>void #C#(LDD_TUserData *UserDataPtr)</ANSIC>
+        </Declarations>
+        <Children>
+          <GrupItem>
+            <TEvntName>
+              <Name>Event procedure name</Name>
+              <Symbol>Name</Symbol>
+              <Hint>OnBlockReceived procedure name</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+              <ErrorIfNotSet>true</ErrorIfNotSet>
+              <IdentType>EVNT</IdentType>
+            </TEvntName>
+          </GrupItem>
+        </Children>
+      </TEvntItem>
+    </Event>
+  </EventList>
+  <Links>
+    <EmptySection_DummyValue/>
+  </Links>
+  <Revisions>
+    <RevisionVersion>2</RevisionVersion>
+  </Revisions>
+</Bean>
