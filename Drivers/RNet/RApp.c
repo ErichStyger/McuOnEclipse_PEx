@@ -99,6 +99,9 @@ void RAPP_SniffPacket(RAPP_PacketDesc *packet, bool isTx) {
   RAPP_ShortAddrType addr;
   
   io = %@Shell@'ModuleName'%.GetStdio();
+  if (io==NULL) {
+    return; /* no standard I/O defined? */
+  }
   if (isTx) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"Packet Tx ", io->stdOut);
   } else {

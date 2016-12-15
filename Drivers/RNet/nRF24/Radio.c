@@ -540,7 +540,9 @@ static void RADIO_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  sniff", RADIO_isSniffing?(unsigned char*)"yes\r\n":(unsigned char*)"no\r\n", io->stdOut);
-  
+%if defined(Shell)
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  sniff stdio", %@Shell@'ModuleName'%.GetStdio()==NULL?(unsigned char*)"NULL\r\n":(unsigned char*)"Shell default standard I/O\r\n", io->stdOut);
+%endif
   (void)%@nRF24L01p@'ModuleName'%.GetChannel(&val0);
   %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), val0);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" (HW), ");
