@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=windows-1250">
+      <title>      
+         ExceptionsHandler documentation - Typical Usage      
+      </title>
+      <STYLE type="text/css">
+body{
+  background-color: white;
+  margin:0px;
+  font: 13px Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+A:visited {
+	COLOR: #2D8AA7; TEXT-DECORATION: none
+}
+A:link {
+	COLOR: #2D8AA7; TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #2D8AA7; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #2D8AA7; TEXT-DECORATION: underline
+}
+.VSP {
+	COLOR: #2D8AA7; FONT: bold italic 14px Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+.reflink {
+	FONT: 11px/18px Helvetica Neue, Helvetica, Arial, sans-serif;
+ 	COLOR: #2D8AA7;
+}
+.user_text {
+	FONT: 12px/18px Helvetica Neue, Helvetica, Arial, sans-serif;
+	COLOR: #000000;
+}
+.bluetext {
+  COLOR: #695F52;
+}
+.versionspec {
+  padding:5px; 
+  background-color: RGB(243, 242, 230);
+  margin-top:5px;
+  margin-bottom:5px;  
+}
+.versionspecdetail {
+  padding:5px; 
+  background-color: RGB(243, 242, 230);
+  margin-top:5px;
+  margin-bottom:5px;  
+}
+.versionspeclabel {
+  font-style: italic;
+}
+LI.DEF {
+  list-style-image: url(DefaultLI.gif) ;
+}
+LI.BAS {
+	list-style-image: url(BasicLI.gif) ;
+}
+LI.ADV {
+	list-style-image: url(AdvancedLI.gif) ;
+}
+LI.EXP {
+	list-style-image: url(ExpertLI.gif) ;
+}
+.titlebox {  
+  font: bold 18px Helvetica Neue, Helvetica, Arial, sans-serif;
+  color: #51626F;
+  margin-bottom: 10px;
+}
+.lefttitlebox {
+  background-color:#C3CFD1;  
+}
+.lefttitle {
+  color:#51626F;
+  font: bold 11px Helvetica Neue, Helvetica, Arial, sans-serif;   
+}
+.beanname {
+  font: bold 14px/18px Helvetica Neue, Helvetica, Arial, sans-serif;
+  padding-top:6px;
+  padding-bottom:5px;
+  margin-bottom: 5px;
+  border-bottom-style: dotted;
+  border-bottom-width: 1;  
+}
+.descrtext {
+  font-style: italic;
+  font: 14px/18px Helvetica Neue, Helvetica, Arial, sans-serif;  
+  padding-bottom:9px;
+}
+.footer {
+  color: #b0b0b0; 
+  font: 9px Helvetica Neue, Helvetica, Arial, sans-serif;
+  text-align: center;
+  border-top-style: solid;
+  border-top-color: #BOBOBO;
+  border-top-width: 1px;  
+  padding-top: 5px;
+  margin-top: 20px;
+}
+.info_name {
+  font: 9px Helvetica Neue, Helvetica, Arial, sans-serif;
+  padding: 0px;
+  color: black;
+}
+.info_text {
+  font: 11px Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+.text_title {
+  COLOR: #000000; 
+  FONT: bold 14px Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+.descr_line {
+  COLOR: gray; 
+  FONT: 9px Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+.code {
+  background-color: RGB(243, 242, 230);
+  padding: 10px;
+  white-space: pre;
+  font-family: Courier New, Monospace;
+}
+</STYLE>
+  
+   </head>
+   <body>
+      <table border="0"  cellspacing="0" cellpadding="0">
+         <tr>
+            <td valign="top" width="150" >
+               <table  width="150" cellpadding="3" cellspacing="0" border="0">
+                  <tbody>
+                     <tr class="lefttitlebox">
+                        <td width="4"></td>
+                        <td align="center" valign="middle" height="30" width="128">                               
+                           <span class="lefttitle">			<b>                      
+                           ExceptionsHandler</b>                               
+                           </span>          
+                        </td>
+                     </tr>
+                     <tr>
+                        <td width="4"></td>
+                        <td width="128" valign="top">
+                           &nbsp;<br>                               
+                           <div class="reflink">
+                              <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE--> <a href="ExceptionsHandler.html">General Info</a><br><a href="ExceptionsHandlerProperties.html">Properties</a><br><a href="ExceptionsHandlerMethods.html">Methods</a><br><a href="ExceptionsHandlerUser Types.html">Types and constants</a><br><i>Typical Usage</i><br> 
+                              <!---HTMLLISTEND DON'T CHANGE THIS LINE--><br><br><br>                    
+                              <a href="../../DOCs/PredefSymbols.html">Types &amp; definitions</a><br><a href="../../DOCs/EmbeddedBeans.html">Embedded Components</a><br><br><br><br>                      
+                              <center>                        
+                                  <img src="ExceptionsHandler_b.gif" alt="ExceptionsHandler icon">                                   
+                              </center>
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </td>
+            <td width="1" class="lefttitlebox" valign="top">
+                <table class="lefttitlebox" width="1" cellpadding="0" cellspacing="0" border="0">
+                  <tr class="lefttitlebox">
+                     <td width="1"></td>
+                  </tr>
+               </table>
+            </td>
+            <td style="padding-left:15px;padding-right:10px;" valign="top" align="left" width="100%">
+               <div class="titlebox">
+                  <div class="beanname">              
+                     Component ExceptionsHandler            
+                  </div>
+                  <div class="descrtext">              
+                     To handle exceptions at runtime and fix errors at debug time.            
+                  </div>
+                  <div class="info_name">Component Level:                
+                     <span class="info_text">                
+                     <a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">                  
+                     Low</a>              
+                     </span>            
+                  </div>
+                  <div class="info_name">Category:  				               
+                     <span class="info_text">				                 
+                     <a href="../../DOCs/BeanCategoriesInfo.html">                  
+                     Software-User Components</a>				               
+                     </span>                         
+                  </div>
+               </div>
+               <div class="text_title">              Typical Usage:       		           
+               </div>
+               <div class="descr_line">                                 (Examples of a typical usage of the component in user code.                For more information please                 see the page              
+                  <a href="..\..\DOCs\BeanCodeTypical Usage.html">Component Code                 Typical Usage</a>.)                                         
+               </div>       
+               
+               <div class="user_text" style="margin-top:10px">                            
+                  <!---USERBEG DON'T CHANGE THIS LINE-->  
+                      <p>Next you will find examples that how this component works.</p>
+                      <ul>
+                      <li><a href="#debug">Find faults on debug time.</a></li>
+                      <li><a href="#runtime">Handle faults on runtime.</a></li>
+                      <li><a href="#custom">Generate custom exceptions.</a></li>
+                      <li><a href="#multiple">Handling multiple exceptions.</a></li>
+                      <li><a href="#frtos">Handling exceptions on FreeRTOS.</a></li>
+                      </ul>
+                      <br>
+                      <div class="text_title"><a name="debug">Find faults on debug time.</a></div>
+                      <p>
+                      	This functionality is always active when the code is not inside <b>try</b> block.
+                      </p>
+                      <p><b>Example code:</b></p>
+<PRE>
+void example_function() {
+    char *p = NULL;
+    *p = 0;	//Error line
+}
+</PRE>
+					  <p>Call the function from <b>main()</b> function and debug.</p>
+					  <p>The execution will stop in this function:</p>
+					  <img src="img/debug1.png">
+					  <p>Follow the procedure described:</p>
+					  <ol>
+					  <li><p><b>Active "Instruction Stepping Mode":</b></p>
+					  <img src="img/debug2.png">
+					  <p>And this window will apear.</p>
+					  <img src="img/debug3.png">
+					  </li>
+					  <br>
+					  <li><p><b>Press "F5" key two times:</b></p>
+					  <p>And the IDE will shows you the line that causes the fault.</p>
+					  <img src="img/debug4.png">
+					  </li>
+					  </ol>
+					  <br>
+                      <div class="text_title"><a name="runtime">Handle faults on runtime.</a></div>
+                      <p>
+                      	To handle the faults on runtime its necesary use <b>try</b>/<b>catch</b> block.
+                      </p>
+                      <p><b>Example code:</b></p>
+<PRE>
+void example_function() {
+	char *pt = NULL;
+	*pt = 4;
+}
+
+bool example_function2() {
+	try {
+		example_function();
+	} catch {
+		ClearException();
+		return FALSE;
+	}
+	return TRUE;
+}
+</PRE>
+					  <p>On <b>main()</b> function paste this code:</p>
+<PRE>
+  bool result;
+  result = example_function2();
+  for(;;);
+</PRE>
+					  <p>Stop the execution on <b>for</b> line and check <b>result</b> value:</p>
+					  <img src="img/runtime1.png">
+					  <p>You will see that <b>result</b> value is <b>FALSE</b>, which means that the fault was handled on runtime.
+					  <br><br>
+                      <div class="text_title"><a name="custom">Generate custom exceptions.</a></div>
+                      <p>
+                      	The user can generate custom exceptions througt a macro with value bigger than 1.
+                      </p>
+                      <p><b>Example code:</b></p>
+<PRE>
+#define CustomException	3
+
+int example_function3(int num) {
+	if(num > 10) {
+		throw(CustomException);
+	}
+	return num * 2;
+}
+
+bool example_function4() {
+	int a = 20, b;
+	try {
+		b = example_function3(a);
+	} catch {
+		b = 0;
+		ClearException();
+		return FALSE;
+	}
+	return TRUE;
+}
+</PRE>
+					  <p>On <b>main()</b> function paste this code:</p>
+<PRE>
+  bool result;
+  result = example_function4();
+  for(;;);
+</PRE>
+					  <p>Stop the execution on <b>for</b> line and check <b>result</b> value:</p>
+					  <img src="img/runtime2.png">
+					  <p>You will see that <b>result</b> value is <b>FALSE</b>, which means that the fault was handled on runtime.
+					  <br>
+					  <p>If you change <b>a</b> value to <b>5</b> you will see that <b>result</b> value is <b>TRUE</b></p>
+					  <img src="img/runtime3.png">
+					  <p>Wich means that no exception was generated.</p>
+					  <br>
+                      <div class="text_title"><a name="multiple">Handling multiple exceptions.</a></div>
+                      <p>
+                      	It could be used multiple exceptions and know what exception was generated.
+                      </p>
+                      <p><b>Example code:</b></p>
+<PRE>
+#define OverLimitException	4
+#define UnderLimitException	5
+
+int example_function5(int num) {
+	if(num < 0) {
+		throw(UnderLimitException);
+	} else if(num > 100) {
+		throw(OverLimitException);
+	}
+	return 100 - num;
+}
+
+int example_function6(int percent) {
+	int percent2;
+	Exception ex;
+	try {
+		percent2 = example_function5(percent);
+	} catch {
+		ex = GetException();
+		ClearException();
+		if(ex == UnderLimitException) {
+			return -1;
+		} else if(ex == OverLimitException) {
+			return 1;
+		}
+	}
+	return 0;
+}
+</PRE>
+					  <p>On <b>main()</b> function paste this code:</p>
+<PRE>
+  int result;
+  result = example_function6(101);
+  for(;;);
+</PRE>
+					  <p>Stop the execution on <b>for</b> line and check <b>result</b> value:</p>
+					  <img src="img/runtime4.png">
+					  <p>The value is <b>1</b> wich means that <b>OverLimitException</b> was generated.</p>
+					  <p>Now change the parameter of <b>example_function6</b> to <b>-10</b>.</p>
+					  <img src="img/runtime5.png">
+					  <p>The value is <b>-1</b> wich means that <b>UnderLimitException</b> was generated.</p>
+					  <br>
+                      <div class="text_title"><a name="freertos">Handling exceptions on FreeRTOS.</a></div>
+                      <p>To use this component with FreeRTOS it is necesary configure both components.</p>
+                      <ol>
+                      <li><p>On <b>FreeRTOS</b> component change <b>Thread Local Storage Pointer</b> value to <b>4</b>.</p>
+                      <img src="img/freertos1.png">
+                      </li>
+                      <li><p>On <b>ExceptionsHandler</b> component check <b>Support for FreeRTOS</b> option.</p>
+                      <img src="img/freertos2.png">
+                      </li>
+                      <li><p>Finally generate the <b>Processor Expert</b> code.</p></li>
+                      </ol>
+                  <!---USEREND DON'T CHANGE THIS LINE-->
+                   <!---DESCBEG DON'T CHANGE THIS-->      
+                  <!---DESCEND DON'T CHANGE THIS-->          
+               </div>
+               <p class="footer">            PROCESSOR EXPERT is trademark of Freescale Semiconductor, Inc.             <br>                         
+                  Copyright 1997 - 2016 Freescale Semiconductor, Inc.                     
+               </p>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
