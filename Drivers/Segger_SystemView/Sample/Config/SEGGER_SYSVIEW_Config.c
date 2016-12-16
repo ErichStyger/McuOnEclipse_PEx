@@ -174,6 +174,7 @@ extern unsigned int SEGGER_SYSVIEW_TickCnt;
 *   disabled. Therefore locking here is not required.
 */
 U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
   U32 TickCount;
   U32 Cycles;
   U32 CyclesPerTick;
@@ -196,6 +197,9 @@ U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
   Cycles += TickCount * CyclesPerTick;
 
   return Cycles;
+#else
+  return 0;
+#endif
 }
 #endif /* << EST */
 

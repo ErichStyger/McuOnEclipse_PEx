@@ -2249,7 +2249,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
  */
 osa_status_t OSA_Init(void) {
 %if %UseTraceHooksGroup='yes'
-  %@FRTrace@'ModuleName'%.vTraceInitTraceData();/* initialize trace first, as needed by RTOS functions */
+  %@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %endif
   return kStatus_OSA_Success;
 }
