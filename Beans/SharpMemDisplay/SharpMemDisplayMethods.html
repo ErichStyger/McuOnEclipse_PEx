@@ -294,6 +294,17 @@ LI.EXP {
 <li><i>y1:<i>ComponentName_</i>PixelDim</i> - no hint</li>
 </ul><br />
 </li>
+<li><a name="UpdateLine">
+<b>UpdateLine</b></a>
+ - Updates a single line on the LCD
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void UpdateLine(uint8_t line, uint8_t *dataP)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>line:uint8_t</i> - Line number to update, range 0-93</li>
+<li><i>dataP: Pointer to uint8_t</i> - Pointer to data, must be array of 12 bytes (96 pixels)</li>
+</ul><br />
+</li>
 <li><a name="UpdateFull">
 <b>UpdateFull</b></a>
  - Updates the whole display
@@ -314,6 +325,15 @@ LI.EXP {
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - y coordinate</li>
 <li><i>w:<i>ComponentName_</i>PixelDim</i> - width of the region</li>
 <li><i>h:<i>ComponentName_</i>PixelDim</i> - height of the region</li>
+</ul><br />
+</li>
+<li><a name="ToggleVCOM">
+<b>ToggleVCOM</b></a>
+ - Command used if EXTMODE=L. This function toggles the VCOM if no other command is executed
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void ToggleVCOM(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
 <li><a name="GetLCD">

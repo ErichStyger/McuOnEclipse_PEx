@@ -316,6 +316,24 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN UpdateLine
+%ifdef UpdateLine
+void %'ModuleName'%.%UpdateLine(uint8_t line, uint8_t *dataP);
+%define! Parline
+%define! PardataP
+%include Common\SharpMemDisplayUpdateLine.Inc
+
+%endif %- UpdateLine
+%-BW_METHOD_END UpdateLine
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ToggleVCOM
+%ifdef ToggleVCOM
+void %'ModuleName'%.%ToggleVCOM(void);
+%include Common\SharpMemDisplayToggleVCOM.Inc
+
+%endif %- ToggleVCOM
+%-BW_METHOD_END ToggleVCOM
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -418,6 +436,22 @@ static void WriteData(uint8_t data)
 
 %-INTERNAL_METHOD_END WriteData
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN ToggleVCOM
+%ifdef ToggleVCOM
+%include Common\SharpMemDisplayToggleVCOM.Inc
+void %'ModuleName'%.%ToggleVCOM(void)
+{
+ /* send toggle VCOM command */
+  %@CS@'ModuleName'%.SetVal();
+  WriteData(%'ModuleName'%.sharpmem_vcom);
+  WriteData(0x00); /* 8bit trailer */
+  %'ModuleName'%.TOGGLE_VCOM;
+  %@CS@'ModuleName'%.ClrVal();
+}
+
+%endif %- ToggleVCOM
+%-BW_METHOD_END ToggleVCOM
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Clear
 %ifdef Clear
 %include Common\SharpMemDisplayClear.Inc
@@ -473,13 +507,44 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN UpdateLine
+%ifdef UpdateLine
+%define! Parline
+%define! PardataP
+%include Common\SharpMemDisplayUpdateLine.Inc
+void %'ModuleName'%.%UpdateLine(uint8_t line, uint8_t *dataP)
+{
+  int i;
+
+  /* Send the write command */
+  %@CS@'ModuleName'%.SetVal();
+  WriteData(%'ModuleName'%.BIT_WRITECMD | %'ModuleName'%.sharpmem_vcom);
+  %'ModuleName'%.TOGGLE_VCOM;
+
+  /* Send the address for line */
+  WriteData(%'ModuleName'%.RevertBits(line+1)); /* line starts with 1 */
+
+  /* Send data byte for selected line */
+  for (i=0; i<(%'ModuleName'%.HW_WIDTH/8); i++) {
+    WriteData(*dataP);
+    dataP++;
+  }
+  /* Send trailing 16 bits  */
+  WriteData(0x00);
+  WriteData(0x00);
+  %@CS@'ModuleName'%.ClrVal();
+}
+
+%endif %- UpdateLine
+%-BW_METHOD_END UpdateLine
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
 %include Common\SharpMemDisplayUpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
   uint16_t numBytes = sizeof(%'ModuleName'_DisplayBuf);
-  uint16_t i, currentline, oldline;
+  int i, currentline, oldline;
   uint8_t *data = (uint8_t*)%'ModuleName'_DisplayBuf;
 
   /* Send the write command */
@@ -497,9 +562,9 @@ void %'ModuleName'%.%UpdateFull(void)
     data++;
     currentline = ((i+1)/(%'ModuleName'%.HW_WIDTH/8)) + 1;
     if(currentline != oldline) {
-      /* Send end of line and address bytes */
-      WriteData(0x00);
+      WriteData(0x00); /* send 8 traling bits to finish current line */
       if (currentline <= %'ModuleName'%.HW_HEIGHT) {
+        /* send new line number */
         WriteData(%'ModuleName'%.RevertBits(currentline));
       }
       oldline = currentline;

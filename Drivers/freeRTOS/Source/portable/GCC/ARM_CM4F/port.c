@@ -668,7 +668,19 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   *pxTopOfStack = (portSTACK_TYPE)portTASK_RETURN_ADDRESS;  /* LR */
 
   /* Save code space by skipping register initialization. */
+#if 1
   pxTopOfStack -= 5;  /* R12, R3, R2 and R1. */
+#else /* initialize all registers */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x12121212; /* R12 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x03030303; /* R3 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x02020202; /* R2 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x01010101; /* R1 */
+  pxTopOfStack--;
+#endif
   *pxTopOfStack = (portSTACK_TYPE)pvParameters; /* R0 */
 
 #if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
@@ -677,7 +689,26 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   pxTopOfStack--;
   *pxTopOfStack = portINITIAL_EXEC_RETURN;
 #endif
+#if 1
   pxTopOfStack -= 8;  /* R11, R10, R9, R8, R7, R6, R5 and R4. */
+#else /* initialize all registers */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x11111111; /* R11 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x10101010; /* R10 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x99999999; /* R5 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x88888888; /* R8 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x0; /* R7 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x66666666; /* R6 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x55555555; /* R5 */
+  pxTopOfStack--;
+  *pxTopOfStack = 0x44444444; /* R4 */
+#endif
   return pxTopOfStack;
 %elif (CPUfamily = "56800")
   #define portINITIAL_SR	0x00UL
@@ -704,7 +735,7 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
 	0x55555555UL, /* D2 */
 	0x66666666UL, /* D10 */
 	0x77777777UL, /* X0 */
-	0x88888888UL /* Y */
+	0x88888888UL  /* Y */
   };
 
   /* Setup the stack as if a yield had occurred. Save the program counter. */

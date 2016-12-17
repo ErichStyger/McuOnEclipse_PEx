@@ -4,7 +4,7 @@
     <Name>SharpMemDisplay</Name>
     <Description>Display driver for the Sharp Memory Display LS013B4DN04</Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.004</Version>
     <Icon>SharpMemDisplay</Icon>
     <TypesFiles>PE,SharpMemDisplay\SharpMemDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -245,7 +245,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -295,7 +295,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -655,6 +655,46 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>UpdateLine</Name>
+        <Symbol>UpdateLine</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Updates a single line on the LCD</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>line</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Line number to update, range 0-93</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dataP</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to data, must be array of 12 bytes (96 pixels)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t line, uint8_t *dataP)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>UpdateFull</Name>
         <Symbol>UpdateFull</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -730,6 +770,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ToggleVCOM</Name>
+        <Symbol>ToggleVCOM</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Command used if EXTMODE=L. This function toggles the VCOM if no other command is executed</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
