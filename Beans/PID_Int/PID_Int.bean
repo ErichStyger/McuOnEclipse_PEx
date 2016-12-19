@@ -4,7 +4,7 @@
     <Name>PID_Int</Name>
     <Description>PID Controller using integer arithmetic.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.007</Version>
     <Icon>PID_Integral</Icon>
     <TypesFiles>PE,PID_Int\PID_Int</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all rights reserved.\n\nThis an open source software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2012-2016, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>PIDI</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -356,11 +356,65 @@
               <SortStyle/>
             </TInhrLinkItem>
           </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>PID_Int\sdk</TypeSpec>
+              <Hint>Link to SDK</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
         </Children>
       </TGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
+    <Method>
+      <TMthdItem>
+        <Name>PID</Name>
+        <Symbol>PID</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Performs PID calculation</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>output of PID calculation</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>setPoint</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>current setpoint (desired value)</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>currValue</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>current sensor value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(int32_t setPoint, int32_t currValue)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
     <Method>
       <TMthdItem>
         <Name>Control</Name>
@@ -413,13 +467,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>value</ParName>
-          <ParType>16bit signed</ParType>
+          <ParType>int32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The setpoint value.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(int16_t value)</ANSIC>
+          <ANSIC>void #M#_#C#(int32_t value)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -442,12 +496,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>16bit signed</ReturnType>
+        <ReturnType>int32_t</ReturnType>
         <RetHint>The current set point</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>int16_t #M#_#C#(void)</ANSIC>
+          <ANSIC>int32_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

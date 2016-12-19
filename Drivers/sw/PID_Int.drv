@@ -64,14 +64,10 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
@@ -86,8 +82,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -115,7 +109,7 @@ void %'ModuleName'%.%Control(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetPoint
 %ifdef SetPoint
-void %'ModuleName'%.%SetPoint(int value);
+void %'ModuleName'%.%SetPoint(int32_t value);
 %define! Parvalue
 %include Common\PID_IntSetPoint.Inc
 
@@ -140,12 +134,24 @@ void %'ModuleName'%.%Disable(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetPoint
 %ifdef GetPoint
-int %'ModuleName'%.%GetPoint(void);
+int32_t %'ModuleName'%.%GetPoint(void);
 %define! RetVal
 %include Common\PID_IntGetPoint.Inc
 
 %endif %- GetPoint
 %-BW_METHOD_END GetPoint
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PID
+%ifdef PID
+int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue);
+%define! Parsetpoint
+%define! ParcurrValue
+%define! ParsetPoint
+%define! RetVal
+%include Common\PID_IntPID.Inc
+
+%endif %- PID
+%-BW_METHOD_END PID
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -181,22 +187,8 @@ int %'ModuleName'%.%GetPoint(void);
 %-
 static int %'ModuleName'%.setPoint; /* the value to be reached by the PID algorithm */
 %if defined(Enable) | defined(Disable)
-static bool %'ModuleName'%.disabled;  /* if the PID controller is enabled or not */
+static bool %'ModuleName'%.enabled;  /* if the PID controller is enabled or not */
 %endif
-
-%-BW_CUSTOM_VARIABLE_END
-%-BW_INTERN_METHOD_DECL_START
-%- List of internal methods headers
-%-BW_INTERN_METHOD_DECL_END
-%-BW_IMPLEMENT_START
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN Control
-%ifdef Control
-%include Common\PID_IntControl.Inc
-#ifdef __HIWARE__
-#pragma MESSAGE DISABLE C5904 /* Division by one */
-#pragma MESSAGE DISABLE C5905 /* Multiplication with one */
-#endif
 %if %VariableForSetPoint = 'yes'
 static int %'ModuleName'%.ControlSetPoint; /* set point variable of the controller, useful for debugging/visualization */
 %endif
@@ -205,61 +197,63 @@ static
   %if %KpConstant = 'yes'
     %+                                                           %>1 const
   %endif
-  %+                                                             %>1 int %'ModuleName'%.KpMul = %KpMul, %'ModuleName'%.KpDiv = %KpDiv; /* the Kp adjustment values */
+  %+                                                             %>1 int32_t %'ModuleName'%.KpMul = %KpMul, %'ModuleName'%.KpDiv = %KpDiv; /* the Kp adjustment values */
 %endif %- ProportionalGroup
 %if %IntegralGroup = 'yes'
 static
   %if %KiConstant = 'yes'
     %+                                                           %>1 const
   %endif
-    %+                                                           %>1 int %'ModuleName'%.KiMul = %KiMul, %'ModuleName'%.KiDiv = %KiDiv; /* the Ki adjustment values */
+    %+                                                           %>1 int32_t %'ModuleName'%.KiMul = %KiMul, %'ModuleName'%.KiDiv = %KiDiv; /* the Ki adjustment values */
 %endif %- Integralgroup
 %if %DifferentialGroup = 'yes'
 static
   %if %KdConstant = 'yes'
     %+                                                           %>1 const
   %endif
-  %+                                                             %>1 int %'ModuleName'%.KdMul = %KdMul, %'ModuleName'%.KdDiv = %KdDiv; /* the Kd adjustment values */
+  %+                                                             %>1 int32_t %'ModuleName'%.KdMul = %KdMul, %'ModuleName'%.KdDiv = %KdDiv; /* the Kd adjustment values */
 %endif %- DifferentialGroup
 %if defined(AntiWindUpConstant) & %AntiWindUpConstant = 'no'
-static int %'ModuleName'%.AntiWindUpValue = %AntiWindUpValue; /* anti wind-up limit for the I portion of the controller */
+static int32_t %'ModuleName'%.AntiWindUpValue = %AntiWindUpValue; /* anti wind-up limit for the I portion of the controller */
 %endif
 
-void %'ModuleName'%.%Control(void)
+%-BW_CUSTOM_VARIABLE_END
+%-BW_INTERN_METHOD_DECL_START
+%- List of internal methods headers
+%-BW_INTERN_METHOD_DECL_END
+%-BW_IMPLEMENT_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PID
+%ifdef PID
+%define! Parsetpoint
+%define! ParcurrValue
+%define! ParsetPoint
+%define! RetVal
+%include Common\PID_IntPID.Inc
+#ifdef __HIWARE__
+#pragma MESSAGE DISABLE C5904 /* Division by one */
+#pragma MESSAGE DISABLE C5905 /* Multiplication with one */
+#endif
+int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue)
 {
-  /* Performs a PID calculation. The set point is specified by '%'ModuleName'%.SetPoint()' */
-  static int oldRegelDiff = 0; /*!< Remember error for next round (for D part) */
-  static int regIntegral = 0;  /*!< Remember integral part for next iteration */
-  int regelDiff; /* actual error */
-  int setPoint;  /* new set point */
+  /* Performs a PID calculation */
 %if %DifferentialGroup = 'yes'
-  int regDifferential; /* temporary variable for the D part */
+  int32_t regDifferential; /* temporary variable for the D part */
 %endif
-  word currActorValue; /* current values from actuator */
+  static int32_t oldDiff = 0; /*!< Remember error for next round (for D part) */
+  static int32_t regIntegral = 0;  /*!< Remember integral part for next iteration */
+  int32_t diff; /* actual error */
+  int32_t pid;  /* pid calculation value */
 
-%if defined(Enable) | defined(Disable)
-  if (%'ModuleName'%.disabled) { /* PID disabled? */
-    return; /* do nothing */
-  }
-%endif
-  regelDiff = %'ModuleName'%.setPoint-%@Sensor@'ModuleName'%.GetVal();
-  if (%'ModuleName'%.setPoint == 0) {
-    %@Actor@'ModuleName'%.SetVal(0);
-%if %VariableForSetPoint = 'yes'
-    %'ModuleName'%.ControlSetPoint = 0;
-%endif
-    return; /* all done, this was easy :-) */
-  }
-  setPoint = 0;
+  pid = 0; /* initialize */
+  diff = setPoint-currValue;
 %if %ProportionalGroup = 'yes'
-
   /* P-Part */
-  setPoint += (%'ModuleName'%.KpMul*regelDiff)/%'ModuleName'%.KpDiv;
+  pid += (%'ModuleName'%.KpMul*diff)/%'ModuleName'%.KpDiv;
 %endif %- %ProportionalGroup = 'yes'
 %if %IntegralGroup = 'yes'
-
   /* I-Part */
-  regIntegral += regelDiff;
+  regIntegral += diff; /* integrate error */
  %if %AntiWindUpEnabled = 'yes'
   %if %AntiWindUpConstant = 'yes'
   if (regIntegral > %AntiWindUpValue) { /* anti wind-up */
@@ -275,41 +269,45 @@ void %'ModuleName'%.%Control(void)
   }
   %endif
  %endif %-%AntiWindUpEnabled = 'yes'
-  setPoint += (%'ModuleName'%.KiMul*regIntegral)/%'ModuleName'%.KiDiv;
+  pid += (%'ModuleName'%.KiMul*regIntegral)/%'ModuleName'%.KiDiv;
 %endif %-IntegralGroup = 'yes'
 %if %DifferentialGroup = 'yes'
-
   /* D-Part */
-  regDifferential = regelDiff-oldRegelDiff;
-  oldRegelDiff = regelDiff; /* remember for next iteration */
-  setPoint += (%'ModuleName'%.KdMul*regDifferential)/%'ModuleName'%.KdDiv; /* scaled down by a factor to avoid overreaction */
+  regDifferential = diff-oldDiff;
+  olddiff = diff; /* remember for next iteration */
+  pid += (%'ModuleName'%.KdMul*regDifferential)/%'ModuleName'%.KdDiv; /* add D part */
 %endif %- %DifferentialGroup = 'yes'
+  return pid;
+}
 
-  if (setPoint == 0) {
+%endif %- PID
+%-BW_METHOD_END PID
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Control
+%ifdef Control
+%include Common\PID_IntControl.Inc
+void %'ModuleName'%.%Control(void)
+{
+  int32_t pid;
+
+%if defined(Enable) | defined(Disable)
+  if (!%'ModuleName'%.enabled) { /* PID enabled? */
+    return; /* do nothing */
+  }
+%endif
+  if (%'ModuleName'%.setPoint == 0) {
+    %@Actor@'ModuleName'%.SetVal(0);
 %if %VariableForSetPoint = 'yes'
     %'ModuleName'%.ControlSetPoint = 0;
 %endif
-    return; /* nothing to do */
+    return;
   }
-
+  /* calculate pid */
+  pid = %'ModuleName'%.%PID(%'ModuleName'%.setPoint, %@Sensor@'ModuleName'%.GetVal());
 %if %VariableForSetPoint = 'yes'
-  %'ModuleName'%.ControlSetPoint = setPoint;
+  %'ModuleName'%.ControlSetPoint = pid; /* store value for debugging */
 %endif
-  currActorValue = %@Actor@'ModuleName'%.GetVal();
-  if (setPoint > 0) { /* increase actuator value */
-    if (currActorValue >= (0xFFFF-setPoint)) { /* check for overflow */
-      %@Actor@'ModuleName'%.SetVal(0xFFFF);
-    } else {
-      %@Actor@'ModuleName'%.SetVal((word)(currActorValue+setPoint));
-    }
-  } else { /* setPoint < 0, decrease actuator value */
-    setPoint = -setPoint;
-    if (setPoint >= currActorValue) { /* check for underflow */
-      %@Actor@'ModuleName'%.SetVal(0);
-    } else {
-      %@Actor@'ModuleName'%.SetVal((word)(currActorValue-setPoint));
-    }
-  }
+  %@Actor@'ModuleName'%.SetVal(pid);
 }
 
 %endif %- Control
@@ -319,7 +317,7 @@ void %'ModuleName'%.%Control(void)
 %ifdef SetPoint
 %define! Parvalue
 %include Common\PID_IntSetPoint.Inc
-void %'ModuleName'%.%SetPoint(int value)
+void %'ModuleName'%.%SetPoint(int32_t value)
 {
   %'ModuleName'%.setPoint = value;
 }
@@ -332,7 +330,7 @@ void %'ModuleName'%.%SetPoint(int value)
 %include Common\PID_IntEnable.Inc
 void %'ModuleName'%.%Enable(void)
 {
-  %'ModuleName'%.disabled = 0;
+  %'ModuleName'%.enabled = TRUE;
 }
 
 %endif %- Enable
@@ -343,7 +341,7 @@ void %'ModuleName'%.%Enable(void)
 %include Common\PID_IntDisable.Inc
 void %'ModuleName'%.%Disable(void)
 {
-  %'ModuleName'%.disabled = 1;
+  %'ModuleName'%.enabled = FALSE;
 }
 
 %endif %- Disable
@@ -353,7 +351,7 @@ void %'ModuleName'%.%Disable(void)
 %ifdef GetPoint
 %define! RetVal
 %include Common\PID_IntGetPoint.Inc
-int %'ModuleName'%.%GetPoint(void)
+int32_t %'ModuleName'%.%GetPoint(void)
 {
   return %'ModuleName'%.setPoint;
 }
@@ -384,3 +382,19 @@ int %'ModuleName'%.%GetPoint(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk)
+  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

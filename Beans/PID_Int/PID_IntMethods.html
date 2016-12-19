@@ -206,6 +206,19 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
+<li><a name="PID">
+<b>PID</b></a>
+ - Performs PID calculation
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t PID(int32_t setPoint, int32_t currValue)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>setPoint:int32_t</i> - current setpoint (desired value)</li>
+<li><i>currValue:int32_t</i> - current sensor value</li>
+<li><i>Return value:int32_t</i> - output of PID calculation
+</li>
+</ul><br />
+</li>
 <li><a name="Control">
 <b>Control</b></a>
  - Performs the PID control calculation.
@@ -220,9 +233,9 @@ LI.EXP {
  - Specifies the value to be reached by the PID controller.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetPoint(int16_t value)<br />
+<br /><i>ANSIC prototype:</i> void SetPoint(int32_t value)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>value:int16_t</i> - The setpoint value.</li>
+<li><i>value:int32_t</i> - The setpoint value.</li>
 </ul><br />
 </li>
 <li><a name="GetPoint">
@@ -230,9 +243,9 @@ LI.EXP {
  - Returns the current set point value
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> int16_t GetPoint(void)<br />
+<br /><i>ANSIC prototype:</i> int32_t GetPoint(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:int16_t</i> - The current set point
+<li><i>Return value:int32_t</i> - The current set point
 </li>
 </ul><br />
 </li>
