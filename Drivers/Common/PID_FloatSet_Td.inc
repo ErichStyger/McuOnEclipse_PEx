@@ -5,11 +5,10 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Set_Td)
 %;**     Description :
-%;**         Change the Td parameter. 
+%;**         Change the Td parameter.
 %include Common\GeneralParameters.inc(27)
-%;**         float t%>27 - New Td value. 
-%;**     Returns     :
-%;**         void %>27 - 
+%;**         t%Part %>27 - New Td value.
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -5,11 +5,10 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Set_Ti)
 %;**     Description :
-%;**         Change the Ti parameter. 
+%;**         Change the Ti parameter.
 %include Common\GeneralParameters.inc(27)
-%;**         float t%>27 - New Ti value. 
-%;**     Returns     :
-%;**         void %>27 - 
+%;**         t%Part %>27 - New Ti value.
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -5,11 +5,10 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Set_K)
 %;**     Description :
-%;**         Change the K parameter. 
+%;**         Change the K parameter.
 %include Common\GeneralParameters.inc(27)
-%;**         float k%>27 - New K value. 
-%;**     Returns     :
-%;**         void %>27 - 
+%;**         k%Park %>27 - New K value.
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

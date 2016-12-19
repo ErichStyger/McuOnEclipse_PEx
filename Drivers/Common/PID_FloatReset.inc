@@ -5,10 +5,9 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Reset)
 %;**     Description :
-%;**         Reset the PID. 
-%include Common\GeneralParameters.inc(27)
-%;**     Returns     :
-%;**         void %>27 - 
+%;**         Reset the PID.
+%include Common\GeneralParametersNone.inc
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
