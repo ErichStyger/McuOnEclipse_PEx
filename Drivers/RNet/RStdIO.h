@@ -28,6 +28,20 @@ typedef enum RSTDIO_QueueType {
   RSTDIO_QUEUE_TX_ERR
 } RSTDIO_QueueType;
 
+extern uint8_t RSTDIO_DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
+
+extern %@Shell@'ModuleName'%.ConstStdIOType RSTDIO_stdio; /* default standard I/O */
+
+#define RSTDIO_PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
+
+/*!
+ * \brief Shell parser routine.
+ * \param cmd Pointer to command line string.
+ * \param handled Pointer to status if command has been handled. Set to TRUE if command was understood.
+ * \param io Pointer to stdio handle
+ * \return Error code, ERR_OK if everything was ok.
+ */
+uint8_t RSTDIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 
 /*!
  * \brief Returns a queue handle for a Remote Standard I/O type
@@ -72,7 +86,7 @@ uint8_t RSTDIO_AddToQueue(RSTDIO_QueueType queueType, const unsigned char *data,
  * \brief returns the Standard I/O hander for the remote Rx channel
  * \return Standard I/O handler with stdin, stdout and stderr
  */
-%@Shell@'ModuleName'%.ConstStdIOTypePtr RSTDIO_GetStdioRx(void);
+%@Shell@'ModuleName'%.ConstStdIOTypePtr RSTDIO_GetStdio(void);
 
 /*!
  * \brief Message handler for StdIO messages sent over the radio

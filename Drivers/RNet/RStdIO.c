@@ -33,6 +33,8 @@ static xQueueHandle RSTDIO_TxStdInQ, RSTDIO_TxStdOutQ, RSTDIO_TxStdErrQ;
 
 static RNWK_ShortAddrType RSTDIO_dstAddr; /* destination address */
 
+uint8_t RSTDIO_DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
+
 /*!
  * \brief Returns a queue handle for a Remote Standard I/O type
  * \param queueType Type of queue
@@ -267,14 +269,15 @@ static bool RSTDIO_RxStdInKeyPressed(void) {
   return (bool)(RSTDIO_NofElements(RSTDIO_RxStdInQ)!=0); 
 }
 
-%@Shell@'ModuleName'%.ConstStdIOTypePtr RSTDIO_GetStdioRx(void) {
-  static %@Shell@'ModuleName'%.ConstStdIOType RSTDIO_stdioRx = {
-    (%@Shell@'ModuleName'%.StdIO_In_FctType)RSTDIO_RxStdInReadChar, /* stdin */
-    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)RSTDIO_TxStdOut, /* stdout */
-    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)RSTDIO_TxStdErr, /* stderr */
-    RSTDIO_RxStdInKeyPressed /* if input is not empty */
-  };
-  return &RSTDIO_stdioRx; 
+%@Shell@'ModuleName'%.ConstStdIOType RSTDIO_stdio = {
+  (%@Shell@'ModuleName'%.StdIO_In_FctType)RSTDIO_RxStdInReadChar, /* stdin */
+  (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)RSTDIO_TxStdOut, /* stdout */
+  (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)RSTDIO_TxStdErr, /* stderr */
+  RSTDIO_RxStdInKeyPressed /* if input is not empty */
+};
+
+%@Shell@'ModuleName'%.ConstStdIOTypePtr RSTDIO_GetStdio(void) {
+  return &RSTDIO_stdio;
 }
 
 /*!
@@ -298,6 +301,75 @@ void RSTDIO_Print(%@Shell@'ModuleName'%.ConstStdIOTypePtr io) {
     }
     io->stdErr(ch); /* output character */
   }
+}
+
+static void PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"rstdio", (unsigned char*)"Group of rstdio commands\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows help or status\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  daddr 0x<addr>", (unsigned char*)"Set destination node address\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  send (in/out/err)", (unsigned char*)"Send a string to remote stdio\r\n", io->stdOut);
+}
+
+static uint8_t PrintStatus(const CLS1_StdIOType *io) {
+  uint8_t buf[32];
+
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"rstdio", (unsigned char*)"\r\n", io->stdOut);
+  UTIL1_strcpy(buf, sizeof(buf), (unsigned char*)"0x");
+#if RNWK_SHORT_ADDR_SIZE==1
+  %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), RSTDIO_dstAddr);
+#else
+  %@Utility@'ModuleName'%.strcatNum16Hex(buf, sizeof(buf), RSTDIO_dstAddr);
+#endif
+  UTIL1_strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  dest addr", buf, io->stdOut);
+  return ERR_OK;
+}
+
+uint8_t RSTDIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io) {
+  uint8_t res = ERR_OK;
+  const uint8_t *p;
+  uint16_t val16;
+
+  if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)%@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"rstdio help")==0) {
+    PrintHelp(io);
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)%@Shell@'ModuleName'%.CMD_STATUS)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"rstdio status")==0) {
+    *handled = TRUE;
+    return PrintStatus(io);
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"rstdio send", sizeof("rstdio send")-1)==0) {
+    unsigned char buf[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE];
+    RSTDIO_QueueType queue;
+
+    if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"rstdio send in", sizeof("rstdio send in")-1)==0) {
+      queue = RSTDIO_QUEUE_TX_IN;
+      cmd += sizeof("rstdio send in");
+    } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"rstdio send out", sizeof("rstdio send out")-1)==0) {
+      queue = RSTDIO_QUEUE_TX_OUT;
+      cmd += sizeof("rstdio send out");
+    } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"rstdio send err", sizeof("rstdio send err")-1)==0) {
+      queue = RSTDIO_QUEUE_TX_ERR;
+      cmd += sizeof("rstdio send err");
+    } else {
+      return ERR_OK; /* not handled */
+    }
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), cmd);
+    %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), '\n');
+    buf[sizeof(buf)-2] = '\n'; /* have a '\n' in any case */
+    if (RSTDIO_SendToTxStdio(queue, buf, %@Utility@'ModuleName'%.strlen((char*)buf))!=ERR_OK) {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"failed!\r\n", io->stdErr);
+    }
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"rstdio daddr", sizeof("rstdio daddr")-1)==0) {
+    p = cmd + sizeof("rstdio daddr")-1;
+    *handled = TRUE;
+    if (%@Utility@'ModuleName'%.ScanHex16uNumber(&p, &val16)==ERR_OK) {
+      RSTDIO_dstAddr = val16;
+    } else {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERR: wrong address\r\n", io->stdErr);
+      return ERR_FAILED;
+    }
+  }
+  return res;
 }
 
 /*! \brief Deinitializes the queue module */

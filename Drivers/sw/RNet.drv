@@ -237,6 +237,8 @@ void %OnRadioEvent(%'ModuleName'_RadioEvent event);
 #include "Radio.h"
 #include "RNWK.h"
 #include "RMSG.h"
+#include "RStdIO.h"
+
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -335,6 +337,11 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     RADIO_ParseCommand,
     RNWK_ParseCommand,
     RMSG_ParseCommand,
+  #if RNET_CONFIG_REMOTE_STDIO
+    #if RSTDIO_PARSE_COMMAND_ENABLED
+    RSTDIO_ParseCommand,
+    #endif
+  #endif
     NULL /* sentinel */
   };
   return %@Shell@'ModuleName'%.IterateTable(cmd, handled, io, CmdParserTable);
