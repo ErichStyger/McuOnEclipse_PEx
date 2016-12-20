@@ -231,8 +231,8 @@ static int32_t %'ModuleName'%.AntiWindUpValue = %AntiWindUpValue; /* anti wind-u
 %define! RetVal
 %include Common\PID_IntPID.Inc
 #ifdef __HIWARE__
-#pragma MESSAGE DISABLE C5904 /* Division by one */
-#pragma MESSAGE DISABLE C5905 /* Multiplication with one */
+  #pragma MESSAGE DISABLE C5904 /* Division by one */
+  #pragma MESSAGE DISABLE C5905 /* Multiplication with one */
 #endif
 int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue)
 {
@@ -303,7 +303,6 @@ void %'ModuleName'%.%Control(void)
 %endif
     return;
   }
-%if defined(Actor) & defined(Sensor)
   /* calculate pid */
   pid = %'ModuleName'%.%PID(%'ModuleName'%.setPoint, %@Sensor@'ModuleName'%.GetVal());
 %if %VariableForSetPoint = 'yes'
