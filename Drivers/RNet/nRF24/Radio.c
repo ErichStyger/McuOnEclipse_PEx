@@ -173,7 +173,7 @@ static uint8_t CheckTx(void) {
 /* called to check if we have something in the RX queue. If so, we queue it */
 static uint8_t CheckRx(void) {
 #if NRF24_DYNAMIC_PAYLOAD
-    uint8_t payloadSize;
+  uint8_t payloadSize;
 #endif
   uint8_t res = ERR_OK;
   uint8_t RxDataBuffer[RPHY_BUFFER_SIZE];
@@ -206,7 +206,7 @@ static uint8_t CheckRx(void) {
     hasRxData = TRUE;
 #if NRF24_DYNAMIC_PAYLOAD
     (void)%@nRF24L01p@'ModuleName'%.ReadNofRxPayload(&payloadSize);
-    if (payloadSize>32) { /* packet with error? */
+    if (payloadSize==0 || payloadSize>32) { /* packet with error? */
       %@nRF24L01p@'ModuleName'%.Write(%@nRF24L01p@'ModuleName'%.FLUSH_RX); /* flush old data */
       return ERR_FAILED;
     } else {
@@ -281,6 +281,10 @@ static void RADIO_HandleStateMachine(void) {
           RADIO_isrFlag = FALSE; /* reset interrupt flag */
           res = CheckRx(); /* get message */
 #if 1 /* experimental */
+          if (res==ERR_FAILED) { /* failed reading from device */
+            RADIO_AppStatus = RADIO_RECEIVER_ALWAYS_ON; /* continue listening */
+            return; /* get out of loop */
+          }
           (void)%@nRF24L01p@'ModuleName'%.GetFifoStatus(&status);
           if (res==ERR_RXEMPTY && !(status&%@nRF24L01p@'ModuleName'%.FIFO_STATUS_RX_EMPTY)) { /* no data, but still flag set? */
             %@nRF24L01p@'ModuleName'%.Write(RF1_FLUSH_RX); /* flush old data */
