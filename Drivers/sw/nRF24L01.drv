@@ -836,6 +836,17 @@ void %OnDeactivate(void);
 #define %'ModuleName'%.SPI_SetBaudRateMode(m)         %@SPI@'ModuleName'%.SetBaudRateMode(m)
 %endif
 
+%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & %UseMutex='yes'
+#define %'ModuleName'%.CONFIG_USE_MUTEX    1
+#else
+#define %'ModuleName'%.CONFIG_USE_MUTEX    0
+%endif
+
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  #include "FreeRTOS.h"
+
+  static xSemaphoreHandle %'ModuleName'%.Mutex = NULL; /* Mutex to allow mutual exclusive access to the bus */
+#endif
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -975,6 +986,17 @@ void %'ModuleName'%.%Deinit(void)
 %include Common\nRF24L01Init.Inc
 void %'ModuleName'%.%Init(void)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  #if configSUPPORT_STATIC_ALLOCATION
+  static StaticSemaphore_t xMutexBuffer;
+  #endif
+
+  #if %'ModuleName'%.CONFIG_USE_MUTEX#if configSUPPORT_STATIC_ALLOCATION
+  %'ModuleName'%.Mutex = xSemaphoreCreateRecursiveMutexStatic(&xMutexBuffer);
+  #else
+  %'ModuleName'%.Mutex = xSemaphoreCreateRecursiveMutex();
+  #endif
+#endif
   %'ModuleName'%.CE_LOW();   /* CE high: do not send or receive data */
   %'ModuleName'%.CSN_HIGH(); /* CSN low: not sending commands to the device */
   %'ModuleName'%.%ConfigureSPI(); /* set up SPI bus */
@@ -1013,6 +1035,9 @@ void %@IRQ@OnInterrupt(void)
 %include Common\nRF24L01WriteRegister.Inc
 void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1026,6 +1051,9 @@ void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10); /* insert a delay until next command */
   /*lint -restore */
@@ -1043,6 +1071,9 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 {
   uint8_t val;
 
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1056,6 +1087,9 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
   /*lint -restore */
@@ -1073,6 +1107,9 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 %include Common\nRF24L01ReadRegisterData.Inc
 void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1086,6 +1123,9 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
   /*lint -restore */
@@ -1102,6 +1142,9 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %include Common\nRF24L01WriteRegisterData.Inc
 void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1115,6 +1158,9 @@ void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
   /*lint -restore */
@@ -1130,6 +1176,9 @@ void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
 %include Common\nRF24L01WriteRead.Inc
 uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1142,6 +1191,9 @@ uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
   /*lint -restore */
@@ -1157,6 +1209,9 @@ uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 %include Common\nRF24L01Write.Inc
 void %'ModuleName'%.%Write(uint8_t val)
 {
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1169,6 +1224,9 @@ void %'ModuleName'%.%Write(uint8_t val)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10);
   /*lint -restore */
@@ -1209,6 +1267,9 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
 {
   uint8_t status;
 
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
+#endif
 %if defined(OnActivate)
   %OnActivate(); /* call user event */
 %endif
@@ -1222,6 +1283,9 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
 %if defined(OnDeactivate)
   %OnDeactivate(); /* call user event */
 %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
+#endif
   /*lint -save -e522 function lacks side-effects */
   %'ModuleName'%.WAIT_US(10); /* insert a delay until next command */
   /*lint -restore */

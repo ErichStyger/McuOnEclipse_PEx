@@ -4,7 +4,7 @@
     <Name>nRF24L01</Name>
     <Description>Driver for the Nordic nRF241L01+ Wireless Transceiver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.088</Version>
+    <Version>01.090</Version>
     <Icon>nRF24L01</Icon>
     <TypesFiles>PE,nRF24L01\nRF24L01</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -233,6 +233,24 @@
           </GrupItem>
         </Children>
       </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Mutex</Name>
+        <Symbol>UseMutex</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled and an RTOS is present, a mutex is used to grant mutual access to the SPI bus to the hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
   </PropertyList>
   <MethodList>
