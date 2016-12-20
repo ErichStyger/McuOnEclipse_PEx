@@ -68,15 +68,13 @@
 
 #if %'ModuleName'%.CONFIG_SDK_VERSION_USED == %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %ifdef SharedModules
-/* Include shared modules, which are used for whole project */
+  /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
   #include "%'var'.h"
   %endfor
 %endif
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
-#elif %'ModuleName'%.CONFIG_SDK_VERSION_USED == %'ModuleName'%.CONFIG_SDK_GENERIC
-  /* no specific includes */
-#else /* use non-Processor Expert SDK */
+#else /* use non-Processor Expert SDK: generic or silicon vendor SDK */
   /* defines of common types used by Processor Expert, which might not be provided by the SDK */
   #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
     #include <stdint.h> /* uint8_t, int16_t, ... */
