@@ -301,8 +301,10 @@ The following items are available only if the group is enabled (the value is "En
 </ul>
 </li>
 <li>
-<a name="SystemGroup">
-<b>System</b></a> - Interface to the system.
+<a name="HardwareEnabled">
+<b>Hardware</b></a> - Configures the hardware. It can be disabled, in this case the Process() function will not be implemented as it uses the hardware. Use the PID() function instead.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
 <ul>
   <li>
   <a name="Sensor">
@@ -312,6 +314,12 @@ The following items are available only if the group is enabled (the value is "En
   <a name="Actor">
   <b>Actuator</b></a> - The motor to be used
   </li>
+</ul>
+</li>
+<li>
+<a name="SystemGroup">
+<b>System</b></a> - Interface to the system.
+<ul>
   <li>
   <a name="sdk">
   <b>SDK</b></a> - Link to SDK
