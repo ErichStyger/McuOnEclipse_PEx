@@ -274,7 +274,7 @@ int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue)
 %if %DifferentialGroup = 'yes'
   /* D-Part */
   regDifferential = diff-oldDiff;
-  olddiff = diff; /* remember for next iteration */
+  oldDiff = diff; /* remember for next iteration */
   pid += (%'ModuleName'%.KdMul*regDifferential)/%'ModuleName'%.KdDiv; /* add D part */
 %endif %- %DifferentialGroup = 'yes'
   return pid;
@@ -288,6 +288,7 @@ int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue)
 %include Common\PID_IntControl.Inc
 void %'ModuleName'%.%Control(void)
 {
+%if defined(Actor) & defined(Sensor)
   int32_t pid;
 
 %if defined(Enable) | defined(Disable)
@@ -308,6 +309,9 @@ void %'ModuleName'%.%Control(void)
   %'ModuleName'%.ControlSetPoint = pid; /* store value for debugging */
 %endif
   %@Actor@'ModuleName'%.SetVal(pid);
+%else
+  return; /* hardware for sensor and actuator not enabled: enable them in the properties or use the PID() function instead */
+%endif
 }
 
 %endif %- Control

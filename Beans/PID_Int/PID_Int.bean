@@ -4,7 +4,7 @@
     <Name>PID_Int</Name>
     <Description>PID Controller using integer arithmetic.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.007</Version>
+    <Version>01.008</Version>
     <Icon>PID_Integral</Icon>
     <TypesFiles>PE,PID_Int\PID_Int</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -318,15 +318,19 @@
       </TBoolGrupItem>
     </Property>
     <Property>
-      <TGrupItem>
-        <Name>System</Name>
-        <Symbol>SystemGroup</Symbol>
-        <Hint>Interface to the system.</Hint>
+      <TBoolGrupItem>
+        <Name>Hardware</Name>
+        <Symbol>HardwareEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Configures the hardware. It can be disabled, in this case the Process() function will not be implemented as it uses the hardware. Use the PID() function instead.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description/>
+        <Description>Enabled</Description>
         <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
             <TInhrLinkItem>
@@ -356,6 +360,20 @@
               <SortStyle/>
             </TInhrLinkItem>
           </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>System</Name>
+        <Symbol>SystemGroup</Symbol>
+        <Hint>Interface to the system.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
           <GrupItem>
             <TInhrLinkItem>
               <Name>SDK</Name>
