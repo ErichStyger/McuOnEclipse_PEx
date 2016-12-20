@@ -838,7 +838,7 @@ void %OnDeactivate(void);
 
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & %UseMutex='yes'
 #define %'ModuleName'%.CONFIG_USE_MUTEX    1
-#else
+%else
 #define %'ModuleName'%.CONFIG_USE_MUTEX    0
 %endif
 
@@ -991,7 +991,7 @@ void %'ModuleName'%.%Init(void)
   static StaticSemaphore_t xMutexBuffer;
   #endif
 
-  #if %'ModuleName'%.CONFIG_USE_MUTEX#if configSUPPORT_STATIC_ALLOCATION
+  #if configSUPPORT_STATIC_ALLOCATION
   %'ModuleName'%.Mutex = xSemaphoreCreateRecursiveMutexStatic(&xMutexBuffer);
   #else
   %'ModuleName'%.Mutex = xSemaphoreCreateRecursiveMutex();
@@ -1359,6 +1359,9 @@ void %'ModuleName'%.%StartRxTx(void)
 uint8_t %'ModuleName'%.%SetChannel(uint8_t channel)
 {
   %'ModuleName'%.WriteRegister(%'ModuleName'%.RF_CH, channel&0x7F); /* set channel */
+  /* need to flush data after channel change */
+  %'ModuleName'%.%Write(%'ModuleName'%.FLUSH_RX); /* flush old data */
+  %'ModuleName'%.%Write(%'ModuleName'%.FLUSH_TX); /* flush old data */
   return ERR_OK;
 }
 
