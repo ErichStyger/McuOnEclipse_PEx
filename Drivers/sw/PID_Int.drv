@@ -303,6 +303,7 @@ void %'ModuleName'%.%Control(void)
 %endif
     return;
   }
+%if defined(Actor) & defined(Sensor)
   /* calculate pid */
   pid = %'ModuleName'%.%PID(%'ModuleName'%.setPoint, %@Sensor@'ModuleName'%.GetVal());
 %if %VariableForSetPoint = 'yes'
