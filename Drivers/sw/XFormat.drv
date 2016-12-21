@@ -459,8 +459,6 @@ unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const 
   va_start(list,fmt);
   count = %'ModuleName'%.xvformat(outchar,arg,fmt,list);
   va_end(list);
-  (void)list;
-
   return count;
 }
 
@@ -947,10 +945,10 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
 
                 count += outBuffer(outchar,arg,prefix,prefixlen,0);
                 if (!(flags & FLAG_LEFT))
-                    count += outChars(outchar,arg,flags & FLAG_ZERO ? '0' : ' ' , padding);
+                    count += outChars(outchar,arg,(flags & FLAG_ZERO) ? '0' : ' ' , padding);
                 count += outBuffer(outchar,arg,out,length,flags);
                 if (flags & FLAG_LEFT)
-                    count += outChars(outchar,arg,flags & FLAG_ZERO ? '0' : ' ' , padding);
+                    count += outChars(outchar,arg,(flags & FLAG_ZERO) ? '0' : ' ' , padding);
 
         }
     }
