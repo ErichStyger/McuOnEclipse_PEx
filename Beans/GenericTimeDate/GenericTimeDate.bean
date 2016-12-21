@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.046</Version>
+    <Version>01.049</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1431,6 +1431,112 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>int32_t #M#_#C#(TIMEREC *time, DATEREC *date, int8_t offset_hours)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>AddDateString</Name>
+        <Symbol>AddDateString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Adds a formatted date string to a buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code, ERR_OK for no error</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to zero terminated buffer where to append the string</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bufSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of the buffer in bytes</ParHint>
+          <ParUserDeclaration>size_t bufSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>date</ParName>
+          <ParType>DATEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to date information</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>format</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the format string. Supported formats: "dd.mm.yyyy"</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *buf, size_t bufSize, DATEREC *date, uint8_t *format)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>AddTimeString</Name>
+        <Symbol>AddTimeString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Adds a formatted time string to a buffer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code, ERR_OK for no error</RetHint>
+        <ParamCount>4</ParamCount>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to zero terminated buffer where to append the string</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>bufSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Size of the buffer in bytes</ParHint>
+          <ParUserDeclaration>size_t bufSize</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>time</ParName>
+          <ParType>TIMEREC</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to time information</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>format</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to the format string. Supported formats: "hh:mm.ss,cc"</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *buf, size_t bufSize, TIMEREC *time, uint8_t *format)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

@@ -476,6 +476,36 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="AddDateString">
+<b>AddDateString</b></a>
+ - Adds a formatted date string to a buffer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t AddDateString(uint8_t *buf, size_t bufSize, DATEREC *date, uint8_t *format)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>buf: Pointer to uint8_t</i> - Pointer to zero terminated buffer where to append the string</li>
+<li><i>bufSize:byte</i> - Size of the buffer in bytes</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to date information</li>
+<li><i>format: Pointer to uint8_t</i> - Pointer to the format string. Supported formats: &quot;dd.mm.yyyy&quot;</li>
+<li><i>Return value:uint8_t</i> - Error code, ERR_OK for no error
+</li>
+</ul><br />
+</li>
+<li><a name="AddTimeString">
+<b>AddTimeString</b></a>
+ - Adds a formatted time string to a buffer
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t AddTimeString(uint8_t *buf, size_t bufSize, TIMEREC *time, uint8_t *format)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>buf: Pointer to uint8_t</i> - Pointer to zero terminated buffer where to append the string</li>
+<li><i>bufSize:byte</i> - Size of the buffer in bytes</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to time information</li>
+<li><i>format: Pointer to uint8_t</i> - Pointer to the format string. Supported formats: &quot;hh:mm.ss,cc&quot;</li>
+<li><i>Return value:uint8_t</i> - Error code, ERR_OK for no error
+</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line parser

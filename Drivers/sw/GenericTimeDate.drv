@@ -176,6 +176,10 @@
   #define %'ModuleName'%.GET_TIME_DATE_METHOD                    %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
 %endif
 
+/* default time and date format strings */
+#define %'ModuleName'%.DEFAULT_TIME_FORMAT_STR  "hh:mm:ss,cc"
+#define %'ModuleName'%.DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
+
 /* user events */
 %if defined(OnDateGet)
 #define %'ModuleName'%.ON_DATE_GET_EVENT                         %>60 1 /* 1: enabled user event */
@@ -559,6 +563,32 @@ int32_t %'ModuleName'%.%TimeDateToUnixSeconds(TIMEREC *time, DATEREC *date, int8
 
 %endif %- TimeDateToUnixSeconds
 %-BW_METHOD_END TimeDateToUnixSeconds
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AddDateString
+%ifdef AddDateString
+uint8_t %'ModuleName'%.%AddDateString(uint8_t *buf, size_t bufSize, DATEREC *date, uint8_t *format);
+%define! Parbuf
+%define! ParbufSize
+%define! Pardate
+%define! Parformat
+%define! RetVal
+%include Common\GenericTimeDateAddDateString.Inc
+
+%endif %- AddDateString
+%-BW_METHOD_END AddDateString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AddTimeString
+%ifdef AddTimeString
+uint8_t %'ModuleName'%.%AddTimeString(uint8_t *buf, size_t bufSize, TIMEREC *time, uint8_t *format);
+%define! Parbuf
+%define! ParbufSize
+%define! Parformat
+%define! Partime
+%define! RetVal
+%include Common\GenericTimeDateAddTimeString.Inc
+
+%endif %- AddTimeString
+%-BW_METHOD_END AddTimeString
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1861,6 +1891,58 @@ int32_t %'ModuleName'%.%TimeDateToUnixSeconds(TIMEREC *time, DATEREC *date, int8
 
 %endif %- TimeDateToUnixSeconds
 %-BW_METHOD_END TimeDateToUnixSeconds
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AddDateString
+%ifdef AddDateString
+%define! Parbuf
+%define! ParbufSize
+%define! Pardate
+%define! Parformat
+%define! RetVal
+%include Common\GenericTimeDateAddDateString.Inc
+uint8_t %'ModuleName'%.%AddDateString(uint8_t *buf, size_t bufSize, DATEREC *date, uint8_t *format)
+{
+  /* currently only the following format is supported: "dd.mm.yyyy" */
+  (void)format; /* not supported yet */
+  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, date->Day, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
+  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, date->Month, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
+  %@Utility@'ModuleName'%.strcatNum16u(buf, bufSize, (uint16_t)date->Year);
+  return ERR_OK;
+}
+
+%endif %- AddDateString
+%-BW_METHOD_END AddDateString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN AddTimeString
+%ifdef AddTimeString
+%define! Parbuf
+%define! ParbufSize
+%define! Parformat
+%define! Partime
+%define! RetVal
+%include Common\GenericTimeDateAddTimeString.Inc
+uint8_t %'ModuleName'%.%AddTimeString(uint8_t *buf, size_t bufSize, TIMEREC *time, uint8_t *format)
+{
+  /* currently only the following format is supported: hh:mm:ss,cc" */
+  (void)format; /* not supported yet */
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, time->Hour, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, time->Min, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ':');
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, time->Sec, '0', 2);
+  %@Utility@'ModuleName'%.chcat(buf, bufSize, ',');
+#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, time->Sec100, '0', 2);
+#else
+  %@Utility@'ModuleName'%.strcatNum16sFormatted(buf, bufSize, 0, '0', 2);
+#endif
+  return ERR_OK;
+}
+
+%endif %- AddTimeString
+%-BW_METHOD_END AddTimeString
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
