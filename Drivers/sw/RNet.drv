@@ -409,8 +409,14 @@ void %OnRadioEvent(%'ModuleName'_RadioEvent event)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+/* remote standard I/O destination address */
+#ifndef RSTDIO_CONFIG_SETTING_RSTDIO_DEFAULT_DESTINATION_ADDRESS
+%if defined(RStdioDefaultDestinationAddress)
+  #define RSTDIO_CONFIG_SETTING_RSTDIO_DEFAULT_DESTINATION_ADDRESS   %RStdioDefaultDestinationAddress
+%else
+  #define RSTDIO_CONFIG_SETTING_RSTDIO_DEFAULT_DESTINATION_ADDRESS   RNWK_ADDR_BROADCAST
+%endif
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

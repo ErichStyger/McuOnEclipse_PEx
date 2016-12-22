@@ -13,6 +13,7 @@
 
 #include "%'ModuleName'.h"  /* component main header file */
 #include "RNet_AppConfig.h" /* User application configuration file */
+#include "%'ModuleName'config.h"  /* configuration file */
 
 /* Default configuration items, can be overwritten by the application configuration header file: */
 #define RNET_CONFIG_TRANSCEIVER_NRF24   1 

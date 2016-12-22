@@ -35,6 +35,10 @@ static RNWK_ShortAddrType RSTDIO_dstAddr; /* destination address */
 
 uint8_t RSTDIO_DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 
+void RSTDIO_SetDestinationAddress(RNWK_ShortAddrType addr) {
+  RSTDIO_dstAddr = addr;
+}
+
 /*!
  * \brief Returns a queue handle for a Remote Standard I/O type
  * \param queueType Type of queue
@@ -400,7 +404,7 @@ void RSTDIO_Deinit(void) {
 }
 
 void RSTDIO_Init(void) {
-  RSTDIO_dstAddr = RNWK_ADDR_BROADCAST;
+  RSTDIO_SetDestinationAddress(RSTDIO_CONFIG_SETTING_RSTDIO_DEFAULT_DESTINATION_ADDRESS);
   RSTDIO_RxStdInQ = %@RTOS@'ModuleName'%.xQueueCreate(RSTDIO_QUEUE_LENGTH, RSTDIO_QUEUE_ITEM_SIZE);
   if (RSTDIO_RxStdInQ==NULL) {
     for(;;){} /* out of memory? */

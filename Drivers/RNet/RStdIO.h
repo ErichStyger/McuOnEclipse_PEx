@@ -101,8 +101,15 @@ uint8_t RSTDIO_HandleStdioRxMessage(RAPP_MSG_Type type, uint8_t size, uint8_t *d
 
 /*!
  * \brief Call this routines periodically. It will parse incoming remote messages and will dispatch them between stdin, stdout and stderr.
+ * \param io Standard I/O handle to be used for printing
  */
 void RSTDIO_Print(%@Shell@'ModuleName'%.ConstStdIOTypePtr io);
+
+/*!
+ * \brief Sets the destination address to be used for remote standard I/O
+ * \param addr Address to be used
+ */
+void RSTDIO_SetDestinationAddress(RNWK_ShortAddrType addr);
 
 /*! \brief Initializes the module */
 void RSTDIO_Init(void);
