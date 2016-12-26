@@ -150,7 +150,7 @@
 #define USB_MAX_CONFIG_SUPPORTED          (1)
 
 /* Max string descriptors supported by the Application */
-#define USB_MAX_STRING_DESCRIPTORS        (3)
+#define USB_MAX_STRING_DESCRIPTORS        (4)  /* << EST added one more for serial number */
 
 /* Max language codes supported by the USB */
 #define USB_MAX_LANGUAGES_SUPPORTED       (1)

@@ -790,6 +790,7 @@ uint_8 const g_string_desc_size[USB_MAX_STRING_DESCRIPTORS+1] =
                                 sizeof(USB_STR_0),
                                 sizeof(USB_STR_1),
                                 sizeof(USB_STR_2),
+                                sizeof(USB_STR_3), /* << EST serial number */
                                 sizeof(USB_STR_n)
                             };
 
@@ -798,6 +799,7 @@ uint_8_ptr const g_string_descriptors[USB_MAX_STRING_DESCRIPTORS+1] =
                                 (uint_8_ptr)USB_STR_0,
                                 (uint_8_ptr)USB_STR_1,
                                 (uint_8_ptr)USB_STR_2,
+                                (uint_8_ptr)USB_STR_3, /* << EST serial number */
                                 (uint_8_ptr)USB_STR_n
                             };
 
