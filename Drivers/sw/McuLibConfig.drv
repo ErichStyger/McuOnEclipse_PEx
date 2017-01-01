@@ -76,7 +76,7 @@
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
 #else /* use non-Processor Expert SDK: generic or silicon vendor SDK */
   /* defines of common types used by Processor Expert, which might not be provided by the SDK */
-  #ifndef __HIWARE__ /* Hiware compiler (S08, S12) only supports C89 */
+  #if !(defined(__ICCARM__) || defined(__HIWARE__)) /* Hiware compiler (S08, S12) only supports C89 */
     #include <stdint.h> /* uint8_t, int16_t, ... */
     #include <stdbool.h> /* bool, true, false, ... */
   #endif
