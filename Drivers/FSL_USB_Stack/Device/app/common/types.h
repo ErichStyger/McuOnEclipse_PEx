@@ -115,6 +115,7 @@ typedef uint_32*        uint_32_ptr;         /* ptr to 32-bit*/
 
 typedef uint_8_ptr      uchar_ptr;           /* ptr to 8-bit*/
 
+#if 0 /* not using these types, might conflict with the ones in FatFS */
 /* definition of 8 bit word */
 typedef union _BYTE
 {
@@ -177,6 +178,7 @@ typedef union _DWORD
         WORD Word0;
     }_Word;
 } DWORD;
+#endif
 
 /******************************************************************************
  * Global Functions - None
