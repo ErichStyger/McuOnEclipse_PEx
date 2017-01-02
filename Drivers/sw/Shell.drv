@@ -1579,7 +1579,7 @@ unsigned %'ModuleName'%.%printfIO(%'ModuleName'_ConstStdIOType *io, const char *
   unsigned int count = 0;
 
   va_start(args,fmt);
-  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, io->stdOut, fmt, args);
+  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, (void*)io->stdOut, fmt, args);
   va_end(args);
   return count;
 }
@@ -1598,7 +1598,7 @@ unsigned %'ModuleName'%.%printf(const char *fmt, ...)
   unsigned int count = 0;
 
   va_start(args,fmt);
-  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, %'ModuleName'%.%GetStdio()->stdOut, fmt, args);
+  count = %@XFormat@'ModuleName'%.xvformat(%'ModuleName'%.printfPutChar, (void*)%'ModuleName'%.%GetStdio()->stdOut, fmt, args);
   va_end(args);
   return count;
 }
