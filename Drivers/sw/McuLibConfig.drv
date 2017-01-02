@@ -67,13 +67,15 @@
 #include "%'ModuleName'config.h" /* include configuration header file */
 
 #if %'ModuleName'%.CONFIG_SDK_VERSION_USED == %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  #ifndef __IASMARM__ /* not including standard header files if using IAR assembler */
 %ifdef SharedModules
   /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
-  #include "%'var'.h"
+    #include "%'var'.h"
   %endfor
 %endif
-  #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
+    #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
+  #endif
 #else /* use non-Processor Expert SDK: generic or silicon vendor SDK */
   /* defines of common types used by Processor Expert, which might not be provided by the SDK */
   #if !(defined(__ICCARM__) || defined(__HIWARE__)) /* Hiware compiler (S08, S12) only supports C89 */
