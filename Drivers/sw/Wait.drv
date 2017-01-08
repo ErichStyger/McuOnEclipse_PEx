@@ -645,7 +645,11 @@ void %'ModuleName'%.%Waitms(uint16_t ms)
   }
 %else
   if (ms>0) {
+%if (defined(PEversionDecimal) && PEversionDecimal <=0 '1089') %- old version of PE in classic CW for MCU 6.3
+    %Delay100usFunction((uint16_t)(ms*10)); /* Use function in CPU component. If you get a compiler error here, this typically means that the method is not enabled. Enable this method in the CPU component */
+%else
     %'ProcessorModule'%.%Delay100usFunction((uint16_t)(ms*10)); /* Use function in CPU component. If you get a compiler error here, this typically means that the method is not enabled. Enable this method in the CPU component */
+%endif
   %if WatchdogEnabled='yes'
     %if defined(Watchdog)
     %@Watchdog@'ModuleName'%.Clear();                            %>40/* kick the dog in order not to timeout */
