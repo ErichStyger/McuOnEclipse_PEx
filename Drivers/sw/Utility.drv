@@ -1081,7 +1081,7 @@ void %'ModuleName'%.%Num16sToStr(uint8_t *dst, size_t dstSize, int16_t val)
   }
   dstSize--; /* for zero byte */
   if (sign) {
-    val = -val;
+    val = (int16_t)(-val);
   }
   if (val == 0 && dstSize > 0){
     ptr[i++] = '0';
@@ -2127,7 +2127,7 @@ uint8_t %'ModuleName'%.%ScanDecimal8sNumber(const unsigned char **str, signed ch
     return res;
   }
   if (isNeg) {
-    *val = - (int8_t)val8u;
+    *val = (int8_t)(-(int8_t)val8u);
   } else {
     *val = (int8_t)val8u;
   }
@@ -2202,7 +2202,7 @@ uint8_t %'ModuleName'%.%ScanDecimal16sNumber(const unsigned char **str, int16_t 
     return res;
   }
   if (isNeg) {
-    *val = - (int16_t)val16u;
+    *val = (int16_t)(-(int16_t)val16u);
   } else {
     *val = (int16_t)val16u;
   }
