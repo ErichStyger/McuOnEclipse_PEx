@@ -529,6 +529,7 @@ uint8_t %'ModuleName'%.%GetChar(%'ModuleName'_TComData *Chr)
 uint8_t %'ModuleName'%.%RecvChar(%'ModuleName'_TComData *Chr)
 {
   while(%@RxBuffer@'ModuleName'%.Get(Chr)!=ERR_OK) {
+    %@Wait@'ModuleName'%.WaitOSms(10); /* avoid to completely block */
     /* retry receiving until success */
   }
   return ERR_OK;
