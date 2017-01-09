@@ -111,6 +111,22 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args);
 %include Common\GeneralInternal.inc (HandlerC)
 
 %-INTERNAL_METHOD_END HandlerC
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\HardFaultDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\HardFaultInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -347,6 +363,40 @@ asm void %'ModuleName'%.%HardFaultHandler(void)
 
 %endif %- HardFaultHandler
 %-BW_METHOD_END HardFaultHandler
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\HardFaultDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+#if %'ModuleName'%.CONFIG_SETTING_DISABLE_WRITE_BUFFER
+  #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+    SCB_ACTLR &= ~(SCB_ACTLR_DISDEFWBUF_MASK); /* write buffer bit, see https://community.nxp.com/docs/DOC-103810 */
+  #elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
+    SCnSCB->ACTLR &= ~SCnSCB_ACTLR_DISDEFWBUF_Msk;
+  #endif
+#endif
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\HardFaultInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+#if %'ModuleName'%.CONFIG_SETTING_DISABLE_WRITE_BUFFER
+  #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+    SCB_ACTLR |= SCB_ACTLR_DISDEFWBUF_MASK; /* write buffer bit, see https://community.nxp.com/docs/DOC-103810 */
+  #elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
+    SCnSCB->ACTLR |= SCnSCB_ACTLR_DISDEFWBUF_Msk;
+  #endif
+#endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -358,7 +408,7 @@ asm void %'ModuleName'%.%HardFaultHandler(void)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+  %'ModuleName'%.%Init();
 %CODE_END
 %-
 %ENABLE
@@ -411,8 +461,25 @@ asm void %'ModuleName'%.%HardFaultHandler(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+%if (%CPUfamily = "Kinetis")
+%if defined(ARMFamilyType) & %ARMFamilyType="M0+"
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (defined(__CORTEX_M) && __CORTEX_M>=3))
+%else
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (1 || (defined(__CORTEX_M) && __CORTEX_M>=3))
+%endif
+%else
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (defined(__CORTEX_M) && __CORTEX_M >= 3))
+%endif
+  /*!< 1: Cortex-M3, M4 have Auxiliary Control Register, ACTLR register */
+
+#ifndef %'ModuleName'%.CONFIG_SETTING_DISABLE_WRITE_BUFFER
+%if defined(DisableWriteBuffer) & %DisableWriteBuffer='yes'
+  #define %'ModuleName'%.CONFIG_SETTING_DISABLE_WRITE_BUFFER   (1 && %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR)
+%else
+  #define %'ModuleName'%.CONFIG_SETTING_DISABLE_WRITE_BUFFER   (0 && %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR)
+%endif
+  /*!< 1: disable write buffer in ACTLR register */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
