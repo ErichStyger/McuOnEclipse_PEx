@@ -4,7 +4,7 @@
     <Name>SharpMemDisplay</Name>
     <Description>Display driver for the Sharp Memory Display LS013B4DN04</Description>
     <Author>Erich Styger</Author>
-    <Version>01.006</Version>
+    <Version>01.008</Version>
     <Icon>SharpMemDisplay</Icon>
     <TypesFiles>PE,SharpMemDisplay\SharpMemDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedTps>yes</BW_NeedTps>
     <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
@@ -35,6 +35,22 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Display</Name>
+        <Symbol>DisplayType</Symbol>
+        <TypeSpec>typeDisplay</TypeSpec>
+        <Hint>Select the display used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
     </Property>
     <Property>
       <TGrupItem>
