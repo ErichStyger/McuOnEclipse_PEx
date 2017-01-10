@@ -304,8 +304,8 @@ void %'ModuleName'%.%AddTick(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetTime
 %ifdef GetTime
-uint8_t %'ModuleName'%.%GetTime(TIMEREC *Time);
-%define! ParTime
+uint8_t %'ModuleName'%.%GetTime(TIMEREC *time);
+%define! Partime
 %define! RetVal
 %include Common\GenericTimeDateGetTime.Inc
 
@@ -326,8 +326,8 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDate
 %ifdef GetDate
-uint8_t %'ModuleName'%.%GetDate(DATEREC *Date);
-%define! ParDate
+uint8_t %'ModuleName'%.%GetDate(DATEREC *date);
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetDate.Inc
 
@@ -374,10 +374,9 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN TicksToTime
 %ifdef TicksToTime
-uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time);
+uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *time);
 %define! Particks
 %define! Partime
-%define! ParTime
 %define! RetVal
 %include Common\GenericTimeDateTicksToTime.Inc
 
@@ -386,10 +385,9 @@ uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN TimeToTicks
 %ifdef TimeToTicks
-uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks);
-%define! Partime
+uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *time, uint32_t *ticks);
 %define! Particks
-%define! ParTime
+%define! Partime
 %define! RetVal
 %include Common\GenericTimeDateTimeToTicks.Inc
 
@@ -398,9 +396,9 @@ uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetInternalRTCTimeDate
 %ifdef SetInternalRTCTimeDate
-uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetInternalRTCTimeDate.Inc
 
@@ -409,9 +407,9 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetInternalRTCTimeDate
 %ifdef GetInternalRTCTimeDate
-uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetInternalRTCTimeDate.Inc
 
@@ -432,9 +430,9 @@ uint8_t %'ModuleName'%.%CalculateDayOfWeek(uint16_t Year, uint8_t Month, uint8_t
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetSWTimeDate
 %ifdef SetSWTimeDate
-uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetSWTimeDate.Inc
 
@@ -443,9 +441,9 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSWTimeDate
 %ifdef GetSWTimeDate
-uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetSWTimeDate.Inc
 
@@ -472,9 +470,9 @@ uint8_t %'ModuleName'%.%SyncWithExternalRTC(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetExternalRTCTimeDate
 %ifdef SetExternalRTCTimeDate
-uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetExternalRTCTimeDate.Inc
 
@@ -483,9 +481,9 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetExternalRTCTimeDate
 %ifdef GetExternalRTCTimeDate
-uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetExternalRTCTimeDate.Inc
 
@@ -494,9 +492,9 @@ uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetTimeDate
 %ifdef SetTimeDate
-uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetTimeDate.Inc
 
@@ -505,9 +503,9 @@ uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *Time, DATEREC *Date);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetTimeDate
 %ifdef GetTimeDate
-uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *Time, DATEREC *Date);
-%define! ParTime
-%define! ParDate
+uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *time, DATEREC *date);
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetTimeDate.Inc
 
@@ -934,11 +932,11 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetSWTimeDate
 %ifdef SetSWTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetSWTimeDate.Inc
-uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_SOFTWARE_RTC
   uint8_t res;
@@ -946,8 +944,8 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
   bool failed = FALSE;
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
-  if (Time!=NULL) {
-    res = %'ModuleName'%.%TimeToTicks(Time, &nofTicks);
+  if (time!=NULL) {
+    res = %'ModuleName'%.%TimeToTicks(time, &nofTicks);
     if (res!=ERR_OK) {
       failed = TRUE;
     }
@@ -957,11 +955,11 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
       %@CriticalSection@'ModuleName'%.ExitCritical();
     }
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
     %@CriticalSection@'ModuleName'%.EnterCritical();
-    CntDay = Date->Day;
-    CntMonth = Date->Month;
-    CntYear = Date->Year;
+    CntDay = date->Day;
+    CntMonth = date->Month;
+    CntYear = date->Year;
     %@CriticalSection@'ModuleName'%.ExitCritical();
   }
   if (failed) {
@@ -978,11 +976,11 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *Time, DATEREC *Date)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSWTimeDate
 %ifdef GetSWTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetSWTimeDate.Inc
-uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_SOFTWARE_RTC
   uint8_t res;
@@ -990,20 +988,20 @@ uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *Time, DATEREC *Date)
   bool failed = FALSE;
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
-  if (Time!=NULL) {
+  if (time!=NULL) {
     %@CriticalSection@'ModuleName'%.EnterCritical();
     ticks = tickCntr;
     %@CriticalSection@'ModuleName'%.ExitCritical();
-    res = %'ModuleName'%.%TicksToTime(ticks, Time);
+    res = %'ModuleName'%.%TicksToTime(ticks, time);
     if (res!=ERR_OK) {
       failed = TRUE;
     }
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
     %@CriticalSection@'ModuleName'%.EnterCritical();
-    Date->Year = CntYear;
-    Date->Month = CntMonth;
-    Date->Day = CntDay;
+    date->Year = CntYear;
+    date->Month = CntMonth;
+    date->Day = CntDay;
     %@CriticalSection@'ModuleName'%.ExitCritical();
   }
   if (failed) {
@@ -1079,19 +1077,19 @@ uint8_t %'ModuleName'%.%SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t 
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetTime
 %ifdef GetTime
-%define! ParTime
+%define! Partime
 %define! RetVal
 %include Common\GenericTimeDateGetTime.Inc
-uint8_t %'ModuleName'%.%GetTime(TIMEREC *Time)
+uint8_t %'ModuleName'%.%GetTime(TIMEREC *time)
 {
   uint8_t res;
 
 #if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
-  res = %'ModuleName'%.%GetSWTimeDate(Time, NULL);
+  res = %'ModuleName'%.%GetSWTimeDate(time, NULL);
 #elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
-  res = %'ModuleName'%.%GetInternalRTCTimeDate(Time, NULL);
+  res = %'ModuleName'%.%GetInternalRTCTimeDate(time, NULL);
 #elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
-  res = %'ModuleName'%.%GetExternalRTCTimeDate(Time, NULL);
+  res = %'ModuleName'%.%GetExternalRTCTimeDate(time, NULL);
 #else
   #error "invalid configuration!"
   res = ERR_FAILED;
@@ -1099,9 +1097,9 @@ uint8_t %'ModuleName'%.%GetTime(TIMEREC *Time)
   /* call user event */
 #if %'ModuleName'%.ON_TIME_GET_EVENT
   #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  %'ModuleName'%.ON_TIME_GET_EVENT_NAME(&Time->Hour, &Time->Min, &Time->Sec, &Time->Sec100);
+    %'ModuleName'%.ON_TIME_GET_EVENT_NAME(&time->Hour, &time->Min, &time->Sec, &time->Sec100);
   #else
-  %'ModuleName'%.ON_TIME_GET_EVENT_NAME(&Time->Hour, &Time->Min, &Time->Sec, 0);
+    %'ModuleName'%.ON_TIME_GET_EVENT_NAME(&time->Hour, &time->Min, &time->Sec, 0);
   #endif
 #endif
   return res;
@@ -1166,19 +1164,19 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDate
 %ifdef GetDate
-%define! ParDate
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetDate.Inc
-uint8_t %'ModuleName'%.%GetDate(DATEREC *Date)
+uint8_t %'ModuleName'%.%GetDate(DATEREC *date)
 {
   uint8_t res;
 
 #if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
-  res = %'ModuleName'%.%GetSWTimeDate(NULL, Date);
+  res = %'ModuleName'%.%GetSWTimeDate(NULL, date);
 #elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
-  res = %'ModuleName'%.%GetInternalRTCTimeDate(NULL, Date);
+  res = %'ModuleName'%.%GetInternalRTCTimeDate(NULL, date);
 #elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
-  res = %'ModuleName'%.%GetExternalRTCTimeDate(NULL, Date);
+  res = %'ModuleName'%.%GetExternalRTCTimeDate(NULL, date);
 #else
   #error "invalid configuration!"
   res = ERR_FAILED;
@@ -1310,19 +1308,18 @@ void %'ModuleName'%.%DeInit(void)
 %ifdef TicksToTime
 %define! Particks
 %define! Partime
-%define! ParTime
 %define! RetVal
 %include Common\GenericTimeDateTicksToTime.Inc
-uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time)
+uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *time)
 {
-  Time->Hour = (uint8_t)(ticks/(3600*%'ModuleName'%.TICKS_PER_S));%>40/* number of hours */
+  time->Hour = (uint8_t)(ticks/(3600*%'ModuleName'%.TICKS_PER_S));%>40/* number of hours */
   ticks %%= (3600*%'ModuleName'%.TICKS_PER_S);                   %>40/* remainder of ticks inside hour */
-  Time->Min = (uint8_t)(ticks/(60*%'ModuleName'%.TICKS_PER_S));  %>40/* number of minutes */
+  time->Min = (uint8_t)(ticks/(60*%'ModuleName'%.TICKS_PER_S));  %>40/* number of minutes */
   ticks %%= (60*%'ModuleName'%.TICKS_PER_S);                     %>40/* remainder of ticks inside minute */
-  Time->Sec = (uint8_t)(ticks/%'ModuleName'%.TICKS_PER_S);       %>40/* number of seconds */
+  time->Sec = (uint8_t)(ticks/%'ModuleName'%.TICKS_PER_S);       %>40/* number of seconds */
   ticks %%= %'ModuleName'%.TICKS_PER_S;
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  Time->Sec100 = (uint8_t)((ticks*(1000/%'ModuleName'%.TICKS_PER_S))/10);%>40/* number of 1/100 seconds */
+  time->Sec100 = (uint8_t)((ticks*(1000/%'ModuleName'%.TICKS_PER_S))/10);%>40/* number of 1/100 seconds */
 #endif
   return ERR_OK;
 }
@@ -1332,21 +1329,20 @@ uint8_t %'ModuleName'%.%TicksToTime(uint32_t ticks, TIMEREC *Time)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN TimeToTicks
 %ifdef TimeToTicks
-%define! Partime
 %define! Particks
-%define! ParTime
+%define! Partime
 %define! RetVal
 %include Common\GenericTimeDateTimeToTicks.Inc
-uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks)
+uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *time, uint32_t *ticks)
 {
   uint32_t cntr;
 
   /* Load given time re-calculated to %'ModuleName'%.TICK_TIME_MS ms ticks into software tick counter */
-  cntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Hour)
-              + (60UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Min)
-              + (%'ModuleName'%.TICKS_PER_S*(uint32_t)Time->Sec)
+  cntr = (3600UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)time->Hour)
+              + (60UL*%'ModuleName'%.TICKS_PER_S*(uint32_t)time->Min)
+              + (%'ModuleName'%.TICKS_PER_S*(uint32_t)time->Sec)
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-              + ((%'ModuleName'%.TICKS_PER_S/100)*(uint32_t)Time->Sec100)
+              + ((%'ModuleName'%.TICKS_PER_S/100)*(uint32_t)time->Sec100)
 #endif
               ;
   *ticks = cntr;
@@ -1358,11 +1354,11 @@ uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *Time, uint32_t *ticks)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetInternalRTCTimeDate
 %ifdef SetInternalRTCTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetInternalRTCTimeDate.Inc
-uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD
   LDD_RTC_TTime timeDate;
@@ -1373,16 +1369,16 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 %else
   RTC1_GetTime(RTC1_DeviceData, &timeDate); /* get information from HW RTC */
 %endif
-  if (Time!=NULL) {
-    timeDate.Hour = Time->Hour;
-    timeDate.Minute = Time->Min;
-    timeDate.Second = Time->Sec;
+  if (time!=NULL) {
+    timeDate.Hour = time->Hour;
+    timeDate.Minute = time->Min;
+    timeDate.Second = time->Sec;
   }
-  if (Date!=NULL) {
-    timeDate.Year = Date->Year;
-    timeDate.Month = Date->Month;
-    timeDate.Day = Date->Day;
-    timeDate.DayOfWeek = %'ModuleName'%.%CalculateDayOfWeek(Date->Year, Date->Month, Date->Day);
+  if (date!=NULL) {
+    timeDate.Year = date->Year;
+    timeDate.Month = date->Month;
+    timeDate.Day = date->Day;
+    timeDate.DayOfWeek = %'ModuleName'%.%CalculateDayOfWeek(date->Year, date->Month, date->Day);
   }
 %if defined(LDDRTC)
   return %@LDDRTC@'ModuleName'%.SetTime(%@LDDRTC@'ModuleName'%.DeviceData, &timeDate); /* get information from HW RTC */
@@ -1392,21 +1388,21 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 #elif %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
   uint8_t res;
 
-  if (Time!=NULL) {
+  if (time!=NULL) {
   %if defined(RTC)
-    res = %@RTC@'ModuleName'%.SetTime(Time->Hour, Time->Min, Time->Sec); /* set information in HW RTC */
+    res = %@RTC@'ModuleName'%.SetTime(time->Hour, time->Min, time->Sec); /* set information in HW RTC */
   %else
-    res = RTC1_SetTime(Time->Hour, Time->Min, Time->Sec); /* set information in HW RTC */
+    res = RTC1_SetTime(time->Hour, time->Min, time->Sec); /* set information in HW RTC */
   %endif
     if (res!=ERR_OK) {
       return res;
     }
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
   %if defined(RTC)
-    res = %@RTC@'ModuleName'%.SetDate(Date->Year, Date->Month, Date->Day); /* set information in HW RTC */
+    res = %@RTC@'ModuleName'%.SetDate(date->Year, date->Month, date->Day); /* set information in HW RTC */
   %else
-    res = RTC1_SetDate(Date); /* set information in HW RTC */
+    res = RTC1_SetDate(date); /* set information in HW RTC */
   %endif
     if (res!=ERR_OK) {
       return res;
@@ -1414,8 +1410,8 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
   }
   return ERR_OK;
 #else
-  (void)Time;
-  (void)Date;
+  (void)time;
+  (void)date;
   return ERR_FAILED; /* no HW RTC configured */
 #endif
 }
@@ -1425,11 +1421,11 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetInternalRTCTimeDate
 %ifdef GetInternalRTCTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetInternalRTCTimeDate.Inc
-uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD
   LDD_RTC_TTime timeDate;
@@ -1439,51 +1435,51 @@ uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 %else
   RTC1_GetTime(RTC1_DeviceData, &timeDate); /* get information from HW RTC */
 %endif
-  if (Time!=NULL) {
-    Time->Hour = timeDate.Hour;
-    Time->Min = timeDate.Minute;
-    Time->Sec = timeDate.Second;
+  if (time!=NULL) {
+    time->Hour = timeDate.Hour;
+    time->Min = timeDate.Minute;
+    time->Sec = timeDate.Second;
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-    Time->Sec100 = 0;
+    time->Sec100 = 0;
 #endif
   }
-  if (Date!=NULL) {
-    Date->Year = timeDate.Year;
-    Date->Month = timeDate.Month;
-    Date->Day = timeDate.Day;
+  if (date!=NULL) {
+    date->Year = timeDate.Year;
+    date->Month = timeDate.Month;
+    date->Day = timeDate.Day;
   }
   return ERR_OK;
 #elif %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
-  TIMEREC time;
-  DATEREC date;
+  TIMEREC t;
+  DATEREC d;
   uint8_t res;
 
   if (Time!=NULL) {
   %if defined(RTC)
-    res = %@RTC@'ModuleName'%.GetTime(&time); /* get information from HW RTC */
+    res = %@RTC@'ModuleName'%.GetTime(&t); /* get information from HW RTC */
   %else
-    res = RTC1_GetTime(&time); /* get information from HW RTC */
+    res = RTC1_GetTime(&t); /* get information from HW RTC */
   %endif
     if (res!=ERR_OK) {
       return res;
     }
-    *Time = time; /* struct copy */
+    *time = t; /* struct copy */
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
   %if defined(RTC)
-    res = %@RTC@'ModuleName'%.GetDate(&date); /* get information from HW RTC */
+    res = %@RTC@'ModuleName'%.GetDate(&d); /* get information from HW RTC */
   %else
-    res = RTC1_GetDate(&date); /* get information from HW RTC */
+    res = RTC1_GetDate(&d); /* get information from HW RTC */
   %endif
     if (res!=ERR_OK) {
       return res;
     }
-    *Date = date; /* struct copy */
+    *date = d; /* struct copy */
   }
   return ERR_OK;
 #else
-  (void)Time;
-  (void)Date;
+  (void)time;
+  (void)date;
   return ERR_FAILED; /* no HW RTC configured */
 #endif
 }
@@ -1586,23 +1582,23 @@ uint8_t %'ModuleName'%.%SyncWithExternalRTC(void)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetExternalRTCTimeDate
 %ifdef SetExternalRTCTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetExternalRTCTimeDate.Inc
-uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_EXTERNAL_HW_RTC
   uint8_t res;
 
-  if (Time!=NULL) {
+  if (time!=NULL) {
 %if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.SetTime(Time->Hour, Time->Min, Time->Sec,
+    res = %@ExternalRTC@'ModuleName'%.SetTime(time->Hour, time->Min, time->Sec,
 %else
-    res = RTC2_SetTime(Time->Hour, Time->Min, Time->Sec,
+    res = RTC2_SetTime(time->Hour, time->Min, time->Sec,
 %endif
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-        Time->Sec100
+        time->Sec100
 #else
         0
 #endif
@@ -1611,11 +1607,11 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
       return res;
     }
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
 %if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.SetDate(Date->Year, Date->Month, Date->Day);
+    res = %@ExternalRTC@'ModuleName'%.SetDate(date->Year, date->Month, date->Day);
 %else
-    res = RTC2_SetDate(Date->Year, Date->Month, Date->Day);
+    res = RTC2_SetDate(date->Year, date->Month, date->Day);
 %endif
     if (res!=ERR_OK) {
       return res;
@@ -1623,8 +1619,8 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
   }
   return ERR_OK;
 #else
-  (void)Time;
-  (void)Date;
+  (void)time;
+  (void)date;
   return ERR_FAILED; /* no external RTC available */
 #endif
 }
@@ -1634,30 +1630,30 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetExternalRTCTimeDate
 %ifdef GetExternalRTCTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetExternalRTCTimeDate.Inc
-uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
 #if %'ModuleName'%.USE_EXTERNAL_HW_RTC
   uint8_t res;
 
-  if (Time!=NULL) {
+  if (time!=NULL) {
 %if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.GetTime(Time);
+    res = %@ExternalRTC@'ModuleName'%.GetTime(time);
 %else
-    res = RTC2_GetTime(Time);
+    res = RTC2_GetTime(time);
 %endif
     if (res!=ERR_OK) {
       return res;
     }
   }
-  if (Date!=NULL) {
+  if (date!=NULL) {
 %if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.GetDate(Date);
+    res = %@ExternalRTC@'ModuleName'%.GetDate(date);
 %else
-    res = RTC2_GetDate(Date);
+    res = RTC2_GetDate(date);
 %endif
     if (res!=ERR_OK) {
       return res;
@@ -1665,8 +1661,8 @@ uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
   }
   return ERR_OK;
 #else
-  (void)Time;
-  (void)Date;
+  (void)time;
+  (void)date;
   return ERR_FAILED; /* no external RTC available */
 #endif
 }
@@ -1676,29 +1672,29 @@ uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetTimeDate
 %ifdef SetTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateSetTimeDate.Inc
-uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *time, DATEREC *date)
 {
   uint8_t res = ERR_OK;
   bool failed = FALSE;
 
 #if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
-  res = %'ModuleName'%.SetSWTimeDate(Time, Date);
+  res = %'ModuleName'%.SetSWTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
 #if %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
-  res = %'ModuleName'%.SetInternalRTCTimeDate(Time, Date);
+  res = %'ModuleName'%.SetInternalRTCTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
 #if %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
-  res = %'ModuleName'%.SetExternalRTCTimeDate(Time, Date);
+  res = %'ModuleName'%.SetExternalRTCTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
@@ -1714,20 +1710,20 @@ uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *Time, DATEREC *Date)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetTimeDate
 %ifdef GetTimeDate
-%define! ParTime
-%define! ParDate
+%define! Partime
+%define! Pardate
 %define! RetVal
 %include Common\GenericTimeDateGetTimeDate.Inc
-uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *Time, DATEREC *Date)
+uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *time, DATEREC *date)
 {
   uint8_t res;
 
 #if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
-  res = %'ModuleName'%.%GetSWTimeDate(Time, Date);
+  res = %'ModuleName'%.%GetSWTimeDate(time, date);
 #elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
-  res = %'ModuleName'%.%GetInternalRTCTimeDate(Time, Date);
+  res = %'ModuleName'%.%GetInternalRTCTimeDate(time, date);
 #elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
-  res = %'ModuleName'%.%GetExternalRTCTimeDate(Time, Date);
+  res = %'ModuleName'%.%GetExternalRTCTimeDate(time, date);
 #else
   #error "invalid configuration!"
   res = ERR_FAILED;
@@ -2028,8 +2024,8 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk)
-  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif

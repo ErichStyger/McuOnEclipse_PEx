@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.049</Version>
+    <Version>01.059</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -587,14 +587,14 @@
           <ParHint/>
         </Parameter>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer where to store the time information</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint32_t ticks, TIMEREC *Time)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint32_t ticks, TIMEREC *time)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -621,7 +621,7 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer where to time information</ParHint>
@@ -634,7 +634,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, uint32_t *ticks)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, uint32_t *ticks)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -759,14 +759,14 @@
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the structure TIMEREC. It contains actual number of hours, minutes, seconds and hundredth of seconds.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -839,14 +839,14 @@
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to DATEREC</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -873,20 +873,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -913,20 +913,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the structure to return the time. Can be NULL.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to structure which returns the date information. Can be NULL</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -953,20 +953,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -993,20 +993,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the structure to return the time. Can be NULL.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to structure which returns the date information. Can be NULL</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1033,20 +1033,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1073,20 +1073,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the structure to return the time. Can be NULL.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to structure which returns the date information. Can be NULL</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1141,20 +1141,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1181,20 +1181,20 @@
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>Time</ParName>
+          <ParName>time</ParName>
           <ParType>TIMEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the structure to return the time. Can be NULL.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>Date</ParName>
+          <ParName>date</ParName>
           <ParType>DATEREC</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to structure which returns the date information. Can be NULL</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(TIMEREC *Time, DATEREC *Date)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(TIMEREC *time, DATEREC *date)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

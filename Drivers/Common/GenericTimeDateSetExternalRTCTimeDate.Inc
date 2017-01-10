@@ -8,10 +8,10 @@
 %;**         This method sets a new actual time and date of the external
 %;**         hardware RTC.
 %include Common\GeneralParameters.inc(27)
-%;**       * Time%ParTime %>27 - Pointer to struct which contains the
+%;**       * time%Partime %>27 - Pointer to struct which contains the
 %;** %>29 time to be set. Can be NULL if time shall
 %;** %>29 not be set.
-%;**       * Date%ParDate %>27 - Pointer to struct which contains the
+%;**       * date%Pardate %>27 - Pointer to struct which contains the
 %;** %>29 date information to be set. Can be NULL if
 %;** %>29 date shall not be set.
 %;**     Returns     :

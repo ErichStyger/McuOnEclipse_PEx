@@ -509,8 +509,8 @@ void %'ModuleName'%.%SetRatio16(uint16_t ratio)
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk)
-  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif

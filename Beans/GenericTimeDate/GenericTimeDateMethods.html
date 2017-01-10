@@ -261,9 +261,9 @@ LI.EXP {
  - This method returns current time from the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetTime(TIMEREC *Time)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetTime(TIMEREC *time)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure TIMEREC. It contains actual number of hours, minutes, seconds and hundredth of seconds.</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to the structure TIMEREC. It contains actual number of hours, minutes, seconds and hundredth of seconds.</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -287,9 +287,9 @@ LI.EXP {
  - This method returns current date from the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetDate(DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetDate(DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Date: Pointer to DATEREC</i> - Pointer to DATEREC</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to DATEREC</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -299,10 +299,10 @@ LI.EXP {
  - This method sets a new actual time and date of the RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -312,10 +312,10 @@ LI.EXP {
  - This method returns current time and date from the RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -325,10 +325,10 @@ LI.EXP {
  - This method sets a new actual time and date of the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetSWTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetSWTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -338,10 +338,10 @@ LI.EXP {
  - This method returns current time and date from the software RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetSWTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetSWTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -351,10 +351,10 @@ LI.EXP {
  - This method sets a new actual time and date of the internal hardware RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -364,10 +364,10 @@ LI.EXP {
  - This method returns current time and date from the hardware RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetInternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -388,10 +388,10 @@ LI.EXP {
  - This method sets a new actual time and date of the external hardware RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to struct which contains the time to be set. Can be NULL if time shall not be set.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to struct which contains the date information to be set. Can be NULL if date shall not be set.</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -401,10 +401,10 @@ LI.EXP {
  - This method returns current time and date from the external hardware RTC.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetExternalRTCTimeDate(TIMEREC *Time, DATEREC *Date)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
-<li><i>Date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
+<li><i>time: Pointer to TIMEREC</i> - Pointer to the structure to return the time. Can be NULL.</li>
+<li><i>date: Pointer to DATEREC</i> - Pointer to structure which returns the date information. Can be NULL</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />

@@ -405,8 +405,8 @@ bool %'ModuleName'%.%TriggerPending(uint8_t trigger)
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk)
-  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif

@@ -5,7 +5,7 @@
     %set TicksEnabled Value Enabled
   %endif
 %endif
-%if defined(TicksTimeMs)
+%if defined(TicksTimeMs) & defined(SamplePeriodMs)
   %if %TicksTimeMs <. %SamplePeriodMs
     %- TicksTimeMs must be at least the sample period
     %set TicksTimeMs Value %SamplePeriodMs

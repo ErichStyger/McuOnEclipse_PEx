@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         This method returns current date from the software RTC.
 %include Common\GeneralParameters.inc(27)
-%;**       * Date%ParDate %>27 - Pointer to DATEREC
+%;**       * date%Pardate %>27 - Pointer to DATEREC
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

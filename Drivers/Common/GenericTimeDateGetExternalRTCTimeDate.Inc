@@ -8,9 +8,9 @@
 %;**         This method returns current time and date from the external
 %;**         hardware RTC.
 %include Common\GeneralParameters.inc(27)
-%;**       * Time%ParTime %>27 - Pointer to the structure to return the
+%;**       * time%Partime %>27 - Pointer to the structure to return the
 %;** %>29 time. Can be NULL.
-%;**       * Date%ParDate %>27 - Pointer to structure which returns the
+%;**       * date%Pardate %>27 - Pointer to structure which returns the
 %;** %>29 date information. Can be NULL
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code

@@ -250,8 +250,8 @@
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(ConfigFilesFolderName)
-  %define  ConfigSrcDirFolder /%'ConfigFilesFolderName'/
+%if defined(ConfigFilesFolderName) & ConfigFilesFolderName<>""
+  %define  ConfigSrcDirFolder %'ConfigFilesFolderName'/
 %else
   %define  ConfigSrcDirFolder
 %endif
@@ -289,10 +289,15 @@
                                                                  %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_2_0) \
                                                                  %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0) \
                                                                  %>50)
+  /*!< Using one of the Freescale/NXP SDKs */
+
 #define %'ModuleName'%.CONFIG_NXP_SDK_2_0_USED                   %>50(   (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_2_0) \
                                                                  %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0) \
                                                                  %>50)
+  /*!< Using Freescale/NXP SDK V2.0 */
+
 #define %'ModuleName'%.CONFIG_PEX_SDK_USED                       %>50(%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT)
+  /*!< Using Processor Expert API */
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

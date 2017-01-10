@@ -8,7 +8,7 @@
 %;**         Transforms ticks into time information
 %include Common\GeneralParameters.inc(27)
 %;**         ticks%Particks %>27 - 
-%;**       * Time%ParTime %>27 - Pointer where to store the time
+%;**       * time%Partime %>27 - Pointer where to store the time
 %;** %>29 information
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code

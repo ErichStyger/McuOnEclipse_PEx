@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         Specifies the value to be reached by the PID controller.
 %include Common\GeneralParameters.inc(27)
-%;**         value%Parvalue %>27 - The setpoint value.
+%;**         value%Parvalue %>27 - The value to be reached.
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

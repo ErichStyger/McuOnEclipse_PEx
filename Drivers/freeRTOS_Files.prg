@@ -11,27 +11,27 @@
 %- FreeRTOS source files
 %-
 %if defined(RTOSSrcFolderName)
-  %define  RTOSSrcDirFolder /%'RTOSSrcFolderName'/
+  %define  RTOSSrcDirFolder %'RTOSSrcFolderName'/
 %else
   %define  RTOSSrcDirFolder 
 %endif
 %if defined(RTOSMemMangFolderName)
-  %define  RTOSMemMangDirFolder /%'RTOSMemMangFolderName'/
+  %define  RTOSMemMangDirFolder %'RTOSMemMangFolderName'/
 %else
   %define  RTOSMemMangDirFolder
 %endif
 %if defined(RTOSHeaderFolderName)
-  %define  RTOSHeaderDirFolder /%'RTOSHeaderFolderName'/
+  %define  RTOSHeaderDirFolder %'RTOSHeaderFolderName'/
 %else
   %define  RTOSHeaderDirFolder 
 %endif
 %if defined(RTOSPortFolderName)
-  %define  RTOSPortDirFolder /%'RTOSPortFolderName'/
+  %define  RTOSPortDirFolder %'RTOSPortFolderName'/
 %else
   %define  RTOSPortDirFolder 
 %endif
 %if defined(RTOSConfigFolderName)
-  %define  RTOSConfigDirFolder /%'RTOSConfigFolderName'/
+  %define  RTOSConfigDirFolder %'RTOSConfigFolderName'/
 %else
   %define  RTOSConfigDirFolder 
 %endif

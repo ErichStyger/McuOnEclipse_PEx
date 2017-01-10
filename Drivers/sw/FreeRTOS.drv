@@ -4632,8 +4632,8 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %CODE_END
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(KinetisSDK)
-  %define  ConfigSrcDirFolder /%%@KinetisSDK@ConfigFilesFolderName/
+%if defined(KinetisSDK) & %@KinetisSDK@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@KinetisSDK@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif

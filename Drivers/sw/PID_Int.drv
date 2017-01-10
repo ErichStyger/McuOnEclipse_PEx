@@ -144,7 +144,6 @@ int32_t %'ModuleName'%.%GetPoint(void);
 %-BW_METHOD_BEGIN PID
 %ifdef PID
 int32_t %'ModuleName'%.%PID(int32_t setPoint, int32_t currValue);
-%define! Parsetpoint
 %define! ParcurrValue
 %define! ParsetPoint
 %define! RetVal
@@ -387,8 +386,8 @@ int32_t %'ModuleName'%.%GetPoint(void)
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk)
-  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif
