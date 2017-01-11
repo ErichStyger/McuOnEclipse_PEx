@@ -351,7 +351,7 @@
 
 /* Software timer definitions. */
 %if %TimersEnabled='yes'
-#define configUSE_TIMERS                                         %>50 1 /* set to 1 to enable sofware timers */
+#define configUSE_TIMERS                                         %>50 1 /* set to 1 to enable software timers */
 #define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority /* e.g. (configMAX_PRIORITIES-1U) */
 #define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* e.g. 10U */
 #define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth /* e.g. (configMINIMAL_STACK_SIZE) */
