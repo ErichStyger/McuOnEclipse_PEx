@@ -103,7 +103,7 @@ void %'ModuleName'%.%HardFaultHandler(void);
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG HandlerC
 #ifdef __GNUC__ /* 'used' attribute needed for GNU LTO (Link Time Optimization) */
-void %'ModuleName'%.HandlerC(uint32_t *hardfault_args);
+void %'ModuleName'%.HandlerC(uint32_t *hardfault_args) __attribute__((used));
 #else
 void %'ModuleName'%.HandlerC(uint32_t *hardfault_args);
 #endif
