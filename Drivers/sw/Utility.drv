@@ -2788,7 +2788,12 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
   for(i=0;i<nofFracDigits;i++) {
     shift *= 10;
   }
-  fractional = ((int32_t)val)*shift; /* get fractional part */
+  /* get fractional part */
+#if 0 /* non-rounding version */
+  fractional = (int32_t)(val*shift);
+#else /* rounding version */
+  fractional = (int32_t)((val+5.0f/(shift*10))*shift);
+#endif
   if (isNeg && fractional>0 && nofFracDigits>0) {
     %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
     %'ModuleName'%.%strcatNum32s(dst, dstSize, (int32_t)integral);
