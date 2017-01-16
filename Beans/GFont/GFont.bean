@@ -4,7 +4,7 @@
     <Name>GFont</Name>
     <Description>Graphic Font</Description>
     <Author>Erich Styger</Author>
-    <Version>01.123</Version>
+    <Version>01.125</Version>
     <Icon>GFont</Icon>
     <TypesFiles>PE,GFont\GFont</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>no</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>6</BW_NeedUst>
+    <BW_NeedUst>10</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2011, all rights reserved.\n\nThis an open source software in the form of a Processor Expert Embedded Component.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -35,6 +35,20 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>GFont\SDK</TypeSpec>
+        <Hint>SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -179,13 +193,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The character for that a bitmap is required.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>PGFONT_CharInfo #M#_#C#(byte ch)</ANSIC>
+          <ANSIC>PGFONT_CharInfo #M#_#C#(uint8_t ch)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -208,12 +222,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Height of bounding box</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -264,12 +278,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -292,12 +306,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

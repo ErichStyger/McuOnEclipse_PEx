@@ -8,9 +8,9 @@
     <Generate>yes</Generate>
     <Unique>no</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef const byte *PConstByte; /* Pointer to a constant byte. */\n
+    <PreparedHint>typedef const uint8_t *PConstByte; /* Pointer to a constant byte. */\n
 </PreparedHint>
-    <Type>typedef const byte *PConstByte;</Type>
+    <Type>typedef const uint8_t *PConstByte;</Type>
     <HWTestType>16bit signed</HWTestType>
   </Type>
   <Type>
@@ -21,41 +21,41 @@
     <Unique>no</Unique>
     <GenerateHelp>yes</GenerateHelp>
     <PreparedHint>  typedef struct { /* A descriptor describing the font. */\n
-    signed char dwidth; /* position of next char. relative to the current */\n
-    byte width; /* width of character in pixels */\n
-    byte height; /* height of character in pixels */\n
-    signed char offsetX; /* horizontal offset to left edge of bounding box */\n
-    signed char offsetY; /* vertical offset to bottom edge of bounding box */\n
+    int8_t dwidth; /* position of next char. relative to the current */\n
+    uint8_t width; /* width of character in pixels */\n
+    uint8_t height; /* height of character in pixels */\n
+    int8_t offsetX; /* horizontal offset to left edge of bounding box */\n
+    int8_t offsetY; /* vertical offset to bottom edge of bounding box */\n
     PConstByte CharBMP; /* pointer to character bitmap defined above */\n
   } GFONT_CharInfo;\n
 </PreparedHint>
     <RecordItem>
       <ItemName>dwidth</ItemName>
-      <ItemType>8bit signed</ItemType>
+      <ItemType>int8_t</ItemType>
       <ItemHint>position of next char. relative to the current</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>width</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>width of character in pixels</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>height</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>height of character in pixels</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>offsetX</ItemName>
-      <ItemType>8bit signed</ItemType>
+      <ItemType>int8_t</ItemType>
       <ItemHint>horizontal offset to left edge of bounding box</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>offsetY</ItemName>
-      <ItemType>8bit signed</ItemType>
+      <ItemType>int8_t</ItemType>
       <ItemHint>vertical offset to bottom edge of bounding box</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
@@ -84,9 +84,9 @@
     <Generate>yes</Generate>
     <Unique>no</Unique>
     <GenerateHelp>yes</GenerateHelp>
-    <PreparedHint>typedef PGFONT_CharInfo (*CallbackGetFontChar)(byte ch); /* Callback used to get the font information for a single character. */\n
+    <PreparedHint>typedef PGFONT_CharInfo (*CallbackGetFontChar)(uint8_t ch); /* Callback used to get the font information for a single character. */\n
 </PreparedHint>
-    <Type>typedef PGFONT_CharInfo (*CallbackGetFontChar)(byte ch);</Type>
+    <Type>typedef PGFONT_CharInfo (*CallbackGetFontChar)(uint8_t ch);</Type>
     <HWTestType>16bit signed</HWTestType>
   </Type>
   <Type>
@@ -98,9 +98,9 @@
     <GenerateHelp>yes</GenerateHelp>
     <PreparedHint>  typedef struct { /* Structure with font relevant callbacks. */\n
     CallbackGetFontChar GetFontChar; /* Callback for retrieving a font character. */\n
-    byte boundingBoxHeight; /* Height of the bounding box. This includes the height of the underline box height. */\n
-    byte underlineBoxHeight; /* Height of the underline box height. */\n
-    byte lineSpaceBoxHeight; /* Height of the space between lines */\n
+    uint8_t boundingBoxHeight; /* Height of the bounding box. This includes the height of the underline box height. */\n
+    uint8_t underlineBoxHeight; /* Height of the underline box height. */\n
+    uint8_t lineSpaceBoxHeight; /* Height of the space between lines */\n
   } GFONT_Callbacks;\n
 </PreparedHint>
     <RecordItem>
@@ -111,19 +111,19 @@
     </RecordItem>
     <RecordItem>
       <ItemName>boundingBoxHeight</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>Height of the bounding box. This includes the height of the underline box height.</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>underlineBoxHeight</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>Height of the underline box height.</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
     <RecordItem>
       <ItemName>lineSpaceBoxHeight</ItemName>
-      <ItemType>8bit unsigned</ItemType>
+      <ItemType>uint8_t</ItemType>
       <ItemHint>Height of the space between lines</ItemHint>
       <ItemPointer>no</ItemPointer>
     </RecordItem>
@@ -138,5 +138,49 @@
     <PreparedHint>  typedef GFONT_Callbacks* PGFONT_Callbacks ; /* Pointer to struct for font callbacks. */\n
 </PreparedHint>
     <Type>GFONT_Callbacks</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint8_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef byte uint8_t ;\n
+</PreparedHint>
+    <Type>8bit unsigned</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint16_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef word uint16_t ;\n
+</PreparedHint>
+    <Type>16bit unsigned</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>uint32_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef dword uint32_t ;\n
+</PreparedHint>
+    <Type>32bit unsigned</Type>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>int8_t</Name>
+    <Hint/>
+    <Generate>no</Generate>
+    <Unique>no</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef signed char int8_t ;\n
+</PreparedHint>
+    <Type>8bit signed</Type>
   </Type>
 </UserTypes>
