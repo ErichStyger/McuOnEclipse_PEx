@@ -236,7 +236,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #include "fsl_port.h" /* include SDK header file for port muxing */
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
@@ -252,7 +252,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #define %'ModuleName'%.PORTName   %PORT_Name /* name of PORT, is pointer to PORT_Type */
   #define %'ModuleName'%.GPIOName   %PortName /* name of GPIO, is pointer to GPIO_Type */
   #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
@@ -325,7 +325,7 @@ static bool %'ModuleName'%.isOutput = false;
 %include Common\SDK_BitIOClrVal.Inc
 void %'ModuleName'%.%ClrVal(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_ClearPinOutput(%'PinSymbol');
@@ -340,7 +340,7 @@ void %'ModuleName'%.%ClrVal(void)
 %include Common\SDK_BitIOSetVal.Inc
 void %'ModuleName'%.%SetVal(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinOutput(%'PinSymbol');
@@ -355,7 +355,7 @@ void %'ModuleName'%.%SetVal(void)
 %include Common\SDK_BitIONegVal.Inc
 void %'ModuleName'%.%NegVal(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_TogglePinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_TogglePinOutput(%'PinSymbol');
@@ -371,7 +371,7 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\SDK_BitIOGetVal.Inc
 bool %'ModuleName'%.%GetVal(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   return GPIO_ReadPinInput(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber)!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
@@ -416,7 +416,7 @@ void %'ModuleName'%.%SetDir(bool Dir)
 %include Common\SDK_BitIOSetInput.Inc
 void %'ModuleName'%.%SetInput(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
@@ -432,7 +432,7 @@ void %'ModuleName'%.%SetInput(void)
 %include Common\SDK_BitIOSetOutput.Inc
 void %'ModuleName'%.%SetOutput(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
@@ -449,7 +449,7 @@ void %'ModuleName'%.%SetOutput(void)
 %include Common\SDK_BitIOPutVal.Inc
 void %'ModuleName'%.%PutVal(bool Val)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   if (Val) {
     GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
   } else {
@@ -468,7 +468,7 @@ void %'ModuleName'%.%PutVal(bool Val)
 %include Common\SDK_BitIOInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_2_0
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
   PORT_SetPinMux(%'ModuleName'%.PORTName, %'ModuleName'%.PinNumber, kPORT_MuxAsGpio); /* mux as GPIO */
   #endif
