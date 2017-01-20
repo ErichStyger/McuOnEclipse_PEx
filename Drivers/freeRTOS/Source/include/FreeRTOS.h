@@ -97,7 +97,7 @@ extern "C" {
 #include "FreeRTOSConfig.h"
 
 //  #include <stdint.h> /* READ COMMENT ABOVE. */
-#if configSYSTICK_USE_LOW_POWER_TIMER
+#if configSYSTICK_USE_LOW_POWER_TIMER && %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #include "SIM_PDD.h"  /*! \todo this is a PEx header */
 #endif
 
