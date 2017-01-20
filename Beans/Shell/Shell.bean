@@ -4,7 +4,7 @@
     <Name>Shell</Name>
     <Description>Command Line Shell</Description>
     <Author>Erich Styger</Author>
-    <Version>01.089</Version>
+    <Version>01.090</Version>
     <Icon>Shell</Icon>
     <TypesFiles>PE,Shell\Shell</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -285,98 +285,6 @@
       </TBoolGrupItem>
     </Property>
     <Property>
-      <TInhrLinkItem>
-        <Name>Utility</Name>
-        <Symbol>Utility</Symbol>
-        <TypeSpec>Utility_I</TypeSpec>
-        <Hint>Interface to utility</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>XFormat</Name>
-        <Symbol>XFormat</Symbol>
-        <TypeSpec>Shell\XFormat</TypeSpec>
-        <Hint>Interface to XFormat for printf() style support</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>Default Serial</Name>
-        <Symbol>DefaultSerialEnabled</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Enabled</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>Console Interface</Name>
-              <Symbol>Serial</Symbol>
-              <TypeSpec>Shell\Serial</TypeSpec>
-              <Hint>Interface to low level asynchroserial component</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Mutex</Name>
-        <Symbol>ConsoleSempahore</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled and an RTOS is present, a mutex is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>Critical Section</Name>
-        <Symbol>CriticalSection</Symbol>
-        <TypeSpec>CriticalSection_I</TypeSpec>
-        <Hint>Interface to critical section handling</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
       <TBoolGrupItem>
         <Name>History</Name>
         <Symbol>HistoryEnabled</Symbol>
@@ -455,11 +363,103 @@
       </TBoolGrupItem>
     </Property>
     <Property>
+      <TBoolItem>
+        <Name>Mutex</Name>
+        <Symbol>ConsoleSempahore</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled and an RTOS is present, a mutex is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
       <TInhrLinkItem>
         <Name>SDK</Name>
         <Symbol>sdk</Symbol>
         <TypeSpec>Shell\KinetisSDK</TypeSpec>
         <Hint>Interface to SDK used.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Default Serial</Name>
+        <Symbol>DefaultSerialEnabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Enabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Console Interface</Name>
+              <Symbol>Serial</Symbol>
+              <TypeSpec>Shell\Serial</TypeSpec>
+              <Hint>Interface to low level asynchroserial component</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Utility</Name>
+        <Symbol>Utility</Symbol>
+        <TypeSpec>Utility_I</TypeSpec>
+        <Hint>Interface to utility</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>XFormat</Name>
+        <Symbol>XFormat</Symbol>
+        <TypeSpec>Shell\XFormat</TypeSpec>
+        <Hint>Interface to XFormat for printf() style support</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Critical Section</Name>
+        <Symbol>CriticalSection</Symbol>
+        <TypeSpec>CriticalSection_I</TypeSpec>
+        <Hint>Interface to critical section handling</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>

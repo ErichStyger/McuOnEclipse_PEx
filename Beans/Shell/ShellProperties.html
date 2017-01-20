@@ -293,34 +293,6 @@ The following items are available only if the group is enabled (the value is "En
 </ul>
 </li>
 <li>
-<a name="Utility">
-<b>Utility</b></a> - Interface to utility
-</li>
-<li>
-<a name="XFormat">
-<b>XFormat</b></a> - Interface to XFormat for printf() style support
-</li>
-<li>
-<a name="DefaultSerialEnabled">
-<b>Default Serial</b></a> - If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="Serial">
-  <b>Console Interface</b></a> - Interface to low level asynchroserial component
-  </li>
-</ul>
-</li>
-<li>
-<a name="ConsoleSempahore">
-<b>Mutex</b></a> - If enabled and an RTOS is present, a mutex is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.
-</li>
-<li>
-<a name="CriticalSection">
-<b>Critical Section</b></a> - Interface to critical section handling
-</li>
-<li>
 <a name="HistoryEnabled">
 <b>History</b></a> - If enabled, the component will store up to four entered commands. Recall them by enter a non-alphanumeric key.<br />
 The following items are available only if the group is enabled (the value is "yes"):<br />
@@ -345,8 +317,36 @@ The following items are available only if the group is enabled (the value is "ye
 </ul>
 </li>
 <li>
+<a name="ConsoleSempahore">
+<b>Mutex</b></a> - If enabled and an RTOS is present, a mutex is used to grant mutual access to the console/serial/SCI hardware. Useful if multiple tasks needs to write to the shell console. Make sure you call the Init() routine of the componenent first in order to create the semaphore.
+</li>
+<li>
 <a name="sdk">
 <b>SDK</b></a> - Interface to SDK used.
+</li>
+<li>
+<a name="DefaultSerialEnabled">
+<b>Default Serial</b></a> - If enabled, the Shell implements a default internal serial interface. Otherwise the SetStdIO() function can be used to set one.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Serial">
+  <b>Console Interface</b></a> - Interface to low level asynchroserial component
+  </li>
+</ul>
+</li>
+<li>
+<a name="Utility">
+<b>Utility</b></a> - Interface to utility
+</li>
+<li>
+<a name="XFormat">
+<b>XFormat</b></a> - Interface to XFormat for printf() style support
+</li>
+<li>
+<a name="CriticalSection">
+<b>Critical Section</b></a> - Interface to critical section handling
 </li>
 
      </ul>
