@@ -579,7 +579,7 @@ void %'ModuleName'%.%vTraceStoreISREnd(int isTaskSwitchRequired)
 %include Common\PercepioTracevGetGDBDumpCommand.Inc
 void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t *fileName)
 {
-#if TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_STREAMING
+#if !TRC_USE_TRACEALYZER_RECORDER || (TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_STREAMING) /* trace disabled or streaming mode */
   (void)bufSize; /* not used */
   (void)fileName; /* not used */
   /* with RTT streaming, there is no trace buffer */
