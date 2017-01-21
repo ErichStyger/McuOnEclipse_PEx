@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.114</Version>
+    <Version>01.116</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -52,22 +52,6 @@
     </Property>
     <Property>
       <TEnumItem>
-        <Name>Startup trace enable method</Name>
-        <Symbol>trcStartupEnableMethod</Symbol>
-        <TypeSpec>typeTraceEnable</TypeSpec>
-        <Hint>Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-      </TEnumItem>
-    </Property>
-    <Property>
-      <TEnumItem>
         <Name>Recorder Mode</Name>
         <Symbol>TraceRecorderMode</Symbol>
         <TypeSpec>typeRecorderMode</TypeSpec>
@@ -76,6 +60,28 @@
         <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Startup trace enable method</Name>
+        <Symbol>trcStartupEnableMethod</Symbol>
+        <TypeSpec>typeTraceEnable</TypeSpec>
+        <Hint>Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.\n
+     Snapshot Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START: Initializes and starts tracing\n
+     Streaming Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START_AWAIT_HOST: initialies trace module and blocks (waits for data to be retrieved */</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>

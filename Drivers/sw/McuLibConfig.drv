@@ -257,6 +257,13 @@
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for McuLibConfig
+ *
+ * This header file is used to configure settings of the McuLibConfig module.
+ */
+
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
@@ -288,30 +295,44 @@
   #define %'ModuleName'%.CONFIG_CORTEX_M      (4)
     /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
   %if %CPUDB_prph_has_feature(CPU,FPU) = 'yes'
+  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+    /*!< 1: floating point unit present, 0: otherwise */
   #define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
-  %else
-  #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
-  %endif
     /*!< 1: using floating point unit, 0: otherwise */
+  %else
+  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+    /*!< 1: floating point unit present, 0: otherwise */
+  #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
+    /*!< 1: using floating point unit, 0: otherwise */
+  %endif
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
   #define %'ModuleName'%.CONFIG_CORTEX_M      (7)
     /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+    /*!< 1: floating point unit present, 0: otherwise */
   #define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
     /*!< 1: using floating point unit, 0: otherwise */
 %else %- default
   #define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
     /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+    /*!< 1: floating point unit present, 0: otherwise */
   #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
     /*!< 1: using floating point unit, 0: otherwise */
 %endif
 #endif
 
 /* Identifiers used to identify the SDK */
-#define %'ModuleName'%.CONFIG_SDK_GENERIC             0 /* using a generic API/SDK */
-#define %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT    1 /* using Processor Expert SDK */
-#define %'ModuleName'%.CONFIG_SDK_KINETIS_1_3         2 /* using NXP Kinetis SDK V1.3 */
-#define %'ModuleName'%.CONFIG_SDK_KINETIS_2_0         3 /* using NXP Kinetis SDK V2.0 */
-#define %'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0      4 /* same as Kinetis SDK v2.0 */
+#define %'ModuleName'%.CONFIG_SDK_GENERIC             0
+  /*!< using a generic API/SDK */
+#define %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT    1
+  /*!< using Processor Expert SDK */
+#define %'ModuleName'%.CONFIG_SDK_KINETIS_1_3         2
+  /*!< using NXP Kinetis SDK V1.3 */
+#define %'ModuleName'%.CONFIG_SDK_KINETIS_2_0         3
+  /*!< using NXP Kinetis SDK V2.0 */
+#define %'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0      4
+  /*!< same as Kinetis SDK v2.0 */
 
 /* specify the SDK and API used */
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_USED
@@ -328,6 +349,7 @@
 %else
   #error "unknown SDK!?!"
 %endif
+    /*!< identify the version of SDK/API used */
 #endif
 
 /* special macro to identify a set of SDKs used */

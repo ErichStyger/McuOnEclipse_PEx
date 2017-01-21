@@ -225,23 +225,23 @@ LI.EXP {
 <b>RTOS+Trace Version</b></a> - Identifies the RTOS+Trace version used from Percepio AB
 </li>
 <li>
-<a name="trcStartupEnableMethod">
-<b>Startup trace enable method</b></a> - Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.<br /><br />
-There are 3 options:<br />
-<ul>
-  <li><u>TRC_INIT</u>: Initializes the trace recorder, but does not start the tracing. In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime later.</li>
-  <li><u>TRC_START</u>: Starts the tracing directly. In snapshot mode this allows for starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT) has been called in the startup.</li>
-  <li><u>TRC_START_AWAIT_HOST</u>: TRC_START_AWAIT_HOST: For streaming mode only. Initializes the trace recorder if necessary and waits for a Start command from Tracealyzer (&quot;Start Recording&quot; button). This call is intentionally blocking! By calling vTraceEnable with this option from the startup code, you start tracing at this point and capture the early events.</li>
-</ul><br />
-
-</li>
-<li>
 <a name="TraceRecorderMode">
 <b>Recorder Mode</b></a> - Configrue TRC_CFG_RECORDER_MODE to TRC_RECORDER_MODE_SNAPSHOT or TRC_RECORDER_MODE_STREAMING<br /><br />
 There are 2 options:<br />
 <ul>
   <li><u>Snapshot</u>: Does snapshot trace into local RAM buffer for later uploade.</li>
   <li><u>Streaming</u>: Does continuous trace to the host PC.</li>
+</ul><br />
+
+</li>
+<li>
+<a name="trcStartupEnableMethod">
+<b>Startup trace enable method</b></a> - Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.<br />     Snapshot Mode:<br />        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);<br />        TRC_START: Initializes and starts tracing<br />     Streaming Mode:<br />        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);<br />        TRC_START_AWAIT_HOST: initialies trace module and blocks (waits for data to be retrieved */<br /><br />
+There are 3 options:<br />
+<ul>
+  <li><u>TRC_INIT</u>: Initializes the trace recorder, but does not start the tracing. In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime later.</li>
+  <li><u>TRC_START</u>: Starts the tracing directly. In snapshot mode this allows for starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT) has been called in the startup.</li>
+  <li><u>TRC_START_AWAIT_HOST</u>: TRC_START_AWAIT_HOST: For streaming mode only. Initializes the trace recorder if necessary and waits for a Start command from Tracealyzer (&quot;Start Recording&quot; button). This call is intentionally blocking! By calling vTraceEnable with this option from the startup code, you start tracing at this point and capture the early events.</li>
 </ul><br />
 
 </li>
