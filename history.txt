@@ -1,0 +1,281 @@
+Processor Expert *.peupd releases are published on SourceForge:
+https://sourceforge.net/projects/mcuoneclipse/files/PEx%20Components/
+
+[Pending next release]
+- KinetisTools: added cycle counting functions
+
+2017-01-28
+See http://mcuoneclipse.com/2017/01/27/mcuoneclipse-components-27-jan-2017-release
+- New component SharpMemDisplay
+- GenericTimeDate: fixed wrong cast for Unix time, fixed usage with on software RTC enabled
+- RNet: added check for sniffing enabled and no standard I/O used
+- RNet: Added standard I/O handlers for remote shell usage
+- nRF24L01+: properly handling zero byte data packets received
+- nRF24L01+: added FreeRTOS mutex
+- nRF24L01+: when switching channels the buffers get now flushed
+- Utility: fixed wrong include with SDK V1.3
+- McuLibConfig: enabled for other components like PID_Int and PID_Float
+- PID_Int: component can be used without hardware
+- various fixes in multiple components to deal with the Kinetis SDK
+- FSL_USB_CDC: fixed serial device number handling
+- FatFS: removed custom BYTE/WORD typedefs in types.h to avoid conflicting types
+- McuLibConfig: updated for using it with IAR compiler
+- fixed multiple warnings in developer mode
+- Utility: fixed fractional part handling in NumFloatToStr()
+- SystemView: Folder support for SEGGER SystemView
+- PercepioTrace: Added folder support
+- FatFS: fixed usage of stdint.h and stdbool.h
+- FreeRTOS with tickless idle mode and low power timer with SDK
+- Various updates to support classic CodeWarrior and classic toolchains
+
+2016-12-12:
+See http://mcuoneclipse.com/2016/12/12/mcuoneclipse-components-12-dec-2016-release
+- New component McuLibConfig
+- New contributed component ExceptionsHandler
+- GenericTimeDate with flexible RTC handling and initialization
+- GenericTimeDate with added Unix timestamp functions
+- Key component adds extra long key event and debouncing time
+- SeggerRTT, Bluetooth and USB CDC: added GetStdio() function
+- FreeRTOS: property for optimized task selection.
+
+2016-10-30:
+See http://mcuoneclipse.com/2017/07/31/mcuoneclipse-components-30-oct-2016-release
+- Shell: added support for printf() using XFormat
+- GenericTimeDate: Support for hardware RTC
+- KinetisTools: Fixed wrong bytes reported for Kinetis UID
+- RNet: Improved performance with random wait time in case of collisions
+- RNet: added support for multiple data pipes (experimental)
+- Fixed many warnings after increasing the GCC warning levels
+
+2016-09-21:
+- Utility: improved hex string scanning handling
+- Shell: default standard I/O structure in USB CDC, Segger RTT and Bluetooth 
+- GenericI2c: using standard int types for better compatibility with SDKs
+- RNet: removed ACK for standard I/O redirection for better throughput
+- Utility: added little endian data handling routines: Get- and SetValueXXLE() for 16, 24 and 32 bits.
+- FreeRTOS: fixed Shell prefix
+- FatFS: fixed gcc warnings
+- RNet: added optional timeout for NRF24L01+transceiver if interrupt or Rx packet is not received
+- USB CDC: added property to specify the USB subclass value
+- FreeRTOS: removed need for SVC for ARM Cortex-M0+ port
+- Segger SystemView: Updated to V2.40 and fixed missing information about kernel time used
+- FatFS: fixed handling of long file name extension
+
+2016-07-31:
+See http://mcuoneclipse.com/2017/07/31/mcuoneclipse-components-31-july-2016-release
+- FreeRTOS: generate OSA code only for SDK V1.3
+- FreeRTOS: better suppport for NXP TAD plugin (making variable volatile)
+- C++ wrappers for: SystemView, Utility, Shell, 
+- Fixed CriticalSection section handling with FreeRTOS interrupts
+- Several warning fixes for C89 compilers (S08, ColdFire, S12)
+- Updated FatFS to R0.12 with Patch 3
+- Changed FatFS folder structure to match Elm Chan distribution structure
+- Shell has echo turned on by default if enabled
+- Fixed and re-added MC13202 transceiver
+
+2016-06-25:
+See http://mcuoneclipse.com/2016/06/25/mcuoneclipse-components-25-june-2016-release
+- FreeRTOS support for Cortex-M7
+- SDK V1.3 support (SDK_BitIO, FSL_USB_Stack)
+- Fixed bug in Wait component (register handling for GCC and ARM)
+- FatFS supports FreeRTOS V9.0.0 with static memory allocation
+- FreeRTOS shell and task list with static memory allocation
+- Floating point conversion routines in Utility
+- FreeRTOS component shows NVIC mask bits
+
+2016-05-29:
+See http://mcuoneclipse.com/2016/05/29/mcuoneclipse-components-29-may-2016-release
+- FreeRTOS updated to V9.0.0 with static memory allocation
+- Shell with single character I/O function.
+- FatFS File System with extra shell commands for memory dump and file creation.
+- Segger SystemViewer library updated to V2.36a
+- Updated both Segger SystemView and Percepio Tracealizer libraries for FreeRTOS V9.0.0
+- Improvements in many components with using the NXP SDK.
+- MaxonF2140 component has now a property for low active PWM
+- HardFault component works now with the Kinetis SDK
+- Updated Utility API documentation.
+- Added 'create' command to FatFS shell to create an empty file.
+
+2016-05-08:
+See http://mcuoneclipse.com/2016/05/08/mcuoneclipse-components-8-may-2016-release
+- Percepio FreeRTOS+Trace is now a linked component and is supported by the Kinetis SDK
+- KinetisTools supports now 128bit UUIDs
+- Quadraturcounter can switch pins at runtime now
+- Fixed Timeout component for using proper counter type.
+- Added and extended and verified Kinetis SDK support: Tacho, Hardfault, FreeRTOS, CriticalSection, GenericBitIO, KinetisSDK, LED, RingBufer, SDK_BitIO, Shell, SimpleEvents, Utility and Wait
+- KinetisTools have now added support for Kinetis KE06
+- Fixed Shell component if used with CodeWarrior
+- Re-added Idle Decision hook in FreeRTOS, was lost with last FreeRTOS upgrade
+- Fix for settings comments used in Shell component
+- Fix for using LED with Kinetis SDK and PWM mode
+- Fixed interrupt masking for Segger RTT: now it uses automatically the value of FreeRTOS if present
+- Ringbuffers are now using a default of 64 entries instead of 1
+- GenericBitIO handles now Kinetis SDK properly
+- FreeRTOS component can now specify custom Critical Section handling
+- Segger SystemView updated to library V2.34
+- Segger SystemView: fix for Cortex-M0+, wrong prescaler information was used which results in wrong timeline
+
+2016-04-03:
+See http://mcuoneclipse.com/2016/04/03/mcuoneclipse-components-3-apr-2016-release
+- Utility: fixing issue with 'byte' and SDK usage.
+- USB CDC: timeout settings are enabled by default.
+- FreeRTOS: SysTick timer gets disabled before configured to prevent issues with bootloaders.
+- Segger RTT: updated to version v5.10u.
+- Segger SystemViewer: updated to v2.32a, added post mortem support and static buffer support and printf().
+- Segger SystemViewer: fixed a bug on Cortex M4 with critical section handling.
+- Multiple components: Added support to be used with Kinetis SDK v2.0.
+- USB CDC: fixed a bug for Tx buffers larger than 256 bytes used.
+- Shell: new command line option to turn on/off echo.
+- Kinetis Tools: support for Kinetis KE0x devices.
+
+2016-02-07
+See http://mcuoneclipse.com/2016/02/07/mcuoneclipse-components-7-feb-2016-release
+- Segger SystemViewer: Upgraded to V2.30, added stack high-water mark
+- Segger RTT: fixed BASEPRI issue on Cortex M4 for critical sections
+- Utility: Fixed issue with Utility module and Kinetis SDK (usage of 'byte')
+- USB CDC: property to specify USB device current usage
+- USB CDC: New status getter functions: ApplicationStarted(), TransactionsStarted()
+
+2016-01-10
+See http://mcuoneclipse.com/2016/01/10/mcuoneclipse-components-10-jan-2016-release
+- FSL_USB_Stack: added MSD Host support for MCF52259
+- FreeRTOS: updated to use interrupt safe method to get tick counter for Segger SystemView
+- Segger RTT and SystemView: updated to version V2.26, added print and console functions
+- FSL_USB_Stack: added serial number property, vendor and device strings use flexible strings now
+- RingBuffer: added Compare() and Putn() functions
+- FreeRTOS: fixed hardcoded Shell and Utility names
+- New NEOMatrix component for Adafruit Neopixel matrix
+- Segger SystemView: added functions to trace ISR
+- Linted most components with PC-lint
+- Kent chLCD: extended to work with GDisplay component
+- FSL_USB_Stack: added support for K24FN120, updated USB host stack for IAR compiler, added 100 MHz K20 support
+- FreeRTOS: updated dependency with Shell and trace facility
+- minINI: fixed wrong macro for ini_putl, added ini_browse() function
+
+2015-11-22
+See http://mcuoneclipse.com/2015/11/22/mcuoneclipse-components-22-nov-2015-release
+- Updated Segger RTT component
+- New Segger SystemView component
+- FreeRTOS 'tasklist' shell command
+- FreeRTOS with support for Segger SystemView
+
+2015-11-08
+See http://mcuoneclipse.com/2015/11/08/mcuoneclipse-components-08-nov-2015-release
+- New SeggerRTT component
+- SeggerRTT support in Shell and PercepioTrace
+- USB CDC component has added properties to configure the end point size
+- USB CDC Component has added delay routine
+- Components (e.g. Shell) reference the KinetisSDK component
+- added FreeRTOS TimeSlicing configuration item
+- RingBuffer with Delete() method
+- Updated FreeRTOS to V8.2.3 and added xTaskNotifyClear()
+- Fixed usage of Low Power Timer vector number (was broken with recent Processor Expert Update)
+- Implemented workaround for Processor Expert bug dealing with the FSL_USB_Stack component (wrong usage of USB_Init component)
+
+2015-10-17:
+See http://mcuoneclipse.com/2015/10/17/mcuoneclipse-components-17-oct-2015-release/
+- GenericSWI2C: Added SendAck() and RecvBlockCustom().
+- GenericI2C: Added ReadBlockGeneric().
+- FreeRTOS: ability to specify the number of thread local storage pointers in the properties
+- FreeRTOS: added GDB backtrace handlers
+- FSL_USB_CDC_Device: added STDIO functions
+- minIni: Added additional defines for the interfaces in the header file
+- FreeRTOS: runtime statistics are using spaces instead of tabs to have aligned task lists in the output
+
+2015-09-15:
+- Upgraded FreeRTOS to version 8.2.2 which includes support for thread local storage
+- Added Percepio Trace (Beta5) with Segger RTT support
+- Improved FatFS performance: SPI now is only disabled before changing speed for non-LDD component.
+- Trigger component is now compatible with Kinetis SDK
+- GenericTimeDate component has events for getting date/time
+- Preventing FreeRTOS vTaskSwitchContext() to be removed by high GNU gcc optimizations.
+- Fixed several possible issues found by cppcheck
+
+2015-07-05:
+See http://mcuoneclipse.com/2015/07/05/mcuoneclipse-components-05-july-2015-release/
+- 24AA_EEPROM: added support for 24AA16 devices.
+- Utility: fixed issue with printing negative fixed point values.
+- FreeRTOS: updated to work with Kinetis SDK v1.2, added Cortex-M7 setting.
+- FreeRTOS: updated component and port to support GNU LTO (Link Time Optimization).
+- HardFault: updated component so it works with GNU LTO (Link Time Optimization) optimization setting.
+- SD_Card: component is enabling now only one SPI interface at creation time.
+- RingBuffer: added Init() and Deinit() functions, added Peek() function to inspect buffer item without removing it.
+- FreeRTOS: fixed handling of configMAX_SYSCALL_INTERRUPT_PRIORITY for Keil compiler.
+- Timeout: changed condition order to avoid out-of-bound access.
+- Percepio FreeRTOS+Trace: updated component so it works with the Kinetis SDK v1.2
+- FSL_USB_Stack: USB CDC and HID components have settings for bus power and/or self power settings.
+- FreeRTOS: fixed heap_4.c implementation (the heap size was not written correctly: configfTOTAL_HEAP_SIZE instead of configTOTAL_HEAP_SIZE)
+- GenericSWSPI: fixed error (Generator: FAILURE: at line 276: Error in including "Drivers\Common\SynchroMasterSetIdleClockPolarity.Inc")
+- Utility: new function strcatPad() to add a string with padding pattern.
+- FSL_USB_Stack: extended Deinit() functions to properly deinitialize status variables.
+- KinetisTools: added command line support for reset
+
+
+2015-03-22:
+See http://mcuoneclipse.com/2015/03/22/mcuoneclipse-components-22-mar-2015-release/
+- Shell: Improved history handling
+- MinIni: Option to select local/stack or global memory for buffers
+- FreeRTOS: Ability to use the tick counter instead of dedicated timer for performance measurement.
+- FSL_USB_Stack: Added Deinit() functions to USB components for proper USB shutdown.
+- FatFsMemSDHC: custom behaviour of CardPresent() and isWriteProtected() functions.
+- Wait: Fixed Waitus() and Waitns() for Kinetis if using different core and bus clock speed.
+- FreeRTOS: fixed port macros for legacy Freescale ARM compiler
+- Shell: fixed hardcoded utility module reference.
+- FatFSMemSDHC: fixed wrong condition order with disabled CD and WP pins
+
+2015-02-03:
+See http://mcuoneclipse.com/2015/02/03/mcuoneclipse-components-03-feb-2015-release/
+- VS1053: New component for VS1053 encoder chip (e.g. present on Adafruit Music Maker Shield) with MIDI API.
+- FSL_USB_Host_MSD: Refactoring of critical section management, added configurable timeout settings.
+- Shell: added contributed shell history support.
+- Shell: fixed silent mode and multi-command support in combination with shell history support
+- RNet: automatic registration of queues and semaphores for trace
+- Percepio Trace: updated to V2.7.0 trace library
+- FreeRTOS: The RTOS has been updated to version 8.2.0
+
+2014-12-27:
+See http://mcuoneclipse.com/2014/12/30/mcuoneclipse-components-27-dec-2014-release/
+- nRF24L01: added property to specify SPI speed/baud settings to be used for shared SPI bus usage.
+- SD_Card: ability to select AsynchroSerial SPI component in addition to the SPI_LDD for Kinetis.
+- FSL_USB_Stack: fixed script for MSD Host and Kinetis K20D72.
+- RNet: fixed missing return statement in PrintHelp() of RMSG.c.
+- Extended FatFS and nRF24L01+ drivers to co-exist on the same SPI bus.
+- Fixed USB host support for Kinetis K20D72.
+- Added FreeRTOS Software Timer API.
+- Updated and incorporated bug fixes in XFormat component.
+- Added FatFS 0.10c patches (removing clusters, _FS_NORTHC handling)
+- Added support for FRDM-K22F (MK22FN512) in FSL_USB_Stack.
+
+2014-12-07:
+See http://mcuoneclipse.com/2014/12/08/mcuoneclipse-components-07-dec-2014-release/
+- RingBuffer: Fixed RingBuffer component with buffer size of 256 (wrong handling/overflow of index variable fixed).
+- PercepioTrace: properties added for INCLUDE_READY_EVENTS, USE_16BIT_OBJECT_HANDLES, HEAP_SIZE_BELOW_16M and
+  TRACE_SCHEDULING_ONLY. Fixed handling of USE_IMPLICIT_IFE_RULES. Added ability to disable some of the events to 
+  extend tracing time.
+- FreeRTOS: added setting to set stackframe to zero for GDB.
+- FSL_USB_Stack: fixed missing interrupt handling (enable/disable) for KL24Z48M.
+- FAT_FileSystem: registering the queue/semaphore name so it shows up in RTOS trace.
+- FSL_USB_Stack: Added K22F120 for USB MSD host devices.
+- RNet: fixed header file include in RNWK.c as case sensitive on Linux. Fixed source file folder naming for Linux.
+- FSL_USB_Stack: added HID Keyboard and HID Mouse support for K22(FX).
+- FSL_USB_Stack: added USB support for FRDM-K22F board (K22FN1M) which needs the MPU disabled (like K64F on FRDM-K64F).
+- Prepared to be used for Kinetis SDK (e.g. using uint8_t instead of byte): RingBuffer, USB_CDC_Device, FSL_USB_Stack.
+- RNet: added shell support to RMSG module, improved error handling for nRF24L01+. Added module address to properties.
+- Utility: new method ScanDoubleQuotedString() to scan a string in double quotes.
+- LCDHTA: New functions CursorShiftLeft() and CursorShiftRight(). WriteLCDCommand() is now a public method. (Contribution from Frederico Luiz Fernandes Marcelino)
+- New component FreeRTOS_Tasks to create FreeRTOS tasks.
+
+
+2014-11-16:
+- backspace/del support for Shell component
+- updated FatFs component from r0.8a to r0.10c
+- added configUSE_TRACE_HOOKS in FreeRTOSConfig.h to indicate usage of Percepio Trace
+- Added KL24Z to the list of supported FSL_USB_Stack devices
+
+2014-11-02:
+- USB support for K64F
+- Added memory barrier to EnterCritical in CritialSection component
+
+2014-10-17:
+see http://mcuoneclipse.com/2014/10/21/mcuoneclipse-releases-on-sourceforge/
+- initial release of components on SourceForge

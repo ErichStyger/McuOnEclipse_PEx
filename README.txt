@@ -7,8 +7,6 @@ To follow on this project (and beyond): follow my blog on http://mcuoneclipse.co
 Erich
 
 
-List of Components:
-===================
 
 Component 			Description
 ------------------------------------------------------------------
@@ -129,3 +127,5 @@ UTI				Driver for Smartec UTI Universal Transducer IC.
 Utility 			Utility functions.
 Wait 				Busy Waiting Routines.
 XFormat				String formatting utility functions.
+
+
