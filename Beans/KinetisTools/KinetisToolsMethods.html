@@ -321,6 +321,53 @@ LI.EXP {
 <li><i>setval:uint32_t</i> - new LR value</li>
 </ul><br />
 </li>
+<li><a name="InitCycleCounter">
+<b>InitCycleCounter</b></a>
+ - Initializes the cycle counter, available if the core has a DWT (Data Watchpoint and Trace) unit, usually present on M3/M4/M7
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void InitCycleCounter(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="ResetCycleCounter">
+<b>ResetCycleCounter</b></a>
+ - Reset the cycle counter (set it to zero)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void ResetCycleCounter(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="EnableCycleCounter">
+<b>EnableCycleCounter</b></a>
+ - Enables counting the cycles.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void EnableCycleCounter(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="DisableCycleCounter">
+<b>DisableCycleCounter</b></a>
+ - Disables the cycle counter.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void DisableCycleCounter(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="GetCycleCounter">
+<b>GetCycleCounter</b></a>
+ - Return the current cycle counter value
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint32_t GetCycleCounter(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint32_t</i> - cycle counter
+</li>
+</ul><br />
+</li>
 
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

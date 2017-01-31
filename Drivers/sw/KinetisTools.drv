@@ -99,6 +99,21 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+  /* DWT (Data Watchpoint and Trace) registers, only exists on ARM Cortex with a DWT unit */
+  #define %'ModuleName'_DWT_CONTROL             (*((volatile uint32_t*)0xE0001000))
+    /*!< DWT Control register */
+  #define %'ModuleName'_DWT_CYCCNTENA_BIT       (1UL<<0)
+    /*!< CYCCNTENA bit in DWT_CONTROL register */
+  #define %'ModuleName'_DWT_CYCCNT              (*((volatile uint32_t*)0xE0001004))
+    /*!< DWT Cycle Counter register */
+  #define %'ModuleName'_DEMCR                   (*((volatile uint32_t*)0xE000EDFC))
+    /*!< DEMCR: Debug Exception and Monitor Control Register */
+  #define %'ModuleName'_TRCENA_BIT              (1UL<<24)
+    /*!< Trace enable bit in DEMCR register */
+#endif
+
 typedef struct {
   uint8_t id[16]; /* 128 bit ID */
 } %'ModuleName'%.UID;
@@ -220,6 +235,67 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 
 %endif %- SetLR
 %-BW_METHOD_END SetLR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN InitCycleCounter
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+%ifdef InitCycleCounter
+#define %'ModuleName'%.%InitCycleCounter() \
+  %'ModuleName'_DEMCR |= %'ModuleName'_TRCENA_BIT
+  /*!< TRCENA: Enable trace and debug block DEMCR (Debug Exception and Monitor Control Register */
+%include Common\KinetisToolsInitCycleCounter.Inc
+%endif %- InitCycleCounter
+#endif
+
+%-BW_METHOD_END InitCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ResetCycleCounter
+%ifdef ResetCycleCounter
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#define %'ModuleName'%.%ResetCycleCounter() \
+  %'ModuleName'_DWT_CYCCNT = 0
+  /*!< Reset cycle counter */
+%include Common\KinetisToolsResetCycleCounter.Inc
+%endif %- ResetCycleCounter
+#endif
+
+%-BW_METHOD_END ResetCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN EnableCycleCounter
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+%ifdef EnableCycleCounter
+#define %'ModuleName'%.%EnableCycleCounter() \
+  %'ModuleName'_DWT_CONTROL |= %'ModuleName'_DWT_CYCCNTENA_BIT
+  /*!< Enable cycle counter */
+%include Common\KinetisToolsEnableCycleCounter.Inc
+%endif %- EnableCycleCounter
+#endif
+
+%-BW_METHOD_END EnableCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisableCycleCounter
+%ifdef DisableCycleCounter
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#define %'ModuleName'%.%DisableCycleCounter() \
+  %'ModuleName'_DWT_CONTROL &= ~%'ModuleName'_DWT_CYCCNTENA_BIT
+  /*!< Disable cycle counter */
+%include Common\KinetisToolsDisableCycleCounter.Inc
+%endif %- DisableCycleCounter
+#endif
+
+%-BW_METHOD_END DisableCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetCycleCounter
+%ifdef GetCycleCounter
+#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#define %'ModuleName'%.%GetCycleCounter() \
+  %'ModuleName'_DWT_CYCCNT
+  /*!< Read cycle counter register */
+%define! RetVal
+%include Common\KinetisToolsGetCycleCounter.Inc
+%endif %- GetCycleCounter
+#endif
+
+%-BW_METHOD_END GetCycleCounter
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -278,6 +354,7 @@ static const unsigned char *KinetisM4FamilyStrings[] =
   (const unsigned char *)"Reserved"                    /* 111 */
 };
 #endif
+
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0
 static const unsigned char *KinetisM0FamilyStrings[] =
 { /* FAMID (3 bits) are used as index */
@@ -651,6 +728,72 @@ void %'ModuleName'%.%SetLR(uint32_t setval)
 
 %endif %- SetLR
 %-BW_METHOD_END SetLR
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN InitCycleCounter
+%ifdef InitCycleCounter
+%include Common\KinetisToolsInitCycleCounter.Inc
+/**
+void %'ModuleName'%.%InitCycleCounter(void)
+{
+  ** Implemented as macro in header file
+}
+*/
+
+%endif %- InitCycleCounter
+%-BW_METHOD_END InitCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ResetCycleCounter
+%ifdef ResetCycleCounter
+%include Common\KinetisToolsResetCycleCounter.Inc
+/**
+void %'ModuleName'%.%ResetCycleCounter(void)
+{
+  ** Implemented as macro in header file
+}
+*/
+
+%endif %- ResetCycleCounter
+%-BW_METHOD_END ResetCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN EnableCycleCounter
+%ifdef EnableCycleCounter
+%include Common\KinetisToolsEnableCycleCounter.Inc
+/**
+void %'ModuleName'%.%EnableCycleCounter(void)
+{
+  ** Implemented as macro in header file
+}
+*/
+
+%endif %- EnableCycleCounter
+%-BW_METHOD_END EnableCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisableCycleCounter
+%ifdef DisableCycleCounter
+%include Common\KinetisToolsDisableCycleCounter.Inc
+/**
+void %'ModuleName'%.%DisableCycleCounter(void)
+{
+  ** Implemented as macro in header file
+}
+*/
+
+%endif %- DisableCycleCounter
+%-BW_METHOD_END DisableCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetCycleCounter
+%ifdef GetCycleCounter
+%define! RetVal
+%include Common\KinetisToolsGetCycleCounter.Inc
+/**
+uint32_t %'ModuleName'%.%GetCycleCounter(void)
+{
+  ** Implemented as macro in header file
+}
+*/
+
+%endif %- GetCycleCounter
+%-BW_METHOD_END GetCycleCounter
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
