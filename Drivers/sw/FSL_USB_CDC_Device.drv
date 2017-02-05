@@ -68,34 +68,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-%if (%CPUDB_prph_has_feature(CPU,SDK_SUPPORT) = 'yes') %- TRUE/FALSE not defined for SDK projects
-#include "PE_KSDK_Types.h" /* if this file is missing: have you added the Kinetis SDK component? */
-%endif
 #include <stddef.h> /* for size_t */
+#include "%@Shell@'ModuleName'.h" /* shell interface */
+#include "%@RxBuffer@'ModuleName'.h"
+#include "%@TxBuffer@'ModuleName'.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -422,6 +410,14 @@ void %OnError(uint8_t error);
 #endif
 #include <stdlib.h>
 #include <string.h>
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+%if defined(Timeout)
+  #include "%@Timeout@'ModuleName'.h"
+%else
+  #include "Timeout.h"
+%endif
+#endif
+#include "%@Wait@'ModuleName'.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -729,9 +725,13 @@ void %'ModuleName'%.RunUsbEngine(void)
 %include Common\GeneralInternal.inc (SendDataBlock)
 uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
 {
-%if defined(Timeout) & %AppTaskTimeout >. "0"
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
+%if defined(Timeout)
   %@Timeout@'ModuleName'%.CounterHandle timeout;
+%else
+  TimeoutCounterHandle timeout;
 %endif
+#endif
   uint8_t res = ERR_OK;
 
   transactionOngoing = TRUE;
@@ -743,14 +743,26 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
     return ERR_FAULT;
   }
   /* wait for transaction finish */
-%if defined(Timeout) & %AppTaskTimeout >. "0"
-  timeout = %@Timeout@'ModuleName'%.GetCounter(%AppTaskTimeout/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
+%if defined(Timeout)
+  timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
+%else
+  timeout = Timeout_GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/Timout_TICK_PERIOD_MS); /* set up timeout counter */
 %endif
+#endif
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
+%if defined(Timeout)
+  timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
+%else
+  timeout = Timout_GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/Timout_TICK_PERIOD_MS); /* set up timeout counter */
+%endif
+#endif
   while(transactionOngoing) { /* wait until transaction is finished */
     /*lint -save -e522 function lacks side-effects */
     %'ModuleName'%.RunUsbEngine();
     /*lint -restore */
-%if defined(Timeout) & %AppTaskTimeout >. "0"
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
+%if defined(Timeout)
     if (%@Timeout@'ModuleName'%.CounterExpired(timeout)) {
 %if defined(OnError)
       %OnError(%'ModuleName'%.USB_TIMEOUT_SEND);
@@ -758,14 +770,27 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
       res = ERR_FAILED;
       break;
     }
+%else
+    if (Timout_CounterExpired(timeout)) {
+%if defined(OnError)
+      %OnError(%'ModuleName'%.USB_TIMEOUT_SEND);
 %endif
+      res = ERR_FAILED;
+      break;
+    }
+%endif
+#endif
 %if defined(SendDataBlockWaitms) & SendDataBlockWaitms >. '0'
     %@Wait@'ModuleName'%.WaitOSms(%SendDataBlockWaitms); /* wait some time */
 %endif
   }
-%if defined(Timeout) & %AppTaskTimeout >. "0"
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
+%if defined(Timeout)
   %@Timeout@'ModuleName'%.LeaveCounter(timeout); /* return timeout counter */
+%else
+  Timout_LeaveCounter(timeout); /* return timeout counter */
 %endif
+#endif
   return res;
 }
 
@@ -1032,6 +1057,40 @@ void %OnError(uint8_t error)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+
+#ifndef %'ModuleName'%.CONFIG_USE_TIMEOUT
+%if defined(Timeout)
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT           1
+    /*!< 1: Use timeout; 0: do not use timeout */
+%else
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT           0
+    /*!< 1: Use timeout; 0: do not use timeout */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS
+%if defined(AppTaskTimeout)
+  #define %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS   %AppTaskTimeout
+    /*!< App Task timeout in milliseconds, 0 to disable timout */
+%else
+  #define %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS   0
+    /*!< App Task timeout in milliseconds, 0 to disable timout */
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
