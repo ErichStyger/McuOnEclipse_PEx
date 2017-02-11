@@ -3,12 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (CreateScreen)
+%include Common\GeneralMethod.inc (MessageHandler)
 %;**     Description :
-%;**         Initializes a screen with default values
+%;**         Message Handler for Widget
 %include Common\GeneralParameters.inc(27)
-%;**       * screen%Parscreen %>27 - Pointer to screen structure
-%;**         bgColor%ParbgColor %>27 - background color
+%;**       * element%Parelement %>27 - Pointer to element
+%;**         kind%Parkind %>27 - kind of event
+%;**         pData%ParpData %>27 - optional data pointer, NULL otherwise
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

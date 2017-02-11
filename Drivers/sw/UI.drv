@@ -49,8 +49,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_ScreenMsgHandler Message handler for the screen
-%define! Description_PaintScreen Draws all elements to the screen
 %define! Description_SearchInsideElement search touched element in a sub tree
 %define! Description_FctInsideElement check if coordinates are inside element
 %define! Description_AddSubElement Adds a sub element 
@@ -71,36 +69,22 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* Include inherited components */
+#include "%@Display@ModuleName.h" /* display driver */
+#include "%@FontDisplay@ModuleName.h" /* font driver */
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-
-#ifndef NULL
-  #define NULL ((void*)0)
-#endif
-
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
 typedef enum {                                                   %>40/* this lists all the different element types supported */
   %'ModuleName'_WIDGET_SPACE,                                    %>40/* generic rectangle space (transparent) */
   %'ModuleName'_WIDGET_SCREEN,                                   %>40/* screen element, top element */
@@ -112,7 +96,8 @@ typedef enum {                                                   %>40/* this lis
   %'ModuleName'_WIDGET_SCROLLMENU,                               %>40/* menu item which scrolls text on click. Similar like a drop down box. */
   %'ModuleName'_WIDGET_BARGRAPH,                                 %>40/* widget a bar graph*/
   %'ModuleName'_WIDGET_ICON,                                     %>40/* widget for an icon/symbol */
-  %'ModuleName'_WIDGET_SLIDER                                    %>40/* widget for a slider */
+  %'ModuleName'_WIDGET_SLIDER,                                   %>40/* widget for a slider */
+  %'ModuleName'_WIDGET_LAST_PREDEFINED                           %>40/* last predefined widget*/
 } %'ModuleName'_ElementType;
 
 typedef enum %'ModuleName'_MsgKind {                             %>40/* this lists all the different message types supported */
@@ -141,18 +126,13 @@ typedef enum %'ModuleName'_MsgKind {                             %>40/* this lis
 
 /* callback/function pointer type used internally and for user events */
 struct %'ModuleName'_Element; /* forward declaration, needed for type below */
+
 typedef void (*%'ModuleName'_MsgHandler) (                       %>40/* event called for an element */
-  %'ModuleName'_MsgKind eventKind,                               %>40/* kind of event */
   struct %'ModuleName'_Element *element,                         %>40/* element for the event */
+  %'ModuleName'_MsgKind eventKind,                               %>40/* kind of event */
   void *pData                                                    %>40/* optional data pointer */
 );
 
-%if SelectionEnabled='yes'
-#define %'ModuleName'_CAN_SELECT_ELEMENTS  1                     %>40/* We can select elements (this will need some more resources) */
-%else
-#define %'ModuleName'_CAN_SELECT_ELEMENTS  0                     %>40/* We cannot select elements (using additional resources) */
-
-%endif %- SelectElement
 #define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
 #define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
 #define %'ModuleName'%.COLOR_RED                %@Display@'ModuleName'%.COLOR_RED             /* red color */
@@ -198,12 +178,11 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 #define %'ModuleName'_FLAGS_NEEDS_REPAINT   (1<<0)               %>40/* element needs to be repainted */
 #define %'ModuleName'_FLAGS_IS_MODAL        (1<<1)               %>40/* element is modal */
 #define %'ModuleName'_FLAGS_ALIGN_RIGHT     (1<<2)               %>40/* element is right aligned */
-%if SelectionEnabled='yes'
-/* selection flags */
-#define %'ModuleName'_FLAGS_CAN_SELECT      (1<<3)               %>40/* flag indicating that the element can be selected */
-#define %'ModuleName'_FLAGS_IS_SELECTED     (1<<4)               %>40/* flag indicating that the element is selected */
-#define %'ModuleName'_FLAGS_CLICKED         (1<<5)               %>40/* flag indicating that the element is clicked */
-%endif
+#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+  /* selection flags */
+  #define %'ModuleName'_FLAGS_CAN_SELECT      (1<<3)             %>40/* flag indicating that the element can be selected */
+  #define %'ModuleName'_FLAGS_IS_SELECTED     (1<<4)             %>40/* flag indicating that the element is selected */
+#endif
 
 /* window flags */
 #define %'ModuleName'_FLAGS_WINDOW_HAS_BORDER    (1<<6)          %>40/* window has a border */
@@ -216,7 +195,7 @@ typedef uint16_t %'ModuleName'_ElementFlagsType;                 %>40/* type to 
 typedef uint8_t %'ModuleName'_ElementFlagsType;                  %>40/* type to hold all element flags */
 %endif
 
-/* --- Screen content: window, ... */
+/* --- common element properties, at the beginning of all widgets */
 typedef struct %'ModuleName'_ElementProperties {                 %>40/* Common properties for elements */
   %'ModuleName'_ElementType type;                                %>40/* type of the element */
   %'ModuleName'_ElementFlagsType flags;                          %>40/* element flags */
@@ -224,7 +203,6 @@ typedef struct %'ModuleName'_ElementProperties {                 %>40/* Common p
   %'ModuleName'_PixelDim y;                                      %>40/* y coordinate */
   %'ModuleName'_PixelDim width;                                  %>40/* element width in pixels */
   %'ModuleName'_PixelDim height;                                 %>40/* element height in pixels */
-  %'ModuleName'_PixelColor color;                                %>40/* color of element */
 } %'ModuleName'_ElementProperties;
 
 typedef void *%'ModuleName'_Pvoid;                               %>40/* pointer to void */
@@ -245,6 +223,7 @@ typedef struct %'ModuleName'_Element {                           %>40/* This des
   struct %'ModuleName'_Element *next;                            %>40/* pointer to the next element in list */
 } %'ModuleName'_Element;
 
+#if 1
 /* --- Screen --- */
 typedef struct  %'ModuleName'_Screen{                            %>40/* This is the abstraction of a generic window, with all the needed information. */
  %'ModuleName'_Element element;                                  %>40/* the base element */
@@ -253,6 +232,7 @@ typedef struct  %'ModuleName'_Screen{                            %>40/* This is 
  %'ModuleName'_Element *selectedE;                               %>40/* pointer to the currently selected element */
  %endif
 } %'ModuleName'_Screen;
+#endif
 
 typedef %'ModuleName'_Coordinate *%'ModuleName'_PCoordinate;     %>40/* Pointer to coordinate */
 typedef struct %'ModuleName'_Element* %'ModuleName'%.PElement;   %>40/* Pointer to element */
@@ -297,12 +277,12 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EnableElementSelection
 %ifdef EnableElementSelection
-#define %'ModuleName'%.%EnableElementSelection(elem) \
-%if SelectionEnabled='yes'
-  ((%'ModuleName'_Element*)elem)->prop.flags |= %'ModuleName'_FLAGS_CAN_SELECT%>40/* indicate that we can select the element */
-%else
-  /* do nothing, as selection is disabled in the settings */
-%endif
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
+  #define %'ModuleName'%.%EnableElementSelection(elem) \
+    ((%'ModuleName'_Element*)elem)->prop.flags |= %'ModuleName'_FLAGS_CAN_SELECT%>40/* indicate that we can select the element */
+#else
+  #define %'ModuleName'%.%EnableElementSelection(elem)  /* do nothing, as selection is disabled in the settings */
+#endif
 
 %define! Parelem
 %include Common\UIEnableElementSelection.Inc
@@ -359,25 +339,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-BW_METHOD_END GetElementPosY
 %-************************************************************************************************************
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CreateScreen
-%ifdef CreateScreen
-void %'ModuleName'%.%CreateScreen(%'ModuleName'_Screen *screen, %'ModuleName'_PixelColor bgColor);
-%define! Parscreen
-%define! ParbgColor
-%include Common\UICreateScreen.Inc
-
-%endif %- CreateScreen
-%-BW_METHOD_END CreateScreen
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN UpdateScreen
-%ifdef UpdateScreen
-void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen, bool updateAll);
-%define! Parscreen
-%define! ParupdateAll
-%include Common\UIUpdateScreen.Inc
-
-%endif %- UpdateScreen
-%-BW_METHOD_END UpdateScreen
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawFilledBox
 %ifdef DrawFilledBox
@@ -434,40 +396,20 @@ void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'
 %endif %- DeselectElement
 %-BW_METHOD_END DeselectElement
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SetElementColor
-%ifdef SetElementColor
-void %'ModuleName'%.%SetElementColor(%'ModuleName'_Element *element, %'ModuleName'_PixelColor color);
-%define! Parcolor
-%define! Parelement
-%include Common\UISetElementColor.Inc
-
-%endif %- SetElementColor
-%-BW_METHOD_END SetElementColor
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN ElementInitCommon
 %ifdef ElementInitCommon
-void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor bgColor, %'ModuleName'_MsgHandler handler);
+void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_MsgHandler handler);
 %define! Parelement
 %define! Partype
 %define! Parx
 %define! Pary
 %define! Parwidth
 %define! Parheight
-%define! ParbgColor
 %define! Parhandler
 %include Common\UIElementInitCommon.Inc
 
 %endif %- ElementInitCommon
 %-BW_METHOD_END ElementInitCommon
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreen
-%ifdef GetScreen
-%'ModuleName'_PScreen %'ModuleName'%.%GetScreen(void);
-%define! RetVal
-%include Common\UIGetScreen.Inc
-
-%endif %- GetScreen
-%-BW_METHOD_END GetScreen
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EqualElement
 %ifdef EqualElement
@@ -616,25 +558,7 @@ bool %'ModuleName'%.SearchInsideElement(%'ModuleName'_PElement *pElement, %'Modu
 
 %-INTERNAL_METHOD_END SearchInsideElement
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreenPosX
-%ifdef GetScreenPosX
-%'ModuleName'_PixelDim %'ModuleName'%.%GetScreenPosX(%'ModuleName'_Element *element);
-%define! Parelement
-%define! RetVal
-%include Common\UIGetScreenPosX.Inc
-
-%endif %- GetScreenPosX
-%-BW_METHOD_END GetScreenPosX
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreenPosY
-%ifdef GetScreenPosY
-%'ModuleName'_PixelDim %'ModuleName'%.%GetScreenPosY(%'ModuleName'_Element *element);
-%define! Parelement
-%define! RetVal
-%include Common\UIGetScreenPosY.Inc
-
-%endif %- GetScreenPosY
-%-BW_METHOD_END GetScreenPosY
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawHLine
 %ifdef DrawHLine
@@ -739,7 +663,7 @@ void %'ModuleName'%.%ProcessTouch(bool touched, %'ModuleName'_PixelDim x, %'Modu
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendMessage
 %ifdef SendMessage
-void %'ModuleName'%.%SendMessage(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData);
+void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData);
 %define! Parelement
 %define! Parkind
 %define! ParpData
@@ -940,7 +864,6 @@ void %OnEvent(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'Mod
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-static %'ModuleName'%.Screen *currentScreen;                     %>40/* current screen */
 %if RTOSenabled='yes'
 static xSemaphoreHandle UISem = NULL; /* Semaphore to protect UI access */
 %endif
@@ -951,12 +874,6 @@ static xSemaphoreHandle UISem = NULL; /* Semaphore to protect UI access */
 %- List of internal methods headers
 %-UNLOCKED
 /* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG ScreenMsgHandler
-static void ScreenMsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData);
-%-INTERNAL_LOC_METHOD_END ScreenMsgHandler
-%-INTERNAL_LOC_METHOD_BEG PaintScreen
-static byte PaintScreen(%'ModuleName'_Element *element);
-%-INTERNAL_LOC_METHOD_END PaintScreen
 %-INTERNAL_LOC_METHOD_BEG FctInsideElement
 static bool FctInsideElement(%'ModuleName'_Element *element, %'ModuleName'_Coordinate *coord);
 %-INTERNAL_LOC_METHOD_END FctInsideElement
@@ -973,23 +890,20 @@ static bool FctInsideElement(%'ModuleName'_Element *element, %'ModuleName'_Coord
 %define! Pary
 %define! Parwidth
 %define! Parheight
-%define! ParbgColor
 %define! Parhandler
 %include Common\UIElementInitCommon.Inc
-void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor bgColor, %'ModuleName'_MsgHandler handler)
+void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_MsgHandler handler)
 {
-  element->prop.type = type;
-  element->prop.x = x;
-  element->prop.y = y;
-  element->prop.width = width;
-  element->prop.height = height;
-  element->prop.color = bgColor;
+  element->prop.type = type;                                     %>40/* set widget type */
+  element->prop.x = x;                                           %>40/* x coordinate */
+  element->prop.y = y;                                           %>40/* y coordinate */
+  element->prop.width = width;                                   %>40/* horizontal size */
+  element->prop.height = height;                                 %>40/* vertical size */
   element->prop.flags = %'ModuleName'_FLAGS_INIT;                %>40/* initialize flags */
-  element->msgHandler = handler;
-  element->sub = NULL;                                           %>40/* default widget contains no subwidgets */
+  element->msgHandler = handler;                                 %>40/* handler for messages */
+  element->sub = NULL;                                           %>40/* default widget contains no sub-widgets */
   element->parent = NULL;                                        %>40/* default widget has no parent */
   element->next = NULL;
-  element->prop.flags = %'ModuleName'_FLAGS_NEEDS_REPAINT;       %>40/* after creation the element needs to be repainted */
 }
 
 %endif %- ElementInitCommon
@@ -1030,7 +944,7 @@ void %'ModuleName'%.%EnableElementSelection(%'ModuleName'_Element *elem)
 %include Common\UISelectNextElement.Inc
 void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forward)
 {
-%if SelectionEnabled='yes'
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   %'ModuleName'_Element *currElement, *e;                        %>40/* currently selected element */
   %'ModuleName'_Element *window;                                 %>40/* window of currently selected element */
   %'ModuleName'_Element *startElement;                           %>40/* starting element of iteration */
@@ -1076,10 +990,10 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
   if (currElement != NULL &&(currElement->prop.flags&%'ModuleName'_FLAGS_CAN_SELECT)) {
     %'ModuleName'%.%SelectElement(screen, window, currElement);
   }
-%else
-  (void)window; (void)forward;
+#else
+  (void)screen;
   /* do nothing, as selection is not enabled in the bean properties */
-%endif
+#endif
 }
 
 %endif %- SelectNextElement
@@ -1093,7 +1007,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %include Common\UISelectElement.Inc
 void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)
 {
-%if SelectionEnabled='yes'
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (element!=NULL) {
     if (   (element->prop.flags&%'ModuleName'_FLAGS_CAN_SELECT)  %>40/* element can be selected */
         && !(element->prop.flags&%'ModuleName'_FLAGS_IS_SELECTED)%>40/* element is not currently selected */
@@ -1107,10 +1021,10 @@ void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_E
       %'ModuleName'%.%UpdateElement(window, screen->selectedE);  %>40/* element needs update */
     }
   }
-%else
+#else
   (void)screen; (void)window; (void)element;
   /* do nothing, as selection is not enabled in the bean properties */
-%endif
+#endif
 }
 
 %endif %- SelectElement
@@ -1124,6 +1038,7 @@ void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_E
 %include Common\UIDeselectElement.Inc
 void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)
 {
+#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
   if (element!=NULL) {
     if (element->prop.flags&%'ModuleName'_FLAGS_IS_SELECTED) {   %>40/* element is currently selected */
       %if defined(OnEvent)
@@ -1139,6 +1054,7 @@ void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'
       screen->selectedE = NULL;                                  %>40/* no currently selected element */
     }
   }
+#endif
 }
 
 %endif %- DeselectElement
@@ -1204,56 +1120,6 @@ void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'
 %endif %- GetElementPosY
 %-BW_METHOD_END GetElementPosY
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG ScreenMsgHandler
-%define! Parkind
-%define! Parelement
-%define! ParpData
-%include Common\GeneralInternalGlobal.inc (ScreenMsgHandler)
-static void ScreenMsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)
-{
-  (void)pData; /* unused argument */
-  if (kind==%'ModuleName'_MSG_WIDGET_PAINT) {
-    (void)PaintScreen(element);
-  }
-}
-
-%-INTERNAL_METHOD_END ScreenMsgHandler
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN CreateScreen
-%ifdef CreateScreen
-%define! Parscreen
-%define! ParbgColor
-%include Common\UICreateScreen.Inc
-void %'ModuleName'%.%CreateScreen(%'ModuleName'_Screen *screen, %'ModuleName'_PixelColor bgColor)
-{
-  %'ModuleName'%.ElementInitCommon((%'ModuleName'%.Element*)screen, %'ModuleName'_WIDGET_SCREEN,
-    0, 0, %'ModuleName'%.%GetWidth(), %'ModuleName'%.%GetHeight(), bgColor, ScreenMsgHandler);
-%if SelectionEnabled='yes'
-  screen->selectedE = NULL;
-%endif
-  screen->element.prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT;%>40 /* screen needs to be repainted */
-  currentScreen = screen;
-}
-
-%endif %- CreateScreen
-%-BW_METHOD_END CreateScreen
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN UpdateScreen
-%ifdef UpdateScreen
-%define! Parscreen
-%define! ParupdateAll
-%include Common\UIUpdateScreen.Inc
-void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen, bool updateAll)
-{
-  if (updateAll){
-    screen->element.prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT;%>40/* force complete update */
-  }
-  (void)PaintScreen((%'ModuleName'_Element*)screen);
-}
-
-%endif %- UpdateScreen
-%-BW_METHOD_END UpdateScreen
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawFilledBox
 %ifdef DrawFilledBox
 %define! Parx
@@ -1265,15 +1131,7 @@ void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen, bool updateAll)
 %include Common\UIDrawFilledBox.Inc
 void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color)
 {
-%ifdef _OPTIMIZE_CLEARED_BACKGROUND
-  if ((window->flags&%'ModuleName'_FLAGS_WINDOW_BG_CLEARED) && color==window->prop.color) {
-    /* nothing to do, as window background just has been cleared with our color */
-  } else {
-    %@Display@'ModuleName'%.DrawFilledBox((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), w, h, color);
-  }
-%else
-  %@Display@'ModuleName'%.DrawFilledBox((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), w, h, color);
-%endif
+  %@Display@'ModuleName'%.DrawFilledBox(x, y, w, h, color);
 }
 
 %endif %- DrawFilledBox
@@ -1291,15 +1149,7 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'
 %include Common\UIDrawBox.Inc
 void %'ModuleName'%.%DrawBox(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h, %'ModuleName'_PixelDim lineWidth, %'ModuleName'_PixelColor color)
 {
-%ifdef _OPTIMIZE_CLEARED_BACKGROUND
-  if ((window->flags&%'ModuleName'_FLAGS_WINDOW_BG_CLEARED) && color==window->prop.color) {
-    /* nothing to do, as window background just has been cleared with our color */
-  } else {
-    %@Display@'ModuleName'%.DrawBox((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), w, h, lineWidth, color);
-  }
-%else
-  %@Display@'ModuleName'%.DrawBox((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), w, h, lineWidth, color);
-%endif
+  %@Display@'ModuleName'%.DrawBox(x, y, w, h, lineWidth, color);
 }
 
 %endif %- DrawBox
@@ -1317,43 +1167,15 @@ void %'ModuleName'%.%DrawBox(%'ModuleName'_Element *element, %'ModuleName'_Pixel
 void %'ModuleName'%.%DrawLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelColor color)
 {
   %@Display@'ModuleName'%.DrawLine(
-    %'ModuleName'%.%GetScreenPosX(element)+x0,
-    %'ModuleName'%.%GetScreenPosY(element)+y0,
-    %'ModuleName'%.%GetScreenPosX(element)+x1,
-    %'ModuleName'%.%GetScreenPosY(element)+y1,
+    x0,
+    y0,
+    x1,
+    y1,
     color);
 }
 
 %endif %- DrawLine
 %-BW_METHOD_END DrawLine
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN SetElementColor
-%ifdef SetElementColor
-%define! Parcolor
-%define! Parelement
-%include Common\UISetElementColor.Inc
-void %'ModuleName'%.%SetElementColor(%'ModuleName'_Element *element, %'ModuleName'_PixelColor color)
-{
-  //%'ModuleName'_Element *e;
-  if (element != NULL){
-    element->prop.color = color;                                 %>40/* change color of element */
-  }
-}
-
-%endif %- SetElementColor
-%-BW_METHOD_END SetElementColor
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreen
-%ifdef GetScreen
-%define! RetVal
-%include Common\UIGetScreen.Inc
-%'ModuleName'_PScreen %'ModuleName'%.%GetScreen(void)
-{
-  return currentScreen;
-}
-
-%endif %- GetScreen
-%-BW_METHOD_END GetScreen
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EqualElement
 %ifdef EqualElement
@@ -1379,9 +1201,13 @@ bool %'ModuleName'%.%EqualElement(%'ModuleName'_Element *elem1, %'ModuleName'_El
 %include Common\UIGetSelectedElement.Inc
 bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_Screen *screen, %'ModuleName'_PElement *pElement)
 {
+#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
   *pElement = screen->selectedE;
-
   return (bool)((*pElement)!=NULL);
+#else
+  *pElement = NULL;
+  return FALSE;
+#endif
 }
 
 %endif %- GetSelectedElement
@@ -1462,7 +1288,7 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
   %'ModuleName'_DisplayOrientation currOrientation = %'ModuleName'%.%GetDisplayOrientation();
 
   /* inform UI about change */
-  screen = %'ModuleName'%.%GetScreen();
+  screen = %'ModuleName'%.GetScreen();
   if (screen==NULL) {
     return;                                                      %>40/* no screen? something is wrong? */
   }
@@ -1522,14 +1348,13 @@ void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *parent, %'Mod
   (void)parent; /* unused argument */
   if (updateAll || (element->prop.flags&%'ModuleName'_FLAGS_NEEDS_REPAINT)) {
     element->prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT; /* force repaint */
-    element->msgHandler(%'ModuleName'_MSG_PAINT, element, NULL);
+    element->msgHandler(element, %'ModuleName'_MSG_PAINT, NULL);
     element->prop.flags &= ~%'ModuleName'_FLAGS_NEEDS_REPAINT;
   }
 }
 
 %endif %- UpdateElementNoRefresh
 %-BW_METHOD_END UpdateElementNoRefresh
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG AddSubElement
 %define! ParparentElement
@@ -1589,7 +1414,7 @@ byte %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'Modu
 %include Common\UIDrawCircle.Inc
 void %'ModuleName'%.%DrawCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
 {
-   %@Display@'ModuleName'%.DrawCircle((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), radius, color);
+   %@Display@'ModuleName'%.DrawCircle(x, y, radius, color);
 }
 
 %endif %- DrawCircle
@@ -1605,7 +1430,7 @@ void %'ModuleName'%.%DrawCircle(%'ModuleName'_Element *element, %'ModuleName'_Pi
 %include Common\UIDrawFilledCircle.Inc
 void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
 {
-  %@Display@'ModuleName'%.DrawFilledCircle((%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosX(element)+x), (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetScreenPosY(element)+y), radius, color);
+  %@Display@'ModuleName'%.DrawFilledCircle(x, y, radius, color);
 }
 
 %endif %- DrawFilledCircle
@@ -1632,7 +1457,7 @@ byte %'ModuleName'%.RemoveElement(%'ModuleName'_Element *element)
   }
   while(*pe != NULL) {
     if (*pe == element) { /* found element */
-      %'ModuleName'%.SendMessage(%'ModuleName'_MSG_ELEMENT_REMOVE, element, NULL);%>40/* notify element about removal */
+      %'ModuleName'%.SendMessage(element, %'ModuleName'_MSG_ELEMENT_REMOVE, NULL);%>40/* notify element about removal */
       *pe = (*pe)->next;                                         %>40/* unlink element */
       break; /* break while loop */
     }
@@ -1653,7 +1478,7 @@ void %'ModuleName'%.%NextElement(%'ModuleName'_PElement *ppElement, %'ModuleName
   /* precondition: data structure with valid data */
   %'ModuleName'_Element *parent = NULL;
   if (stopElement == NULL){
-    stopElement = (%'ModuleName'_Element*)%'ModuleName'%.%GetScreen();%>40/* searching whole tree */
+    stopElement = (%'ModuleName'_Element*)%'ModuleName'%.GetScreen();%>40/* searching whole tree */
   }
   if ((*ppElement)->sub != NULL){
     *ppElement = (*ppElement)->sub;                              %>40/* next element on sub level */
@@ -1758,52 +1583,6 @@ bool %'ModuleName'%.SearchInsideElement(%'ModuleName'_PElement *pElement, %'Modu
 
 %-INTERNAL_METHOD_END SearchInsideElement
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreenPosX
-%ifdef GetScreenPosX
-%define! Parelement
-%define! RetVal
-%include Common\UIGetScreenPosX.Inc
-%'ModuleName'_PixelDim %'ModuleName'%.%GetScreenPosX(%'ModuleName'_Element *element)
-{
-  %'ModuleName'_PixelDim x;
-
-  if (element == NULL){
-    return 0;                                                    %>40 /* set x to 0 if element is NULL */
-  }
-  x = %'ModuleName'_GetElementPosX(element);
-  while (element->parent != NULL){
-    x += %'ModuleName'_GetElementPosX(element->parent);
-    element = element->parent;
-  }
-  return x;
-}
-
-%endif %- GetScreenPosX
-%-BW_METHOD_END GetScreenPosX
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN GetScreenPosY
-%ifdef GetScreenPosY
-%define! Parelement
-%define! RetVal
-%include Common\UIGetScreenPosY.Inc
-%'ModuleName'_PixelDim %'ModuleName'%.%GetScreenPosY(%'ModuleName'_Element *element)
-{
-  %'ModuleName'_PixelDim y;
-
-  if (element == NULL){
-    return 0;                                                    %>40 /* set y to 0 if element is NULL */
-  }
-  y = %'ModuleName'_GetElementPosY(element);
-  while (element->parent != NULL){
-    y = y + %'ModuleName'_GetElementPosY(element->parent);
-    element = element->parent;
-  }
-  return y;
-}
-
-%endif %- GetScreenPosY
-%-BW_METHOD_END GetScreenPosY
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawHLine
 %ifdef DrawHLine
 %define! Parelement
@@ -1815,8 +1594,8 @@ bool %'ModuleName'%.SearchInsideElement(%'ModuleName'_PElement *pElement, %'Modu
 void %'ModuleName'%.%DrawHLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelColor color)
 {
   %@Display@'ModuleName'%.DrawHLine(
-    %'ModuleName'%.%GetScreenPosX(element)+x,
-    %'ModuleName'%.%GetScreenPosY(element)+y,
+    x,
+    y,
     w,
     color);
 }
@@ -1835,32 +1614,14 @@ void %'ModuleName'%.%DrawHLine(%'ModuleName'_Element *element, %'ModuleName'_Pix
 void %'ModuleName'%.%DrawVLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color)
 {
     %@Display@'ModuleName'%.DrawVLine(
-    %'ModuleName'%.%GetScreenPosX(element)+x,
-    %'ModuleName'%.%GetScreenPosY(element)+y,
+    x,
+    y,
     h,
     color);
 }
 
 %endif %- DrawVLine
 %-BW_METHOD_END DrawVLine
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG PaintScreen
-%define! Parelement
-%define! RetVal
-%include Common\GeneralInternalGlobal.inc (PaintScreen)
-static byte PaintScreen(%'ModuleName'_Element *element)
-{
-  %'ModuleName'_Screen *screen = (%'ModuleName'_Screen*) element;
-
-  if (screen != NULL) {
-    %@Display@'ModuleName'%.DrawFilledBox(screen->element.prop.x, screen->element.prop.y, screen->element.prop.width, screen->element.prop.height, screen->element.prop.color);
-//    %@Display@'ModuleName'%.UpdateFull();
-  } /* if */
-  return ERR_OK;
-}
-
-%-INTERNAL_METHOD_END PaintScreen
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AlignElementRight
 %ifdef AlignElementRight
@@ -1969,10 +1730,10 @@ void %'ModuleName'%.%ProcessTouch(bool touched, %'ModuleName'_PixelDim x, %'Modu
 %define! Parkind
 %define! ParpData
 %include Common\UISendMessage.Inc
-void %'ModuleName'%.%SendMessage(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)
+void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
 {
   if (element->msgHandler!=NULL) {
-    element->msgHandler(kind, element, pData);
+    element->msgHandler(element, kind, pData);
   }
 }
 
@@ -1991,7 +1752,7 @@ byte %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
   if (element==NULL) {
     return ERR_FAILED;
   }
-  screen = %'ModuleName'%.%GetScreen();
+  screen = %'ModuleName'%.GetScreen();
   if (screen==NULL || screen->modalElement != NULL) {
     return ERR_FAILED;
   }
@@ -2015,7 +1776,7 @@ byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
   if (element==NULL) {
     return ERR_FAILED;
   }
-  screen = %'ModuleName'%.%GetScreen();
+  screen = %'ModuleName'%.GetScreen();
   if (screen==NULL || screen->modalElement != element) {
     return ERR_FAILED;
   }
@@ -2033,7 +1794,8 @@ byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
 %include Common\UIGetRoot.Inc
 %'ModuleName'_PElement %'ModuleName'%.%GetRoot(void)
 {
-  %'ModuleName'_Screen *screen = %'ModuleName'%.%GetScreen();
+#if 0
+  %'ModuleName'_Screen *screen = %'ModuleName'%.GetScreen();
 
   if (screen==NULL) {
     return NULL;
@@ -2042,6 +1804,9 @@ byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
     return screen->modalElement;
   }
   return &screen->element;
+#else
+ return NULL;
+#endif
 }
 
 %endif %- GetRoot
@@ -2054,11 +1819,12 @@ byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
 %include Common\UIElementFullyVisible.Inc
 bool %'ModuleName'%.%ElementFullyVisible(%'ModuleName'_Element *element)
 {
+#if 0
   %'ModuleName'_Screen *screen;
   %'ModuleName'_Coordinate coord;
 
   /* simple implementation: checking if we have a modal window covering the element or part of it */
-  screen = %'ModuleName'%.%GetScreen();
+  screen = %'ModuleName'%.GetScreen();
   if (screen==NULL || element==NULL) {
     return FALSE; /* no screen or element: well, it is not visible :-) */
   }
@@ -2089,6 +1855,9 @@ bool %'ModuleName'%.%ElementFullyVisible(%'ModuleName'_Element *element)
     }
   }
   return TRUE; /* element must be visible */
+#else
+  return FALSE;
+#endif
 }
 
 %endif %- ElementFullyVisible
@@ -2107,7 +1876,7 @@ void %'ModuleName'%.%MsgSendListRecursiveBottomUp(%'ModuleName'_Element *element
 {
   while (element!=NULL) {
     %'ModuleName'%.%MsgSendListRecursiveBottomUp(element->sub, kind, pData);
-    %'ModuleName'%.%SendMessage(kind, element, pData); /* for element */
+    %'ModuleName'%.%SendMessage(element, kind, pData); /* for element */
     element = element->next;
   }
 }
@@ -2130,7 +1899,7 @@ void %'ModuleName'%.%MsgSendListRecursiveBottomUp(%'ModuleName'_Element *element
 void %'ModuleName'%.%MsgSendListRecursiveTopDown(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
 {
   while (element!=NULL) {
-    %'ModuleName'%.%SendMessage(kind, element, pData); /* for element */
+    %'ModuleName'%.%SendMessage(element, kind, pData); /* for element */
     %'ModuleName'%.%MsgSendListRecursiveTopDown(element->sub, kind, pData);
     element = element->next;
   }
@@ -2320,6 +2089,37 @@ void %OnEvent(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'Mod
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Application configuration file for UIScreen module
+ *
+ * This header file is a configuration header file to configure the module %'ModuleName' (UIScreen).
+ * You can configure the defines directly in this file or with the compiler -D option.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+%if SelectionEnabled='yes'
+  #define %'ModuleName'%.CONFIG_SELECTION_ENABLED    (1)
+    /*!< 1: can select elements (this will need some more resources); 0: selection of elements disabled */
+%else
+  #define %'ModuleName'%.CONFIG_SELECTION_ENABLED    (0)
+    /*!< 1: can select elements (this will need some more resources); 0: selection of elements disabled */
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SendMessage)
+%include Common\GeneralMethod.inc (SetBackgroundColor)
 %;**     Description :
-%;**         Sends a message to an element.
+%;**         Sets the screen background color
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
-%;**         kind%Parkind %>27 - 
-%;**         pData%ParpData %>27 - 
+%;**       * screen%Parscreen %>27 - Pointer to screen
+%;**         color%Parcolor %>27 - Background color for screen
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

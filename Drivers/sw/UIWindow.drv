@@ -49,9 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_Paint Paints a window with all widgets
 %define! Description_EventCallbackMovableWindow Callback used for movable window
-%define! Description_MsgHandler Callback used for widget events
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -67,19 +65,12 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* Include inherited components */
+#include "%@UI@ModuleName.h"
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -89,8 +80,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 typedef %@UI@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor; %>40/* type large enough to hold the color information */
 typedef %@UI@'ModuleName'%.PixelDim %'ModuleName'%.PixelDim;     %>40/* type big enough to hold the x and y coordinates */
@@ -110,17 +99,17 @@ typedef %@UI@'ModuleName'%.painterCallback %'ModuleName'%.painterCallback;%>40/*
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-
-/* --- Element: Window --- */
+/* --- Window Widget --- */
 typedef struct %'ModuleName'_WindowWidget {
   %'ModuleName'_Element element;                                 %>40 /* the base element, always first in structure */
-%ifdef SetUserMsgHandler
+  %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* background color of the screen */
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   %@UI@'ModuleName'%.MsgHandler userMsgHandler;                  %>40/* optional user handler */
-%endif %- SetUserMsgHandler
-%if movable='yes'
+#endif
+#if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   bool windowMovable;
   %'ModuleName'_Coordinate clickCoord;                           %>40 /* saves the coordinates on click, needed for movable window */
-%endif
+#endif
 } %'ModuleName'_WindowWidget;
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -129,7 +118,7 @@ typedef struct %'ModuleName'_WindowWidget {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Create
 %ifdef Create
-byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_WindowWidget *window, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height);
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height);
 %define! Parwindow
 %define! Parx
 %define! Pary
@@ -145,8 +134,7 @@ byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_WindowW
 %-BW_METHOD_BEGIN WindowSetBorder
 %ifdef WindowSetBorder
 %-BW_PUBLISH_MACRO
-#define %'ModuleName'%.%WindowSetBorder(window) \
-  (window)->element.prop.flags |= %@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER
+void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window);
 %define! Parwindow
 %include Common\UIWindowWindowSetBorder.Inc
 
@@ -165,9 +153,7 @@ void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window);
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler
 %-BW_PUBLISH_MACRO
-#define %'ModuleName'%.%SetUserMsgHandler(window, handler) \
-  (window)->userMsgHandler = handler
-
+void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler);
 %define! Parwindow
 %define! Parhandler
 %include Common\UIWindowSetUserMsgHandler.Inc
@@ -177,15 +163,33 @@ void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetBackgroundColor
 %ifdef SetBackgroundColor
-#define %'ModuleName'%.%SetBackgroundColor(window, color) \
-  %@UI@'ModuleName'%.SetElementColor(&((window)->element), color)
-
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelColor color);
 %define! Parcolor
 %define! Parwindow
 %include Common\UIWindowSetBackgroundColor.Inc
 
 %endif %- SetBackgroundColor
 %-BW_METHOD_END SetBackgroundColor
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window);
+%define! Parwindow
+%include Common\UIWindowPaint.Inc
+
+%endif %- Paint
+%-BW_METHOD_END Paint
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData);
+%define! Parelement
+%define! Parkind
+%define! ParpData
+%include Common\UIWindowMessageHandler.Inc
+
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -225,45 +229,46 @@ void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window);
 %- List of internal methods headers
 %-UNLOCKED
 /* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG Paint
-static byte Paint(%'ModuleName'_Element *element);
-%-INTERNAL_LOC_METHOD_END Paint
 %-INTERNAL_LOC_METHOD_BEG EventCallbackMovableWindow
-static void EventCallbackMovableWindow(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData);
+static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData);
 %-INTERNAL_LOC_METHOD_END EventCallbackMovableWindow
-%-INTERNAL_LOC_METHOD_BEG MsgHandler
-static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData);
-%-INTERNAL_LOC_METHOD_END MsgHandler
 %-
 
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG MsgHandler
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
 %define! Parkind
 %define! ParpData
 %define! Parelement
-%include Common\GeneralInternalGlobal.inc (MsgHandler)
-static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)
+%include Common\UIWindowMessageHandler.Inc
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)
 {
-%ifdef SetUserMsgHandler
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   %'ModuleName'_WindowWidget *widget = (%'ModuleName'_WindowWidget*)element;
+#endif
 
-%else
-  (void)pData; /* avoid warning about unused argument */
-%endif
-  if (kind==%@UI@'ModuleName'%.MSG_WIDGET_PAINT) {
-    (void)Paint(element);
-%-  } else if (kind==%@UI@'ModuleName'%.MSG_WIDGET_RESIZE) {
-%-    (void)%'ModuleName'%.%Resize(widget);
+  if (element==NULL || element->prop.type!=%@UI@'ModuleName'%.WIDGET_WINDOW) {
+    return; /* not a screen */
   }
-%ifdef SetUserMsgHandler
+  switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
+      %'ModuleName'%.%Paint((%'ModuleName'_WindowWidget*)element);
+      break;
+    default:
+      break;
+  } /* switch */
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
     widget->userMsgHandler(kind, element, pData);                %>40/* call user event  */
   }
-%endif
+#else
+  (void)pData; /* avoid warning about unused argument */
+#endif
 }
-%-INTERNAL_METHOD_END MsgHandler
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Create
 %ifdef Create
@@ -275,100 +280,80 @@ static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *elemen
 %define! Parparent
 %define! RetVal
 %include Common\UIWindowCreate.Inc
-byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_WindowWidget *window, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height)
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
-  if (parent == NULL || window == NULL) {
+  if (parent==NULL || window==NULL) {
     return ERR_FAILED;
   }
   %@UI@'ModuleName'%.ElementInitCommon((%'ModuleName'%.Element*)window, %@UI@'ModuleName'%.WIDGET_WINDOW,
-    x, y, width, height, %@UI@'ModuleName'%.COLOR_%WindowBackgroundColor, MsgHandler);
-%if %WindowHasBorder='yes'
+    x, y, width, height,
+    %'ModuleName'%.%MessageHandler
+  );
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
   %'ModuleName'%.%WindowSetBorder(window);
-%endif
-%if %movable='yes'
+#endif
+#if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   window->windowMovable = TRUE;
   window->clickCoord.x = 0;
   window->clickCoord.y = 0;
-%endif
-%ifdef SetUserMsgHandler
+#endif
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   window->userMsgHandler = NULL;                                 %>40/* needs to be set by user */
-%endif %- SetUserMsgHandler
+#endif
   return %@UI@'ModuleName'%.AddSubElement(parent, &window->element);%>40/* add window to screen */
 }
 
 %endif %- Create
 %-BW_METHOD_END Create
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG Paint
-%define! Parelement
-%define! RetVal
-%include Common\GeneralInternalGlobal.inc (Paint)
-static byte Paint(%'ModuleName'_Element *element)
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+%define! Parwindow
+%include Common\UIWindowPaint.Inc
+void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window)
 {
-  bool updateAll; /* do we need a global update? */
-  %'ModuleName'_WindowWidget *window = (%'ModuleName'_WindowWidget*)element;
+  %@UI@'ModuleName'%.Element *element;
 
   if (window != NULL) {
-    updateAll = window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_NEEDS_REPAINT;
-    if (updateAll) {                                             %>40/* start with drawing the background */
-%ifdef _OPTIMIZE_CLEARED_BACKGROUND
-      if (window->prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER) {
-        %@UI@'ModuleName'%.DrawBox(window->element.prop.x, window->element.prop.y, window->element.prop.width, window->element.prop.height, 1, %@UI@'ModuleName'%.COLOR_%WindowBorderColor);
-        if (!(window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_BG_CLEARED)) {
-          %@UI@'ModuleName'%.DrawFilledBox(
-              (%'ModuleName'_PixelDim)(window->element.prop.x+1),
-              (%'ModuleName'_PixelDim)(window->element.prop.y+1),
-              (%'ModuleName'_PixelDim)(window->element.prop.width-2),
-              (%'ModuleName'_PixelDim)(window->element.prop.height-2), window->element.prop.color);
-          window->element.prop.flags |= %@UI@'ModuleName'%.FLAGS_WINDOW_BG_CLEARED;%>40/* window is in background color now */
-        }
-      } else if (!(window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_BG_CLEARED)) {
-        %@UI@'ModuleName'%.DrawFilledBox(window->element.prop.x, window->element.prop.y, window->element.prop.width, window->element.prop.height, window->element.prop.color);
-        window->element.prop.flags |= %@UI@'ModuleName'%.FLAGS_WINDOW_BG_CLEARED;%>40/* window is in background color now */
-      }
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
+    if (window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER) {
+      %@UI@'ModuleName'%.DrawBox(&window->element,
+        window->element.prop.x, window->element.prop.y,
+        window->element.prop.width, window->element.prop.height,
+        1, %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR);
+      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
+        1, 1,
+        (%@UI@'ModuleName'%.PixelDim)(window->element.prop.width-2),
+        (%@UI@'ModuleName'%.PixelDim)(window->element.prop.height-2),
+        window->bgColor);                                        %>40 /* assuming window height/width > 2 pixel! */
+    } else {
+#endif
+      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
+        window->element.prop.x, window->element.prop.y,
+        window->element.prop.width, window->element.prop.height,
+        window->bgColor);
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
     }
-%else
-      if (window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER) {
-        %@UI@'ModuleName'%.DrawBox(&window->element, 0, 0, window->element.prop.width, window->element.prop.height, 1, %@UI@'ModuleName'%.COLOR_%WindowBorderColor);
-        %@UI@'ModuleName'%.DrawFilledBox(&window->element,
-              1,
-              1,
-              (%'ModuleName'_PixelDim)(window->element.prop.width-2),
-              (%'ModuleName'_PixelDim)(window->element.prop.height-2), window->element.prop.color);%>40 /* assuming window height/width > 2 pixel */
-      } else {
-        %@UI@'ModuleName'%.DrawFilledBox(&window->element, 0, 0, window->element.prop.width, window->element.prop.height, window->element.prop.color);
-      }
-    }
-%endif
-    element = window->element.sub;                               %>40/* start with first element of window */
-    if (element!=NULL) {
-      do {
-        %@UI@'ModuleName'%.UpdateElementNoRefresh(NULL, element, updateAll);%>40/* paint element, or whole window */
-        if (element->prop.type==%@UI@'ModuleName'%.WIDGET_WINDOW) {%>40/* subtree is already painted recursively */
-          element = element->next;
-        } else {
-          %@UI@'ModuleName'%.NextElement(&element, &window->element);%>40/* get next element in list */
-        }
-      } while (element!=NULL && element!=&window->element);
-    }
+#endif
     window->element.prop.flags &= ~%@UI@'ModuleName'%.FLAGS_NEEDS_REPAINT;
-%ifdef _OPTIMIZE_CLEARED_BACKGROUND
-    window->element.prop.flags &= ~%@UI@'ModuleName'%.FLAGS_WINDOW_BG_CLEARED;%>40/* mark that we have changed content and it is not any more in just background color */
-%endif
   }
-  return ERR_OK;
 }
 
-%-INTERNAL_METHOD_END Paint
+%endif %- Paint
+%-BW_METHOD_END Paint
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WindowSetBorder
 %ifdef WindowSetBorder
 %define! Parwindow
 %include Common\UIWindowWindowSetBorder.Inc
-/*
 void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window)
- ** This method is implemented as macro
-*/
+{
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
+  window->element.prop.flags |= %@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER;
+#else
+  (void)window;
+#endif
+}
 
 %endif %- WindowSetBorder
 %-BW_METHOD_END WindowSetBorder
@@ -379,11 +364,11 @@ void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window)
 %include Common\UIWindowMakeWindowMovable.Inc
 void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window)
 {
-%if movable='yes'
+#if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   window->windowMovable = TRUE;
-%else
+#else
   /* nothing to do because window is not movable */
-%endif
+#endif
 }
 
 %endif %- MakeWindowMovable
@@ -394,9 +379,9 @@ void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window)
 %define! Parkind
 %define! ParpData
 %include Common\GeneralInternalGlobal.inc (EventCallbackMovableWindow)
-static void EventCallbackMovableWindow(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
+static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
 {
-%if %movable='yes'
+#if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   if (element->prop.type == %@UI@'ModuleName'%.WIDGET_HEADER){   %>40/* only do something if header is clicked */
     bool update = FALSE;                                         %>40/* default no update needed */
 
@@ -442,11 +427,11 @@ static void EventCallbackMovableWindow(%'ModuleName'_Element *element, %'ModuleN
       }
     } /* end if click_move event */
   } /* end if header clicked */
-%else
+#else
   (void)element;
   (void)kind;
   (void)pData;
-%endif %- %movable='yes'
+#endif
 }
 
 %-INTERNAL_METHOD_END EventCallbackMovableWindow
@@ -456,10 +441,14 @@ static void EventCallbackMovableWindow(%'ModuleName'_Element *element, %'ModuleN
 %define! Parwindow
 %define! Parhandler
 %include Common\UIWindowSetUserMsgHandler.Inc
-/*
 void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)
- ** This method is implemented as macro
-*/
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
+  window->userMsgHandler = handler;
+#else
+  (void)window;
+  (void)handler;
+#endif
+}
 
 %endif %- SetUserMsgHandler
 %-BW_METHOD_END SetUserMsgHandler
@@ -469,10 +458,10 @@ void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_WindowWidget *window, %@UI@
 %define! Parcolor
 %define! Parwindow
 %include Common\UIWindowSetBackgroundColor.Inc
-/*
-void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_Window *window, %'ModuleName'_PixelColor color)
- ** This method is implemented as macro
-*/
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelColor color)
+{
+  window->bgColor = color;
+}
 
 %endif %- SetBackgroundColor
 %-BW_METHOD_END SetBackgroundColor
@@ -493,6 +482,67 @@ void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_Window *window, %'ModuleNa
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Application configuration file for UIWindow module
+ *
+ * This header file is a configuration header file to configure the module %'ModuleName' (UIWindow).
+ * You can configure the defines directly in this file or with the compiler -D option.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BACKGROUND_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BACKGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%WindowBackgroundColor
+    /*!< Default window background color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR  %@UI@'ModuleName'%.COLOR_%WindowBorderColor
+    /*!< Default window border color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
+%if %movable='yes'
+  #define %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE  (1)
+    /*!< 1: windows are movable; 0: windows are not movable */
+%else
+  #define %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE  (0)
+    /*!< 1: windows are movable; 0: windows are not movable */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
+%if %WindowHasBorder='yes'
+  #define %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER  (1)
+    /*!< 1: windows have a border; 0: windows are borderless */
+%else
+  #define %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER  (0)
+    /*!< 1: windows have a border; 0: windows are borderless */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
+%ifdef SetUserMsgHandler
+  #define %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER  (1)
+    /*!< 1: windows have extra user message handler; 0: no extra message handler*/
+%else
+  #define %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER  (0)
+    /*!< 1: windows have extra user message handler; 0: no extra message handler*/
+%endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

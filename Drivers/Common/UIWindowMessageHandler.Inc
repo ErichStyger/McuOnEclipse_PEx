@@ -3,13 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (UpdateScreen)
+%include Common\GeneralMethod.inc (MessageHandler)
 %;**     Description :
-%;**         Draws all windows and elements of the screen
+%;**         Callback used for widget events
 %include Common\GeneralParameters.inc(27)
-%;**       * screen%Parscreen %>27 - Pointer to screen
-%;**         updateAll%ParupdateAll %>27 - if the whole screen needs to
-%;** %>29 be updated.
+%;**       * element%Parelement %>27 - Pointer to element
+%;**         kind%Parkind %>27 - kind of event
+%;**         pData%ParpData %>27 - optional data pointer, NULL otherwise
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

@@ -13,7 +13,6 @@
 %;**         y%Pary %>27 - y position
 %;**         width%Parwidth %>27 - width of element
 %;**         height%Parheight %>27 - height of element
-%;**         bgColor%ParbgColor %>27 - background color
 %;**         handler%Parhandler %>27 - message handler to be used
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

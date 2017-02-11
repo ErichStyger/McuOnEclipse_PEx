@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetScreenPosX)
+%include Common\GeneralMethod.inc (Paint)
 %;**     Description :
-%;**         Returns the element x screen coordinate
+%;**         Draws all elements of the screen
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
-%;**     Returns     :
-%;**         ---%RetVal %>27 - element width in pixels
+%;**       * screen%Parscreen %>27 - Pointer to screen
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

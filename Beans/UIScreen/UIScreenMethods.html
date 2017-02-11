@@ -206,25 +206,53 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="CreateScreen">
-<b>CreateScreen</b></a>
- - Creates a new window
+<li><a name="Create">
+<b>Create</b></a>
+ - Creates a new screen
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void CreateScreen(<i>ComponentName_</i>ScreenWidget *screen, <i>ComponentName_</i>PixelColor bgColor)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Create(<i>ComponentName_</i>ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen</li>
-<li><i>bgColor:<i>ComponentName_</i>PixelColor</i> - background color to be used</li>
+<li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen variable to be created</li>
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - y display position</li>
+<li><i>width:<i>ComponentName_</i>PixelDim</i> - screen width</li>
+<li><i>height:<i>ComponentName_</i>PixelDim</i> - screen height</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
-<li><a name="UpdateScreen">
-<b>UpdateScreen</b></a>
+<li><a name="SetBackgroundColor">
+<b>SetBackgroundColor</b></a>
+ - Sets the screen background color
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>ScreenWidget *screen, %@UI@'ModuleName'%.PixelColor color)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - Background color for screen</li>
+</ul><br />
+</li>
+<li><a name="MessageHandler">
+<b>MessageHandler</b></a>
+ - Message Handler for Widget
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
+<li><i>kind:<i>ComponentName_</i>EventCallbackKind</i> - kind of event</li>
+<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+</ul><br />
+</li>
+<li><a name="Paint">
+<b>Paint</b></a>
  - Draws all elements of the screen
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void UpdateScreen(<i>ComponentName_</i>Screen *screen)<br />
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>ScreenWidget *screen)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>Screen</i> - Pointer to screen</li>
+<li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen</li>
 </ul><br />
 </li>
 

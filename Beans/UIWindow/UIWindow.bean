@@ -4,7 +4,7 @@
     <Name>UIWindow</Name>
     <Description>Window Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.033</Version>
+    <Version>01.042</Version>
     <Icon>UIWindow</Icon>
     <TypesFiles>PE,UIWindow\UIWindow</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>13</BW_NeedUst>
+    <BW_NeedUst>14</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all right reserved.\n\nThis an open source software implemented with Processor Expert.\nThis is a free software and is opened for education, research and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2012-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>UIW</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -115,24 +115,6 @@
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Inside screen</Name>
-              <Symbol>insideWindowsOnly</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>Defines if all window must be inside screen after move, not implemented yet!</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
         </Children>
       </TGrupItem>
     </Property>
@@ -153,6 +135,20 @@
               <Symbol>UI</Symbol>
               <TypeSpec>UIWindow\UI</TypeSpec>
               <Hint>Interface to UserInterface</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>UIWindow\sdk</TypeSpec>
+              <Hint>Link to SDK</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <DefaultValue/>
@@ -185,7 +181,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>6</ParamCount>
         <Parameter>
@@ -193,6 +189,7 @@
           <ParType>Element</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to parent element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>window</ParName>
@@ -205,28 +202,73 @@
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>x position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>y</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>y position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>width</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>width of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>height</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>height of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *parent, %'ModuleName'_WindowWidget *window, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetBackgroundColor</Name>
+        <Symbol>SetBackgroundColor</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Changes the window background color.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>window</ParName>
+          <ParType>WindowWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to window widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Background color for window</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -246,21 +288,21 @@
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
+        <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
+          <ParName>window</ParName>
+          <ParType>WindowWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
+          <ParHint>Pointer to window</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -334,6 +376,55 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>MessageHandler</Name>
+        <Symbol>MessageHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Callback used for widget events</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>MsgKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>kind of event</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>optional data pointer, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>EventCallbackMovableWindow</Name>
         <Symbol>EventCallbackMovableWindow</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -359,6 +450,7 @@
           <ParType>Element</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>kind</ParName>
@@ -374,93 +466,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SetBackgroundColor</Name>
-        <Symbol>SetBackgroundColor</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Changes the window background color.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>Window</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window widget</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>color</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Background color for window</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Window *window, %'ModuleName'_PixelColor color)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>MsgHandler</Name>
-        <Symbol>MsgHandler</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Callback used for widget events</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)</ANSIC>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

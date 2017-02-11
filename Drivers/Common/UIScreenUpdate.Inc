@@ -3,12 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetScreen)
+%include Common\GeneralMethod.inc (Update)
 %;**     Description :
-%;**         returns the current active screen
-%include Common\GeneralParametersNone.inc
-%;**     Returns     :
-%;**         ---%RetVal %>27 - the current active screen
+%;**         Draws all elements of the screen
+%include Common\GeneralParameters.inc(27)
+%;**       * screen%Parscreen %>27 - Pointer to screen
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

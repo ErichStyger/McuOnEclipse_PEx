@@ -3,12 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetElementColor)
+%include Common\GeneralMethod.inc (Paint)
 %;**     Description :
-%;**         Sets the element properties color.
+%;**         Paints a window with all widgets
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
-%;**         color%Parcolor %>27 - color to be used for the element
+%;**       * window%Parwindow %>27 - Pointer to window
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

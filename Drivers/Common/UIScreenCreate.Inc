@@ -3,13 +3,18 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetScreenPosY)
+%include Common\GeneralMethod.inc (Create)
 %;**     Description :
-%;**         Returns the element y screen coordinate
+%;**         Creates a new screen
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
+%;**       * screen%Parscreen %>27 - Pointer to screen variable to be
+%;** %>29 created
+%;**         x%Parx %>27 - x position
+%;**         y%Pary %>27 - y display position
+%;**         width%Parwidth %>27 - screen width
+%;**         height%Parheight %>27 - screen height
 %;**     Returns     :
-%;**         ---%RetVal %>27 - element width in pixels
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

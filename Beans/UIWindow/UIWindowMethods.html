@@ -207,7 +207,7 @@ LI.EXP {
  - Creates a new window
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Create(<i>ComponentName_</i>Element *parent, <i>ComponentName_</i>WindowWidget *window, <i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, <i>ComponentName_</i>PixelDim width, <i>ComponentName_</i>PixelDim height)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element</li>
 <li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
@@ -215,8 +215,29 @@ LI.EXP {
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
 <li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
 <li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
+</ul><br />
+</li>
+<li><a name="SetBackgroundColor">
+<b>SetBackgroundColor</b></a>
+ - Changes the window background color.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.PixelColor color)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window widget</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - Background color for window</li>
+</ul><br />
+</li>
+<li><a name="Paint">
+<b>Paint</b></a>
+ - Paints a window with all widgets
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>WindowWidget *window)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
 </ul><br />
 </li>
 <li><a name="WindowSetBorder">
@@ -239,15 +260,16 @@ LI.EXP {
 <li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
 </ul><br />
 </li>
-<li><a name="SetBackgroundColor">
-<b>SetBackgroundColor</b></a>
- - Changes the window background color.
+<li><a name="MessageHandler">
+<b>MessageHandler</b></a>
+ - Callback used for widget events
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>Window *window, <i>ComponentName_</i>PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>window: Pointer to <i>ComponentName_</i>Window</i> - Pointer to window widget</li>
-<li><i>color:<i>ComponentName_</i>PixelColor</i> - Background color for window</li>
+<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
+<li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
+<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
 </ul><br />
 </li>
 <li><a name="SetUserMsgHandler">

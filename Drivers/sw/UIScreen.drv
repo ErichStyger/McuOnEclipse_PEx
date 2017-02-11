@@ -49,7 +49,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_EventCallback Callback used for widget events
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -65,19 +64,12 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* Include inherited components */
+#include "%@UI@ModuleName.h"
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,14 +79,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
-typedef %@UI@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor; %>40/* type large enough to hold the color information */
-typedef %@UI@'ModuleName'%.PixelDim %'ModuleName'%.PixelDim;     %>40/* type big enough to hold the x and y coordinates */
-typedef %@UI@'ModuleName'%.Screen %'ModuleName'%.Screen;         %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Element %'ModuleName'%.Element;       %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Pvoid %'ModuleName'%.Pvoid;           %>40/* Alias to Pvoid data type */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -105,43 +89,62 @@ typedef %@UI@'ModuleName'%.Pvoid %'ModuleName'%.Pvoid;           %>40/* Alias to
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-
-/* --- Element: Screen --- */
-typedef struct %'ModuleName'_ScreenWidget{
-  %'ModuleName'_Element element;                                 %>40/* the base element, always first in structure */
-  %'ModuleName'_PixelDim width;                                  %>40/* fix width */
-  %'ModuleName'_PixelDim height;                                 %>40/* fix height */
-%if %SelectionEnabled='yes'
-  struct %'ModuleName'_Element *selectedW;                       %>40/* pointer to the currently selected window */
-%endif
-  %'ModuleName'_PixelColor bgColor;                              %>40/* background color of the screen */
-  bool updateAll;                                                %>40/* If the screen needs to be updated as a whole */
+/* --- Screen Widget --- */
+typedef struct %'ModuleName'_ScreenWidget {
+  %@UI@'ModuleName'%.Element element;                            %>40/* the base element, always first in structure */
+  %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* background color of the screen */
+#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
+  %@UI@'ModuleName'%.Element *selectedW;                         %>40/* pointer to the currently selected window */
+#endif
 } %'ModuleName'_ScreenWidget;
-
 %-
 %-BW_CUSTOM_USERTYPE_END
 
-
 %-BW_DEFINITION_START
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CreateScreen
-%ifdef CreateScreen
-void %'ModuleName'%.%CreateScreen(%'ModuleName'_ScreenWidget *screen, %'ModuleName'_PixelColor bgColor);
+%-BW_METHOD_BEGIN Create
+%ifdef Create
+uint8_t %'ModuleName'%.%Create(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height);
 %define! Parscreen
-%define! ParbgColor
-%include Common\UIScreenCreateScreen.Inc
+%define! Parx
+%define! Pary
+%define! Parwidth
+%define! Parheight
+%define! RetVal
+%include Common\UIScreenCreate.Inc
 
-%endif %- CreateScreen
-%-BW_METHOD_END CreateScreen
+%endif %- Create
+%-BW_METHOD_END Create
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN UpdateScreen
-%ifdef UpdateScreen
-void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen);
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+void %'ModuleName'%.%Paint(%'ModuleName'_ScreenWidget *screen);
 %define! Parscreen
-%include Common\UIScreenUpdateScreen.Inc
+%include Common\UIScreenPaint.Inc
 
-%endif %- UpdateScreen
-%-BW_METHOD_END UpdateScreen
+%endif %- Paint
+%-BW_METHOD_END Paint
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetBackgroundColor
+%ifdef SetBackgroundColor
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelColor color);
+%define! Parscreen
+%define! Parcolor
+%include Common\UIScreenSetBackgroundColor.Inc
+
+%endif %- SetBackgroundColor
+%-BW_METHOD_END SetBackgroundColor
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData);
+%define! Parkind
+%define! Parelement
+%define! ParpData
+%include Common\UIScreenMessageHandler.Inc
+
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -175,92 +178,94 @@ void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-static %'ModuleName'%.Screen *currentScreen;                     %>40/* current screen */
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
-%-UNLOCKED
-/* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG EventCallback
-static void EventCallback(%'ModuleName'_Screen *screen, %'ModuleName'_Window *window, %'ModuleName'_Element *element, %'ModuleName'_EventCallbackKind kind, %'ModuleName'_Pvoid pData);
-%-INTERNAL_LOC_METHOD_END EventCallback
-%-
-
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG EventCallback
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+%define! Parscreen
+%include Common\UIScreenPaint.Inc
+void %'ModuleName'%.%Paint(%'ModuleName'_ScreenWidget *screen)
+{
+  %@UI@'ModuleName'%.DrawFilledBox(
+    NULL, /* screen is topmost widget on display */
+    screen->element.prop.x,
+    screen->element.prop.y,
+    screen->element.prop.width,
+    screen->element.prop.height,
+    screen->bgColor
+  );
+}
+
+%endif %- Paint
+%-BW_METHOD_END Paint
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
 %define! Parkind
 %define! ParpData
 %define! Parelement
-%define! Parwindow
-%define! Parscreen
-%include Common\GeneralInternalGlobal.inc (EventCallback)
-static void EventCallback(%'ModuleName'_Screen *screen, %'ModuleName'_Window *window, %'ModuleName'_Element *element, %'ModuleName'_EventCallbackKind kind, %'ModuleName'_Pvoid pData)
+%include Common\UIScreenMessageHandler.Inc
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)
 {
   (void)pData; /* unused argument */
-  (void)screen; /* unused argument */
+  if (element==NULL || element->prop.type!=%@UI@'ModuleName'%.WIDGET_SCREEN) {
+    return; /* not a screen */
+  }
+  switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
+      %'ModuleName'%.%Paint((%'ModuleName'_ScreenWidget*)element);
+      break;
+    default:
+      break;
+  } /* switch */
 }
-%-INTERNAL_METHOD_END EventCallback
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CreateScreen
-%ifdef CreateScreen
+%-BW_METHOD_BEGIN Create
+%ifdef Create
 %define! Parscreen
-%define! ParbgColor
-%include Common\UIScreenCreateScreen.Inc
-void %'ModuleName'%.%CreateScreen(%'ModuleName'_ScreenWidget *screen, %'ModuleName'_PixelColor bgColor)
+%define! Parx
+%define! Pary
+%define! Parwidth
+%define! Parheight
+%define! RetVal
+%include Common\UIScreenCreate.Inc
+uint8_t %'ModuleName'%.%Create(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
-  %@UI@'ModuleName'%.ElementInitCommon((%'ModuleName'_Element*)screen, %@UI@'ModuleName'%.WIDGET_SCREEN,
-    0, 0, %@UI@'ModuleName'%.GetWidth(), %@UI@'ModuleName'%.GetHeight(),
-    bgColor, (%'ModuleName'%.painterCallback)PaintScreen); //paintercallback adden
-%if SelectionEnabled='yes'
+  %@UI@'ModuleName'%.ElementInitCommon(
+    (%@UI@'ModuleName'%.Element*)screen,
+    %@UI@'ModuleName'%.WIDGET_SCREEN,
+    x, x, width, height,
+    %'ModuleName'%.%MessageHandler
+  );
+  screen->bgColor = %'ModuleName'_CONFIG_DEFAULT_SCREEN_BACKGROUND_COLOR;
+#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
   screen->selectedW = NULL;
-%endif
-  screen->updateAll = TRUE;
-  currentScreen = screen;
+#endif
+  return ERR_OK;
 }
 
-%endif %- CreateScreen
-%-BW_METHOD_END CreateScreen
+%endif %- Create
+%-BW_METHOD_END Create
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN UpdateScreen
-%ifdef UpdateScreen
+%-BW_METHOD_BEGIN SetBackgroundColor
+%ifdef SetBackgroundColor
 %define! Parscreen
-%include Common\UIScreenUpdateScreen.Inc
-void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen)
+%define! Parcolor
+%include Common\UIScreenSetBackgroundColor.Inc
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelColor color)
 {
-  %'ModuleName'%.Window *window;
-
-  if (screen != NULL) {
-    window = screen->element.sub;                                %>40/* first element of screen */
-    if (screen->updateAll) {                                     %>40/* start with drawing the background */
-      if (   window != NULL
-          && window->element.prop.x == 0 && window->element.prop.y == 0
-          && window->element.prop.width == %@UI@'ModuleName'%.GetWidth()
-          && window->element.prop.height == %@UI@'ModuleName'%.GetHeight()
-         )
-      {
-        /* first window is filling whole screen: no need to paint screen backgound */
-      } else {
-      /* needs fixing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-        %@UI@'ModuleName'%.DrawFilledBox(NULL,0, 0, %@UI@'ModuleName'%.GetWidth(), %@UI@'ModuleName'%.GetHeight(), screen->bgColor);
-      }
-    }
-    while (window != NULL) {
-      if (screen->updateAll) {
-        window->updateAll = TRUE;
-      }
-      /* need to call update here!!!!!!*/
-      window = window->next;                                     %>40/* process next window */
-    } /* while */
-    screen->updateAll = FALSE;
-  } /* if */
+  screen->bgColor = color;
 }
 
-%endif %- UpdateScreen
-%-BW_METHOD_END UpdateScreen
-%-************************************************************************************************************
+%endif %- SetBackgroundColor
+%-BW_METHOD_END SetBackgroundColor
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -278,6 +283,32 @@ void %'ModuleName'%.%UpdateScreen(%'ModuleName'_Screen *screen)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Application configuration file for UIScreen module
+ *
+ * This header file is a configuration header file to configure the module %'ModuleName' (UIScreen).
+ * You can configure the defines directly in this file or with the compiler -D option.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_SCREEN_BACKGROUND_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_SCREEN_BACKGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%BackgroundColor
+    /*!< Default screen background color */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

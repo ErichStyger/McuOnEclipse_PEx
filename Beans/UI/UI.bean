@@ -4,7 +4,7 @@
     <Name>UI</Name>
     <Description>User Interface for different displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.056</Version>
+    <Version>01.066</Version>
     <Icon>UI</Icon>
     <TypesFiles>PE,UI\UI</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -56,12 +56,12 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
+              <DefaultIndex>1</DefaultIndex>
               <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
+              <DefaultValue>false</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
@@ -113,6 +113,20 @@
         <Children>
           <GrupItem>
             <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>UI\sdk</TypeSpec>
+              <Hint>Link to SDK</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
               <Name>Font Display</Name>
               <Symbol>FontDisplay</Symbol>
               <TypeSpec>FontDisplay_I</TypeSpec>
@@ -144,194 +158,6 @@
     </Property>
   </PropertyList>
   <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>GetScreen</Name>
-        <Symbol>GetScreen</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>returns the current active screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>PScreen</ReturnType>
-        <RetHint>the current active screen</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>%'ModuleName'_PScreen #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>ScreenMsgHandler</Name>
-        <Symbol>ScreenMsgHandler</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Message handler for the screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>CreateScreen</Name>
-        <Symbol>CreateScreen</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes a screen with default values</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen structure</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>bgColor</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>background color</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Screen *screen, %'ModuleName'_PixelColor bgColor)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>UpdateScreen</Name>
-        <Symbol>UpdateScreen</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Draws all windows and elements of the screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>updateAll</ParName>
-          <ParType>Boolean</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>if the whole screen needs to be updated.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Screen *screen, bool updateAll)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>PaintScreen</Name>
-        <Symbol>PaintScreen</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Draws all elements to the screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
     <Method>
       <TMthdItem>
         <Name>EnableElementSelection</Name>
@@ -1507,7 +1333,7 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>8</ParamCount>
+        <ParamCount>7</ParamCount>
         <Parameter>
           <ParName>element</ParName>
           <ParType>Element</ParType>
@@ -1545,12 +1371,6 @@
           <ParHint>height of element</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>bgColor</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>background color</ParHint>
-        </Parameter>
-        <Parameter>
           <ParName>handler</ParName>
           <ParType>MsgHandler</ParType>
           <ParPassing>Value</ParPassing>
@@ -1558,47 +1378,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor bgColor, %'ModuleName'_MsgHandler handler)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SetElementColor</Name>
-        <Symbol>SetElementColor</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Sets the element properties color.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>color</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>color to be used for the element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, %'ModuleName'_PixelColor color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, %'ModuleName'_ElementType type, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_MsgHandler handler)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1685,74 +1465,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_Element *parent, %'ModuleName'_Element *element)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>GetScreenPosX</Name>
-        <Symbol>GetScreenPosX</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the element x screen coordinate</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>PixelDim</ReturnType>
-        <RetHint>element width in pixels</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>GetScreenPosY</Name>
-        <Symbol>GetScreenPosY</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the element y screen coordinate</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>PixelDim</ReturnType>
-        <RetHint>element width in pixels</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -2150,52 +1862,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SendMessage</Name>
-        <Symbol>SendMessage</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Sends a message to an element.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint/>
-        </Parameter>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint/>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>ProcessTouch</Name>
         <Symbol>ProcessTouch</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -2333,6 +1999,52 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>%'ModuleName'_PElement #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SendMessage</Name>
+        <Symbol>SendMessage</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sends a message to an element.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>MsgKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
