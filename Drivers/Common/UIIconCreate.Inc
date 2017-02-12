@@ -5,15 +5,14 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Create)
 %;**     Description :
-%;**         Creates a new screen
+%;**         Creates a new Icon widget element
 %include Common\GeneralParameters.inc(27)
-%;**         parent%Parparent %>27 - 
-%;**       * screen%Parscreen %>27 - Pointer to screen variable to be
-%;** %>29 created
+%;**       * parent%Parparent %>27 - Pointer to parent element
+%;**       * icon%Paricon %>27 - Pointer to icon widget
 %;**         x%Parx %>27 - x position
-%;**         y%Pary %>27 - y display position
-%;**         width%Parwidth %>27 - screen width
-%;**         height%Parheight %>27 - screen height
+%;**         y%Pary %>27 - y position
+%;**         width%Parwidth %>27 - width of element
+%;**         height%Parheight %>27 - height of element
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

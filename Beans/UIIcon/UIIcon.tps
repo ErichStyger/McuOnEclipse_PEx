@@ -59,5 +59,63 @@
         <Line>BRIGHT_GREY</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeIcon</Name>
+      <Items lines_count="16">
+        <Line>EMPTY</Line>
+        <Line>BOX</Line>
+        <Line>CIRCLE</Line>
+        <Line>ARROW_LEFT</Line>
+        <Line>ARROW_LEFT_BOXED</Line>
+        <Line>ARROW_RIGHT</Line>
+        <Line>ARROW_RIGHT_BOXED</Line>
+        <Line>ARROW_UP</Line>
+        <Line>ARROW_UP_BOXED</Line>
+        <Line>ARROW_DOWN</Line>
+        <Line>ARROW_DOWN_BOXED</Line>
+        <Line>X</Line>
+        <Line>X_BOXED</Line>
+        <Line>CHECKMARK</Line>
+        <Line>CHECKMARK_BOXED</Line>
+        <Line>DOT_CIRCLED</Line>
+      </Items>
+      <Hints lines_count="16">
+        <Line>empty rectangular area</Line>
+        <Line>box icon (disabled check box)</Line>
+        <Line>circle icon (disabled radio button)</Line>
+        <Line>arrow to the left</Line>
+        <Line>boxed arrow left</Line>
+        <Line>arrow to the right</Line>
+        <Line>boxed arrow right</Line>
+        <Line>arrow pointing up</Line>
+        <Line>boxed arrup up</Line>
+        <Line>arrow pointing down</Line>
+        <Line>boxed arrup down</Line>
+        <Line>X shaped icon</Line>
+        <Line>boxed X shaped icon</Line>
+        <Line>checkmark icon</Line>
+        <Line>checkmark with a box</Line>
+        <Line>circle with a dot in it (enabled radio button)</Line>
+      </Hints>
+      <Defines lines_count="16">
+        <Line>ICON_EMPTY</Line>
+        <Line>ICON_BOX</Line>
+        <Line>ICON_CIRCLE</Line>
+        <Line>ICON_ARROW_LEFT</Line>
+        <Line>ICON_ARROW_LEFT_BOXED</Line>
+        <Line>ICON_ARROW_RIGHT</Line>
+        <Line>ICON_ARROW_RIGHT_BOXED</Line>
+        <Line>ICON_ARROW_UP</Line>
+        <Line>ICON_ARROW_UP_BOXED</Line>
+        <Line>ICON_ARROW_DOWN</Line>
+        <Line>ICON_BOX_DOWN_BOXED</Line>
+        <Line>ICON_X</Line>
+        <Line>ICON_X_BOXED</Line>
+        <Line>ICON_CHECKMARK</Line>
+        <Line>ICON_CHECKMAKR_BOXED</Line>
+        <Line>ICON_DOT_CIRCLED</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>

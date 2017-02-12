@@ -4,7 +4,7 @@
     <Name>UIWindow</Name>
     <Description>Window Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.042</Version>
+    <Version>01.045</Version>
     <Icon>UIWindow</Icon>
     <TypesFiles>PE,UIWindow\UIWindow</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -38,7 +38,7 @@
     </Property>
     <Property>
       <TGrupItem>
-        <Name>Window</Name>
+        <Name>Defaults</Name>
         <Symbol>WindowGroup</Symbol>
         <Hint>Configures the defaults</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -274,42 +274,49 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
+        <Name>SetUserMsgHandler</Name>
+        <Symbol>SetUserMsgHandler</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints a window with all widgets</Hint>
+        <Hint>Assigns a user callback to the widget</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
+        <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>window</ParName>
           <ParType>WindowWidget</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to window</ParHint>
         </Parameter>
+        <Parameter>
+          <ParName>handler</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>callback function pointer</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
     <Method>
       <TMthdItem>
-        <Name>WindowSetBorder</Name>
-        <Symbol>WindowSetBorder</Symbol>
+        <Name>SetBorder</Name>
+        <Symbol>SetBorder</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Configures the window to have a border around it</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -376,6 +383,89 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>EventCallbackMovableWindow</Name>
+        <Symbol>EventCallbackMovableWindow</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Callback used for movable window</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>false</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>MsgKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>kind of event</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>optional data pointer, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Paints a window with all widgets</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>window</ParName>
+          <ParType>WindowWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to window</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>MessageHandler</Name>
         <Symbol>MessageHandler</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -420,94 +510,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>EventCallbackMovableWindow</Name>
-        <Symbol>EventCallbackMovableWindow</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Callback used for movable window</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SetUserMsgHandler</Name>
-        <Symbol>SetUserMsgHandler</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Assigns a user callback to the widget</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>WindowWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>handler</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>callback function pointer</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

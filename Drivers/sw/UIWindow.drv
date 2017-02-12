@@ -81,14 +81,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-typedef %@UI@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor; %>40/* type large enough to hold the color information */
-typedef %@UI@'ModuleName'%.PixelDim %'ModuleName'%.PixelDim;     %>40/* type big enough to hold the x and y coordinates */
-typedef %@UI@'ModuleName'%.Screen %'ModuleName'%.Screen;         %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Element %'ModuleName'%.Element;       %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Coordinate %'ModuleName'%.Coordinate; %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.MsgKind %'ModuleName'%.MsgKind;       %>40/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Pvoid %'ModuleName'%.Pvoid;           %>40/* Alias to Pvoid data type */
-typedef %@UI@'ModuleName'%.painterCallback %'ModuleName'%.painterCallback;%>40/* Alias to UserInterface type */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -101,14 +93,14 @@ typedef %@UI@'ModuleName'%.painterCallback %'ModuleName'%.painterCallback;%>40/*
 %-    typedef int TMyInteger;
 /* --- Window Widget --- */
 typedef struct %'ModuleName'_WindowWidget {
-  %'ModuleName'_Element element;                                 %>40 /* the base element, always first in structure */
+  %@UI@'ModuleName'%.Element element;                            %>40 /* the base element, always first in structure */
   %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* background color of the screen */
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   %@UI@'ModuleName'%.MsgHandler userMsgHandler;                  %>40/* optional user handler */
 #endif
 #if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   bool windowMovable;
-  %'ModuleName'_Coordinate clickCoord;                           %>40 /* saves the coordinates on click, needed for movable window */
+  %@UI@'ModuleName'%.Coordinate clickCoord;                      %>40 /* saves the coordinates on click, needed for movable window */
 #endif
 } %'ModuleName'_WindowWidget;
 %-
@@ -131,15 +123,15 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
 %endif %- Create
 %-BW_METHOD_END Create
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WindowSetBorder
-%ifdef WindowSetBorder
+%-BW_METHOD_BEGIN SetBorder
+%ifdef SetBorder
 %-BW_PUBLISH_MACRO
-void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window);
+void %'ModuleName'%.%SetBorder(%'ModuleName'_WindowWidget *window);
 %define! Parwindow
-%include Common\UIWindowWindowSetBorder.Inc
+%include Common\UIWindowSetBorder.Inc
 
-%endif %- WindowSetBorder
-%-BW_METHOD_END WindowSetBorder
+%endif %- SetBorder
+%-BW_METHOD_END SetBorder
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN MakeWindowMovable
 %ifdef MakeWindowMovable
@@ -230,7 +222,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %-UNLOCKED
 /* Internal method prototypes */
 %-INTERNAL_LOC_METHOD_BEG EventCallbackMovableWindow
-static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData);
+static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData);
 %-INTERNAL_LOC_METHOD_END EventCallbackMovableWindow
 %-
 
@@ -245,16 +237,14 @@ static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %'Mo
 %include Common\UIWindowMessageHandler.Inc
 void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)
 {
-#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   %'ModuleName'_WindowWidget *widget = (%'ModuleName'_WindowWidget*)element;
-#endif
 
-  if (element==NULL || element->prop.type!=%@UI@'ModuleName'%.WIDGET_WINDOW) {
-    return; /* not a screen */
+  if (widget==NULL || widget->element.prop.type!=%@UI@'ModuleName'%.WIDGET_WINDOW) {
+    return; /* not a window widget */
   }
   switch(kind) {
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
-      %'ModuleName'%.%Paint((%'ModuleName'_WindowWidget*)element);
+      %'ModuleName'%.%Paint(widget);
       break;
     default:
       break;
@@ -285,12 +275,12 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
   if (parent==NULL || window==NULL) {
     return ERR_FAILED;
   }
-  %@UI@'ModuleName'%.ElementInitCommon((%'ModuleName'%.Element*)window, %@UI@'ModuleName'%.WIDGET_WINDOW,
+  %@UI@'ModuleName'%.ElementInitCommon((%@UI@'ModuleName'%.Element*)window, %@UI@'ModuleName'%.WIDGET_WINDOW,
     x, y, width, height,
     %'ModuleName'%.%MessageHandler
   );
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
-  %'ModuleName'%.%WindowSetBorder(window);
+  %'ModuleName'%.%SetBorder(window);
 #endif
 #if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   window->windowMovable = TRUE;
@@ -300,7 +290,10 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   window->userMsgHandler = NULL;                                 %>40/* needs to be set by user */
 #endif
-  return %@UI@'ModuleName'%.AddSubElement(parent, &window->element);%>40/* add window to screen */
+  if (parent!=NULL) {
+    return %@UI@'ModuleName'%.AddSubElement(parent, &window->element);%>40/* add window list */
+  }
+  return ERR_OK;
 }
 
 %endif %- Create
@@ -322,7 +315,7 @@ void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window)
         window->element.prop.width, window->element.prop.height,
         1, %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR);
       %@UI@'ModuleName'%.DrawFilledBox(&window->element,
-        1, 1,
+        window->element.prop.x+1, window->element.prop.y+1,
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.width-2),
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.height-2),
         window->bgColor);                                        %>40 /* assuming window height/width > 2 pixel! */
@@ -342,11 +335,11 @@ void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window)
 %endif %- Paint
 %-BW_METHOD_END Paint
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WindowSetBorder
-%ifdef WindowSetBorder
+%-BW_METHOD_BEGIN SetBorder
+%ifdef SetBorder
 %define! Parwindow
-%include Common\UIWindowWindowSetBorder.Inc
-void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window)
+%include Common\UIWindowSetBorder.Inc
+void %'ModuleName'%.%SetBorder(%'ModuleName'_WindowWidget *window)
 {
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
   window->element.prop.flags |= %@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER;
@@ -355,8 +348,8 @@ void %'ModuleName'%.%WindowSetBorder(%'ModuleName'_WindowWidget *window)
 #endif
 }
 
-%endif %- WindowSetBorder
-%-BW_METHOD_END WindowSetBorder
+%endif %- SetBorder
+%-BW_METHOD_END SetBorder
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN MakeWindowMovable
 %ifdef MakeWindowMovable
@@ -379,7 +372,7 @@ void %'ModuleName'%.%MakeWindowMovable(%'ModuleName'_WindowWidget *window)
 %define! Parkind
 %define! ParpData
 %include Common\GeneralInternalGlobal.inc (EventCallbackMovableWindow)
-static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
+static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)
 {
 #if %'ModuleName'%.CONFIG_WINDOW_IS_MOVABLE
   if (element->prop.type == %@UI@'ModuleName'%.WIDGET_HEADER){   %>40/* only do something if header is clicked */

@@ -4,7 +4,7 @@
     <Name>UIScreen</Name>
     <Description>Screen Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.016</Version>
+    <Version>01.017</Version>
     <Icon>UIScreen</Icon>
     <TypesFiles>PE,UIScreen\UIScreen</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -131,7 +131,14 @@
         <InDefinition>true</InDefinition>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>5</ParamCount>
+        <ParamCount>6</ParamCount>
+        <Parameter>
+          <ParName>parent</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
+        </Parameter>
         <Parameter>
           <ParName>screen</ParName>
           <ParType>ScreenWidget</ParType>
@@ -168,7 +175,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

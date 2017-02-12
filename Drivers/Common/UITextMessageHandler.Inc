@@ -3,12 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetUserMsgHandler)
+%include Common\GeneralMethod.inc (MessageHandler)
 %;**     Description :
-%;**         Sets the icon type
+%;**         Widget default message handler
 %include Common\GeneralParameters.inc(27)
-%;**       * icon%Paricon %>27 - Pointer to widget
-%;**         handler%Parhandler %>27 - 
+%;**       * element%Parelement %>27 - Pointer to element
+%;**         kind%Parkind %>27 - kind of event
+%;**         pData%ParpData %>27 - optional data pointer, NULL otherwise
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

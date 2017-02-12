@@ -3,12 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetUserMsgHandler)
+%include Common\GeneralMethod.inc (ChangeFgColor)
 %;**     Description :
-%;**         Sets the icon type
+%;**         Changes the foreground color of an icon
 %include Common\GeneralParameters.inc(27)
-%;**       * icon%Paricon %>27 - Pointer to widget
-%;**         handler%Parhandler %>27 - 
+%;**       * icon%Paricon %>27 - Pointer to icon
+%;**         fgColor%ParfgColor %>27 - new color of icon
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

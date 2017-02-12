@@ -1363,11 +1363,11 @@ void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *parent, %'Mod
 %include Common\GeneralInternal.inc (AddSubElement)
 byte %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement)
 {
-  if (parentElement == NULL){
-    return ERR_FAILED;
+  if (parentElement == NULL) {
+    return ERR_FAILED;                                           %>40/* no parent element */
   }
   if (parentElement->sub == NULL){
-    parentElement->sub = subElement;                             %>40/* no previous sub elements so add it direct */
+    parentElement->sub = subElement;                             %>40/* no previous sub elements so add it directly */
     subElement->parent = parentElement;                          %>40/* link parent */
     return ERR_OK;
   } else {

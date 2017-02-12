@@ -3,12 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetUserMsgHandler)
+%include Common\GeneralMethod.inc (SetType)
 %;**     Description :
-%;**         Sets the icon type
+%;**         Set the icon type
 %include Common\GeneralParameters.inc(27)
-%;**       * icon%Paricon %>27 - Pointer to widget
-%;**         handler%Parhandler %>27 - 
+%;**       * icon%Paricon %>27 - Pointer to icon
+%;**         type%Partype %>27 - icon type
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

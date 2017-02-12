@@ -9,8 +9,7 @@
 %include Common\GeneralParameters.inc(27)
 %;**       * txtw%Partxtw %>27 - Pointer to text widget
 %;**         fgColor%ParfgColor %>27 - text color
-%;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -104,12 +104,13 @@ typedef struct %'ModuleName'_ScreenWidget {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Create
 %ifdef Create
-uint8_t %'ModuleName'%.%Create(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height);
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height);
 %define! Parscreen
 %define! Parx
 %define! Pary
 %define! Parwidth
 %define! Parheight
+%define! Parparent
 %define! RetVal
 %include Common\UIScreenCreate.Inc
 
@@ -234,9 +235,10 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %define! Pary
 %define! Parwidth
 %define! Parheight
+%define! Parparent
 %define! RetVal
 %include Common\UIScreenCreate.Inc
-uint8_t %'ModuleName'%.%Create(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
   %@UI@'ModuleName'%.ElementInitCommon(
     (%@UI@'ModuleName'%.Element*)screen,
@@ -248,6 +250,9 @@ uint8_t %'ModuleName'%.%Create(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleN
 #if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
   screen->selectedW = NULL;
 #endif
+  if (parent!=NULL) {
+    return %@UI@'ModuleName'%.AddSubElement(parent, &screen->element);
+  }
   return ERR_OK;
 }
 

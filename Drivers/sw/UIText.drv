@@ -49,8 +49,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%define! Description_Paint Paints the text to the screen
-%define! Description_MsgHandler Widget default message handler
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -66,19 +64,14 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* Include inherited components */
+#include "%@UI@ModuleName.h"
+#include "%@FontDisplay@ModuleName.h"
+#include "%@Utility@ModuleName.h"
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -88,17 +81,8 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
-typedef %@UI@'ModuleName'%.PixelColor                            %>30 %'ModuleName'%.PixelColor;       %>55/* type large enough to hold the color information */
-typedef %@UI@'ModuleName'%.PixelDim                              %>30 %'ModuleName'%.PixelDim;         %>55/* type big enough to hold the x and y coordinates */
-typedef %@UI@'ModuleName'%.Screen                                %>30 %'ModuleName'%.Screen;           %>55/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.Element                               %>30 %'ModuleName'%.Element;          %>55/* Alias to UserInterface type */
-typedef %@UI@'ModuleName'%.MsgKind                               %>30 %'ModuleName'%.MsgKind;          %>55/* Alias to UserInterface type */
 typedef %@FontDisplay@'ModuleName'%.Font                         %>30 %'ModuleName'%.Font;             %>55/* Callback to retrieve font information. */
-typedef %@UI@'ModuleName'%.Pvoid                                 %>30 %'ModuleName'%.Pvoid;            %>55/* Alias to Pvoid data type */
-typedef %@UI@'ModuleName'%.painterCallback                       %>30 %'ModuleName'%.painterCallback;  %>55/* Alias to UserInterface type */
+typedef %@UI@'ModuleName'%.PixelDim                              %>30 %'ModuleName'%.PixelDim;         %>55/* wrapper type */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_Pvoid
@@ -125,21 +109,18 @@ typedef %@UI@'ModuleName'%.painterCallback                       %>30 %'ModuleNa
 typedef struct {                                                 %>40/* Structure to describe a simple text helper for drawing text */
   unsigned char *text;                                           %>40/* Pointer to the text itself */
   %@FontDisplay@'ModuleName'%.Font *font;                        %>40/* Font callbacks to be used for the text */
-  %@UI@'ModuleName'%.PixelColor txtColor;                        %>40/* foreground color of text */
+  %@UI@'ModuleName'%.PixelColor fgColor;                         %>40/* foreground color of text */
+  %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* background color of text */
 } %'ModuleName'_TextInfo;
 
 /* --- Element: Text widget --- */
 typedef struct {                                                 %>40/* element showing static text */
-  %'ModuleName'_Element element;                                 %>40/* the base element, always first in structure */
-%ifdef SetUserMsgHandler
+  %@UI@'ModuleName'%.Element element;                            %>40/* the base element, always first in structure */
+  %'ModuleName'_TextInfo textInfo;                               %>40/* Information describing the text */
+#if %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER
   %@UI@'ModuleName'%.MsgHandler userMsgHandler;                  %>40/* optional user handler */
-%endif %- SetUserMsgHandler
-  %'ModuleName'_TextInfo textInfo;                               %>40/* Information describing the text. Must be right after element */
+#endif
 } %'ModuleName'_TextWidget;
-
-#define %'ModuleName'_DEFAULT_TEXT_TEXT     "%DefaultText" /* default text from properties */
-#define %'ModuleName'_DEFAULT_TEXT_FG_COLOR %@UI@'ModuleName'%.COLOR_%DefaultTextTextForegroundColor /* default text foreground color from properties */
-#define %'ModuleName'_DEFAULT_TEXT_BG_COLOR %@UI@'ModuleName'%.COLOR_%DefaultTextTextBackgroundColor /* default text foreground color from properties */
 
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -147,7 +128,7 @@ typedef struct {                                                 %>40/* element 
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Create
 %ifdef Create
-byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height);
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height);
 %define! Parx
 %define! Pary
 %define! Parwidth
@@ -160,10 +141,9 @@ byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_TextWid
 %endif %- Create
 %-BW_METHOD_END Create
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN ChangeText
 %ifdef ChangeText
-byte %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, word dstTextSize, unsigned char *txt);
+uint8_t %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt);
 %define! PardstTextSize
 %define! Partxt
 %define! Partxtw
@@ -175,7 +155,7 @@ byte %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, word dstTextSize
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetText
 %ifdef SetText
-byte %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt);
+uint8_t %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt);
 %define! Partxt
 %define! ParTextElement
 %define! Partxtw
@@ -187,10 +167,9 @@ byte %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetFgColor
 %ifdef SetFgColor
-byte %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelColor fgColor);
+void %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
 %define! ParfgColor
 %define! Partxtw
-%define! RetVal
 %include Common\UITextSetFgColor.Inc
 
 %endif %- SetFgColor
@@ -198,10 +177,9 @@ byte %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_Pi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetBgColor
 %ifdef SetBgColor
-byte %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelColor bgColor);
+void %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
 %define! ParbgColor
 %define! Partxtw
-%define! RetVal
 %include Common\UITextSetBgColor.Inc
 
 %endif %- SetBgColor
@@ -209,8 +187,7 @@ byte %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_Pi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler
-#define %'ModuleName'%.%SetUserMsgHandler(textW, handler) \
-  (textW)->userMsgHandler = handler
+void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_TextWidget *textW, %@UI@'ModuleName'%.MsgHandler handler);
 
 %define! Parbutton
 %define! PartextW
@@ -222,7 +199,7 @@ byte %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_Pi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetFont
 %ifdef SetFont
-byte %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %'ModuleName'_Font *font);
+uint8_t %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %@FontDisplay@'ModuleName'%.Font *font);
 %define! Parwidget
 %define! Parfont
 %define! RetVal
@@ -233,7 +210,7 @@ byte %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %'ModuleName'_Fon
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Resize
 %ifdef Resize
-byte %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget);
+uint8_t %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget);
 %define! Parwidget
 %define! RetVal
 %include Common\UITextResize.Inc
@@ -290,6 +267,26 @@ byte %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget);
 
 %endif %- GetFontHeight
 %-BW_METHOD_END GetFontHeight
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+void %'ModuleName'%.%Paint(%'ModuleName'_TextWidget *text);
+%define! Partext
+%include Common\UITextPaint.Inc
+
+%endif %- Paint
+%-BW_METHOD_END Paint
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData);
+%define! Parelement
+%define! Parkind
+%define! ParpData
+%include Common\UITextMessageHandler.Inc
+
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -326,76 +323,79 @@ byte %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget);
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
-%-UNLOCKED
-/* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG Paint
-static byte Paint(%'ModuleName'_Element *element);
-%-INTERNAL_LOC_METHOD_END Paint
-%-INTERNAL_LOC_METHOD_BEG MsgHandler
-static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData);
-%-INTERNAL_LOC_METHOD_END MsgHandler
-%-
-
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG Paint
-%define! Parelement
-%define! RetVal
-%include Common\GeneralInternalGlobal.inc (Paint)
-static byte Paint(%'ModuleName'_Element *element)
+%-BW_METHOD_BEGIN Paint
+%ifdef Paint
+%define! Partext
+%include Common\UITextPaint.Inc
+void %'ModuleName'%.%Paint(%'ModuleName'_TextWidget *text)
 {
-  %'ModuleName'_TextInfo *textInfo = &((%'ModuleName'_TextWidget*)element)->textInfo;
-  %'ModuleName'_PixelDim x, y;
-  %'ModuleName'_PixelColor fgColor, bgColor;
+  %@UI@'ModuleName'%.PixelDim x, y;
+  %@UI@'ModuleName'%.PixelColor fgColor, bgColor;
 
-  fgColor = textInfo->txtColor;
-  bgColor = element->prop.color;
-  if (element->prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {%>40/* invert colors */
+  fgColor = text->textInfo.fgColor;
+  bgColor = text->textInfo.bgColor;
+#if %@UI@'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+  if (text->prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {   %>40/* invert colors */
     %'ModuleName'_PixelColor tmp;
 
     tmp = fgColor; fgColor = bgColor; bgColor = tmp;
   }
+#endif
   /* draw background */
-  %@UI@'ModuleName'%.DrawFilledBox(element, 0, 0,
-       element->prop.width, element->prop.height, bgColor);
-  /* now write text */
-  x = (%'ModuleName'_PixelDim)(%@UI@'ModuleName'%.GetScreenPosX(element));
-  y = (%'ModuleName'_PixelDim)(%@UI@'ModuleName'%.GetScreenPosY(element));
-  %@FontDisplay@'ModuleName'%.WriteString(textInfo->text,
+  %@UI@'ModuleName'%.DrawFilledBox((%@UI@'ModuleName'%.Element*)text,
+    text->element.prop.x, text->element.prop.y,
+    text->element.prop.width, text->element.prop.height,
+    bgColor);
+  /* write text */
+  x = text->element.prop.x;
+  y = text->element.prop.y;
+  %@FontDisplay@'ModuleName'%.WriteString(text->textInfo.text,
     fgColor,
     &x, &y,
-    textInfo->font
+    text->textInfo.font
   );
-  return ERR_OK;
 }
 
-%-INTERNAL_METHOD_END Paint
+%endif %- Paint
+%-BW_METHOD_END Paint
 %-************************************************************************************************************
-%-INTERNAL_METHOD_BEG MsgHandler
+%-BW_METHOD_BEGIN MessageHandler
+%ifdef MessageHandler
 %define! Parkind
 %define! ParpData
 %define! Parelement
-%include Common\GeneralInternalGlobal.inc (MsgHandler)
-static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)
+%include Common\UITextMessageHandler.Inc
+void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)
 {
   %'ModuleName'_TextWidget *widget = (%'ModuleName'_TextWidget*)element;
 
-  if (kind==%@UI@'ModuleName'%.MSG_WIDGET_PAINT) {
-    (void)Paint(element);
-  } else if (kind==%@UI@'ModuleName'%.MSG_WIDGET_RESIZE) {
-    (void)%'ModuleName'%.%Resize(widget);
+  if (widget==NULL || widget->element.prop.type!=%@UI@'ModuleName'%.WIDGET_TEXT) {
+    return; /* not a text widget */
   }
-%ifdef SetUserMsgHandler
+  switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
+      %'ModuleName'%.%Paint(widget);
+      break;
+    case %@UI@'ModuleName'%.MSG_WIDGET_RESIZE:
+      (void)%'ModuleName'%.%Resize(widget);
+      break;
+    default:
+      break;
+  } /* switch */
+#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
     widget->userMsgHandler(kind, element, pData);                %>40/* call user event  */
   }
-%else
+#else
   (void)pData; /* avoid warning about unused argument */
-%endif
+#endif
 }
 
-%-INTERNAL_METHOD_END MsgHandler
+%endif %- MessageHandler
+%-BW_METHOD_END MessageHandler
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Create
 %ifdef Create
@@ -407,7 +407,7 @@ static void MsgHandler(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *elemen
 %define! Parparent
 %define! RetVal
 %include Common\UITextCreate.Inc
-byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height)
+uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
   %@FontDisplay@'ModuleName'%.Font *font;
 
@@ -415,22 +415,23 @@ byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_TextWid
     return ERR_FAILED;
   }
   font = %@Font@'ModuleName'%.GetFont(); /* font defined in user properties */
-  if (width == 0) {                                              %>40/* auto size */
-    width = %@FontDisplay@'ModuleName'%.GetStringWidth((unsigned char*)%'ModuleName'_DEFAULT_TEXT_TEXT, font, NULL);
+  if (width==0) {                                                %>40/* auto size */
+    width = %@FontDisplay@'ModuleName'%.GetStringWidth((unsigned char*)%'ModuleName'_CONFIG_DEFAULT_TEXT_TEXT, font, NULL);
   }
-  if (height == 0) {                                             %>40/* auto size */
-    height = %@FontDisplay@'ModuleName'%.GetStringHeight((unsigned char*)%'ModuleName'_DEFAULT_TEXT_TEXT, font, NULL);
+  if (height==0) {                                               %>40/* auto size */
+    height = %@FontDisplay@'ModuleName'%.GetStringHeight((unsigned char*)%'ModuleName'_CONFIG_DEFAULT_TEXT_TEXT, font, NULL);
   }
   %@UI@'ModuleName'%.ElementInitCommon(&txtw->element, %@UI@'ModuleName'%.WIDGET_TEXT,
-    x, y, width, height, %'ModuleName'_DEFAULT_TEXT_BG_COLOR, MsgHandler);
-%ifdef SetUserMsgHandler
+    x, y, width, height, %'ModuleName'%.MessageHandler);
+  txtw->textInfo.fgColor = %'ModuleName'%.CONFIG_DEFAULT_TEXT_FOREGROUND_COLOR;
+  txtw->textInfo.bgColor = %'ModuleName'%.CONFIG_DEFAULT_TEXT_BACKGROUND_COLOR;
+#if %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER
   txtw->userMsgHandler = NULL;                                   %>40/* needs to be set by user */
-%endif %- SetUserMsgHandler
-  txtw->textInfo.text = (unsigned char*)%'ModuleName'_DEFAULT_TEXT_TEXT;
+#endif
+  txtw->textInfo.text = (unsigned char*)%'ModuleName'_CONFIG_DEFAULT_TEXT_TEXT;
   txtw->textInfo.font = font;
-  txtw->textInfo.txtColor = %'ModuleName'_DEFAULT_TEXT_FG_COLOR;
-  if (parent!=NULL && %@UI@'ModuleName'%.AddSubElement(parent, &txtw->element)!=ERR_OK) {
-    return ERR_FAILED;
+  if (parent!=NULL) {
+    return %@UI@'ModuleName'%.AddSubElement(parent, &txtw->element);
   }
   return ERR_OK;
 }
@@ -444,14 +445,14 @@ byte %'ModuleName'%.%Create(%'ModuleName'_Element *parent, %'ModuleName'_TextWid
 %define! Partxtw
 %define! RetVal
 %include Common\UITextChangeText.Inc
-byte %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, word dstTextSize, unsigned char *txt)
+uint8_t %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt)
 {
-  %'ModuleName'_PixelDim x, y, leftPos, xCursor, yCursor;
+  %@UI@'ModuleName'%.PixelDim x, y, leftPos, xCursor, yCursor;
   %'ModuleName'_TextInfo *textInfo;
   unsigned char *p, *q;
-  %'ModuleName'_PixelDim width, totalWidth;
-  %'ModuleName'_PixelDim height, totalHeight;
-  %'ModuleName'_PixelColor drawColor, clrColor;
+  %@UI@'ModuleName'%.PixelDim width, totalWidth;
+  %@UI@'ModuleName'%.PixelDim height, totalHeight;
+  %@UI@'ModuleName'%.PixelColor drawColor, clrColor;
   %@FontDisplay@'ModuleName'%.Font *font;
 
   if (txtw == NULL || txtw->element.prop.type != %@UI@'ModuleName'%.WIDGET_TEXT) {
@@ -466,18 +467,15 @@ byte %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, word dstTextSize
   xCursor = x; yCursor = y;
   %@FontDisplay@'ModuleName'%.GetFontHeight(font, &height, &totalHeight);
   /* determine color to clear text and color to draw text */
-%if SelectionEnabled='yes'
+  drawColor = textInfo->fgColor;
+  clrColor = textInfo->bgColor;
+#if %@UI@'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
   if (txtw->element.prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {
-    drawColor = txtw->element.prop.color;
-    clrColor = textInfo->txtColor;
-  } else {
-    drawColor = textInfo->txtColor;
-    clrColor = txtw->element.prop.color;
+    %@UI@'ModuleName'%.PixelColor tmp;
+
+    tmp = drawColor; drawColor = clrColor; clrColor = tmp; /* swap colors */
   }
-%else
-  drawColor = %@UI@'ModuleName'%.COLOR_%DefaultTextTextForegroundColor;
-  clrColor = txtw->element.prop.color;
-%endif
+#endif
   /* iterate through the two strings and compare them. Need to care about '\n' too. Note that we do not handle '\r' 100%% correctly :-(. */
   p = textInfo->text;
   q = txt;
@@ -537,7 +535,7 @@ byte %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, word dstTextSize
 %define! Partxtw
 %define! RetVal
 %include Common\UITextSetText.Inc
-byte %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt)
+uint8_t %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt)
 {
   if (txtw == NULL || (txtw->element.prop.type != %@UI@'ModuleName'%.WIDGET_TEXT)) {
     return ERR_FAILED; /* error! */
@@ -552,15 +550,10 @@ byte %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *txt)
 %ifdef SetFgColor
 %define! ParfgColor
 %define! Partxtw
-%define! RetVal
 %include Common\UITextSetFgColor.Inc
-byte %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelColor fgColor)
+void %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
 {
-  if (txtw == NULL) {
-    return ERR_FAILED;
-  }
-  txtw->textInfo.txtColor = fgColor;
-  return ERR_OK;
+  txtw->textInfo.fgColor = color;
 }
 
 %endif %- SetFgColor
@@ -570,15 +563,10 @@ byte %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_Pi
 %ifdef SetBgColor
 %define! ParbgColor
 %define! Partxtw
-%define! RetVal
 %include Common\UITextSetBgColor.Inc
-byte %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_PixelColor bgColor)
+void %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
 {
-  if (txtw == NULL) {
-    return ERR_FAILED;
-  }
-  txtw->element.prop.color = bgColor;
-  return ERR_OK;
+  txtw->textInfo.bgColor = color;
 }
 
 %endif %- SetBgColor
@@ -589,10 +577,15 @@ byte %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %'ModuleName'_Pi
 %define! PartextW
 %define! Parhandler
 %include Common\UITextSetUserMsgHandler.Inc
-/*
 void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_TextWidget *textW, %@UI@'ModuleName'%.MsgHandler handler)
- ** This method is implemented as macro
-*/
+{
+#if %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER
+  textW->userMsgHandler = handler;
+#else
+  (void)textW;
+  (void)handler;
+#endif
+}
 
 %endif %- SetUserMsgHandler
 %-BW_METHOD_END SetUserMsgHandler
@@ -603,7 +596,7 @@ void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_TextWidget *textW, %@UI@'Mo
 %define! Parfont
 %define! RetVal
 %include Common\UITextSetFont.Inc
-byte %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %'ModuleName'_Font *font)
+uint8_t %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %@FontDisplay@'ModuleName'%.Font *font)
 {
   if (widget==NULL) {
     return ERR_FAILED;
@@ -622,7 +615,7 @@ byte %'ModuleName'%.%SetFont(%'ModuleName'_TextWidget *widget, %'ModuleName'_Fon
 %define! Parwidget
 %define! RetVal
 %include Common\UITextResize.Inc
-byte %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget)
+uint8_t %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget)
 {
   if (widget==NULL) {
     return ERR_FAILED;
@@ -725,6 +718,52 @@ byte %'ModuleName'%.%Resize(%'ModuleName'_TextWidget *widget)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Application configuration file for UIText module
+ *
+ * This header file is a configuration header file to configure the module %'ModuleName' (UIText).
+ * You can configure the defines directly in this file or with the compiler -D option.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_TEXT_BACKGROUND_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_TEXT_BACKGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%DefaultTextTextBackgroundColor
+    /*!< Default text background color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_TEXT_FOREGROUND_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_TEXT_FOREGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%DefaultTextTextForegroundColor
+    /*!< Default text foreground color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER
+%ifdef SetUserMsgHandler
+  #define %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER  (1)
+    /*!< 1: text widget have extra user message handler; 0: no extra message handler*/
+%else
+  #define %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER  (0)
+    /*!< 1: text widget have extra user message handler; 0: no extra message handler*/
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_TEXT_TEXT
+  #define %'ModuleName'_CONFIG_DEFAULT_TEXT_TEXT     "%DefaultText"
+    /*!< default text for widget */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
