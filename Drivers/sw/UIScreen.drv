@@ -193,7 +193,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 void %'ModuleName'%.%Paint(%'ModuleName'_ScreenWidget *screen)
 {
   %@UI@'ModuleName'%.DrawFilledBox(
-    NULL, /* screen is topmost widget on display */
+    screen->element.parent,
     screen->element.prop.x,
     screen->element.prop.y,
     screen->element.prop.width,
@@ -240,6 +240,13 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %include Common\UIScreenCreate.Inc
 uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
+  if (screen==NULL) {
+    return ERR_FAILED;
+  }
+  if (parent!=NULL) {
+    x += %@UI@'ModuleName'%.GetElementPosX(parent);
+    y += %@UI@'ModuleName'%.GetElementPosY(parent);
+  }
   %@UI@'ModuleName'%.ElementInitCommon(
     (%@UI@'ModuleName'%.Element*)screen,
     %@UI@'ModuleName'%.WIDGET_SCREEN,

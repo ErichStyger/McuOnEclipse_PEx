@@ -293,6 +293,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="MessageHandler">
+<b>MessageHandler</b></a>
+ - Widget default message handler
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
+<li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
+<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+</ul><br />
+</li>
 <li><a name="GetTextBoxWidth">
 <b>GetTextBoxWidth</b></a>
  - Returns the width of the text based on font information. As the text might be multiline with \r, it will return the width of the longest line.
@@ -341,23 +353,23 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="SetBgColor">
-<b>SetBgColor</b></a>
+<li><a name="SetBackgroundColor">
+<b>SetBackgroundColor</b></a>
  - Change the background color of the text.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetBgColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
 <li><i>bgColor:<i>ComponentName_</i>PixelColor</i> - text background color</li>
 </ul><br />
 </li>
-<li><a name="SetFgColor">
-<b>SetFgColor</b></a>
+<li><a name="SetForegroundColor">
+<b>SetForegroundColor</b></a>
  - Change the foreground color of the text.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetFgColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void SetForegroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
 <li><i>fgColor:<i>ComponentName_</i>PixelColor</i> - text color</li>
@@ -372,18 +384,6 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>textW: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
 <li><i>handler:byte</i> - Callback to be used</li>
-</ul><br />
-</li>
-<li><a name="MessageHandler">
-<b>MessageHandler</b></a>
- - Widget default message handler
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
-<li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
-<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
 </ul><br />
 </li>
 

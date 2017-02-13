@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SelectNextElement)
+%include Common\GeneralMethod.inc (SetTextForeroundColor)
 %;**     Description :
-%;**         Selects the next (or previous) element in UI
+%;**         Changes the header background color
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
-%;**         forward%Parforward %>27 - if set to TRUE, selects the next
-%;** %>29 element, otherwise selects the previous one.
+%;**       * header%Parheader %>27 - Pointer to header widget
+%;**         color%Parcolor %>27 - backround color
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

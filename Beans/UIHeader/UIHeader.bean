@@ -4,7 +4,7 @@
     <Name>UIHeader</Name>
     <Description>Header Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.064</Version>
+    <Version>01.081</Version>
     <Icon>UIHeader</Icon>
     <TypesFiles>PE,UIHeader\UIHeader</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,7 +17,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>7</BW_NeedUst>
+    <BW_NeedUst>8</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright> * Copyright (c) 2012-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
@@ -64,10 +64,26 @@
             </TEnumItem>
           </GrupItem>
           <GrupItem>
+            <TEnumItem>
+              <Name>Foreground Color</Name>
+              <Symbol>DefaultHeaderForegroundColor</Symbol>
+              <TypeSpec>typeColor</TypeSpec>
+              <Hint>Default text color to be used</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+          <GrupItem>
             <TIntgItem>
               <Name>Border Size</Name>
               <Symbol>HeaderBorderSize</Symbol>
-              <Hint>Defines the width of space around the header text</Hint>
+              <Hint>Defines the width of space around the header text box</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>1</DefaultValue>
@@ -95,29 +111,13 @@
             </TInhrLinkItem>
           </GrupItem>
           <GrupItem>
-            <TEnumItem>
-              <Name>Text Color</Name>
-              <Symbol>DefaultHeaderTextForegroundColor</Symbol>
-              <TypeSpec>typeColor</TypeSpec>
-              <Hint>Default text color to be used</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>true</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-            </TEnumItem>
-          </GrupItem>
-          <GrupItem>
             <TStrgItem>
               <Name>Text</Name>
               <Symbol>defaultText</Symbol>
               <Hint>Default header text</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>Header</DefaultValue>
+              <DefaultValue>MyHeader</DefaultValue>
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>
@@ -186,6 +186,40 @@
   <MethodList>
     <Method>
       <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Paints a header in the window</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>header</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to widget</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Create</Name>
         <Symbol>Create</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -203,7 +237,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>6</ParamCount>
         <Parameter>
@@ -211,6 +245,7 @@
           <ParType>Element</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to parent element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>header</ParName>
@@ -223,62 +258,32 @@
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>x coordinate</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>y</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>y coordinate</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>width</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>width of the widget, zero for auto size</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>height</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>height of the header, zero for auto size</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *parent, %'ModuleName'_HeaderWidget *header, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints a header in the window</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -308,17 +313,99 @@
           <ParName>header</ParName>
           <ParType>HeaderWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to header</ParHint>
+          <ParHint>Pointer to header widget</ParHint>
         </Parameter>
         <Parameter>
           <ParName>color</ParName>
           <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>backround color</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header, %'ModuleName'_PixelColor color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetForegroundColor</Name>
+        <Symbol>SetForegroundColor</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Changes the header foreground color</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>header</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to header widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>background color</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetText</Name>
+        <Symbol>SetText</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Changes the header text</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>header</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to header widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>text</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to text</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header, uint8_t *text)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -341,7 +428,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -352,7 +439,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_HeaderWidget *widget)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_HeaderWidget *widget)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -375,7 +462,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -386,53 +473,56 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_HeaderWidget *widget)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_HeaderWidget *widget)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
     <Method>
       <TMthdItem>
-        <Name>MsgHandler</Name>
-        <Symbol>MsgHandler</Symbol>
+        <Name>MessageHandler</Name>
+        <Symbol>MessageHandler</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Callback used for widget events</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>false</PublicMethod>
+        <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
+          <ParName>element</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
           <ParName>kind</ParName>
           <ParType>MsgKind</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>kind of event</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>pData</ParName>
           <ParType>Pvoid</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>optional data pointe, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_MsgKind kind, %'ModuleName'_Element *element, %'ModuleName'_Pvoid pData)</ANSIC>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

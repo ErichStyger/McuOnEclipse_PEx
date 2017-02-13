@@ -4,7 +4,7 @@
     <Name>UI</Name>
     <Description>User Interface for different displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.066</Version>
+    <Version>01.077</Version>
     <Icon>UI</Icon>
     <TypesFiles>PE,UI\UI</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,7 +17,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>20</BW_NeedUst>
+    <BW_NeedUst>21</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2012, all right reserved.\n\nThis an open source software implemented with Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
@@ -213,19 +213,7 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window</ParHint>
-        </Parameter>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>element</ParName>
           <ParType>Element</ParType>
@@ -234,7 +222,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -243,7 +231,7 @@
         <Name>SelectNextElement</Name>
         <Symbol>SelectNextElement</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Selects the next (or previous) element in the window</Hint>
+        <Hint>Selects the next (or previous) element in UI</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -261,10 +249,10 @@
         <RetHint>none</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
+          <ParHint>Pointer to element</ParHint>
         </Parameter>
         <Parameter>
           <ParName>forward</ParName>
@@ -274,7 +262,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Screen *screen, bool forward)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, bool forward)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -299,19 +287,7 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window</ParHint>
-        </Parameter>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>element</ParName>
           <ParType>Element</ParType>
@@ -320,7 +296,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -345,13 +321,7 @@
         <InDefinition>true</InDefinition>
         <ReturnType>Boolean</ReturnType>
         <RetHint>TRUE if there is a selected element. In this case the pointer to it is returned.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>Screen</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to current screen</ParHint>
-        </Parameter>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>pElement</ParName>
           <ParType>PElement</ParType>
@@ -360,7 +330,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(%'ModuleName'_Screen *screen, %'ModuleName'_PElement *pElement)</ANSIC>
+          <ANSIC>bool #M#_#C#(%'ModuleName'_PElement *pElement)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1085,7 +1055,7 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -1102,7 +1072,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1125,7 +1095,7 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -1142,7 +1112,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1165,7 +1135,7 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -1176,7 +1146,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1403,13 +1373,7 @@
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>element</ParName>
           <ParType>Element</ParType>
@@ -1424,7 +1388,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Element *parent, %'ModuleName'_Element *element, bool updateAll)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element, bool updateAll)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1449,13 +1413,7 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>element</ParName>
           <ParType>Element</ParType>
@@ -1464,7 +1422,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_Element *parent, %'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1799,7 +1757,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -1810,7 +1768,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1833,7 +1791,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -1856,7 +1814,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1925,7 +1883,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -1936,7 +1894,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1959,7 +1917,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
@@ -1970,7 +1928,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Element *element)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1999,6 +1957,40 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>%'ModuleName'_PElement #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetRoot</Name>
+        <Symbol>SetRoot</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the UI root element. In case of a modal element, this one is returned.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>root</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to new root element</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_Element *root)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

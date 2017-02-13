@@ -7,7 +7,6 @@
 %;**     Description :
 %;**         Paints an element to the screen.
 %include Common\GeneralParameters.inc(27)
-%;**       * parent%Parparent %>27 - Pointer to element
 %;**       * element%Parelement %>27 - Pointer to element
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

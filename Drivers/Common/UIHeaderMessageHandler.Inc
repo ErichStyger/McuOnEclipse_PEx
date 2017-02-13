@@ -3,13 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SelectNextElement)
+%include Common\GeneralMethod.inc (MessageHandler)
 %;**     Description :
-%;**         Selects the next (or previous) element in UI
+%;**         Callback used for widget events
 %include Common\GeneralParameters.inc(27)
 %;**       * element%Parelement %>27 - Pointer to element
-%;**         forward%Parforward %>27 - if set to TRUE, selects the next
-%;** %>29 element, otherwise selects the previous one.
+%;**         kind%Parkind %>27 - kind of event
+%;**         pData%ParpData %>27 - optional data pointe, NULL otherwise
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

@@ -217,21 +217,19 @@ LI.EXP {
  - Selects an element in the window
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SelectElement(<i>ComponentName_</i>Screen *screen, <i>ComponentName_</i>Element *window, <i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> void SelectElement(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>Screen</i> - Pointer to screen</li>
-<li><i>window: Pointer to <i>ComponentName_</i>Element</i> - Pointer to window</li>
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - pointer to the element to select</li>
 </ul><br />
 </li>
 <li><a name="SelectNextElement">
 <b>SelectNextElement</b></a>
- - Selects the next (or previous) element in the window
+ - Selects the next (or previous) element in UI
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SelectNextElement(<i>ComponentName_</i>Screen *screen, bool forward)<br />
+<br /><i>ANSIC prototype:</i> void SelectNextElement(<i>ComponentName_</i>Element *element, bool forward)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>Screen</i> - Pointer to screen</li>
+<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>forward:bool</i> - if set to TRUE, selects the next element, otherwise selects the previous one.</li>
 </ul><br />
 </li>
@@ -240,10 +238,8 @@ LI.EXP {
  - Deselects an element
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void DeselectElement(<i>ComponentName_</i>Screen *screen, <i>ComponentName_</i>Element *window, <i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> void DeselectElement(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>Screen</i> - Pointer to screen</li>
-<li><i>window: Pointer to <i>ComponentName_</i>Element</i> - Pointer to window</li>
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - pointer to the element to select</li>
 </ul><br />
 </li>
@@ -252,9 +248,8 @@ LI.EXP {
  - Returns the currently selected element, or NULL.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetSelectedElement(<i>ComponentName_</i>Screen *screen, <i>ComponentName_</i>PElement *pElement)<br />
+<br /><i>ANSIC prototype:</i> bool GetSelectedElement(<i>ComponentName_</i>PElement *pElement)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>screen: Pointer to <i>ComponentName_</i>Screen</i> - Pointer to current screen</li>
 <li><i>pElement: Pointer to <i>ComponentName_</i>PElement</i> - Pointer to element pointer used as output</li>
 <li><i>Return value:bool</i> - TRUE if there is a selected element. In this case the pointer to it is returned.
 </li>
@@ -488,9 +483,8 @@ LI.EXP {
  - Paints an element to the window, with no explicit refresh
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void UpdateElementNoRefresh(<i>ComponentName_</i>Element *parent, <i>ComponentName_</i>Element *element, bool updateAll)<br />
+<br /><i>ANSIC prototype:</i> void UpdateElementNoRefresh(<i>ComponentName_</i>Element *element, bool updateAll)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>updateAll:bool</i> - if the element needs to be updated in any case.</li>
 </ul><br />
@@ -500,9 +494,8 @@ LI.EXP {
  - Paints an element to the screen.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void UpdateElement(<i>ComponentName_</i>Element *parent, <i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> void UpdateElement(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 </ul><br />
 </li>
@@ -620,10 +613,10 @@ LI.EXP {
  - Updates coordinates of an element to be right aligned
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte AlignElementRight(<i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> uint8_t AlignElementRight(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -632,12 +625,12 @@ LI.EXP {
  - Returns in x and y the absolute screen position of the element.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetElementAbsolutePos(<i>ComponentName_</i>Element *elem, <i>ComponentName_</i>PixelDim *xp, <i>ComponentName_</i>PixelDim *yp)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetElementAbsolutePos(<i>ComponentName_</i>Element *elem, <i>ComponentName_</i>PixelDim *xp, <i>ComponentName_</i>PixelDim *yp)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>elem: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>xp: Pointer to <i>ComponentName_</i>PixelDim</i> - pointer to x position</li>
 <li><i>yp: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to y position</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -658,10 +651,10 @@ LI.EXP {
  - Marks the element as modal. Call UnMarkElementModal() at the end of the modal sequence.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte MarkElementModal(<i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> uint8_t MarkElementModal(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -670,10 +663,10 @@ LI.EXP {
  - Marks the element as modal.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte UnMarkElementModal(<i>ComponentName_</i>Element *element)<br />
+<br /><i>ANSIC prototype:</i> uint8_t UnMarkElementModal(<i>ComponentName_</i>Element *element)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -686,6 +679,16 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Return value:<i>ComponentName_</i>PElement</i> - Error code
 </li>
+</ul><br />
+</li>
+<li><a name="SetRoot">
+<b>SetRoot</b></a>
+ - Returns the UI root element. In case of a modal element, this one is returned.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetRoot(<i>ComponentName_</i>Element *root)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>root: Pointer to <i>ComponentName_</i>Element</i> - Pointer to new root element</li>
 </ul><br />
 </li>
 <li><a name="SendMessage">

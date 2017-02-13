@@ -69,7 +69,6 @@
 
 /* Include inherited components */
 #include "%@UI@ModuleName.h"
-
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -80,7 +79,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -109,7 +107,7 @@ typedef enum %'ModuleName'_IconType {
   %'ModuleName'_ICON_CIRCLE_DOT,                                 %>40/* radio button: circle with a button */
 } %'ModuleName'_IconType;
 
-/* --- Element: Icon --- */
+/* --- Icon Widget --- */
 typedef struct {
   %@UI@'ModuleName'%.Element element;                            %>40/* the base element, always first in structure */
   %'ModuleName'_IconType type;                                   %>40/* defines the type of the icon */
@@ -222,7 +220,6 @@ void %'ModuleName'%.%SetType(%'ModuleName'_IconWidget *icon, %'ModuleName'_IconT
 %-     #include "header_name.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
-
 %-BW_CUSTOM_VARIABLE_START
 %- Write your static variables here
 %-   Example:
@@ -268,26 +265,26 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
     case %'ModuleName'_ICON_ARROW_RIGHT_BOXED:
     case %'ModuleName'_ICON_ARROW_UP_BOXED:
     case %'ModuleName'_ICON_ARROW_DOWN_BOXED:
-      %@UI@'ModuleName'%.DrawBox(&icon->element, x, y, w, h, 1, fgColor);%>40/* paint box */
+      %@UI@'ModuleName'%.DrawBox(icon->element.parent, x, y, w, h, 1, fgColor);%>40/* paint box */
       x++; y++; w -= 2; h -= 2; /* adjust for border */
-      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, bgColor);%>40/* fill background */
+      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background */
       break;
     case %'ModuleName'_ICON_CIRCLE_DOT:
     case %'ModuleName'_ICON_CIRCLE:
-      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, bgColor);%>40/* fill background */
+      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background */
       if (w>=3) { /* check for minimal size/radius */
         r = (%@UI@'ModuleName'%.PixelDim)((w-1)/2);
       } else {
         r = 1;
       }
-      %@UI@'ModuleName'%.DrawCircle(&icon->element,
+      %@UI@'ModuleName'%.DrawCircle(icon->element.parent,
         (%@UI@'ModuleName'%.PixelDim)(x+((w-1)/2)),
         (%@UI@'ModuleName'%.PixelDim)(y+((h-1)/2)),
         r,
         fgColor);                                                %>40/* paint circle */
       break;
     default:
-      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, bgColor);%>40/* fill background for all icon types*/
+      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background for all icon types*/
       break;
   } /* switch */
   switch(icon->type) {
@@ -304,7 +301,7 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
       } else {
         r = 1;
       }
-      %@UI@'ModuleName'%.DrawFilledCircle(&icon->element,
+      %@UI@'ModuleName'%.DrawFilledCircle(icon->element.parent,
         (%@UI@'ModuleName'%.PixelDim)(x+((w-1)/2)),
         (%@UI@'ModuleName'%.PixelDim)(y+((h-1)/2)),
         r,
@@ -312,37 +309,37 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
       break;
     case %'ModuleName'_ICON_CHECKMARK:
     case %'ModuleName'_ICON_CHECKMARK_BOXED:
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
       break;
     case %'ModuleName'_ICON_X:                                   %>40/* paint an X */
     case %'ModuleName'_ICON_X_BOXED:
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_LEFT:                          %>40/* paint <- */
     case %'ModuleName'_ICON_ARROW_LEFT_BOXED:
-      %@UI@'ModuleName'%.DrawHLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawHLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_RIGHT:                         %>40/* paint -> */
     case %'ModuleName'_ICON_ARROW_RIGHT_BOXED:
-      %@UI@'ModuleName'%.DrawHLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawHLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_UP:                            %>40/* paint up arrow */
     case %'ModuleName'_ICON_ARROW_UP_BOXED:
-      %@UI@'ModuleName'%.DrawVLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawVLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_DOWN:                          %>40/* paint down arrow */
     case %'ModuleName'_ICON_ARROW_DOWN_BOXED:
-      %@UI@'ModuleName'%.DrawVLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)),(%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawVLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)),(%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     default:
       break;
@@ -374,7 +371,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
   } /* switch */
 #if %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
-    widget->userMsgHandler(kind, element, pData);                %>40/* call user event  */
+    widget->userMsgHandler(element, kind, pData);                %>40/* call user event  */
   }
 #else
   (void)pData; /* avoid warning about unused argument */
@@ -396,7 +393,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %include Common\UIIconCreate.Inc
 uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
-  if (parent == NULL || icon == NULL) {
+  if (icon == NULL) {
     return ERR_FAILED;
   }
   %@UI@'ModuleName'%.ElementInitCommon(&icon->element, %@UI@'ModuleName'%.WIDGET_ICON,
@@ -527,10 +524,10 @@ void %'ModuleName'%.%SetType(%'ModuleName'_IconWidget *icon, %'ModuleName'_IconT
 #ifndef %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER
 %ifdef SetUserMsgHandler
   #define %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER  (1)
-    /*!< 1: windows have extra user message handler; 0: no extra message handler*/
+    /*!< 1: icons have extra user message handler; 0: no extra message handler*/
 %else
   #define %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER  (0)
-    /*!< 1: windows have extra user message handler; 0: no extra message handler*/
+    /*!< 1: icons have extra user message handler; 0: no extra message handler*/
 %endif %- SetUserMsgHandler
 #endif
 

@@ -7,8 +7,6 @@
 %;**     Description :
 %;**         Deselects an element
 %include Common\GeneralParameters.inc(27)
-%;**       * screen%Parscreen %>27 - Pointer to screen
-%;**       * window%Parwindow %>27 - Pointer to window
 %;**       * element%Parelement %>27 - pointer to the element to select
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

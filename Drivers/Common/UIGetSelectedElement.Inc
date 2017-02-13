@@ -7,7 +7,6 @@
 %;**     Description :
 %;**         Returns the currently selected element, or NULL.
 %include Common\GeneralParameters.inc(27)
-%;**       * screen%Parscreen %>27 - Pointer to current screen
 %;**       * pElement%ParpElement %>27 - Pointer to element pointer used
 %;** %>29 as output
 %;**     Returns     :

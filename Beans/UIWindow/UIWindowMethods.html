@@ -219,6 +219,16 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="Paint">
+<b>Paint</b></a>
+ - Paints a window with all widgets
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>WindowWidget *window)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
+</ul><br />
+</li>
 <li><a name="SetBackgroundColor">
 <b>SetBackgroundColor</b></a>
  - Changes the window background color.
@@ -228,17 +238,6 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window widget</li>
 <li><i>color:<i>ComponentName_</i>PixelColor</i> - Background color for window</li>
-</ul><br />
-</li>
-<li><a name="SetUserMsgHandler">
-<b>SetUserMsgHandler</b></a>
- - Assigns a user callback to the widget
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetUserMsgHandler(<i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
-<li><i>handler:byte</i> - callback function pointer</li>
 </ul><br />
 </li>
 <li><a name="SetBorder">
@@ -261,16 +260,6 @@ LI.EXP {
 <li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
 </ul><br />
 </li>
-<li><a name="Paint">
-<b>Paint</b></a>
- - Paints a window with all widgets
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>WindowWidget *window)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
-</ul><br />
-</li>
 <li><a name="MessageHandler">
 <b>MessageHandler</b></a>
  - Callback used for widget events
@@ -281,6 +270,17 @@ LI.EXP {
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
 <li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+</ul><br />
+</li>
+<li><a name="SetUserMsgHandler">
+<b>SetUserMsgHandler</b></a>
+ - Assigns a user callback to the widget
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetUserMsgHandler(<i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
+<li><i>handler:byte</i> - callback function pointer</li>
 </ul><br />
 </li>
 

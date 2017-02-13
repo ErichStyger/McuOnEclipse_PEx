@@ -178,7 +178,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 #define %'ModuleName'_FLAGS_NEEDS_REPAINT   (1<<0)               %>40/* element needs to be repainted */
 #define %'ModuleName'_FLAGS_IS_MODAL        (1<<1)               %>40/* element is modal */
 #define %'ModuleName'_FLAGS_ALIGN_RIGHT     (1<<2)               %>40/* element is right aligned */
-#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   /* selection flags */
   #define %'ModuleName'_FLAGS_CAN_SELECT      (1<<3)             %>40/* flag indicating that the element can be selected */
   #define %'ModuleName'_FLAGS_IS_SELECTED     (1<<4)             %>40/* flag indicating that the element is selected */
@@ -223,14 +223,11 @@ typedef struct %'ModuleName'_Element {                           %>40/* This des
   struct %'ModuleName'_Element *next;                            %>40/* pointer to the next element in list */
 } %'ModuleName'_Element;
 
-#if 1
+#if 1 /* temporary only, to be cleaned up */
 /* --- Screen --- */
 typedef struct  %'ModuleName'_Screen{                            %>40/* This is the abstraction of a generic window, with all the needed information. */
  %'ModuleName'_Element element;                                  %>40/* the base element */
  %'ModuleName'_Element *modalElement;                            %>40/* pointer to a modal element or NULL */
- %if SelectionEnabled='yes'
- %'ModuleName'_Element *selectedE;                               %>40/* pointer to the currently selected element */
- %endif
 } %'ModuleName'_Screen;
 #endif
 
@@ -238,7 +235,7 @@ typedef %'ModuleName'_Coordinate *%'ModuleName'_PCoordinate;     %>40/* Pointer 
 typedef struct %'ModuleName'_Element* %'ModuleName'%.PElement;   %>40/* Pointer to element */
 typedef %'ModuleName'_Screen *%'ModuleName'%.PScreen;            %>40/* Pointer to Screen element. */
 typedef bool (*%'ModuleName'_ElementFindFct)(%'ModuleName'_Element*, void*);%>40/* Function pointer for finding an element */
-typedef byte (*%'ModuleName'_painterCallback) (%'ModuleName'_Element *element);%>40/* callback to be called to paint the element */
+typedef uint8_t (*%'ModuleName'_painterCallback) (%'ModuleName'_Element *element);%>40/* callback to be called to paint the element */
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -246,9 +243,8 @@ typedef byte (*%'ModuleName'_painterCallback) (%'ModuleName'_Element *element);%
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateElement
 %ifdef UpdateElement
-void %'ModuleName'%.%UpdateElement(%'ModuleName'_Element *parent, %'ModuleName'_Element *element);
+void %'ModuleName'%.%UpdateElement(%'ModuleName'_Element *element);
 %define! Parelement
-%define! Parparent
 %include Common\UIUpdateElement.Inc
 
 %endif %- UpdateElement
@@ -256,10 +252,8 @@ void %'ModuleName'%.%UpdateElement(%'ModuleName'_Element *parent, %'ModuleName'_
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectElement
 %ifdef SelectElement
-void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element);
-%define! Parwindow
+void %'ModuleName'%.%SelectElement(%'ModuleName'_Element *element);
 %define! Parelement
-%define! Parscreen
 %include Common\UISelectElement.Inc
 
 %endif %- SelectElement
@@ -267,9 +261,9 @@ void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_E
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectNextElement
 %ifdef SelectNextElement
-void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forward);
+void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Element *element, bool forward);
 %define! Parforward
-%define! Parscreen
+%define! Parelement
 %include Common\UISelectNextElement.Inc
 
 %endif %- SelectNextElement
@@ -279,7 +273,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %ifdef EnableElementSelection
 #if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   #define %'ModuleName'%.%EnableElementSelection(elem) \
-    ((%'ModuleName'_Element*)elem)->prop.flags |= %'ModuleName'_FLAGS_CAN_SELECT%>40/* indicate that we can select the element */
+    (elem)->prop.flags |= %'ModuleName'_FLAGS_CAN_SELECT         %>40/* indicate that we can select the element */
 #else
   #define %'ModuleName'%.%EnableElementSelection(elem)  /* do nothing, as selection is disabled in the settings */
 #endif
@@ -293,7 +287,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-BW_METHOD_BEGIN GetElementWidth
 %ifdef GetElementWidth
 #define %'ModuleName'%.%GetElementWidth(element) \
-  ((%'ModuleName'_Element*)element)->prop.width
+  (element)->prop.width
 
 %define! Parelement
 %define! RetVal
@@ -305,7 +299,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-BW_METHOD_BEGIN GetElementHeight
 %ifdef GetElementHeight
 #define %'ModuleName'%.%GetElementHeight(element) \
-  ((%'ModuleName'_Element*)element)->prop.height
+  (element)->prop.height
 
 %define! Parelement
 %define! RetVal
@@ -317,7 +311,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-BW_METHOD_BEGIN GetElementPosX
 %ifdef GetElementPosX
 #define %'ModuleName'%.%GetElementPosX(element)\
-  ((%'ModuleName'_Element*)element)->prop.x
+  (element)->prop.x
 
 %define! Parelement
 %define! RetVal
@@ -329,7 +323,7 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-BW_METHOD_BEGIN GetElementPosY
 %ifdef GetElementPosY
 #define %'ModuleName'%.%GetElementPosY(element)\
-  ((%'ModuleName'_Element*)element)->prop.y
+  (element)->prop.y
 
 %define! Parelement
 %define! RetVal
@@ -338,13 +332,9 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %endif %- GetElementPosY
 %-BW_METHOD_END GetElementPosY
 %-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawFilledBox
 %ifdef DrawFilledBox
 void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color);
-
 %define! Parx
 %define! Pary
 %define! Parw
@@ -387,9 +377,7 @@ void %'ModuleName'%.%DrawLine(%'ModuleName'_Element *element, %'ModuleName'_Pixe
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DeselectElement
 %ifdef DeselectElement
-void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element);
-%define! Parscreen
-%define! Parwindow
+void %'ModuleName'%.%DeselectElement(%'ModuleName'_Element *element);
 %define! Parelement
 %include Common\UIDeselectElement.Inc
 
@@ -414,7 +402,7 @@ void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleN
 %-BW_METHOD_BEGIN EqualElement
 %ifdef EqualElement
 #define %'ModuleName'%.%EqualElement(elem1, elem2) \
-  ((elem1)==&((elem2)->element))
+  ((elem1)==(elem2))
 %define! Parelem1
 %define! Parelem2
 %define! RetVal
@@ -425,8 +413,7 @@ void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleN
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelectedElement
 %ifdef GetSelectedElement
-bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_Screen *screen, %'ModuleName'_PElement *pElement);
-%define! Parscreen
+bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_PElement *pElement);
 %define! ParpElement
 %define! RetVal
 %include Common\UIGetSelectedElement.Inc
@@ -488,17 +475,16 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateElementNoRefresh
 %ifdef UpdateElementNoRefresh
-void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *parent, %'ModuleName'_Element *element, bool updateAll);
+void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *element, bool updateAll);
 %define! Parelement
 %define! ParupdateAll
-%define! Parparent
 %include Common\UIUpdateElementNoRefresh.Inc
 
 %endif %- UpdateElementNoRefresh
 %-BW_METHOD_END UpdateElementNoRefresh
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG AddSubElement
-byte %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement);
+uint8_t %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement);
 %define! ParparentElement
 %define! ParsubElement
 %define! RetVal
@@ -507,7 +493,7 @@ byte %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'Module
 %-INTERNAL_METHOD_END AddSubElement
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG AddNextElement
-byte %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement);
+uint8_t %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement);
 %define! ParcurrentElement
 %define! ParnextElement
 %define! RetVal
@@ -542,7 +528,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_Element *element, %'ModuleNa
 %-BW_METHOD_END DrawFilledCircle
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG RemoveElement
-byte %'ModuleName'%.RemoveElement(%'ModuleName'_Element *element);
+uint8_t %'ModuleName'%.RemoveElement(%'ModuleName'_Element *element);
 %define! Parelement
 %define! RetVal
 %include Common\GeneralInternal.inc (RemoveElement)
@@ -557,8 +543,6 @@ bool %'ModuleName'%.SearchInsideElement(%'ModuleName'_PElement *pElement, %'Modu
 %include Common\GeneralInternal.inc (SearchInsideElement)
 
 %-INTERNAL_METHOD_END SearchInsideElement
-%-************************************************************************************************************
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawHLine
 %ifdef DrawHLine
@@ -608,7 +592,7 @@ void %'ModuleName'%.%PrevElement(%'ModuleName'_PElement *ppElement, %'ModuleName
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AlignElementRight
 %ifdef AlignElementRight
-byte %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element);
+uint8_t %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element);
 %define! Parelement
 %define! RetVal
 %include Common\UIAlignElementRight.Inc
@@ -618,7 +602,7 @@ byte %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetElementAbsolutePos
 %ifdef GetElementAbsolutePos
-byte %'ModuleName'%.%GetElementAbsolutePos(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp);
+uint8_t %'ModuleName'%.%GetElementAbsolutePos(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp);
 %define! Parelem
 %define! Parxp
 %define! Paryp
@@ -674,7 +658,7 @@ void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_M
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN MarkElementModal
 %ifdef MarkElementModal
-byte %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element);
+uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element);
 %define! Parelement
 %define! RetVal
 %include Common\UIMarkElementModal.Inc
@@ -684,7 +668,7 @@ byte %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UnMarkElementModal
 %ifdef UnMarkElementModal
-byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element);
+uint8_t %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element);
 %define! Parelement
 %define! RetVal
 %include Common\UIUnMarkElementModal.Inc
@@ -819,6 +803,15 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetRoot
+%ifdef SetRoot
+void %'ModuleName'%.%SetRoot(%'ModuleName'_Element *root);
+%define! Parroot
+%include Common\UISetRoot.Inc
+
+%endif %- SetRoot
+%-BW_METHOD_END SetRoot
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -864,9 +857,19 @@ void %OnEvent(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'Mod
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-%if RTOSenabled='yes'
-static xSemaphoreHandle UISem = NULL; /* Semaphore to protect UI access */
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  #include "FreeRTOS.h"
+  #include "semphr.h" /* FreeRTOS semaphore interface */
+
+  static xSemaphoreHandle UISem = NULL; /* Semaphore to protect UI access */
+#endif
+
+static struct {
+  %'ModuleName'_Element *root; /* pointer to the UI root element */
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
+  %'ModuleName'_Element *selected; /* pointer to the currently selected element */
+#endif
+} %'ModuleName'_RootInfo;
 
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -912,11 +915,10 @@ void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleN
 %-BW_METHOD_BEGIN UpdateElement
 %ifdef UpdateElement
 %define! Parelement
-%define! Parparent
 %include Common\UIUpdateElement.Inc
-void %'ModuleName'%.%UpdateElement(%'ModuleName'_Element *parent, %'ModuleName'_Element *element)
+void %'ModuleName'%.%UpdateElement(%'ModuleName'_Element *element)
 {
-  %'ModuleName'%.%UpdateElementNoRefresh(parent, element, TRUE);
+  %'ModuleName'%.%UpdateElementNoRefresh(element, TRUE);
   %@Display@'ModuleName'%.UpdateRegion(element->prop.x, element->prop.y, element->prop.width, element->prop.height);
 }
 
@@ -940,34 +942,21 @@ void %'ModuleName'%.%EnableElementSelection(%'ModuleName'_Element *elem)
 %-BW_METHOD_BEGIN SelectNextElement
 %ifdef SelectNextElement
 %define! Parforward
-%define! Parscreen
+%define! Parelement
 %include Common\UISelectNextElement.Inc
-void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forward)
+void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Element *element, bool forward)
 {
 #if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   %'ModuleName'_Element *currElement, *e;                        %>40/* currently selected element */
-  %'ModuleName'_Element *window;                                 %>40/* window of currently selected element */
   %'ModuleName'_Element *startElement;                           %>40/* starting element of iteration */
 
-  if (screen == NULL) {                                          %>40/* no screen at all? */
+  if (element == NULL) {                                         %>40/* no element at all? */
     return;
   }
-
-  /* search window , to be removed?*/
-  while (e != NULL && e->parent != NULL){
-    if (e->prop.type == %'ModuleName'_WIDGET_WINDOW){
-      window = e->parent;                                        %>40/* found window */
-    }
-    else {
-      window = NULL;                                             %>40/* no window element */
-    }
-    e = e->parent;
-  }
-
-  if (%'ModuleName'%.%GetSelectedElement(screen, &startElement)){%>40/* we have an element already selected */
-    %'ModuleName'%.DeselectElement(screen, window, startElement);
+  if (%'ModuleName'%.%GetSelectedElement(&startElement)){        %>40/* we have an element already selected */
+    %'ModuleName'%.DeselectElement(startElement);
   } else {
-    startElement = screen->element.sub;                          %>40/* we have no current selected element: use first in chain */
+    startElement = element;                                      %>40/* we have no current selected element: use first in chain */
   }
 
   currElement = startElement;
@@ -988,10 +977,11 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
     }
   } /* for */                                                    %>40/* iterate elements */
   if (currElement != NULL &&(currElement->prop.flags&%'ModuleName'_FLAGS_CAN_SELECT)) {
-    %'ModuleName'%.%SelectElement(screen, window, currElement);
+    %'ModuleName'%.%SelectElement(currElement);
   }
 #else
-  (void)screen;
+  (void)element;
+  (void)forward;
   /* do nothing, as selection is not enabled in the bean properties */
 #endif
 }
@@ -1001,11 +991,9 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Screen *screen, bool forwar
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectElement
 %ifdef SelectElement
-%define! Parwindow
 %define! Parelement
-%define! Parscreen
 %include Common\UISelectElement.Inc
-void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)
+void %'ModuleName'%.%SelectElement(%'ModuleName'_Element *element)
 {
 #if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (element!=NULL) {
@@ -1017,8 +1005,8 @@ void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_E
       %OnEvent(screen, window, element, %'ModuleName'_MSG_ELEMENT_SELECT);%>40/* call user event */
       %endif
       element->prop.flags |= (%'ModuleName'_FLAGS_IS_SELECTED|%'ModuleName'_FLAGS_NEEDS_REPAINT);%>40/* select element, and it needs a repaint */
-      screen->selectedE = element;
-      %'ModuleName'%.%UpdateElement(window, screen->selectedE);  %>40/* element needs update */
+      %'ModuleName'_RootInfo.selected = element;
+      %'ModuleName'%.%UpdateElement(%'ModuleName'_RootInfo.selected);%>40/* element needs update */
     }
   }
 #else
@@ -1032,28 +1020,28 @@ void %'ModuleName'%.%SelectElement(%'ModuleName'_Screen *screen, %'ModuleName'_E
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DeselectElement
 %ifdef DeselectElement
-%define! Parscreen
-%define! Parwindow
 %define! Parelement
 %include Common\UIDeselectElement.Inc
-void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'ModuleName'_Element *element)
+void %'ModuleName'%.%DeselectElement(%'ModuleName'_Element *element)
 {
-#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (element!=NULL) {
     if (element->prop.flags&%'ModuleName'_FLAGS_IS_SELECTED) {   %>40/* element is currently selected */
       %if defined(OnEvent)
-      %OnEvent(screen, window, element, %'ModuleName'_MSG_ELEMENT_DESELECT);%>40/* call user event */
+      %OnEvent(element, %'ModuleName'_MSG_ELEMENT_DESELECT);     %>40/* call user event */
       %endif
 
       if (element->msgHandler != NULL) { /* call element deselect handler if there is any */
-        element->msgHandler(%'ModuleName'_MSG_ELEMENT_DESELECT, element, NULL);
+        element->msgHandler(element, %'ModuleName'_MSG_ELEMENT_DESELECT, NULL);
       }
       element->prop.flags &= ~%'ModuleName'_FLAGS_IS_SELECTED;   %>40/* unselect current selected element */
       element->prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT;  %>40/* need to repaint element */
-      %'ModuleName'%.%UpdateElement(window, element);
-      screen->selectedE = NULL;                                  %>40/* no currently selected element */
+      %'ModuleName'%.%UpdateElement(element);
+      %'ModuleName'_RootInfo.selected = NULL;                    %>40/* no currently selected element */
     }
   }
+#else
+  (void)element;
 #endif
 }
 
@@ -1131,11 +1119,61 @@ void %'ModuleName'%.%DeselectElement(%'ModuleName'_Screen *screen, %'ModuleName'
 %include Common\UIDrawFilledBox.Inc
 void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color)
 {
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
   %@Display@'ModuleName'%.DrawFilledBox(x, y, w, h, color);
 }
 
 %endif %- DrawFilledBox
 %-BW_METHOD_END DrawFilledBox
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawHLine
+%ifdef DrawHLine
+%define! Parelement
+%define! Parx
+%define! Pary
+%define! Parw
+%define! Parcolor
+%include Common\UIDrawHLine.Inc
+void %'ModuleName'%.%DrawHLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelColor color)
+{
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
+  %@Display@'ModuleName'%.DrawHLine(x, y, w, color);
+}
+
+%endif %- DrawHLine
+%-BW_METHOD_END DrawHLine
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawVLine
+%ifdef DrawVLine
+%define! Parelement
+%define! Parx
+%define! Pary
+%define! Parh
+%define! Parcolor
+%include Common\UIDrawVLine.Inc
+void %'ModuleName'%.%DrawVLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color)
+{
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
+  %@Display@'ModuleName'%.DrawVLine(x, y, h, color);
+}
+
+%endif %- DrawVLine
+%-BW_METHOD_END DrawVLine
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawBox
 %ifdef DrawBox
@@ -1149,6 +1187,12 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'
 %include Common\UIDrawBox.Inc
 void %'ModuleName'%.%DrawBox(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h, %'ModuleName'_PixelDim lineWidth, %'ModuleName'_PixelColor color)
 {
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
   %@Display@'ModuleName'%.DrawBox(x, y, w, h, lineWidth, color);
 }
 
@@ -1166,16 +1210,61 @@ void %'ModuleName'%.%DrawBox(%'ModuleName'_Element *element, %'ModuleName'_Pixel
 %include Common\UIDrawLine.Inc
 void %'ModuleName'%.%DrawLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelColor color)
 {
-  %@Display@'ModuleName'%.DrawLine(
-    x0,
-    y0,
-    x1,
-    y1,
-    color);
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x0 += xp; x1 += xp;
+    y0 += yp; y1 += yp;
+  }
+  %@Display@'ModuleName'%.DrawLine(x0, y0, x1, y1, color);
 }
 
 %endif %- DrawLine
 %-BW_METHOD_END DrawLine
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawCircle
+%ifdef DrawCircle
+%define! Parelement
+%define! Parx
+%define! Pary
+%define! Parradius
+%define! Parcolor
+%include Common\UIDrawCircle.Inc
+void %'ModuleName'%.%DrawCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
+{
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
+  %@Display@'ModuleName'%.DrawCircle(x, y, radius, color);
+}
+
+%endif %- DrawCircle
+%-BW_METHOD_END DrawCircle
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawFilledCircle
+%ifdef DrawFilledCircle
+%define! Parelement
+%define! Parx
+%define! Pary
+%define! Parradius
+%define! Parcolor
+%include Common\UIDrawFilledCircle.Inc
+void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
+{
+  %'ModuleName'_PixelDim xp, yp;
+
+  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
+  %@Display@'ModuleName'%.DrawFilledCircle(x, y, radius, color);
+}
+
+%endif %- DrawFilledCircle
+%-BW_METHOD_END DrawFilledCircle
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EqualElement
 %ifdef EqualElement
@@ -1195,14 +1284,13 @@ bool %'ModuleName'%.%EqualElement(%'ModuleName'_Element *elem1, %'ModuleName'_El
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelectedElement
 %ifdef GetSelectedElement
-%define! Parscreen
 %define! ParpElement
 %define! RetVal
 %include Common\UIGetSelectedElement.Inc
-bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_Screen *screen, %'ModuleName'_PElement *pElement)
+bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_PElement *pElement)
 {
-#if %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
-  *pElement = screen->selectedE;
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
+  *pElement = %'ModuleName'_RootInfo.selected;
   return (bool)((*pElement)!=NULL);
 #else
   *pElement = NULL;
@@ -1341,11 +1429,9 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %ifdef UpdateElementNoRefresh
 %define! Parelement
 %define! ParupdateAll
-%define! Parparent
 %include Common\UIUpdateElementNoRefresh.Inc
-void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *parent, %'ModuleName'_Element *element, bool updateAll)
+void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *element, bool updateAll)
 {
-  (void)parent; /* unused argument */
   if (updateAll || (element->prop.flags&%'ModuleName'_FLAGS_NEEDS_REPAINT)) {
     element->prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT; /* force repaint */
     element->msgHandler(element, %'ModuleName'_MSG_PAINT, NULL);
@@ -1361,7 +1447,7 @@ void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *parent, %'Mod
 %define! ParsubElement
 %define! RetVal
 %include Common\GeneralInternal.inc (AddSubElement)
-byte %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement)
+uint8_t %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'ModuleName'_Element *subElement)
 {
   if (parentElement == NULL) {
     return ERR_FAILED;                                           %>40/* no parent element */
@@ -1382,7 +1468,7 @@ byte %'ModuleName'%.AddSubElement(%'ModuleName'_Element *parentElement, %'Module
 %define! ParnextElement
 %define! RetVal
 %include Common\GeneralInternal.inc (AddNextElement)
-byte %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement)
+uint8_t %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'ModuleName'_Element *nextElement)
 {
   if (currentElement == NULL){
     return ERR_FAILED;
@@ -1404,43 +1490,11 @@ byte %'ModuleName'%.AddNextElement(%'ModuleName'_Element *currentElement, %'Modu
 
 %-INTERNAL_METHOD_END AddNextElement
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawCircle
-%ifdef DrawCircle
-%define! Parelement
-%define! Parx
-%define! Pary
-%define! Parradius
-%define! Parcolor
-%include Common\UIDrawCircle.Inc
-void %'ModuleName'%.%DrawCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
-{
-   %@Display@'ModuleName'%.DrawCircle(x, y, radius, color);
-}
-
-%endif %- DrawCircle
-%-BW_METHOD_END DrawCircle
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawFilledCircle
-%ifdef DrawFilledCircle
-%define! Parelement
-%define! Parx
-%define! Pary
-%define! Parradius
-%define! Parcolor
-%include Common\UIDrawFilledCircle.Inc
-void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim radius, %'ModuleName'_PixelColor color)
-{
-  %@Display@'ModuleName'%.DrawFilledCircle(x, y, radius, color);
-}
-
-%endif %- DrawFilledCircle
-%-BW_METHOD_END DrawFilledCircle
-%-************************************************************************************************************
 %-INTERNAL_METHOD_BEG RemoveElement
 %define! Parelement
 %define! RetVal
 %include Common\GeneralInternal.inc (RemoveElement)
-byte %'ModuleName'%.RemoveElement(%'ModuleName'_Element *element)
+uint8_t %'ModuleName'%.RemoveElement(%'ModuleName'_Element *element)
 {
   %'ModuleName'_Element **pe;                                    %>40/* pointer to previous element */
 
@@ -1477,8 +1531,9 @@ void %'ModuleName'%.%NextElement(%'ModuleName'_PElement *ppElement, %'ModuleName
 {
   /* precondition: data structure with valid data */
   %'ModuleName'_Element *parent = NULL;
+
   if (stopElement == NULL){
-    stopElement = (%'ModuleName'_Element*)%'ModuleName'%.GetScreen();%>40/* searching whole tree */
+    stopElement = %'ModuleName'%.%GetRoot();                     %>40/* searching whole tree */
   }
   if ((*ppElement)->sub != NULL){
     *ppElement = (*ppElement)->sub;                              %>40/* next element on sub level */
@@ -1583,52 +1638,12 @@ bool %'ModuleName'%.SearchInsideElement(%'ModuleName'_PElement *pElement, %'Modu
 
 %-INTERNAL_METHOD_END SearchInsideElement
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawHLine
-%ifdef DrawHLine
-%define! Parelement
-%define! Parx
-%define! Pary
-%define! Parw
-%define! Parcolor
-%include Common\UIDrawHLine.Inc
-void %'ModuleName'%.%DrawHLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelColor color)
-{
-  %@Display@'ModuleName'%.DrawHLine(
-    x,
-    y,
-    w,
-    color);
-}
-
-%endif %- DrawHLine
-%-BW_METHOD_END DrawHLine
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawVLine
-%ifdef DrawVLine
-%define! Parelement
-%define! Parx
-%define! Pary
-%define! Parh
-%define! Parcolor
-%include Common\UIDrawVLine.Inc
-void %'ModuleName'%.%DrawVLine(%'ModuleName'_Element *element, %'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim h, %'ModuleName'_PixelColor color)
-{
-    %@Display@'ModuleName'%.DrawVLine(
-    x,
-    y,
-    h,
-    color);
-}
-
-%endif %- DrawVLine
-%-BW_METHOD_END DrawVLine
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN AlignElementRight
 %ifdef AlignElementRight
 %define! Parelement
 %define! RetVal
 %include Common\UIAlignElementRight.Inc
-byte %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element)
+uint8_t %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element)
 {
   if (%'ModuleName'%.%GetElementWidth(element->parent) > (%'ModuleName'%.%GetElementPosX(element) + %'ModuleName'%.%GetElementWidth(element))){
     element->prop.x = (%'ModuleName'_PixelDim)(%'ModuleName'%.%GetElementWidth(element->parent) - (%'ModuleName'%.%GetElementPosX(element) + %'ModuleName'%.%GetElementWidth(element)));
@@ -1647,7 +1662,7 @@ byte %'ModuleName'%.%AlignElementRight(%'ModuleName'_Element *element)
 %define! Paryp
 %define! RetVal
 %include Common\UIGetElementAbsolutePos.Inc
-byte %'ModuleName'%.%GetElementAbsolutePos(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp)
+uint8_t %'ModuleName'%.%GetElementAbsolutePos(%'ModuleName'_Element *elem, %'ModuleName'_PixelDim *xp, %'ModuleName'_PixelDim *yp)
 {
   if (elem==NULL || xp==NULL || yp==NULL) {
     return ERR_FAILED;
@@ -1745,7 +1760,7 @@ void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_M
 %define! Parelement
 %define! RetVal
 %include Common\UIMarkElementModal.Inc
-byte %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
+uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
 {
   %'ModuleName'_Screen *screen;
 
@@ -1769,7 +1784,7 @@ byte %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
 %define! Parelement
 %define! RetVal
 %include Common\UIUnMarkElementModal.Inc
-byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
+uint8_t %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
 {
   %'ModuleName'_Screen *screen;
 
@@ -1794,23 +1809,26 @@ byte %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
 %include Common\UIGetRoot.Inc
 %'ModuleName'_PElement %'ModuleName'%.%GetRoot(void)
 {
-#if 0
-  %'ModuleName'_Screen *screen = %'ModuleName'%.GetScreen();
-
-  if (screen==NULL) {
-    return NULL;
-  }
-  if (screen->modalElement!=NULL) {
-    return screen->modalElement;
-  }
-  return &screen->element;
-#else
- return NULL;
-#endif
+ return %'ModuleName'_RootInfo.root;
 }
 
 %endif %- GetRoot
 %-BW_METHOD_END GetRoot
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetRoot
+%ifdef SetRoot
+%define! Parroot
+%include Common\UISetRoot.Inc
+void %'ModuleName'%.%SetRoot(%'ModuleName'_Element *root)
+{
+  %'ModuleName'_RootInfo.root = root;
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
+  %'ModuleName'_RootInfo.selected = NULL;
+#endif
+}
+
+%endif %- SetRoot
+%-BW_METHOD_END SetRoot
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ElementFullyVisible
 %ifdef ElementFullyVisible
@@ -2000,11 +2018,11 @@ void %'ModuleName'%.%MsgUpdateAllElements(%'ModuleName'_Element *rootElement)
 %include Common\UIGetUI.Inc
 void %'ModuleName'%.%GetUI(void)
 {
-%if RTOSenabled='yes'
-  (void)%@RTOS@'ModuleName'%.xSemaphoreTakeRecursive(UISem, portMAX_DELAY);
-%else
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(UISem, portMAX_DELAY);
+#else
   /* nothing to do, as no RTOS selected */
-%endif
+#endif
 }
 
 %endif %- GetUI
@@ -2015,11 +2033,9 @@ void %'ModuleName'%.%GetUI(void)
 %include Common\UIGiveUI.Inc
 void %'ModuleName'%.%GiveUI(void)
 {
-%if RTOSenabled='yes'
-  (void)%@RTOS@'ModuleName'%.xSemaphoreGiveRecursive(UISem);
-%else
-  /* nothing to do, as no RTOS selected */
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(UISem);
+#endif
 }
 
 %endif %- GiveUI
@@ -2030,14 +2046,12 @@ void %'ModuleName'%.%GiveUI(void)
 %include Common\UIInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-%if RTOSenabled='yes'
-  UISem = %@RTOS@'ModuleName'%.xSemaphoreCreateRecursiveMutex();
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  UISem = xSemaphoreCreateRecursiveMutex();
   if (UISem==NULL) { /* semaphore creation failed */
     for(;;) {} /* error, not enough memory? */
   }
-%else
-  /* nothing to do, as no RTOS selected */
-%endif
+#endif
 }
 
 %endif %- Init
@@ -2048,11 +2062,9 @@ void %'ModuleName'%.%Init(void)
 %include Common\UIDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-%if RTOSenabled='yes'
-  %@RTOS@'ModuleName'%.vSemaphoreDelete(UISem);
-%else
-  /* nothing to do, as no RTOS selected */
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  vSemaphoreDelete(UISem);
+#endif
 }
 
 %endif %- Deinit
@@ -2108,13 +2120,23 @@ void %OnEvent(%'ModuleName'_Screen *screen, %'ModuleName'_Element *window, %'Mod
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-#ifndef %'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+#ifndef %'ModuleName'%.CONFIG_SELECTION_ENABLED
 %if SelectionEnabled='yes'
   #define %'ModuleName'%.CONFIG_SELECTION_ENABLED    (1)
     /*!< 1: can select elements (this will need some more resources); 0: selection of elements disabled */
 %else
   #define %'ModuleName'%.CONFIG_SELECTION_ENABLED    (0)
     /*!< 1: can select elements (this will need some more resources); 0: selection of elements disabled */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_MUTEX
+%if RTOSenabled='yes'
+  #define %'ModuleName'%.CONFIG_USE_MUTEX    (1)
+    /*!< 1: using mutex to protect shared access to display; 0: no mutex used */
+%else
+  #define %'ModuleName'%.CONFIG_USE_MUTEX    (0)
+    /*!< 1: using mutex to protect shared access to display; 0: no mutex used */
 %endif
 #endif
 

@@ -81,7 +81,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-typedef %@FontDisplay@'ModuleName'%.Font                         %>30 %'ModuleName'%.Font;             %>55/* Callback to retrieve font information. */
 typedef %@UI@'ModuleName'%.PixelDim                              %>30 %'ModuleName'%.PixelDim;         %>55/* wrapper type */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -165,25 +164,25 @@ uint8_t %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *t
 %endif %- SetText
 %-BW_METHOD_END SetText
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SetFgColor
-%ifdef SetFgColor
-void %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
+%-BW_METHOD_BEGIN SetForegroundColor
+%ifdef SetForegroundColor
+void %'ModuleName'%.%SetForegroundColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
 %define! ParfgColor
 %define! Partxtw
-%include Common\UITextSetFgColor.Inc
+%include Common\UITextSetForegroundColor.Inc
 
-%endif %- SetFgColor
-%-BW_METHOD_END SetFgColor
+%endif %- SetForegroundColor
+%-BW_METHOD_END SetForegroundColor
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SetBgColor
-%ifdef SetBgColor
-void %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
+%-BW_METHOD_BEGIN SetBackgroundColor
+%ifdef SetBackgroundColor
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color);
 %define! ParbgColor
 %define! Partxtw
-%include Common\UITextSetBgColor.Inc
+%include Common\UITextSetBackgroundColor.Inc
 
-%endif %- SetBgColor
-%-BW_METHOD_END SetBgColor
+%endif %- SetBackgroundColor
+%-BW_METHOD_END SetBackgroundColor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler
@@ -332,26 +331,30 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %include Common\UITextPaint.Inc
 void %'ModuleName'%.%Paint(%'ModuleName'_TextWidget *text)
 {
-  %@UI@'ModuleName'%.PixelDim x, y;
+  %@UI@'ModuleName'%.PixelDim x, y, xp, yp;
   %@UI@'ModuleName'%.PixelColor fgColor, bgColor;
 
   fgColor = text->textInfo.fgColor;
   bgColor = text->textInfo.bgColor;
-#if %@UI@'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
-  if (text->prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {   %>40/* invert colors */
-    %'ModuleName'_PixelColor tmp;
+#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
+  if (text->element.prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {%>40/* invert colors */
+    %@UI@'ModuleName'%.PixelColor tmp;
 
     tmp = fgColor; fgColor = bgColor; bgColor = tmp;
   }
 #endif
   /* draw background */
-  %@UI@'ModuleName'%.DrawFilledBox((%@UI@'ModuleName'%.Element*)text,
+  %@UI@'ModuleName'%.DrawFilledBox(text->element.parent,
     text->element.prop.x, text->element.prop.y,
     text->element.prop.width, text->element.prop.height,
     bgColor);
   /* write text */
   x = text->element.prop.x;
   y = text->element.prop.y;
+  if (%@UI@'ModuleName'%.GetElementAbsolutePos(text->element.parent, &xp, &yp)==ERR_OK) {
+    x += xp;
+    y += yp;
+  }
   %@FontDisplay@'ModuleName'%.WriteString(text->textInfo.text,
     fgColor,
     &x, &y,
@@ -387,7 +390,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
   } /* switch */
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
-    widget->userMsgHandler(kind, element, pData);                %>40/* call user event  */
+    widget->userMsgHandler(element, kind, pData);                %>40/* call user event  */
   }
 #else
   (void)pData; /* avoid warning about unused argument */
@@ -469,7 +472,7 @@ uint8_t %'ModuleName'%.%ChangeText(%'ModuleName'_TextWidget *txtw, uint16_t dstT
   /* determine color to clear text and color to draw text */
   drawColor = textInfo->fgColor;
   clrColor = textInfo->bgColor;
-#if %@UI@'ModuleName'%.CONFIG_CAN_SELECT_ELEMENTS
+#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (txtw->element.prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {
     %@UI@'ModuleName'%.PixelColor tmp;
 
@@ -541,36 +544,36 @@ uint8_t %'ModuleName'%.%SetText(%'ModuleName'_TextWidget *txtw, unsigned char *t
     return ERR_FAILED; /* error! */
   }
   txtw->textInfo.text = txt;
-  return ERR_OK;
+  return %'ModuleName'%.%Resize(txtw); /* adjust widget size */
 }
 %endif %- SetText
 %-BW_METHOD_END SetText
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SetFgColor
-%ifdef SetFgColor
+%-BW_METHOD_BEGIN SetForegroundColor
+%ifdef SetForegroundColor
 %define! ParfgColor
 %define! Partxtw
-%include Common\UITextSetFgColor.Inc
-void %'ModuleName'%.%SetFgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
+%include Common\UITextSetForegroundColor.Inc
+void %'ModuleName'%.%SetForegroundColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
 {
   txtw->textInfo.fgColor = color;
 }
 
-%endif %- SetFgColor
-%-BW_METHOD_END SetFgColor
+%endif %- SetForegroundColor
+%-BW_METHOD_END SetForegroundColor
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN SetBgColor
-%ifdef SetBgColor
+%-BW_METHOD_BEGIN SetBackgroundColor
+%ifdef SetBackgroundColor
 %define! ParbgColor
 %define! Partxtw
-%include Common\UITextSetBgColor.Inc
-void %'ModuleName'%.%SetBgColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
+%include Common\UITextSetBackgroundColor.Inc
+void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)
 {
   txtw->textInfo.bgColor = color;
 }
 
-%endif %- SetBgColor
-%-BW_METHOD_END SetBgColor
+%endif %- SetBackgroundColor
+%-BW_METHOD_END SetBackgroundColor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler

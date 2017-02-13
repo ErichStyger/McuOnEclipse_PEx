@@ -4,7 +4,7 @@
     <Name>UIText</Name>
     <Description>Text Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.073</Version>
+    <Version>01.081</Version>
     <Icon>UIText</Icon>
     <TypesFiles>PE,UIText\UIText</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -483,6 +483,55 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>MessageHandler</Name>
+        <Symbol>MessageHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Widget default message handler</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>MsgKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>kind of event</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>optional data pointer, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>GetTextBoxWidth</Name>
         <Symbol>GetTextBoxWidth</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -619,8 +668,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetBgColor</Name>
-        <Symbol>SetBgColor</Symbol>
+        <Name>SetBackgroundColor</Name>
+        <Symbol>SetBackgroundColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Change the background color of the text.</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -660,8 +709,8 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetFgColor</Name>
-        <Symbol>SetFgColor</Symbol>
+        <Name>SetForegroundColor</Name>
+        <Symbol>SetForegroundColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Change the foreground color of the text.</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -737,55 +786,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *textW, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>MessageHandler</Name>
-        <Symbol>MessageHandler</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Widget default message handler</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-          <ParUserDeclaration>void *pData</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

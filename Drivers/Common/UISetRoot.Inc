@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SelectNextElement)
+%include Common\GeneralMethod.inc (SetRoot)
 %;**     Description :
-%;**         Selects the next (or previous) element in UI
+%;**         Returns the UI root element. In case of a modal element,
+%;**         this one is returned.
 %include Common\GeneralParameters.inc(27)
-%;**       * element%Parelement %>27 - Pointer to element
-%;**         forward%Parforward %>27 - if set to TRUE, selects the next
-%;** %>29 element, otherwise selects the previous one.
+%;**       * root%Parroot %>27 - Pointer to new root element
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

@@ -70,7 +70,6 @@
 
 /* Include inherited components */
 #include "%@UI@ModuleName.h"
-
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -82,7 +81,6 @@
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -251,7 +249,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
   } /* switch */
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
-    widget->userMsgHandler(kind, element, pData);                %>40/* call user event  */
+    widget->userMsgHandler(element, kind, pData);                %>40/* call user event  */
   }
 #else
   (void)pData; /* avoid warning about unused argument */
@@ -272,7 +270,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 %include Common\UIWindowCreate.Inc
 uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)
 {
-  if (parent==NULL || window==NULL) {
+  if (window==NULL) {
     return ERR_FAILED;
   }
   %@UI@'ModuleName'%.ElementInitCommon((%@UI@'ModuleName'%.Element*)window, %@UI@'ModuleName'%.WIDGET_WINDOW,
@@ -310,18 +308,18 @@ void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window)
   if (window != NULL) {
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
     if (window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER) {
-      %@UI@'ModuleName'%.DrawBox(&window->element,
+      %@UI@'ModuleName'%.DrawBox(window->element.parent,
         window->element.prop.x, window->element.prop.y,
         window->element.prop.width, window->element.prop.height,
         1, %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR);
-      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
+      %@UI@'ModuleName'%.DrawFilledBox(window->element.parent,
         window->element.prop.x+1, window->element.prop.y+1,
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.width-2),
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.height-2),
         window->bgColor);                                        %>40 /* assuming window height/width > 2 pixel! */
     } else {
 #endif
-      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
+      %@UI@'ModuleName'%.DrawFilledBox(window->element.parent,
         window->element.prop.x, window->element.prop.y,
         window->element.prop.width, window->element.prop.height,
         window->bgColor);
