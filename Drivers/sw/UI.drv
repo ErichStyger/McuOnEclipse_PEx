@@ -113,13 +113,13 @@ typedef enum %'ModuleName'_MsgKind {                             %>40/* this lis
   %'ModuleName'_MSG_WIDGET_RESIZE,                               %>40/* message to the widget to resize itself. Widget usually will da a recursive update. */
   %'ModuleName'_MSG_WIDGET_PAINT,                                %>40/* message to the widget to paint itself. The widget shall do a complete repaint. */
   %'ModuleName'_MSG_WIDGET_UPDATE,                               %>40/* message to the widget to update itself in case data has been changed. */
+  %'ModuleName'_MSG_WIDGET_SELECTED,                             %>40/* message to the widget that it has been selected. */
   /* slider specific */
   %'ModuleName'_MSG_SLIDER_VAL_CHANGE,
   /* display specific */
   %'ModuleName'_MSG_PRE_ORIENTATION_CHANGE,                      %>40/* message called before a display orientation change */
   %'ModuleName'_MSG_ORIENTATION_CHANGE,                          %>40/* message called after the orientation change, before doing an update */
   %'ModuleName'_MSG_POST_ORIENTATION_CHANGE,                     %>40/* message called after a display orientation change and update */
-  %'ModuleName'_MSG_PAINT,                                       %>40/* message called for painting the element */
   /* starting point for widget specific messages */
   %'ModuleName'_MSG_LAST_PREFINED                                %>40/* last predefined message */
 } %'ModuleName'_MsgKind;
@@ -1108,7 +1108,7 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_Element *element, %'ModuleName'
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1130,7 +1130,7 @@ void %'ModuleName'%.%DrawHLine(%'ModuleName'_Element *element, %'ModuleName'_Pix
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1152,7 +1152,7 @@ void %'ModuleName'%.%DrawVLine(%'ModuleName'_Element *element, %'ModuleName'_Pix
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1176,7 +1176,7 @@ void %'ModuleName'%.%DrawBox(%'ModuleName'_Element *element, %'ModuleName'_Pixel
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1199,7 +1199,7 @@ void %'ModuleName'%.%DrawLine(%'ModuleName'_Element *element, %'ModuleName'_Pixe
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x0 += xp; x1 += xp;
     y0 += yp; y1 += yp;
   }
@@ -1221,7 +1221,7 @@ void %'ModuleName'%.%DrawCircle(%'ModuleName'_Element *element, %'ModuleName'_Pi
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1243,7 +1243,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_Element *element, %'ModuleNa
 {
   %'ModuleName'_PixelDim xp, yp;
 
-  if (%'ModuleName'%.%GetElementAbsolutePos(element, &xp, &yp)==ERR_OK) {
+  if (element!=NULL && %'ModuleName'%.%GetElementAbsolutePos(element->parent, &xp, &yp)==ERR_OK) {
     x += xp;
     y += yp;
   }
@@ -1421,7 +1421,7 @@ void %'ModuleName'%.%UpdateElementNoRefresh(%'ModuleName'_Element *element, bool
 {
   if (updateAll || (element->prop.flags&%'ModuleName'_FLAGS_NEEDS_REPAINT)) {
     element->prop.flags |= %'ModuleName'_FLAGS_NEEDS_REPAINT; /* force repaint */
-    element->msgHandler(element, %'ModuleName'_MSG_PAINT, NULL);
+    element->msgHandler(element, %'ModuleName'_MSG_WIDGET_UPDATE, NULL);
     element->prop.flags &= ~%'ModuleName'_FLAGS_NEEDS_REPAINT;
   }
 }

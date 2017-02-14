@@ -202,45 +202,26 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Create">
-<b>Create</b></a>
- - Creates a text element
+<li><a name="SetBackgroundColor">
+<b>SetBackgroundColor</b></a>
+ - Change the background color of the text.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
+<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element. If NULL, then the widget will not be added to the list of widgets.</li>
 <li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
-<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
-<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
-<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
-<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
+<li><i>bgColor:<i>ComponentName_</i>PixelColor</i> - text background color</li>
 </ul><br />
 </li>
-<li><a name="Paint">
-<b>Paint</b></a>
- - Paints the text to the screen
+<li><a name="SetForegroundColor">
+<b>SetForegroundColor</b></a>
+ - Change the foreground color of the text.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>TextWidget *text)<br />
+<br /><i>ANSIC prototype:</i> void SetForegroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>text: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to element</li>
-</ul><br />
-</li>
-<li><a name="ChangeText">
-<b>ChangeText</b></a>
- - Changes the text of the element. The method will erase the existing text and replaces it with the new text, and copies the new text into the existing buffer (that's why you need to provide the size of the existing buffer as well).
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t ChangeText(<i>ComponentName_</i>TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to the text widget</li>
-<li><i>dstTextSize:uint16_t</i> - Size in bytes of existing text.</li>
-<li><i>txt: Pointer to char</i> - Pointer to new text. Note that this text has to be different from the element text shown, and this text will become the new element text.</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
+<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
+<li><i>fgColor:<i>ComponentName_</i>PixelColor</i> - text color</li>
 </ul><br />
 </li>
 <li><a name="SetFont">
@@ -293,16 +274,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="MessageHandler">
-<b>MessageHandler</b></a>
- - Widget default message handler
+<li><a name="ChangeText">
+<b>ChangeText</b></a>
+ - Changes the text of the element. The method will erase the existing text and replaces it with the new text, and copies the new text into the existing buffer (that's why you need to provide the size of the existing buffer as well).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ChangeText(<i>ComponentName_</i>TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
-<li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
-<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to the text widget</li>
+<li><i>dstTextSize:uint16_t</i> - Size in bytes of existing text.</li>
+<li><i>txt: Pointer to char</i> - Pointer to new text. Note that this text has to be different from the element text shown, and this text will become the new element text.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 <li><a name="GetTextBoxWidth">
@@ -353,26 +336,14 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="SetBackgroundColor">
-<b>SetBackgroundColor</b></a>
- - Change the background color of the text.
+<li><a name="Paint">
+<b>Paint</b></a>
+ - Paints the text to the screen
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>TextWidget *text)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
-<li><i>bgColor:<i>ComponentName_</i>PixelColor</i> - text background color</li>
-</ul><br />
-</li>
-<li><a name="SetForegroundColor">
-<b>SetForegroundColor</b></a>
- - Change the foreground color of the text.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetForegroundColor(<i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
-<li><i>fgColor:<i>ComponentName_</i>PixelColor</i> - text color</li>
+<li><i>text: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to element</li>
 </ul><br />
 </li>
 <li><a name="SetUserMsgHandler">
@@ -384,6 +355,35 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>textW: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
 <li><i>handler:byte</i> - Callback to be used</li>
+</ul><br />
+</li>
+<li><a name="MessageHandler">
+<b>MessageHandler</b></a>
+ - Widget default message handler
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
+<li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
+<li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+</ul><br />
+</li>
+<li><a name="Create">
+<b>Create</b></a>
+ - Creates a text element
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element. If NULL, then the widget will not be added to the list of widgets.</li>
+<li><i>txtw: Pointer to <i>ComponentName_</i>TextWidget</i> - Pointer to text widget</li>
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
+<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
+<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

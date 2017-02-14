@@ -4,7 +4,7 @@
     <Name>UIIcon</Name>
     <Description>Icon Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.077</Version>
+    <Version>01.080</Version>
     <Icon>UIIcon</Icon>
     <TypesFiles>PE,UIIcon\UIIcon</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -72,7 +72,7 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>1</DefaultIndex>
+              <DefaultIndex>0</DefaultIndex>
               <TextValueIndex>true</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
@@ -88,7 +88,23 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Inside Color</Name>
+              <Symbol>DefaultInsideColor</Symbol>
+              <TypeSpec>typeColor</TypeSpec>
+              <Hint>Default inside color</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
               <TextValueIndex>true</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
@@ -144,10 +160,10 @@
   <MethodList>
     <Method>
       <TMthdItem>
-        <Name>Create</Name>
-        <Symbol>Create</Symbol>
+        <Name>SetBackgroundColor</Name>
+        <Symbol>SetBackgroundColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Creates a new Icon widget element</Hint>
+        <Hint>Changes the background color of an icon</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -161,87 +177,25 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>6</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to parent element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>icon</ParName>
-          <ParType>IconWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to icon widget</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>x</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>x position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>y</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>y position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>width</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>width of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>height</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>height of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints an icon in the element</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <RetHint/>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>icon</ParName>
           <ParType>IconWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
+          <ParHint>Pointer to icon</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>background color</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_IconWidget *icon)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -288,10 +242,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetBackgroundColor</Name>
-        <Symbol>SetBackgroundColor</Symbol>
+        <Name>SetInsideColor</Name>
+        <Symbol>SetInsideColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Changes the background color of an icon</Hint>
+        <Hint>Changes the inside color of an icon</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -318,7 +272,7 @@
           <ParName>color</ParName>
           <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>background color</ParHint>
+          <ParHint>foreground color</ParHint>
           <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
@@ -364,6 +318,40 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_IconWidget *icon, %'ModuleName'_IconType type)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Paints an icon in the element</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>icon</ParName>
+          <ParType>IconWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_IconWidget *icon)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -454,6 +442,75 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Create</Name>
+        <Symbol>Create</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Creates a new Icon widget element</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>6</ParamCount>
+        <Parameter>
+          <ParName>parent</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to parent element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>icon</ParName>
+          <ParType>IconWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to icon widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>width</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>width of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>height</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>height of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

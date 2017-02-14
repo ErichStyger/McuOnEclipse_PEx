@@ -79,6 +79,7 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -113,6 +114,7 @@ typedef struct {
   %'ModuleName'_IconType type;                                   %>40/* defines the type of the icon */
   %@UI@'ModuleName'%.PixelColor fgColor;                         %>40/* foreground color */
   %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* foreground color */
+  %@UI@'ModuleName'%.PixelColor insideColor;                     %>40/* inside color */
 #if %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER
   %@UI@'ModuleName'%.MsgHandler userMsgHandler;                  %>40/* optional user handler */
 #endif
@@ -136,14 +138,6 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
 
 %endif %- Create
 %-BW_METHOD_END Create
-%-************************************************************************************************************
-%ifdef SetForegroundColor
-void %'ModuleName'%.%SetForegroundColor(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color);
-%define! Paricon
-%define! Parcolor
-%include Common\UIIconSetForegroundColor.Inc
-
-%endif %- SetForegroundColor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler
@@ -175,6 +169,14 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon);
 %endif %- Paint
 %-BW_METHOD_END Paint
 %-************************************************************************************************************
+%ifdef SetForegroundColor
+void %'ModuleName'%.%SetForegroundColor(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color);
+%define! Paricon
+%define! Parcolor
+%include Common\UIIconSetForegroundColor.Inc
+
+%endif %- SetForegroundColor
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetBackgroundColor
 %ifdef SetBackgroundColor
 void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color);
@@ -184,6 +186,16 @@ void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_IconWidget *icon, %@UI@'Mo
 
 %endif %- SetBackgroundColor
 %-BW_METHOD_END SetBackgroundColor
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetInsideColor
+%ifdef SetInsideColor
+void %'ModuleName'%.%SetInsideColor(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color);
+%define! Paricon
+%define! Parcolor
+%include Common\UIIconSetInsideColor.Inc
+
+%endif %- SetInsideColor
+%-BW_METHOD_END SetInsideColor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetType
 %ifdef SetType
@@ -239,15 +251,17 @@ void %'ModuleName'%.%SetType(%'ModuleName'_IconWidget *icon, %'ModuleName'_IconT
 void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
 {
   %@UI@'ModuleName'%.PixelDim x, y, w, h, r;
-  %@UI@'ModuleName'%.PixelColor fgColor, bgColor;
+  %@UI@'ModuleName'%.PixelColor fgColor, bgColor, insideColor;
 
 #if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (icon->element.prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {
-    fgColor = icon->bgColor;
-    bgColor = icon->fgColor;
+    fgColor = icon->insideColor;
+    bgColor = icon->bgColor;
+    insideColor = icon->fgColor;
   } else {
     fgColor = icon->fgColor;
     bgColor = icon->bgColor;
+    insideColor = icon->insideColor;
   }
 #else
   fgColor = icon->fgColor;
@@ -265,26 +279,29 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
     case %'ModuleName'_ICON_ARROW_RIGHT_BOXED:
     case %'ModuleName'_ICON_ARROW_UP_BOXED:
     case %'ModuleName'_ICON_ARROW_DOWN_BOXED:
-      %@UI@'ModuleName'%.DrawBox(icon->element.parent, x, y, w, h, 1, fgColor);%>40/* paint box */
+    %@UI@'ModuleName'%.DrawBox(&icon->element, x, y, w, h, 1, fgColor);%>40/* paint box */
       x++; y++; w -= 2; h -= 2; /* adjust for border */
-      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background */
+      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, insideColor);%>40/* fill background */
       break;
     case %'ModuleName'_ICON_CIRCLE_DOT:
     case %'ModuleName'_ICON_CIRCLE:
-      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background */
+      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, bgColor);%>40/* fill background */
       if (w>=3) { /* check for minimal size/radius */
         r = (%@UI@'ModuleName'%.PixelDim)((w-1)/2);
       } else {
         r = 1;
       }
-      %@UI@'ModuleName'%.DrawCircle(icon->element.parent,
+      %@UI@'ModuleName'%.DrawFilledCircle(&icon->element,
         (%@UI@'ModuleName'%.PixelDim)(x+((w-1)/2)),
         (%@UI@'ModuleName'%.PixelDim)(y+((h-1)/2)),
-        r,
-        fgColor);                                                %>40/* paint circle */
+        r, insideColor);                                         %>40/* paint inside of circle */
+      %@UI@'ModuleName'%.DrawCircle(&icon->element,
+        (%@UI@'ModuleName'%.PixelDim)(x+((w-1)/2)),
+        (%@UI@'ModuleName'%.PixelDim)(y+((h-1)/2)),
+        r, fgColor);                                             %>40/* paint circle line */
       break;
     default:
-      %@UI@'ModuleName'%.DrawFilledBox(icon->element.parent, x, y, w, h, bgColor);%>40/* fill background for all icon types*/
+      %@UI@'ModuleName'%.DrawFilledBox(&icon->element, x, y, w, h, bgColor);%>40/* fill background for all icon types*/
       break;
   } /* switch */
   switch(icon->type) {
@@ -301,7 +318,7 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
       } else {
         r = 1;
       }
-      %@UI@'ModuleName'%.DrawFilledCircle(icon->element.parent,
+      %@UI@'ModuleName'%.DrawFilledCircle(&icon->element,
         (%@UI@'ModuleName'%.PixelDim)(x+((w-1)/2)),
         (%@UI@'ModuleName'%.PixelDim)(y+((h-1)/2)),
         r,
@@ -309,37 +326,37 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
       break;
     case %'ModuleName'_ICON_CHECKMARK:
     case %'ModuleName'_ICON_CHECKMARK_BOXED:
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
       break;
     case %'ModuleName'_ICON_X:                                   %>40/* paint an X */
     case %'ModuleName'_ICON_X_BOXED:
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), y, fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_LEFT:                          %>40/* paint <- */
     case %'ModuleName'_ICON_ARROW_LEFT_BOXED:
-      %@UI@'ModuleName'%.DrawHLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawHLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_RIGHT:                         %>40/* paint -> */
     case %'ModuleName'_ICON_ARROW_RIGHT_BOXED:
-      %@UI@'ModuleName'%.DrawHLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawHLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), w, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_UP:                            %>40/* paint up arrow */
     case %'ModuleName'_ICON_ARROW_UP_BOXED:
-      %@UI@'ModuleName'%.DrawVLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawVLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     case %'ModuleName'_ICON_ARROW_DOWN:                          %>40/* paint down arrow */
     case %'ModuleName'_ICON_ARROW_DOWN_BOXED:
-      %@UI@'ModuleName'%.DrawVLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
-      %@UI@'ModuleName'%.DrawLine(icon->element.parent, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)),(%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
+      %@UI@'ModuleName'%.DrawVLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), y, h, fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, x, (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), (%@UI@'ModuleName'%.PixelDim)(x+(w/2)), (%@UI@'ModuleName'%.PixelDim)(y+h-1), fgColor);
+      %@UI@'ModuleName'%.DrawLine(&icon->element, (%@UI@'ModuleName'%.PixelDim)(x+(w/2)),(%@UI@'ModuleName'%.PixelDim)(y+h-1), (%@UI@'ModuleName'%.PixelDim)(x+w-1), (%@UI@'ModuleName'%.PixelDim)(y+(h/2)), fgColor);
       break;
     default:
       break;
@@ -359,10 +376,11 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 {
   %'ModuleName'_IconWidget *widget = (%'ModuleName'_IconWidget*)element;
 
-  if (widget==NULL || widget->element.prop.type!=%@UI@'ModuleName'%.MSG_WIDGET_PAINT) {
+  if (widget==NULL || widget->element.prop.type!=%@UI@'ModuleName'%.WIDGET_ICON) {
     return; /* not a window widget */
   }
   switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_UPDATE:
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
       %'ModuleName'%.%Paint(widget);
       break;
@@ -402,6 +420,7 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
   icon->type = %'ModuleName'%.CONFIG_DEFAULT_ICON_KIND;
   icon->fgColor = %'ModuleName'%.CONFIG_DEFAULT_ICON_FOREGROUND_COLOR;
   icon->bgColor = %'ModuleName'%.CONFIG_DEFAULT_ICON_BACKGROUND_COLOR;
+  icon->insideColor = %'ModuleName'%.CONFIG_DEFAULT_ICON_INSIDE_COLOR;
 #if %'ModuleName'%.CONFIG_ICON_HAS_USER_MSG_HANDLER
   icon->userMsgHandler = NULL;                                   %>40/* needs to be set by user */
 #endif
@@ -439,6 +458,19 @@ void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_IconWidget *icon, %@UI@'Mo
 
 %endif %- SetBackgroundColor
 %-BW_METHOD_END SetBackgroundColor
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetInsideColor
+%ifdef SetInsideColor
+%define! Paricon
+%define! Parcolor
+%include Common\UIIconSetInsideColor.Inc
+void %'ModuleName'%.%SetInsideColor(%'ModuleName'_IconWidget *icon, %@UI@'ModuleName'%.PixelColor color)
+{
+  icon->insideColor = color;
+}
+
+%endif %- SetInsideColor
+%-BW_METHOD_END SetInsideColor
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetUserMsgHandler
 %ifdef SetUserMsgHandler
@@ -514,6 +546,11 @@ void %'ModuleName'%.%SetType(%'ModuleName'_IconWidget *icon, %'ModuleName'_IconT
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_ICON_FOREGROUND_COLOR
   #define %'ModuleName'%.CONFIG_DEFAULT_ICON_FOREGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%DefaultForegroundColor
     /*!< Default icon border color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_ICON_INSIDE_COLOR
+  #define %'ModuleName'%.CONFIG_DEFAULT_ICON_INSIDE_COLOR  %@UI@'ModuleName'%.COLOR_%DefaultInsideColor
+    /*!< Default icon inside color */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_ICON_KIND

@@ -344,7 +344,7 @@ void %'ModuleName'%.%Paint(%'ModuleName'_TextWidget *text)
   }
 #endif
   /* draw background */
-  %@UI@'ModuleName'%.DrawFilledBox(text->element.parent,
+  %@UI@'ModuleName'%.DrawFilledBox(&text->element,
     text->element.prop.x, text->element.prop.y,
     text->element.prop.width, text->element.prop.height,
     bgColor);
@@ -379,6 +379,8 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
     return; /* not a text widget */
   }
   switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_SELECTED:
+    case %@UI@'ModuleName'%.MSG_WIDGET_UPDATE:
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
       %'ModuleName'%.%Paint(widget);
       break;
@@ -388,7 +390,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
     default:
       break;
   } /* switch */
-#if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
+#if %'ModuleName'%.CONFIG_TEXT_HAS_USER_MSG_HANDLER
   if (widget->userMsgHandler != NULL){
     widget->userMsgHandler(element, kind, pData);                %>40/* call user event  */
   }

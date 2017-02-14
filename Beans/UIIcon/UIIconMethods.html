@@ -206,31 +206,15 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Create">
-<b>Create</b></a>
- - Creates a new Icon widget element
+<li><a name="SetBackgroundColor">
+<b>SetBackgroundColor</b></a>
+ - Changes the background color of an icon
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>IconWidget *icon, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
+<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>IconWidget *icon, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element</li>
-<li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to icon widget</li>
-<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
-<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
-<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
-<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="Paint">
-<b>Paint</b></a>
- - Paints an icon in the element
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>IconWidget *icon)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to element</li>
+<li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to icon</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - background color</li>
 </ul><br />
 </li>
 <li><a name="SetForegroundColor">
@@ -244,15 +228,15 @@ LI.EXP {
 <li><i>color:<i>ComponentName_</i>PixelColor</i> - foreground color</li>
 </ul><br />
 </li>
-<li><a name="SetBackgroundColor">
-<b>SetBackgroundColor</b></a>
- - Changes the background color of an icon
+<li><a name="SetInsideColor">
+<b>SetInsideColor</b></a>
+ - Changes the inside color of an icon
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetBackgroundColor(<i>ComponentName_</i>IconWidget *icon, %@UI@'ModuleName'%.PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void SetInsideColor(<i>ComponentName_</i>IconWidget *icon, %@UI@'ModuleName'%.PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to icon</li>
-<li><i>color:<i>ComponentName_</i>PixelColor</i> - background color</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - foreground color</li>
 </ul><br />
 </li>
 <li><a name="SetType">
@@ -264,6 +248,16 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to icon</li>
 <li><i>type:<i>ComponentName_</i>IconType</i> - icon type</li>
+</ul><br />
+</li>
+<li><a name="Paint">
+<b>Paint</b></a>
+ - Paints an icon in the element
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>IconWidget *icon)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to element</li>
 </ul><br />
 </li>
 <li><a name="SetUserMsgHandler">
@@ -287,6 +281,23 @@ LI.EXP {
 <li><i>element: Pointer to <i>ComponentName_</i>Element</i> - Pointer to element</li>
 <li><i>kind:<i>ComponentName_</i>MsgKind</i> - kind of event</li>
 <li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
+</ul><br />
+</li>
+<li><a name="Create">
+<b>Create</b></a>
+ - Creates a new Icon widget element
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>IconWidget *icon, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element</li>
+<li><i>icon: Pointer to <i>ComponentName_</i>IconWidget</i> - Pointer to icon widget</li>
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
+<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
+<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

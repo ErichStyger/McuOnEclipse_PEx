@@ -81,6 +81,7 @@
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -241,6 +242,8 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
     return; /* not a window widget */
   }
   switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_SELECTED:
+    case %@UI@'ModuleName'%.MSG_WIDGET_UPDATE:
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
       %'ModuleName'%.%Paint(widget);
       break;
@@ -308,18 +311,18 @@ void %'ModuleName'%.%Paint(%'ModuleName'_WindowWidget *window)
   if (window != NULL) {
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_BORDER
     if (window->element.prop.flags&%@UI@'ModuleName'%.FLAGS_WINDOW_HAS_BORDER) {
-      %@UI@'ModuleName'%.DrawBox(window->element.parent,
+      %@UI@'ModuleName'%.DrawBox(&window->element,
         window->element.prop.x, window->element.prop.y,
         window->element.prop.width, window->element.prop.height,
         1, %'ModuleName'%.CONFIG_DEFAULT_WINDOW_BORDER_COLOR);
-      %@UI@'ModuleName'%.DrawFilledBox(window->element.parent,
+      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
         window->element.prop.x+1, window->element.prop.y+1,
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.width-2),
         (%@UI@'ModuleName'%.PixelDim)(window->element.prop.height-2),
         window->bgColor);                                        %>40 /* assuming window height/width > 2 pixel! */
     } else {
 #endif
-      %@UI@'ModuleName'%.DrawFilledBox(window->element.parent,
+      %@UI@'ModuleName'%.DrawFilledBox(&window->element,
         window->element.prop.x, window->element.prop.y,
         window->element.prop.width, window->element.prop.height,
         window->bgColor);
@@ -433,6 +436,7 @@ static void EventCallbackMovableWindow(%@UI@'ModuleName'%.Element *element, %@UI
 %define! Parhandler
 %include Common\UIWindowSetUserMsgHandler.Inc
 void %'ModuleName'%.%SetUserMsgHandler(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)
+{
 #if %'ModuleName'%.CONFIG_WINDOW_HAS_USER_MSG_HANDLER
   window->userMsgHandler = handler;
 #else

@@ -190,7 +190,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 void %'ModuleName'%.%Paint(%'ModuleName'_ScreenWidget *screen)
 {
   %@UI@'ModuleName'%.DrawFilledBox(
-    screen->element.parent,
+    &screen->element,
     screen->element.prop.x,
     screen->element.prop.y,
     screen->element.prop.width,
@@ -215,6 +215,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
     return; /* not a screen */
   }
   switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_UPDATE:
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
       %'ModuleName'%.%Paint((%'ModuleName'_ScreenWidget*)element);
       break;

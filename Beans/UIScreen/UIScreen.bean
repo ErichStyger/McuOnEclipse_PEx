@@ -4,7 +4,7 @@
     <Name>UIScreen</Name>
     <Description>Screen Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.017</Version>
+    <Version>01.018</Version>
     <Icon>UIScreen</Icon>
     <TypesFiles>PE,UIScreen\UIScreen</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -112,6 +112,130 @@
   <MethodList>
     <Method>
       <TMthdItem>
+        <Name>SetBackgroundColor</Name>
+        <Symbol>SetBackgroundColor</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the screen background color</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>screen</ParName>
+          <ParType>ScreenWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to screen</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Background color for screen</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Draws all elements of the screen</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>screen</ParName>
+          <ParType>ScreenWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to screen</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_ScreenWidget *screen)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MessageHandler</Name>
+        <Symbol>MessageHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Message Handler for Widget</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>EventCallbackKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>kind of event</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>optional data pointer, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Create</Name>
         <Symbol>Create</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -176,130 +300,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SetBackgroundColor</Name>
-        <Symbol>SetBackgroundColor</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Sets the screen background color</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>ScreenWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>color</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Background color for screen</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_ScreenWidget *screen, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>MessageHandler</Name>
-        <Symbol>MessageHandler</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Message Handler for Widget</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>3</ParamCount>
-        <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>kind</ParName>
-          <ParType>EventCallbackKind</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-          <ParUserDeclaration>void *pData</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Draws all elements of the screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>screen</ParName>
-          <ParType>ScreenWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to screen</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_ScreenWidget *screen)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

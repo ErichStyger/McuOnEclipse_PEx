@@ -202,33 +202,6 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Create">
-<b>Create</b></a>
- - Creates a new window
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element</li>
-<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
-<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
-<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
-<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
-<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="Paint">
-<b>Paint</b></a>
- - Paints a window with all widgets
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>WindowWidget *window)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
-</ul><br />
-</li>
 <li><a name="SetBackgroundColor">
 <b>SetBackgroundColor</b></a>
  - Changes the window background color.
@@ -260,6 +233,27 @@ LI.EXP {
 <li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
 </ul><br />
 </li>
+<li><a name="Paint">
+<b>Paint</b></a>
+ - Paints a window with all widgets
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Paint(<i>ComponentName_</i>WindowWidget *window)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
+</ul><br />
+</li>
+<li><a name="SetUserMsgHandler">
+<b>SetUserMsgHandler</b></a>
+ - Assigns a user callback to the widget
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetUserMsgHandler(<i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
+<li><i>handler:byte</i> - callback function pointer</li>
+</ul><br />
+</li>
 <li><a name="MessageHandler">
 <b>MessageHandler</b></a>
  - Callback used for widget events
@@ -272,15 +266,21 @@ LI.EXP {
 <li><i>pData:<i>ComponentName_</i>Pvoid</i> - optional data pointer, NULL otherwise</li>
 </ul><br />
 </li>
-<li><a name="SetUserMsgHandler">
-<b>SetUserMsgHandler</b></a>
- - Assigns a user callback to the widget
+<li><a name="Create">
+<b>Create</b></a>
+ - Creates a new window
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void SetUserMsgHandler(<i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Create(%@UI@'ModuleName'%.Element *parent, <i>ComponentName_</i>WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window</li>
-<li><i>handler:byte</i> - callback function pointer</li>
+<li><i>parent: Pointer to <i>ComponentName_</i>Element</i> - Pointer to parent element</li>
+<li><i>window: Pointer to <i>ComponentName_</i>WindowWidget</i> - Pointer to window structure</li>
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position</li>
+<li><i>width:<i>ComponentName_</i>PixelDim</i> - width of element</li>
+<li><i>height:<i>ComponentName_</i>PixelDim</i> - height of element</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

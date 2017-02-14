@@ -250,7 +250,7 @@ void %'ModuleName'%.%Paint(%'ModuleName'_HeaderWidget *header)
   if (header->element.prop.type != %@UI@'ModuleName'%.WIDGET_HEADER) {
     return;
   }
-  %@UI@'ModuleName'%.DrawFilledBox(header->element.parent,
+  %@UI@'ModuleName'%.DrawFilledBox(&header->element,
     header->element.prop.x, header->element.prop.y,
     header->element.prop.width, header->element.prop.height,
     header->bgColor);
@@ -273,6 +273,8 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
     return; /* not a text widget */
   }
   switch(kind) {
+    case %@UI@'ModuleName'%.MSG_WIDGET_SELECTED:
+    case %@UI@'ModuleName'%.MSG_WIDGET_UPDATE:
     case %@UI@'ModuleName'%.MSG_WIDGET_PAINT:
       %'ModuleName'%.%Paint(widget);
       break;
@@ -413,9 +415,13 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
 %include Common\UIHeaderSetBackgroundColor.Inc
 void %'ModuleName'%.%SetBackgroundColor(%'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelColor color)
 {
+  /* header widget background */
   header->bgColor = color;
+  /* set color of text widget */
   %@TextWidget@'ModuleName'%.SetBackgroundColor(&header->textWidget, color);
+  /* set color of icon widget */
   %@Icon@'ModuleName'%.SetBackgroundColor(&header->iconWidget, color);
+  %@Icon@'ModuleName'%.SetInsideColor(&header->iconWidget, color);
 }
 
 %endif %- SetBackgroundColor
@@ -520,11 +526,6 @@ uint8_t %'ModuleName'%.%Resize(%'ModuleName'_HeaderWidget *widget)
 
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
-
-#ifndef %'ModuleName'%.CONFIG_DEFAULT_HEADER_BACKGROUND_COLOR
-  #define %'ModuleName'%.CONFIG_DEFAULT_HEADER_BACKGROUND_COLOR  %@UI@'ModuleName'%.COLOR_%DefaultHeaderBackgroundColor
-    /*!< Default header background color */
-#endif
 
 #ifndef %'ModuleName'_CONFIG_HEADER_DEFAULT_TEXT
   #define %'ModuleName'_CONFIG_HEADER_DEFAULT_TEXT                "%defaultText"

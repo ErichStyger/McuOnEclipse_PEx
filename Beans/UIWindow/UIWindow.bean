@@ -4,7 +4,7 @@
     <Name>UIWindow</Name>
     <Description>Window Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.046</Version>
+    <Version>01.047</Version>
     <Icon>UIWindow</Icon>
     <TypesFiles>PE,UIWindow\UIWindow</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -162,109 +162,6 @@
     </Property>
   </PropertyList>
   <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>Create</Name>
-        <Symbol>Create</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Creates a new window</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>6</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to parent element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>WindowWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window structure</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>x</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>x position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>y</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>y position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>width</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>width of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>height</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>height of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints a window with all widgets</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>window</ParName>
-          <ParType>WindowWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
     <Method>
       <TMthdItem>
         <Name>SetBackgroundColor</Name>
@@ -425,6 +322,81 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Paints a window with all widgets</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>window</ParName>
+          <ParType>WindowWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to window</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetUserMsgHandler</Name>
+        <Symbol>SetUserMsgHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Assigns a user callback to the widget</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>window</ParName>
+          <ParType>WindowWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to window</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>handler</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>callback function pointer</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>MessageHandler</Name>
         <Symbol>MessageHandler</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -474,42 +446,70 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetUserMsgHandler</Name>
-        <Symbol>SetUserMsgHandler</Symbol>
+        <Name>Create</Name>
+        <Symbol>Create</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Assigns a user callback to the widget</Hint>
+        <Hint>Creates a new window</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>6</ParamCount>
+        <Parameter>
+          <ParName>parent</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to parent element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
+        </Parameter>
         <Parameter>
           <ParName>window</ParName>
           <ParType>WindowWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to window</ParHint>
+          <ParHint>Pointer to window structure</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>handler</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>callback function pointer</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
+          <ParHint>x position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>width</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>width of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>height</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>height of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_WindowWidget *window, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

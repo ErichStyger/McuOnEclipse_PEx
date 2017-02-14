@@ -4,7 +4,7 @@
     <Name>UIHeader</Name>
     <Description>Header Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.081</Version>
+    <Version>01.083</Version>
     <Icon>UIHeader</Icon>
     <TypesFiles>PE,UIHeader\UIHeader</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -184,109 +184,6 @@
     </Property>
   </PropertyList>
   <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints a header in the window</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>header</ParName>
-          <ParType>HeaderWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to widget</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Create</Name>
-        <Symbol>Create</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Creates a new header widget element</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>6</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to parent element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>header</ParName>
-          <ParType>HeaderWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to header</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>x</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>x coordinate</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>y</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>y coordinate</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>width</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>width of the widget, zero for auto size</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>height</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>height of the header, zero for auto size</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
     <Method>
       <TMthdItem>
         <Name>SetBackgroundColor</Name>
@@ -479,6 +376,81 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Paints a header in the window</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>header</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to widget</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *header)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetUserMsgHandler</Name>
+        <Symbol>SetUserMsgHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Assigns a user callback to the widget</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>widget</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to header widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>handler</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Message handler</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *widget, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>MessageHandler</Name>
         <Symbol>MessageHandler</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -528,10 +500,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetUserMsgHandler</Name>
-        <Symbol>SetUserMsgHandler</Symbol>
+        <Name>Create</Name>
+        <Symbol>Create</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Assigns a user callback to the widget</Hint>
+        <Hint>Creates a new header widget element</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -545,25 +517,53 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>2</ParamCount>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>6</ParamCount>
         <Parameter>
-          <ParName>widget</ParName>
-          <ParType>HeaderWidget</ParType>
+          <ParName>parent</ParName>
+          <ParType>Element</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to header widget</ParHint>
+          <ParHint>Pointer to parent element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
         </Parameter>
         <Parameter>
-          <ParName>handler</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParName>header</ParName>
+          <ParType>HeaderWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to header</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Message handler</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgHandler handler</ParUserDeclaration>
+          <ParHint>x coordinate</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y coordinate</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>width</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>width of the widget, zero for auto size</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>height</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>height of the header, zero for auto size</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_HeaderWidget *widget, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_HeaderWidget *header, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

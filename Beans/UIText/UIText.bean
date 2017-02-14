@@ -4,7 +4,7 @@
     <Name>UIText</Name>
     <Description>Text Widget</Description>
     <Author>Erich Styger</Author>
-    <Version>01.081</Version>
+    <Version>01.084</Version>
     <Icon>UIText</Icon>
     <TypesFiles>PE,UIText\UIText</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -183,10 +183,10 @@
   <MethodList>
     <Method>
       <TMthdItem>
-        <Name>Create</Name>
-        <Symbol>Create</Symbol>
+        <Name>SetBackgroundColor</Name>
+        <Symbol>SetBackgroundColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Creates a text element</Hint>
+        <Hint>Change the background color of the text.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -200,16 +200,9 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
+        <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>6</ParamCount>
-        <Parameter>
-          <ParName>parent</ParName>
-          <ParType>Element</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to parent element. If NULL, then the widget will not be added to the list of widgets.</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
-        </Parameter>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>txtw</ParName>
           <ParType>TextWidget</ParType>
@@ -217,79 +210,24 @@
           <ParHint>Pointer to text widget</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>x</ParName>
-          <ParType>PixelDim</ParType>
+          <ParName>bgColor</ParName>
+          <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>x position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>y</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>y position</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>width</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>width of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
-        </Parameter>
-        <Parameter>
-          <ParName>height</ParName>
-          <ParType>PixelDim</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>height of element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
+          <ParHint>text background color</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Paint</Name>
-        <Symbol>Paint</Symbol>
+        <Name>SetForegroundColor</Name>
+        <Symbol>SetForegroundColor</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Paints the text to the screen</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>text</ParName>
-          <ParType>TextWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *text)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>ChangeText</Name>
-        <Symbol>ChangeText</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Changes the text of the element. The method will erase the existing text and replaces it with the new text, and copies the new text into the existing buffer (that's why you need to provide the size of the existing buffer as well).</Hint>
+        <Hint>Change the foreground color of the text.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -303,31 +241,25 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
+        <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>3</ParamCount>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>txtw</ParName>
           <ParType>TextWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to the text widget</ParHint>
+          <ParHint>Pointer to text widget</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>dstTextSize</ParName>
-          <ParType>uint16_t</ParType>
+          <ParName>fgColor</ParName>
+          <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Size in bytes of existing text.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>txt</ParName>
-          <ParType>char</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to new text. Note that this text has to be different from the element text shown, and this text will become the new element text.</ParHint>
-          <ParUserDeclaration>unsigned char *txt</ParUserDeclaration>
+          <ParHint>text color</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -483,10 +415,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>MessageHandler</Name>
-        <Symbol>MessageHandler</Symbol>
+        <Name>ChangeText</Name>
+        <Symbol>ChangeText</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Widget default message handler</Hint>
+        <Hint>Changes the text of the element. The method will erase the existing text and replaces it with the new text, and copies the new text into the existing buffer (that's why you need to provide the size of the existing buffer as well).</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -499,34 +431,32 @@
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
-          <ParName>element</ParName>
-          <ParType>Element</ParType>
+          <ParName>txtw</ParName>
+          <ParType>TextWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to element</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+          <ParHint>Pointer to the text widget</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>kind</ParName>
-          <ParType>MsgKind</ParType>
+          <ParName>dstTextSize</ParName>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>kind of event</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+          <ParHint>Size in bytes of existing text.</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>pData</ParName>
-          <ParType>Pvoid</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>optional data pointer, NULL otherwise</ParHint>
-          <ParUserDeclaration>void *pData</ParUserDeclaration>
+          <ParName>txt</ParName>
+          <ParType>char</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to new text. Note that this text has to be different from the element text shown, and this text will become the new element text.</ParHint>
+          <ParUserDeclaration>unsigned char *txt</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_TextWidget *txtw, uint16_t dstTextSize, unsigned char *txt)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -668,10 +598,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>SetBackgroundColor</Name>
-        <Symbol>SetBackgroundColor</Symbol>
+        <Name>Paint</Name>
+        <Symbol>Paint</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Change the background color of the text.</Hint>
+        <Hint>Paints the text to the screen</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -684,67 +614,19 @@
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
+        <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>2</ParamCount>
+        <ParamCount>1</ParamCount>
         <Parameter>
-          <ParName>txtw</ParName>
+          <ParName>text</ParName>
           <ParType>TextWidget</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to text widget</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>bgColor</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>text background color</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
+          <ParHint>Pointer to element</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SetForegroundColor</Name>
-        <Symbol>SetForegroundColor</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Change the foreground color of the text.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>txtw</ParName>
-          <ParType>TextWidget</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to text widget</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>fgColor</ParName>
-          <ParType>PixelColor</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>text color</ParHint>
-          <ParUserDeclaration>%@UI@'ModuleName'%.PixelColor color</ParUserDeclaration>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelColor color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *text)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -786,6 +668,124 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_TextWidget *textW, %@UI@'ModuleName'%.MsgHandler handler)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>MessageHandler</Name>
+        <Symbol>MessageHandler</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Widget default message handler</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>element</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *element</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>kind</ParName>
+          <ParType>MsgKind</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>kind of event</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.MsgKind kind</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>pData</ParName>
+          <ParType>Pvoid</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>optional data pointer, NULL otherwise</ParHint>
+          <ParUserDeclaration>void *pData</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%@UI@'ModuleName'%.Element *element, %@UI@'ModuleName'%.MsgKind kind, void *pData)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Create</Name>
+        <Symbol>Create</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Creates a text element</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>6</ParamCount>
+        <Parameter>
+          <ParName>parent</ParName>
+          <ParType>Element</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to parent element. If NULL, then the widget will not be added to the list of widgets.</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.Element *parent</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>txtw</ParName>
+          <ParType>TextWidget</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to text widget</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim x</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y position</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim y</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>width</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>width of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim width</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>height</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>height of element</ParHint>
+          <ParUserDeclaration>%@UI@'ModuleName'%.PixelDim height</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%@UI@'ModuleName'%.Element *parent, %'ModuleName'_TextWidget *txtw, %@UI@'ModuleName'%.PixelDim x, %@UI@'ModuleName'%.PixelDim y, %@UI@'ModuleName'%.PixelDim width, %@UI@'ModuleName'%.PixelDim height)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
