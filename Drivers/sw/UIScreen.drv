@@ -93,9 +93,6 @@
 typedef struct %'ModuleName'_ScreenWidget {
   %@UI@'ModuleName'%.Element element;                            %>40/* the base element, always first in structure */
   %@UI@'ModuleName'%.PixelColor bgColor;                         %>40/* background color of the screen */
-#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
-  %@UI@'ModuleName'%.Element *selectedW;                         %>40/* pointer to the currently selected window */
-#endif
 } %'ModuleName'_ScreenWidget;
 %-
 %-BW_CUSTOM_USERTYPE_END
@@ -254,9 +251,6 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
     %'ModuleName'%.%MessageHandler
   );
   screen->bgColor = %'ModuleName'_CONFIG_DEFAULT_SCREEN_BACKGROUND_COLOR;
-#if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
-  screen->selectedW = NULL;
-#endif
   if (parent!=NULL) {
     return %@UI@'ModuleName'%.AddSubElement(parent, &screen->element);
   }

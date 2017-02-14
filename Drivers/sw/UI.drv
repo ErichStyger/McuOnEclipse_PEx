@@ -212,8 +212,6 @@ typedef struct {
   %'ModuleName'_PixelDim y;                                      %>40/* y coordinate */
 } %'ModuleName'_Coordinate;
 
-struct %'ModuleName'_Screen;                                     %>40/* forward declaration of screen widget */
-
 /* --- Element --- */
 typedef struct %'ModuleName'_Element {                           %>40/* This describes a generic UI element */
   %'ModuleName'_ElementProperties prop;                          %>40/* common properties of element */
@@ -223,17 +221,7 @@ typedef struct %'ModuleName'_Element {                           %>40/* This des
   struct %'ModuleName'_Element *next;                            %>40/* pointer to the next element in list */
 } %'ModuleName'_Element;
 
-#if 1 /* temporary only, to be cleaned up */
-/* --- Screen --- */
-typedef struct  %'ModuleName'_Screen{                            %>40/* This is the abstraction of a generic window, with all the needed information. */
- %'ModuleName'_Element element;                                  %>40/* the base element */
- %'ModuleName'_Element *modalElement;                            %>40/* pointer to a modal element or NULL */
-} %'ModuleName'_Screen;
-#endif
-
-typedef %'ModuleName'_Coordinate *%'ModuleName'_PCoordinate;     %>40/* Pointer to coordinate */
 typedef struct %'ModuleName'_Element* %'ModuleName'%.PElement;   %>40/* Pointer to element */
-typedef %'ModuleName'_Screen *%'ModuleName'%.PScreen;            %>40/* Pointer to Screen element. */
 typedef bool (*%'ModuleName'_ElementFindFct)(%'ModuleName'_Element*, void*);%>40/* Function pointer for finding an element */
 typedef uint8_t (*%'ModuleName'_painterCallback) (%'ModuleName'_Element *element);%>40/* callback to be called to paint the element */
 %-
@@ -1030,7 +1018,6 @@ void %'ModuleName'%.%DeselectElement(%'ModuleName'_Element *element)
       %if defined(OnEvent)
       %OnEvent(element, %'ModuleName'_MSG_ELEMENT_DESELECT);     %>40/* call user event */
       %endif
-
       if (element->msgHandler != NULL) { /* call element deselect handler if there is any */
         element->msgHandler(element, %'ModuleName'_MSG_ELEMENT_DESELECT, NULL);
       }
@@ -1571,6 +1558,7 @@ void %'ModuleName'%.%PrevElement(%'ModuleName'_PElement *ppElement, %'ModuleName
 {
   /* precondition: datastructure with valid data */
   %'ModuleName'_Element *nextElement, *nextNextElement;
+
   nextElement = *ppElement;
   for(;;) {
     %'ModuleName'%.%NextElement(&nextElement, stopElement);      %>40/* next element */
@@ -1762,6 +1750,7 @@ void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_M
 %include Common\UIMarkElementModal.Inc
 uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
 {
+#if 0
   %'ModuleName'_Screen *screen;
 
   if (element==NULL) {
@@ -1773,6 +1762,7 @@ uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
   }
   screen->modalElement = element;
   element->prop.flags |= %'ModuleName'_FLAGS_IS_MODAL;
+#endif
   return ERR_OK;
 }
 
@@ -1786,6 +1776,7 @@ uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
 %include Common\UIUnMarkElementModal.Inc
 uint8_t %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
 {
+#if 0
   %'ModuleName'_Screen *screen;
 
   if (element==NULL) {
@@ -1797,6 +1788,7 @@ uint8_t %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
   }
   screen->modalElement = NULL;
   element->prop.flags &= ~%'ModuleName'_FLAGS_IS_MODAL;
+#endif
   return ERR_OK;
 }
 
