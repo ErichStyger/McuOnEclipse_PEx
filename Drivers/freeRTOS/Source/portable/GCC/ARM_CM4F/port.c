@@ -704,7 +704,11 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts, and to ensure alignment. */
   *pxTopOfStack = portINITIAL_XPSR;   /* xPSR */
   pxTopOfStack--;
+#if configUSE_MPU_SUPPORT
   *pxTopOfStack = ((StackType_t)pxCode)&portSTART_ADDRESS_MASK;  /* PC */
+#else
+  *pxTopOfStack = ((StackType_t)pxCode);  /* PC */
+#endif
   pxTopOfStack--;
   *pxTopOfStack = (StackType_t)portTASK_RETURN_ADDRESS;  /* LR */
 
