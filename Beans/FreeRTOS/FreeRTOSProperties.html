@@ -291,6 +291,10 @@ The following items are available only if the group is enabled (the value is "En
     <b>MemMang Folder</b></a> - RTOS port depending sources files are generated into this sub folder name. The name can be empty.
     </li>
     <li>
+    <a name="RTOSCommonFolderName">
+    <b>Common Folder</b></a> - This defines the RTOS common folder name
+    </li>
+    <li>
     <a name="RTOSConfigFolderName">
     <b>Config Folder</b></a> - The RTOS FreeRTOSConfig.h wilf will be generated into this sub folder name. The name can be empty.
     </li>
@@ -507,7 +511,7 @@ Mapping for number to vector for the MCF52259:<br />
   </li>
   <li>
   <a name="KinetisCPUSpecific">
-  <b>Kinetis</b></a> - This group is used to configure the RTOS for the Kinetis/ARM cores<br />
+  <b>ARM (Kinetis)</b></a> - This group is used to configure the RTOS for the Kinetis/ARM cores<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
   <ul>
@@ -549,6 +553,10 @@ There are 5 options:<br />
   <li><u>4</u>: Optimization level 4</li>
 </ul><br />
 
+    </li>
+    <li>
+    <a name="useMPUsupport">
+    <b>MPU</b></a> - Using MPU (Memory Protection Unit) support in the port.
     </li>
     <li>
     <a name="useARMSysTickTimer">
@@ -796,7 +804,7 @@ The following items are available only if the group is enabled (the value is "En
     </li>
     <li>
     <a name="MemoryScheme">
-    <b>Memory Allocation Scheme</b></a> - Scheme 1:<br />This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.<br /><br />Scheme 2:<br />This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.<br /><br />Scheme 3:<br />This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.<br /><br />Scheme 4:<br />This scheme uses a first fit algorithm and, unlike scheme 2, does combine adjacent free memory blocks into a single large block (it does include a coalescence algorithm).<br /><br />Scheme 5:<br />This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().<br /><br />
+    <b>Memory Allocation Scheme</b></a> - Configures configUSE_HEAP_SCHEME.<br />Scheme 1:<br />This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.<br /><br />Scheme 2:<br />This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.<br /><br />Scheme 3:<br />This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.<br /><br />Scheme 4:<br />This scheme uses a first fit algorithm and, unlike scheme 2, does combine adjacent free memory blocks into a single large block (it does include a coalescence algorithm).<br /><br />Scheme 5:<br />This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().<br /><br />
 There are 5 options:<br />
 <ul>
   <li><u>Scheme 1: alloc only</u>: This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.</li>

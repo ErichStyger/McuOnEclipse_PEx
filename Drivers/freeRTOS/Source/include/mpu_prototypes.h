@@ -110,8 +110,8 @@ void * MPU_pvTaskGetThreadLocalStoragePointer( TaskHandle_t xTaskToQuery, BaseTy
 BaseType_t MPU_xTaskCallApplicationTaskHook( TaskHandle_t xTask, void *pvParameter );
 TaskHandle_t MPU_xTaskGetIdleTaskHandle( void );
 UBaseType_t MPU_uxTaskGetSystemState( TaskStatus_t * const pxTaskStatusArray, const UBaseType_t uxArraySize, uint32_t * const pulTotalRunTime );
-void MPU_vTaskList( char * pcWriteBuffer );
-void MPU_vTaskGetRunTimeStats( char *pcWriteBuffer );
+void MPU_vTaskList( char * pcWriteBuffer, size_t bufSize);
+void MPU_vTaskGetRunTimeStats( char *pcWriteBuffer, size_t bufSize);
 BaseType_t MPU_xTaskGenericNotify( TaskHandle_t xTaskToNotify, uint32_t ulValue, eNotifyAction eAction, uint32_t *pulPreviousNotificationValue );
 BaseType_t MPU_xTaskNotifyWait( uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, uint32_t *pulNotificationValue, TickType_t xTicksToWait );
 uint32_t MPU_ulTaskNotifyTake( BaseType_t xClearCountOnExit, TickType_t xTicksToWait );
@@ -123,7 +123,15 @@ BaseType_t MPU_xTaskCheckForTimeOut( TimeOut_t * const pxTimeOut, TickType_t * c
 void MPU_vTaskMissedYield( void );
 BaseType_t MPU_xTaskGetSchedulerState( void );
 
+/* MPU version of heap API functions */
+void *MPU_pvPortMalloc( size_t xSize );
+size_t MPU_xPortGetFreeHeapSize( void );
+void MPU_vPortFree( void *pv );
+void MPU_vPortInitialiseBlocks( void );
+size_t MPU_xPortGetFreeHeapSize( void );
+
 /* MPU versions of queue.h API function. */
+BaseType_t MPU_xQueuePeekFromISR( QueueHandle_t pxQueue, void * const pvBuffer );
 BaseType_t MPU_xQueueGenericSend( QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait, const BaseType_t xCopyPosition );
 BaseType_t MPU_xQueueGenericReceive( QueueHandle_t xQueue, void * const pvBuffer, TickType_t xTicksToWait, const BaseType_t xJustPeek );
 UBaseType_t MPU_uxQueueMessagesWaiting( const QueueHandle_t xQueue );

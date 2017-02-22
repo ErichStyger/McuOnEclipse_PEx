@@ -758,10 +758,14 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB ) PRIVILEGED_FUNCTION;
 				/* Store the stack location in the TCB. */
 				pxNewTCB->pxStack = pxTaskDefinition->puxStackBuffer;
 
-				/* Tasks can be created statically or dynamically, so note
-				this task had a statically allocated stack in case it is
-				later deleted.  The TCB was allocated dynamically. */
-				pxNewTCB->ucStaticallyAllocated = tskSTATICALLY_ALLOCATED_STACK_ONLY;
+				#if( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
+				{
+				  /* Tasks can be created statically or dynamically, so note
+				  this task had a statically allocated stack in case it is
+				  later deleted.  The TCB was allocated dynamically. */
+				  pxNewTCB->ucStaticallyAllocated = tskSTATICALLY_ALLOCATED_STACK_ONLY;
+				}
+        #endif
 
 				prvInitialiseNewTask(	pxTaskDefinition->pvTaskCode,
 										pxTaskDefinition->pcName,

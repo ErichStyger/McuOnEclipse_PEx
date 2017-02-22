@@ -4732,15 +4732,28 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 #error "Unknown CPU family %CPUfamily?"
 %endif
 
+/* MPU support: portUSING_MPU_WRAPPERS is defined (or not) in portmacro.h and turns on MPU support. Currently only supported for ARM Cortex-M4/M3 ports */
+#ifndef configUSE_MPU_SUPPORT
+%if defined(useMPUsupport) & %useMPUsupport='yes'
+  #define configUSE_MPU_SUPPORT                                  %>50 (1 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+%else
+  #define configUSE_MPU_SUPPORT                                  %>50 (0 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+%endif
+  /*!< 1: enable MPU support; 0: MPU support is disabled */
+#endif
+
 /*-----------------------------------------------------------
  * GDB backtrace handler support
  * See http://interactive.freertos.org/entries/23468301-Tasks-backtrace-switcher-viewer-snippet-for-debugger-gcc-gdb-ARM-Cortex-M3-MPU-port-Eclipse-support-
  *----------------------------------------------------------*/
+#ifndef configGDB_HELPER
 %if defined(EnableGDBDebugHelper) & %EnableGDBDebugHelper='yes'
-#define configGDB_HELPER                                         %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)) /* 1: enable special GDB stack backtrace debug helper; 0: disabled */
+  #define configGDB_HELPER                                       %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC))
 %else
-#define configGDB_HELPER                                         %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC)) /* 1: enable special GDB stack backtrace debug helper; 0: disabled */
+  #define configGDB_HELPER                                       %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC))
 %endif
+   /*!< 1: enable special GDB stack backtrace debug helper; 0: disabled */
+#endif
 
 
 #endif /* __%'ModuleName'_CONFIG_H */

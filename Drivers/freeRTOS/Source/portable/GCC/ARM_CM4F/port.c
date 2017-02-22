@@ -258,6 +258,11 @@ typedef %@TickCntr@'ModuleName'%.TTimerValue TickCounter_t; /* for holding count
 #endif
 
 #if configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
+
+/* For strict compliance with the Cortex-M spec the task start address should
+have bit-0 clear, as it is loaded into the PC on exit from an ISR. */
+#define portSTART_ADDRESS_MASK				( ( StackType_t ) 0xfffffffeUL )
+
 /* Constants required to manipulate the core.
  * SysTick register: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0662b/CIAGECDD.html
  * Registers first... 
@@ -374,8 +379,10 @@ static void NVIC_EnableIRQ(IRQn_Type IRQn) {
 #endif /* configSYSTICK_USE_LOW_POWER_TIMER */
 
 /* Constants required to set up the initial stack. */
-#define portINITIAL_XPSR         (0x01000000)
-#define portINITIAL_EXEC_RETURN  (0xfffffffd)
+#define portINITIAL_XPSR                       (0x01000000)
+#define portINITIAL_EXEC_RETURN                (0xfffffffd)
+#define portINITIAL_CONTROL_IF_UNPRIVILEGED    (0x03)
+#define portINITIAL_CONTROL_IF_PRIVILEGED      (0x02)
 
 #if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
   /* Constants required to manipulate the VFP. */
@@ -529,8 +536,9 @@ extern tskTCB *volatile pxCurrentTCB;
     } while(0)
 
 %endif %- (CPUfamily = "56800")
-portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+%- -------------------------------------------------------------------------------------
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
   unsigned portLONG ulOriginalA5;
 
   __asm{ MOVE.L A5, ulOriginalA5 };
@@ -554,7 +562,9 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   *(pxTopOfStack + 13) = ulOriginalA5;
 
   return pxTopOfStack;
+}
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08")
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
   /* Set as task caller the prvTaskExitError function. */
   *pxTopOfStack = (uint8_t)portTASK_RETURN_ADDRESS;
   pxTopOfStack--;
@@ -609,7 +619,9 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   *pxTopOfStack = (portSTACK_TYPE) 0x00;
 
   return pxTopOfStack;
+}
 %elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
   /*Place a few bytes of known values on the bottom of the stack.
     This can be uncommented to provide useful stack markers when debugging.
     *pxTopOfStack = (portSTACK_TYPE)0x11;
@@ -681,30 +693,23 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   /* Finally the critical nesting depth is initialised with 0 (not within a critical section). */
   *pxTopOfStack = (portSTACK_TYPE)0x00;
   return pxTopOfStack;
+}
 %elif (CPUfamily = "Kinetis")
+#if configUSE_MPU_SUPPORT
+StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters, BaseType_t xRunPrivileged) {
+#else
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+#endif
   /* Simulate the stack frame as it would be created by a context switch interrupt. */
-  pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts,
-                        and to ensure alignment. */
+  pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts, and to ensure alignment. */
   *pxTopOfStack = portINITIAL_XPSR;   /* xPSR */
   pxTopOfStack--;
-  *pxTopOfStack = (portSTACK_TYPE)pxCode;  /* PC */
+  *pxTopOfStack = ((StackType_t)pxCode)&portSTART_ADDRESS_MASK;  /* PC */
   pxTopOfStack--;
-  *pxTopOfStack = (portSTACK_TYPE)portTASK_RETURN_ADDRESS;  /* LR */
+  *pxTopOfStack = (StackType_t)portTASK_RETURN_ADDRESS;  /* LR */
 
   /* Save code space by skipping register initialization. */
-#if 1
   pxTopOfStack -= 5;  /* R12, R3, R2 and R1. */
-#else /* initialize all registers */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x12121212; /* R12 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x03030303; /* R3 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x02020202; /* R2 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x01010101; /* R1 */
-  pxTopOfStack--;
-#endif
   *pxTopOfStack = (portSTACK_TYPE)pvParameters; /* R0 */
 
 #if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
@@ -713,28 +718,20 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   pxTopOfStack--;
   *pxTopOfStack = portINITIAL_EXEC_RETURN;
 #endif
-#if 1
+#if configUSE_MPU_SUPPORT
+  pxTopOfStack -= 9;  /* R11, R10, R9, R8, R7, R6, R5 and R4 plus priviledge level */
+  if (xRunPrivileged == pdTRUE) {
+    *pxTopOfStack = portINITIAL_CONTROL_IF_PRIVILEGED;
+  } else {
+    *pxTopOfStack = portINITIAL_CONTROL_IF_UNPRIVILEGED;
+  }
+#else
   pxTopOfStack -= 8;  /* R11, R10, R9, R8, R7, R6, R5 and R4. */
-#else /* initialize all registers */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x11111111; /* R11 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x10101010; /* R10 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x99999999; /* R5 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x88888888; /* R8 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x0; /* R7 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x66666666; /* R6 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x55555555; /* R5 */
-  pxTopOfStack--;
-  *pxTopOfStack = 0x44444444; /* R4 */
 #endif
   return pxTopOfStack;
+}
 %elif (CPUfamily = "56800")
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
   #define portINITIAL_SR	0x00UL
   unsigned short usCode;
   portBASE_TYPE i;
@@ -811,11 +808,14 @@ portSTACK_TYPE *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE 
   pxTopOfStack++;
 
   return pxTopOfStack;
+}
 %else
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
   %warning "unsupported target %CPUfamily!"
   #error "unsupported target %CPUfamily!"
-%endif
+  return 0;
 }
+%endif
 
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_S08_FSL) || (configCOMPILER==configCOMPILER_S12_FSL)
@@ -2064,6 +2064,10 @@ __asm void vPortPendSVHandler(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 #if configGDB_HELPER
+/* prototypes to avoid compiler warnings */
+__attribute__ ((naked)) void vPortPendSVHandler_native(void);
+__attribute__ ((naked)) void PendSV_Handler_jumper(void);
+
 __attribute__ ((naked)) void vPortPendSVHandler_native(void) {
 #elif %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
@@ -2188,7 +2192,7 @@ void *volatile dbgPendingTaskHandle;
 const int volatile dbgFreeRTOSConfig_suspend_value = INCLUDE_vTaskSuspend;
 const int volatile dbgFreeRTOSConfig_delete_value = INCLUDE_vTaskDelete;
 
-void __attribute__ ((naked)) PendSV_Handler_jumper(void) {
+__attribute__ ((naked)) void PendSV_Handler_jumper(void) {
   __asm volatile("b vPortPendSVHandler_native \n");
 }
 

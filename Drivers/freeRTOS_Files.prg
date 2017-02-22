@@ -35,6 +35,11 @@
 %else
   %define  RTOSConfigDirFolder 
 %endif
+%if defined(RTOSCommonFolderName)
+  %define  RTOSCommonDirFolder %'RTOSCommonFolderName'/
+%else
+  %define  RTOSCommonDirFolder 
+%endif
 %-
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'croutine.h
 %include freeRTOS\Source\include\croutine.h
@@ -111,9 +116,6 @@
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'tasks.c
 %include freeRTOS\Source\tasks.c
 
-%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_wrappers.h
-%include freeRTOS\Source\include\mpu_wrappers.h
-
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'timers.h
 %include freeRTOS\Source\include\timers.h
 
@@ -125,6 +127,17 @@
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'event_groups.h
 %include freeRTOS\Source\include\event_groups.h
+
+%- -----------------------------------------
+%- MPU support files
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_wrappers.h
+%include freeRTOS\Source\include\mpu_wrappers.h
+
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_prototypes.h
+%include freeRTOS\Source\include\mpu_prototypes.h
+
+%FILE %'DirRel_Code'%'RTOSCommonDirFolder'mpu_wrappers.c
+%include freeRTOS\Source\portable\Common\mpu_wrappers.c
 
 %- -----------------------------------------
 %- GDB thread debug helpers

@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.524</Version>
+    <Version>01.529</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -21,7 +21,7 @@
     <BW_NeedUst>23</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * FreeRTOS (c) Copyright 2003-2016 Richard Barry, http: www.FreeRTOS.org\n * See separate FreeRTOS licensing terms.\n *\n * FreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2016\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
+    <Copyright> * FreeRTOS (c) Copyright 2003-2016 Richard Barry, http: www.FreeRTOS.org\n * See separate FreeRTOS licensing terms.\n *\n * FreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2017\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>FRTOS</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -128,7 +128,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Custom port settings</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
             <TEnumItem>
@@ -208,6 +208,19 @@
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <DefaultValue>FreeRTOS/Source/portable/MemMang</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Common Folder</Name>
+                    <Symbol>RTOSCommonFolderName</Symbol>
+                    <Hint>This defines the RTOS common folder name</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>FreeRTOS/Source/portable/Common</DefaultValue>
                     <StrDefine>nothing</StrDefine>
                     <MinLength>0</MinLength>
                     <MaxLength>-1</MaxLength>
@@ -757,7 +770,7 @@ Mapping for number to vector for the MCF52259:\n
           </GrupItem>
           <GrupItem>
             <TBoolGrupItem>
-              <Name>Kinetis</Name>
+              <Name>ARM (Kinetis)</Name>
               <Symbol>KinetisCPUSpecific</Symbol>
               <TypeSpec>typeEnaDis</TypeSpec>
               <Hint>This group is used to configure the RTOS for the Kinetis/ARM cores</Hint>
@@ -854,6 +867,24 @@ The highest interrupt priority that can be used by any interrupt service routine
                     <CanDelete>false</CanDelete>
                     <IconPopup>false</IconPopup>
                   </TEnumItem>
+                </GrupItem>
+                <GrupItem>
+                  <TBoolItem>
+                    <Name>MPU</Name>
+                    <Symbol>useMPUsupport</Symbol>
+                    <TypeSpec>typeYesNo</TypeSpec>
+                    <Hint>Using MPU (Memory Protection Unit) support in the port.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>1</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <DefaultValue>false</DefaultValue>
+                    <Popup>false</Popup>
+                  </TBoolItem>
                 </GrupItem>
                 <GrupItem>
                   <TBoolGrupItem>
@@ -1653,7 +1684,8 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
                     <Name>Memory Allocation Scheme</Name>
                     <Symbol>MemoryScheme</Symbol>
                     <TypeSpec>typeMemAllocScheme</TypeSpec>
-                    <Hint>Scheme 1:\n
+                    <Hint>Configures configUSE_HEAP_SCHEME.\n
+Scheme 1:\n
 This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.\n
 \n
 Scheme 2:\n

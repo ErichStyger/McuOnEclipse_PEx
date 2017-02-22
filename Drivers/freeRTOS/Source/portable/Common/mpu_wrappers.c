@@ -87,6 +87,8 @@ task.h is included from an application file. */
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
+#if configUSE_MPU_SUPPORT /* << EST: only compile this module if MPU is actually enabled and supported */
+
 /*
  * Checks to see if being called from the context of an unprivileged task, and
  * if so raises the privilege level and returns false - otherwise does nothing
@@ -353,22 +355,22 @@ BaseType_t xRunningPrivileged = xPortRaisePrivilege();
 /*-----------------------------------------------------------*/
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
-	void MPU_vTaskList( char *pcWriteBuffer )
+	void MPU_vTaskList( char *pcWriteBuffer, size_t bufSize)
 	{
 	BaseType_t xRunningPrivileged = xPortRaisePrivilege();
 
-		vTaskList( pcWriteBuffer );
+		vTaskList( pcWriteBuffer, bufSize);
 		vPortResetPrivilege( xRunningPrivileged );
 	}
 #endif
 /*-----------------------------------------------------------*/
 
 #if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) && ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) )
-	void MPU_vTaskGetRunTimeStats( char *pcWriteBuffer )
+	void MPU_vTaskGetRunTimeStats( char *pcWriteBuffer, size_t bufSize)
 	{
 	BaseType_t xRunningPrivileged = xPortRaisePrivilege();
 
-		vTaskGetRunTimeStats( pcWriteBuffer );
+		vTaskGetRunTimeStats( pcWriteBuffer, bufSize);
 		vPortResetPrivilege( xRunningPrivileged );
 	}
 #endif
@@ -1153,3 +1155,5 @@ BaseType_t xRunningPrivileged = xPortRaisePrivilege();
 #if configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS == 1
 	#include "application_defined_privileged_functions.h"
 #endif
+
+#endif /* configUSE_MPU_SUPPORT */ /* << EST: only compile this module if MPU is actually enabled and supported */
