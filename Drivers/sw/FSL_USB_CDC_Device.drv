@@ -750,13 +750,6 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
   timeout = Timeout_GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/Timout_TICK_PERIOD_MS); /* set up timeout counter */
 %endif
 #endif
-#if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
-%if defined(Timeout)
-  timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS); /* set up timeout counter */
-%else
-  timeout = Timout_GetCounter(%'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS/Timout_TICK_PERIOD_MS); /* set up timeout counter */
-%endif
-#endif
   while(transactionOngoing) { /* wait until transaction is finished */
     /*lint -save -e522 function lacks side-effects */
     %'ModuleName'%.RunUsbEngine();
