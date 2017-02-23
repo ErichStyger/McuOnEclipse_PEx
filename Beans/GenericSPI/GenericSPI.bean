@@ -2,9 +2,9 @@
 <Bean>
   <Header>
     <Name>GenericSPI</Name>
-    <Description>Generic SPI implementation</Description>
+    <Description>Generic SPI implementation for HCS08 and ColdFire</Description>
     <Author>Erich Styger</Author>
-    <Version>01.029</Version>
+    <Version>01.033</Version>
     <Icon>GenericSPI</Icon>
     <TypesFiles>PE,GenericSPI\GenericSPI</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -20,7 +20,7 @@
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright Erich Styger, 2008\nhttp      : www.hslu.ch\nmail      : erich.styger@hslu.ch</Copyright>
+    <Copyright> * Copyright (c) 2008-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>SPI</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -53,10 +53,10 @@
         <Children>
           <GrupItem>
             <TInhrItem>
-              <Name>SPI Channel</Name>
+              <Name>SPI Channel (S08, ColdFire only)</Name>
               <Symbol>SPIChannel</Symbol>
               <TypeSpec>GenericSPI\SPI</TypeSpec>
-              <Hint/>
+              <Hint>Link to the Init SPI component (HCS08 or ColdFire)</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
