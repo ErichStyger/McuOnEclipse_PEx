@@ -503,7 +503,8 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 
   if (%'ModuleName'%.isEnabled(&isEnabled)!=ERR_OK) {
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"FAIL!\r\n");
-	return ERR_OK;
+    %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  enabled", buf, io->stdErr);
+    return ERR_OK;
   } else {
     if (isEnabled) {
       %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"yes\r\n");
