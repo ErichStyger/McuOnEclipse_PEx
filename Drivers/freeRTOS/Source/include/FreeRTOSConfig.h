@@ -339,9 +339,9 @@
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities
 
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
-#define configTASK_RETURN_ADDRESS   0  /* return address of task is zero */
+#define configTASK_RETURN_ADDRESS   0                            %>50 /* return address of task is zero */
 %else
-/* #define portTASK_RETURN_ADDRESS   0 */ /* ability to overwrite task return address for port.c */
+/* #define portTASK_RETURN_ADDRESS   0 */                        %>50 /* ability to overwrite task return address for port.c */
 %endif
 
 %if defined(RecordStackHighAddress) & %RecordStackHighAddress='yes'
@@ -359,7 +359,7 @@
 #define INCLUDE_xEventGroupSetBitFromISR                         %>50 1
 #define INCLUDE_xTimerPendFunctionCall                           %>50 1
 %else
-#define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable sofware timers */
+#define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable software timers */
 #define configTIMER_TASK_PRIORITY                                %>50 (configMAX_PRIORITIES-1U)
 #define configTIMER_QUEUE_LENGTH                                 %>50 10U
 #define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
