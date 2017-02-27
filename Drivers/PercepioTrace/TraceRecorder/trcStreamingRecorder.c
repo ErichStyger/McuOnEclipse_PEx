@@ -589,7 +589,14 @@ void vTraceStoreISREnd(int isTaskSwitchRequired)
 		/* Store return to interrupted task, if a task switch has not been triggered by any interrupt */
 		if (isPendingContextSwitch == 0)
 		{
+#if 1 /* << EST: avoid gcc warning "cast from function call of type 'void *' to non-matching type 'long unsigned int' [-Wbad-function-cast]" */
+      void *t;
+      t = TRACE_GET_CURRENT_TASK();
+
+      prvTraceStoreEvent1(PSF_EVENT_TS_RESUME, (uint32_t)t);
+#else
 			prvTraceStoreEvent1(PSF_EVENT_TS_RESUME, (uint32_t)TRACE_GET_CURRENT_TASK());
+#endif
 		}
 	}
 
