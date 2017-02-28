@@ -33,8 +33,9 @@
 #define POWERDOWN()          %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.CONFIG, %@nRF24L01p@'ModuleName'%.CONFIG_SETTINGS) /* power down */
 
 static bool RADIO_isSniffing = FALSE;
-static const uint8_t RADIO_TADDR_P0[5] = {%nRFAddress}; /* device address for pipe 0 */
-static const uint8_t RADIO_TADDR_P1[5] = {%nRFAddress_Pipe1}; /* device address for pipe 1 */
+#define RADIO_NOF_ADDR_BYTES   5  /* we are using 5 address bytes */
+static const uint8_t RADIO_TADDR_P0[RADIO_NOF_ADDR_BYTES] = {%nRFAddress}; /* device address for pipe 0 */
+static const uint8_t RADIO_TADDR_P1[RADIO_NOF_ADDR_BYTES] = {%nRFAddress_Pipe1}; /* device address for pipe 1 */
 static const uint8_t RADIO_TADDR_P2[1] = {%nRFAddress_Pipe2}; /* device address for pipe 2 */
 static const uint8_t RADIO_TADDR_P3[1] = {%nRFAddress_Pipe3}; /* device address for pipe 3 */
 static const uint8_t RADIO_TADDR_P4[1] = {%nRFAddress_Pipe4}; /* device address for pipe 4 */
@@ -403,6 +404,9 @@ uint8_t RADIO_SetChannel(uint8_t channel) {
  * \return Error code, ERR_OK if everything is ok.
  */
 uint8_t RADIO_PowerUp(void) {
+  uint8_t addr[RADIO_NOF_ADDR_BYTES];
+  int i;
+
   %@nRF24L01p@'ModuleName'%.Init(); /* set CE and CSN to initialization value */
   
   %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.RF_SETUP, %@nRF24L01p@'ModuleName'%.RF_SETUP_RF_PWR_0|RNET_CONFIG_NRF24_DATA_RATE);
@@ -416,25 +420,31 @@ uint8_t RADIO_PowerUp(void) {
 #endif
   (void)RADIO_SetChannel(RADIO_CurrChannel);
 
+  (void)%@nRF24L01p@'ModuleName'%.SetAddressWidth(RADIO_NOF_ADDR_BYTES); /* set address width to 5 bytes (default) */
+
   /* Set RADDR and TADDR as the transmit address since we also enable auto acknowledgment */
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.TX_ADDR, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
-#if 0 /* single pipe */
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P0, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
-#else /* Pipes 0 to 5 */
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P0, (uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P1, (uint8_t*)RADIO_TADDR_P1, sizeof(RADIO_TADDR_P1));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P2, (uint8_t*)RADIO_TADDR_P2, sizeof(RADIO_TADDR_P2));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P3, (uint8_t*)RADIO_TADDR_P3, sizeof(RADIO_TADDR_P3));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P4, (uint8_t*)RADIO_TADDR_P4, sizeof(RADIO_TADDR_P4));
-  %@nRF24L01p@'ModuleName'%.WriteRegisterData(%@nRF24L01p@'ModuleName'%.RX_ADDR_P5, (uint8_t*)RADIO_TADDR_P5, sizeof(RADIO_TADDR_P5));
-#endif
+  (void)%@nRF24L01p@'ModuleName'%.SetTxAddress((uint8_t*)RADIO_TADDR_P0, sizeof(RADIO_TADDR_P0));
+  /* Pipes 0 to 5 */
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(0, (uint8_t*)RADIO_TADDR_P0, RADIO_NOF_ADDR_BYTES);
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(1, (uint8_t*)RADIO_TADDR_P1, RADIO_NOF_ADDR_BYTES);
+  /* for the following pipes, use P1 as base. Only need to write single byte to transceiver */
+  for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+    addr[i] = RADIO_TADDR_P1[i]; /* use P1 as base */
+  }
+  addr[RADIO_NOF_ADDR_BYTES-1] = RADIO_TADDR_P2[0];
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(2, addr, RADIO_NOF_ADDR_BYTES);
+
+  addr[RADIO_NOF_ADDR_BYTES-1] = RADIO_TADDR_P3[0];
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(3, addr, RADIO_NOF_ADDR_BYTES);
+
+  addr[RADIO_NOF_ADDR_BYTES-1] = RADIO_TADDR_P4[0];
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(4, addr, RADIO_NOF_ADDR_BYTES);
+
+  addr[RADIO_NOF_ADDR_BYTES-1] = RADIO_TADDR_P5[0];
+  (void)%@nRF24L01p@'ModuleName'%.SetRxAddress(5, addr, RADIO_NOF_ADDR_BYTES);
 
   /* Enable RX_ADDR address matching */
-#if 0
-  %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.EN_RXADDR, %@nRF24L01p@'ModuleName'%.EN_RXADDR_ERX_P0); /* enable data pipe 0 */
-#else
-  %@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.EN_RXADDR, %@nRF24L01p@'ModuleName'%.EN_RXADDR_ERX_ALL); /* enable all data pipes */
-#endif
+  (void)%@nRF24L01p@'ModuleName'%.WriteRegister(%@nRF24L01p@'ModuleName'%.EN_RXADDR, %@nRF24L01p@'ModuleName'%.EN_RXADDR_ERX_ALL); /* enable all data pipes */
   
   /* clear interrupt flags */
   %@nRF24L01p@'ModuleName'%.ResetStatusIRQ(%@nRF24L01p@'ModuleName'%.STATUS_RX_DR|%@nRF24L01p@'ModuleName'%.STATUS_TX_DS|%@nRF24L01p@'ModuleName'%.STATUS_MAX_RT);
@@ -509,6 +519,8 @@ static void RADIO_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Shows radio help or status\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  channel <number>", (unsigned char*)"Switches to the given channel (0..127)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  datarate <rate>", (unsigned char*)"Changes the datareate (250, 1000, 2000)\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  txaddr <addr>", (unsigned char*)"Set TX address, <addr> of up to 5 hex bytes, separated by space\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  rxaddr <pipe> <addr>", (unsigned char*)"Set RX pipe address for pipe (0-5), <addr> of up to 5 hex bytes, separated by space\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  power <number>", (unsigned char*)"Changes output power (0, -10, -12, -18)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sniff on|off", (unsigned char*)"Turns sniffing on or off\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  writereg 0xReg 0xVal", (unsigned char*)"Write a transceiver register\r\n", io->stdOut);
@@ -553,6 +565,44 @@ static void RADIO_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), RADIO_CurrChannel);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" (SW)\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  channel", buf, io->stdOut);
+
+  (void)%@nRF24L01p@'ModuleName'%.GetAddressWidth(&val0);
+  %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), val0);
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" bytes\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  addr width", buf, io->stdOut);
+
+  {
+    int i, pipe; /* Pipes 0 to 5 */
+    uint8_t pipeAddr[RADIO_NOF_ADDR_BYTES];
+    uint8_t str[sizeof("  RX_ADDR_Px")];
+
+    for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+      pipeAddr[i] = 0; /* init */
+    }
+    /* TX_ADDR */
+    buf[0] = '\0';
+    (void)%@nRF24L01p@'ModuleName'%.GetTxAddress(pipeAddr, sizeof(pipeAddr));
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"0x");
+    for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+      %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), pipeAddr[i]);
+    }
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+    %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  TX_ADDR", buf, io->stdOut);
+
+    for (pipe=0;pipe<6;pipe++) { /* pipes 0 to 5 */
+      /* RX_ADDR_Px */
+      %@nRF24L01p@'ModuleName'%.GetRxAddress(pipe, &pipeAddr[0], sizeof(pipeAddr));
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"0x");
+      for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+        %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), pipeAddr[i]);
+      }
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+      %@Utility@'ModuleName'%.strcpy(str, sizeof(str), (unsigned char*)"  RX_ADDR_P");
+      %@Utility@'ModuleName'%.strcatNum8u(str, sizeof(str), pipe);
+      %@Shell@'ModuleName'%.SendStatusStr(str, buf, io->stdOut);
+    }
+  }
 
   (void)%@nRF24L01p@'ModuleName'%.GetOutputPower(&val);
   %@Utility@'ModuleName'%.Num8sToStr(buf, sizeof(buf), val);
@@ -654,6 +704,8 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
   const unsigned char *p;
   uint8_t val;
   int8_t vals;
+  uint8_t addr[RADIO_NOF_ADDR_BYTES];
+  int i;
 
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)%@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio help")==0) {
     RADIO_PrintHelp(io);
@@ -717,6 +769,40 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 2000")==0) {
     %@nRF24L01p@'ModuleName'%.SetDataRate(2000);
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"radio txaddr ", sizeof("radio txaddr ")-1)==0) {
+    p = cmd+sizeof("radio txaddr ")-1;
+    for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+      if (%@Utility@'ModuleName'%.ScanHex8uNumber(&p, &addr[i])!=ERR_OK) {
+        /* error parsing number */
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"Error reading hex number!\r\n", io->stdErr);
+        res = ERR_FAILED;
+        break; /* break for loop */
+      }
+    } /* for */
+    if (%@nRF24L01p@'ModuleName'%.SetTxAddress(addr, sizeof(addr))!=ERR_OK) {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"Error setting TX address!\r\n", io->stdErr);
+      res = ERR_FAILED;
+    }
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"radio rxaddr ", sizeof("radio rxaddr ")-1)==0) {
+    uint8_t pipe;
+
+    p = cmd+sizeof("radio rxaddr ")-1;
+    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &pipe)==ERR_OK) {
+      for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
+        if (%@Utility@'ModuleName'%.ScanHex8uNumber(&p, &addr[i])!=ERR_OK) {
+          /* error parsing number */
+          %@Shell@'ModuleName'%.SendStr((unsigned char*)"Error reading hex number!\r\n", io->stdErr);
+          res = ERR_FAILED;
+          break; /* break for loop */
+        }
+      } /* for */
+      if (%@nRF24L01p@'ModuleName'%.SetRxAddress(pipe, addr, sizeof(addr))!=ERR_OK) {
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"Error setting RX address!\r\n", io->stdErr);
+        res = ERR_FAILED;
+      }
+    }
     *handled = TRUE;
   }
   return res;

@@ -538,6 +538,84 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SetAddressWidth">
+<b>SetAddressWidth</b></a>
+ - Sets the address width using the SETUP_AW register
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetAddressWidth(uint8_t width)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>width:uint8_t</i> - only 3, 4 or 5 is allowed</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetAddressWidth">
+<b>GetAddressWidth</b></a>
+ - Returns the address width stored in the SETUP_AW register
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetAddressWidth(uint8_t *pAddrWidth)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pAddrWidth: Pointer to uint8_t</i> - Pointer to where to store the value.</li>
+<li><i>Return value:uint8_t</i> - number of address bytes (3, 4 or 5)
+</li>
+</ul><br />
+</li>
+<li><a name="SetTxAddress">
+<b>SetTxAddress</b></a>
+ - Sets the TX address using the RF_TX_ADDR register.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetTxAddress(uint8_t *address, uint8_t nofAddressBytes)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>address: Pointer to uint8_t</i> - Pointer to the buffer with the address bytes.</li>
+<li><i>nofAddressBytes:uint8_t</i> - Number of address bytes and size of buffer, typically 5.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetTxAddress">
+<b>GetTxAddress</b></a>
+ - Returns the TX address using the RF_TX_ADDR register.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetTxAddress(uint8_t *address, uint8_t nofAddressBytes)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>address: Pointer to uint8_t</i> - Pointer to array where the return the address bytes.</li>
+<li><i>nofAddressBytes:uint8_t</i> - Number of address bytes and size of buffer, typically 5.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetRxAddress">
+<b>SetRxAddress</b></a>
+ - Set the TX address using the RF_RX_ADDR_Px register.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pipe:uint8_t</i> - pipe number (0-5)</li>
+<li><i>address: Pointer to uint8_t</i> - Pointer to array where the return the address bytes.</li>
+<li><i>nofAddressBytes:uint8_t</i> - Number of address bytes and size of buffer, typically 5.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetRxAddress">
+<b>GetRxAddress</b></a>
+ - Returns the RX address using the RF_RX_ADDR_Px register.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>pipe:uint8_t</i> - pipe number (0-5)</li>
+<li><i>address: Pointer to uint8_t</i> - Pointer to array where the return the address bytes.</li>
+<li><i>nofAddressBytes:uint8_t</i> - Number of address bytes and size of buffer, typically 5.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="GetFifoStatus">
 <b>GetFifoStatus</b></a>
  - Returns the FIFO_STATUS register value

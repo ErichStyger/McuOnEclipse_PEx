@@ -740,6 +740,72 @@ void %'ModuleName'%.%ConfigureSPI(void);
 
 %endif %- ConfigureSPI
 %-BW_METHOD_END ConfigureSPI
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetAddressWidth
+%ifdef SetAddressWidth
+uint8_t %'ModuleName'%.%SetAddressWidth(uint8_t width);
+%define! Parwidth
+%define! RetVal
+%include Common\nRF24L01SetAddressWidth.Inc
+
+%endif %- SetAddressWidth
+%-BW_METHOD_END SetAddressWidth
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetAddressWidth
+%ifdef GetAddressWidth
+uint8_t %'ModuleName'%.%GetAddressWidth(uint8_t *pAddrWidth);
+%define! ParpAddrWidth
+%define! RetVal
+%include Common\nRF24L01GetAddressWidth.Inc
+
+%endif %- GetAddressWidth
+%-BW_METHOD_END GetAddressWidth
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetTxAddress
+%ifdef SetTxAddress
+uint8_t %'ModuleName'%.%SetTxAddress(uint8_t *address, uint8_t nofAddressBytes);
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! RetVal
+%include Common\nRF24L01SetTxAddress.Inc
+
+%endif %- SetTxAddress
+%-BW_METHOD_END SetTxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetTxAddress
+%ifdef GetTxAddress
+uint8_t %'ModuleName'%.%GetTxAddress(uint8_t *address, uint8_t nofAddressBytes);
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! RetVal
+%include Common\nRF24L01GetTxAddress.Inc
+
+%endif %- GetTxAddress
+%-BW_METHOD_END GetTxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetRxAddress
+%ifdef SetRxAddress
+uint8_t %'ModuleName'%.%SetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes);
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! Parpipe
+%define! RetVal
+%include Common\nRF24L01SetRxAddress.Inc
+
+%endif %- SetRxAddress
+%-BW_METHOD_END SetRxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetRxAddress
+%ifdef GetRxAddress
+uint8_t %'ModuleName'%.%GetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes);
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! Parpipe
+%define! RetVal
+%include Common\nRF24L01GetRxAddress.Inc
+
+%endif %- GetRxAddress
+%-BW_METHOD_END GetRxAddress
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1701,6 +1767,176 @@ uint8_t %'ModuleName'%.%GetFifoStatus(uint8_t *status)
 
 %endif %- GetFifoStatus
 %-BW_METHOD_END GetFifoStatus
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetAddressWidth
+%ifdef SetAddressWidth
+%define! Parwidth
+%define! RetVal
+%include Common\nRF24L01SetAddressWidth.Inc
+uint8_t %'ModuleName'%.%SetAddressWidth(uint8_t width)
+{
+  if (width==3) {
+    %'ModuleName'%.WriteRegister(%'ModuleName'%.SETUP_AW, %'ModuleName'%.SETUP_AW_3BYTES);
+  } else if (width==4) {
+    %'ModuleName'%.WriteRegister(%'ModuleName'%.SETUP_AW, %'ModuleName'%.SETUP_AW_4BYTES);
+  } else if (width==5) {
+    %'ModuleName'%.WriteRegister(%'ModuleName'%.SETUP_AW, %'ModuleName'%.SETUP_AW_5BYTES);
+  } else {
+    return ERR_FAILED; /* only 3, 4 or 5 allowed */
+  }
+  return ERR_OK;
+}
+
+%endif %- SetAddressWidth
+%-BW_METHOD_END SetAddressWidth
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetAddressWidth
+%ifdef GetAddressWidth
+%define! ParpAddrWidth
+%define! RetVal
+%include Common\nRF24L01GetAddressWidth.Inc
+uint8_t %'ModuleName'%.%GetAddressWidth(uint8_t *pAddrWidth)
+{
+  uint8_t val;
+
+  val = %'ModuleName'%.ReadRegister(%'ModuleName'%.SETUP_AW); /* read RF_SETUP_AW register */
+  if (val==%'ModuleName'%.SETUP_AW_3BYTES) {
+    *pAddrWidth = 3;
+    return ERR_OK;
+  } else if (val==%'ModuleName'%.SETUP_AW_4BYTES) {
+    *pAddrWidth = 4;
+    return ERR_OK;
+  } else if (val==%'ModuleName'%.SETUP_AW_5BYTES) {
+    *pAddrWidth = 5;
+    return ERR_OK;
+  } else {
+    /* failure */
+    *pAddrWidth = 0; /* illegal value */
+    return ERR_FAILED;
+  }
+}
+
+%endif %- GetAddressWidth
+%-BW_METHOD_END GetAddressWidth
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetTxAddress
+%ifdef SetTxAddress
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! RetVal
+%include Common\nRF24L01SetTxAddress.Inc
+uint8_t %'ModuleName'%.%SetTxAddress(uint8_t *address, uint8_t nofAddressBytes)
+{
+  int i, j;
+  uint8_t swap[5]; /* address is max 5 bytes */
+
+  if (nofAddressBytes>=3 && nofAddressBytes<=5) {
+    for(j=0,i=nofAddressBytes-1; i>=0 && j<(int)sizeof(swap); i--,j++) { /* need to send LSB first */
+      swap[j] = address[i];
+    }
+    %'ModuleName'%.WriteRegisterData(%'ModuleName'%.TX_ADDR, &swap[0], nofAddressBytes);
+    return ERR_OK;
+  } else {
+    return ERR_FAILED; /* only 3, 4 or 5 address bytes allowed */
+  }
+}
+
+%endif %- SetTxAddress
+%-BW_METHOD_END SetTxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetTxAddress
+%ifdef GetTxAddress
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! RetVal
+%include Common\nRF24L01GetTxAddress.Inc
+uint8_t %'ModuleName'%.%GetTxAddress(uint8_t *address, uint8_t nofAddressBytes)
+{
+  int i, j;
+  uint8_t swap[5]; /* address is max 5 bytes */
+
+  if (nofAddressBytes>=3 && nofAddressBytes<=5) {
+    %'ModuleName'%.ReadRegisterData(%'ModuleName'%.TX_ADDR, swap, nofAddressBytes);
+    for(j=0,i=nofAddressBytes-1; i>=0 && j<nofAddressBytes; i--,j++) {
+      address[j] = swap[i];
+    }
+    return ERR_OK;
+  } else {
+    return ERR_FAILED; /* only 3, 4 or 5 address bytes allowed */
+  }
+}
+
+%endif %- GetTxAddress
+%-BW_METHOD_END GetTxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetRxAddress
+%ifdef SetRxAddress
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! Parpipe
+%define! RetVal
+%include Common\nRF24L01SetRxAddress.Inc
+uint8_t %'ModuleName'%.%SetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes)
+{
+  uint8_t swap[5]; /* address is max 5 bytes */
+  int i, j;
+
+  if (pipe>5) {
+    return ERR_FAILED; /* only pipe 0 to 5 allowed */
+  }
+  if (!(nofAddressBytes>=3 && nofAddressBytes<=5)) {
+    return ERR_FAILED; /* only 3, 4 or 5 allowed */
+  }
+  if (pipe==0 || pipe==1) { /* full number of address bytes */
+    for(j=0,i=nofAddressBytes-1; i>=0 && j<(int)sizeof(swap); i--,j++) { /* need to send LSB first */
+      swap[j] = address[i];
+    }
+    %'ModuleName'%.WriteRegisterData(%'ModuleName'%.RX_ADDR_P0+pipe, &swap[0], nofAddressBytes);
+  } else { /* P2-P5: only last byte */
+    %'ModuleName'%.WriteRegisterData(%'ModuleName'%.RX_ADDR_P0+pipe, &address[nofAddressBytes-1], 1);
+  }
+  return ERR_OK;
+}
+
+%endif %- SetRxAddress
+%-BW_METHOD_END SetRxAddress
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetRxAddress
+%ifdef GetRxAddress
+%define! Paraddress
+%define! ParnofAddressBytes
+%define! Parpipe
+%define! RetVal
+%include Common\nRF24L01GetRxAddress.Inc
+uint8_t %'ModuleName'%.%GetRxAddress(uint8_t pipe, uint8_t *address, uint8_t nofAddressBytes)
+{
+  int i, j;
+  uint8_t swap[5]; /* address is max 5 bytes */
+
+  if (pipe>5) {
+    return ERR_FAILED; /* only pipe 0 to 5 allowed */
+  }
+  if (!(nofAddressBytes>=3 && nofAddressBytes<=5)) {
+    return ERR_FAILED; /* only 3, 4 or 5 allowed */
+  }
+  for(i=0; i<nofAddressBytes; i++) {
+    swap[i] = 0; /* init */
+  }
+  if (pipe==0 || pipe==1) { /* full number of address bytes */
+    %'ModuleName'%.ReadRegisterData(%'ModuleName'%.RX_ADDR_P0+pipe, swap, nofAddressBytes);
+  } else if (pipe>=2 && pipe<=5) {
+    %'ModuleName'%.ReadRegisterData(%'ModuleName'%.RX_ADDR_P1, swap, nofAddressBytes); /* read base address from P1 */
+    %'ModuleName'%.ReadRegisterData(%'ModuleName'%.RX_ADDR_P0+pipe, &swap[0], 1); /* pipe 2-5 only have one address byte */
+  }
+  /* swap back into correct order */
+  for(j=0,i=nofAddressBytes-1; i>=0 && j<(int)nofAddressBytes; i--,j++) {
+    address[j] = swap[i];
+  }
+  return ERR_OK;
+}
+
+%endif %- GetRxAddress
+%-BW_METHOD_END GetRxAddress
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
