@@ -65,13 +65,12 @@
 
 /* MODULE %ModuleName. */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
+/* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
+/* Include inherited components */
+#include %'ModuleName'_CONFIG_SPI_HEADER_FILE  /* SPI driver */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
@@ -87,10 +86,7 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -593,9 +589,7 @@ static %'ModuleName'_DisplayOrientation currentOrientation;
 
 #define REMAP_COLOR_RGB565 ( 1 << 6 )
 
-
 #define OLED_REMAP_SETTINGS ( REMAP_ORDER_ABC | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_COLOR_RGB565 | REMAP_COLUMNS_LEFT_TO_RIGHT | REMAP_SCAN_UP_TO_DOWN | REMAP_HORIZONTAL_INCREMENT )
-
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -884,12 +878,12 @@ void %'ModuleName'%.%Init(void)
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
 %include Common\SSD1351UpdateFull.Inc
-#if 0
+/*
 void %'ModuleName'%.%UpdateFull(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- UpdateFull
 %-BW_METHOD_END UpdateFull
@@ -901,12 +895,12 @@ void %'ModuleName'%.%UpdateFull(void)
 %define! Parw
 %define! Parh
 %include Common\SSD1351UpdateRegion.Inc
-#if 0
+/*
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
@@ -914,12 +908,12 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %-BW_METHOD_BEGIN CloseWindow
 %ifdef CloseWindow
 %include Common\SSD1351CloseWindow.Inc
-#if 0
+/*
 void %'ModuleName'%.%CloseWindow(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- CloseWindow
 %-BW_METHOD_END CloseWindow
@@ -974,12 +968,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
   }
 }
 %else
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetWidth(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 %endif
 
 %endif %- GetWidth
@@ -999,12 +993,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
   }
 }
 %else
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetHeight(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 %endif
 
 %endif %- GetHeight
@@ -1014,12 +1008,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %ifdef GetLongerSide
 %define! RetVal
 %include Common\SSD1351GetLongerSide.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetLongerSide(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetLongerSide
 %-BW_METHOD_END GetLongerSide
@@ -1028,12 +1022,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %ifdef GetShorterSide
 %define! RetVal
 %include Common\SSD1351GetShorterSide.Inc
-#if 0
+/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetShorterSide(void)
 {
-  /* implemented as macro in %'ModuleName'.h */
+  implemented as macro in %'ModuleName'.h
 }
-#endif
+*/
 
 %endif %- GetShorterSide
 %-BW_METHOD_END GetShorterSide
@@ -1133,3 +1127,61 @@ void %OnGiveLCD(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Application configuration file for SSD1351 display driver
+ *
+ * This header file is a configuration header file to configure the module %'ModuleName' (SSD1351).
+ * You can configure the defines directly in this file or with the compiler -D option.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'_CONFIG_SPI_HEADER_FILE
+%if defined(SWSPI)
+  #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "%@SWSPI@'ModuleName'.h"
+%elif defined(HWSPI)
+  #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "%@HWSPI@'ModuleName'.h"
+%endif
+    /*!< Header file to be included for the SPI driver */
+#endif
+
+
+#ifndef %'ModuleName'_CONFIG_SPI_MODE
+%if defined(SWSPI)
+  #define %'ModuleName'_CONFIG_SPI_MODE                          %>40 (0)
+%elif defined(HWSPI)
+  #define %'ModuleName'_CONFIG_SPI_MODE                          %>40 (1)
+%endif
+    /*!< 0: using software (bit banging) SPI; 1: using non-LDD hardware SPI; 3: using LDD hardware SPI */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_SPI_SEND_CHAR
+%if defined(SWSPI)
+  #define %'ModuleName'_CONFIG_SPI_SEND_CHAR                     %>40 %@SWSPI@'ModuleName'%.SendChar
+%elif defined(HWSPI)
+  #define %'ModuleName'_CONFIG_SPI_SEND_CHAR                     %>40 %@HWSPI@'ModuleName'%.SendChar
+%endif
+  /*!< method to send a character */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_NOF_TX_CHAR
+%if defined(SWSPI)
+  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@SWSPI@'ModuleName'%.CharsInTxBuf
+%elif defined(HWSPI)
+  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@SWSPI@'ModuleName'%.GetCharsInTxBuf
+%endif
+  /*!< method which returns how many characters are in the tx buffer */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
