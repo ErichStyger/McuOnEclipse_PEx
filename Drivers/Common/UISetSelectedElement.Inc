@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetSelectedElement)
+%include Common\GeneralMethod.inc (SetSelectedElement)
 %;**     Description :
-%;**         Returns the currently selected element, or NULL.
-%include Common\GeneralParametersNone.inc
-%;**     Returns     :
-%;**         ---%RetVal %>27 - TRUE if there is a selected element. In
-%;** %>29 this case the pointer to it is returned.
+%;**         Set the currently selected element
+%include Common\GeneralParameters.inc(27)
+%;**       * element%Parelement %>27 - Pointer to the element
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

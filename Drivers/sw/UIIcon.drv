@@ -255,9 +255,15 @@ void %'ModuleName'%.%Paint(%'ModuleName'_IconWidget *icon)
 
 #if %@UI@'ModuleName'%.CONFIG_SELECTION_ENABLED
   if (icon->element.prop.flags&%@UI@'ModuleName'%.FLAGS_IS_SELECTED) {
-    fgColor = icon->insideColor;
-    bgColor = icon->bgColor;
-    insideColor = icon->fgColor;
+    if (icon->bgColor == icon->insideColor) {
+      fgColor = icon->insideColor;
+      bgColor = icon->bgColor;
+      insideColor = icon->fgColor;
+    } else {
+      fgColor = icon->insideColor;
+      bgColor = icon->fgColor;
+      insideColor = icon->bgColor;
+    }
   } else {
     fgColor = icon->fgColor;
     bgColor = icon->bgColor;

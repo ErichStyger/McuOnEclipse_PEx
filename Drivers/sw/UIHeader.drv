@@ -367,6 +367,9 @@ uint8_t %'ModuleName'%.%Create(%@UI@'ModuleName'%.Element *parent, %'ModuleName'
     x, y, width, height,
     %'ModuleName'%.%MessageHandler);
   header->bgColor = %'ModuleName'_CONFIG_HEADER_DEFAULT_BACKGROUND_COLOR;
+#if %'ModuleName'%.CONFIG_HEADER_HAS_USER_MSG_HANDLER
+  header->userMsgHandler = NULL;                                 %>40/* optional user handler */
+#endif
 
   /* create a textWidget for header text */
   if (%@TextWidget@'ModuleName'%.Create(&header->element, &header->textWidget,

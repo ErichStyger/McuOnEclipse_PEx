@@ -106,6 +106,7 @@ typedef enum %'ModuleName'_MsgKind {                             %>40/* this lis
   %'ModuleName'_MSG_ELEMENT_MOVE_OUT,                            %>40/* message called if cursor moved out of an element */
   %'ModuleName'_MSG_ELEMENT_REMOVE,                              %>40/* message to the widget when it gets removed from UI */
   %'ModuleName'_MSG_WINDOW_CLOSE,                                %>40/* message for closing a window */
+  %'ModuleName'_MSG_CANCEL,                                      %>40/* message for escape/cancel. */
   %'ModuleName'_MSG_CLICK,                                       %>40/* message for pressing/click an element. */
   %'ModuleName'_MSG_CLICK_MOVE,                                  %>40/* message for moving cursor while clicked (e.g. with a touch screen). Passes %'ModuleName'_Coordinate as data argument in the message */
   %'ModuleName'_MSG_CLICK_RELEASE,                               %>40/* message for a short click release */
@@ -401,8 +402,7 @@ void %'ModuleName'%.%ElementInitCommon(%'ModuleName'_Element *element, %'ModuleN
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelectedElement
 %ifdef GetSelectedElement
-bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_PElement *pElement);
-%define! ParpElement
+%'ModuleName'_PElement %'ModuleName'%.%GetSelectedElement(void);
 %define! RetVal
 %include Common\UIGetSelectedElement.Inc
 
@@ -800,6 +800,15 @@ void %'ModuleName'%.%SetRoot(%'ModuleName'_Element *root);
 
 %endif %- SetRoot
 %-BW_METHOD_END SetRoot
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetSelectedElement
+%ifdef SetSelectedElement
+void %'ModuleName'%.%SetSelectedElement(%'ModuleName'_Element *element);
+%define! Parelement
+%include Common\UISetSelectedElement.Inc
+
+%endif %- SetSelectedElement
+%-BW_METHOD_END SetSelectedElement
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -941,7 +950,8 @@ void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Element *element, bool forw
   if (element == NULL) {                                         %>40/* no element at all? */
     return;
   }
-  if (%'ModuleName'%.%GetSelectedElement(&startElement)){        %>40/* we have an element already selected */
+  startElement = %'ModuleName'%.%GetSelectedElement();
+  if (startElement!=NULL) {                                      %>40/* we have an element already selected */
     %'ModuleName'%.DeselectElement(startElement);
   } else {
     startElement = element;                                      %>40/* we have no current selected element: use first in chain */
@@ -1271,22 +1281,33 @@ bool %'ModuleName'%.%EqualElement(%'ModuleName'_Element *elem1, %'ModuleName'_El
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelectedElement
 %ifdef GetSelectedElement
-%define! ParpElement
 %define! RetVal
 %include Common\UIGetSelectedElement.Inc
-bool %'ModuleName'%.%GetSelectedElement(%'ModuleName'_PElement *pElement)
+%'ModuleName'_PElement %'ModuleName'%.%GetSelectedElement(void)
 {
 #if %'ModuleName'%.CONFIG_SELECTION_ENABLED
-  *pElement = %'ModuleName'_RootInfo.selected;
-  return (bool)((*pElement)!=NULL);
+  return %'ModuleName'_RootInfo.selected;
 #else
-  *pElement = NULL;
-  return FALSE;
+  return NULL; /* no selection */
 #endif
 }
 
 %endif %- GetSelectedElement
 %-BW_METHOD_END GetSelectedElement
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetSelectedElement
+%ifdef SetSelectedElement
+%define! Parelement
+%include Common\UISetSelectedElement.Inc
+void %'ModuleName'%.%SetSelectedElement(%'ModuleName'_Element *element)
+{
+#if %'ModuleName'%.CONFIG_SELECTION_ENABLED
+  %'ModuleName'_RootInfo.selected = element;
+#endif
+}
+
+%endif %- SetSelectedElement
+%-BW_METHOD_END SetSelectedElement
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN FindElement
 %ifdef FindElement
@@ -1735,7 +1756,7 @@ void %'ModuleName'%.%ProcessTouch(bool touched, %'ModuleName'_PixelDim x, %'Modu
 %include Common\UISendMessage.Inc
 void %'ModuleName'%.%SendMessage(%'ModuleName'_Element *element, %'ModuleName'_MsgKind kind, %'ModuleName'_Pvoid pData)
 {
-  if (element->msgHandler!=NULL) {
+  if (element!=NULL && element->msgHandler!=NULL) {
     element->msgHandler(element, kind, pData);
   }
 }
