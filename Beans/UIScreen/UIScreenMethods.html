@@ -227,6 +227,17 @@ LI.EXP {
 <li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen</li>
 </ul><br />
 </li>
+<li><a name="SetUserMsgHandler">
+<b>SetUserMsgHandler</b></a>
+ - Assigns a user callback to the widget
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SetUserMsgHandler(<i>ComponentName_</i>ScreenWidget *screen, %@UI@'ModuleName'%.MsgHandler handler)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>screen: Pointer to <i>ComponentName_</i>ScreenWidget</i> - Pointer to screen</li>
+<li><i>handler:byte</i> - callback function pointer</li>
+</ul><br />
+</li>
 <li><a name="MessageHandler">
 <b>MessageHandler</b></a>
  - Message Handler for Widget
