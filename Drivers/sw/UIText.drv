@@ -69,8 +69,8 @@
 
 /* Include inherited components */
 #include "%@UI@ModuleName.h"
+#include "%@Font@ModuleName.h"
 #include "%@FontDisplay@ModuleName.h"
-#include "%@Utility@ModuleName.h"
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -306,6 +306,7 @@ void %'ModuleName'%.%MessageHandler(%@UI@'ModuleName'%.Element *element, %@UI@'M
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#include "%@Utility@ModuleName.h"
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
