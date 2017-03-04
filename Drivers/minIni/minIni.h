@@ -78,6 +78,10 @@ typedef int (*INI_CALLBACK)(const mTCHAR *Section, const mTCHAR *Key, const mTCH
 int  ini_browse(INI_CALLBACK Callback, const void *UserData, const mTCHAR *Filename);
 #endif /* INI_NOBROWSE */
 
+#if defined PORTABLE_STRNICMP
+int strnicmp(const TCHAR *s1, const TCHAR *s2, size_t n);
+#endif /* PORTABLE_STRNICMP */
+
 #if defined __cplusplus
   }
 #endif
