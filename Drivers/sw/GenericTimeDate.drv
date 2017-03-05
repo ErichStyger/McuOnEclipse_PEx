@@ -94,9 +94,9 @@
 %endif
 
 /* RTC Initialization options during Init() */
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS           %>60 1  /* init software RTC from default values */
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS           %>60 0  /* init software RTC from default values */
 #define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC       %>60 1  /* init software RTC from internal RTC values */
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC       %>60 1  /* init software RTC from external RTC values */
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC       %>60 2  /* init software RTC from external RTC values */
 
 /* settings for software RTC */
 %if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
