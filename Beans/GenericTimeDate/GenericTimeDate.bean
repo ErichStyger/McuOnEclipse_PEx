@@ -4,7 +4,7 @@
     <Name>GenericTimeDate</Name>
     <Description>Generic Software Time and Date component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.059</Version>
+    <Version>01.061</Version>
     <Icon>GenericTimeDate</Icon>
     <TypesFiles>PE,GenericTimeDate\GenericTimeDate</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1096,6 +1096,34 @@
         <Symbol>SyncWithInternalRTC</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Synchronizes the software RTC with date and time from the internal hardware RTC</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SyncSWtimeToInternalRTCsec</Name>
+        <Symbol>SyncSWtimeToInternalRTCsec</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>This method synchronizes the software RTC with the internal HW RTC. Because the internal RTC only counts seconds, we sync on a second change.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

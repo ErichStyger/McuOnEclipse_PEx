@@ -587,6 +587,15 @@ uint8_t %'ModuleName'%.%AddTimeString(uint8_t *buf, size_t bufSize, TIMEREC *tim
 
 %endif %- AddTimeString
 %-BW_METHOD_END AddTimeString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SyncSWtimeToInternalRTCsec
+%ifdef SyncSWtimeToInternalRTCsec
+uint8_t %'ModuleName'%.%SyncSWtimeToInternalRTCsec(void);
+%define! RetVal
+%include Common\GenericTimeDateSyncSWtimeToInternalRTCsec.Inc
+
+%endif %- SyncSWtimeToInternalRTCsec
+%-BW_METHOD_END SyncSWtimeToInternalRTCsec
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1514,6 +1523,37 @@ uint8_t %'ModuleName'%.%CalculateDayOfWeek(uint16_t Year, uint8_t Month, uint8_t
 %endif %- CalculateDayOfWeek
 %-BW_METHOD_END CalculateDayOfWeek
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN SyncSWtimeToInternalRTCsec
+%ifdef SyncSWtimeToInternalRTCsec
+%define! RetVal
+%include Common\GenericTimeDateSyncSWtimeToInternalRTCsec.Inc
+uint8_t %'ModuleName'%.%SyncSWtimeToInternalRTCsec(void)
+{
+  /* This method synchronizes the software RTC with the internal HW RTC.
+   * Because the internal RTC only counts seconds, we sync on a second change.
+   */
+  TIMEREC time;
+  uint8_t secs;
+
+  if (%'ModuleName'%.%GetInternalRTCTimeDate(&time, NULL)!=ERR_OK) {
+    return ERR_FAILED;
+  }
+  secs = time.Sec; /* remember current second counter */
+  do {
+    if (%'ModuleName'%.%GetInternalRTCTimeDate(&time, NULL)!=ERR_OK) {
+      return ERR_FAILED;
+    }
+  } while(secs==time.Sec);
+  /* internal RTC has switched to the new second: sync internal RTC with it */
+  if (%'ModuleName'%.SetSWTimeDate(&time, NULL)!=ERR_OK) { /* sync software RTC from HW RTC */
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
+%endif %- SyncSWtimeToInternalRTCsec
+%-BW_METHOD_END SyncSWtimeToInternalRTCsec
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SyncWithInternalRTC
 %ifdef SyncWithInternalRTC
 %define! RetVal
@@ -1538,7 +1578,16 @@ uint8_t %'ModuleName'%.%SyncWithInternalRTC(void)
   if (res!=ERR_OK) {
     return res;
   }
-  return %'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
+  res = %'ModuleName'%.%SetDate(date.Year, date.Month, date.Day);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  /* now sync to the second of the internal RTC */
+  res = %'ModuleName'%.%SyncSWtimeToInternalRTCsec();
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return ERR_OK;
 #else
   return ERR_FAILED; /* no hardware RTC available */
 #endif

@@ -383,6 +383,17 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SyncSWtimeToInternalRTCsec">
+<b>SyncSWtimeToInternalRTCsec</b></a>
+ - This method synchronizes the software RTC with the internal HW RTC. Because the internal RTC only counts seconds, we sync on a second change.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SyncSWtimeToInternalRTCsec(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="SetExternalRTCTimeDate">
 <b>SetExternalRTCTimeDate</b></a>
  - This method sets a new actual time and date of the external hardware RTC.
