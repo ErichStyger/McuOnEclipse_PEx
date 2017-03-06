@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.1.0
+ * Trace Recorder Library for Tracealyzer v3.1.1
  * Percepio AB, www.percepio.com
  *
  * trcStreamingPort.h
@@ -40,7 +40,7 @@
  *
  * Tabs are used for indent in this file (1 tab = 4 spaces)
  *
- * Copyright Percepio AB, 2016.
+ * Copyright Percepio AB, 2017.
  * www.percepio.com
  ******************************************************************************/
 
@@ -52,8 +52,6 @@ extern "C" {
 #endif
 
 /*******************************************************************************
- *   TRC_RECORDER_TRANSFER_METHOD_CUSTOM
- *
  * Implement the below macros to define your own stream port. If your transfer 
  * method uses RTOS functions, you should not send the data directly but use 
  * the recorder's internal buffer to store the trace data, for later transfer by

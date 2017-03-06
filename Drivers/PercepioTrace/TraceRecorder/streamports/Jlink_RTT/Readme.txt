@@ -1,1 +1,0 @@
-This folder contain files needed for implementing streaming over Segger RTT using a J-Link debug probe

@@ -142,8 +142,8 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   *           
   *         @note
   *         This function will block any OUT packet reception on USB endpoint 
-  *         untill exiting this function. If you exit this function before transfer
-  *         is complete on CDC interface (ie. using DMA controller) it will result 
+  *         until exiting this function. If you exit this function before transfer
+  *         is complete on CDC interface (i.e. using DMA controller) it will result 
   *         in receiving more data while previous ones are still not sent.
   *                 
   * @param  Buf: Buffer of data to be received
@@ -192,7 +192,7 @@ int32_t trcCDCReceive(void *data, uint32_t size, int32_t* NumBytes)
 
 	if(commandBuffer.idx>0)
 	{
-		if (size >= commandBuffer.idx) // more than what is stored, nr of bytes will be .idx
+		if (size >= commandBuffer.idx) // more than what is stored, number of bytes will be .idx
 		{
 			memcpy(data,commandBuffer.data, commandBuffer.idx);
 			*NumBytes=commandBuffer.idx;
