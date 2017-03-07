@@ -1132,13 +1132,14 @@ void %'ModuleName'%.%Init(void)
   }
 %endif
 %if defined(RTOS) & %UseSemaphore='yes'
-  %'ModuleName'%.busSem = %@RTOS@'ModuleName'%.xSemaphoreCreateRecursiveMutex();
+  %'ModuleName'%.busSem = xSemaphoreCreateRecursiveMutex();
   if (%'ModuleName'%.busSem==NULL) { /* semaphore creation failed */
   %if defined(OnError)
     %OnError();
   %endif
     for(;;) {} /* error, not enough memory? */
   }
+  vQueueAddToRegistry(%'ModuleName'%.busSem, "%'ModuleName'_Mutex");
 %endif
 }
 
@@ -1154,7 +1155,9 @@ void %'ModuleName'%.%Deinit(void)
   %@LDD_I2C@'ModuleName'%.Deinit(&%'ModuleName'%.deviceData);
 %endif
 %if defined(RTOS) & %UseSemaphore='yes'
+  vQueueUnregisterQueue(%'ModuleName'%.busSem);
   %@RTOS@'ModuleName'%.vSemaphoreDelete(%'ModuleName'%.busSem);
+  %'ModuleName'%.busSem = NULL;
 %endif
 }
 
@@ -1367,7 +1370,6 @@ uint8_t %'ModuleName'%.%ProbeACK(void* data, uint16_t dataSize, %'ModuleName'_En
 
 %endif %- ProbeACK
 %-BW_METHOD_END ProbeACK
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
