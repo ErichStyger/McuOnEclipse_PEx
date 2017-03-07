@@ -38,6 +38,7 @@
 %endif
 
 #include "minGlue-FatFs.h"
+#include <stddef.h> /* for size_t */
 
 #if (defined _UNICODE || defined __UNICODE__ || defined UNICODE) && !defined MININI_ANSI
   #include <tchar.h>
