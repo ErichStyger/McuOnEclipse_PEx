@@ -303,6 +303,44 @@ Macro which should be defined as an integer value.<br />
 This defines the capacity of the symbol table, in bytes. This symbol table stores User Events labels and names of deleted tasks, queues, or other kernel objects. Note that the names of active objects not stored here but in the Object Table. Thus, if you don't use User Events or delete any kernel objects you set this to zero (0) to minimize RAM usage.
   </li>
   <li>
+  <a name="traceConfigUseAssert">
+  <b>Use Trace Assert</b></a> - Configures TRC_CFG_USE_TRACE_ASSERT. If set to yes, <br />
+the TRACE_ASSERT macro (used at various locations in the <br />
+trace recorder) will verify that a relevant condition is true. <br />
+If the condition is false, prvTraceError() will be called, which stops the<br />
+recording and stores an error message that is displayed when opening the<br />
+trace in Tracealyzer.<br />
+This is used on several places in the recorder code for sanity checks on<br />
+parameters. Can be switched off to reduce the footprint of the tracing, but<br />
+we recommend to have it enabled initially.
+  </li>
+  <li>
+  <a name="traceConfigISRTailchainingThreshold">
+  <b>ISR Tailchaining Threshold</b></a> - Configures TRC_CFG_ISR_TAILCHAINING_THRESHOLD.<br />
+If tracing multiple ISRs, this setting allows for accurate display of the <br />
+context-switching also in cases when the ISRs execute in direct sequence.
+  </li>
+  <li>
+  <a name="traceConfigUseSeprateUserEventBuffer">
+  <b>Separate User Event Buffer</b></a> - Configures TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER.<br />If set to yes, it enables a separate user event buffer (UB).<br />In this mode, user events are stored separately from other events, <br />e.g., RTOS events. Thereby you can get a much longer history of <br />user events as they don't need to share the buffer space with more <br />frequent events. <br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="Symbol0">
+    <b>traceConfigSeparateUserEventBufferSize</b></a> - Defines TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE, the capacity of teh user event buffer
+    </li>
+    <li>
+    <a name="traceConfigUserEventBufferChannels">
+    <b>User Event Buffer Channels</b></a> - Configures TRC_CFG_UB_CHANNELS. <br />
+This defines the number of User Event Buffer Channels (UB channels).<br />
+These are used to structure the events when using the separate user<br />
+event buffer, and contains both a User Event Channel (the name) and<br />
+a default format string for the channel.
+    </li>
+  </ul>
+  </li>
+  <li>
   <a name="ObjectsGroup">
   <b>Objects</b></a> - Configures the size of objects in the object property table
   <ul>

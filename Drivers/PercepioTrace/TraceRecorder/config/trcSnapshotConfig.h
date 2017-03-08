@@ -470,7 +470,11 @@
  * parameters. Can be switched off to reduce the footprint of the tracing, but
  * we recommend to have it enabled initially.
  *****************************************************************************/
+%if defined(traceConfigUseAssert) & %traceConfigUseAssert='yes'
 #define TRC_CFG_USE_TRACE_ASSERT 1
+%else
+#define TRC_CFG_USE_TRACE_ASSERT 0
+%endif
 
 /*******************************************************************************
  * TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER
@@ -528,7 +532,11 @@
  *  vTracePrintF(chn2, "%%Z: %%d", value2);
  
  ******************************************************************************/
+%if defined(traceConfigUseSeprateUserEventBuffer) & %traceConfigUseSeprateUserEventBuffer='yes'
+#define TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER 1
+%else
 #define TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER 0
+%endif
 
 /*******************************************************************************
  * TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE
@@ -540,7 +548,11 @@
  *
  * Only applicable if TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER is 1.
  ******************************************************************************/
+%if defined(traceConfigSeparateUserEventBufferSize)
+#define TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE %traceConfigSeparateUserEventBufferSize
+%else
 #define TRC_CFG_SEPARATE_USER_EVENT_BUFFER_SIZE 200
+%endif
 
 /*******************************************************************************
  * TRC_CFG_UB_CHANNELS
@@ -554,7 +566,11 @@
  *
  * Only applicable if TRC_CFG_USE_SEPARATE_USER_EVENT_BUFFER is 1.
  ******************************************************************************/
+%if defined(traceConfigUserEventBufferChannels)
+#define TRC_CFG_UB_CHANNELS %traceConfigUserEventBufferChannels
+%else
 #define TRC_CFG_UB_CHANNELS 32
+%endif
 
 /*******************************************************************************
  * TRC_CFG_ISR_TAILCHAINING_THRESHOLD
@@ -579,7 +595,11 @@
  * Note: This setting has separate definitions in trcSnapshotConfig.h and 
  * trcStreamingConfig.h, since it is affected by the recorder mode.
  ******************************************************************************/
+%if defined(traceConfigISRTailchainingThreshold)
+#define TRC_CFG_ISR_TAILCHAINING_THRESHOLD %traceConfigISRTailchainingThreshold
+%else
 #define TRC_CFG_ISR_TAILCHAINING_THRESHOLD 0
+%endif
 
 /* << EST: additional configuration item */
 /******************************************************************************
