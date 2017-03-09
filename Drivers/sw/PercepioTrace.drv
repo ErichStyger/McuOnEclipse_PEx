@@ -697,6 +697,7 @@ void %'ModuleName'%.%vTraceSetMutexName(void *mutex, char *name)
 void %'ModuleName'%.%Startup(void)
 {
 #if configUSE_TRACE_HOOKS /* FreeRTOS using Percepio Trace */
+  vTraceSetFrequency(configSYSTICK_CLOCK_HZ);
   vTraceEnable(%'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE); /* snapshot trace, from startup */
 #endif /* configUSE_TRACE_HOOKS */
 }

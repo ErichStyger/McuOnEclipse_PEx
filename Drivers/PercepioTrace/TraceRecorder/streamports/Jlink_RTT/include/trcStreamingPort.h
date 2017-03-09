@@ -66,7 +66,11 @@ extern "C" {
  * But integrated J-Link OB interfaces are slower and needs about 5-10 KB, 
  * depending on the amount of data produced.
  ******************************************************************************/
+%if defined(TraceRTTUpBufferSize)
+#define TRC_CFG_RTT_BUFFER_SIZE_UP %TraceRTTUpBufferSize
+%else
 #define TRC_CFG_RTT_BUFFER_SIZE_UP 5000
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RTT_BUFFER_SIZE_DOWN
@@ -79,7 +83,11 @@ extern "C" {
  * This setting is ignored for RTT buffer 0, which can't be reconfigured
  * in runtime and therefore hard-coded to use the defines in SEGGER_RTT_Conf.h.
  ******************************************************************************/
+%if defined(TraceRTTDownBufferSize)
+#define TRC_CFG_RTT_BUFFER_SIZE_DOWN %TraceRTTDownBufferSize
+%else
 #define TRC_CFG_RTT_BUFFER_SIZE_DOWN 32
+%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_RTT_UP_BUFFER_INDEX

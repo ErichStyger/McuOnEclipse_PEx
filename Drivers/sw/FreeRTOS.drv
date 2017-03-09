@@ -131,16 +131,7 @@
 /* Macros used by Processor Expert */
 #if %'ModuleName'%.GENERATE_PEX_RTOS_MACROS
   #define PEX_RTOS_INIT() /* macro called from PE_low_level_init() */ \
-  %if %DisabledInterruptsInStartup='yes'
-                                                                 %>>portDISABLE_ALL_INTERRUPTS(); /* disable all interrupts, they get enabled in vStartScheduler() */ \
-  %else
-                                                                 %>>/* RTOS adapter is configured not to disable interrupts */ \
-  %endif
-  %if %UseTraceHooksGroup='yes'
-                                                                 %>>%@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
-  %else
-                                                                 %>>/* no Percepio Trace Hooks enabled with configUSE_TRACE_HOOKS */
-  %endif
+    %'ModuleName'%.%Init();
 
   #define PEX_RTOS_START()                                       %>>%'ModuleName'%.%vTaskStartScheduler()
 #endif
@@ -3275,8 +3266,24 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %include Common\FreeRTOSInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-  vPortInitTickTimer();
-  vPortStopTickTimer();
+%if %DisabledInterruptsInStartup='yes'
+  portDISABLE_ALL_INTERRUPTS(); /* disable all interrupts, they get enabled in vStartScheduler() */
+%else
+  /* RTOS adapter is configured not to disable interrupts */ \
+%endif
+#if configSYSTICK_USE_LOW_POWER_TIMER
+  /* enable clocking for low power timer, otherwise vPortStopTickTimer() will crash.
+    Additionally, Percepio trace needs access to the timer early on. */
+  SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
+#endif
+  vPortStopTickTimer(); /* tick timer shall not run until the RTOS scheduler is started */
+%if %UseTraceHooksGroup='yes'
+  %@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
+%else
+  /* no Percepio Trace Hooks enabled with configUSE_TRACE_HOOKS */
+%endif
+  //vPortInitTickTimer();
+  //vPortStopTickTimer();
 }
 
 %endif %- Init
@@ -4619,11 +4626,7 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
-#if configSYSTICK_USE_LOW_POWER_TIMER
-  /* enable clocking for low power timer, otherwise vPortStopTickTimer() will crash */
-  SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
-#endif
-  vPortStopTickTimer(); /* tick timer shall not run until the RTOS scheduler is started */
+  /* PEX_RTOS_INIT() should have been called at this time already with the most critical setup */
 %CODE_BEGIN
 %CODE_END
 %-
@@ -4754,7 +4757,6 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %endif
    /*!< 1: enable special GDB stack backtrace debug helper; 0: disabled */
 #endif
-
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
