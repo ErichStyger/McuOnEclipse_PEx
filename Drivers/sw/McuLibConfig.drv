@@ -285,42 +285,40 @@
 %endif
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
-#if %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
-  #define %'ModuleName'%.CONFIG_CORTEX_M      (0)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
-    /*!< 1: using floating point unit, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CORTEX_M      (0)
+  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
+  /*!< 1: using floating point unit, 0: otherwise */
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
-  #define %'ModuleName'%.CONFIG_CORTEX_M      (4)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
-  %if %CPUDB_prph_has_feature(CPU,FPU) = 'yes'
-  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
-    /*!< 1: floating point unit present, 0: otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
-    /*!< 1: using floating point unit, 0: otherwise */
-  %else
-  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
-    /*!< 1: floating point unit present, 0: otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
-    /*!< 1: using floating point unit, 0: otherwise */
-  %endif
-%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
-  #define %'ModuleName'%.CONFIG_CORTEX_M      (7)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
-    /*!< 1: floating point unit present, 0: otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
-    /*!< 1: using floating point unit, 0: otherwise */
-%else %- default
-  #define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
-    /*!< 1: floating point unit present, 0: otherwise */
-  #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
-    /*!< 1: using floating point unit, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CORTEX_M      (4)
+  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+%if %CPUDB_prph_has_feature(CPU,FPU) = 'yes'
+#define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+  /*!< 1: floating point unit present, 0: otherwise */
+#define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
+  /*!< 1: using floating point unit, 0: otherwise */
+%else
+#define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+  /*!< 1: floating point unit present, 0: otherwise */
+#define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
+  /*!< 1: using floating point unit, 0: otherwise */
 %endif
-#endif
+%elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
+#define %'ModuleName'%.CONFIG_CORTEX_M      (7)
+  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+  /*!< 1: floating point unit present, 0: otherwise */
+#define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
+  /*!< 1: using floating point unit, 0: otherwise */
+%else %- default
+#define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
+  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
+  /*!< 1: floating point unit present, 0: otherwise */
+#define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
+  /*!< 1: using floating point unit, 0: otherwise */
+%endif
 
 /* Identifiers used to identify the SDK */
 #define %'ModuleName'%.CONFIG_SDK_GENERIC             0
