@@ -294,6 +294,22 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles);
 
 %endif %- WaitLongCycles
 %-BW_METHOD_END WaitLongCycles
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\WaitInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DeInit
+%ifdef DeInit
+void %'ModuleName'%.%DeInit(void);
+%include Common\WaitDeInit.Inc
+
+%endif %- DeInit
+%-BW_METHOD_END DeInit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -578,6 +594,19 @@ void %'ModuleName'%.%WaitCycles(uint16_t cycles)
 %include Common\WaitWaitLongCycles.Inc
 void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 {
+#if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+  uint32_t counter = cycles;
+
+%if defined(CortexTools)
+  counter += %@CortexTools@'ModuleName'%.GetCycleCounter();
+  while(%@CortexTools@'ModuleName'%.GetCycleCounter()<counter) {
+%else
+  counter += KIN1_GetCycleCounter();
+  while(KIN1_GetCycleCounter()<counter) {
+%endif
+    /* wait */
+  }
+#else
   /*lint -save -e522 function lacks side effect. */
   while(cycles>60000) {
     %'ModuleName'%.%WaitCycles(60000);
@@ -585,6 +614,7 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
   }
   %'ModuleName'%.%WaitCycles((uint16_t)cycles);
   /*lint -restore */
+#endif
 }
 
 %endif %- WaitLongCycles
@@ -751,15 +781,51 @@ void %'ModuleName'%.%Waitns(uint16_t ns)
 %-BW_METHOD_BEGIN WaitOSms
 %ifdef WaitOSms
 %include Common\WaitWaitOSms.Inc
-#if 0
+/*
 void %'ModuleName'%.%WaitOSms(void)
 {
-  /* Method is implemented as macro in the header file */
+  Method is implemented as macro in the header file
 }
-#endif
+*/
 
 %endif %- WaitOSms
 %-BW_METHOD_END WaitOSms
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\WaitInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+#if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+  /* init cycle counter */
+%if defined(CortexTools)
+  %@CortexTools@'ModuleName'%.InitCycleCounter();
+%else
+  KIN1_InitCycleCounter();
+%endif
+#endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DeInit
+%ifdef DeInit
+%include Common\WaitDeInit.Inc
+void %'ModuleName'%.%DeInit(void)
+{
+#if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+  /* disable hardware cycle counter */
+%if defined(CortexTools)
+  %@CortexTools@'ModuleName'%.DisableCycleCounter();
+%else
+  KIN1_DisableCycleCounter();
+%endif
+#endif
+}
+
+%endif %- DeInit
+%-BW_METHOD_END DeInit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -770,6 +836,7 @@ void %'ModuleName'%.%WaitOSms(void)
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
 %CODE_BEGIN
+  %'ModuleName'%.%Init();
 %CODE_END
 %-
 %ENABLE
@@ -815,7 +882,22 @@ void %'ModuleName'%.%WaitOSms(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
+#if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
+%if defined(useCycleCounter) & %useCycleCounter='yes'
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%else
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%endif
+    /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
+#endif
+
+#if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+%if defined(CortexTools)
+  #include "%@CortexTools@ModuleName.h" /* include Cortex utility functions */
+%else
+  #include "KIN1.h" /* include Cortex utility functions */
+%endif
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
