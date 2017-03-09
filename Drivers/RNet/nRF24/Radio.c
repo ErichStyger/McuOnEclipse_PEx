@@ -591,7 +591,7 @@ static void RADIO_PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 
     for (pipe=0;pipe<6;pipe++) { /* pipes 0 to 5 */
       /* RX_ADDR_Px */
-      %@nRF24L01p@'ModuleName'%.GetRxAddress(pipe, &pipeAddr[0], sizeof(pipeAddr));
+      (void)%@nRF24L01p@'ModuleName'%.GetRxAddress(pipe, &pipeAddr[0], sizeof(pipeAddr));
       buf[0] = '\0';
       %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"0x");
       for(i=0;i<RADIO_NOF_ADDR_BYTES;i++) {
@@ -762,13 +762,13 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
     RadioPrintRegisters(io);
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 250")==0) {
-    %@nRF24L01p@'ModuleName'%.SetDataRate(250);
+    (void)%@nRF24L01p@'ModuleName'%.SetDataRate(250);
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 1000")==0) {
-    %@nRF24L01p@'ModuleName'%.SetDataRate(1000);
+    (void)%@nRF24L01p@'ModuleName'%.SetDataRate(1000);
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 2000")==0) {
-    %@nRF24L01p@'ModuleName'%.SetDataRate(2000);
+    (void)%@nRF24L01p@'ModuleName'%.SetDataRate(2000);
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"radio txaddr ", sizeof("radio txaddr ")-1)==0) {
     p = cmd+sizeof("radio txaddr ")-1;
