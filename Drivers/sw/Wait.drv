@@ -882,6 +882,8 @@ void %'ModuleName'%.%DeInit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#include "%@sdk@ModuleName.h" /* include library configuration */
+
 #if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
 %if defined(useCycleCounter) & %useCycleCounter='yes'
   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
