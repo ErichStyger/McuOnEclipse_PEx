@@ -574,6 +574,19 @@ loop
 void %'ModuleName'%.%WaitCycles(uint16_t cycles)
 {
   /*lint -save -e522 function lacks side effect. */
+#if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+  uint32_t counter = cycles;
+
+%if defined(CortexTools)
+  counter += %@CortexTools@'ModuleName'%.GetCycleCounter();
+  while(%@CortexTools@'ModuleName'%.GetCycleCounter()<counter) {
+%else
+  counter += KIN1_GetCycleCounter();
+  while(KIN1_GetCycleCounter()<counter) {
+%endif
+    /* wait */
+  }
+#else
   while(cycles > 100) {
     %'ModuleName'%.%Wait100Cycles();
     cycles -= 100;
@@ -582,6 +595,7 @@ void %'ModuleName'%.%WaitCycles(uint16_t cycles)
     %'ModuleName'%.%Wait10Cycles();
     cycles -= 10;
   }
+#endif
   /*lint -restore */
 }
 
