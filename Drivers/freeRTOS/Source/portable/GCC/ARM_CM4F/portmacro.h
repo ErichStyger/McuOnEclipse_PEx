@@ -344,6 +344,7 @@ extern void vPortEnterCritical(void);
 extern void vPortExitCritical(void);
 #define portENABLE_INTERRUPTS()              __asm(bfclr #0x0300,SR) /* Enable interrupts of level 0,1,2,3 */
 #define portDISABLE_INTERRUPTS()             __asm(bfset #0x0300,SR) /* Disable interrupts, only level 3 allowed */
+#define portDISABLE_ALL_INTERRUPTS()         portDISABLE_INTERRUPTS()
 #define portENTER_CRITICAL()                 vPortEnterCritical()
 #define portEXIT_CRITICAL()                  vPortExitCritical()
 %else
