@@ -108,10 +108,9 @@
   %warning "only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported!"
   #error "only GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF and GPIOG are currently supported!"
 %endif
-  #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
 
   enum %'ModuleName'%.pinNames{
-    %'PinSymbol' = GPIO_MAKE_PIN(%'ModuleName'%.GPIO_IDX, %'ModuleName'%.PinNumber),
+    %'PinSymbol' = GPIO_MAKE_PIN(%'ModuleName'%.GPIO_IDX, %'ModuleName'%.CONFIG_PIN_NUMBER),
   };
 
   extern const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[];
@@ -253,24 +252,21 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  #define %'ModuleName'%.PORTName   %PORT_Name /* name of PORT, is pointer to PORT_Type */
-  #define %'ModuleName'%.GPIOName   %PortName /* name of GPIO, is pointer to GPIO_Type */
-  #define %'ModuleName'%.PinNumber  %'PinNumber'u   /* number of pin, type unsigned integer */
 
   static const gpio_pin_config_t %'ModuleName'%.configOutput = {
     kGPIO_DigitalOutput,  /* use as output pin */
-    1,  /* initial value */
+    %'ModuleName'%.CONFIG_INIT_PIN_VALUE,  /* initial value */
   };
 
   static const gpio_pin_config_t %'ModuleName'%.configInput = {
     kGPIO_DigitalInput,  /* use as input pin */
-    0,  /* initial value */
+    %'ModuleName'%.CONFIG_INIT_PIN_VALUE,  /* initial value */
   };
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[] = {
     {
       .pinName = %'PinSymbol',
-      .config.outputLogic = 0,
+      .config.outputLogic = %'ModuleName'%.CONFIG_INIT_PIN_VALUE,
     #if FSL_FEATURE_PORT_HAS_SLEW_RATE
       .config.slewRate = kPortSlowSlewRate,
     #endif
@@ -326,7 +322,7 @@ static bool %'ModuleName'%.isOutput = false;
 void %'ModuleName'%.%ClrVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_ClearPinOutput(%'PinSymbol');
 #endif
@@ -341,7 +337,7 @@ void %'ModuleName'%.%ClrVal(void)
 void %'ModuleName'%.%SetVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinOutput(%'PinSymbol');
 #endif
@@ -356,7 +352,7 @@ void %'ModuleName'%.%SetVal(void)
 void %'ModuleName'%.%NegVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_TogglePinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
+  GPIO_TogglePinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_TogglePinOutput(%'PinSymbol');
 #endif
@@ -372,7 +368,7 @@ void %'ModuleName'%.%NegVal(void)
 bool %'ModuleName'%.%GetVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  return GPIO_ReadPinInput(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber)!=0;
+  return GPIO_ReadPinInput(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER)!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
 #else
@@ -417,7 +413,7 @@ void %'ModuleName'%.%SetDir(bool Dir)
 void %'ModuleName'%.%SetInput(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configInput);
+  GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configInput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
 #endif
@@ -433,7 +429,7 @@ void %'ModuleName'%.%SetInput(void)
 void %'ModuleName'%.%SetOutput(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_PinInit(%'ModuleName'%.GPIOName, %'ModuleName'%.PinNumber, &%'ModuleName'%.configOutput);
+  GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configOutput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
 #endif
@@ -451,9 +447,9 @@ void %'ModuleName'%.%PutVal(bool Val)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   if (Val) {
-    GPIO_SetPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
+    GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   } else {
-    GPIO_ClearPinsOutput(%'ModuleName'%.GPIOName, 1<<%'ModuleName'%.PinNumber);
+    GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   }
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_WritePinOutput(%'PinSymbol', Val);
@@ -470,9 +466,13 @@ void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
-  PORT_SetPinMux(%'ModuleName'%.PORTName, %'ModuleName'%.PinNumber, kPORT_MuxAsGpio); /* mux as GPIO */
+  PORT_SetPinMux(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, kPORT_MuxAsGpio); /* mux as GPIO */
   #endif
+#if %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
+  %'ModuleName'%.%SetInput();
+#elif %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_OUTPUT
   %'ModuleName'%.%SetOutput();
+#endif
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   /*! \todo Pin Muxing not implemented */
   GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
@@ -528,12 +528,52 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#ifndef %'ModuleName'%.CONFIG_PORT_NAME
+  #define %'ModuleName'%.CONFIG_PORT_NAME       %PORT_Name
+    /*!< name of PORT, is pointer to PORT_Type */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_GPIO_NAME
+  #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
+    /*!< name of GPIO, is pointer to GPIO_Type */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_PIN_NUMBER
+  #define %'ModuleName'%.CONFIG_PIN_NUMBER      %'PinNumber'u
+    /*!< number of pin, type unsigned integer */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_INIT_PIN_VALUE
+%if defined(InitPinValue) & %InitPinValue='1'
+  #define %'ModuleName'%.CONFIG_INIT_PIN_VALUE  1
+%else
+  #define %'ModuleName'%.CONFIG_INIT_PIN_VALUE  0
+%endif
+  /*!< 0: Pin data is initialized with 0 (low); 1: pin value is initialized with 1 (high) */
+#endif
+
+/* different types of pin direction settings */
+#define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_NONE    (0)
+#define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT   (1)
+#define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_OUTPUT  (2)
+
+#ifndef %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION
+%if defined(PinDirection) & %PinDirection='Input'
+  #define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION  %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
+%elif defined(PinDirection) & %PinDirection='Output'
+  #define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION  %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_OUTPUT
+%else
+  #define %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION  %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_NONE
+%endif
+#endif
+
 #ifndef %'ModuleName'%.CONFIG_DO_PIN_MUXING
 %if defined(DoPinMuxing) & %DoPinMuxing='yes'
-  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  1  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  1
 %else
-  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  0  /* 1: perform pin muxing in Init(), 0: do not do pin muxing */
+  #define %'ModuleName'%.CONFIG_DO_PIN_MUXING  0
 %endif
+  /*!< 1: perform pin muxing in Init(), 0: do not do pin muxing */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */

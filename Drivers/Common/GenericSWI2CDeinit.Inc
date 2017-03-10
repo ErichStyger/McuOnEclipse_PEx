@@ -3,10 +3,9 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (Init)
+%include Common\GeneralMethod.inc (Deinit)
 %;**     Description :
-%;**         Initializes the associated peripheral(s) and the components
-%;**         internal variables.
+%;**         Driver de-initialization method.
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

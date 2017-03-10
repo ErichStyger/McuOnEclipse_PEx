@@ -74,13 +74,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -97,29 +93,7 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
-#ifndef __BWUserType_%'ModuleName'_TTIME
-#define __BWUserType_%'ModuleName'_TTIME
-  typedef struct {                                               %>40/* Time in binary format */
-    byte hour;                                                   %>40/* hours */
-    byte min;                                                    %>40/* minutes */
-    byte sec;                                                    %>40/* seconds */
-    bool mode;                                                   %>40/* clock mode, 0 for 12-hour mode, otherwise 0-24 hour mode */
-    byte am_pm;                                                  %>40/* 0: AM, otherwise PM */
-  } %'ModuleName'_TTIME;
-#endif
-#ifndef __BWUserType_%'ModuleName'_TDATE
-#define __BWUserType_%'ModuleName'_TDATE
-  typedef struct {                                               %>40/* Date in binary format */
-    byte year;                                                   %>40/* year */
-    byte month;                                                  %>40/* month */
-    byte day;                                                    %>40/* day */
-    bool dayOfWeek;                                              %>40/* Day of week, where 0 is the first day. In the range of 0..6 */
-  } %'ModuleName'_TDATE;
-#endif
 
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
@@ -1424,6 +1398,35 @@ void %OnError(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for GenericI2C
+ *
+ * This header file is used to configure settings of the Generic I2C module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+%- #if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
+%- %if defined(useCycleCounter) & %useCycleCounter='yes'
+%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%- %else
+%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%- %endif
+%-    /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
+%- #endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

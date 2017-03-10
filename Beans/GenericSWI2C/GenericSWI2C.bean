@@ -4,7 +4,7 @@
     <Name>GenericSWI2C</Name>
     <Description>Generic Software I2C</Description>
     <Author>Erich Styger, Marc Lindahl</Author>
-    <Version>01.019</Version>
+    <Version>01.021</Version>
     <Icon>GenericSWI2C</Icon>
     <TypesFiles>PE,GenericSWI2C\GenericSWI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright> * Copyright (c) 2014-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
@@ -108,6 +108,20 @@
     </Property>
     <Property>
       <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>GenericSWI2C\sdk</TypeSpec>
+        <Hint>Link to SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
         <Name>Wait</Name>
         <Symbol>Wait</Symbol>
         <TypeSpec>GenericSWI2C\Wait</TypeSpec>
@@ -170,34 +184,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes the associated peripheral(s) and the components internal variables. The method is called automatically as a part of the application initialization code.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>Read</Name>
         <Symbol>Read</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -215,12 +201,12 @@
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -276,13 +262,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Data to be written</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte Data)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t Data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -361,18 +347,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment  (MASTER mode only)\nERR_NOTAVAIL - The master device sends acknowledgment instead of no acknowledgment after the last byte transfer (SLAVE mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Chr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Character to send</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -395,18 +381,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Chr</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to received character</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *Chr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *Chr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -429,7 +415,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_TXFULL - Output buffer is full (MASTER mode only)\nERR_NOTAVAIL - The master device sends acknowledgment instead of no acknowledgment after the last byte transfer (SLAVE mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -441,19 +427,19 @@
         </Parameter>
         <Parameter>
           <ParName>Siz</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The size of the block</ParHint>
         </Parameter>
         <Parameter>
           <ParName>Snt</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the number of data that are sent (copied to buffer)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Snt)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void *Ptr, uint16_t Siz, uint16_t *Snt)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -476,7 +462,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_TXFULL - Output buffer is full (MASTER mode only)\nERR_NOTAVAIL - The master device sends acknowledgment instead of no acknowledgment after the last byte transfer (SLAVE mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -488,19 +474,19 @@
         </Parameter>
         <Parameter>
           <ParName>Siz</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The size of the block</ParHint>
         </Parameter>
         <Parameter>
           <ParName>Snt</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the number of data that are sent (copied to buffer)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Snt)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void *Ptr, uint16_t Siz, uint16_t *Snt)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -523,7 +509,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -535,19 +521,19 @@
         </Parameter>
         <Parameter>
           <ParName>Siz</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The size of the block</ParHint>
         </Parameter>
         <Parameter>
           <ParName>Rcv</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the number of actually received data</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Rcv)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void *Ptr, uint16_t Siz, uint16_t *Rcv)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -570,7 +556,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_BUSY - The slave device is busy, it does not respond by the acknowledgment (MASTER mode only)\nERR_DISABLED - Device is disabled\nERR_BUSOFF - Clock timeout elapsed (SLAVE mode only)</RetHint>
         <ParamCount>5</ParamCount>
         <Parameter>
@@ -582,19 +568,19 @@
         </Parameter>
         <Parameter>
           <ParName>Siz</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The size of the block</ParHint>
         </Parameter>
         <Parameter>
           <ParName>Rcv</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the number of actually received data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>flagsStart</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Flags for start condition</ParHint>
           <ParUserDeclaration>%'ModuleName'%.EnumStartFlags flagsStart</ParUserDeclaration>
@@ -608,7 +594,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void *Ptr, uint16_t Siz, uint16_t *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -665,12 +651,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_DISABLED - Device is disabled</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -693,18 +679,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode\nERR_DISABLED -  Device is disabled</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Slv</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Slave address value</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte Slv)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t Slv)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -727,18 +713,74 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_SPEED - This device does not work in the active speed mode</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>Slv</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the current selected slave address value</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte *Slv)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *Slv)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver de-initialization method.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the associated peripheral(s) and the components internal variables.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

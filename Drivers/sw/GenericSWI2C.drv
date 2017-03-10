@@ -69,19 +69,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -91,9 +81,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -132,7 +119,7 @@ void %'ModuleName'%.%Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendChar
 %ifdef SendChar
-byte %'ModuleName'%.%SendChar(byte Chr);
+uint8_t %'ModuleName'%.%SendChar(uint8_t Chr);
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWI2CSendChar.Inc
@@ -142,7 +129,7 @@ byte %'ModuleName'%.%SendChar(byte Chr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvChar
 %ifdef RecvChar
-byte %'ModuleName'%.%RecvChar(byte *Chr);
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr);
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWI2CRecvChar.Inc
@@ -152,7 +139,7 @@ byte %'ModuleName'%.%RecvChar(byte *Chr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendBlock
 %ifdef SendBlock
-byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt);
+uint8_t %'ModuleName'%.%SendBlock(void *Ptr, uint16_t Siz, uint16_t *Snt);
 %define! ParPtr
 %define! ParSiz
 %define! ParSnt
@@ -164,7 +151,7 @@ byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvBlock
 %ifdef RecvBlock
-byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv);
+uint8_t %'ModuleName'%.%RecvBlock(void *Ptr, uint16_t Siz, uint16_t *Rcv);
 %define! ParPtr
 %define! ParSiz
 %define! ParRcv
@@ -176,7 +163,7 @@ byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendStop
 %ifdef SendStop
-byte %'ModuleName'%.%SendStop(void);
+uint8_t %'ModuleName'%.%SendStop(void);
 %define! RetVal
 %include Common\GenericSWI2CSendStop.Inc
 
@@ -185,7 +172,7 @@ byte %'ModuleName'%.%SendStop(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectSlave
 %ifdef SelectSlave
-byte %'ModuleName'%.%SelectSlave(byte Slv);
+uint8_t %'ModuleName'%.%SelectSlave(uint8_t Slv);
 %define! ParSlv
 %define! RetVal
 %include Common\GenericSWI2CSelectSlave.Inc
@@ -195,7 +182,7 @@ byte %'ModuleName'%.%SelectSlave(byte Slv);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelected
 %ifdef GetSelected
-byte %'ModuleName'%.%GetSelected(byte *Slv);
+uint8_t %'ModuleName'%.%GetSelected(uint8_t *Slv);
 %define! ParSlv
 %define! RetVal
 %include Common\GenericSWI2CGetSelected.Inc
@@ -214,7 +201,7 @@ bool %'ModuleName'%.%ResetBus(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendBlockContinue
 %ifdef SendBlockContinue
-byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt);
+uint8_t %'ModuleName'%.%SendBlockContinue(void *Ptr, uint16_t Siz, uint16_t *Snt);
 %define! ParPtr
 %define! ParSiz
 %define! ParSnt
@@ -226,7 +213,7 @@ byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvBlockCustom
 %ifdef RecvBlockCustom
-byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck);
+uint8_t %'ModuleName'%.%RecvBlockCustom(void *Ptr, uint16_t Siz, uint16_t *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck);
 %define! ParPtr
 %define! ParSiz
 %define! ParRcv
@@ -246,6 +233,14 @@ void %'ModuleName'%.%SendAck(bool Ack);
 
 %endif %- SendAck
 %-BW_METHOD_END SendAck
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GenericSWI2CDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -290,6 +285,9 @@ void %OnRxChar(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#include "%@Wait@ModuleName.h" /* waiting routines */
+#include "%@SDA@ModuleName.h" /* SDA pin */
+#include "%@SCL@ModuleName.h" /* SCL pin */
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -315,8 +313,8 @@ void %OnRxChar(void);
 %endif
 
 #if %'ModuleName'%.HAS_RTOS
-/* include RTOS header files */
-#include "FreeRTOS.h" /* for yielding */
+  /* include RTOS header files */
+  #include "FreeRTOS.h" /* for yielding */
 #endif
 
 #if %'ModuleName'%.HAS_RTOS && %'ModuleName'%.YIELD
@@ -333,15 +331,19 @@ void %OnRxChar(void);
 
 #define %'ModuleName'%.DELAY_NS    %DelayNs   /* delay time in ns, as specified in the component properties */
 
-static byte SlaveAddr;             /* destination slave address      */
+static uint8_t SlaveAddr;             /* destination slave address      */
 
 #define SCL_SetDir(dir) %@SCL@'ModuleName'%.SetDir(dir)
 #define SCL_ClrVal()    %@SCL@'ModuleName'%.ClrVal()
 #define SCL_GetVal()    %@SCL@'ModuleName'%.GetVal()
+#define SCL_Init()      %@SCL@'ModuleName'%.Init()
+#define SCL_Deinit()    %@SCL@'ModuleName'%.Deinit()
 
 #define SDA_SetDir(dir) %@SDA@'ModuleName'%.SetDir(dir)
 #define SDA_ClrVal()    %@SDA@'ModuleName'%.ClrVal()
 #define SDA_GetVal()    %@SDA@'ModuleName'%.GetVal()
+#define SDA_Init()      %@SDA@'ModuleName'%.Init()
+#define SDA_Deinit()    %@SDA@'ModuleName'%.Deinit()
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -352,13 +354,13 @@ static byte SlaveAddr;             /* destination slave address      */
 static void Delay(void);
 %-INTERNAL_LOC_METHOD_END Delay
 %-INTERNAL_LOC_METHOD_BEG Read
-static byte Read(void);
+static uint8_t Read(void);
 %-INTERNAL_LOC_METHOD_END Read
 %-INTERNAL_LOC_METHOD_BEG GetAck
 static bool GetAck(void);
 %-INTERNAL_LOC_METHOD_END GetAck
 %-INTERNAL_LOC_METHOD_BEG Write
-static void Write(byte Data);
+static void Write(uint8_t Data);
 %-INTERNAL_LOC_METHOD_END Write
 %-INTERNAL_LOC_METHOD_BEG InternalStop
 static void InternalStop(void);
@@ -378,25 +380,14 @@ static void Delay(void)
 
 %-INTERNAL_METHOD_END Delay
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\GenericSWI2CInit.Inc
-void %'ModuleName'%.%Init(void)
-{
-  SlaveAddr = 0;
-}
-
-%endif %- Init
-%-BW_METHOD_END Init
-%-************************************************************************************************************
 %-INTERNAL_METHOD_BEG Write
 %define! ParData
 %include Common\GeneralInternalGlobal.inc (Write)
-static void Write(byte Data)
+static void Write(uint8_t Data)
 {
-  byte Shift;
-  byte I;
-  word timeout;
+  uint8_t Shift;
+  uint8_t I;
+  uint16_t timeout;
 
   Shift = 0x80U;
   for (I = 0x08U; I != 0U; I--) {
@@ -407,7 +398,7 @@ static void Write(byte Data)
       SDA_ClrVal();              /* SDA LOW */
     }
     Delay();
-    Shift = (byte)(Shift >> 1);
+    Shift = (uint8_t)(Shift >> 1);
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();
     timeout = 65535U;
@@ -427,11 +418,11 @@ static void Write(byte Data)
 %-INTERNAL_METHOD_BEG Read
 %define! RetVal
 %include Common\GeneralInternalGlobal.inc (Read)
-static byte Read(void)
+static uint8_t Read(void)
 {
-  byte Shift;
-  byte I;
-  word timeout;
+  uint8_t Shift;
+  uint8_t I;
+  uint16_t timeout;
 
   Shift = 0U;
   SDA_SetDir((bool)INPUT);       /* SDA INPUT MODE */
@@ -445,7 +436,7 @@ static byte Read(void)
       %'ModuleName'%.OSYIELD();
     }
     Delay();
-    Shift = (byte)(Shift << 1);
+    Shift = (uint8_t)(Shift << 1);
     if (SDA_GetVal()) {
       Shift++;
     }
@@ -463,7 +454,7 @@ static byte Read(void)
 %include Common\GeneralInternalGlobal.inc (GetAck)
 static bool GetAck(void)
 {
-  word timeout;
+  uint16_t timeout;
 
   SDA_SetDir((bool)INPUT);       /* SDA HIGH */
   Delay();
@@ -485,7 +476,7 @@ static bool GetAck(void)
 %include Common\GenericSWI2CSendAck.Inc
 void %'ModuleName'%.%SendAck(bool Ack)
 {
-  word timeout;
+  uint16_t timeout;
 
   Delay();
   if (Ack) {
@@ -570,11 +561,11 @@ bool %'ModuleName'%.%ResetBus(void)
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWI2CSendChar.Inc
-byte %'ModuleName'%.%SendChar(byte Chr)
+uint8_t %'ModuleName'%.%SendChar(uint8_t Chr)
 {
-  word Trial;
+  uint16_t Trial;
   bool Acknowledge;
-  word timeout;
+  uint16_t timeout;
 
   Trial = TRIALS;
   do {
@@ -598,7 +589,7 @@ byte %'ModuleName'%.%SendChar(byte Chr)
     SCL_SetDir((bool)OUTPUT);
     SCL_ClrVal();                /* CLOCK LOW PULSE */
     Delay();
-    Write((byte)(SlaveAddr + WRITE));
+    Write((uint8_t)(SlaveAddr + WRITE));
     Acknowledge = GetAck();
     --Trial;
   } while ((Trial != 0U) && Acknowledge);
@@ -643,11 +634,11 @@ byte %'ModuleName'%.%SendChar(byte Chr)
 %define! ParChr
 %define! RetVal
 %include Common\GenericSWI2CRecvChar.Inc
-byte %'ModuleName'%.%RecvChar(byte *Chr)
+uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr)
 {
-  word Trial;
+  uint16_t Trial;
   bool Acknowledge;
-  word timeout;
+  uint16_t timeout;
 
   Trial = TRIALS;
   do {
@@ -671,7 +662,7 @@ byte %'ModuleName'%.%RecvChar(byte *Chr)
     SCL_SetDir((bool)OUTPUT);
     SCL_ClrVal();                /* CLOCK LOW PULSE */
     Delay();
-    Write((byte)(SlaveAddr + READ));
+    Write((uint8_t)(SlaveAddr + READ));
     Acknowledge = GetAck();
     --Trial;
   } while ((Trial != 0U) && Acknowledge);
@@ -706,12 +697,12 @@ byte %'ModuleName'%.%RecvChar(byte *Chr)
 %define! ParSnt
 %define! RetVal
 %include Common\GenericSWI2CSendBlock.Inc
-byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt)
+uint8_t %'ModuleName'%.%SendBlock(void *Ptr, uint16_t Siz, uint16_t *Snt)
 {
-  register word I;
+  register uint16_t I;
   bool Acknowledge;
-  word Trial;
-  word timeout;
+  uint16_t Trial;
+  uint16_t timeout;
 
   *Snt = 0U;
   Trial = TRIALS;
@@ -735,7 +726,7 @@ byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt)
     SCL_SetDir((bool)OUTPUT);
     SCL_ClrVal();                /* CLOCK LOW PULSE */
     Delay();
-    Write((byte)(SlaveAddr + WRITE));
+    Write((uint8_t)(SlaveAddr + WRITE));
     Acknowledge = GetAck();
     --Trial;
   } while ((Trial != 0U) && Acknowledge);
@@ -750,7 +741,7 @@ byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt)
     Delay();
   }
   for (I = 0U; I < Siz; I++) {
-    Write (*((const byte*)Ptr + I) );
+    Write (*((const uint8_t*)Ptr + I) );
     if (GetAck()) {
 %if defined(OnNACK)
       %OnNACK();
@@ -791,16 +782,14 @@ byte %'ModuleName'%.%SendBlock(void *Ptr, word Siz, word *Snt)
 %define! ParSnt
 %define! RetVal
 %include Common\GenericSWI2CSendBlockContinue.Inc
-byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt)
+uint8_t %'ModuleName'%.%SendBlockContinue(void *Ptr, uint16_t Siz, uint16_t *Snt)
 {
-  register word I;
-  word Trial;
-  word timeout;
+  register uint16_t I;
+  uint16_t timeout;
 
   *Snt = 0U;
-  Trial = TRIALS;
   for (I = 0U; I < Siz; I++) {
-    Write (*((const byte*)Ptr + I) );
+    Write (*((const uint8_t*)Ptr + I) );
     if (GetAck()) {
 %if defined(OnNACK)
       %OnNACK();
@@ -840,12 +829,12 @@ byte %'ModuleName'%.%SendBlockContinue(void *Ptr, word Siz, word *Snt)
 %define! ParflagsAck
 %define! RetVal
 %include Common\GenericSWI2CRecvBlockCustom.Inc
-byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)
+uint8_t %'ModuleName'%.%RecvBlockCustom(void *Ptr, uint16_t Siz, uint16_t *Rcv, %'ModuleName'%.EnumStartFlags flagsStart, %'ModuleName'%.EnumAckFlags flagsAck)
 {
-  register word I;
+  register uint16_t I;
   bool Acknowledge;
-  word Trial;
-  word timeout;
+  uint16_t Trial;
+  uint16_t timeout;
 
   *Rcv = 0U;
   Trial = TRIALS;
@@ -871,7 +860,7 @@ byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleNam
       SCL_SetDir((bool)OUTPUT);
       SCL_ClrVal();                /* CLOCK LOW PULSE */
       Delay();
-      Write((byte)(SlaveAddr + READ));
+      Write((uint8_t)(SlaveAddr + READ));
       Acknowledge = GetAck();
       --Trial;
     } while ((Trial != 0U) && Acknowledge);
@@ -890,7 +879,7 @@ byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleNam
     }
   } /* %'ModuleName'%.SEND_START */
   for (I = 0U; I < Siz; I++) {
-    *((byte *)Ptr + I) = Read();
+    *((uint8_t *)Ptr + I) = Read();
 %if defined(OnRxChar)
     %OnRxChar();
 %endif
@@ -925,7 +914,7 @@ byte %'ModuleName'%.%RecvBlockCustom(void *Ptr, word Siz, word *Rcv, %'ModuleNam
 %define! ParRcv
 %define! RetVal
 %include Common\GenericSWI2CRecvBlock.Inc
-byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
+uint8_t %'ModuleName'%.%RecvBlock(void *Ptr, uint16_t Siz, uint16_t *Rcv)
 {
   return %'ModuleName'%.%RecvBlockCustom(Ptr, Siz, Rcv, %'ModuleName'%.SEND_START, %'ModuleName'%.SEND_LAST_ACK);
 }
@@ -937,7 +926,7 @@ byte %'ModuleName'%.%RecvBlock(void *Ptr, word Siz, word *Rcv)
 %ifdef SendStop
 %define! RetVal
 %include Common\GenericSWI2CSendStop.Inc
-byte %'ModuleName'%.%SendStop(void)
+uint8_t %'ModuleName'%.%SendStop(void)
 {
   Delay();
   SDA_SetDir((bool)OUTPUT);
@@ -958,9 +947,9 @@ byte %'ModuleName'%.%SendStop(void)
 %define! ParSlv
 %define! RetVal
 %include Common\GenericSWI2CSelectSlave.Inc
-byte %'ModuleName'%.%SelectSlave(byte Slv)
+uint8_t %'ModuleName'%.%SelectSlave(uint8_t Slv)
 {
-  SlaveAddr = (byte)(Slv<<1);
+  SlaveAddr = (uint8_t)(Slv<<1);
   return ERR_OK;
 }
 
@@ -972,14 +961,40 @@ byte %'ModuleName'%.%SelectSlave(byte Slv)
 %define! ParSlv
 %define! RetVal
 %include Common\GenericSWI2CGetSelected.Inc
-byte %'ModuleName'%.%GetSelected(byte *Slv)
+uint8_t %'ModuleName'%.%GetSelected(uint8_t *Slv)
 {
-  *Slv = (byte)(SlaveAddr>>1);
+  *Slv = (uint8_t)(SlaveAddr>>1);
   return ERR_OK;
 }
 
 %endif %- GetSelected
 %-BW_METHOD_END GetSelected
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\GenericSWI2CInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  SlaveAddr = 0;
+  SDA_Init();
+  SCL_Init();
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GenericSWI2CDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  SCL_Deinit();
+  SDA_Deinit();
+  SlaveAddr = 0;
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1030,7 +1045,34 @@ void %OnRxChar(void)
 %ENABLE
 %CODE_BEGIN
 %CODE_END
-%-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for GenericSWI2C
+ *
+ * This header file is used to configure settings of the software (bit-banging) I2C module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+%- #if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
+%- %if defined(CortexTools)
+%-   #include "%@CortexTools@ModuleName.h" /* include Cortex utility functions */
+%- %else
+%-   #include "KIN1.h" /* include Cortex utility functions */
+%- %endif
+%- #endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

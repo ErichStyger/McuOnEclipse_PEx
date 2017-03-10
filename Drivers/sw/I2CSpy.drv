@@ -74,14 +74,10 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
@@ -96,8 +92,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -122,7 +116,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
-byte %'ModuleName'%.%Init(void);
+uint8_t %'ModuleName'%.%Init(void);
 %define! RetVal
 %include Common\I2CSpyInit.Inc
 
@@ -139,7 +133,7 @@ void %'ModuleName'%.%Deinit(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetDeviceAddress
 %ifdef SetDeviceAddress
-byte %'ModuleName'%.%SetDeviceAddress(byte addr);
+uint8_t %'ModuleName'%.%SetDeviceAddress(uint8_t addr);
 %define! Paraddr
 %define! RetVal
 %include Common\I2CSpySetDeviceAddress.Inc
@@ -149,7 +143,7 @@ byte %'ModuleName'%.%SetDeviceAddress(byte addr);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetAddressSize
 %ifdef SetAddressSize
-byte %'ModuleName'%.%SetAddressSize(byte size);
+uint8_t %'ModuleName'%.%SetAddressSize(uint8_t size);
 %define! Parsize
 %define! RetVal
 %include Common\I2CSpySetAddressSize.Inc
@@ -159,7 +153,7 @@ byte %'ModuleName'%.%SetAddressSize(byte size);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetBytesPerLine
 %ifdef SetBytesPerLine
-byte %'ModuleName'%.%SetBytesPerLine(byte nofBytesPerLine);
+uint8_t %'ModuleName'%.%SetBytesPerLine(uint8_t nofBytesPerLine);
 %define! ParnofBytesPerLine
 %define! RetVal
 %include Common\I2CSpySetBytesPerLine.Inc
@@ -181,7 +175,7 @@ void %@I2C@OnReleaseBus(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadRegData
 %ifdef ReadRegData
-byte %'ModuleName'%.%ReadRegData(dword addr, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, uint16_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -193,7 +187,7 @@ byte %'ModuleName'%.%ReadRegData(dword addr, byte *data, word dataSize);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteRegData
 %ifdef WriteRegData
-byte %'ModuleName'%.%WriteRegData(dword addr, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%WriteRegData(uint32_t addr, uint8_t *data, uint16_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -205,7 +199,7 @@ byte %'ModuleName'%.%WriteRegData(dword addr, byte *data, word dataSize);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
@@ -217,7 +211,7 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDeviceAddress
 %ifdef GetDeviceAddress
-byte %'ModuleName'%.%GetDeviceAddress(void);
+uint8_t %'ModuleName'%.%GetDeviceAddress(void);
 %define! RetVal
 %include Common\I2CSpyGetDeviceAddress.Inc
 
@@ -273,9 +267,9 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 
 static void strcatAddress(unsigned char *buf, size_t bufSize, uint32_t addr) {
   if (%'ModuleName'%.deviceData.addrSize==1) {
-    %@Utility@'ModuleName'%.strcatNum8Hex(buf, bufSize, (byte)addr);
+    %@Utility@'ModuleName'%.strcatNum8Hex(buf, bufSize, (uint8_t)addr);
   } else if (%'ModuleName'%.deviceData.addrSize==2) {
-    %@Utility@'ModuleName'%.strcatNum16Hex(buf, bufSize, (word)addr);
+    %@Utility@'ModuleName'%.strcatNum16Hex(buf, bufSize, (uint16_t)addr);
   } else if (%'ModuleName'%.deviceData.addrSize==3) {
     %@Utility@'ModuleName'%.strcatNum24Hex(buf, bufSize, addr);
   } else if (%'ModuleName'%.deviceData.addrSize==4) {
@@ -460,7 +454,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %define! Pario
 %define! RetVal
 %include Common\I2CSpyParseCommand.Inc
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   uint8_t addr8, value8;
   uint32_t addr32, end32;
@@ -553,7 +547,7 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 %define! Paraddr
 %define! RetVal
 %include Common\I2CSpySetDeviceAddress.Inc
-byte %'ModuleName'%.%SetDeviceAddress(byte addr)
+uint8_t %'ModuleName'%.%SetDeviceAddress(uint8_t addr)
 {
   %'ModuleName'%.deviceData.deviceAddr = addr;
   return ERR_OK;
@@ -566,7 +560,7 @@ byte %'ModuleName'%.%SetDeviceAddress(byte addr)
 %ifdef GetDeviceAddress
 %define! RetVal
 %include Common\I2CSpyGetDeviceAddress.Inc
-byte %'ModuleName'%.%GetDeviceAddress(void)
+uint8_t %'ModuleName'%.%GetDeviceAddress(void)
 {
   return %'ModuleName'%.deviceData.deviceAddr;
 }
@@ -579,7 +573,7 @@ byte %'ModuleName'%.%GetDeviceAddress(void)
 %define! Parsize
 %define! RetVal
 %include Common\I2CSpySetAddressSize.Inc
-byte %'ModuleName'%.%SetAddressSize(byte size)
+uint8_t %'ModuleName'%.%SetAddressSize(uint8_t size)
 {
   %'ModuleName'%.deviceData.addrSize = size;
   return ERR_OK;
@@ -593,7 +587,7 @@ byte %'ModuleName'%.%SetAddressSize(byte size)
 %define! ParnofBytesPerLine
 %define! RetVal
 %include Common\I2CSpySetBytesPerLine.Inc
-byte %'ModuleName'%.%SetBytesPerLine(byte nofBytesPerLine)
+uint8_t %'ModuleName'%.%SetBytesPerLine(uint8_t nofBytesPerLine)
 {
   %'ModuleName'%.deviceData.bytesPerLine = nofBytesPerLine;
   return ERR_OK;
@@ -606,7 +600,7 @@ byte %'ModuleName'%.%SetBytesPerLine(byte nofBytesPerLine)
 %ifdef Init
 %define! RetVal
 %include Common\I2CSpyInit.Inc
-byte %'ModuleName'%.%Init(void)
+uint8_t %'ModuleName'%.%Init(void)
 {
   if (%'ModuleName'%.%SetDeviceAddress(%'ModuleName'%.DEFAULT_I2C_ADDR)!=ERR_OK) {
     return ERR_FAILED;
@@ -662,7 +656,7 @@ void %@I2C@OnReleaseBus(void)
 %define! PardataSize
 %define! RetVal
 %include Common\I2CSpyReadRegData.Inc
-byte %'ModuleName'%.%ReadRegData(dword addr, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, uint16_t dataSize)
 {
   uint8_t addrBuf[4];
 
@@ -684,7 +678,7 @@ byte %'ModuleName'%.%ReadRegData(dword addr, byte *data, word dataSize)
 %define! PardataSize
 %define! RetVal
 %include Common\I2CSpyWriteRegData.Inc
-byte %'ModuleName'%.%WriteRegData(dword addr, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%WriteRegData(uint32_t addr, uint8_t *data, uint16_t dataSize)
 {
   uint8_t addrBuf[4];
 
@@ -717,6 +711,35 @@ byte %'ModuleName'%.%WriteRegData(dword addr, byte *data, word dataSize)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for I2CSpy
+ *
+ * This header file is used to configure settings of the I2CSpy module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+%- #if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
+%- %if defined(useCycleCounter) & %useCycleCounter='yes'
+%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%- %else
+%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+%- %endif
+%-    /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
+%- #endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

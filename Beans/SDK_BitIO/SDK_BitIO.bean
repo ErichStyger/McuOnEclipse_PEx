@@ -4,7 +4,7 @@
     <Name>SDK_BitIO</Name>
     <Description>BitIO component for Kinetis SDK</Description>
     <Author>Erich Styger</Author>
-    <Version>01.019</Version>
+    <Version>01.022</Version>
     <Icon>SDK_BitIO</Icon>
     <TypesFiles>PE,SDK_BitIO\SDK_BitIO</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -15,7 +15,7 @@
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
+    <BW_NeedTps>yes</BW_NeedTps>
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
@@ -123,6 +123,38 @@
         <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Init Direction</Name>
+        <Symbol>PinDirection</Symbol>
+        <TypeSpec>typeDirection</TypeSpec>
+        <Hint>Defines the initial direction of the pin, configured in the Init() function</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>2</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
+    </Property>
+    <Property>
+      <TEnumItem>
+        <Name>Init Value</Name>
+        <Symbol>InitPinValue</Symbol>
+        <TypeSpec>typePinValue</TypeSpec>
+        <Hint>Initialization pin value</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+      </TEnumItem>
     </Property>
   </PropertyList>
   <MethodList>

@@ -202,14 +202,92 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Init">
-<b>Init</b></a>
- - Initialization method
+<li><a name="SetDeviceAddress">
+<b>SetDeviceAddress</b></a>
+ - Sets the I2C Device address to be used
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Init(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetDeviceAddress(uint8_t addr)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code
+<li><i>addr:uint8_t</i> - I2C 7bit address</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetDeviceAddress">
+<b>GetDeviceAddress</b></a>
+ - Returns the current I2C Device address used
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetDeviceAddress(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Return value:uint8_t</i> - 7bit Device Address
+</li>
+</ul><br />
+</li>
+<li><a name="SetAddressSize">
+<b>SetAddressSize</b></a>
+ - Specifies the address size of the I2C device memory
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetAddressSize(uint8_t size)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>size:uint8_t</i> - Either 1 (8bit), 2 (16bit), 3 (24bit), or 4 (32bit)</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetBytesPerLine">
+<b>SetBytesPerLine</b></a>
+ - Sets the number of bytes per line for the Dump shell command
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetBytesPerLine(uint8_t nofBytesPerLine)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>nofBytesPerLine:uint8_t</i> - Number of bytes per line</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="ReadRegData">
+<b>ReadRegData</b></a>
+ - Reads data starting from a register address from the current device
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadRegData(uint32_t addr, uint8_t *data, uint16_t dataSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>addr:uint32_t</i> - Device address</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data buffer where read data is stored</li>
+<li><i>dataSize:uint16_t</i> - size of data buffer in bytes</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="WriteRegData">
+<b>WriteRegData</b></a>
+ - Writes data starting from a register address to the current device
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t WriteRegData(uint32_t addr, uint8_t *data, uint16_t dataSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>addr:uint32_t</i> - Address in device</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data to write</li>
+<li><i>dataSize:uint16_t</i> - Size of data in bytes</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="ParseCommand">
+<b>ParseCommand</b></a>
+ - Shell Command Line parser
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd: Pointer to uint8_t</i> - Pointer to command string</li>
+<li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
+<li><i>io:uint8_t</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -222,92 +300,14 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
-<li><a name="SetDeviceAddress">
-<b>SetDeviceAddress</b></a>
- - Sets the I2C Device address to be used
+<li><a name="Init">
+<b>Init</b></a>
+ - Initialization method
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetDeviceAddress(byte addr)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:byte</i> - I2C 7bit address</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="GetDeviceAddress">
-<b>GetDeviceAddress</b></a>
- - Returns the current I2C Device address used
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetDeviceAddress(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - 7bit Device Address
-</li>
-</ul><br />
-</li>
-<li><a name="SetAddressSize">
-<b>SetAddressSize</b></a>
- - Specifies the address size of the I2C device memory
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetAddressSize(byte size)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>size:byte</i> - Either 1 (8bit), 2 (16bit), 3 (24bit), or 4 (32bit)</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="SetBytesPerLine">
-<b>SetBytesPerLine</b></a>
- - Sets the number of bytes per line for the Dump shell command
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SetBytesPerLine(byte nofBytesPerLine)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>nofBytesPerLine:byte</i> - Number of bytes per line</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="ReadRegData">
-<b>ReadRegData</b></a>
- - Reads data starting from a register address from the current device
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadRegData(dword addr, byte *data, word dataSize)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:dword</i> - Device address</li>
-<li><i>data: Pointer to byte</i> - Pointer to data buffer where read data is stored</li>
-<li><i>dataSize:word</i> - size of data buffer in bytes</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="WriteRegData">
-<b>WriteRegData</b></a>
- - Writes data starting from a register address to the current device
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteRegData(dword addr, byte *data, word dataSize)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:dword</i> - Address in device</li>
-<li><i>data: Pointer to byte</i> - Pointer to data to write</li>
-<li><i>dataSize:word</i> - Size of data in bytes</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="ParseCommand">
-<b>ParseCommand</b></a>
- - Shell Command Line parser
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd: Pointer to byte</i> - Pointer to command string</li>
-<li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
-<li><i>io:byte</i> - Pointer to I/O structure</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
