@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.125</Version>
+    <Version>01.127</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -68,28 +68,6 @@
     </Property>
     <Property>
       <TEnumItem>
-        <Name>Startup trace enable method</Name>
-        <Symbol>trcStartupEnableMethod</Symbol>
-        <TypeSpec>typeTraceEnable</TypeSpec>
-        <Hint>Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.\n
-     Snapshot Mode:\n
-        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
-        TRC_START: Initializes and starts tracing\n
-     Streaming Mode:\n
-        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
-        TRC_START_AWAIT_HOST: initialies trace module and blocks (waits for data to be retrieved */</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-      </TEnumItem>
-    </Property>
-    <Property>
-      <TEnumItem>
         <Name>Recorder Buffer Allocation</Name>
         <Symbol>RecorderBufferAllocation</Symbol>
         <TypeSpec>typeRecorderBufferAllocation</TypeSpec>
@@ -132,6 +110,28 @@
         <Description/>
         <Expanded>Yes</Expanded>
         <Children>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Snapshot trace enable method</Name>
+              <Symbol>trcStartupEnableMethodSnapshot</Symbol>
+              <TypeSpec>typeTraceEnableSnapshot</TypeSpec>
+              <Hint>Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.\n
+     Snapshot Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START: Initializes and starts tracing\n
+     Streaming Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START_AWAIT_HOST: initialies trace module and blocks (waits for data to be retrieved */</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
           <GrupItem>
             <TEnumItem>
               <Name>Recorder store mode</Name>
@@ -353,7 +353,7 @@ a default format string for the channel.</Hint>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description/>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <Children>
                 <GrupItem>
                   <TIntgItem>
@@ -637,7 +637,7 @@ be truncated when stored in the recorder.</Hint>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description/>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <Children>
                 <GrupItem>
                   <TBoolItem>
@@ -917,6 +917,28 @@ By setting USE_IMPLICIT_IFE_RULES to zero (0), the implicit IFEs are disabled fo
                 </GrupItem>
               </Children>
             </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Streaming trace enable method</Name>
+              <Symbol>trcStartupEnableMethodStreaming</Symbol>
+              <TypeSpec>typeTraceEnableStreaming</TypeSpec>
+              <Hint>Chooses which trace init and startup method shall be used while the trace Startup() function gets called during application startup.\n
+     Snapshot Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START: Initializes and starts tracing\n
+     Streaming Mode:\n
+        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);\n
+        TRC_START_AWAIT_HOST: initialies trace module and blocks (waits for data to be retrieved */</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>

@@ -779,18 +779,29 @@ void %OnTraceWrap(void)
 #define __%'ModuleName'_CONFIG_H
 
 #ifndef %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE
-%if defined(trcStartupEnableMethod)
-  #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE      %>60 %trcStartupEnableMethod
-%else
-  #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE      %>60 TRC_INIT
-%endif
-    /*!< Percepio trace startup mode used for calling vTraceEnable() from Startup():
-      Snapshot Mode:
-        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);
-        TRC_START: Initializes and starts tracing
-      Streaming Mode:
-        TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);
-        TRC_START_AWAIT_HOST: Initializes trace module and blocks (waits for data to be retrieved */
+  /* Percepio trace startup mode used for calling vTraceEnable() from Startup():
+     Snapshot Mode:
+       TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);
+       TRC_START: Initializes and starts tracing
+     Streaming Mode:
+       TRC_INIT: Initializes trace module. Application needs to start tracing later with vTraceEnable(TRC_START);
+       TRC_START: Initializes and starts tracing
+       TRC_START_AWAIT_HOST: Initializes trace module and blocks (waits for data to be retrieved */
+  #if TRC_CFG_RECORDER_MODE==TRC_RECORDER_MODE_SNAPSHOT
+  %if defined(trcStartupEnableMethodSnapshot)
+    #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE    %>60 %trcStartupEnableMethodSnapshot
+  %else
+    #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE    %>60 TRC_START
+  %endif
+      /*!< Trace startup for snapshot mode: TRC_INIT or TRC_START */
+  #else /* streaming mode */
+  %if defined(trcStartupEnableMethodStreaming)
+    #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE    %>60 %trcStartupEnableMethodStreaming
+  %else
+    #define %'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE    %>60 TRC_START
+  %endif
+      /*!< Trace startup for streaming mode: TRC_INIT, TRC_START or TRC_START_AWAIT_HOST */
+  #endif
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */

@@ -70,7 +70,7 @@
     </Type>
     <Type>
       <Type>TEnumSpec</Type>
-      <Name>typeTraceEnable</Name>
+      <Name>typeTraceEnableStreaming</Name>
       <Items lines_count="3">
         <Line>TRC_INIT</Line>
         <Line>TRC_START</Line>
@@ -85,6 +85,22 @@
         <Line>TRC_INIT</Line>
         <Line>TRC_START</Line>
         <Line>TRC_START_AWAIT_HOST</Line>
+      </Defines>
+    </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeTraceEnableSnapshot</Name>
+      <Items lines_count="2">
+        <Line>TRC_INIT</Line>
+        <Line>TRC_START</Line>
+      </Items>
+      <Hints lines_count="2">
+        <Line>Initializes the trace recorder, but does not start the tracing. In snapshot mode, this must be followed by a vTraceEnable(TRC_START) sometime later.</Line>
+        <Line>Starts the tracing directly. In snapshot mode this allows for starting the trace at any point in your code, assuming vTraceEnable(TRC_INIT) has been called in the startup.</Line>
+      </Hints>
+      <Defines lines_count="2">
+        <Line>TRC_INIT</Line>
+        <Line>TRC_START</Line>
       </Defines>
     </Type>
   </Types>
