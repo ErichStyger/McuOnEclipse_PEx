@@ -336,14 +336,22 @@ static uint8_t SlaveAddr;             /* destination slave address      */
 #define SCL_SetDir(dir) %@SCL@'ModuleName'%.SetDir(dir)
 #define SCL_ClrVal()    %@SCL@'ModuleName'%.ClrVal()
 #define SCL_GetVal()    %@SCL@'ModuleName'%.GetVal()
-#define SCL_Init()      %@SCL@'ModuleName'%.Init()
-#define SCL_Deinit()    %@SCL@'ModuleName'%.Deinit()
 
 #define SDA_SetDir(dir) %@SDA@'ModuleName'%.SetDir(dir)
 #define SDA_ClrVal()    %@SDA@'ModuleName'%.ClrVal()
 #define SDA_GetVal()    %@SDA@'ModuleName'%.GetVal()
-#define SDA_Init()      %@SDA@'ModuleName'%.Init()
-#define SDA_Deinit()    %@SDA@'ModuleName'%.Deinit()
+
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  #define SCL_Init()      /* Init does not exist with Processor Expert API */
+  #define SCL_Deinit()    /* Deinit does not exist with Processor Expert API */
+  #define SDA_Init()      /* Init does not exist with Processor Expert API */
+  #define SDA_Deinit()    /* Deinit does not exist with Processor Expert API */
+#else
+  #define SCL_Init()      %@SCL@'ModuleName'%.Init()
+  #define SCL_Deinit()    %@SCL@'ModuleName'%.Deinit()
+  #define SDA_Init()      %@SDA@'ModuleName'%.Init()
+  #define SDA_Deinit()    %@SDA@'ModuleName'%.Deinit()
+#endif
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
