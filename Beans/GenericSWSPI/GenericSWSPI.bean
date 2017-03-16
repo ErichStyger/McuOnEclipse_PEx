@@ -4,7 +4,7 @@
     <Name>GenericSWSPI</Name>
     <Description>Software synchronous serial communication</Description>
     <Author>Erich Styger</Author>
-    <Version>01.027</Version>
+    <Version>01.029</Version>
     <Icon>GenericSWSPI</Icon>
     <TypesFiles>PE,GenericSWSPI\GenericSWSPI</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -215,6 +215,20 @@
         <Symbol>Wait</Symbol>
         <TypeSpec>Wait_I</TypeSpec>
         <Hint/>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>GenericSWSPI\sdk</TypeSpec>
+        <Hint>Link to the SDK used</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>
@@ -500,6 +514,62 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>void</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver Deinitialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver Initialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>

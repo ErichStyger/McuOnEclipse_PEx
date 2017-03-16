@@ -13,10 +13,26 @@
 %-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
+%-  %-BW_METHOD_BEGIN
+%-  %-BW_METHOD_END
+%-  %-BW_DEFINITION_START
+%-  %-BW_DEFINITION_END
+%-  %-BW_IMPLEMENT_START
+%-  %-BW_IMPLEMENT_END
+%-  %-BW_EVENT_DEFINITION_START
+%-  %-BW_EVENT_DEFINITION_END
+%-  %-BW_EVENT_IMPLEMENT_START
+%-  %-BW_EVENT_IMPLEMENT_END
+%-  %-BW_METHOD_MACROS_START
+%-  %-BW_METHOD_MACROS_END
+%-  %-BW_SECTIONS_INSERT
+%-  %-BW_INTERN_COMMENTS_START
+%-  %-BW_INTERN_COMMENTS_END
+%-  %-BW_BEAN_CONSTANTS_START
+%-  %-BW_BEAN_CONSTANTS_END
 %-
-%- These lines are not comments, but they are necessary for Bean Wizard
-%- If you change these lines, Bean Wizard will not be responsible for losing or damaging your code!
-%-
+%- These lines are not comments, but they are necessary for Component Wizard
+%- If you change these lines, Component Wizard will not be responsible for losing or damaging your code!
 %-
 %- readyINTERFACE Bit_IO
 %- readyINTERFACE Bit_IO_In
@@ -30,120 +46,6 @@
 %- readyCOMPILER CodeWarrior ColdFireV1 C Compiler
 %- readyCOMPILER CodeWarrior RS08 C Compiler
 %-
-%apploc revDate 06.06.2007
-%apploc revVer  01.15
-%apploc revLvl  5
-%apploc revAuth MS
-%apploc revVrf  RH
-%apploc revCmnt_14 RS08 compiler support added
-%-
-%apploc revDate 27.02.2007
-%apploc revVer  01.14
-%apploc revLvl  5
-%apploc revAuth MS
-%apploc revVrf  RH
-%apploc revCmnt_13 CFV1 compiler support added
-%-
-%apploc revDate 28.11.2005
-%apploc revVer  01.13
-%apploc revLvl  5
-%apploc revAuth MS
-%apploc revVrf  RH
-%apploc revCmnt_12 MISRA compliance improved
-%-
-%apploc revDate 17.11.2005
-%apploc revVer  01.12
-%apploc revLvl  5
-%apploc revAuth MS
-%apploc revVrf  RH
-%apploc revCmnt_11 HCS12X compiler supported
-%-
-%apploc revDate 16.08.2005
-%apploc revVer  01.11
-%apploc revLvl  9
-%apploc revAuth MS
-%apploc revVrf  RH
-%apploc revCmnt_10 SetSpeedModulesList symbol removed
-%apploc revCmnt_10 Description of internal methods added.
-%-
-%apploc revDate 16.11.2004
-%apploc revVer  01.10
-%apploc revLvl  9
-%apploc revAuth PF
-%apploc revVrf  RH
-%apploc revCmnt_9 STAMP removed.
-%-
-%apploc revDate 12.08.2004
-%apploc revVer  01.09
-%apploc revLvl  5
-%apploc revAuth PF
-%apploc revVrf  RH
-%apploc revCmnt_8 Redundant #includes removed.
-%-
-%apploc revDate 07.11.2003
-%apploc revVer  01.08
-%apploc revLvl  2
-%apploc revAuth SA
-%apploc revVrf  SA
-%apploc revCmnt_7 C warnings optimization - typecasting.
-%-
-%apploc revDate 16.07.2003
-%apploc revVer  01.07
-%apploc revLvl  5
-%apploc revAuth PF
-%apploc revVrf  RH
-%apploc revCmnt_6 SendChar uninitialized InputBuffer fixed.
-%- Na DSP s 16ti bitovou granularitou se pri prijmu znaku v metode SendChar
-%- InputBuffer logicky posune pouze o 8 bitu a hornich 8 MSB zustane neinicializovanych
-%- RecvChar pak vraci 0xFFxx, coz napriklad implicitne ci explicitne pretypovano na int
-%- neni to, co se od toho ceka.
-%-
-%apploc revDate 22.04.2003
-%apploc revVer  01.06
-%apploc revLvl  2
-%apploc revAuth SA
-%apploc revVrf  RH
-%apploc revCmnt_5 Support of the Metrowerks HCS08 C compiler and DSP C compiler
-%-
-%apploc revDate 2.12.2002
-%apploc revVer  01.05
-%apploc revLvl  4
-%apploc revAuth SA
-%apploc revVrf  RH
-%apploc revCmnt_4 Corrected banking support for PE version for HC08 only.
-%-
-%apploc revDate 14.10.2002
-%apploc revVer  01.04
-%apploc revLvl  3
-%apploc revAuth SA
-%apploc revVrf  RH
-%apploc revCmnt_3 MSB first yes/no feature added.
-%-
-%apploc revDate 08.10.2002
-%apploc revVer  01.03
-%apploc revLvl  5
-%apploc revAuth SA
-%apploc revVrf  RH
-%apploc revCmnt_2 Banking support
-%-
-%apploc revDate 30.09.2002
-%apploc revVer  01.02
-%apploc revLvl  5
-%apploc revAuth SA
-%apploc revVrf  RH
-%apploc revCmnt_1 SetIdleClockPolarity method added
-%-
-%apploc revDate 21.06.2002
-%apploc revVer  01.01
-%apploc revLvl  5
-%apploc revAuth SA / PF
-%apploc revVrf  RH
-%apploc revCmnt_0 Support of the Metrowerks HC08/HC12 C compiler
-%apploc revCmnt_0 Fixed bug in transmission
-%apploc revCmnt_0 ClockEdge property added
-%-
-%define DriverAuthor  Lubos Lorenc
-%- Promazal a upravil Stanislav Adamek
 %define DriverVersion 01.15
 %define DriverDate    11.10.2001
 %-BW_INTERN_COMMENTS_START
@@ -171,12 +73,19 @@
 %define! Abstract Common\GenericSWSPIAbstract.Inc
 %include Common\Header.h
 
-#ifndef __%ModuleName
-#define __%ModuleName
+#ifndef __%'ModuleName'_H
+#define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
 
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GenericSWSPIDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_METHOD_BEGIN SetFastMode
 %ifdef SetFastMode
 void %'ModuleName'%.%SetFastMode(void);
@@ -197,14 +106,12 @@ void %'ModuleName'%.%SetSlowMode(void);
 #include "%'var'.h"
   %endfor
 %endif
-/* Include inherited beans */
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -271,11 +178,11 @@ uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level);
 
 %endif %- SetIdleClockPolarity
 %-BW_METHOD_END SetIdleClockPolarity
-%-INTERNAL_METHOD_BEG Init
+%ifdef Init
 void %'ModuleName'_Init(void);
 %include Common\GeneralInternal.Inc (Init)
 
-%-INTERNAL_METHOD_END Init
+%endif %- Init
 
 /* END %ModuleName. */
 
@@ -313,7 +220,7 @@ void %'ModuleName'_Init(void);
 #define CHAR_IN_RX   %#h8                                        %>40/* Char is in RX buffer     */
 
 %if defined(SetSlowMode) | defined(SetFastMode)
-static byte %'ModuleName'%.FastMode; /* 0: slow, 1: fast */
+static uint8_t %'ModuleName'%.FastMode; /* 0: slow, 1: fast */
 %endif
 %if %OutputPinPolarity='Low'
 #define MOSI_IDLE_POLARITY    0                                  %>>/* MOSI idle polarity is low */
@@ -327,8 +234,8 @@ static byte %'ModuleName'%.FastMode; /* 0: slow, 1: fast */
 %endif
 
 %if defined(DynamicClockSettings)
-static byte CLKshift;
-static byte CLKsampl;
+static uint8_t CLKshift;
+static uint8_t CLKsampl;
 %elif (SKpolarity='Low' & ClockEdge='falling')
 /* clock idle low, rising edge: Data - Sample - Shift */
 #define CLKsampl  1
@@ -346,8 +253,8 @@ static byte CLKsampl;
 #define CLKshift  0
 #define CLKsampl  1
 %endif
-static byte InputBuffer;
-static byte SerFlag;                                             %>40/* Flags for serial communication */
+static uint8_t InputBuffer;
+static uint8_t SerFlag;                                          %>40/* Flags for serial communication */
                                                                  %>40/* Bits: 0 - OverRun error */
                                                                  %>40/*       1 - Unused */
                                                                  %>40/*       2 - Unused */
@@ -381,6 +288,7 @@ void %'ModuleName'%.%SetFastMode(void)
 
 %endif %- SetFastMode
 %-BW_METHOD_END SetFastMode
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetSlowMode
 %ifdef SetSlowMode
 %include Common\GenericSWSPISetSlowMode.Inc
@@ -391,6 +299,7 @@ void %'ModuleName'%.%SetSlowMode(void)
 
 %endif %- SetSlowMode
 %-BW_METHOD_END SetSlowMode
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvChar
 %ifdef RecvChar
 %define! ParChr
@@ -413,13 +322,14 @@ uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr)
 
 %endif %- RecvChar
 %-BW_METHOD_END RecvChar
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Write_ReadDummy
 %ifdef Write_ReadDummy
 %define! Parval
 %include Common\GenericSWSPIWrite_ReadDummy.Inc
 void %'ModuleName'%.%Write_ReadDummy(uint8_t val)
 {
-  byte i;
+  int i;
 
   for(i=0; i<8; i++) {
     %'ModuleName'%.DELAY();
@@ -449,6 +359,7 @@ void %'ModuleName'%.%Write_ReadDummy(uint8_t val)
 
 %endif %- Write_ReadDummy
 %-BW_METHOD_END Write_ReadDummy
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SendChar
 %ifdef SendChar
 %define! Parval
@@ -456,7 +367,7 @@ void %'ModuleName'%.%Write_ReadDummy(uint8_t val)
 %include Common\GenericSWSPISendChar.Inc
 uint8_t %'ModuleName'%.%SendChar(uint8_t val)
 {
-  byte i;
+  int i;
 
   for(i=0; i<8; i++) {
     %'ModuleName'%.DELAY();
@@ -498,17 +409,19 @@ uint8_t %'ModuleName'%.%SendChar(uint8_t val)
 
 %endif %- SendChar
 %-BW_METHOD_END SendChar
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN CharsInRxBuf
 %ifdef CharsInRxBuf
 %define! RetVal
 %include Common\GenericSWSPICharsInRxBuf.Inc
 uint8_t %'ModuleName'%.%CharsInRxBuf(void)
 {
-  return (byte)((SerFlag & CHAR_IN_RX)?(byte)1:(byte)0);         %>>/* Return number of chars in receive buffer */
+  return (uint8_t)((SerFlag & CHAR_IN_RX)?(uint8_t)1:(uint8_t)0);%>>/* Return number of chars in receive buffer */
 }
 
 %endif %- CharsInRxBuf
 %-BW_METHOD_END CharsInRxBuf
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN CharsInTxBuf
 %ifdef CharsInTxBuf
 %define! RetVal
@@ -521,6 +434,7 @@ uint8_t %'ModuleName'%.%CharsInTxBuf(void)
 #endif
 %endif %- CharsInTxBuf
 %-BW_METHOD_END CharsInTxBuf
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetShiftClockPolarity
 %ifdef SetShiftClockPolarity
 %define! ParEdge
@@ -528,13 +442,14 @@ uint8_t %'ModuleName'%.%CharsInTxBuf(void)
 %include Common\GenericSWSPISetShiftClockPolarity.Inc
 uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge)
 {
-  CLKshift = (byte)(Edge?(byte)1:(byte)0);                       %>>/* Set shift value */
-  CLKsampl = (byte)(CLKshift ^ (byte)%#h1);                      %>>/* Set sample value */
+  CLKshift = (uint8_t)(Edge?(uint8_t)1:(uint8_t)0);              %>>/* Set shift value */
+  CLKsampl = (uint8_t)(CLKshift^(uint8_t)%#h1);                  %>>/* Set sample value */
   return ERR_OK;
 }
 
 %endif %- SetShiftClockPolarity
 %-BW_METHOD_END SetShiftClockPolarity
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetIdleClockPolarity
 %ifdef SetIdleClockPolarity
 %define! ParLevel
@@ -542,16 +457,23 @@ uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge)
 %include Common\GenericSWSPISetIdleClockPolarity.Inc
 uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level)
 {
-  %@Clk@'ModuleName'%.PutVal((byte)Level);                       %>>/* Set CLK to (new) idle value */
+  %@Clk@'ModuleName'%.PutVal((uint8_t)Level);                    %>>/* Set CLK to (new) idle value */
   return ERR_OK;
 }
 
 %endif %- SetIdleClockPolarity
 %-BW_METHOD_END SetIdleClockPolarity
-%-INTERNAL_METHOD_BEG Init
-%include Common\GeneralInternal.Inc (Init)
-void %'ModuleName'_Init(void)
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\GenericSWSPIInit.Inc
+void %'ModuleName'%.%Init(void)
 {
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  %@Din@'ModuleName'%.Init();
+  %@Dout@'ModuleName'%.Init();
+  %@Clk@'ModuleName'%.Init();
+#endif
 %ifdef SetSlowMode
   %'ModuleName'%.SetSlowMode();                                  %>>/* slow mode is default */
 %endif
@@ -579,20 +501,77 @@ void %'ModuleName'_Init(void)
   SerFlag = 0;                                                   %>>/* Clear flags */
 }
 
-%-INTERNAL_METHOD_END Init
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GenericSWSPIDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  %@Din@'ModuleName'%.Deinit();
+  %@Dout@'ModuleName'%.Deinit();
+  %@Clk@'ModuleName'%.Deinit();
+#endif
+}
 
-/* END %ModuleName. */
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+
+/* END __%'ModuleName'_H */
 
 %include Common\Header.End
 %-
-%-
-
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
   %'ModuleName'_Init();
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for GenericSWI2C
+ *
+ * This header file is used to configure settings of the software (bit-banging) I2C module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+% ClockEdge='falling')
+
+#if %'ModuleName'%.CONFIG_CLOCK_POLARITY
+%if defined(SKpolarity) & SKpolarity='Low'
+  #define %'ModuleName'%.CONFIG_CLOCK_POLARITY  0
+%else
+  #define %'ModuleName'%.CONFIG_CLOCK_POLARITY  1
+%endif
+    /*!< 0: clock is low if idle; 1: clock is high if idle */
+#endif
+
+#if %'ModuleName'%.CONFIG_CLOCK_EDGE
+%if defined(ClockEdge) & ClockEdge='falling'
+  #define %'ModuleName'%.CONFIG_CLOCK_EDGE  0
+%else
+  #define %'ModuleName'%.CONFIG_CLOCK_EDGE  1
+%endif
+    /*!< 0: data is shifed on falling clock edge; 1: data is shifted on rising clock edge */
+#endif
+
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
+
 %else %- Language='ANSIC'
   %error^ This bean is not implemented in the selected language & compiler!%--
 %endif %- Language='ANSIC'
