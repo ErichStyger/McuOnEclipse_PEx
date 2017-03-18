@@ -71,9 +71,13 @@
 #define FREERTOS_CONFIG_H
 
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
-#include "%'ModuleName'config.h" /* configuration */
+#include "%'ModuleName'config.h" /* extra configuration settings not part of the original FreeRTOS ports */
 
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H %>50 1 /* include additional header file to help with debugging in GDB */
+%if defined(TaskCAdditions) & %TaskCAdditions='yes'
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>50 1 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
+%else
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>50 0 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
+%endif
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -335,13 +339,13 @@
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 0 /* number of tread local storage pointers, 0 to disable functionality */
 %endif
 
-#define configMAX_PRIORITIES                                     %>50 %MaxPriority
-#define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities
+#define configMAX_PRIORITIES                                     %>50 %MaxPriority /* task priorities can be from 0 up to this value-1 */
+#define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities /* co-routine priorities can be from 0 up to this value-1 */
 
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
-#define configTASK_RETURN_ADDRESS   0                            %>50 /* return address of task is zero */
+#define configTASK_RETURN_ADDRESS                                %>50 0 /* return address of task is zero */
 %else
-/* #define portTASK_RETURN_ADDRESS   0 */                        %>50 /* ability to overwrite task return address for port.c */
+/* #define portTASK_RETURN_ADDRESS   0                           %>50 0 */ /* ability to overwrite task return address for port.c */
 %endif
 
 %if defined(RecordStackHighAddress) & %RecordStackHighAddress='yes'
@@ -352,19 +356,19 @@
 
 /* Software timer definitions. */
 %if %TimersEnabled='yes'
-#define configUSE_TIMERS                                         %>50 1 /* set to 1 to enable software timers */
+#define configUSE_TIMERS                                         %>50 1 /* 1: enable software timers; 0: software timers disabled */
 #define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority /* e.g. (configMAX_PRIORITIES-1U) */
-#define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* e.g. 10U */
+#define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* size of queue for the timer task */
 #define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth /* e.g. (configMINIMAL_STACK_SIZE) */
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 1
-#define INCLUDE_xTimerPendFunctionCall                           %>50 1
+#define INCLUDE_xEventGroupSetBitFromISR                         %>50 1 /* 1: function is included; 0: do not include function */
+#define INCLUDE_xTimerPendFunctionCall                           %>50 1 /* 1: function is included; 0: do not include function */
 %else
 #define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable software timers */
 #define configTIMER_TASK_PRIORITY                                %>50 (configMAX_PRIORITIES-1U)
-#define configTIMER_QUEUE_LENGTH                                 %>50 10U
+#define configTIMER_QUEUE_LENGTH                                 %>50 10U /* size of queue for the timer task */
 #define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 0
-#define INCLUDE_xTimerPendFunctionCall                           %>50 0
+#define INCLUDE_xEventGroupSetBitFromISR                         %>50 0 /* 1: function is included; 0: do not include function */
+#define INCLUDE_xTimerPendFunctionCall                           %>50 0 /* 1: function is included; 0: do not include function */
 %endif
 %if defined(UseDaemonTaskStartupHook) & %UseDaemonTaskStartupHook='yes'
 #define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 1 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
@@ -472,9 +476,9 @@ point support. */
 %endif
 %- --------------------------------------------------------------------
 %if defined(xTaskResumeFromISR)
-#define INCLUDE_xTaskResumeFromISR                           %>50 1
+#define INCLUDE_xTaskResumeFromISR                               %>50 1
 %else
-#define INCLUDE_xTaskResumeFromISR                           %>50 0
+#define INCLUDE_xTaskResumeFromISR                               %>50 0
 %endif
 %- --------------------------------------------------------------------
 %if defined(eTaskGetState)

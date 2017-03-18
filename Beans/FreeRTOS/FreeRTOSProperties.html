@@ -351,10 +351,6 @@ There are 4 options:<br />
 <b>configASSERT</b></a> - If set to 'yes', FreeRTOSConfig.h will have the configASSERT() macro defined. lt is used in different places in the Kernel to verify proper operation. For better code density/speed you might set this option to 'no'.
 </li>
 <li>
-<a name="EnableGDBDebugHelper">
-<b>Enable GDB Debug Helper</b></a> - If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. 
-</li>
-<li>
 <a name="UseApplicationTaskTags">
 <b>Application Task Tags</b></a> - This configures configUSE_APPLICATION_TASK_TAG. If enabled, the methodsxTaskGetApplicationTaskTag(), vTaskSetApplicationTaskTag() and xTaskCallApplicationTaskHook() are enabled.
 </li>
@@ -365,6 +361,28 @@ There are 4 options:<br />
 <li>
 <a name="UseTraceFacility">
 <b>Use Trace Facility</b></a> - Configures configUSE_TRACE_FACILITY. Set to 1 if you wish the trace visualisation functionality to be available, or 0 if the trace functionality is not going to be used. If you use the trace functionality a trace buffer must also be provided. If using Trace Hooks, this property is automatically enabled..
+</li>
+<li>
+<a name="DebugHelpersGrop">
+<b>Debug Helpers</b></a> - Several helpers to make debugging easier. For smaller footprint, turn them off.
+<ul>
+  <li>
+  <a name="EnableGDBDebugHelper">
+  <b>Enable GDB Debug Helper</b></a> - If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. 
+  </li>
+  <li>
+  <a name="uxTopUsedPriority">
+  <b>uxTopUsedPriority</b></a> - Configures configUSE_TOP_USED_PRIORITY. OpenOCD Thread Aware debugging needs the variable uxTopUsedPriority present.
+  </li>
+  <li>
+  <a name="freeRTOSMemorySchemeConstant">
+  <b>Heap Indication Constant</b></a> - Configures configHEAP_SCHEME_IDENTIFICATION. If enabled, a constant named 'freeRTOSMemoryScheme' is added to indicate the heap scheme used. This variable can be used by the NXP FreeRTOS Kernel Awareness plugin to identify the heap scheme used.
+  </li>
+  <li>
+  <a name="TaskCAdditions">
+  <b>Task C Additions</b></a> - Configures configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H, configUSE_TRACE_FACILITY should be enabled too. If enabled, it includes the file  freertos_tasks_c_additions.h at the end of task.c. That extra information is for example used by the debugger to locate RTOS releated information.
+  </li>
+</ul>
 </li>
 <li>
 <a name="SeggerSystemViewerGroup">

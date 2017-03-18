@@ -1871,6 +1871,11 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
+#if configHEAP_SCHEME_IDENTIFICATION
+  /* special variable identifying the used heap scheme */
+  const uint8_t freeRTOSMemoryScheme = configUSE_HEAP_SCHEME;
+#endif
+
 %if defined(defaultvApplicationGetIdleTaskMemory) & defaultvApplicationGetIdleTaskMemory='yes'
 #if configSUPPORT_STATIC_ALLOCATION
 /* static memory allocation for the IDLE task */
@@ -4757,6 +4762,25 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %endif
    /*!< 1: enable special GDB stack backtrace debug helper; 0: disabled */
 #endif
+
+#ifndef configHEAP_SCHEME_IDENTIFICATION
+%if defined(freeRTOSMemorySchemeConstant) & %freeRTOSMemorySchemeConstant='yes'
+  #define configHEAP_SCHEME_IDENTIFICATION                       %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY))
+%else
+  #define configHEAP_SCHEME_IDENTIFICATION                       %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY))
+%endif
+   /*!< 1: use constant freeRTOSMemoryScheme to identify memory scheme; 0: no constant used */
+#endif
+
+#ifndef configUSE_TOP_USED_PRIORITY
+%if defined(uxTopUsedPriority) & %uxTopUsedPriority='yes'
+  #define configUSE_TOP_USED_PRIORITY                            %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY))
+%else
+  #define configUSE_TOP_USED_PRIORITY                            %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY))
+%endif
+   /*!< 1: Makes sure uxTopUsedPriority is present (needed for OpenOCD thread aware debugging); 0: no special reference to uxTopUsedPriority */
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

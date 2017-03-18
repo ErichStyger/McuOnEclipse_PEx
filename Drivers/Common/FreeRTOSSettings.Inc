@@ -10,12 +10,13 @@
 %endif %- KinetisSDKGroup
 %;**%>12 Custom Port %>60: %get(CustomPortGroup,Text)
 %;**%>14 Compiler %>60: %get(configCOMPILER,Text)
-%;**%>14 Static Sources %>60: %get(StaticSourcesEnabled,Text)
+%;**%>14 Source Folders %>60: %get(StaticSourcesEnabled,Text)
 %if %get(StaticSourcesEnabled, Bool) = 'yes'
 %;**%>16 Source Folder %>60: %get(RTOSSrcFolderName,Text)
 %;**%>16 Header Folder %>60: %get(RTOSHeaderFolderName,Text)
 %;**%>16 Port Folder %>60: %get(RTOSPortFolderName,Text)
 %;**%>16 MemMang Folder %>60: %get(RTOSMemMangFolderName,Text)
+%;**%>16 Common Folder %>60: %get(RTOSCommonFolderName,Text)
 %;**%>16 Config Folder %>60: %get(RTOSConfigFolderName,Text)
 %;**%>16 Manual Clock Values %>60: %get(UseManualClockValues,Text)
 %if %get(UseManualClockValues, Bool) = 'yes'
@@ -33,10 +34,13 @@
 %;**%>12 Classic CodeWarrior %>60: %get(IsClassicCW,Text)
 %;**%>12 Disabled Interrupts in Startup %>60: %get(DisabledInterruptsInStartup,Text)
 %;**%>12 configASSERT %>60: %get(configASSERTdefined,Text)
-%;**%>12 Enable GDB Debug Helper %>60: %get(EnableGDBDebugHelper,Text)
 %;**%>12 Application Task Tags %>60: %get(UseApplicationTaskTags,Text)
 %;**%>12 Thread Local Storage Pointers %>60: %get(NumThreadLocalStoragePointers,Text)
 %;**%>12 Use Trace Facility %>60: %get(UseTraceFacility,Text)
+%;**%>12 Debug Helpers %>60: %get(DebugHelpersGrop,Text)
+%;**%>14 Enable GDB Debug Helper %>60: %get(EnableGDBDebugHelper,Text)
+%;**%>14 uxTopUsedPriority %>60: %get(uxTopUsedPriority,Text)
+%;**%>14 Heap Indication Constant %>60: %get(freeRTOSMemorySchemeConstant,Text)
 %;**%>12 Segger System Viewer Trace %>60: %get(SeggerSystemViewerGroup,Text)
 %if %get(SeggerSystemViewerGroup, Bool) = 'yes'
 %;**%>14 Segger System Viewer %>60: %get(SeggerSystemViewer,Text)
@@ -76,13 +80,14 @@
 %;**%>16 SWI Number %>60: %get(ColdFireV2SWInumber,Text)
 %else %- ColdFireV2CPUSpecific
 %endif %- ColdFireV2CPUSpecific
-%;**%>14 Kinetis %>60: %get(KinetisCPUSpecific,Text)
+%;**%>14 ARM (Kinetis) %>60: %get(KinetisCPUSpecific,Text)
 %if %get(KinetisCPUSpecific, Bool) = 'yes'
 %;**%>16 ARM Family %>60: %get(ARMFamilyType,Text)
 %;**%>16 Max SysCall Interrupt Priority %>60: %get(KinetisLibraryMaxInterruptPriority,Text)
 %;**%>16 RTOS Interrupt Priority %>60: %get(KinetisLibraryLowestInterruptPriority,Text)
 %;**%>16 Lowest Interrupt Priority %>60: %get(ARMLowestInterruptPriority,Text)
 %;**%>16 Compiler Optimization Level %>60: %get(CompilerOptimizationLevel,Text)
+%;**%>16 MPU %>60: %get(useMPUsupport,Text)
 %;**%>16 SysTick %>60: %get(useARMSysTickTimer,Text)
 %if %get(useARMSysTickTimer, Bool) = 'yes'
 %;**%>18 Core Clock %>60: %get(useARMSysTickUseCoreClock,Text)

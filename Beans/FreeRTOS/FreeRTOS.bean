@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.530</Version>
+    <Version>01.537</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -380,24 +380,6 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
     </Property>
     <Property>
       <TBoolItem>
-        <Name>Enable GDB Debug Helper</Name>
-        <Symbol>EnableGDBDebugHelper</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. </Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
         <Name>Application Task Tags</Name>
         <Symbol>UseApplicationTaskTags</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
@@ -448,6 +430,92 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
         <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Debug Helpers</Name>
+        <Symbol>DebugHelpersGrop</Symbol>
+        <Hint>Several helpers to make debugging easier. For smaller footprint, turn them off.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Enable GDB Debug Helper</Name>
+              <Symbol>EnableGDBDebugHelper</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. </Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>uxTopUsedPriority</Name>
+              <Symbol>uxTopUsedPriority</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configUSE_TOP_USED_PRIORITY. OpenOCD Thread Aware debugging needs the variable uxTopUsedPriority present.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Heap Indication Constant</Name>
+              <Symbol>freeRTOSMemorySchemeConstant</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configHEAP_SCHEME_IDENTIFICATION. If enabled, a constant named 'freeRTOSMemoryScheme' is added to indicate the heap scheme used. This variable can be used by the NXP FreeRTOS Kernel Awareness plugin to identify the heap scheme used.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Task C Additions</Name>
+              <Symbol>TaskCAdditions</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H, configUSE_TRACE_FACILITY should be enabled too. If enabled, it includes the file  freertos_tasks_c_additions.h at the end of task.c. That extra information is for example used by the debugger to locate RTOS releated information.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TBoolGrupItem>
