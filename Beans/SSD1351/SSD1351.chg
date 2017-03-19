@@ -12,10 +12,20 @@
     %set SWSPIgroup Value Enabled
   %endif
 %endif
-%if %Orientation='landscape' | %Orientation='landscape180'
-  %set Width Value 96
-  %set Height Value 96
-%else
-  %set Width Value 96
-  %set Height Value 96
+%if %displayType='96x96'
+  %if %Orientation='landscape' | %Orientation='landscape180'
+    %set Width Value 96
+    %set Height Value 96
+  %else
+    %set Width Value 96
+    %set Height Value 96
+  %endif
+%elif %displayType='128x128'
+  %if %Orientation='landscape' | %Orientation='landscape180'
+    %set Width Value 128
+    %set Height Value 128
+  %else
+    %set Width Value 128
+    %set Height Value 128
+  %endif
 %endif

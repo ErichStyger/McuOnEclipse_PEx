@@ -20,36 +20,17 @@
     <Type>
       <Type>TEnumSpec</Type>
       <Name>typeDisplayType</Name>
-      <Items lines_count="3">
-        <Line>LPH7366</Line>
-        <Line>LPH7677</Line>
-        <Line>LPH7779</Line>
-      </Items>
-      <Hints lines_count="3">
-        <Line>Nokia 5110, 5120, 5130, 5160, 6110, 6150</Line>
-        <Line>Nokia 3210, 5510</Line>
-        <Line>Nokia 3310, 3315, 3330, 3350, 3410</Line>
-      </Hints>
-      <Defines lines_count="3">
-        <Line>LPH7366</Line>
-        <Line>LPH7677</Line>
-        <Line>LPH7779</Line>
-      </Defines>
-    </Type>
-    <Type>
-      <Type>TEnumSpec</Type>
-      <Name>typeDisplayVoltage</Name>
       <Items lines_count="2">
-        <Line>V3</Line>
-        <Line>V5</Line>
+        <Line>96x96</Line>
+        <Line>128x128</Line>
       </Items>
       <Hints lines_count="2">
-        <Line>3.0-3.3V display supply voltage</Line>
-        <Line>5.0V display supply voltage</Line>
+        <Line>e.g. display used in Hexiwear</Line>
+        <Line>e.g. Adafruit 1.5" Color OLED (#1431)</Line>
       </Hints>
       <Defines lines_count="2">
-        <Line>V3</Line>
-        <Line>V5</Line>
+        <Line>96x96</Line>
+        <Line>128x128</Line>
       </Defines>
     </Type>
     <Type>
