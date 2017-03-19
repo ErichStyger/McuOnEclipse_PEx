@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.537</Version>
+    <Version>01.539</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -511,6 +511,24 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Record Stack High Address</Name>
+              <Symbol>RecordStackHighAddress</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This configures configRECORD_STACK_HIGH_ADDRESS. If enabled, gives the FreeRTOS Kernel Awareness access to the stack high address. Disable for better code efficiency and less RAM usage.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
@@ -1171,24 +1189,6 @@ Tasks that share the same priority will time slice. Assuming none of the tasks g
               <ChangeValueIntoRange>true</ChangeValueIntoRange>
               <RuntimeProperty>false</RuntimeProperty>
             </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Record Stack High Address</Name>
-              <Symbol>RecordStackHighAddress</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>This configures configRECORD_STACK_HIGH_ADDRESS. If enabled, gives the FreeRTOS Kernel Awareness access to the stack high address. Disable for better code efficiency and less RAM usage.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>

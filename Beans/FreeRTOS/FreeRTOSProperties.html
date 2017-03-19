@@ -382,6 +382,10 @@ There are 4 options:<br />
   <a name="TaskCAdditions">
   <b>Task C Additions</b></a> - Configures configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H, configUSE_TRACE_FACILITY should be enabled too. If enabled, it includes the file  freertos_tasks_c_additions.h at the end of task.c. That extra information is for example used by the debugger to locate RTOS releated information.
   </li>
+  <li>
+  <a name="RecordStackHighAddress">
+  <b>Record Stack High Address</b></a> - This configures configRECORD_STACK_HIGH_ADDRESS. If enabled, gives the FreeRTOS Kernel Awareness access to the stack high address. Disable for better code efficiency and less RAM usage.
+  </li>
 </ul>
 </li>
 <li>
@@ -640,10 +644,6 @@ Tasks that share the same priority will time slice. Assuming none of the tasks g
   <li>
   <a name="MinimalStackSize">
   <b>Minimal Stack Size</b></a> - The size of the stack used by the idle task (configMINIMAL_STACK_SIZE flag). Generally this should not be reduced from the value set in the FreeRTOSConfig.h file provided with the demo application for the port you are using. Note that the size is in stack units (portSTACK_TYPE), which is 4 bytes for a 32bit core like ColdFire and ARM/Kinetis and 1 byte for HCS08. Keep in mind that there is the IDLE task too which needs stack plus the task descriptor block.
-  </li>
-  <li>
-  <a name="RecordStackHighAddress">
-  <b>Record Stack High Address</b></a> - This configures configRECORD_STACK_HIGH_ADDRESS. If enabled, gives the FreeRTOS Kernel Awareness access to the stack high address. Disable for better code efficiency and less RAM usage.
   </li>
   <li>
   <a name="MaxPriority">
