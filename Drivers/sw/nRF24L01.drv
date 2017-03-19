@@ -72,13 +72,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -95,8 +91,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -107,14 +101,6 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-%if defined(IRQPinEnabled) & %IRQPinEnabled='yes'
-#define %'ModuleName'%.IRQ_PIN_ENABLED   1
-  /*!< IRQ pin is enabled */
-%else
-#define %'ModuleName'%.IRQ_PIN_ENABLED   0
-  /*!< no IRQ pin or not enabled */
-%endif
-
 /* if having multiple users on the SPI bus, enable bus sharing/switching */
 %if defined(SwitchBusEnabled) & SwitchBusEnabled='yes'
   #define %'ModuleName'%.SWITCH_BUS   1
@@ -464,7 +450,7 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteRegisterData
 %ifdef WriteRegisterData
-void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize);
+void %'ModuleName'%.%WriteRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize);
 %define! Parreg
 %define! Parbuf
 %define! ParbufSize
@@ -846,10 +832,8 @@ void %OnDeactivate(void);
 
 /* MODULE %ModuleName. */
 
-%for var from EventModules
-#include "%var.h"
-%endfor
 #include "%'ModuleName'.h"
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -902,16 +886,11 @@ void %OnDeactivate(void);
 #define %'ModuleName'%.SPI_SetBaudRateMode(m)         %@SPI@'ModuleName'%.SetBaudRateMode(m)
 %endif
 
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & %UseMutex='yes'
-#define %'ModuleName'%.CONFIG_USE_MUTEX    1
-%else
-#define %'ModuleName'%.CONFIG_USE_MUTEX    0
-%endif
-
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   #include "FreeRTOS.h"
+  #include "semphr.h"
 
-  static xSemaphoreHandle %'ModuleName'%.Mutex = NULL; /* Mutex to allow mutual exclusive access to the bus */
+  static SemaphoreHandle_t %'ModuleName'%.Mutex = NULL; /* Mutex to allow mutual exclusive access to the bus */
 #endif
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -1104,9 +1083,7 @@ void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
@@ -1114,9 +1091,7 @@ void %'ModuleName'%.%WriteRegister(uint8_t reg, uint8_t val)
   (void)SPIWriteRead(%'ModuleName'%.W_REGISTER|reg); /* write register command */
   (void)SPIWriteRead(val); /* write value */
   %'ModuleName'%.CSN_HIGH(); /* end command sequence */
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1140,9 +1115,7 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
@@ -1150,9 +1123,7 @@ uint8_t %'ModuleName'%.%ReadRegister(uint8_t reg)
   (void)SPIWriteRead(reg);
   val = SPIWriteRead(0); /* write dummy */
   %'ModuleName'%.CSN_HIGH();
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1176,9 +1147,7 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
@@ -1186,9 +1155,7 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
   (void)SPIWriteRead(%'ModuleName'%.R_REGISTER|reg);
   SPIWriteReadBuffer(buf, buf, bufSize);
   %'ModuleName'%.CSN_HIGH();
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1206,14 +1173,12 @@ void %'ModuleName'%.%ReadRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize
 %define! Parbuf
 %define! ParbufSize
 %include Common\nRF24L01WriteRegisterData.Inc
-void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
+void %'ModuleName'%.%WriteRegisterData(uint8_t reg, uint8_t *buf, uint8_t bufSize)
 {
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
@@ -1221,9 +1186,7 @@ void %'ModuleName'%.%WriteRegisterData(byte reg, uint8_t *buf, uint8_t bufSize)
   (void)SPIWriteRead(%'ModuleName'%.W_REGISTER|reg); /* not masking registers as it would conflict with %'ModuleName'%.W_TX_PAYLOAD */
   SPIWriteBuffer(buf, bufSize);
   %'ModuleName'%.CSN_HIGH();
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1245,18 +1208,14 @@ uint8_t %'ModuleName'%.%WriteRead(uint8_t val)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
   %'ModuleName'%.CSN_LOW();
   val = SPIWriteRead(val);
   %'ModuleName'%.CSN_HIGH();
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1278,18 +1237,14 @@ void %'ModuleName'%.%Write(uint8_t val)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
   %'ModuleName'%.CSN_LOW();
   (void)SPIWriteRead(val);
   %'ModuleName'%.CSN_HIGH();
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1336,9 +1291,7 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(%'ModuleName'%.Mutex, portMAX_DELAY);
 #endif
-%if defined(OnActivate)
-  %OnActivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.SWITCH_BUS
   %'ModuleName'%.ConfigureSPI(); /* change bus speed */
 #endif
@@ -1346,9 +1299,7 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void)
   status = SPIWriteRead(%'ModuleName'%.W_REGISTER|%'ModuleName'%.STATUS); /* get status */
   (void)SPIWriteRead(status&(%'ModuleName'%.STATUS_RX_DR|%'ModuleName'%.STATUS_TX_DS|%'ModuleName'%.STATUS_MAX_RT)); /* reset IRQ Bits */
   %'ModuleName'%.CSN_HIGH(); /* end command sequence */
-%if defined(OnDeactivate)
-  %OnDeactivate(); /* call user event */
-%endif
+  %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK(); /* call user event */
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(%'ModuleName'%.Mutex);
 #endif
@@ -1993,3 +1944,65 @@ void %OnDeactivate(void)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for Nordic Semiconductor nRF24L01+ transceiver
+ *
+ * This header file is used to configure settings of the nRF24L01 module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_IRQ_PIN_ENABLED
+%if defined(IRQPinEnabled) & %IRQPinEnabled='yes'
+  void %@IRQ@OnInterrupt(void); /* prototype for interrupt handler */
+  #define %'ModuleName'%.CONFIG_IRQ_PIN_ENABLED  1
+%else
+  void RF1_OnInterrupt(void); /* prototype for interrupt handler */
+  #define %'ModuleName'%.CONFIG_IRQ_PIN_ENABLED  0
+%endif
+    /*!< 1: IRQ pin is enabled, 0: No IRQ pin available */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK
+%if defined(OnActivate)
+  void %OnActivate(void); /* prototype */
+  #define %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK()  %OnActivate()
+%else
+  void RF1_OnActivate(void); /* prototype */
+  #define %'ModuleName'%.CONFIG_ON_ACTIVATE_CALLBACK()  /* RF1_OnActivate() */
+%endif
+    /*!< User callback called before using device */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK
+%if defined(OnDeactivate)
+  void %OnDeactivate(void); /* prototype */
+  #define %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK()  %OnDeactivate()
+%else
+  void RF1_Deactivate(void); /* prototype */
+  #define %'ModuleName'%.CONFIG_ON_DEACTIVATE_CALLBACK()  /* RF1_OnDeactivate() */
+%endif
+    /*!< User callback called after using device */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_MUTEX
+%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & %UseMutex='yes'
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  1
+%else
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  0
+%endif
+    /*!< 1: Use FreeRTOS Mutex, 0: Do not use FreeRTOS mutex */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------

@@ -77,7 +77,37 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
+%-BW_CUSTOM_INCLUDE_START_H
+%- Write your own includes here ...
+%-   Example:
+%-     #include "header_name.h"
+%-
+%-BW_CUSTOM_INCLUDE_END_H
+%-
+%-BW_METHOD_MACROS_START
+%-BW_METHOD_MACROS_END
+
+%-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+%-ENDUSRTYPES
+%-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
+%- No constants defined in the BeanWizard for this bean
+%-BW_BEAN_CONSTANTS_END
+%-BW_CUSTOM_USERTYPE_START
+%- Write your own types here ...
+%-  Example:
+%-    typedef int TMyInteger;
+%-
+
+%-BW_CUSTOM_USERTYPE_END
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+%-BW_DEFINITION_START
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -86,6 +116,7 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetFastMode
 %ifdef SetFastMode
 void %'ModuleName'%.%SetFastMode(void);
@@ -93,6 +124,7 @@ void %'ModuleName'%.%SetFastMode(void);
 
 %endif %- SetFastMode
 %-BW_METHOD_END SetFastMode
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetSlowMode
 %ifdef SetSlowMode
 void %'ModuleName'%.%SetSlowMode(void);
@@ -100,24 +132,7 @@ void %'ModuleName'%.%SetSlowMode(void);
 
 %endif %- SetSlowMode
 %-BW_METHOD_END SetSlowMode
-%ifdef SharedModules
-/*Include shared modules, which are used for whole project*/
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
-
-%-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
-%-ENDUSRTYPES
-%-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-%-ENDUSRTYPES
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Write_ReadDummy
 %ifdef Write_ReadDummy
 void %'ModuleName'%.%Write_ReadDummy(uint8_t val);
@@ -126,6 +141,7 @@ void %'ModuleName'%.%Write_ReadDummy(uint8_t val);
 
 %endif %- Write_ReadDummy
 %-BW_METHOD_END Write_ReadDummy
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN RecvChar
 %ifdef RecvChar
 uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr);
@@ -135,6 +151,7 @@ uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr);
 
 %endif %- RecvChar
 %-BW_METHOD_END RecvChar
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SendChar
 %ifdef SendChar
 uint8_t %'ModuleName'%.%SendChar(uint8_t val);
@@ -144,6 +161,7 @@ uint8_t %'ModuleName'%.%SendChar(uint8_t val);
 
 %endif %- SendChar
 %-BW_METHOD_END SendChar
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN CharsInRxBuf
 %ifdef CharsInRxBuf
 uint8_t %'ModuleName'%.%CharsInRxBuf(void);
@@ -152,6 +170,7 @@ uint8_t %'ModuleName'%.%CharsInRxBuf(void);
 
 %endif %- CharsInRxBuf
 %-BW_METHOD_END CharsInRxBuf
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN CharsInTxBuf
 %ifdef CharsInTxBuf
 #define %'ModuleName'%.%CharsInTxBuf()  0 /* we always directly send the characters without buffering */
@@ -160,6 +179,7 @@ uint8_t %'ModuleName'%.%CharsInRxBuf(void);
 
 %endif %- CharsInTxBuf
 %-BW_METHOD_END CharsInTxBuf
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetShiftClockPolarity
 %ifdef SetShiftClockPolarity
 uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge);
@@ -169,6 +189,7 @@ uint8_t %'ModuleName'%.%SetShiftClockPolarity(uint8_t Edge);
 
 %endif %- SetShiftClockPolarity
 %-BW_METHOD_END SetShiftClockPolarity
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetIdleClockPolarity
 %ifdef SetIdleClockPolarity
 uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level);
@@ -178,15 +199,24 @@ uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level);
 
 %endif %- SetIdleClockPolarity
 %-BW_METHOD_END SetIdleClockPolarity
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
 %ifdef Init
 void %'ModuleName'_Init(void);
 %include Common\GeneralInternal.Inc (Init)
 
 %endif %- Init
 
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_DEFINITION_END
 /* END %ModuleName. */
 
-#endif /* ifndef __%ModuleName */
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+
+#endif /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
 %-
 %IMPLEMENTATION
@@ -196,11 +226,17 @@ void %'ModuleName'_Init(void);
 
 
 /* MODULE %ModuleName. */
-
 %for var from EventModules
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+
+/* Include inherited components */
+%ifdef InhrSymbolList
+  %for var from InhrSymbolList
+#include "%@%var@ModuleName.h"
+  %endfor
+%endif
 
 %-
 %if (ClockEdge='rising' & SKpolarity='Low') | (ClockEdge='falling' & SKpolarity='High')
@@ -470,7 +506,9 @@ uint8_t %'ModuleName'%.%SetIdleClockPolarity(uint8_t Level)
 void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+%if defined(Din)
   %@Din@'ModuleName'%.Init();
+%endif
   %@Dout@'ModuleName'%.Init();
   %@Clk@'ModuleName'%.Init();
 #endif
@@ -510,7 +548,9 @@ void %'ModuleName'%.%Init(void)
 void %'ModuleName'%.%Deinit(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+%if defined(Din)
   %@Din@'ModuleName'%.Deinit();
+%endif
   %@Dout@'ModuleName'%.Deinit();
   %@Clk@'ModuleName'%.Deinit();
 #endif
@@ -548,9 +588,7 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-% ClockEdge='falling')
-
-#if %'ModuleName'%.CONFIG_CLOCK_POLARITY
+#ifndef %'ModuleName'%.CONFIG_CLOCK_POLARITY
 %if defined(SKpolarity) & SKpolarity='Low'
   #define %'ModuleName'%.CONFIG_CLOCK_POLARITY  0
 %else
@@ -559,13 +597,13 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 0: clock is low if idle; 1: clock is high if idle */
 #endif
 
-#if %'ModuleName'%.CONFIG_CLOCK_EDGE
+#ifndef %'ModuleName'%.CONFIG_CLOCK_EDGE
 %if defined(ClockEdge) & ClockEdge='falling'
   #define %'ModuleName'%.CONFIG_CLOCK_EDGE  0
 %else
   #define %'ModuleName'%.CONFIG_CLOCK_EDGE  1
 %endif
-    /*!< 0: data is shifed on falling clock edge; 1: data is shifted on rising clock edge */
+    /*!< 0: data is shifted on falling clock edge; 1: data is shifted on rising clock edge */
 #endif
 
 

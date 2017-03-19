@@ -193,7 +193,7 @@ static uint8_t CheckRx(void) {
 #endif
   status = %@nRF24L01p@'ModuleName'%.GetStatusClrIRQ();
   hasRx = (status&%@nRF24L01p@'ModuleName'%.STATUS_RX_DR)!=0;
-#if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
+#if !%@nRF24L01p@'ModuleName'%.CONFIG_IRQ_PIN_ENABLED
 #if 1 /* experimental */
   if (!hasRx) { /* interrupt flag not set, check if we have otherwise data */
     (void)%@nRF24L01p@'ModuleName'%.GetFifoStatus(&status);
@@ -267,7 +267,7 @@ static void RADIO_HandleStateMachine(void) {
         break; /* process switch again */
   
       case RADIO_READY_FOR_TX_RX_DATA: /* we are ready to receive/send data data */
-#if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
+#if !%@nRF24L01p@'ModuleName'%.CONFIG_IRQ_PIN_ENABLED
         %@nRF24L01p@'ModuleName'%.PollInterrupt();
 #if 1 /* experimental */
         if (!RADIO_isrFlag) { /* interrupt flag not set, check if we have otherwise data */
@@ -325,7 +325,7 @@ static void RADIO_HandleStateMachine(void) {
         return;
   
       case RADIO_WAITING_DATA_SENT:
-#if !%@nRF24L01p@'ModuleName'%.IRQ_PIN_ENABLED
+#if !%@nRF24L01p@'ModuleName'%.CONFIG_IRQ_PIN_ENABLED
         %@nRF24L01p@'ModuleName'%.PollInterrupt();
 #else /* experimental */
         if (!RADIO_isrFlag) { /* check if we missed an interrupt? */

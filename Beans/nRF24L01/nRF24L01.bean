@@ -4,7 +4,7 @@
     <Name>nRF24L01</Name>
     <Description>Driver for the Nordic nRF241L01+ Wireless Transceiver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.096</Version>
+    <Version>01.101</Version>
     <Icon>nRF24L01</Icon>
     <TypesFiles>PE,nRF24L01\nRF24L01</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -35,6 +35,20 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>nRF24L01\sdk</TypeSpec>
+        <Hint>Link to the SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TInhrLinkItem>
@@ -546,7 +560,7 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>reg</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Register address</ParHint>
         </Parameter>
@@ -564,7 +578,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte reg, uint8_t *buf, uint8_t bufSize)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t reg, uint8_t *buf, uint8_t bufSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
