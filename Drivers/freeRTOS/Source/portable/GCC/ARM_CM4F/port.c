@@ -2184,7 +2184,7 @@ volatile const int
 #ifdef __GNUC__
 __attribute__((used))
 #endif
-uxTopUsedPriority = configMAX_PRIORITIES;
+uxTopUsedPriority = configMAX_PRIORITIES-1;
 
 #if configGDB_HELPER /* if GDB debug helper is enabled */
 /* Credits to:
