@@ -498,10 +498,10 @@ void %OnGiveLCD(void);
   #define OLED_ROW_OFFSET    (0)
 #endif
 
-#define OLED_CMD_SET_COLUMN ( 0x15 )
-#define OLED_CMD_SET_ROW    ( 0x75 )
+#define OLED_CMD_SET_COLUMN     (0x15)
+#define OLED_CMD_SET_ROW        (0x75)
 
-#define OLED_CMD_STARTLINE (0xA1)
+#define OLED_CMD_STARTLINE      (0xA1)
 
 #define OLED_CMD_WRITERAM       (0x5C)
 #define OLED_CMD_READRAM        (0x5D)
@@ -571,28 +571,22 @@ void %OnGiveLCD(void);
 #define OLED_ADDR_INC_VER (0x01)
 
 /* remap settings */
-#define REMAP_HORIZONTAL_INCREMENT ( 0 )
-#define REMAP_VERTICAL_INCREMENT   ( 1 << 0 )
+#define REMAP_HORIZONTAL_INCREMENT      (0)     /* horizontal address incremented */
+#define REMAP_VERTICAL_INCREMENT        (1<<0)  /* vertical address increment */
 
-#define REMAP_COLUMNS_LEFT_TO_RIGHT ( 0 )
-#define REMAP_COLUMNS_RIGHT_TO_LEFT ( 1 << 1 )
+#define REMAP_COLUMNS_LEFT_TO_RIGHT     (0)     /* column numbering from left to right */
+#define REMAP_COLUMNS_RIGHT_TO_LEFT     (1<<1)  /* column numbering from right to left */
 
-#define REMAP_ORDER_ABC ( 0 )
-#define REMAP_ORDER_CBA ( 1 << 2 )
+#define REMAP_ORDER_ABC                 (0)
+#define REMAP_ORDER_CBA                 (1<<2)
 
-#define REMAP_SCAN_UP_TO_DOWN ( 0 )
-#define REMAP_SCAN_DOWN_TO_UP ( 1 << 4 )
+#define REMAP_SCAN_UP_TO_DOWN           (0)
+#define REMAP_SCAN_DOWN_TO_UP           (1<<4)
 
-#define REMAP_COM_SPLIT_ODD_EVEN_DIS ( 0 )
-#define REMAP_COM_SPLIT_ODD_EVEN_EN  ( 1 << 5 )
+#define REMAP_COM_SPLIT_ODD_EVEN_DIS    (0)
+#define REMAP_COM_SPLIT_ODD_EVEN_EN     (1<<5)
 
-#define REMAP_COLOR_RGB565 ( 1 << 6 )
-
-#if %'ModuleName'%.HW_WIDTH==64
-  #define OLED_REMAP_SETTINGS ( REMAP_ORDER_ABC | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_COLOR_RGB565 | REMAP_COLUMNS_LEFT_TO_RIGHT | REMAP_SCAN_UP_TO_DOWN | REMAP_HORIZONTAL_INCREMENT )
-#else /* for Adafruit 128x128 it has to be CBA (RGB) and right-to-left? */
-  #define OLED_REMAP_SETTINGS ( REMAP_ORDER_CBA | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_COLOR_RGB565 | REMAP_COLUMNS_RIGHT_TO_LEFT | REMAP_SCAN_UP_TO_DOWN | REMAP_HORIZONTAL_INCREMENT )
-#endif
+#define REMAP_COLOR_RGB565              (1<<6) /* 5 bits for red, 6 for green and 5 for blue */
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -702,31 +696,16 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       r0 = y0+OLED_ROW_OFFSET; r1 = y1+OLED_ROW_OFFSET;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT180:
-    #if 0
-      x1_x0 = (word)(((%'ModuleName'%.HW_WIDTH-1-x0)<<8)|(%'ModuleName'%.HW_WIDTH-1-x1));%>40/* pack X-Values into one word */
-      v_y0 = (word)(%'ModuleName'%.HW_HEIGHT-1-y1);
-      v_y1 = (word)(%'ModuleName'%.HW_HEIGHT-1-y0);
-      AddrX = (word)(%'ModuleName'%.HW_WIDTH-1-x0);
-      AddrY = (word)(%'ModuleName'%.HW_HEIGHT-1-y0);
-      #endif
+      c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
+      r0 = %'ModuleName'%.HW_HEIGHT-1-y1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-y0+OLED_ROW_OFFSET;
       break;
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
-    #if 0
-      x1_x0 = (word)(((%'ModuleName'%.HW_WIDTH-1-y0)<<8)|(%'ModuleName'%.HW_WIDTH-1-y1));%>40/* pack X-Values into one word */
-      v_y0 = x0;
-      v_y1 = x1;
-      AddrX = (word)(%'ModuleName'%.HW_WIDTH-1-y0);
-      AddrY = x0;
-      #endif
+      c0 = LCD1_HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = LCD1_HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
+      r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
       break;
     case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
-    #if 0
-      x1_x0 = (word)((y1<<8)|y0);                                %>40/* pack X-Values into one word */
-      v_y0 = (word)(%'ModuleName'%.HW_HEIGHT-1-x1);
-      v_y1 = (word)(%'ModuleName'%.HW_HEIGHT-1-x0);
-      AddrX = y0;
-      AddrY = (word)(%'ModuleName'%.HW_HEIGHT-1-x0);
-      #endif
+      c0 = y0+OLED_COLUMN_OFFSET; c1 = y1+OLED_COLUMN_OFFSET;
+      r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
       break;
   } /* switch */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
@@ -735,25 +714,16 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
   r0 = y0+OLED_ROW_OFFSET; r1 = y1+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
   /* Portrait mode, rotated 180° */
-  x1_x0 = (word)(((%'ModuleName'%.HW_WIDTH-1-x0)<<8)|(%'ModuleName'%.HW_WIDTH-1-x1));%>40/* pack X-Values into one word */
-  v_y0 = (word)(%'ModuleName'%.HW_HEIGHT-1-y1);
-  v_y1 = (word)(%'ModuleName'%.HW_HEIGHT-1-y0);
-  AddrX = (word)(%'ModuleName'%.HW_WIDTH-1-x0);
-  AddrY = (word)(%'ModuleName'%.HW_HEIGHT-1-y0);
+  c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
+  r0 = %'ModuleName'%.HW_HEIGHT-1-y1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-y0+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
   /* Landscape mode, rotated right 90° */
-  x1_x0 = (word)(((%'ModuleName'%.HW_WIDTH-1-y0)<<8)|(%'ModuleName'%.HW_WIDTH-1-y1));%>40/* pack X-Values into one word */
-  v_y0 = x0;
-  v_y1 = x1;
-  AddrX = (word)(%'ModuleName'%.HW_WIDTH-1-y0);
-  AddrY = x0;
+  c0 = LCD1_HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = LCD1_HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
+  r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   /* Landscape mode, rotated left 90° */
-  x1_x0 = (word)((y1<<8)|y0);                                    %>40/* pack X-Values into one word */
-  v_y0 = (word)(%'ModuleName'%.HW_HEIGHT-1-x1);
-  v_y1 = (word)(%'ModuleName'%.HW_HEIGHT-1-x0);
-  AddrX = y0;
-  AddrY = (word)(%'ModuleName'%.HW_HEIGHT-1-x0);
+  c0 = y0+OLED_COLUMN_OFFSET; c1 = y1+OLED_COLUMN_OFFSET;
+  r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
 #endif
   /* Set Window */
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_COLUMN);              %>40/* set column command */
@@ -813,8 +783,6 @@ void %'ModuleName'%.%Init(void)
                0xF1,                    DATA_BYTE,
     /* 0xCA */ OLED_CMD_SET_MUX_RATIO,  CMD_BYTE,
                (%'ModuleName'%.HW_WIDTH-1), DATA_BYTE,
-    /* 0xA0 */ OLED_CMD_SET_REMAP,      CMD_BYTE,
-               OLED_REMAP_SETTINGS,     DATA_BYTE, /* Adafruit: 0x74 */
     /* 0x15 */ OLED_CMD_SET_COLUMN,     CMD_BYTE,
                0x00,                    DATA_BYTE,
                (%'ModuleName'%.HW_WIDTH-1), DATA_BYTE,
@@ -874,20 +842,18 @@ void %'ModuleName'%.%Init(void)
       %'ModuleName'%.%WriteData(seq[i].cmd);
     }
   }
-#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
-  #if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
-    %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
-  #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-    %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
-  #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
-    %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
-  #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
-    %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
-  #endif
+#if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
 #endif
-%if ClearDisplayInInit='yes'
+#if %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
   %'ModuleName'%.%Clear();
-%endif
+#endif
 }
 
 %endif %- Init
@@ -965,7 +931,48 @@ void %'ModuleName'%.%CloseWindow(void)
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+
+  uint8_t remap;
   currentOrientation = newOrientation;
+  #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
+    #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
+  #else
+    #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_CBA)
+  #endif
+
+  switch(currentOrientation) {
+    default:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
+      remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_HORIZONTAL_INCREMENT;
+    #else
+      remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
+    #endif
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
+    #else
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_VERTICAL_INCREMENT;
+    #endif
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_HORIZONTAL_INCREMENT;
+    #else
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
+    #endif
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_VERTICAL_INCREMENT;
+    #else
+      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
+    #endif
+      break;
+  } /* switch */
+  %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
+  %'ModuleName'%.WriteData(remap);                 /* remap data */
 #endif
 }
 
@@ -1209,12 +1216,11 @@ void %OnGiveLCD(void)
   /*!< 1: Use SetDisplayOrientation() to change display orientation at runtime; 0: fixed display orientation */
 #endif
 
-/* display orientationt types used in macro below: */
+/* display orientation types used in macro below: */
 #define %'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT      0
 #define %'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180   1
 #define %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE     2
 #define %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180  3
-
 
 #ifndef %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION
  %if %Orientation='portrait'
@@ -1226,12 +1232,21 @@ void %OnGiveLCD(void)
  %elif %Orientation='landscape180'
   #define %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION    %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
  %endif
-  /*!< Fixed display orientation setting, on of:
+  /*!< Fixed display orientation setting, one of:
     %'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
     %'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
     %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
     %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
+%if defined(ClearDisplayInInit) & %ClearDisplayInInit='yes'
+  #define %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT             %>40 (1)
+%else
+  #define %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT             %>40 (0)
+%endif
+  /*!< 1: Clear display at the end of Init(); 0: Do not clear display at the end of Init() */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
