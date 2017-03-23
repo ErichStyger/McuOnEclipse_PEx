@@ -814,8 +814,12 @@ void %'ModuleName'%.%Init(void)
   /* init cycle counter */
 %if defined(CortexTools)
   %@CortexTools@'ModuleName'%.InitCycleCounter();
+  %@CortexTools@'ModuleName'%.ResetCycleCounter();
+  %@CortexTools@'ModuleName'%.EnableCycleCounter();
 %else
   KIN1_InitCycleCounter();
+  KIN1_ResetCycleCounter();
+  KIN1_EnableCycleCounter();
 %endif
 #endif
 }
