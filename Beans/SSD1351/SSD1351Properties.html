@@ -293,6 +293,58 @@ There are 4 options:<br />
 <b>HW</b></a> - Group controlling the hardware settings.
 <ul>
   <li>
+  <a name="SWSPIgroup">
+  <b>SW SPI</b></a> - Group to control the Software SPI.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="SWSPI">
+    <b>SW SPI</b></a> - Software SPI interface
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="LDDHWSPIgroup">
+  <b>LDD HW SPI</b></a> - Using LDD (Logical Device Driver) SPI driver<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="LDDHWSPI">
+    <b>HW SPI</b></a> - SPI communication interface
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="HWSPIgroup">
+  <b>HW SPI</b></a> - This sets up a Hardware SPI (non-LDD) communication<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="HWSPI">
+    <b>HW SPI</b></a> - Hardware SPI interface
+    </li>
+    <li>
+    <a name="HWSPIBaudRateMode">
+    <b>Baud Rate Mode</b></a> - If the HW SPI channel is used with different devices and baud rate, this number specifies the baud rate to be used. 0 is the initial baud rate.
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="SlaveSelectEnabled">
+  <b>Slave Select</b></a> - if we are directly controlling the slave select pin (chip select)<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="SCE">
+    <b>SCE</b></a> - SPI Chip Enable/Select signal (low active)
+    </li>
+  </ul>
+  </li>
+  <li>
   <a name="PowerPinEnabled">
   <b>Power</b></a> - Enable this group if there is a dedicated hardware power up/down pin<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
@@ -314,37 +366,9 @@ The following items are available only if the group is enabled (the value is "En
     <a name="RES">
     <b>Reset</b></a> - Display reset signal (low active)
     </li>
-  </ul>
-  </li>
-  <li>
-  <a name="ParallelInterfaceEnabled">
-  <b>Parallel</b></a> - If communication to the LCD is with a parallel interface.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-  <ul>
     <li>
-    <a name="MiniFlexBusEnabled">
-    <b>mini-FlexBus</b></a> - Using the memory bus or mini-FlexBus. Note that you need to enable and configure the Mini-FlexBus in the CPU properties<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-    <ul>
-      <li>
-      <a name="ALE">
-      <b>ALE</b></a> - Address Latch Enable (ALE) bit of the MiniBus (high active)
-      </li>
-      <li>
-      <a name="FlexBaseAddress">
-      <b>Base Address</b></a> - Specifies the base address to be used. Make sure this corresponds to the Mini-FlexBus settings in the CPU component.
-      </li>
-      <li>
-      <a name="FlexDCMask">
-      <b>D/C Mask</b></a> - The FlexBus mask bit for the D/C pin to the display. This has to be configured as one of the chip selects in the CPU bean.
-      </li>
-      <li>
-      <a name="MiniFlexBusConfiguredInCPUBean">
-      <b>Configured in CPU component</b></a> - Normally the Mini-FlexBus is configured in the CPU component. If not, then the driver generates the initialization code.
-      </li>
-    </ul>
+    <a name="D_C">
+    <b>D_C</b></a> - Data/Command mode select pin. Low level is command mode.
     </li>
   </ul>
   </li>
@@ -354,50 +378,6 @@ The following items are available only if the group is enabled (the value is "En
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
   <ul>
-    <li>
-    <a name="D_C">
-    <b>D_C</b></a> - Data/Command mode select pin. Low level is command mode.
-    </li>
-    <li>
-    <a name="SlaveSelectEnabled">
-    <b>Slave Select</b></a> - if we are directly controlling the slave select pin (chip select)<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-    <ul>
-      <li>
-      <a name="SCE">
-      <b>SCE</b></a> - SPI Chip Enable/Select signal (low active)
-      </li>
-    </ul>
-    </li>
-    <li>
-    <a name="HWSPIgroup">
-    <b>HW SPI</b></a> - This sets up a Hardware SPI communication<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-    <ul>
-      <li>
-      <a name="HWSPI">
-      <b>HW SPI</b></a> - Hardware SPI interface
-      </li>
-      <li>
-      <a name="HWSPIBaudRateMode">
-      <b>Baud Rate Mode</b></a> - If the HW SPI channel is used with different devices and baud rate, this number specifies the baud rate to be used. 0 is the initial baud rate.
-      </li>
-    </ul>
-    </li>
-    <li>
-    <a name="SWSPIgroup">
-    <b>SW SPI</b></a> - Group to control the Software SPI.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-    <ul>
-      <li>
-      <a name="SWSPI">
-      <b>SW SPI</b></a> - Software SPI interface
-      </li>
-    </ul>
-    </li>
   </ul>
   </li>
 </ul>

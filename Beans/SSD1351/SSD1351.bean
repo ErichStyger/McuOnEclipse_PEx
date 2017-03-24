@@ -4,7 +4,7 @@
     <Name>SSD1351</Name>
     <Description>Display driver for the Solomon Systech SSD1351 display (e.g. on Hexwear)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.014</Version>
+    <Version>01.019</Version>
     <Icon>SSD1351</Icon>
     <TypesFiles>PE,SSD1351\SSD1351</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -285,6 +285,155 @@
         <Children>
           <GrupItem>
             <TBoolGrupItem>
+              <Name>SW SPI</Name>
+              <Symbol>SWSPIgroup</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Group to control the Software SPI.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Disabled</Description>
+              <Expanded>No</Expanded>
+              <DefaultValue>false</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>SW SPI</Name>
+                    <Symbol>SWSPI</Symbol>
+                    <TypeSpec>SSD1351\SPI</TypeSpec>
+                    <Hint>Software SPI interface</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>LDD HW SPI</Name>
+              <Symbol>LDDHWSPIgroup</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>Using LDD (Logical Device Driver) SPI driver</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Disabled</Description>
+              <Expanded>No</Expanded>
+              <DefaultValue>false</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>HW SPI</Name>
+                    <Symbol>LDDHWSPI</Symbol>
+                    <TypeSpec>SSD1351\LDDHWSPI</TypeSpec>
+                    <Hint>SPI communication interface</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>HW SPI</Name>
+              <Symbol>HWSPIgroup</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>This sets up a Hardware SPI (non-LDD) communication</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrLinkItem>
+                    <Name>HW SPI</Name>
+                    <Symbol>HWSPI</Symbol>
+                    <TypeSpec>SSD1351\HWSPI</TypeSpec>
+                    <Hint>Hardware SPI interface</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <DefaultValue/>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <SortStyle/>
+                  </TInhrLinkItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>Baud Rate Mode</Name>
+                    <Symbol>HWSPIBaudRateMode</Symbol>
+                    <Hint>If the HW SPI channel is used with different devices and baud rate, this number specifies the baud rate to be used. 0 is the initial baud rate.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>0</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
+              <Name>Slave Select</Name>
+              <Symbol>SlaveSelectEnabled</Symbol>
+              <TypeSpec>typeEnaDis</TypeSpec>
+              <Hint>if we are directly controlling the slave select pin (chip select)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <BoldName>true</BoldName>
+              <EditLine>false</EditLine>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
+              <DefineSymbol>YES_NO</DefineSymbol>
+              <IfDisabled>setNOTHING</IfDisabled>
+              <Children>
+                <GrupItem>
+                  <TInhrItem>
+                    <Name>SCE</Name>
+                    <Symbol>SCE</Symbol>
+                    <TypeSpec>SSD1351\SCE</TypeSpec>
+                    <Hint>SPI Chip Enable/Select signal (low active)</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>-1</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <InhrBeanBaseName>SCEpin</InhrBeanBaseName>
+                    <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+                  </TInhrItem>
+                </GrupItem>
+              </Children>
+            </TBoolGrupItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolGrupItem>
               <Name>Power</Name>
               <Symbol>PowerPinEnabled</Symbol>
               <TypeSpec>typeEnaDis</TypeSpec>
@@ -348,111 +497,23 @@
                     <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
                   </TInhrItem>
                 </GrupItem>
-              </Children>
-            </TBoolGrupItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolGrupItem>
-              <Name>Parallel</Name>
-              <Symbol>ParallelInterfaceEnabled</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>If communication to the LCD is with a parallel interface.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description>Disabled</Description>
-              <Expanded>No</Expanded>
-              <DefaultValue>false</DefaultValue>
-              <DefineSymbol>YES_NO</DefineSymbol>
-              <IfDisabled>setNOTHING</IfDisabled>
-              <Children>
                 <GrupItem>
-                  <TBoolGrupItem>
-                    <Name>mini-FlexBus</Name>
-                    <Symbol>MiniFlexBusEnabled</Symbol>
-                    <TypeSpec>typeEnaDis</TypeSpec>
-                    <Hint>Using the memory bus or mini-FlexBus. Note that you need to enable and configure the Mini-FlexBus in the CPU properties</Hint>
+                  <TInhrItem>
+                    <Name>D_C</Name>
+                    <Symbol>D_C</Symbol>
+                    <TypeSpec>SSD1351\D_C</TypeSpec>
+                    <Hint>Data/Command mode select pin. Low level is command mode.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
-                    <BoldName>true</BoldName>
                     <EditLine>false</EditLine>
-                    <Description>Enabled</Description>
-                    <Expanded>Yes</Expanded>
-                    <DefaultValue>true</DefaultValue>
-                    <DefineSymbol>YES_NO</DefineSymbol>
-                    <IfDisabled>setNOTHING</IfDisabled>
-                    <Children>
-                      <GrupItem>
-                        <TInhrItem>
-                          <Name>ALE</Name>
-                          <Symbol>ALE</Symbol>
-                          <TypeSpec>SSD1351\ALE</TypeSpec>
-                          <Hint>Address Latch Enable (ALE) bit of the MiniBus (high active)</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>false</EditLine>
-                          <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                          <DefaultIndex>-1</DefaultIndex>
-                          <TextValueIndex>false</TextValueIndex>
-                          <RuntimeProperty>false</RuntimeProperty>
-                          <CanDelete>false</CanDelete>
-                          <IconPopup>false</IconPopup>
-                          <InhrBeanBaseName>ALE</InhrBeanBaseName>
-                          <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-                        </TInhrItem>
-                      </GrupItem>
-                      <GrupItem>
-                        <TIntgItem>
-                          <Name>Base Address</Name>
-                          <Symbol>FlexBaseAddress</Symbol>
-                          <Hint>Specifies the base address to be used. Make sure this corresponds to the Mini-FlexBus settings in the CPU component.</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>true</EditLine>
-                          <DefaultValue>4194304</DefaultValue>
-                          <MinValue>0</MinValue>
-                          <MaxValue>-1</MaxValue>
-                          <Bases>BIN DEC HEX</Bases>
-                          <DefaultBase>HEX</DefaultBase>
-                          <ExtraHintDisabled>false</ExtraHintDisabled>
-                          <ChangeValueIntoRange>false</ChangeValueIntoRange>
-                          <RuntimeProperty>false</RuntimeProperty>
-                        </TIntgItem>
-                      </GrupItem>
-                      <GrupItem>
-                        <TIntgItem>
-                          <Name>D/C Mask</Name>
-                          <Symbol>FlexDCMask</Symbol>
-                          <Hint>The FlexBus mask bit for the D/C pin to the display. This has to be configured as one of the chip selects in the CPU bean.</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>true</EditLine>
-                          <DefaultValue>65536</DefaultValue>
-                          <MinValue>0</MinValue>
-                          <MaxValue>-1</MaxValue>
-                          <Bases>DEC HEX</Bases>
-                          <DefaultBase>HEX</DefaultBase>
-                          <ExtraHintDisabled>false</ExtraHintDisabled>
-                          <ChangeValueIntoRange>true</ChangeValueIntoRange>
-                          <RuntimeProperty>false</RuntimeProperty>
-                        </TIntgItem>
-                      </GrupItem>
-                      <GrupItem>
-                        <TBoolItem>
-                          <Name>Configured in CPU component</Name>
-                          <Symbol>MiniFlexBusConfiguredInCPUBean</Symbol>
-                          <TypeSpec>typeYesNo</TypeSpec>
-                          <Hint>Normally the Mini-FlexBus is configured in the CPU component. If not, then the driver generates the initialization code.</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>false</EditLine>
-                          <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                          <DefaultIndex>0</DefaultIndex>
-                          <TextValueIndex>false</TextValueIndex>
-                          <RuntimeProperty>false</RuntimeProperty>
-                          <CanDelete>false</CanDelete>
-                          <IconPopup>false</IconPopup>
-                          <DefaultValue>true</DefaultValue>
-                          <Popup>false</Popup>
-                        </TBoolItem>
-                      </GrupItem>
-                    </Children>
-                  </TBoolGrupItem>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>-1</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <InhrBeanBaseName>D_Cpin</InhrBeanBaseName>
+                    <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+                  </TInhrItem>
                 </GrupItem>
               </Children>
             </TBoolGrupItem>
@@ -472,144 +533,6 @@
               <DefaultValue>true</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
-              <Children>
-                <GrupItem>
-                  <TInhrItem>
-                    <Name>D_C</Name>
-                    <Symbol>D_C</Symbol>
-                    <TypeSpec>SSD1351\D_C</TypeSpec>
-                    <Hint>Data/Command mode select pin. Low level is command mode.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>-1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <InhrBeanBaseName>D_Cpin</InhrBeanBaseName>
-                    <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-                  </TInhrItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolGrupItem>
-                    <Name>Slave Select</Name>
-                    <Symbol>SlaveSelectEnabled</Symbol>
-                    <TypeSpec>typeEnaDis</TypeSpec>
-                    <Hint>if we are directly controlling the slave select pin (chip select)</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <BoldName>true</BoldName>
-                    <EditLine>false</EditLine>
-                    <Description>Enabled</Description>
-                    <Expanded>Yes</Expanded>
-                    <DefaultValue>true</DefaultValue>
-                    <DefineSymbol>YES_NO</DefineSymbol>
-                    <IfDisabled>setNOTHING</IfDisabled>
-                    <Children>
-                      <GrupItem>
-                        <TInhrItem>
-                          <Name>SCE</Name>
-                          <Symbol>SCE</Symbol>
-                          <TypeSpec>SSD1351\SCE</TypeSpec>
-                          <Hint>SPI Chip Enable/Select signal (low active)</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>false</EditLine>
-                          <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                          <DefaultIndex>-1</DefaultIndex>
-                          <TextValueIndex>false</TextValueIndex>
-                          <RuntimeProperty>false</RuntimeProperty>
-                          <CanDelete>false</CanDelete>
-                          <IconPopup>false</IconPopup>
-                          <InhrBeanBaseName>SCEpin</InhrBeanBaseName>
-                          <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-                        </TInhrItem>
-                      </GrupItem>
-                    </Children>
-                  </TBoolGrupItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolGrupItem>
-                    <Name>HW SPI</Name>
-                    <Symbol>HWSPIgroup</Symbol>
-                    <TypeSpec>typeEnaDis</TypeSpec>
-                    <Hint>This sets up a Hardware SPI communication</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <BoldName>true</BoldName>
-                    <EditLine>false</EditLine>
-                    <Description>Enabled</Description>
-                    <Expanded>Yes</Expanded>
-                    <DefaultValue>true</DefaultValue>
-                    <DefineSymbol>YES_NO</DefineSymbol>
-                    <IfDisabled>setNOTHING</IfDisabled>
-                    <Children>
-                      <GrupItem>
-                        <TInhrLinkItem>
-                          <Name>HW SPI</Name>
-                          <Symbol>HWSPI</Symbol>
-                          <TypeSpec>SSD1351\HWSPI</TypeSpec>
-                          <Hint>Hardware SPI interface</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>false</EditLine>
-                          <DefaultValue/>
-                          <CanDelete>false</CanDelete>
-                          <IconPopup>false</IconPopup>
-                          <SortStyle/>
-                        </TInhrLinkItem>
-                      </GrupItem>
-                      <GrupItem>
-                        <TIntgItem>
-                          <Name>Baud Rate Mode</Name>
-                          <Symbol>HWSPIBaudRateMode</Symbol>
-                          <Hint>If the HW SPI channel is used with different devices and baud rate, this number specifies the baud rate to be used. 0 is the initial baud rate.</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>true</EditLine>
-                          <DefaultValue>0</DefaultValue>
-                          <MinValue>0</MinValue>
-                          <MaxValue>-1</MaxValue>
-                          <Bases>DEC</Bases>
-                          <DefaultBase>DEC</DefaultBase>
-                          <ExtraHintDisabled>false</ExtraHintDisabled>
-                          <ChangeValueIntoRange>false</ChangeValueIntoRange>
-                          <RuntimeProperty>false</RuntimeProperty>
-                        </TIntgItem>
-                      </GrupItem>
-                    </Children>
-                  </TBoolGrupItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolGrupItem>
-                    <Name>SW SPI</Name>
-                    <Symbol>SWSPIgroup</Symbol>
-                    <TypeSpec>typeEnaDis</TypeSpec>
-                    <Hint>Group to control the Software SPI.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <ReadOnly>true</ReadOnly>
-                    <BoldName>true</BoldName>
-                    <EditLine>false</EditLine>
-                    <Description>Disabled</Description>
-                    <Expanded>No</Expanded>
-                    <DefaultValue>false</DefaultValue>
-                    <DefineSymbol>YES_NO</DefineSymbol>
-                    <IfDisabled>setNOTHING</IfDisabled>
-                    <Children>
-                      <GrupItem>
-                        <TInhrLinkItem>
-                          <Name>SW SPI</Name>
-                          <Symbol>SWSPI</Symbol>
-                          <TypeSpec>SSD1351\SPI</TypeSpec>
-                          <Hint>Software SPI interface</Hint>
-                          <ItemLevel>BASIC</ItemLevel>
-                          <EditLine>false</EditLine>
-                          <DefaultValue/>
-                          <CanDelete>false</CanDelete>
-                          <IconPopup>false</IconPopup>
-                          <SortStyle/>
-                        </TInhrLinkItem>
-                      </GrupItem>
-                    </Children>
-                  </TBoolGrupItem>
-                </GrupItem>
-              </Children>
             </TBoolGrupItem>
           </GrupItem>
         </Children>

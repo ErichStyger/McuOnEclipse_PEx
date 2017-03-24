@@ -87,6 +87,7 @@
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -139,24 +140,11 @@ typedef enum {
   %'ModuleName'%.ORIENTATION_LANDSCAPE180= 3
 } %'ModuleName'%.DisplayOrientation;
 
-%if ParallelInterfaceEnabled='yes' & MiniFlexBusEnabled='yes'
-#define %'ModuleName'_FLEX_DC_MASK       0x%#l%FlexDCMask        %>40 /* this is the bit to set/clear the D/C pin of the display. This one has to be configured as CSx in the Mini-FlexBus configuration */
-#define %'ModuleName'_FLEX_BASE_ADDRESS  0x%#l%FlexBaseAddress
-#define %'ModuleName'_FLEX_DC_ADDRESS    (%'ModuleName'_FLEX_BASE_ADDRESS|%'ModuleName'_FLEX_DC_MASK)
-%endif
-
 #define %'ModuleName'_WritePixel(data)  \
-%if ParallelInterfaceEnabled='yes' & MiniFlexBusEnabled='yes'
-  (*((word*)%'ModuleName'_FLEX_DC_ADDRESS) = data)
-%else
   %'ModuleName'_WriteDataWord(data)
-%endif
+
 #define %'ModuleName'_ReadPixel(data)  \
-%if SerialInterfaceEnabled='yes'
   0 /* with the serial interface it is NOT possible to read from display memory */
-%elif MiniFlexBusEnabled='yes'
-  (*((word*)%'ModuleName'_FLEX_DC_ADDRESS))
-%endif
 
 %-BW_CUSTOM_USERTYPE_END
 
@@ -435,30 +423,6 @@ void %OnGiveLCD(void);
 - RESET is low active
 - D_C high is data, low is command
 */
-#if 0
-/* device registers with their bit settings */
-#define ENTRY_MODE_REG           0x0011                          %>40/* Entry mode register */
-  /* DFM[1:0] controls the color mode */
-  #define ENTRY_MODE_REG_DFM_POR     (0b11<<13)                  %>40/* POR */
-  #define ENTRY_MODE_REG_DFM_65K     (0b11<<13)                  %>40/* 65k color */
-  #define ENTRY_MODE_REG_DFM_262K    (0b10<<13)                  %>40/* 262k color */
-  /* TY[1:0]: in 262k color mode, 16bit parallel interface, there are 3 types of writing data to the RAM */
-  #define ENTRY_MODE_REG_TY_TYPE_POR (0b00<<6)                   %>40/* POR value */
-  #define ENTRY_MODE_REG_TY_TYPE_A   (0b00<<6)                   %>40/* 262 color, type A */
-  #define ENTRY_MODE_REG_TY_TYPE_B   (0b01<<6)                   %>40/* 262 color, type B */
-  #define ENTRY_MODE_REG_TY_TYPE_C   (0b10<<6)                   %>40/* 262 color, type C */
-  /* ID[1:0] controls the address counter increment/decrement */
-  #define ENTRY_MODE_REG_ID_ADDR_POR       (0b11<<4)             %>40/* POR value */
-  #define ENTRY_MODE_REG_ID_ADDR_HDEC_VDEC (0b00<<4)             %>40/* address counter with horizontal decrement & vertical decrement */
-  #define ENTRY_MODE_REG_ID_ADDR_HINC_VDEC (0b01<<4)             %>40/* address counter with horizontal increment & vertical decrement */
-  #define ENTRY_MODE_REG_ID_ADDR_HDEC_VINC (0b10<<4)             %>40/* address counter with horizontal decrement & vertical increment */
-  #define ENTRY_MODE_REG_ID_ADDR_HINC_VINC (0b11<<4)             %>40/* address counter with horizontal increment & vertical increment */
-  /* AM controls the address counter direction */
-  #define ENTRY_MODE_REG_ID_AM_POR   (0b0<<3)                    %>40/* POR value */
-  #define ENTRY_MODE_REG_ID_AM_HORI  (0b0<<3)                    %>40/* address counter in horizontal direction */
-  #define ENTRY_MODE_REG_ID_AM_VERT  (0b1<<3)                    %>40/* address counter in vertical direction */
-#endif
-
 %if ResetPinEnabled='yes'
 #define RESET_INIT()  /* no special init needed, is done during component init */
 #define RESET_LOW()   %@RES@'ModuleName'%.ClrVal()               %>40 /* RESET signal low (reset is low active) */
@@ -593,6 +557,64 @@ void %OnGiveLCD(void);
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
+%---------------------------------------------------------------------------------------------------
+%ifdef LDDHWSPI
+#define %'ModuleName'%.SPI_Enable()                   (void)%@LDDHWSPI@'ModuleName'%.Enable(%@LDDHWSPI@'ModuleName'%.DeviceData)
+#define %'ModuleName'%.SPI_Disable()                  (void)%@LDDHWSPI@'ModuleName'%.Disable(%@LDDHWSPI@'ModuleName'%.DeviceData)
+#define %'ModuleName'%.SPI_SetSlowMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWSlowBaudRateMode, %HWSlowBaudRateMode) /* max 400kbps */
+#define %'ModuleName'%.SPI_SetFastMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWFastBaudRateMode, %HWFastBaudRateMode) /* max 12Mbps */
+#define %'ModuleName'%.SPI_SetShiftClockPolarity(val) /* not needed for LDD */
+#define %'ModuleName'%.SPI_SetIdleClockPolarity(val)  /* not needed for LDD */
+
+static volatile bool %'ModuleName'%.DataReceivedFlag = FALSE;
+
+void %'ModuleName'%.SPI_WRITE(unsigned char write) {
+  unsigned char dummy;
+
+  %'ModuleName'%.DataReceivedFlag = FALSE;
+  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &dummy, sizeof(dummy));
+  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &write, sizeof(write));
+  while(!%'ModuleName'%.DataReceivedFlag){}
+}
+
+#if %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED
+static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *writeP, uint16_t size) {
+  unsigned char dummy[4];
+  uint16_t writeSize;
+
+  while(size>0) {
+    if (size>sizeof(dummy)) {
+      writeSize = sizeof(dummy);
+    } else {
+      writeSize = size;
+    }
+    %'ModuleName'%.DataReceivedFlag = FALSE;
+    (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &dummy[0], writeSize);
+    (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, writeP, writeSize);
+    while(!%'ModuleName'%.DataReceivedFlag){}
+    size -= writeSize;
+    writeP += writeSize;
+  }
+}
+#endif /* %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED */
+
+static void %'ModuleName'%.SPI_WRITE_READ(unsigned char write, unsigned char *readP) {
+  %'ModuleName'%.DataReceivedFlag = FALSE;
+  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, readP, 1);
+  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &write, 1);
+  while(!%'ModuleName'%.DataReceivedFlag){}
+}
+
+#if %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED
+static void %'ModuleName'%.SPI_WRITE_READ_BLOCK(unsigned char *writeP, unsigned char *readP, uint16_t size) {
+  %'ModuleName'%.DataReceivedFlag = FALSE;
+  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, readP, size);
+  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, writeP, size);
+  while(!%'ModuleName'%.DataReceivedFlag){}
+}
+#endif /* %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED */
+
+%endif %- LDDHWSPI
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadDataWord
 %ifdef ReadDataWord
@@ -624,7 +646,9 @@ void %'ModuleName'%.%WriteData(uint8_t data)
   while(%@SWSPI@'ModuleName'%.CharsInTxBuf()) {};                %>40/* wait until everything is sent */
  %elif defined(HWSPI)
   while(%@HWSPI@'ModuleName'%.SendChar(data)!=ERR_OK) {}         %>40/* send MSB data byte */
-  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {};          %>40/* wait until everything is sent */
+  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {}           %>40/* wait until everything is sent */
+  //while(%@HWSPI@'ModuleName'%.GetCharsInRxBuf()==0) {}         %>40/* wait until everything is sent */
+  //%@Wait@'ModuleName'%.Waitus(20);
  %endif
   CS_HIGH();
 }
@@ -645,7 +669,9 @@ void %'ModuleName'%.%WriteCommand(uint8_t cmd)
   while(%@SWSPI@'ModuleName'%.CharsInTxBuf()) {};                %>40/* wait until everything is sent */
  %elif defined(HWSPI)
   while(%@HWSPI@'ModuleName'%.SendChar(cmd)!=ERR_OK) {}          %>40/* send MSB data byte */
-  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {};          %>40/* wait until everything is sent */
+  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {}           %>40/* wait until everything is sent */
+  //while(%@HWSPI@'ModuleName'%.GetCharsInRxBuf()==0) {}         %>40/* wait until everything is sent */
+  //%@Wait@'ModuleName'%.Waitus(20);
  %endif
   CS_HIGH();
 }
@@ -1202,7 +1228,7 @@ void %OnGiveLCD(void)
 %if defined(SWSPI)
   #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@SWSPI@'ModuleName'%.CharsInTxBuf
 %elif defined(HWSPI)
-  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@SWSPI@'ModuleName'%.GetCharsInTxBuf
+  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@HWSPI@'ModuleName'%.GetCharsInTxBuf
 %endif
   /*!< method which returns how many characters are in the tx buffer */
 #endif

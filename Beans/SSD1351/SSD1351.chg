@@ -1,17 +1,11 @@
-%if %ParallelInterfaceEnabled='yes'
-  %set SerialInterfaceEnabled Value Disabled
-  %set MiniFlexBusEnabled Value Enabled
-  %set ReadDataWord Selection enable
-%else %- enable serial interface
-  %set SerialInterfaceEnabled Value Enabled
-  %- cannot read from display with serial interface
-  %set ReadDataWord Selection never
-  %if %HWSPIgroup='yes'
-    %set SWSPIgroup Value Disabled
-  %else %- enable SW SPI
-    %set SWSPIgroup Value Enabled
-  %endif
-%endif
+%- %set LDDHWSPIgroup Value Enabled
+%- %set SWSPIgroup Value Enabled
+%- %set SWSPIgroup Value Enabled
+
+%set SerialInterfaceEnabled Value Enabled
+%- cannot read from display with serial interface
+%set ReadDataWord Selection never
+
 %if %displayType='96x96'
   %if %Orientation='landscape' | %Orientation='landscape180'
     %set Width Value 96
