@@ -81,6 +81,12 @@
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
+/* event handler prototypes */
+void %'ModuleName'%.OnInterrupt(void);
+void %'ModuleName'%.OnActivate(void);
+void %'ModuleName'%.OnDeactivate(void);
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -833,7 +839,6 @@ void %OnDeactivate(void);
 /* MODULE %ModuleName. */
 
 #include "%'ModuleName'.h"
-
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
