@@ -4,7 +4,7 @@
     <Name>Wait</Name>
     <Description>Wait</Description>
     <Author>Erich Styger</Author>
-    <Version>01.079</Version>
+    <Version>01.081</Version>
     <Icon>wait</Icon>
     <TypesFiles>PE,Wait\Wait</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -37,6 +37,20 @@
       </TCompNameItem>
     </Property>
     <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>Wait\sdk</TypeSpec>
+        <Hint>Link to the SDK</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
       <TBoolGrupItem>
         <Name>Use Cycle Counter</Name>
         <Symbol>useCycleCounter</Symbol>
@@ -67,20 +81,6 @@
           </GrupItem>
         </Children>
       </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>SDK</Name>
-        <Symbol>sdk</Symbol>
-        <TypeSpec>Wait\sdk</TypeSpec>
-        <Hint>Link to the SDK</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -175,7 +175,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>

@@ -266,22 +266,12 @@ void %'ModuleName'%.%Waitns(uint16_t ns);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WaitOSms
 %ifdef WaitOSms
-%if defined(RTOS) %-RTOS defined in properties, e.g. uCOS-II
-#define %'ModuleName'%.%WaitOSms(ms) \
-  (void)%@RTOS@'ModuleName'%.OSTimeDlyHMSM(0,0,(ms)/1000,(ms)%%1000)
-%else
-#define %'ModuleName'%.%WaitOSms(ms) \
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
-  vTaskDelay(ms/portTICK_PERIOD_MS)
-%else
-  %'ModuleName'%.%Waitms(ms) /* no RTOS used, so use normal wait */
-%endif
-%endif
-%include Common\WaitWaitOSms.Inc
-
-#ifdef __cplusplus
-}  /* extern "C" */
+#if %'ModuleName'%.CONFIG_USE_RTOS_WAIT
+  #define %'ModuleName'%.%WaitOSms(ms) vTaskDelay(ms/portTICK_PERIOD_MS) /* use FreeRTOS API */
+#else
+  #define %'ModuleName'%.%WaitOSms(ms)  %'ModuleName'%.%Waitms(ms) /* use normal wait */
 #endif
+%include Common\WaitWaitOSms.Inc
 
 %endif %- WaitOSms
 %-BW_METHOD_END WaitOSms
@@ -312,6 +302,10 @@ void %'ModuleName'%.%DeInit(void);
 %-BW_METHOD_END DeInit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
@@ -909,13 +903,22 @@ void %'ModuleName'%.%DeInit(void)
 
 #include "%@sdk@ModuleName.h" /* include library configuration */
 
-#if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
+#ifndef %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
 %if defined(useCycleCounter) & %useCycleCounter='yes'
   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %else
   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %endif
     /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_RTOS_WAIT
+%if defined(RTOS)
+  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (0)
+%endif
+    /*!< 1: Use RTOS wait if RTOS is present; 0: use normal busy waiting */
 #endif
 
 #if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
