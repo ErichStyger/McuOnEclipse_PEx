@@ -68,12 +68,9 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+/* Event prototype */
+void %'ModuleName'%.CONFIG_EVENT_HANDLER_NAME(uint8_t event);
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,11 +84,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/*! List of events */
-%for i from EventNameList
-#define %'ModuleName'%.%i                                        %>40 %for_index_0
-%endfor
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -159,9 +151,6 @@ bool %'ModuleName'%.%EventsPending(void);
 
 %endif %- EventsPending
 %-BW_METHOD_END EventsPending
-#ifdef __cplusplus
-}  /* extern "C" */
-#endif
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetClearEvent
 %ifdef GetClearEvent
@@ -174,6 +163,10 @@ bool %'ModuleName'%.%GetClearEvent(uint8_t event);
 %-BW_METHOD_END GetClearEvent
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
@@ -196,21 +189,14 @@ void %AppHandleEvent(uint8_t event);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
-#ifndef __HIWARE__
-  #include <stdbool.h>
-  #include <stdint.h>
-#endif
 #include "%'ModuleName'.h"
-#if %@sdk@'ModuleName'%.SDK_VERSION_USED == %@sdk@'ModuleName'%.SDK_VERSION_NONE
-%for var from EventModules
-  #include "%var.h"
-%endfor
-#endif
 
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#include "%@CriticalSection@ModuleName.h"
+
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -220,9 +206,7 @@ void %AppHandleEvent(uint8_t event);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-%define NumOfEvents %EventNameListLines
-#define %'ModuleName'%.NOF_EVENTS  %EventNameListLines           %>40 /*!< Number of events supported */
-static uint8_t %'ModuleName'%.Events[((%'ModuleName'%.NOF_EVENTS-1)/8)+1];%>40 /*!< Bit set of events */
+static uint8_t %'ModuleName'%.Events[((%'ModuleName'%.CONFIG_NOF_EVENTS-1)/8)+1];%>40 /*!< Bit set of events */
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -306,24 +290,24 @@ bool %'ModuleName'%.%GetClearEvent(uint8_t event)
 bool %'ModuleName'%.%EventsPending(void)
 {
  %- for small number of events: check the bytes
- %if %NumOfEvents <=. '8'
+#if %'ModuleName'%.CONFIG_NOF_EVENTS<=8
   return (bool)(%'ModuleName'%.Events[0]!=0);
- %elif %NumOfEvents <=. '16'
+#elif %'ModuleName'%.CONFIG_NOF_EVENTS<=16
   return (bool)(%'ModuleName'%.Events[0]!=0 || %'ModuleName'%.Events[1]!=0);
- %elif %NumOfEvents <=. '24'
+#elif %'ModuleName'%.CONFIG_NOF_EVENTS<=24
   return (%'ModuleName'%.Events[0]!=0 || %'ModuleName'%.Events[1]!=0 || %'ModuleName'%.Events[2]!=0);
- %elif %NumOfEvents <=. '32'
+#elif %'ModuleName'%.CONFIG_NOF_EVENTS<=32
   return (bool)(%'ModuleName'%.Events[0]!=0 || %'ModuleName'%.Events[1]!=0 || %'ModuleName'%.Events[2]!=0 || %'ModuleName'%.Events[3]!=0);
- %else /* iterate through the array */
+#else /* iterate through the array */
   char i; /* local counter */
 
-  for(i=0; i<(%'ModuleName'%.NOF_EVENTS/8)+1; i++) {
+  for(i=0; i<(%'ModuleName'%.CONFIG_NOF_EVENTS/8)+1; i++) {
     if (%'ModuleName'%.Events[i] != 0) { /* there are events pending */
       return TRUE;
     }
   }
   return FALSE;
- %endif
+#endif
 }
 
 %endif %- EventsPending
@@ -338,27 +322,21 @@ void %'ModuleName'%.%HandleEvent(void)
   uint8_t event;
   %@CriticalSection@'ModuleName'%.CriticalVariable();
 
-%if %PowerSave = 'yes'
-   if (!%'ModuleName'%.%EventsPending()) {
-     /* no events pending */
-    %'ProcessorModule'%.SetWaitMode(); /* make sure that this method is enabled in the CPU bean */
-   }
-%endif /* PowerSave */
   %@CriticalSection@'ModuleName'%.EnterCritical();
-  for (event=0; event<%'ModuleName'%.NOF_EVENTS; event++) { /* does a test on every event */
+  for (event=0; event<%'ModuleName'%.CONFIG_NOF_EVENTS; event++) { /* does a test on every event */
     if (%'ModuleName'%.GetEvent(event)) { /* event present */
       %'ModuleName'%.Events[event/8] &= ~(0x80>>(event%%8)); /* clear event */
       break; /* get out of loop */
     }
   }
   %@CriticalSection@'ModuleName'%.ExitCritical();
-%if defined(AppHandleEvent)
+#if %'ModuleName'%.CONFIG_USE_EVENT_HANDLER
   /*lint -save -e522 function lacks side effect  */
-  if (event != %'ModuleName'%.NOF_EVENTS) {
-    %AppHandleEvent(event);
+  if (event != %'ModuleName'%.CONFIG_NOF_EVENTS) {
+    %'ModuleName'%.CONFIG_EVENT_HANDLER_NAME(event);
   }
   /*lint -restore */
-%endif
+#endif
 }
 
 %endif %- HandleEvent
@@ -368,15 +346,15 @@ void %'ModuleName'%.%HandleEvent(void)
 %include Common\GeneralInternal.inc (Init)
 void %'ModuleName'%.Init(void)
 {
-%if %NumOfEvents <=. '8'
+#if %'ModuleName'%.CONFIG_NOF_EVENTS<=8
   %'ModuleName'%.Events[0] = 0; /* initialize data structure */
-%else
+#else
   uint8_t i;
 
   for(i=0;i<sizeof(%'ModuleName'%.Events); i++) {
     %'ModuleName'%.Events[i] = 0; /* initialize data structure */
   }
-%endif
+#endif
 }
 
 %-INTERNAL_METHOD_END Init
@@ -405,17 +383,7 @@ void %AppHandleEvent(uint8_t event)
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
 %if InitializeOnInit='yes'
-  %if LowPowerEnabled='yes' & %@LowPower@SpecialInit='yes'
-  %if %@LowPower@RAMlostAfterRecovery='yes'
   %'ModuleName'%.Init();
-  %else
-  if (%@LowPower@'ModuleName'%.InitializeRAMinInit()) { /* only initialize driver RAM if needed */
-    %'ModuleName'%.Init();
-  }
-  %endif
-  %else
-  %'ModuleName'%.Init();
-  %endif
 %endif
 %CODE_END
 %-
@@ -436,12 +404,41 @@ void %AppHandleEvent(uint8_t event)
   %define  ConfigSrcDirFolder
 %endif
 %----------------------------
+/**
+ * \file
+ * \brief Configuration header file for SimpleEvents
+ *
+ * This header file is used to configure settings of the SimpleEvents module.
+ */
+
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+#ifndef %'ModuleName'%.CONFIG_USE_EVENT_HANDLER
+%if defined(AppHandleEvent)
+  #define %'ModuleName'%.CONFIG_USE_EVENT_HANDLER  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_EVENT_HANDLER  (0)
+%endif
+    /*!< 1: Use Event handler; 0: Do not use Event Handler */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_EVENT_HANDLER_NAME
+%if defined(AppHandleEvent)
+  #define %'ModuleName'%.CONFIG_EVENT_HANDLER_NAME  %AppHandleEvent
+%else
+  #define %'ModuleName'%.CONFIG_EVENT_HANDLER_NAME  APP_EventHandler
+%endif
+    /*!< Name of event handler, of type 'void FunctionName(uint8_t event)' */
+#endif
+
+/*! List of events */
+%for i from EventNameList
+#define %'ModuleName'%.%i                                        %>40 %for_index_0
+%endfor
+
+#define %'ModuleName'%.CONFIG_NOF_EVENTS    %EventNameListLines  %>40 /*!< Number of events supported */
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
