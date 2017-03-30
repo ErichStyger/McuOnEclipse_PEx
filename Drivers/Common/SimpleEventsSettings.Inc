@@ -4,9 +4,3 @@
 %;**%>12 Critical Section %>60: %get(CriticalSection,Text)
 %;**%>12 Initialize on Init %>60: %get(InitializeOnInit,Text)
 %;**%>12 Event Name List %>60: %get(EventNameList,Text)
-%;**%>12 Power Save %>60: %get(PowerSave,Text)
-%;**%>12 Low Power %>60: %get(LowPowerEnabled,Text)
-%if %get(LowPowerEnabled, Bool) = 'yes'
-%;**%>14 Low Power %>60: %get(LowPower,Text)
-%else %- LowPowerEnabled
-%endif %- LowPowerEnabled

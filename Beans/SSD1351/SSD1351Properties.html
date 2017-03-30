@@ -289,6 +289,10 @@ There are 4 options:<br />
 <b>Initialize on Init</b></a> - If the driver shall be initialized during Init
 </li>
 <li>
+<a name="useRAMBuffer">
+<b>RAM Buffer</b></a> - If enabled, the driver will use a RAM buffer for the display.
+</li>
+<li>
 <a name="HardwareGroup">
 <b>HW</b></a> - Group controlling the hardware settings.
 <ul>
@@ -327,6 +331,10 @@ The following items are available only if the group is enabled (the value is "En
     <b>HW SPI</b></a> - Hardware SPI interface
     </li>
     <li>
+    <a name="HWSPI_DelayUs">
+    <b>HW SPI Delay (us)</b></a> - Optional Hardware SPI delay time after sending a character, in microsconds
+    </li>
+    <li>
     <a name="HWSPIBaudRateMode">
     <b>Baud Rate Mode</b></a> - If the HW SPI channel is used with different devices and baud rate, this number specifies the baud rate to be used. 0 is the initial baud rate.
     </li>
@@ -345,18 +353,6 @@ The following items are available only if the group is enabled (the value is "En
   </ul>
   </li>
   <li>
-  <a name="PowerPinEnabled">
-  <b>Power</b></a> - Enable this group if there is a dedicated hardware power up/down pin<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-  <ul>
-    <li>
-    <a name="Power">
-    <b>Power</b></a> - Interface to Power Pin
-    </li>
-  </ul>
-  </li>
-  <li>
   <a name="ResetPinEnabled">
   <b>Reset</b></a> - Enable this group if a normal reset pin can be used. Otherwise you need to fill in the information for a manual reset pin handling<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
@@ -369,6 +365,18 @@ The following items are available only if the group is enabled (the value is "En
     <li>
     <a name="D_C">
     <b>D_C</b></a> - Data/Command mode select pin. Low level is command mode.
+    </li>
+  </ul>
+  </li>
+  <li>
+  <a name="PowerPinEnabled">
+  <b>Power</b></a> - Enable this group if there is a dedicated hardware power up/down pin<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+  <ul>
+    <li>
+    <a name="Power">
+    <b>Power</b></a> - Interface to Power Pin
     </li>
   </ul>
   </li>

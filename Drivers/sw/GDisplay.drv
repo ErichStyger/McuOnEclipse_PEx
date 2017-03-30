@@ -60,30 +60,20 @@
 %define! Abstract Common\GDisplayAbstract.Inc
 %include Common\Header.h
 
-%if (defined(PEversionDecimal) && (PEversionDecimal <=0 '1283')) %- this is only supported with MCU 10.3
-%if (CPUfamily = "Kinetis")
-/* PEversionDecimal version: %PEversionDecimal (1283 for MCU10.3) */
-#include "PE_LDD.h" /* hack for Processor Expert (e.g. in MCU10.3) and LDD: PE_LDD.h includes at the end all shared modules, causing a recursive header file include conflict */
-%endif
-%endif
-
 #ifndef __%'ModuleName'_H
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
+/* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
   %endfor
 %endif
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -93,8 +83,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -113,10 +101,10 @@
 %endif
 /* this type is declared in PE_Types.h for non-LDD processors, need to declare it locally otherwise */
 typedef struct {                       /* Image */
-  word width;                          /* Image width  */
-  word height;                         /* Image height */
-  const byte * pixmap;                 /* Image pixel bitmap */
-  word size;                           /* Image size   */
+  uint16_t width;                          /* Image width  */
+  uint16_t height;                         /* Image height */
+  const uint8_t * pixmap;                 /* Image pixel bitmap */
+  uint16_t size;                           /* Image size   */
   const char_t * name;                 /* Image name   */
 } TIMAGE;
 typedef TIMAGE* PIMAGE ;               /* Pointer to image */
@@ -129,41 +117,41 @@ typedef TIMAGE* PIMAGE ;               /* Pointer to image */
 
 #define %'ModuleName'%.COLOR_PIXEL_SET          %@Display@'ModuleName'%.COLOR_PIXEL_SET       /* value for a pixel set */
 #define %'ModuleName'%.COLOR_PIXEL_CLR          %@Display@'ModuleName'%.COLOR_PIXEL_CLR       /* value for a pixel cleared */
-%if %InvertedPixels='yes'
-#define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
-#define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
-#define %'ModuleName'%.COLOR_RED                (~%@Display@'ModuleName'%.COLOR_RED)          /* red color */
-#define %'ModuleName'%.COLOR_BRIGHT_RED         (~%@Display@'ModuleName'%.COLOR_BRIGHT_RED)   /* bright red color */
-#define %'ModuleName'%.COLOR_DARK_RED           (~%@Display@'ModuleName'%.COLOR_DARK_RED)     /* dark red color */
-#define %'ModuleName'%.COLOR_GREEN              (~%@Display@'ModuleName'%.COLOR_GREEN)        /* green color */
-#define %'ModuleName'%.COLOR_DARK_GREEN         (~%@Display@'ModuleName'%.COLOR_DARK_GREEN)   /* dark green color */
-#define %'ModuleName'%.COLOR_BRIGHT_GREEN       (~%@Display@'ModuleName'%.COLOR_BRIGHT_GREEN) /* bright green color */
-#define %'ModuleName'%.COLOR_BLUE               (~%@Display@'ModuleName'%.COLOR_BLUE)         /* blue color */
-#define %'ModuleName'%.COLOR_BRIGHT_BLUE        (~%@Display@'ModuleName'%.COLOR_BRIGHT_BLUE)  /* bright blue color */
-#define %'ModuleName'%.COLOR_DARK_BLUE          (~%@Display@'ModuleName'%.COLOR_DARK_BLUE)    /* dark blue color */
-#define %'ModuleName'%.COLOR_YELLOW             (~%@Display@'ModuleName'%.COLOR_YELLOW)       /* yellow color */
-#define %'ModuleName'%.COLOR_BRIGHT_YELLOW      (~%@Display@'ModuleName'%.COLOR_BRIGHT_YELLOW)/* bright yellow color */
-#define %'ModuleName'%.COLOR_ORANGE             (~%@Display@'ModuleName'%.COLOR_ORANGE)       /* orange color */
-#define %'ModuleName'%.COLOR_GREY               (~%@Display@'ModuleName'%.COLOR_GREY)         /* grey color */
-#define %'ModuleName'%.COLOR_BRIGHT_GREY        (~%@Display@'ModuleName'%.COLOR_BRIGHT_GREY)  /* bright grey color */
-%else
-#define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
-#define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
-#define %'ModuleName'%.COLOR_RED                %@Display@'ModuleName'%.COLOR_RED             /* red color */
-#define %'ModuleName'%.COLOR_BRIGHT_RED         %@Display@'ModuleName'%.COLOR_BRIGHT_RED      /* bright red color */
-#define %'ModuleName'%.COLOR_DARK_RED           %@Display@'ModuleName'%.COLOR_DARK_RED        /* dark red color */
-#define %'ModuleName'%.COLOR_GREEN              %@Display@'ModuleName'%.COLOR_GREEN           /* green color */
-#define %'ModuleName'%.COLOR_DARK_GREEN         %@Display@'ModuleName'%.COLOR_DARK_GREEN      /* dark green color */
-#define %'ModuleName'%.COLOR_BRIGHT_GREEN       %@Display@'ModuleName'%.COLOR_BRIGHT_GREEN    /* bright green color */
-#define %'ModuleName'%.COLOR_BLUE               %@Display@'ModuleName'%.COLOR_BLUE            /* blue color */
-#define %'ModuleName'%.COLOR_BRIGHT_BLUE        %@Display@'ModuleName'%.COLOR_BRIGHT_BLUE     /* bright blue color */
-#define %'ModuleName'%.COLOR_DARK_BLUE          %@Display@'ModuleName'%.COLOR_DARK_BLUE       /* dark blue color */
-#define %'ModuleName'%.COLOR_YELLOW             %@Display@'ModuleName'%.COLOR_YELLOW          /* yellow color */
-#define %'ModuleName'%.COLOR_BRIGHT_YELLOW      %@Display@'ModuleName'%.COLOR_BRIGHT_YELLOW   /* bright yellow color */
-#define %'ModuleName'%.COLOR_ORANGE             %@Display@'ModuleName'%.COLOR_ORANGE          /* orange color */
-#define %'ModuleName'%.COLOR_GREY               %@Display@'ModuleName'%.COLOR_GREY            /* grey color */
-#define %'ModuleName'%.COLOR_BRIGHT_GREY        %@Display@'ModuleName'%.COLOR_BRIGHT_GREY     /* bright grey color */
-%endif
+#if CONFIG_INVERTED_PIXEL_COLOR
+  #define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
+  #define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
+  #define %'ModuleName'%.COLOR_RED                (~%@Display@'ModuleName'%.COLOR_RED)          /* red color */
+  #define %'ModuleName'%.COLOR_BRIGHT_RED         (~%@Display@'ModuleName'%.COLOR_BRIGHT_RED)   /* bright red color */
+  #define %'ModuleName'%.COLOR_DARK_RED           (~%@Display@'ModuleName'%.COLOR_DARK_RED)     /* dark red color */
+  #define %'ModuleName'%.COLOR_GREEN              (~%@Display@'ModuleName'%.COLOR_GREEN)        /* green color */
+  #define %'ModuleName'%.COLOR_DARK_GREEN         (~%@Display@'ModuleName'%.COLOR_DARK_GREEN)   /* dark green color */
+  #define %'ModuleName'%.COLOR_BRIGHT_GREEN       (~%@Display@'ModuleName'%.COLOR_BRIGHT_GREEN) /* bright green color */
+  #define %'ModuleName'%.COLOR_BLUE               (~%@Display@'ModuleName'%.COLOR_BLUE)         /* blue color */
+  #define %'ModuleName'%.COLOR_BRIGHT_BLUE        (~%@Display@'ModuleName'%.COLOR_BRIGHT_BLUE)  /* bright blue color */
+  #define %'ModuleName'%.COLOR_DARK_BLUE          (~%@Display@'ModuleName'%.COLOR_DARK_BLUE)    /* dark blue color */
+  #define %'ModuleName'%.COLOR_YELLOW             (~%@Display@'ModuleName'%.COLOR_YELLOW)       /* yellow color */
+  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW      (~%@Display@'ModuleName'%.COLOR_BRIGHT_YELLOW)/* bright yellow color */
+  #define %'ModuleName'%.COLOR_ORANGE             (~%@Display@'ModuleName'%.COLOR_ORANGE)       /* orange color */
+  #define %'ModuleName'%.COLOR_GREY               (~%@Display@'ModuleName'%.COLOR_GREY)         /* grey color */
+  #define %'ModuleName'%.COLOR_BRIGHT_GREY        (~%@Display@'ModuleName'%.COLOR_BRIGHT_GREY)  /* bright grey color */
+#else
+  #define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
+  #define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
+  #define %'ModuleName'%.COLOR_RED                %@Display@'ModuleName'%.COLOR_RED             /* red color */
+  #define %'ModuleName'%.COLOR_BRIGHT_RED         %@Display@'ModuleName'%.COLOR_BRIGHT_RED      /* bright red color */
+  #define %'ModuleName'%.COLOR_DARK_RED           %@Display@'ModuleName'%.COLOR_DARK_RED        /* dark red color */
+  #define %'ModuleName'%.COLOR_GREEN              %@Display@'ModuleName'%.COLOR_GREEN           /* green color */
+  #define %'ModuleName'%.COLOR_DARK_GREEN         %@Display@'ModuleName'%.COLOR_DARK_GREEN      /* dark green color */
+  #define %'ModuleName'%.COLOR_BRIGHT_GREEN       %@Display@'ModuleName'%.COLOR_BRIGHT_GREEN    /* bright green color */
+  #define %'ModuleName'%.COLOR_BLUE               %@Display@'ModuleName'%.COLOR_BLUE            /* blue color */
+  #define %'ModuleName'%.COLOR_BRIGHT_BLUE        %@Display@'ModuleName'%.COLOR_BRIGHT_BLUE     /* bright blue color */
+  #define %'ModuleName'%.COLOR_DARK_BLUE          %@Display@'ModuleName'%.COLOR_DARK_BLUE       /* dark blue color */
+  #define %'ModuleName'%.COLOR_YELLOW             %@Display@'ModuleName'%.COLOR_YELLOW          /* yellow color */
+  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW      %@Display@'ModuleName'%.COLOR_BRIGHT_YELLOW   /* bright yellow color */
+  #define %'ModuleName'%.COLOR_ORANGE             %@Display@'ModuleName'%.COLOR_ORANGE          /* orange color */
+  #define %'ModuleName'%.COLOR_GREY               %@Display@'ModuleName'%.COLOR_GREY            /* grey color */
+  #define %'ModuleName'%.COLOR_BRIGHT_GREY        %@Display@'ModuleName'%.COLOR_BRIGHT_GREY     /* bright grey color */
+#endif
 
 typedef %@Display@'ModuleName'%.PixelDim   %'ModuleName'%.PixelDim;%>40/* Display specific type for a pixel coordinate. */
 typedef %@Display@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor;%>40/* Display specific color type. */
@@ -191,6 +179,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 %endif
 %endif
 
+%if %@Display@BitsPerPixel='1' | %@Display@BitsPerPixel='8'
 #define %'ModuleName'%.BUF_BYTE(x,y)  /* how to access a byte in the display buf[][] */ \
 %if %@Display@BitsPerPixel='1'
   %if %Orientation='Landscape'
@@ -243,7 +232,13 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 %else
   /* not supported yet! */
 %endif
-
+%endif
+%------------------------------------------
+%if %@Display@BitsPerPixel='16'
+#define %'ModuleName'%.BUF_WORD(x,y)  /* how to access a byte in the display buf[][] */ \
+  %@Display@'ModuleName'%.DisplayBuf[y][x]
+%endif
+%------------------------------------------
 %if %@Display@BitsPerPixel='1'
 #define %'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y) /* pixel bit number inside display buffer byte (0 is LSB, 7 MSB) */ \
   %if %Orientation='Landscape'
@@ -289,23 +284,23 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
   %endif
 %endif
 
-#define %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y)  /* pixel mask for an individual bit inside a display buffer byte */ \
-%if %@Display@BitsPerPixel='1'
-  (1<<%'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y))
-%elif %@Display@BitsPerPixel='8'
-  0xff
-%else
-  /* not supported yet! */
-%endif
+#if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
+  #define %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y)  /* pixel mask for an individual bit inside a display buffer byte */ \
+    (1<<%'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y))
+  #define %'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y)  /* extract a pixel */ \
+    ((%'ModuleName'%.BUF_BYTE(x,y)&%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y))>>%'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y))
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==8
+  #define %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y)  /* pixel mask for an individual bit inside a display buffer byte */ \
+    0xff
+  #define %'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y)  /* extract a pixel */ \
+    %'ModuleName'%.BUF_BYTE(x,y)
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  /* no byte access used */
+#else
+  #error "not supported"
+#endif
 
 #define %'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y)  /* extract a pixel */ \
-%if %@Display@BitsPerPixel='1'
-  ((%'ModuleName'%.BUF_BYTE(x,y)&%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y))>>%'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y))
-%elif %@Display@BitsPerPixel='8'
-  %'ModuleName'%.BUF_BYTE(x,y)
-%else
-  /* not supported yet! */
-%endif
 
 %endif %- %@Display@WindowCapability='no'
 %-BW_DEFINITION_START
@@ -830,10 +825,10 @@ void %'ModuleName'%.%Clear(void)
 %if %@Display@WindowCapability='yes' | %@Display@DisplayMemoryWrite='yes'
   %'ModuleName'%.%DrawFilledBox(0, 0, %'ModuleName'%.GetWidth(), %'ModuleName'%.GetHeight(), %'ModuleName'%.COLOR_WHITE);
 %else %- use display buffer
-  byte *p = &%@Display@'ModuleName'%.DisplayBuf[0][0]; /* first element in display buffer */
+  uint8_t *p = (uint8_t*)(&%@Display@'ModuleName'%.DisplayBuf[0][0]); /* first element in display buffer */
 
   while (p<((byte*)%@Display@'ModuleName'%.DisplayBuf)+sizeof(%@Display@'ModuleName'%.DisplayBuf)) {
- %if %@Display@BitsPerPixel='1'
+ #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
     *p++ = (byte)(  (%'ModuleName'%.COLOR_WHITE<<7)
                   | (%'ModuleName'%.COLOR_WHITE<<6)
                   | (%'ModuleName'%.COLOR_WHITE<<5)
@@ -843,9 +838,12 @@ void %'ModuleName'%.%Clear(void)
                   | (%'ModuleName'%.COLOR_WHITE<<1)
                   |  %'ModuleName'%.COLOR_WHITE
                  );
- %else
+ #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+    *((uint16_t*)p) = %'ModuleName'%.COLOR_WHITE;
+    p += 2;
+ #else
     *p++ = %'ModuleName'%.COLOR_WHITE;
- %endif
+ #endif
   }
 %endif
 }
@@ -873,15 +871,17 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x, y, x, y);                %>40 /* set up a one pixel window */
-  %@Display@'ModuleName'%.WritePixel(%'ModuleName'%.COLOR_BLACK);%>40 /* store pixel with color information */
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%elif %@Display@DisplayMemoryWrite='yes'
-  %@Display@'ModuleName'%.SetPixel(x, y);
-%else %- use memory buffer
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
+  %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_BLACK);%>40 /* store pixel with color information */
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
+  %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL(x, y);
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  %'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_BLACK;
+#else
   %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
@@ -910,15 +910,17 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x, y, x, y);                %>40 /* set up a one pixel window */
-  %@Display@'ModuleName'%.WritePixel(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%elif %@Display@DisplayMemoryWrite='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
+  %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.ClrPixel(x, y);
-%else %- use buffer
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  %'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_WHITE;
+#else
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
@@ -944,15 +946,17 @@ void %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   #warning "not using RAM buffer may mean that this is not possible at all (unless read from display)?"
   (void)x; (void)y; /* avoid compiler warning */
   /* NYI */
-%elif %@Display@DisplayMemoryWrite='yes'
+#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.NegPixel(x, y);
-%else %- use memory buffer
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  %'ModuleName'%.BUF_WORD(x,y) ^= %'ModuleName'%.BUF_WORD(x,y);
+#else %- use memory buffer
   %'ModuleName'%.BUF_BYTE(x,y) ^= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
-%endif
+#endif
 }
 
 %endif %- NegPixel
@@ -988,19 +992,76 @@ void %'ModuleName'%.%UpdateFull(void)
     return 0;
   }
 %endif
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   #warning "not using RAM buffer may mean that this is not possible at all (unless read from display)?"
   (void)x; (void)y; /* avoid compiler warning */
   return %'ModuleName'%.COLOR_BLACK; /* NYI */
-%elif %@Display@DisplayMemoryWrite='yes'
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  return %'ModuleName'%.BUF_WORD(x,y);
+#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   return %@Display@'ModuleName'%.GetPixel(x, y);
-%else %- use memory buffer
+#else %- use memory buffer
   return (%'ModuleName'_PixelColor)%'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y);
-%endif
+#endif
 }
 
 %endif %- GetPixel
 %-BW_METHOD_END GetPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\GDisplayPutPixel.Inc
+#ifdef __HC08__
+  #pragma MESSAGE DISABLE C4001 /* condition always FALSE */
+#endif
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+{
+%if ndefined(OnError) & %@Display@WindowCapability='yes'
+ %- we do not have OnError(), and using Window capabilities: only need to check for boundaries in case of memory buffer
+%else
+  if (x>=%'ModuleName'%.GetWidth() || y>=%'ModuleName'%.GetHeight()) { /* values out of range */
+  %ifdef OnError
+    %OnError(); /* call error handler */
+  %endif
+    return;
+  }
+%endif
+  %ifdef RTOS
+  %'ModuleName'%.GetDisplay();
+  %endif
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up window as large as the box */
+  %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(color);              %>40 /* store pixel with color information */
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#else
+ #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
+  if (   (color==%'ModuleName'%.COLOR_BLACK && %'ModuleName'%.COLOR_BLACK==%'ModuleName'%.COLOR_PIXEL_SET)
+      || (color==%'ModuleName'%.COLOR_WHITE && %'ModuleName'%.COLOR_WHITE==%'ModuleName'%.COLOR_PIXEL_SET)
+     )
+  {
+    %'ModuleName'%.%SetPixel(x,y);
+  } else {
+    %'ModuleName'%.%ClrPixel(x,y);
+  }
+ #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+  %'ModuleName'%.BUF_WORD(x,y) = color;
+ #else /* multi-bit display */
+  %@Display@'ModuleName'%.PutPixel(x, y, color);
+ #endif
+#endif
+%ifdef RTOS
+  %'ModuleName'%.GiveDisplay();
+%endif
+}
+#ifdef __HC08__
+  #pragma MESSAGE DEFAULT C4001 /* condition always FALSE */
+#endif
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawFilledBox
 %ifdef DrawFilledBox
@@ -1012,13 +1073,12 @@ void %'ModuleName'%.%UpdateFull(void)
 %include Common\GDisplayDrawFilledBox.Inc
 void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, %'ModuleName'_PixelColor color)
 {
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixCnt;
   %'ModuleName'_PixelDim x1, y1;
-%- %elif %@Display@DisplayMemoryWrite='yes'
-%else %- use memory buffer
+#else
   %'ModuleName'%.PixelDim x0, xe, y0, ye;
-%endif
+#endif
   %'ModuleName'_PixelDim d_width = %'ModuleName'%.GetWidth();
   %'ModuleName'_PixelDim d_height = %'ModuleName'%.GetHeight();
 
@@ -1054,29 +1114,23 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
       height = (%'ModuleName'_PixelDim)(d_height-y);
     }
   }
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   x1 = (%'ModuleName'_PixelDim)(x+width-1);                      %>40 /* set window lower right x coordinate */
   y1 = (%'ModuleName'_PixelDim)(y+height-1);                     %>40 /* set window lower right y coordinate */
   pixCnt = (%'ModuleName'_PixelCount)((x1-x+1)*(y1-y+1));        %>40 /* number of pixels to write */
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-  %@Display@'ModuleName'%.OpenWindow(x, y, x1, y1);              %>40 /* set up window as large as the box */
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x1, y1);       %>40 /* set up window as large as the box */
   while (pixCnt>0) {
-    %@Display@'ModuleName'%.WritePixel(color);                   %>40 /* store pixel with color information */
+    %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(color);            %>40 /* store pixel with color information */
     pixCnt--;
   } /* while */
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
-%- Not sure why this below exists?
-%- %elif %@Display@DisplayMemoryWrite='yes'
-%-  %@Display@'ModuleName'%.DrawFilledBox(x, y, width, height, color);
-%-  %ifdef RTOS
-%-  %'ModuleName'%.GiveDisplay();
-%-  %endif
-%else %- use memory buffer
+#else
   y0 = y; ye = (%'ModuleName'%.PixelDim)(y0+height-1);
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
@@ -1101,64 +1155,11 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
-%endif
+#endif
 }
 
 %endif %- DrawFilledBox
 %-BW_METHOD_END DrawFilledBox
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN PutPixel
-%ifdef PutPixel
-%define! Parx
-%define! Pary
-%define! Parcolor
-%include Common\GDisplayPutPixel.Inc
-#ifdef __HC08__
-  #pragma MESSAGE DISABLE C4001 /* condition always FALSE */
-#endif
-void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
-{
-%if ndefined(OnError) & %@Display@WindowCapability='yes'
- %- we do not have OnError(), and using Window capabilities: only need to check for boundaries in case of memory buffer
-%else
-  if (x>=%'ModuleName'%.GetWidth() || y>=%'ModuleName'%.GetHeight()) { /* values out of range */
-  %ifdef OnError
-    %OnError(); /* call error handler */
-  %endif
-    return;
-  }
-%endif
-  %ifdef RTOS
-  %'ModuleName'%.GetDisplay();
-  %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x, y, x, y);                %>40 /* set up window as large as the box */
-  %@Display@'ModuleName'%.WritePixel(color);                     %>40 /* store pixel with color information */
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%else %- use memory buffer
-%if %@Display@BitsPerPixel='1'
-  if (   (color==%'ModuleName'%.COLOR_BLACK && %'ModuleName'%.COLOR_BLACK==%'ModuleName'%.COLOR_PIXEL_SET)
-      || (color==%'ModuleName'%.COLOR_WHITE && %'ModuleName'%.COLOR_WHITE==%'ModuleName'%.COLOR_PIXEL_SET)
-     )
-  {
-    %'ModuleName'%.%SetPixel(x,y);
-  } else {
-    %'ModuleName'%.%ClrPixel(x,y);
-  }
-%else /* multi-bit display */
-  %@Display@'ModuleName'%.PutPixel(x, y, color);
-%endif
-%endif
-%ifdef RTOS
-  %'ModuleName'%.GiveDisplay();
-%endif
-}
-#ifdef __HC08__
-  #pragma MESSAGE DEFAULT C4001 /* condition always FALSE */
-#endif
-
-%endif %- PutPixel
-%-BW_METHOD_END PutPixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawBox
 %ifdef DrawBox
@@ -1345,7 +1346,7 @@ void %'ModuleName'%.%DrawVLine(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim 
 %include Common\GDisplayDrawBarChart.Inc
 void %'ModuleName'%.%DrawBarChart(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, byte *data, byte nofData, %'ModuleName'_PixelColor barColor, byte borderWidth, %'ModuleName'_PixelColor borderColor, byte borderSpace)
 {
-  byte i;
+  uint8_t i;
   %'ModuleName'%.PixelDim barHeight; /* for calculation of each bar height */
   %'ModuleName'%.PixelDim barWidth; /* bar width, based on even distribution of the bars */
 
@@ -1521,37 +1522,37 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %include Common\GDisplayDraw65kBitmap.Inc
 void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, word *bmp, bool compressed)
 {
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x1, y1, x2, y2);            %>40 /* set up window as large as the box */
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
     %'ModuleName'_PixelColor PixelColor = 0;
-    word Pos = 0;
+    uint16_t Pos = 0;
     bool FirstRead = TRUE;
-    word i;
-    word Repeat;
+    uint16_t i;
+    uint16_t Repeat;
 
     for (i=0; i<pixelCount; i++) {
       if (FirstRead) {                                           %>40 /* read first pixel after first start or after finishing a compressed bunch of data */
         PixelColor = (%'ModuleName'%.PixelColor)bmp[Pos++];
-        %@Display@'ModuleName'%.WritePixel(PixelColor);          %>40 /* paint pixel */
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(PixelColor);   %>40 /* paint pixel */
         FirstRead = FALSE;
       } else {
-        word LastPixel = PixelColor;                             %>40 /* save data of last pixel (word format) to temporary variable */
+        uint16_t LastPixel = PixelColor;                         %>40 /* save data of last pixel (word format) to temporary variable */
 
         PixelColor = (%'ModuleName'%.PixelColor)bmp[Pos++];      %>40 /* read next pixel */
-        %@Display@'ModuleName'%.WritePixel(PixelColor);          %>40 /* paint new pixel */
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(PixelColor);   %>40 /* paint new pixel */
         if (LastPixel == PixelColor) {                           %>40 /* check if the last two read pixels are identical */
           Repeat = bmp[Pos++];                                   %>40 /* if yes: read number following pixels of this color */
           i += Repeat;                                           %>40 /* increment pixel counter */
           while (Repeat--) {                                     %>40 /* output requested number of pixels */
-            %@Display@'ModuleName'%.WritePixel(PixelColor);
+            %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(PixelColor);
           }
           FirstRead = TRUE;                                      %>40 /* restart potential repetition sequence */
         }
@@ -1563,14 +1564,14 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
 
     for(i=0; i<pixelCount; i++) {
       pixelColor = (%'ModuleName'%.PixelColor)bmp[i];
-      %@Display@'ModuleName'%.WritePixel(pixelColor);
+      %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(pixelColor);
     }
   }
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%else
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#else
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
@@ -1591,37 +1592,37 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
 %include Common\GDisplayDraw256BitmapHigh.Inc
 void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed)
 {
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x1, y1, x2, y2);            %>40 /* set up window as large as the box */
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
     byte PixelColorIndex = 0;
-    word Pos = 0;
+    uint16_t Pos = 0;
     bool FirstRead = TRUE;
-    word i;
+    uint16_t i;
     byte LastPixelIndex;
     byte Repeat;
 
     for (i=0; i<pixelCount; i++) {
       if (FirstRead) {                                           %>40 /* read first pixel after first start or after finishing a compressed bunch of data */
         PixelColorIndex = bmp[Pos++];
-        %@Display@'ModuleName'%.WritePixel(ColorTable[PixelColorIndex]);
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(ColorTable[PixelColorIndex]);
         FirstRead = FALSE;
       } else {
         LastPixelIndex = PixelColorIndex;                        %>40 /* save data of last pixel (word format) to temporary variable */
         PixelColorIndex = bmp[Pos++];                            %>40 /* read next pixel */
-        %@Display@'ModuleName'%.WritePixel(ColorTable[PixelColorIndex]);
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(ColorTable[PixelColorIndex]);
         if (LastPixelIndex == PixelColorIndex) {                 %>40 /* check if the last two read pixels are identical */
           Repeat = bmp[Pos++];                                   %>40 /* if yes: read number following pixels of this color */
           i += Repeat;                                           %>40 /* increment pixel counter */
           while (Repeat--) {                                     %>40 /* output requested number of pixels */
-            %@Display@'ModuleName'%.WritePixel(ColorTable[PixelColorIndex]);
+            %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(ColorTable[PixelColorIndex]);
           }
           FirstRead = TRUE;                                      %>40 /* restart potential repetition sequence */
         }
@@ -1629,20 +1630,20 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
     }
   } else {
     %'ModuleName'_PixelCount i;
-    byte PixelColorIndex;
-    word PixelColor;
+    uint8_t PixelColorIndex;
+    uint16_t PixelColor;
 
     for(i=0; i<pixelCount; i++) {
       PixelColorIndex = bmp[i];
       PixelColor = ColorTable[PixelColorIndex];
-      %@Display@'ModuleName'%.WritePixel(PixelColor);
+      %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(PixelColor);
     }
   }
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%else
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#else
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp;  (void)ColorTable; (void)compressed;%>40 /* avoid compiler warning */
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
@@ -1671,15 +1672,15 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
         RED RED 8
  */
 
-%if %@Display@WindowCapability='yes'
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GetDisplay();
   %endif
-%if %@Display@WindowCapability='yes'
-  %@Display@'ModuleName'%.OpenWindow(x1, y1, x2, y2);            %>40 /* set up window as large as the box */
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+  %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
     /* compressed pixel information */
     byte pixelColor = 0;
@@ -1692,21 +1693,21 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
       if (first) {                                               %>40 /* first pixel, or first after a compressed sequence */
         pixelColor = *bmp;                                       %>40 /* read pixel */
         bmp++;                                                   %>40 /* advance pointer to next pixel */
-        %@Display@'ModuleName'%.WritePixel(c332to565[pixelColor]);%>40 /* write pixel */
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(c332to565[pixelColor]);%>40 /* write pixel */
         pixelCount--;                                            %>40 /* one more done */
         first = FALSE;                                           %>40 /* reset flag */
       } else {
         lastPixel = pixelColor;                                  %>40 /* remember already written pixel to detect potential compressed sequence */
         pixelColor = *bmp;                                       %>40 /* read pixel */
         bmp++;                                                   %>40 /* advance pointer to next pixel */
-        %@Display@'ModuleName'%.WritePixel(c332to565[pixelColor]);%>40 /* write pixel */
+        %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(c332to565[pixelColor]);%>40 /* write pixel */
         pixelCount--;                                            %>40 /* one more done */
         if (lastPixel == pixelColor) {                           %>40 /* do we have twice the same pixel? Then it this starts a compressed sequence... */
           repeat = *bmp;                                         %>40 /* yes! read the number of pixels to repeat */
           bmp++;                                                 %>40 /* next byte in stream */
           pixelCount -= repeat;                                  %>40 /* a bunch more will be done */
           while (repeat--) {                                     %>40 /* write requested amount of pixels */
-            %@Display@'ModuleName'%.WritePixel(c332to565[pixelColor]);%>40 /* write pixel */
+            %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(c332to565[pixelColor]);%>40 /* write pixel */
           } /* while */
           first = TRUE;                                          %>40 /* set flag for new sequence */
         }
@@ -1715,16 +1716,16 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   } else {
     /* uncompressed pixel information */
     while(pixelCount != 0) {                                     %>40 /* while there are pixels to write... */
-      %@Display@'ModuleName'%.WritePixel(c332to565[*bmp]);       %>40 /* write pixel */
+      %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(c332to565[*bmp]);%>40 /* write pixel */
       bmp++;                                                     %>40 /* next byte */
       pixelCount--;                                              %>40 /* one more done */
     } /* for */
   }
-  %@Display@'ModuleName'%.CloseWindow();                         %>40 /* close and execute window */
-%else
+  %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
+#else
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
-%endif
+#endif
   %ifdef RTOS
   %'ModuleName'%.GiveDisplay();
   %endif
@@ -1924,7 +1925,76 @@ void %OnGiveDisplay(void)
 %ENABLE
 %CODE_BEGIN
 %CODE_END
-%-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for GDisplay
+ *
+ * This header file is used to configure settings of the GDisplay module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+%if %@Display@WindowCapability='yes'
+  #define %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY  (0)
+%endif
+    /*!< 1: Use display window capability; 0: No display window capability */
+#endif
+
+#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
+%if defined(Display)
+  #define %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW     %@Display@'ModuleName'%.OpenWindow
+  #define %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL     %@Display@'ModuleName'%.WritePixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW    %@Display@'ModuleName'%.CloseWindow
+  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       %@Display@'ModuleName'%.SetPixel
+%else
+  #define %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW     OpenWindow
+  #define %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL     WritePixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW    CloseWindow
+  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       SetPixel
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
+%if %@Display@DisplayMemoryWrite='yes'
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE  (0)
+%endif
+    /*!< 1: Use display memory write; 0: Do not use display memory write */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_INVERTED_PIXEL_COLOR
+%if defined(InvertedPixels) & %InvertedPixels='yes'
+  #define %'ModuleName'%.CONFIG_INVERTED_PIXEL_COLOR  (1)
+%else
+  #define %'ModuleName'%.CONFIG_INVERTED_PIXEL_COLOR  (0)
+%endif
+    /*!< 1: Invert pixel color; 0: Do not invert pixel color */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL
+%if defined(Display)
+  #define %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL  (%@Display@BitsPerPixel)
+%else
+  #define %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL  (1)
+%endif
+    /*!< Number of bits per pixel */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

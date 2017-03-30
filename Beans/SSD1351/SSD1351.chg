@@ -1,6 +1,13 @@
 %- %set LDDHWSPIgroup Value Enabled
 %- %set SWSPIgroup Value Enabled
 %- %set SWSPIgroup Value Enabled
+%if defined(useRAMBuffer)
+  %if %useRAMBuffer='yes'
+    %set DisplayMemoryWrite Value no
+  %else
+    %set DisplayMemoryWrite Value yes
+  %endif
+%endif
 
 %set SerialInterfaceEnabled Value Enabled
 %- cannot read from display with serial interface

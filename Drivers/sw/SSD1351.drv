@@ -97,9 +97,14 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-typedef word %'ModuleName'_PixelColor;                           %>40/* type to hold color information */
-typedef word %'ModuleName'_PixelDim;                             %>40/* one word is enough to describe an x/y position */
-typedef dword %'ModuleName'_PixelCount;                          %>40/* need a 32bit type to hold the number of pixels on the display. */
+#define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  %'Width'u         %>40/* number of columns in hardware */
+#define %'ModuleName'%.DISPLAY_HW_NOF_ROWS     %'Height'u        %>40/* number of rows in hardware */
+
+extern uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+
+typedef uint16_t %'ModuleName'_PixelColor;                       %>40/* type to hold color information */
+typedef uint16_t %'ModuleName'_PixelDim;                         %>40/* one word is enough to describe an x/y position */
+typedef uint32_t %'ModuleName'_PixelCount;                       %>40/* need a 32bit type to hold the number of pixels on the display. */
 
 /* Predefined colors and pixel values. The display is using words for a pixel/color. Using 16bits for color (65k: 5:red + 6:green + 5:blue */
 #define %'ModuleName'%.COLOR_RED            0b1111100000000000
@@ -193,7 +198,7 @@ void %'ModuleName'%.%Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
-#define %'ModuleName'%.%UpdateFull()  /* nothing to do */
+void %'ModuleName'%.%UpdateFull(void);
 %include Common\SSD1351UpdateFull.Inc
 
 %endif %- UpdateFull
@@ -370,6 +375,14 @@ void %'ModuleName'%.%InitCommChannel(void);
 
 %endif %- InitCommChannel
 %-BW_METHOD_END InitCommChannel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnDataReceived
+%ifdef OnDataReceived
+void %'ModuleName'%.%OnDataReceived(void);
+%include Common\SSD1351OnDataReceived.Inc
+
+%endif %- OnDataReceived
+%-BW_METHOD_END OnDataReceived
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -418,6 +431,7 @@ void %OnGiveLCD(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 /*
 - RESET is low active
@@ -561,22 +575,33 @@ void %OnGiveLCD(void);
 %ifdef LDDHWSPI
 #define %'ModuleName'%.SPI_Enable()                   (void)%@LDDHWSPI@'ModuleName'%.Enable(%@LDDHWSPI@'ModuleName'%.DeviceData)
 #define %'ModuleName'%.SPI_Disable()                  (void)%@LDDHWSPI@'ModuleName'%.Disable(%@LDDHWSPI@'ModuleName'%.DeviceData)
-#define %'ModuleName'%.SPI_SetSlowMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWSlowBaudRateMode, %HWSlowBaudRateMode) /* max 400kbps */
-#define %'ModuleName'%.SPI_SetFastMode()              (void)%@LDDHWSPI@'ModuleName'%.SelectConfiguration(%@LDDHWSPI@'ModuleName'%.DeviceData, %HWFastBaudRateMode, %HWFastBaudRateMode) /* max 12Mbps */
 #define %'ModuleName'%.SPI_SetShiftClockPolarity(val) /* not needed for LDD */
 #define %'ModuleName'%.SPI_SetIdleClockPolarity(val)  /* not needed for LDD */
+%endif
 
 static volatile bool %'ModuleName'%.DataReceivedFlag = FALSE;
 
-void %'ModuleName'%.SPI_WRITE(unsigned char write) {
+void %'ModuleName'%.SPI_WRITE(unsigned char data) {
+#if %'ModuleName'_CONFIG_USE_SPI_API==%'ModuleName'_CONFIG_SPI_API_SW
+  (void)%'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND(data);        %>40/* send MSB data byte */
+  while(%'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX()) {};    %>40/* wait until everything is sent */
+#elif %'ModuleName'_CONFIG_USE_SPI_API==%'ModuleName'_CONFIG_SPI_API_HW
+  while(%'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND(data)!=ERR_OK) {}%>40/* send MSB data byte */
+  while(%'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX()!=0) {}  %>40/* wait until everything is sent */
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_HWSPI_DELAY_US);
+#elif %'ModuleName'_CONFIG_USE_SPI_API==%'ModuleName'_CONFIG_SPI_API_HW_LDD
   unsigned char dummy;
 
   %'ModuleName'%.DataReceivedFlag = FALSE;
-  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &dummy, sizeof(dummy));
-  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &write, sizeof(write));
+  (void)%'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE_BLOCK(%'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE, &dummy, sizeof(dummy));
+  (void)%'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK(%'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE, &data, sizeof(data));
   while(!%'ModuleName'%.DataReceivedFlag){}
+#else
+  #error "not supported"
+#endif
 }
 
+%ifdef LDDHWSPI
 #if %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED
 static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *writeP, uint16_t size) {
   unsigned char dummy[4];
@@ -598,22 +623,6 @@ static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *writeP, uint16_t size)
 }
 #endif /* %'ModuleName'%.SPI_WRITE_BLOCK_ENABLED */
 
-static void %'ModuleName'%.SPI_WRITE_READ(unsigned char write, unsigned char *readP) {
-  %'ModuleName'%.DataReceivedFlag = FALSE;
-  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, readP, 1);
-  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, &write, 1);
-  while(!%'ModuleName'%.DataReceivedFlag){}
-}
-
-#if %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED
-static void %'ModuleName'%.SPI_WRITE_READ_BLOCK(unsigned char *writeP, unsigned char *readP, uint16_t size) {
-  %'ModuleName'%.DataReceivedFlag = FALSE;
-  (void)%@LDDHWSPI@'ModuleName'%.ReceiveBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, readP, size);
-  (void)%@LDDHWSPI@'ModuleName'%.SendBlock(%@LDDHWSPI@'ModuleName'%.DeviceData, writeP, size);
-  while(!%'ModuleName'%.DataReceivedFlag){}
-}
-#endif /* %'ModuleName'%.SPI_WRITE_READ_BLOCK_ENABLED */
-
 %endif %- LDDHWSPI
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadDataWord
@@ -625,8 +634,6 @@ word %'ModuleName'%.%ReadDataWord(void)
 %if SerialInterfaceEnabled='yes'
   /* sorry, with the serial interface it is NOT possible to read from display memory */
   return 0;
-%elif MiniFlexBusEnabled='yes'
-  return *((word*)%'ModuleName'_FLEX_DC_ADDRESS);
 %endif
 }
 
@@ -641,15 +648,7 @@ void %'ModuleName'%.%WriteData(uint8_t data)
 {
   DATA_MODE();
   CS_LOW();
- %if defined(SWSPI)
-  (void)%@SWSPI@'ModuleName'%.SendChar(data);                    %>40/* send MSB data byte */
-  while(%@SWSPI@'ModuleName'%.CharsInTxBuf()) {};                %>40/* wait until everything is sent */
- %elif defined(HWSPI)
-  while(%@HWSPI@'ModuleName'%.SendChar(data)!=ERR_OK) {}         %>40/* send MSB data byte */
-  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {}           %>40/* wait until everything is sent */
-  //while(%@HWSPI@'ModuleName'%.GetCharsInRxBuf()==0) {}         %>40/* wait until everything is sent */
-  //%@Wait@'ModuleName'%.Waitus(20);
- %endif
+  %'ModuleName'%.SPI_WRITE(data);
   CS_HIGH();
 }
 
@@ -664,15 +663,7 @@ void %'ModuleName'%.%WriteCommand(uint8_t cmd)
 {
   CMD_MODE();
   CS_LOW();
- %if defined(SWSPI)
-  (void)%@SWSPI@'ModuleName'%.SendChar(cmd);                     %>40/* send MSB data byte */
-  while(%@SWSPI@'ModuleName'%.CharsInTxBuf()) {};                %>40/* wait until everything is sent */
- %elif defined(HWSPI)
-  while(%@HWSPI@'ModuleName'%.SendChar(cmd)!=ERR_OK) {}          %>40/* send MSB data byte */
-  while(%@HWSPI@'ModuleName'%.GetCharsInTxBuf()!=0) {}           %>40/* wait until everything is sent */
-  //while(%@HWSPI@'ModuleName'%.GetCharsInRxBuf()==0) {}         %>40/* wait until everything is sent */
-  //%@Wait@'ModuleName'%.Waitus(20);
- %endif
+  %'ModuleName'%.SPI_WRITE(cmd);
   CS_HIGH();
 }
 
@@ -888,12 +879,20 @@ void %'ModuleName'%.%Init(void)
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
 %include Common\SSD1351UpdateFull.Inc
-/*
 void %'ModuleName'%.%UpdateFull(void)
 {
-  implemented as macro in %'ModuleName'.h
+%if defined(useRAMBuffer) & %useRAMBuffer='yes'
+  %'ModuleName'_PixelCount i;
+
+  %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
+  for (i=0; i<(%'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT); i++) {%>40 /* for all display pixels */
+    %'ModuleName'%.WriteDataWord(((uint16_t*)%'ModuleName'%.DisplayBuf)[i]);%>40 /* clear it */
+  }
+  %'ModuleName'%.CloseWindow();
+%else
+  /* nothing needed in direct diplay mode (not using RAM buffer) */
+%endif
 }
-*/
 
 %endif %- UpdateFull
 %-BW_METHOD_END UpdateFull
@@ -1130,6 +1129,17 @@ void %'ModuleName'%.%InitCommChannel(void)
 
 %endif %- InitCommChannel
 %-BW_METHOD_END InitCommChannel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN OnDataReceived
+%ifdef OnDataReceived
+%include Common\SSD1351OnDataReceived.Inc
+void %'ModuleName'%.%OnDataReceived(void)
+{
+  %'ModuleName'%.DataReceivedFlag = TRUE;
+}
+
+%endif %- OnDataReceived
+%-BW_METHOD_END OnDataReceived
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1202,6 +1212,10 @@ void %OnGiveLCD(void)
   #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "%@SWSPI@'ModuleName'.h"
 %elif defined(HWSPI)
   #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "%@HWSPI@'ModuleName'.h"
+%elif defined(LDDHWSPI)
+  #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "%@LDDHWSPI@'ModuleName'.h"
+%else
+  #define %'ModuleName'_CONFIG_SPI_HEADER_FILE                   %>40 "SPI.h"
 %endif
     /*!< Header file to be included for the SPI driver */
 #endif
@@ -1273,6 +1287,70 @@ void %OnGiveLCD(void)
   #define %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT             %>40 (0)
 %endif
   /*!< 1: Clear display at the end of Init(); 0: Do not clear display at the end of Init() */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_HWSPI_DELAY_US
+%if defined(HWSPI_DelayUs)
+  #define %'ModuleName'_CONFIG_HWSPI_DELAY_US                    %>40 (%HWSPI_DelayUs)
+%else
+  #define %'ModuleName'_CONFIG_HWSPI_DELAY_US                    %>40 (10)
+%endif
+  /*!< Delay after an SPI transfer, use zero for not using a delay */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_USE_RAM_BUFFER
+%if defined(useRAMBuffer) & %useRAMBuffer='yes'
+  #define %'ModuleName'_CONFIG_USE_RAM_BUFFER                    %>40 (1)
+%else
+  #define %'ModuleName'_CONFIG_USE_RAM_BUFFER                    %>40 (0)
+%endif
+  /*!< 1: Use RAM Buffer for display memory; 0: Do not use RAM buffer (write directly to display) */
+#endif
+
+/* set of different possible SPI drivers */
+#define %'ModuleName'_CONFIG_SPI_API_SW     1 /* bit banging SW SPI */
+#define %'ModuleName'_CONFIG_SPI_API_HW     2 /* Hardware (non-LDD) SPI */
+#define %'ModuleName'_CONFIG_SPI_API_HW_LDD 3 /* Hardware (LDD) SPI */
+
+/* configuration of SPI API and method names */
+#ifndef %'ModuleName'_CONFIG_USE_SPI_API
+ %if defined(SWSPI)
+   #define %'ModuleName'_CONFIG_USE_SPI_API                     %'ModuleName'_CONFIG_SPI_API_SW
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND           %@SWSPI@'ModuleName'%.SendChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE        ReceiveChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK     SendBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE_BLOCK  ReceiveBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX       %@SWSPI@'ModuleName'%.CharsInTxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_RX       GetCharsInRxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE           NULL /* not used */
+ %elif defined(HWSPI)
+   #define %'ModuleName'_CONFIG_USE_SPI_API                     %'ModuleName'_CONFIG_SPI_API_HW
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND           %@HWSPI@'ModuleName'%.SendChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE        ReceiveChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK     SendBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE_BLOCK  ReceiveBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX       %@HWSPI@'ModuleName'%.GetCharsInTxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_RX       GetCharsInRxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE           NULL /* not used */
+ %elif defined(LDDHWSPI)
+   #define %'ModuleName'_CONFIG_USE_SPI_API                     %'ModuleName'_CONFIG_SPI_API_HW_LDD
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND           %@LDDHWSPI@'ModuleName'%.SendChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE        ReceiveChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK     %@LDDHWSPI@'ModuleName'%.SendBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE_BLOCK  %@LDDHWSPI@'ModuleName'%.ReceiveBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX       %@LDDHWSPI@'ModuleName'%.GetCharsInTxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_RX       GetCharsInRxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE           %@LDDHWSPI@'ModuleName'%.DeviceData
+ %else
+   #define %'ModuleName'_CONFIG_USE_SPI_API                     %'ModuleName'_CONFIG_SPI_API_SW
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND           SendChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE        ReceiveChar
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK     SendBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_RECEIVE_BLOCK  ReceiveBlock
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX       GetCharsInTxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_RX       GetCharsInRxBuf
+   #define %'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE           NULL /* e.g. SM1_DeviceData */
+ %endif
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
