@@ -304,6 +304,28 @@ LI.EXP {
 <li><i>data:uint16_t</i> - data to write</li>
 </ul><br />
 </li>
+<li><a name="WriteDataWordRepeated">
+<b>WriteDataWordRepeated</b></a>
+ - Sends a data word to the display a number of times
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void WriteDataWordRepeated(uint16_t data, size_t nof)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>data:uint16_t</i> - data to write</li>
+<li><i>nof:byte</i> - How many times the data word shall be sent</li>
+</ul><br />
+</li>
+<li><a name="WriteDataBlock">
+<b>WriteDataBlock</b></a>
+ - Sends a data buffer to the display
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void WriteDataBlock(uint8_t *data, size_t dataSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>data: Pointer to uint8_t</i> - Pointer to data to write</li>
+<li><i>dataSize:byte</i> - no hint</li>
+</ul><br />
+</li>
 <li><a name="WriteCommand">
 <b>WriteCommand</b></a>
  - Sends a command byte to the bus

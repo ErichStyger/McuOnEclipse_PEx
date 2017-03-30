@@ -4,7 +4,7 @@
     <Name>SSD1351</Name>
     <Description>Display driver for the Solomon Systech SSD1351 display (e.g. on Hexwear)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.025</Version>
+    <Version>01.032</Version>
     <Icon>SSD1351</Icon>
     <TypesFiles>PE,SSD1351\SSD1351</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -301,6 +301,23 @@
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
+            <TIntgItem>
+              <Name>HW SPI Delay (us)</Name>
+              <Symbol>HWSPI_DelayUs</Symbol>
+              <Hint>Optional Hardware SPI delay time after sending a character, in microsconds</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>2</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
             <TBoolGrupItem>
               <Name>SW SPI</Name>
               <Symbol>SWSPIgroup</Symbol>
@@ -392,23 +409,6 @@
                     <IconPopup>false</IconPopup>
                     <SortStyle/>
                   </TInhrLinkItem>
-                </GrupItem>
-                <GrupItem>
-                  <TIntgItem>
-                    <Name>HW SPI Delay (us)</Name>
-                    <Symbol>HWSPI_DelayUs</Symbol>
-                    <Hint>Optional Hardware SPI delay time after sending a character, in microsconds</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>true</EditLine>
-                    <DefaultValue>10</DefaultValue>
-                    <MinValue>0</MinValue>
-                    <MaxValue>-1</MaxValue>
-                    <Bases>DEC</Bases>
-                    <DefaultBase>DEC</DefaultBase>
-                    <ExtraHintDisabled>false</ExtraHintDisabled>
-                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
-                    <RuntimeProperty>false</RuntimeProperty>
-                  </TIntgItem>
                 </GrupItem>
                 <GrupItem>
                   <TIntgItem>
@@ -883,6 +883,88 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint16_t data)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>WriteDataWordRepeated</Name>
+        <Symbol>WriteDataWordRepeated</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sends a data word to the display a number of times</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>data</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>data to write</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>nof</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>How many times the data word shall be sent</ParHint>
+          <ParUserDeclaration>size_t nof</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint16_t data, size_t nof)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>WriteDataBlock</Name>
+        <Symbol>WriteDataBlock</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sends a data buffer to the display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to data to write</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dataSize</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+          <ParUserDeclaration>size_t dataSize</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t *data, size_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
