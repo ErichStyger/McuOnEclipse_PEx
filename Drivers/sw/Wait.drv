@@ -145,7 +145,6 @@ extern "C" {
 #define %'ModuleName'%.NofCyclesNs(ns, hz)  (((ns)*(((hz)/1000)/1000))/1000) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %endif
 
-
 #define %'ModuleName'%.WAIT_C(cycles) \
      ( (cycles)<=10 ? \
           %'ModuleName'%.Wait10Cycles() \
