@@ -131,7 +131,7 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-#define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %ShellDefaultBufferSize  /* default buffer size for shell command parsing */
+#define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  /* default buffer size for shell command parsing */
 
 /* Include inherited components */
 %ifdef InhrSymbolList
@@ -187,17 +187,13 @@
 #define %'ModuleName'%.ECHO_ENABLED  0                           %>40/* 1: enabled, 0: disabled */
 %endif
 
-%if defined(Serial)
-#define %'ModuleName'%.DEFAULT_SERIAL  1 /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
-%else
-#define %'ModuleName'%.DEFAULT_SERIAL  0 /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
-%endif
+#define %'ModuleName'%.DEFAULT_SERIAL  %'ModuleName'%.CONFIG_DEFAULT_SERIAL /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
+
 extern uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 
 #if %'ModuleName'%.DEFAULT_SERIAL
   extern %'ModuleName'_ConstStdIOType %'ModuleName'%.stdio; /* default standard I/O */
 #endif
-
 
 #define %'ModuleName'%.DASH_LINE "--------------------------------------------------------------"
 /* predefined commands */
@@ -544,6 +540,16 @@ unsigned %'ModuleName'%.%printfIO(%'ModuleName'_ConstStdIOType *io, const char *
 
 %endif %- printfIO
 %-BW_METHOD_END printfIO
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendCharFct
+%ifdef SendCharFct
+void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch));
+%define! Parch
+%define! Parfct
+%include Common\ShellSendCharFct.Inc
+
+%endif %- SendCharFct
+%-BW_METHOD_END SendCharFct
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -608,30 +614,30 @@ uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SI
   static bool %'ModuleName'_EchoEnabled = TRUE;
 #endif
 
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
-#include "FreeRTOS.h"
-#include "semphr.h"
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  #include "FreeRTOS.h"
+  #include "semphr.h"
+#endif
 
-%endif
 #ifdef __HC08__
   #pragma MESSAGE DISABLE C3303 /* implicit concatenation of strings */
 #endif
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & %ConsoleSempahore='yes'
-static xSemaphoreHandle ShellSem = NULL; /* Semaphore to protect shell SCI access */
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  static xSemaphoreHandle ShellSem = NULL; /* Semaphore to protect shell SCI access */
+#endif
 
-%if defined(Serial)
-%'ModuleName'_ConstStdIOType %'ModuleName'%.stdio =
-{
-  (%'ModuleName'_StdIO_In_FctType)%'ModuleName'_ReadChar, /* stdin */
-  (%'ModuleName'_StdIO_OutErr_FctType)%'ModuleName'_SendChar, /* stdout */
-  (%'ModuleName'_StdIO_OutErr_FctType)%'ModuleName'_SendChar, /* stderr */
-  %'ModuleName'_KeyPressed /* if input is not empty */
-};
-static %'ModuleName'_ConstStdIOType *%'ModuleName'%.currStdIO = &%'ModuleName'%.stdio;
-%else
-static %'ModuleName'_ConstStdIOType *%'ModuleName'%.currStdIO = NULL; /* needs to be set through %'ModuleName'%.%SetStdio(); */
-%endif
+#if %'ModuleName'%.DEFAULT_SERIAL
+  %'ModuleName'_ConstStdIOType %'ModuleName'%.stdio =
+  {
+    (%'ModuleName'_StdIO_In_FctType)%'ModuleName'_ReadChar, /* stdin */
+    (%'ModuleName'_StdIO_OutErr_FctType)%'ModuleName'_SendChar, /* stdout */
+    (%'ModuleName'_StdIO_OutErr_FctType)%'ModuleName'_SendChar, /* stderr */
+    %'ModuleName'_KeyPressed /* if input is not empty */
+  };
+  static %'ModuleName'_ConstStdIOType *%'ModuleName'%.currStdIO = &%'ModuleName'%.stdio;
+#else
+  static %'ModuleName'_ConstStdIOType *%'ModuleName'%.currStdIO = NULL; /* needs to be set through %'ModuleName'%.%SetStdio(); */
+#endif
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -1263,9 +1269,9 @@ uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmd
 %include Common\ShellRequestSerial.Inc
 void %'ModuleName'%.%RequestSerial(void)
 {
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
-%endif
+#endif
 }
 
 %endif %- RequestSerial
@@ -1276,9 +1282,9 @@ void %'ModuleName'%.%RequestSerial(void)
 %include Common\ShellReleaseSerial.Inc
 void %'ModuleName'%.%ReleaseSerial(void)
 {
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(ShellSem);
-%endif
+#endif
 }
 
 %endif %- ReleaseSerial
@@ -1290,11 +1296,11 @@ void %'ModuleName'%.%ReleaseSerial(void)
 %include Common\ShellGetSemaphore.Inc
 void* %'ModuleName'%.%GetSemaphore(void)
 {
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   return ShellSem;
-%else
+#else
   return NULL;
-%endif
+#endif
 }
 
 %endif %- GetSemaphore
@@ -1364,26 +1370,24 @@ void %'ModuleName'%.%SendStatusStr(const uint8_t *strItem, const uint8_t *strSta
 %include Common\ShellReadChar.Inc
 void %'ModuleName'%.%ReadChar(uint8_t *c)
 {
-%if defined(Serial)
+#if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
   uint8_t res;
 
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
-%endif
-%if defined(Serial)
-  res = %@Serial@'ModuleName'%.RecvChar((uint8_t*)c);
+#endif
+  res = %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME((uint8_t*)c);
   if (res==ERR_RXEMPTY) {
     /* no character in buffer */
     *c = '\0';
   }
-%endif
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(ShellSem);
-%endif
-%else
+#endif
+#else
   *c = '\0';
   return; /* no serial component set up in properties */
-%endif
+#endif
 }
 
 %endif %- ReadChar
@@ -1395,49 +1399,11 @@ void %'ModuleName'%.%ReadChar(uint8_t *c)
 %include Common\ShellSendChar.Inc
 void %'ModuleName'%.%SendChar(uint8_t ch)
 {
-%if defined(Serial)
-  %if BlockingSend='yes'
-  uint8_t res;
-  %endif
-%if defined(ShellBlockingSendTimeoutMs) & %ShellBlockingSendTimeoutMs >. '0' & defined(WaitTimeMs) & WaitTimeMs >. '0'
-  int timeoutMs = %ShellBlockingSendTimeoutMs;
-
-%endif
-
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
-  (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
-%endif
- %if defined(Serial)
-  %if BlockingSend='yes'
-  do {
-    res = %@Serial@'ModuleName'%.SendChar((uint8_t)ch);          %>40/* Send char */
-  %if defined(WaitTimeMs) & WaitTimeMs >. '0'
-    if (res==ERR_TXFULL) {
-    %if defined(RTOSWait) & RTOSWait='yes'
-      %@Wait@'ModuleName'%.WaitOSms(%WaitTimeMs);
-    %else
-      %@Wait@'ModuleName'%.Waitms(%WaitTimeMs);
-    %endif
-    }
-  %endif
-  %if defined(ShellBlockingSendTimeoutMs) & %ShellBlockingSendTimeoutMs >. '0'
-    if(timeoutMs<=0) {
-      break; /* timeout */
-    }
-    timeoutMs -= %WaitTimeMs;
-  %endif
-  } while(res==ERR_TXFULL);
-  %else
-  (void)%@Serial@'ModuleName'%.SendChar((uint8_t)ch);            %>40/* non blocking send */
-  %endif
- %endif
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
-  (void)xSemaphoreGiveRecursive(ShellSem);
-%endif
-%else
+#if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
+  %'ModuleName'%.%SendCharFct(ch, %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME);
+#else
   (void)ch;                                                      %>40/* avoid compiler warning about unused argument */
-  return;                                                        %>40/* no serial component set up in properties */
-%endif
+#endif
 }
 
 %endif %- SendChar
@@ -1449,22 +1415,22 @@ void %'ModuleName'%.%SendChar(uint8_t ch)
 %include Common\ShellKeyPressed.Inc
 bool %'ModuleName'%.%KeyPressed(void)
 {
-%if defined(Serial)
+#if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
   bool res;
 
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
-%endif
-%if defined(Serial)
-  res = (bool)((%@Serial@'ModuleName'%.GetCharsInRxBuf()==0U) ? FALSE : TRUE); /* true if there are characters in receive buffer */
-%endif
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#endif
+#if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
+  res = (bool)((%'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME()==0U) ? FALSE : TRUE); /* true if there are characters in receive buffer */
+#endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   (void)xSemaphoreGiveRecursive(ShellSem);
-%endif
+#endif
   return res;
-%else
+#else
   return FALSE; /* no serial component set up in properties */
-%endif
+#endif
 }
 
 %endif %- KeyPressed
@@ -1475,7 +1441,7 @@ bool %'ModuleName'%.%KeyPressed(void)
 %include Common\ShellInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
 #if configSUPPORT_STATIC_ALLOCATION
   static StaticSemaphore_t xMutexBuffer;
 #endif
@@ -1498,7 +1464,7 @@ void %'ModuleName'%.%Init(void)
     for(;;) {} /* error, not enough memory? */
   }
   vQueueAddToRegistry(ShellSem, "%'ModuleName'%.Sem");
-%endif
+#endif
 #if %'ModuleName'%.HISTORY_ENABLED
   {
     int i;
@@ -1522,11 +1488,11 @@ void %'ModuleName'%.%Init(void)
 %include Common\ShellDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS' & defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   vQueueUnregisterQueue(ShellSem);
   vSemaphoreDelete(ShellSem);
   ShellSem = NULL;
-%endif
+#endif
 }
 
 %endif %- Deinit
@@ -1605,6 +1571,53 @@ unsigned %'ModuleName'%.%printf(const char *fmt, ...)
 
 %endif %- printf
 %-BW_METHOD_END printf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendCharFct
+%ifdef SendCharFct
+%define! Parch
+%define! Parfct
+%include Common\ShellSendCharFct.Inc
+void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))
+{
+#if %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
+  uint8_t res;
+#endif
+#if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS>0
+  int timeoutMs = %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS;
+#endif
+
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(ShellSem, portMAX_DELAY);
+#endif
+#if %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
+  do {
+    res = fct((uint8_t)ch);                                      %>40/* Send char, returns error code */
+  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS
+    if (res==ERR_TXFULL) {
+    #if %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT
+      %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    #else
+      %@Wait@'ModuleName'%.Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    #endif
+    }
+  #endif
+  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS>0
+    if(timeoutMs<=0) {
+      break; /* timeout */
+    }
+    timeoutMs -= %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS;
+  #endif
+  } while(res==ERR_TXFULL);
+#else
+  (void)fct((uint8_t)ch);                                        %>40/* non blocking send */
+#endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(ShellSem);
+#endif
+}
+
+%endif %- SendCharFct
+%-BW_METHOD_END SendCharFct
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1664,8 +1677,91 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+#ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
+%if defined(BlockingSend) & %BlockingSend='yes'
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED  (1)
+%else
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED  (0)
+%endif
+    /*!< 1: Sending is blocking (with an optional timeout); 0: Do not block on sending */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS
+%if defined(ShellBlockingSendTimeoutMs)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS  (%ShellBlockingSendTimeoutMs)
+%else
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS  (0)
+%endif
+    /*!< Total blocking time (timeout) in milliseconds, uses 0 for blocking without a timeout */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS
+%if defined(WaitTimeMs)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS  (%WaitTimeMs)
+%else
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS  (0)
+%endif
+    /*!< waiting time during blocking, use 0 (zero) for polling */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT
+%if defined(BlockingSend) & %BlockingSend='yes'
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT  (1)
+%else
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT  (0)
+%endif
+    /*!< 1: Use WaitmsOS() instead of Waitms(); 0: Use Waitms() instead of WaitOSms() */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_MUTEX
+%if defined(ConsoleSempahore) & %ConsoleSempahore='yes'
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  (0)
+%endif
+    /*!< 1: use RTOS mutex; 0: do not use RTOS mutex */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE
+%if defined(ShellDefaultBufferSize)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  (%ShellDefaultBufferSize)
+%else
+  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  (0)
+%endif
+    /*!< default buffer size for shell command parsing */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL
+%if defined(Serial)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL  (1)
+%else
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL  (0)
+%endif
+    /*!< /* 1: the shell implements its own StdIO which is returned by GetStdio(); 0: The shell does not implement its own standard I/O */
+#endif
+
+#if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
+%if defined(Serial)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME   %@Serial@'ModuleName'%.RecvChar
+%else
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME   RecvChar
+%endif
+    /*!< Function name to read a character and returning ERR_OK if it was successful */
+
+%if defined(Serial)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   %@Serial@'ModuleName'%.SendChar
+%else
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   SendChar
+%endif
+    /*!< Function name to send a character and returning ERR_OK if it was successful */
+
+%if defined(Serial)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME   %@Serial@'ModuleName'%.GetCharsInRxBuf
+%else
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME   GetCharsInRxBuf
+%endif
+    /*!< Function name to check if there is anything available to receive and returns TRUE, otherwise FALSE */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

@@ -556,6 +556,17 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SendCharFct">
+<b>SendCharFct</b></a>
+ - Method to send a character using a standard I/O handle.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>ch:uint8_t</i> - character to be sent</li>
+<li><i>fct:void*</i> - Function pointer to output function: takes a byte to write and returns error code.</li>
+</ul><br />
+</li>
 <li><a name="Init">
 <b>Init</b></a>
  - Initializes the module, especially creates the mutex semaphore if an RTOS is used.
