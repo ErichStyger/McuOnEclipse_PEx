@@ -282,9 +282,9 @@ void %'ModuleName'%.%ExitCritical(void)
 
 #ifndef %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
 %if (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
-  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don't use custom implementation */
 %else
-  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don' use custom implementation */
+  #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don't use custom implementation */
 %endif
 #endif
 
