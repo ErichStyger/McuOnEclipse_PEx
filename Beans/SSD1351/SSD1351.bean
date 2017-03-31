@@ -4,7 +4,7 @@
     <Name>SSD1351</Name>
     <Description>Display driver for the Solomon Systech SSD1351 display (e.g. on Hexwear)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.032</Version>
+    <Version>01.034</Version>
     <Icon>SSD1351</Icon>
     <TypesFiles>PE,SSD1351\SSD1351</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -237,6 +237,24 @@
     </Property>
     <Property>
       <TBoolItem>
+        <Name>Use RAM Buffer</Name>
+        <Symbol>useRAMBuffer</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled, the driver is able to use a RAM buffer for the display memory. Use the UpdatFull() to transfer the data to the display.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
         <Name>Clear display in init</Name>
         <Symbol>ClearDisplayInInit</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
@@ -268,24 +286,6 @@
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>RAM Buffer</Name>
-        <Symbol>useRAMBuffer</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If enabled, the driver will use a RAM buffer for the display.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>

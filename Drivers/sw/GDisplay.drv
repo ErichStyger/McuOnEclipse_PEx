@@ -1957,12 +1957,18 @@ void %OnGiveDisplay(void)
   #define %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW     %@Display@'ModuleName'%.OpenWindow
   #define %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL     %@Display@'ModuleName'%.WritePixel
   #define %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW    %@Display@'ModuleName'%.CloseWindow
-  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       %@Display@'ModuleName'%.SetPixel
 %else
   #define %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW     OpenWindow
   #define %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL     WritePixel
   #define %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW    CloseWindow
+%endif
+#else
+%if defined(Display)
+  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       %@Display@'ModuleName'%.SetPixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_CLRPIXEL       %@Display@'ModuleName'%.ClrPixel
+%else
   #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       SetPixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_CLRPIXEL       ClrPixel
 %endif
 #endif
 

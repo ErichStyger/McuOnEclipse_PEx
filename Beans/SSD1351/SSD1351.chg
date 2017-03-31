@@ -3,6 +3,7 @@
 %- %set SWSPIgroup Value Enabled
 %if defined(useRAMBuffer)
   %if %useRAMBuffer='yes'
+    %- if using RAM buffer, we do not directly write to display memory
     %set DisplayMemoryWrite Value no
   %else
     %set DisplayMemoryWrite Value yes

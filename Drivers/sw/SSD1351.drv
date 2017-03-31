@@ -101,33 +101,57 @@
 #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  %'Width'u         %>40/* number of columns in hardware */
 #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS     %'Height'u        %>40/* number of rows in hardware */
 
-extern uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
-
 typedef uint16_t %'ModuleName'_PixelColor;                       %>40/* type to hold color information */
 typedef uint16_t %'ModuleName'_PixelDim;                         %>40/* one word is enough to describe an x/y position */
 typedef uint32_t %'ModuleName'_PixelCount;                       %>40/* need a 32bit type to hold the number of pixels on the display. */
 
+extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+
 /* Predefined colors and pixel values. The display is using words for a pixel/color. Using 16bits for color (65k: 5:red + 6:green + 5:blue */
-#define %'ModuleName'%.COLOR_RED            0b1111100000000000
-#define %'ModuleName'%.COLOR_BRIGHT_RED     0b1111100011100011
-#define %'ModuleName'%.COLOR_DARK_RED       0b1001100000000000
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER  /* && is Little endian! */
+  /* if using RAM buffer, we use an array of 16bit entries. Because for ARM, the data is little endian, we need to swap the bits */
+  #define %'ModuleName'%.COLOR_RED            0b0000000011111000
+  #define %'ModuleName'%.COLOR_BRIGHT_RED     0b1110001111111000
+  #define %'ModuleName'%.COLOR_DARK_RED       0b0000000010011000
 
-#define %'ModuleName'%.COLOR_GREEN          0b0000011111100000
-#define %'ModuleName'%.COLOR_DARK_GREEN     0b0000001101100000
-#define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1001111111110011
+  #define %'ModuleName'%.COLOR_GREEN          0b1110000000000111
+  #define %'ModuleName'%.COLOR_DARK_GREEN     0b0110000000000011
+  #define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1111001110011111
 
-#define %'ModuleName'%.COLOR_BLUE           0b0000000000011111
-#define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111011011111
-#define %'ModuleName'%.COLOR_DARK_BLUE      0b0000000000010011
+  #define %'ModuleName'%.COLOR_BLUE           0b0001111100000000
+  #define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111111011110
+  #define %'ModuleName'%.COLOR_DARK_BLUE      0b0001001100000000
 
-#define %'ModuleName'%.COLOR_YELLOW         0b1111111111100000
-#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1111111111001100
-#define %'ModuleName'%.COLOR_ORANGE         0b1111110011000110
+  #define %'ModuleName'%.COLOR_YELLOW         0b1110000011111111
+  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1100110011111111
+  #define %'ModuleName'%.COLOR_ORANGE         0b1100011011111100
 
-#define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
-#define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
-#define %'ModuleName'%.COLOR_GREY           0b0011100011100111
-#define %'ModuleName'%.COLOR_BRIGHT_GREY    0b0111101111101111
+  #define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
+  #define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
+  #define %'ModuleName'%.COLOR_GREY           0b1110011100111000
+  #define %'ModuleName'%.COLOR_BRIGHT_GREY    0b1110111101111011
+#else
+  #define %'ModuleName'%.COLOR_RED            0b1111100000000000
+  #define %'ModuleName'%.COLOR_BRIGHT_RED     0b1111100011100011
+  #define %'ModuleName'%.COLOR_DARK_RED       0b1001100000000000
+
+  #define %'ModuleName'%.COLOR_GREEN          0b0000011111100000
+  #define %'ModuleName'%.COLOR_DARK_GREEN     0b0000001101100000
+  #define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1001111111110011
+
+  #define %'ModuleName'%.COLOR_BLUE           0b0000000000011111
+  #define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111011011111
+  #define %'ModuleName'%.COLOR_DARK_BLUE      0b0000000000010011
+
+  #define %'ModuleName'%.COLOR_YELLOW         0b1111111111100000
+  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1111111111001100
+  #define %'ModuleName'%.COLOR_ORANGE         0b1111110011000110
+
+  #define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
+  #define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
+  #define %'ModuleName'%.COLOR_GREY           0b0011100011100111
+  #define %'ModuleName'%.COLOR_BRIGHT_GREY    0b0111101111101111
+#endif
 
 #define %'ModuleName'%.PIXEL_ON  %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
@@ -452,7 +476,7 @@ void %OnGiveLCD(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+%'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 /*
 - RESET is low active
@@ -563,11 +587,11 @@ uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1]
 #define OLED_CMD_SET_MUX_RATIO (0xCA)
 
 /* set re-map / color depth */
-#define OLED_CMD_SET_REMAP ( 0xA0 )
+#define OLED_CMD_SET_REMAP     (0xA0)
 
-// set horizontal or vertical increment
-#define OLED_ADDR_INC_HOR (0x00)
-#define OLED_ADDR_INC_VER (0x01)
+/* set horizontal or vertical increment */
+#define OLED_ADDR_INC_HOR      (0x00)
+#define OLED_ADDR_INC_VER      (0x01)
 
 /* remap settings */
 #define REMAP_HORIZONTAL_INCREMENT      (0)     /* horizontal address incremented */
@@ -576,8 +600,8 @@ uint16_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1]
 #define REMAP_COLUMNS_LEFT_TO_RIGHT     (0)     /* column numbering from left to right */
 #define REMAP_COLUMNS_RIGHT_TO_LEFT     (1<<1)  /* column numbering from right to left */
 
-#define REMAP_ORDER_ABC                 (0)
-#define REMAP_ORDER_CBA                 (1<<2)
+#define REMAP_ORDER_ABC                 (0) /* color oreder is red-green-blue */
+#define REMAP_ORDER_CBA                 (1<<2) /* color order is blue-green-red */
 
 #define REMAP_SCAN_UP_TO_DOWN           (0)
 #define REMAP_SCAN_DOWN_TO_UP           (1<<4)
@@ -679,7 +703,7 @@ void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof)
   DATA_MODE();
   CS_LOW();
   while(nof>0) {
-    %'ModuleName'%.SPI_WRITE(data);
+    %'ModuleName'%.SPI_WRITE_BLOCK((uint8_t*)&data, sizeof(data));
     nof--;
   }
 #if %'ModuleName'_CONFIG_USE_SPI_API!=%'ModuleName'_CONFIG_SPI_API_SW
@@ -739,8 +763,7 @@ void %'ModuleName'%.%WriteDataWord(uint16_t data)
 {
   DATA_MODE();                                                   %>40/* DC high */
   CS_LOW();                                                      %>40/* CS low */
-  %'ModuleName'%.SPI_WRITE(data>>8);                             %>40/* write high byte */
-  %'ModuleName'%.SPI_WRITE(data);                                %>40/* write low byte */
+  %'ModuleName'%.SPI_WRITE_BLOCK((uint8_t*)&data, sizeof(data)); %>40/* write data */
 #if %'ModuleName'_CONFIG_USE_SPI_API!=%'ModuleName'_CONFIG_SPI_API_SW
   /* for HW SPI, have to delay as transaction still might be going on! */
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_HWSPI_DELAY_US);
@@ -809,12 +832,10 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 #endif
   /* Set Window */
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_COLUMN);              %>40/* set column command */
-  %'ModuleName'%.WriteData(c0);                                  %>40/* start column */
-  %'ModuleName'%.WriteData(c1);                                  %>40/* end column */
+  %'ModuleName'%.WriteDataWord(c1<<8|c0);                        %>40/* start and end column */
 
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_ROW);                 %>40/* set row start address command */
-  %'ModuleName'%.WriteData(r0);                                  %>40/* start row number */
-  %'ModuleName'%.WriteData(r1);                                  %>40/* end row number */
+  %'ModuleName'%.WriteDataWord(r1<<8|r0);                        %>40/* start and end row */
 
   %'ModuleName'%.WriteCommand(OLED_CMD_WRITERAM);                %>40/* now activate writing to RAM */
 }
@@ -848,17 +869,13 @@ void %'ModuleName'%.%Clear(void)
 %include Common\SSD1351UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
-%if defined(useRAMBuffer) & %useRAMBuffer='yes'
-  %'ModuleName'_PixelCount i;
-
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
   %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
-  for (i=0; i<(%'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT); i++) {%>40 /* for all display pixels */
-    %'ModuleName'%.WriteDataWord(((uint16_t*)%'ModuleName'%.DisplayBuf)[i]);%>40 /* clear it */
-  }
+  %'ModuleName'%.%WriteDataBlock((uint8_t*)%'ModuleName'%.DisplayBuf, sizeof(%'ModuleName'%.DisplayBuf));
   %'ModuleName'%.CloseWindow();
-%else
-  /* nothing needed in direct diplay mode (not using RAM buffer) */
-%endif
+#else
+  /* nothing needed in direct display mode (not using RAM buffer) */
+#endif
 }
 
 %endif %- UpdateFull
@@ -928,6 +945,8 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
   currentOrientation = newOrientation;
   #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
     #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
+  //#elif %'ModuleName'%.CONFIG_USE_RAM_BUFFER /* need to care about little/big endian order of data */
+  //  #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
   #else
     #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_CBA)
   #endif
