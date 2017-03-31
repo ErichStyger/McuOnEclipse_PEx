@@ -896,13 +896,15 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
   } /* for(;;) */
 %else
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.SendBlock((void*)memAddr, memAddrSize, &nof);
-    if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
-    %if defined(OnError)
-      %OnError();
-    %endif
-      break; /* break for(;;) */
+    if(memAddr!=NULL) { /* only if we want to send an address */
+      res = %@I2C@'ModuleName'%.SendBlock((void*)memAddr, memAddrSize, &nof);
+      if (res!=ERR_OK) {
+        (void)%@I2C@'ModuleName'%.SendStop();
+      %if defined(OnError)
+        %OnError();
+      %endif
+        break; /* break for(;;) */
+      }
     }
     res = %@I2C@'ModuleName'%.RecvBlock(data, dataSize, &nof);
     if (res!=ERR_OK) {
