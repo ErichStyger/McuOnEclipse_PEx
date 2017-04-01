@@ -4,7 +4,7 @@
     <Name>SSD1351</Name>
     <Description>Display driver for the Solomon Systech SSD1351 display (e.g. on Hexwear)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.034</Version>
+    <Version>01.036</Version>
     <Icon>SSD1351</Icon>
     <TypesFiles>PE,SSD1351\SSD1351</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -358,9 +358,9 @@
               <ItemLevel>BASIC</ItemLevel>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <Description>Disabled</Description>
-              <Expanded>No</Expanded>
-              <DefaultValue>false</DefaultValue>
+              <Description>Enabled</Description>
+              <Expanded>Yes</Expanded>
+              <DefaultValue>true</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
@@ -390,9 +390,9 @@
               <ItemLevel>BASIC</ItemLevel>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <Description>Enabled</Description>
-              <Expanded>Yes</Expanded>
-              <DefaultValue>true</DefaultValue>
+              <Description>Disabled</Description>
+              <Expanded>No</Expanded>
+              <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
@@ -550,23 +550,6 @@
                   </TInhrLinkItem>
                 </GrupItem>
               </Children>
-            </TBoolGrupItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolGrupItem>
-              <Name>Serial</Name>
-              <Symbol>SerialInterfaceEnabled</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>If communication with the display is using an SPI bus (D/C, CS, Clock, MOSI). If not using the D/C signal, then a 3-wire protocol is used.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <ReadOnly>true</ReadOnly>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description>Enabled</Description>
-              <Expanded>Yes</Expanded>
-              <DefaultValue>true</DefaultValue>
-              <DefineSymbol>YES_NO</DefineSymbol>
-              <IfDisabled>setNOTHING</IfDisabled>
             </TBoolGrupItem>
           </GrupItem>
         </Children>

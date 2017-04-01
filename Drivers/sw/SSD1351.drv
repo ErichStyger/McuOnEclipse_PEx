@@ -488,7 +488,6 @@ void %OnGiveLCD(void);
 #define RESET_HIGH()  %@RES@'ModuleName'%.SetVal()               %>40 /* RESET signal high */
 %endif
 
-%if SerialInterfaceEnabled='yes'
 #define CMD_MODE()   %@D_C@'ModuleName'%.ClrVal()                %>40 /* switch to command mode, D/C low */
 #define DATA_MODE()  %@D_C@'ModuleName'%.SetVal()                %>40 /* switch to data mode, D/C high */
 %ifdef SCE
@@ -498,7 +497,6 @@ void %OnGiveLCD(void);
 #define CS_HIGH()    /* hardware is controlling CS */            %>40 /* CE signal high */
 #define CS_LOW()     /* hardware is controlling CS */            %>40 /* CE signal low */
 %endif
-%endif %- SerialInterfaceEnabled */
 
 %if defined(Power)
 #define POWER_OFF()  %@Power@'ModuleName'%.ClrVal() /* OLED power off */
@@ -665,10 +663,8 @@ static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *data, size_t dataSize)
 %include Common\SSD1351ReadDataWord.Inc
 word %'ModuleName'%.%ReadDataWord(void)
 {
-%if SerialInterfaceEnabled='yes'
   /* sorry, with the serial interface it is NOT possible to read from display memory */
   return 0;
-%endif
 }
 
 %endif %- ReadDataWord
