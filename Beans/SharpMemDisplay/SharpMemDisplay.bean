@@ -4,7 +4,7 @@
     <Name>SharpMemDisplay</Name>
     <Description>Display driver for the Sharp Memory Display LS013B4DN04</Description>
     <Author>Erich Styger</Author>
-    <Version>01.008</Version>
+    <Version>01.009</Version>
     <Icon>SharpMemDisplay</Icon>
     <TypesFiles>PE,SharpMemDisplay\SharpMemDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -209,6 +209,24 @@
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Use RAM Buffer</Name>
+              <Symbol>useRAMBuffer</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled, the driver is able to use a RAM buffer for the display memory. Use the UpdatFull() to transfer the data to the display.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>

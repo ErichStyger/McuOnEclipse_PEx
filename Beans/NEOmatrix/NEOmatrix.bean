@@ -4,7 +4,7 @@
     <Name>NEOmatrix</Name>
     <Description>Adafruit NeoPixel LED Matrix Display</Description>
     <Author>Erich Styger</Author>
-    <Version>01.107</Version>
+    <Version>01.108</Version>
     <Icon>NEOmatrix</Icon>
     <TypesFiles>PE,NEOmatrix\NEOmatrix</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -171,6 +171,24 @@
         <Hint>If we can write directly into the display memory</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Use RAM Buffer</Name>
+        <Symbol>useRAMBuffer</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If enabled, the driver is able to use a RAM buffer for the display memory. Use the UpdatFull() to transfer the data to the display.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
