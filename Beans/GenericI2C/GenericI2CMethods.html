@@ -351,6 +351,34 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ReadWordAddress8">
+<b>ReadWordAddress8</b></a>
+ - Read a word from the device using an 8bit memory address. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadWordAddress8(uint8_t i2cAddr, uint8_t memAddr, uint16_t *data)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>memAddr:uint8_t</i> - Device memory address</li>
+<li><i>data: Pointer to uint16_t</i> - Pointer to read buffer (single byte)</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="WriteWordAddress8">
+<b>WriteWordAddress8</b></a>
+ - Write a word to the device using an 8bit memory address: (S+i2cAddr+0), (memAddr), (data)...(data+P)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t WriteWordAddress8(uint8_t i2cAddr, uint8_t memAddr, uint16_t data)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - I2C address of device</li>
+<li><i>memAddr:uint8_t</i> - Device memory address</li>
+<li><i>data:uint16_t</i> - Data value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ProbeACK">
 <b>ProbeACK</b></a>
  - Accesses the bus to check if the device responds with an ACK (ACK polling).
