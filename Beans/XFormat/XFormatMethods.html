@@ -251,6 +251,21 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="xsnprintf">
+<b>xsnprintf</b></a>
+ - snprintf() like function, returns the number of characters written, negative in case of error.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int xsnprintf(char *buf, size_t max_len, const char *fmt, ...)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>buf: Pointer to char</i> - Pointer to buffer to be written</li>
+<li><i>max_len:byte</i> - size of output buffer (in size)</li>
+<li><i>fmt: Pointer to char</i> - Pointer to formatting string</li>
+<li><i>argList:byte</i> - Open Argument List</li>
+<li><i>Return value:int</i> - number of characters written, negative for error case
+</li>
+</ul><br />
+</li>
 
            </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

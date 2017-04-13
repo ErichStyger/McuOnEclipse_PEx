@@ -73,11 +73,19 @@
 
 /* other includes needed */
 #include <stdarg.h> /* open argument list support */
+#include <stddef.h> /* for size_t */
 %-BW_CUSTOM_INCLUDE_END_H
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+/* GCC have printf type attribute check. */
+#ifdef __GNUC__
+  /* inform the GNU compiler about printf() style functions, so the compiler can check the arguments */
+  #define %'ModuleName'%.PRINTF_ATTRIBUTE(a,b) __attribute__ ((__format__ (__printf__, a, b)))
+#else
+  #define %'ModuleName'%.PRINTF_ATTRIBUTE(a,b)
+#endif /* __GNUC__ */
 
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
@@ -94,7 +102,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xformat
 %ifdef xformat
-unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const char * fmt, ...);
+unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const char * fmt, ...) %'ModuleName'%.PRINTF_ATTRIBUTE(3,4);
 %define! Pararg
 %define! Parfmt
 %define! ParopenArgList
@@ -120,7 +128,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN xsprintf
 %ifdef xsprintf
-int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...);
+int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...) %'ModuleName'%.PRINTF_ATTRIBUTE(2,3);
 %define! Parfmt
 %define! ParargList
 %define! Parbuf
@@ -129,6 +137,19 @@ int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...);
 
 %endif %- xsprintf
 %-BW_METHOD_END xsprintf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xsnprintf
+%ifdef xsnprintf
+int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...) %'ModuleName'%.PRINTF_ATTRIBUTE(3,4);
+%define! Parbuf
+%define! Parmax_len
+%define! Parfmt
+%define! ParargList
+%define! RetVal
+%include Common\XFormatxsnprintf.Inc
+
+%endif %- xsnprintf
+%-BW_METHOD_END xsnprintf
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -424,6 +445,36 @@ static const unsigned char formatStates[] =
   0x08,0x00,0x00
 };
 
+typedef struct {
+  char *s;
+  size_t space;
+} StrOutBuffer;
+
+static void putCharIntoBufMaxLen(void *arg, char c) {
+  StrOutBuffer *buff = (StrOutBuffer*)arg;
+  if (buff->space > 0) {
+    buff->space--;
+    *(buff->s)++ = c;
+  }
+}
+
+static int xsnprintf(char *buf, size_t max_len, const char *fmt, va_list args) {
+  int res = -1;
+  StrOutBuffer out = { buf, max_len };
+
+  if (max_len <= 1) {
+    *buf = 0;
+    return 0;
+  } else {
+    out.space--; /* teminal zero*/
+  }
+  res = %'ModuleName'%.xvformat(putCharIntoBufMaxLen, (void *)&out, fmt, args);
+  *(out.s) = 0;
+  if (res > 0) {
+    res = out.s - buf;
+  }
+  return res;
+}
 %------------------------------------------------------------------------------------------------------------
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -983,6 +1034,28 @@ int %'ModuleName'%.%xsprintf(char *buf, const char *fmt, ...)
 %endif %- xsprintf
 #endif
 %-BW_METHOD_END xsprintf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN xsnprintf
+%ifdef xsnprintf
+%define! Parbuf
+%define! Parmax_len
+%define! Parfmt
+%define! ParargList
+%define! RetVal
+%include Common\XFormatxsnprintf.Inc
+int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...)
+{
+  va_list args;
+  int res;
+
+  va_start(args,fmt);
+  res = xsnprintf(buf, max_len, fmt, args);
+  va_end(args);
+  return res;
+}
+
+%endif %- xsnprintf
+%-BW_METHOD_END xsnprintf
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
