@@ -460,15 +460,17 @@ static void putCharIntoBufMaxLen(void *arg, char c) {
 
 static int xsnprintf(char *buf, size_t max_len, const char *fmt, va_list args) {
   int res = -1;
-  StrOutBuffer out = { buf, max_len };
+  StrOutBuffer out;
 
+  out.space = max_len;
+  out.s = buf;
   if (max_len <= 1) {
     *buf = 0;
     return 0;
   } else {
     out.space--; /* teminal zero*/
   }
-  res = %'ModuleName'%.xvformat(putCharIntoBufMaxLen, (void *)&out, fmt, args);
+  res = (int)%'ModuleName'%.xvformat(putCharIntoBufMaxLen, (void *)&out, fmt, args);
   *(out.s) = 0;
   if (res > 0) {
     res = out.s - buf;
@@ -595,7 +597,7 @@ static void putCharIntoBuf(void *arg, char c) {
 static int xsprintf(char *buf, const char *fmt, va_list args) {
   int res;
 
-  res = %'ModuleName'%.xvformat(putCharIntoBuf, (void *)&buf, fmt, args);
+  res = (int)%'ModuleName'%.xvformat(putCharIntoBuf, (void *)&buf, fmt, args);
   *buf = 0;
   return res;
 }
@@ -704,10 +706,11 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                 break;
 
             case    ST_WIDTH:
-                if (c == '*')
+                if (c == '*') {
                     width = (int)va_arg(args,int);
-                else
+                } else {
                     width = width * 10 + (c - '0');
+                }
                 break;
 
             case    ST_DOT:
@@ -715,10 +718,11 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
 
             case    ST_PRECIS:
                 flags |= FLAG_PREC;
-                if (c == '*')
+                if (c == '*') {
                     prec = (int)va_arg(args,int);
-                else
+                } else {
                     prec = prec * 10 + (c - '0');
+                }
                 break;
 
             case    ST_SIZE:
@@ -939,14 +943,15 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
                     {
                         if (flags & FLAG_LONG)
                         {
-                            value = (long)va_arg(args,long);
+                            value = (unsigned long)((long)va_arg(args,long));
                         }
                                                 else
                                                 {
-                                                        if (flags & FLAG_DECIMAL)
-                                                                value = (long)va_arg(args,int);
-                                                        else
-                                                                value = (long)va_arg(args,unsigned int);
+                                                        if (flags & FLAG_DECIMAL) {
+                                                                value = (unsigned long)((long)va_arg(args,int));
+                                                        } else {
+                                                                value = (unsigned long)((long)va_arg(args,unsigned int));
+                                                        }
                                                 }
                     }
 
