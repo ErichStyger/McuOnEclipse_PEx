@@ -325,8 +325,10 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-   Example:
 %-     #include "header_name.h"
 #include <stddef.h> /* for size_t */
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #include "fsl_sim.h" /* system integration module */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
+  #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
 #endif
 %-
 %-BW_CUSTOM_INCLUDE_END_M
@@ -438,7 +440,7 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   sim_uid_t tmp;
   int i, j;
 
