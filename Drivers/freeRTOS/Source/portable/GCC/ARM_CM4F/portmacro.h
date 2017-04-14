@@ -362,8 +362,28 @@ extern void vPortExitCritical(void);
 %if (CPUfamily = "ColdFireV1")
 /* Context switches are requested using the force register. */
 #define portCF_INTC_VALUE \
-%if FreeRTOSColdFireCPU='MCF51CN' | FreeRTOSColdFireCPU='MCF51JM' | FreeRTOSColdFireCPU='MCF51MM' | FreeRTOSColdFireCPU='MCF51ME'
- /* Setting for MCF51CN, JM, MM and ME families */ \
+%if FreeRTOSColdFireCPU='MCF51QE'
+	/* Setting for MCF51QE */ \
+	%if ColdFireSWI='VL1swi'
+	0x26 /* INTC_FRC[LVL1] (VL1swi) set */
+	%elif ColdFireSWI='VL2swi'
+	0x25 /* INTC_FRC[LVL1] (VL2swi) set */
+	%elif ColdFireSWI='VL3swi'
+	0x24 /* INTC_FRC[LVL1] (VL3swi) set */
+	%elif ColdFireSWI='VL4swi'
+	0x23 /* INTC_FRC[LVL1] (VL4swi) set */
+	%elif ColdFireSWI='VL5swi'
+	0x22 /* INTC_FRC[LVL1] (VL5swi) set */
+	%elif ColdFireSWI='VL6swi'
+	0x21 /* INTC_FRC[LVL1] (VL6swi) set */
+	%elif ColdFireSWI='VL7swi'
+	0x20 /* INTC_FRC[LVL1] (VL7swi) set */
+	%else
+	#error "unknown ColdFireSWI setting in embedded component properties!"
+	%endif
+%else
+ %- FreeRTOSColdFireCPU='MCF51JE' | FreeRTOSColdFireCPU='MCF51CN' | FreeRTOSColdFireCPU='MCF51JM' | FreeRTOSColdFireCPU='MCF51MM' | FreeRTOSColdFireCPU='MCF51ME'
+ /* Setting for MCF51CN, JM, JE, MM and ME families */ \
  %if ColdFireSWI='VL1swi'
   0x3E /* INTC_FRC[LVL1] (VL1swi) set */
  %elif ColdFireSWI='VL2swi'
@@ -381,27 +401,8 @@ extern void vPortExitCritical(void);
  %else
   #error "unknown ColdFireSWI setting in embedded component properties!"
  %endif
-%elif FreeRTOSColdFireCPU='MCF51QE'
- /* Setting for MCF51QE */ \
- %if ColdFireSWI='VL1swi'
-  0x26 /* INTC_FRC[LVL1] (VL1swi) set */
- %elif ColdFireSWI='VL2swi'
-  0x25 /* INTC_FRC[LVL1] (VL2swi) set */
- %elif ColdFireSWI='VL3swi'
-  0x24 /* INTC_FRC[LVL1] (VL3swi) set */
- %elif ColdFireSWI='VL4swi'
-  0x23 /* INTC_FRC[LVL1] (VL4swi) set */
- %elif ColdFireSWI='VL5swi'
-  0x22 /* INTC_FRC[LVL1] (VL5swi) set */
- %elif ColdFireSWI='VL6swi'
-  0x21 /* INTC_FRC[LVL1] (VL6swi) set */
- %elif ColdFireSWI='VL7swi'
-  0x20 /* INTC_FRC[LVL1] (VL7swi) set */
- %else
-  #error "unknown ColdFireSWI setting in embedded component properties!"
- %endif
-%else
-  #error "unknown ColdFire CPU setting in embedded component properties!"
+%- %else
+%-   #error "unknown ColdFire CPU setting in embedded component properties!"
 %endif
 
 #define portYIELD() \
