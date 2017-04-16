@@ -4,7 +4,7 @@
     <Name>RingBuffer</Name>
     <Description>Implements a ring buffer for 16bit elements</Description>
     <Author>Erich Styger</Author>
-    <Version>01.048</Version>
+    <Version>01.050</Version>
     <Icon>RingBuffer</Icon>
     <TypesFiles>PE,RingBuffer\RingBuffer</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2014-2015, all rights reserved.\nWeb: http://www.mcuoneclipse.com\n\nThis an open source software of an embedded component for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2014-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -181,46 +181,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Putn</Name>
-        <Symbol>Putn</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Put a number new element into the buffer.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>elem</ParName>
-          <ParType>ElementType</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to new elements to be put into the buffer</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>nof</ParName>
-          <ParType>BufSizeType</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>number of elements</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType *elem, %'ModuleName'_BufSizeType nof)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>Get</Name>
         <Symbol>Get</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -290,6 +250,86 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Putn</Name>
+        <Symbol>Putn</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Put a number new element into the buffer.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>elem</ParName>
+          <ParType>ElementType</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to new elements to be put into the buffer</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>nof</ParName>
+          <ParType>BufSizeType</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>number of elements</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType *elem, %'ModuleName'_BufSizeType nof)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Getn</Name>
+        <Symbol>Getn</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Get a number elements into a buffer.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>buf</ParName>
+          <ParType>ElementType</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to buffer where to store the elements</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>nof</ParName>
+          <ParType>BufSizeType</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>number of elements</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_ElementType *buf, %'ModuleName'_BufSizeType nof)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

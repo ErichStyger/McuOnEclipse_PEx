@@ -227,19 +227,6 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="Putn">
-<b>Putn</b></a>
- - Put a number new element into the buffer.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t Putn(<i>ComponentName_</i>ElementType *elem, <i>ComponentName_</i>BufSizeType nof)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>elem: Pointer to <i>ComponentName_</i>ElementType</i> - Pointer to new elements to be put into the buffer</li>
-<li><i>nof:<i>ComponentName_</i>BufSizeType</i> - number of elements</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
-</ul><br />
-</li>
 <li><a name="Get">
 <b>Get</b></a>
  - Removes an element from the buffer
@@ -261,6 +248,32 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>index:<i>ComponentName_</i>BufSizeType</i> - Index of element. 0 peeks the top element, 1 the next, and so on.</li>
 <li><i>elemP: Pointer to <i>ComponentName_</i>ElementType</i> - Pointer to where to store the received element</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="Putn">
+<b>Putn</b></a>
+ - Put a number new element into the buffer.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Putn(<i>ComponentName_</i>ElementType *elem, <i>ComponentName_</i>BufSizeType nof)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>elem: Pointer to <i>ComponentName_</i>ElementType</i> - Pointer to new elements to be put into the buffer</li>
+<li><i>nof:<i>ComponentName_</i>BufSizeType</i> - number of elements</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="Getn">
+<b>Getn</b></a>
+ - Get a number elements into a buffer.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t Getn(<i>ComponentName_</i>ElementType *buf, <i>ComponentName_</i>BufSizeType nof)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>buf: Pointer to <i>ComponentName_</i>ElementType</i> - Pointer to buffer where to store the elements</li>
+<li><i>nof:<i>ComponentName_</i>BufSizeType</i> - number of elements</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />

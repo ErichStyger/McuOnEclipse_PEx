@@ -217,6 +217,17 @@ uint8_t %'ModuleName'%.%Compare(%'ModuleName'_BufSizeType index, %'ModuleName'_E
 
 %endif %- Compare
 %-BW_METHOD_END Compare
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Getn
+%ifdef Getn
+uint8_t %'ModuleName'%.%Getn(%'ModuleName'_ElementType *buf, %'ModuleName'_BufSizeType nof);
+%define! Parnof
+%define! Parbuf
+%define! RetVal
+%include Common\RingBufferGetn.Inc
+
+%endif %- Getn
+%-BW_METHOD_END Getn
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -405,6 +416,29 @@ uint8_t %'ModuleName'%.%Get(%'ModuleName'_ElementType *elemP)
 
 %endif %- Get
 %-BW_METHOD_END Get
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Getn
+%ifdef Getn
+%define! Parnof
+%define! Parbuf
+%define! RetVal
+%include Common\RingBufferGetn.Inc
+uint8_t %'ModuleName'%.%Getn(%'ModuleName'_ElementType *buf, %'ModuleName'_BufSizeType nof)
+{
+  uint8_t res = ERR_OK;
+
+  while(nof>0) {
+    res = %'ModuleName'%.%Get(buf);
+    if (res!=ERR_OK) {
+      break;
+    }
+    buf++; nof--;
+  }
+  return res;
+}
+
+%endif %- Getn
+%-BW_METHOD_END Getn
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN NofElements
 %ifdef NofElements
