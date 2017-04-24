@@ -117,7 +117,7 @@ typedef TIMAGE* PIMAGE ;               /* Pointer to image */
 
 #define %'ModuleName'%.COLOR_PIXEL_SET          %@Display@'ModuleName'%.COLOR_PIXEL_SET       /* value for a pixel set */
 #define %'ModuleName'%.COLOR_PIXEL_CLR          %@Display@'ModuleName'%.COLOR_PIXEL_CLR       /* value for a pixel cleared */
-#if CONFIG_INVERTED_PIXEL_COLOR
+#if %'ModuleName'%.CONFIG_INVERTED_PIXEL_COLOR
   #define %'ModuleName'%.COLOR_BLACK              %@Display@'ModuleName'%.COLOR_WHITE           /* white color */
   #define %'ModuleName'%.COLOR_WHITE              %@Display@'ModuleName'%.COLOR_BLACK           /* black color */
   #define %'ModuleName'%.COLOR_RED                (~%@Display@'ModuleName'%.COLOR_RED)          /* red color */
