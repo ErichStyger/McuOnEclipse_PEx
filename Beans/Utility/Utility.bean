@@ -4,7 +4,7 @@
     <Name>Utility</Name>
     <Description>Utility Module</Description>
     <Author>Erich Styger</Author>
-    <Version>01.148</Version>
+    <Version>01.154</Version>
     <Icon>Utility</Icon>
     <TypesFiles>PE,Utility\Utility</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -3024,6 +3024,185 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint32_t data, uint8_t *dataP)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>map</Name>
+        <Symbol>map</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Maps a value from one range to another</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>remapped value</RetHint>
+        <ParamCount>5</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>value to be mapped</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>in_min</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>input range minimum value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>in_max</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>input range maximum value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>out_min</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>output range maximum value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>out_max</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint/>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>constrain</Name>
+        <Symbol>constrain</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Makes sure that a given input value is inside a given range.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>the constrained value</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>val</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>input value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>min</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>range minimum value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>max</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>range maximum value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(int32_t val, int32_t min, int32_t max)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>random</Name>
+        <Symbol>random</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Provides a random value. You have to call intialize the random number generator with randomSetSeed() first!</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint>random value between min and max</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>min</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>range minimum value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>max</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>range maximum value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(int32_t min, int32_t max)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>randomSetSeed</Name>
+        <Symbol>randomSetSeed</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets a seed for the random number generator</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>seed</ParName>
+          <ParType>int32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>seed to be used for random number generator</ParHint>
+          <ParUserDeclaration>unsigned int seed</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(unsigned int seed)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

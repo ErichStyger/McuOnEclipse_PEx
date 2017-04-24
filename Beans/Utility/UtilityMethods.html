@@ -1007,6 +1007,59 @@ LI.EXP {
 <li><i>dataP: Pointer to uint8_t</i> - Pointer to memory</li>
 </ul><br />
 </li>
+<li><a name="map">
+<b>map</b></a>
+ - Maps a value from one range to another
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>x:int32_t</i> - value to be mapped</li>
+<li><i>in_min:int32_t</i> - input range minimum value</li>
+<li><i>in_max:int32_t</i> - input range maximum value</li>
+<li><i>out_min:int32_t</i> - output range maximum value</li>
+<li><i>out_max:int32_t</i> - no hint</li>
+<li><i>Return value:int32_t</i> - remapped value
+</li>
+</ul><br />
+</li>
+<li><a name="constrain">
+<b>constrain</b></a>
+ - Makes sure that a given input value is inside a given range.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t constrain(int32_t val, int32_t min, int32_t max)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>val:int32_t</i> - input value</li>
+<li><i>min:int32_t</i> - range minimum value</li>
+<li><i>max:int32_t</i> - range maximum value</li>
+<li><i>Return value:int32_t</i> - the constrained value
+</li>
+</ul><br />
+</li>
+<li><a name="random">
+<b>random</b></a>
+ - Provides a random value. You have to call intialize the random number generator with randomSetSeed() first!
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t random(int32_t min, int32_t max)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>min:int32_t</i> - range minimum value</li>
+<li><i>max:int32_t</i> - range maximum value</li>
+<li><i>Return value:int32_t</i> - random value between min and max
+</li>
+</ul><br />
+</li>
+<li><a name="randomSetSeed">
+<b>randomSetSeed</b></a>
+ - Sets a seed for the random number generator
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void randomSetSeed(unsigned int seed)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>seed:int32_t</i> - seed to be used for random number generator</li>
+</ul><br />
+</li>
 <li><a name="Deinit">
 <b>Deinit</b></a>
  - Driver De-Initialization

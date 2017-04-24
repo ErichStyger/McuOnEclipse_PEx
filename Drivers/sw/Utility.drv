@@ -839,6 +839,51 @@ void %'ModuleName'%.%Init(void);
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN map
+%ifdef map
+int32_t %'ModuleName'%.%map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max);
+%define! Parx
+%define! Parin_min
+%define! Parin_max
+%define! Parout_min
+%define! Parout_max
+%define! RetVal
+%include Common\Utilitymap.Inc
+
+%endif %- map
+%-BW_METHOD_END map
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN constrain
+%ifdef constrain
+int32_t %'ModuleName'%.%constrain(int32_t val, int32_t min, int32_t max);
+%define! Parval
+%define! Parmin
+%define! Parmax
+%define! RetVal
+%include Common\Utilityconstrain.Inc
+
+%endif %- constrain
+%-BW_METHOD_END constrain
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN random
+%ifdef random
+int32_t %'ModuleName'%.%random(int32_t min, int32_t max);
+%define! Parmin
+%define! Parmax
+%define! RetVal
+%include Common\Utilityrandom.Inc
+
+%endif %- random
+%-BW_METHOD_END random
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN randomSetSeed
+%ifdef randomSetSeed
+void %'ModuleName'%.%randomSetSeed(unsigned int seed);
+%define! Parseed
+%include Common\UtilityrandomSetSeed.Inc
+
+%endif %- randomSetSeed
+%-BW_METHOD_END randomSetSeed
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -868,6 +913,7 @@ void %'ModuleName'%.%Init(void);
 %-   Example:
 %-     #include "header_name.h"
 %-
+#include <stdlib.h> /* for rand() */
 %-BW_CUSTOM_INCLUDE_END_M
 
 %-BW_CUSTOM_VARIABLE_START
@@ -2789,7 +2835,7 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
     shift *= 10;
   }
   /* get fractional part */
-  fractional = (int32_t)(val*shift);
+  fractional = (uint32_t)(val*shift);
   if (isNeg && fractional>0 && nofFracDigits>0) {
     %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
     %'ModuleName'%.%strcatNum32s(dst, dstSize, (int32_t)integral);
@@ -2929,6 +2975,71 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN map
+%ifdef map
+%define! Parx
+%define! Parin_min
+%define! Parin_max
+%define! Parout_min
+%define! Parout_max
+%define! RetVal
+%include Common\Utilitymap.Inc
+int32_t %'ModuleName'%.%map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)
+{
+  return (x-in_min)*(out_max-out_min)/(in_max-in_min)+out_min;
+}
+
+%endif %- map
+%-BW_METHOD_END map
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN constrain
+%ifdef constrain
+%define! Parval
+%define! Parmin
+%define! Parmax
+%define! RetVal
+%include Common\Utilityconstrain.Inc
+int32_t %'ModuleName'%.%constrain(int32_t val, int32_t min, int32_t max)
+{
+  if (val<min) {
+    return min;
+  } else if (val>max) {
+    return max;
+  }
+  return val;
+}
+
+%endif %- constrain
+%-BW_METHOD_END constrain
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN random
+%ifdef random
+%define! Parmin
+%define! Parmax
+%define! RetVal
+%include Common\Utilityrandom.Inc
+int32_t %'ModuleName'%.%random(int32_t min, int32_t max)
+{
+  int32_t val;
+
+  val = rand()%%(max-min+1)+min;
+  return %'ModuleName'%.constrain(val, min, max);
+}
+
+%endif %- random
+%-BW_METHOD_END random
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN randomSetSeed
+%ifdef randomSetSeed
+%define! Parseed
+%include Common\UtilityrandomSetSeed.Inc
+void %'ModuleName'%.%randomSetSeed(unsigned int seed)
+{
+  srand(seed); /* set random number generator seed */
+}
+
+%endif %- randomSetSeed
+%-BW_METHOD_END randomSetSeed
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
