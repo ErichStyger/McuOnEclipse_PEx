@@ -204,12 +204,12 @@ int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...) %
 /**
  * Detect support for va_copy
  */
-#ifdef        __GNUC__
-#define        VA_COPY        1
+#if defined(__GNUC__) && !defined(__REDLIB__) /* newlib and newlib-nano implement va_copy, but not RedLib in MCUXpresso */
+  #define        VA_COPY        1
 #endif
 
 #ifndef        VA_COPY
-#define        VA_COPY        0
+  #define        VA_COPY        0
 #endif
 
 /**
