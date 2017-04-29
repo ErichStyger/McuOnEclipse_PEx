@@ -1316,9 +1316,11 @@ void* %'ModuleName'%.%GetSemaphore(void)
 static void SendSeparatedStrings(const uint8_t *strA, const uint8_t *strB, uint8_t tabChar, uint8_t tabPos, %'ModuleName'_StdIO_OutErr_FctType io)
 {
   /* write command part */
-  while(*strA!='\0' && tabPos>0) {
-    io(*strA++);
-    tabPos--;
+  if (strA!=NULL) {
+    while(*strA!='\0' && tabPos>0) {
+      io(*strA++);
+      tabPos--;
+    }
   }
   /* fill up until ';' */
   while(tabPos>0) {
@@ -1328,8 +1330,10 @@ static void SendSeparatedStrings(const uint8_t *strA, const uint8_t *strB, uint8
   /* write separator */
   io(tabChar);
   io(' ');
-  /* write help text */
-  %'ModuleName'%.%SendStr(strB, io);
+  if (strB!=NULL) {
+    /* write help text */
+    %'ModuleName'%.%SendStr(strB, io);
+  }
 }
 
 %-INTERNAL_METHOD_END SendSeparatedStrings
