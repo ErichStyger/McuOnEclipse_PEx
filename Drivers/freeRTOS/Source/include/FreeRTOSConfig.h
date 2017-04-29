@@ -144,7 +144,7 @@
 #define configUSE_MALLOC_FAILED_HOOK                             %>50 0 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
 #define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 vApplicationMallocFailedHook
 %endif
-#define configTICK_RATE_HZ                                       %>50 ((TickType_t)%TickRateHz) /* frequency of tick interrupt */
+#define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */
 %if defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes'
 #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
 #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1000 /* 1 kHz LPO timer. Set to 1 if not used */
@@ -212,9 +212,9 @@
 %endif
 #define configFRTOS_MEMORY_SCHEME                                %>50 configUSE_HEAP_SCHEME /* for backwards compatible only with legacy name */
 %if defined(TotalHeapSize)
-#define configTOTAL_HEAP_SIZE                                    %>50 ((size_t)(%TotalHeapSize)) /* size of heap in bytes */
+#define configTOTAL_HEAP_SIZE                                    %>50 (%TotalHeapSize) /* size of heap in bytes */
 %else
-#define configTOTAL_HEAP_SIZE                                    %>50 ((size_t)(4096)) /* size of heap in bytes */
+#define configTOTAL_HEAP_SIZE                                    %>50 (4096) /* size of heap in bytes */
 %endif
 %if defined(HeapSectionName)
 #define configUSE_HEAP_SECTION_NAME                              %>50 1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
