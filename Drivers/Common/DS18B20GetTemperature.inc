@@ -4,14 +4,13 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralMethod.inc (GetTemperature)
-%;**     @brief
-%;**         Gets the temperature from memory. 
+%;**     Description :
+%;**         Gets the temperature from memory.
 %include Common\GeneralParameters.inc(27)
-%;**         @param
-%;**         uint8_t sensor_index%>27 - Index of the sensor to get the temperature 
-%;**         %>29 value. 
-%;**         @return
-%;**         int32_t %>27 - 
+%;**       * sensor_index%Parsensor_index %>27 - Index of the sensor to
+%;** %>29 get the temperature value.
+%;**     Returns     :
+%;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

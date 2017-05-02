@@ -4,11 +4,10 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralMethod.inc (Init)
-%;**     @brief
-%;**         Initializes the device. 
-%include Common\GeneralParameters.inc(27)
-%;**         @return
-%;**         void %>27 - 
+%;**     Description :
+%;**         Initializes the device.
+%include Common\GeneralParametersNone.inc
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

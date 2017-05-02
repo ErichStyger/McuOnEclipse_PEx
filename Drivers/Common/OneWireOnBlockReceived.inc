@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnBlockReceived)
 %;**     Description :
-%;**         Event created when receiving a block
+%;**         
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================

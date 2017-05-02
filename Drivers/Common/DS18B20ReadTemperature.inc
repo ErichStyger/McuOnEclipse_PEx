@@ -4,13 +4,13 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralMethod.inc (ReadTemperature)
-%;**     @brief
-%;**         Read the temperature value from the sensor and stores it in memory 
+%;**     Description :
+%;**         Read the temperature value from the sensor and stores it in
+%;**         memory
 %include Common\GeneralParameters.inc(27)
-%;**         @param
-%;**         uint8_t sensor_index%>27 -  
-%;**         @return
-%;**         bool %>27 - 
+%;**       * sensor_index%Parsensor_index %>27 - 
+%;**     Returns     :
+%;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

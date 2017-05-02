@@ -258,11 +258,10 @@ uint8_t %'ModuleName'%.%Count(void);
 
 %-*****************************************************************************************************
 %ifdef Receive
-%define! ParnumOfBytes
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(byte numOfBytes, byte counter);
+bool %'ModuleName'%.%Receive(byte counter);
 %endif %- Receive
 
 %-*****************************************************************************************************
@@ -771,7 +770,7 @@ void %'ModuleName'%.%i_send_float(void)
 %define! Pardata
 %define! RetVal
 %include Common\OneWireSendByte.inc
-bool %'ModuleName'%.%SendByte(byte data)
+bool %'ModuleName'%.%SendByte(uint8_t data)
 {
   PROG pr;
 
@@ -850,11 +849,10 @@ void %'ModuleName'%.%i_recv_get(void)
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Receive
 %ifdef Receive
-%define! ParnumOfBytes
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(uint8_t numOfBytes, uint8_t counter)
+bool %'ModuleName'%.%Receive(uint8_t counter)
 {
   PROG pr;
 
@@ -917,7 +915,7 @@ void %'ModuleName'%.%i_wait(void)
 %define! Parkey
 %define! RetVal
 %include Common\OneWireWaitms.inc
-bool %'ModuleName'%.%Waitms(byte key, uint8_t time_ms)
+bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
 {
   PROG pr;
   %@CS@'ModuleName'%.CriticalVariable()

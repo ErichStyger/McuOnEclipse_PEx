@@ -9,7 +9,7 @@
 %;**         are ready to read.
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - number of elements
+%;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

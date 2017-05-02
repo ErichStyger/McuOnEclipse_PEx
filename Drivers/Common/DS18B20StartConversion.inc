@@ -4,14 +4,14 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralMethod.inc (StartConversion)
-%;**     @brief
-%;**         Starts the conversion of temperature in the sensor. 
+%;**     Description :
+%;**         Starts the conversion of temperature in the sensor.
 %include Common\GeneralParameters.inc(27)
-%;**         @param
-%;**         uint8_t sensor_index%>27 - Index of the sensor to start to convert the 
-%;**         %>29 temperature. 
-%;**         @return
-%;**         bool %>27 - Returns FALSE if the device is busy. 
+%;**       * sensor_index%Parsensor_index %>27 - 
+%;**       * sensor_index%Parsensor_index %>27 - Index of the sensor to
+%;** %>29 start to convert the temperature.
+%;**     Returns     :
+%;**         ---%RetVal %>27 - Returns FALSE if the device is busy.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

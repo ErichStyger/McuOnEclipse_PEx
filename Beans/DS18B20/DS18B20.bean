@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.001</Version>
+    <Version>01.007</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -24,6 +24,7 @@
     <BW_NeedUst>0</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>RELEASE</BeanStatus>
+    <Shortcut>DS</Shortcut>
   </Options>
   <PropertyList>
     <Property>
@@ -77,22 +78,18 @@
       </TBoolGrupItem>
     </Property>
     <Property>
-      <TInhrItem>
-        <Name>One wire</Name>
+      <TInhrLinkItem>
+        <Name>One Wire</Name>
         <Symbol>OW</Symbol>
         <TypeSpec>DS18B20\OW</TypeSpec>
-        <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+        <Hint>Link to 1-Wire communication component</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>-1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
+        <DefaultValue/>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <InhrBeanBaseName>OW</InhrBeanBaseName>
-        <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
-      </TInhrItem>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TBoolItem>
@@ -114,34 +111,6 @@
     </Property>
   </PropertyList>
   <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes the device.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint/>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
     <Method>
       <TMthdItem>
         <Name>ReadRom</Name>
@@ -395,7 +364,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -408,7 +377,7 @@
         <Name>SetResolution</Name>
         <Symbol>SetResolution</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Sets the resolution</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -440,6 +409,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>bool #M#_#C#(void* config_bits, void* sensor_index)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the device.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint/>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

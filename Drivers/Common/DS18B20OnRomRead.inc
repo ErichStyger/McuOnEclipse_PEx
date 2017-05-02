@@ -4,14 +4,11 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnRomRead)
-%;**     @brief
-%;**          
+%;**     Description :
+%;**         
 %include Common\GeneralParameters.inc(27)
-%;**         @param
-%;**         uint8_t sensor_index%>27 -  
-%;**         @param
-%;**         uint8_t rom_code%>27 -  
-%;**         @return
+%;**       * sensor_index%Parsensor_index %>27 - 
+%;**       * rom_code%Parrom_code %>27 - 
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================
 %ifndef CommentLine

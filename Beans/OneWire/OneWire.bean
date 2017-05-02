@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.067</Version>
+    <Version>01.070</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -324,36 +324,6 @@
   <MethodList>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes this device.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <ReadOnly>true</ReadOnly>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnTypeANSICUserDeclaration>void %'ModuleName'%.Init(void)</ReturnTypeANSICUserDeclaration>
-        <ReturnType>void</ReturnType>
-        <RetHint/>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void %'ModuleName'%.Init(void) #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>SendReset</Name>
         <Symbol>SendReset</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -402,13 +372,7 @@
         <InDefinition>false</InDefinition>
         <ReturnType>bool</ReturnType>
         <RetHint>Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>numOfBytes</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>number of bytes</ParHint>
-        </Parameter>
+        <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>counter</ParName>
           <ParType>uint8_t</ParType>
@@ -417,7 +381,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t numOfBytes, uint8_t counter)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t counter)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -507,7 +471,7 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>key</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Key to identify the source of the event.</ParHint>
         </Parameter>
@@ -519,7 +483,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte key, uint8_t time_ms)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t key, uint8_t time_ms)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -901,13 +865,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Variable to save the byte.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(byte data)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1050,6 +1014,36 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes this device.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnTypeANSICUserDeclaration>void %'ModuleName'%.Init(void)</ReturnTypeANSICUserDeclaration>
+        <ReturnType>void</ReturnType>
+        <RetHint/>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void %'ModuleName'%.Init(void) #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1351,8 +1345,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2014-12-07</Date>
-      <Version>01.067</Version>
+      <Date>2017-05-02</Date>
+      <Version>01.070</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

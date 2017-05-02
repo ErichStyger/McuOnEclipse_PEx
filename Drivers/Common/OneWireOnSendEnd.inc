@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnSendEnd)
 %;**     Description :
-%;**         Event created at the end of a send
+%;**         
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================

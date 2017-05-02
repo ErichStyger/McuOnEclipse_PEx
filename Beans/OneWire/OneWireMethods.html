@@ -207,15 +207,6 @@ LI.EXP {
 <!---USERBEG DON'T CHANGE THIS LINE-->
 
 <!---USEREND DON'T CHANGE THIS LINE-->
-<li><a name="Init">
-<b>Init</b></a>
- - Initializes this device.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void %'ModuleName'%.Init(void) Init(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
 <li><a name="SendReset">
 <b>SendReset</b></a>
  - Sends a reset to the bus
@@ -230,9 +221,8 @@ LI.EXP {
  - Programs a read operation after the master send all in output buffer. Don't use a SendReset while the data is coming.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool Receive(uint8_t numOfBytes, uint8_t counter)<br />
+<br /><i>ANSIC prototype:</i> bool Receive(uint8_t counter)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>numOfBytes:uint8_t</i> - number of bytes</li>
 <li><i>counter:uint8_t</i> - Number of bytes to receive from slave</li>
 <li><i>Return value:bool</i> - Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-
 </li>
@@ -266,9 +256,9 @@ LI.EXP {
  - Programs a pause between instruccions.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool Waitms(byte key, uint8_t time_ms)<br />
+<br /><i>ANSIC prototype:</i> bool Waitms(uint8_t key, uint8_t time_ms)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>key:byte</i> - Key to identify the source of the event.</li>
+<li><i>key:uint8_t</i> - Key to identify the source of the event.</li>
 <li><i>time_ms:uint8_t</i> - Value of time to wait.</li>
 <li><i>Return value:bool</i> - Returns false if the program buffer or the time buffer is full.
 </li>
@@ -279,9 +269,9 @@ LI.EXP {
  - Sends a single byte
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SendByte(byte data)<br />
+<br /><i>ANSIC prototype:</i> bool SendByte(uint8_t data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:byte</i> - Variable to save the byte.</li>
+<li><i>data:uint8_t</i> - Variable to save the byte.</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
@@ -330,6 +320,15 @@ LI.EXP {
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void GetError(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="Init">
+<b>Init</b></a>
+ - Initializes this device.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void %'ModuleName'%.Init(void) Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>

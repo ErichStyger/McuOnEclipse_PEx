@@ -4,13 +4,13 @@
 %endif CommentLine
 %;** ===================================================================
 %include Common\GeneralMethod.inc (ReadRom)
-%;**     @brief
-%;**         Starts to read the rom code and saves it in memory. 
+%;**     Description :
+%;**         Starts to read the rom code and saves it in memory.
 %include Common\GeneralParameters.inc(27)
-%;**         @param
-%;**         uint8_t sensor_index%>27 -  
-%;**         @return
-%;**         bool %>27 - Returns FALSE if the device is busy in another operation. 
+%;**       * sensor_index%Parsensor_index %>27 - 
+%;**     Returns     :
+%;**         ---%RetVal %>27 - Returns FALSE if the device is busy in
+%;** %>29 another operation.
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
