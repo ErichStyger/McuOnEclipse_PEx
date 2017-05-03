@@ -105,7 +105,6 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-
 typedef enum {
   OWERR_OK,
   OWERR_NO_DEVICE,
@@ -318,6 +317,14 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr);
 %-INHERITED_EVENT_END TU OnCounterRestart
 
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN isBusy
+%ifdef isBusy
+bool %'ModuleName'%.%isBusy(void);
+%define! RetVal
+%include Common\OneWireisBusy.Inc
+
+%endif %- isBusy
+%-BW_METHOD_END isBusy
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -403,37 +410,57 @@ void %OnProgramEvent(uint8_t key4);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
+#define %'ModuleName'%.DEBUG  1
+
+#if %'ModuleName'%.DEBUG
+  #include "Bit1.h"
+  #include "Bit2.h"
+#endif
+
 /* timing */
-#define %'ModuleName'%.RESET_TIME       %resetTime
-#define %'ModuleName'%.RESPONSE_TIME    %responseTime
-#define %'ModuleName'%.SLOT_TIME        %slotTime
-#define %'ModuleName'%.WAIT_TIME        %waitTime
-#define %'ModuleName'%.HIGH_TIME        %highTime
-#define %'ModuleName'%.LOW_TIME         %lowTime
+#define %'ModuleName'%.A_WRITE_1_LOW_TIME       %write1LowTime   %>50/* A */
+#define %'ModuleName'%.B_WRITE_1_HIGH_TIME      %write1HighTime  %>50/* B */
+#define %'ModuleName'%.C_WRITE_0_LOW_TIME       %write0LowTime   %>50/* C */
+#define %'ModuleName'%.D_WRITE_0_HIGH_TIME      %write0HighTime  %>50/* D */
+#define %'ModuleName'%.H_RESET_TIME             %resetTime       %>50/* H */
+#define %'ModuleName'%.I_RESPONSE_TIME          %responseTime    %>50/* I */
+#define %'ModuleName'%.A_READ_TIME              %'ModuleName'%.A_WRITE_1_LOW_TIME%>50/* A (for read) */
+#define %'ModuleName'%.E_BEFORE_READ_DELAY_TIME %beforeReadDelayTime%>50/* E */
+#define %'ModuleName'%.F_AFTER_READ_DELAY_TIME  %afterReadDelayTime%>50/* F */
+#define %'ModuleName'%.SLOT_TIME                %slotTime
 
 #define INPUT          0U
 #define OUTPUT         1U
-//#define DQ_Float()     GPIO_PDD_SetPortInputDirectionMask(%@DQ@'ModuleName'%.MODULE_BASE_ADDRESS, %@DQ@'ModuleName'%.PORT_MASK)
-//#define DQ_Low()       GPIO_PDD_SetPortOutputDirectionMask(%@DQ@'ModuleName'%.MODULE_BASE_ADDRESS, %@DQ@'ModuleName'%.PORT_MASK)
 #define DQ_Float()              %@DQ@'ModuleName'%.SetInput(Data.TUDeviceDataPtr);
-#define DQ_Low()                %@DQ@'ModuleName'%.ClrVal(Data.TUDeviceDataPtr);%@DQ@'ModuleName'%.SetOutput(Data.TUDeviceDataPtr);
+#define DQ_Low()                %@DQ@'ModuleName'%.SetOutput(Data.TUDeviceDataPtr);
 #define DQ_Read()               %'ModuleName'%.read_Pin()
-#define TU_SetTime(t)           %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, (t)*Data.Ticks)
 
 typedef enum {
-  TS_NOTHING, TS_RESET_LOW, TS_RESET_FLOAT, TS_PRESENCE,
-  TS_WRITE_LOW, TS_WRITE_FLOAT,
-  TS_READ_LOW, TS_READ_FLOAT, TS_READ_GET,
-  TS_WAIT_INTER, TS_WAIT, TS_EVENT
-} %'ModuleName'%.TimerStep;
-
-typedef enum {
-  I_RESET,
-  I_SEND,
-  I_RECV,
-  I_WAIT,
-  I_EVENT
+  I_RESET, /* reset instruction */
+  I_SEND,  /* send data instruction */
+  I_RECV,  /* receive data instruction */
+  I_WAIT,  /* wait instruction */
+  I_EVENT  /* event instruction */
 } INSTR;
+
+typedef enum {
+  TS_NOTHING, /* end of timer step */
+  /* I_RESET: reset sequence */
+  TS_RESET_LOW, /* start of reset, pulling pin LOW */
+  TS_RESET_FLOAT, /* reset sequence, release pin */
+  TS_PRESENCE, /* check for presence */
+  /* I_SEND: writing sequence */
+  TS_WRITE_LOW, /* strt of write, pulling pin LOW */
+  TS_WRITE_FLOAT, /* writing sequence, releasing pin */
+  /* I_RECV: reading sequence */
+  TS_READ_LOW, /* start of read, pulling pin low */
+  TS_READ_FLOAT, /* middle of read, releasing pin */
+  TS_READ_GET, /* reading data */
+  /* I_WAIT_ waiting sequence */
+  TS_WAIT_INTER,
+  TS_WAIT,
+  TS_EVENT
+} %'ModuleName'%.TimerStep;
 
 typedef struct {
   INSTR Instr     :3;
@@ -510,6 +537,17 @@ QUEUE(uint8, Input, %szInput)
 QUEUE(uint16, Time, %szTime)
 QUEUE(PROG, Program, %szProgram)
 
+static void TU_SetTime(uint32_t us) {
+  if (Data.Busy) { /* timer already running */
+    %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
+    %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
+    %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
+    %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
+  } else {
+    %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
+  }
+}
+
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -568,33 +606,13 @@ bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 %include Common\OneWireread_Pin.inc
 bool %'ModuleName'%.%read_Pin(void)
 {
-  uint32_t PortData; /* Port data masked according to the bit used */
-
-  if ((GPIO_PDD_GetPortDirection(DQ1_MODULE_BASE_ADDRESS) & DQ1_PORT_MASK) == 0U) {
-    /* Port is configured as input */
-    PortData = GPIO_PDD_GetPortDataInput(DQ1_MODULE_BASE_ADDRESS) & DQ1_PORT_MASK;
-  } else {
-    /* Port is configured as output */
-    PortData = GPIO_PDD_GetPortDataOutput(DQ1_MODULE_BASE_ADDRESS) & DQ1_PORT_MASK;
-  }
-  return (PortData != 0U) ? (bool)TRUE : (bool)FALSE;
+#if %'ModuleName'%.DEBUG
+  Bit1_NegVal();
+#endif
+  return %@DQ@'ModuleName'%.GetVal(Data.TUDeviceDataPtr)!=0;
 }
 %endif %-read_Pin
 %-BW_METHOD_END read_Pin
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_low
-%ifdef i_recv_low
-%include Common\OneWirei_recv_low.inc
-void %'ModuleName'%.%i_recv_low(void)
-{
-  DQ_Low();
-  Data.SkipWEvent = TRUE;
-  TU_SetTime(%'ModuleName'%.WAIT_TIME - %readTime);
-  Data.Step = TS_READ_FLOAT;
-}
-%endif %-i_recv_low
-%-BW_METHOD_END i_recv_low
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_run
@@ -602,6 +620,9 @@ void %'ModuleName'%.%i_recv_low(void)
 %include Common\OneWirei_run.inc
 void %'ModuleName'%.%i_run(void)
 {
+#if %'ModuleName'%.DEBUG
+  //Bit1_NegVal();
+#endif
   Data.Busy = TRUE;
   %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
   %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
@@ -623,7 +644,7 @@ void %'ModuleName'%.%i_action(void)
   Data.Prog = Program_Get();
   switch(Data.Prog.Instr) {
     case I_RESET:
-      TU_SetTime(%'ModuleName'%.RESET_TIME);
+      TU_SetTime(%'ModuleName'%.H_RESET_TIME);
       Data.Step = TS_RESET_LOW;
       break;
     case I_SEND:
@@ -633,7 +654,7 @@ void %'ModuleName'%.%i_action(void)
     case I_RECV:
       Data.ToWork = Data.Prog.Count;
       Data.WorkByte = 0;
-      TU_SetTime(%readTime);
+      TU_SetTime(%'ModuleName'%.A_READ_TIME);
       Data.Step = TS_READ_LOW;
       break;
     case I_WAIT:
@@ -650,7 +671,7 @@ void %'ModuleName'%.%i_action(void)
       }
       break;
     case I_EVENT:
-      TU_SetTime(%'ModuleName'%.RESET_TIME);
+      TU_SetTime(%'ModuleName'%.H_RESET_TIME);
       Data.Step = TS_EVENT;
       break;
     default:
@@ -661,24 +682,14 @@ void %'ModuleName'%.%i_action(void)
 %-BW_METHOD_END i_action
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_reset
-%ifdef i_reset
-%include Common\OneWirei_reset.inc
-void %'ModuleName'%.%i_reset(void)
-{
-  DQ_Low();
-  TU_SetTime(%'ModuleName'%.RESPONSE_TIME);
-  Data.Step = TS_RESET_FLOAT;
-}
-%endif %-i_reset
-%-BW_METHOD_END i_reset
-
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_presence
 %ifdef i_presence
 %include Common\OneWirei_presence.inc
 void %'ModuleName'%.%i_presence(void)
 {
+#if %'ModuleName'%.DEBUG
+  //Bit1_NegVal();
+#endif
   if(DQ_Read()) {	//No response
     Data.Step = TS_NOTHING;
     Data.Error = OWERR_NO_DEVICE;
@@ -694,6 +705,19 @@ void %'ModuleName'%.%i_presence(void)
 %-BW_METHOD_END i_presence
 
 %-*****************************************************************************************************
+%-BW_METHOD_BEGIN i_reset
+%ifdef i_reset
+%include Common\OneWirei_reset.inc
+void %'ModuleName'%.%i_reset(void)
+{
+  DQ_Low();
+  TU_SetTime(%'ModuleName'%.H_RESET_TIME);
+  Data.Step = TS_RESET_FLOAT;
+}
+%endif %-i_reset
+%-BW_METHOD_END i_reset
+
+%-*****************************************************************************************************
 %-BW_METHOD_BEGIN SendReset
 %ifdef SendReset
 %define! RetVal
@@ -707,10 +731,10 @@ bool %'ModuleName'%.%SendReset(void)
   }
   pr.Instr = I_RESET;
   Program_Put(pr);
-  if(!Data.Busy) {
+  if(!Data.Busy) { /* start action */
     %'ModuleName'%.i_action();
-    %'ModuleName'%.i_run();
     %'ModuleName'%.i_reset();
+    %'ModuleName'%.i_run();
   }
   return TRUE;
 }
@@ -725,12 +749,12 @@ void %'ModuleName'%.%i_send_low(void)
 {
   DQ_Low();
   if(Data.WorkBit) {
-    TU_SetTime(%'ModuleName'%.SLOT_TIME - %'ModuleName'%.HIGH_TIME );
+    TU_SetTime(%'ModuleName'%.A_WRITE_1_LOW_TIME);
     Data.SkipWEvent = TRUE;
   } else {
-    TU_SetTime(%'ModuleName'%.SLOT_TIME - %'ModuleName'%.LOW_TIME );
+    TU_SetTime(%'ModuleName'%.C_WRITE_0_LOW_TIME);
   }
-  Data.Step = TS_WRITE_FLOAT;
+  Data.Step = TS_WRITE_FLOAT; /* next step is to release pin */
 }
 %endif %-i_send_low
 %-BW_METHOD_END i_send_low
@@ -742,7 +766,7 @@ void %'ModuleName'%.%i_send_low(void)
 void %'ModuleName'%.%i_send_float(void)
 {
   DQ_Float();
-  if(Data.WorkBitPos==0) {
+  if(Data.WorkBitPos==0) { /* all bits sent? */
     if(Data.ToWork) {
       Data.WorkByte = Output_Get();
       Data.ToWork--;
@@ -753,13 +777,13 @@ void %'ModuleName'%.%i_send_float(void)
   }
   Data.WorkBit = Data.WorkByte & 1;
   Data.WorkByte >>= 1;
-  if(Data.WorkBit) {
-    TU_SetTime(%'ModuleName'%.HIGH_TIME );
+  if(Data.WorkBit) { /* set time for when we will get back to floating */
+    TU_SetTime(%'ModuleName'%.B_WRITE_1_HIGH_TIME);
   } else {
-    TU_SetTime(%'ModuleName'%.LOW_TIME );
+    TU_SetTime(%'ModuleName'%.D_WRITE_0_HIGH_TIME);
   }
   Data.WorkBitPos++;
-  Data.Step = TS_WRITE_LOW;
+  Data.Step = TS_WRITE_LOW; /* next action for the next bit: pull LOW to start new bit */
 }
 %endif %-i_send_float
 %-BW_METHOD_END i_send_float
@@ -788,8 +812,8 @@ bool %'ModuleName'%.%SendByte(uint8_t data)
   }
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
-    %'ModuleName'%.i_run();
     %'ModuleName'%.i_send_low();
+    %'ModuleName'%.i_run();
   }
   return TRUE;
 }
@@ -797,25 +821,14 @@ bool %'ModuleName'%.%SendByte(uint8_t data)
 %-BW_METHOD_END SendByte
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_float
-%ifdef i_recv_float
-%include Common\OneWirei_recv_float.inc
-void %'ModuleName'%.%i_recv_float(void)
-{
-  DQ_Float();
-  TU_SetTime(%'ModuleName'%.SLOT_TIME - %'ModuleName'%.WAIT_TIME);
-  Data.SkipWEvent = TRUE;
-  Data.Step = TS_READ_GET;
-}
-%endif %-i_recv_float
-%-BW_METHOD_END i_recv_float
-
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_recv_get
 %ifdef i_recv_get
 %include Common\OneWirei_recv_get.inc
 void %'ModuleName'%.%i_recv_get(void)
 {
+#if %'ModuleName'%.DEBUG
+  //Bit1_NegVal();
+#endif
   Data.WorkByte >>= 1;
   Data.WorkBit = DQ_Read();
   %'ModuleName'%.add_CRC(Data.WorkBit);
@@ -840,11 +853,39 @@ void %'ModuleName'%.%i_recv_get(void)
     }
   }
   Data.WorkBitPos++;
-  TU_SetTime(%readTime);
+  TU_SetTime(%'ModuleName'%.F_AFTER_READ_DELAY_TIME);
   Data.Step = TS_READ_LOW;
 }
 %endif %-i_recv_get
 %-BW_METHOD_END i_recv_get
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN i_recv_float
+%ifdef i_recv_float
+%include Common\OneWirei_recv_float.inc
+void %'ModuleName'%.%i_recv_float(void)
+{
+  DQ_Float();
+  TU_SetTime(%'ModuleName'%.E_BEFORE_READ_DELAY_TIME);
+  Data.SkipWEvent = TRUE;
+  Data.Step = TS_READ_GET;
+}
+%endif %-i_recv_float
+%-BW_METHOD_END i_recv_float
+
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN i_recv_low
+%ifdef i_recv_low
+%include Common\OneWirei_recv_low.inc
+void %'ModuleName'%.%i_recv_low(void)
+{
+  DQ_Low();
+  Data.SkipWEvent = TRUE;
+  TU_SetTime(%'ModuleName'%.A_READ_TIME);
+  Data.Step = TS_READ_FLOAT;
+}
+%endif %-i_recv_low
+%-BW_METHOD_END i_recv_low
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Receive
@@ -864,8 +905,8 @@ bool %'ModuleName'%.%Receive(uint8_t counter)
   Program_Put(pr);
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
+    %'ModuleName'%.i_recv_low();
     %'ModuleName'%.i_run();
-    %'ModuleName'%.i_recv_float();
   }
   return TRUE;
 }
@@ -1009,10 +1050,8 @@ bool %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
 %include Common\OneWireInit.inc
 void %'ModuleName'%.%Init(void)
 {
-  GPIO_PDD_ClearPortDataOutputMask(%@DQ@'ModuleName'%.MODULE_BASE_ADDRESS, %@DQ@'ModuleName'%.PORT_MASK);
-  DQ_Float();
-  Data.DQDeviceDataPtr = %@DQ@'ModuleName'%.Init(NULL);
-  Data.TUDeviceDataPtr = %@TU@'ModuleName'%.Init(NULL);
+  Data.DQDeviceDataPtr = %@DQ@'ModuleName'%.Init(NULL); /* GPIO pin init */
+  Data.TUDeviceDataPtr = %@TU@'ModuleName'%.Init(NULL); /* timer init */
   Data.Ticks = %@TU@'ModuleName'%.GetInputFrequency(Data.TUDeviceDataPtr) / 1000000U;
   Data.Busy = FALSE;
   Data.WorkBitPos = 0;
@@ -1021,6 +1060,9 @@ void %'ModuleName'%.%Init(void)
   Data.Step = TS_NOTHING;
   Data.CRC = 0;
   Data.Error = OWERR_OK;
+
+  DQ_Float(); /* input mode, let the pull-up take the signal high */
+  %@DQ@'ModuleName'%.ClrVal(Data.TUDeviceDataPtr); /* load LOW to output register. We won't change that value afterwards, we only switch between output and input/float mode */
 }
 %endif %-Init
 %-BW_METHOD_END Init
@@ -1030,6 +1072,9 @@ void %'ModuleName'%.%Init(void)
 %include Common\GeneralInternal.inc (OnCounterRestart)
 void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 {
+#if %'ModuleName'%.DEBUG
+  Bit2_NegVal();
+#endif
   switch(Data.Step) {
     case TS_NOTHING:
       if(Program_isEmpty()) {
@@ -1044,7 +1089,7 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
       break;
     case TS_RESET_FLOAT:
       DQ_Float();
-      TU_SetTime(%'ModuleName'%.RESET_TIME - %'ModuleName'%.RESPONSE_TIME);
+      TU_SetTime(%'ModuleName'%.I_RESPONSE_TIME); /* have it floting for this time until handling of TS_PRESENCE */
       Data.Step = TS_PRESENCE;
       break;
     case TS_PRESENCE:
@@ -1102,6 +1147,17 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 %-INHERITED_EVENT_END TU OnCounterRestart
 
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN isBusy
+%ifdef isBusy
+%define! RetVal
+%include Common\OneWireisBusy.Inc
+bool %'ModuleName'%.%isBusy(void)
+{
+  return (Data.Busy!=0);
+}
+
+%endif %- isBusy
+%-BW_METHOD_END isBusy
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

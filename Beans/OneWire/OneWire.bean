@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.070</Version>
+    <Version>01.077</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -103,12 +103,114 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>Reset time (us)</Name>
+              <Name>A: Write 1 Low time (us)</Name>
+              <Symbol>write1LowTime</Symbol>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>6</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>15</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>B: Write 1 High time (us)</Name>
+              <Symbol>write1HighTime</Symbol>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>64</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>100</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>C: Write 0 Low time (us)</Name>
+              <Symbol>write0LowTime</Symbol>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>60</DefaultValue>
+              <MinValue>60</MinValue>
+              <MaxValue>120</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>D: Write 0 High time (us)</Name>
+              <Symbol>write0HighTime</Symbol>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>10</DefaultValue>
+              <MinValue>1</MinValue>
+              <MaxValue>120</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>E: delay time before read (us)</Name>
+              <Symbol>beforeReadDelayTime</Symbol>
+              <Hint>Time to wait after releasing signal until to read the bit</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>9</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>F: After read delay time</Name>
+              <Symbol>afterReadDelayTime</Symbol>
+              <Hint/>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>55</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>H: Reset time (us)</Name>
               <Symbol>resetTime</Symbol>
               <Hint>Duration of the reset pulse that the master send to slave devices.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>500</DefaultValue>
+              <DefaultValue>480</DefaultValue>
               <MinValue>480</MinValue>
               <MaxValue>-1</MaxValue>
               <MinValue_Reason>This is the minimum required time by 1-wire protocol.</MinValue_Reason>
@@ -121,82 +223,14 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>Device response time (us)</Name>
+              <Name>I: Device response time (us)</Name>
               <Symbol>responseTime</Symbol>
               <Hint>Time that master waits before read, after send the reset pulse.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>100</DefaultValue>
+              <DefaultValue>70</DefaultValue>
               <MinValue>15</MinValue>
               <MaxValue>300</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>High signal time (us)</Name>
-              <Symbol>highTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>5</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>15</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Low signal time (us)</Name>
-              <Symbol>lowTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>80</DefaultValue>
-              <MinValue>60</MinValue>
-              <MaxValue>120</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Output low time to read (us)</Name>
-              <Symbol>readTime</Symbol>
-              <Hint/>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>5</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>14</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Wait time to read input (us)</Name>
-              <Symbol>waitTime</Symbol>
-              <Hint>Wait time to read after start to send the low signal to read.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>10</DefaultValue>
-              <MinValue>2</MinValue>
-              <MaxValue>10</MaxValue>
               <Bases>DEC</Bases>
               <DefaultBase>DEC</DefaultBase>
               <ExtraHintDisabled>false</ExtraHintDisabled>
@@ -1019,6 +1053,34 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>isBusy</Name>
+        <Symbol>isBusy</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint/>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>TRUE if device is busy</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Init</Name>
         <Symbol>Init</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1345,8 +1407,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-02</Date>
-      <Version>01.070</Version>
+      <Date>2017-05-03</Date>
+      <Version>01.077</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

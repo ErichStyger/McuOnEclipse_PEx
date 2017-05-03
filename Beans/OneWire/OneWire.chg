@@ -1,9 +1,9 @@
 %-This is the Chg script. It is used for tests, verifications and
 %- validations of the component every time it is changed.
 %-
-%if (%EXPR(%get(lowTime, Value) - %get(slotTime, Value)) >= %EXPR(0))
-	%set lowTime Error "Can't be greater than slot time."
-%endif
+%- %if (%EXPR(%get(lowTime, Value) - %get(slotTime, Value)) >= %EXPR(0))
+%-	%set lowTime Error "Can't be greater than slot time."
+%- %endif
 %- %set lowTime MaxValue %EXPR(%get(slotTime, Value)-1)
 
 %- %set @TU@Counter Value TPM1_CNT

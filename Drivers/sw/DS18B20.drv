@@ -603,44 +603,43 @@ char* %'ModuleName'%.%GetRomCode(uint8_t sensor_index)
 %include Common\DS18B20ReadRom.inc
 bool %'ModuleName'%.%ReadRom(uint8_t sensor_index)
 {
-%CODE_BEGIN
-	if(Device.Busy) return FALSE;
-	Device.Busy = TRUE;
+  if(Device.Busy) {
+    return FALSE;
+  }
+  Device.Busy = TRUE;
 %if %get(connMultiple, Bool) = 'yes'
-	Device.WorkSensor = sensor_index;
+  Device.WorkSensor = sensor_index;
 %endif
-	%@OW@'ModuleName'%.SendReset();
-	%@OW@'ModuleName'%.SendByte(RC_READ_ROM);
-	%@OW@'ModuleName'%.Receive(8);
-	%@OW@'ModuleName'%.SendByte(0xFF);
-	%@OW@'ModuleName'%.ProgramEvent(EV_READ_ROM);
-	return TRUE;
-%CODE_END
+  %@OW@'ModuleName'%.SendReset();
+  %@OW@'ModuleName'%.SendByte(RC_READ_ROM);
+  %@OW@'ModuleName'%.Receive(8);
+  %@OW@'ModuleName'%.SendByte(0xFF);
+  %@OW@'ModuleName'%.ProgramEvent(EV_READ_ROM);
+  return TRUE;
 }
 %endif %-ReadRom
 %-BW_METHOD_END ReadRom
-
-
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %include Common\DS18B20Init.inc
-void %'ModuleName'%.%Init()
+void %'ModuleName'%.%Init(void)
 {
 %CODE_BEGIN
 %if %get(connMultiple, Bool) = 'yes'
-	uint8 i;
-	for(i=0;i<%get(deviceCount, Value);i++) {
-		Sensor[i].Resolution = 0b11;
-	}
+  uint8 i;
+
+  for(i=0;i<%get(deviceCount, Value);i++) {
+    Sensor[i].Resolution = 0b11;
+  }
 %for i from [0..%EXPR(%get(deviceCount, Value)-1)]
-	memcpy(Sensor[%i].Rom, "\x%#b%get(rom0%i, Value)\x%#b%get(rom1%i, Value)\x%#b%get(rom2%i, Value)\x%#b%get(rom3%i, Value)\x%#b%get(rom4%i, Value)\x%#b%get(rom5%i, Value)\x%#b%get(rom6%i, Value)\x%#b%get(rom7%i, Value)", 8);
+  memcpy(Sensor[%i].Rom, "\x%#b%get(rom0%i, Value)\x%#b%get(rom1%i, Value)\x%#b%get(rom2%i, Value)\x%#b%get(rom3%i, Value)\x%#b%get(rom4%i, Value)\x%#b%get(rom5%i, Value)\x%#b%get(rom6%i, Value)\x%#b%get(rom7%i, Value)", 8);
 %endfor
 %else
-	Sensor.Resolution = 0b11;
+  Sensor.Resolution = 0b11;
 %endif
-	Device.Value = 8500000;
+  Device.Value = 8500000;
 %CODE_END
 }
 %endif %-Init
