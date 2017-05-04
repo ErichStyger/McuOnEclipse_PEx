@@ -463,8 +463,8 @@ typedef enum {
 } %'ModuleName'%.TimerStep;
 
 typedef struct {
-  INSTR Instr     :3;
-  unsigned Count  :5;
+  INSTR Instr     :3; /* instruction code */
+  unsigned Count  :5; /* e.g. how many bytes to send */
 } PROG;
 
 struct {
@@ -482,70 +482,18 @@ struct {
   uint8 WorkByte;
   unsigned ToWork     :6;
   unsigned WorkBit    :1;
-  unsigned Busy       :1;
+  volatile unsigned Busy       :1;
   unsigned WorkBitPos :3;
   unsigned WaitEvent  :1;
   unsigned SkipWEvent :1;
   unsigned WaitKey    :5;
 } Data;
 
-#define QUEUE(type, q, len) \
-	type q[len], *q##_First, *q##_Last; \
-	uint8 w_##q=0, r_##q=0, c_##q=0; \
-	void q##_Put(type c) { \
-		if(c_##q==len) return; \
-		%@CS@'ModuleName'%.CriticalVariable(); \
-		%@CS@'ModuleName'%.EnterCritical(); \
-		q[w_##q] = c; \
-		q##_Last = &q[w_##q]; \
-		c_##q++; \
-		if(++w_##q==len) w_##q=0; \
-		%@CS@'ModuleName'%.ExitCritical(); \
-	} \
-	type q##_Get() { \
-		type r; \
-		if(c_##q==0) return q[r_##q]; \
-		%@CS@'ModuleName'%.CriticalVariable(); \
-		%@CS@'ModuleName'%.EnterCritical(); \
-		r = q[r_##q]; \
-		if(++r_##q==len) r_##q=0; \
-		c_##q--; \
-		q##_First = &q[r_##q]; \
-		%@CS@'ModuleName'%.ExitCritical(); \
-		return r; \
-	} \
-	uint8 q##_isEmpty() { \
-		return r_##q==w_##q; \
-	} \
-	uint8 q##_isFull() { \
-		return c_##q==len; \
-	} \
-	uint8 q##_Count() { \
-		return c_##q; \
-	} \
-	uint8 q##_CountFree() { \
-		return len - c_##q; \
-	} \
-	void q##_Clear() { \
-		r_##q=w_##q; \
-		c_##q=0; \
-	}
-// End of define QUEUE
-
-QUEUE(uint8, Output, %szOutput)
-QUEUE(uint8, Input, %szInput)
-QUEUE(uint16, Time, %szTime)
-QUEUE(PROG, Program, %szProgram)
-
 static void TU_SetTime(uint32_t us) {
-  if (Data.Busy) { /* timer already running */
-    %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
-    %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
-    %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
-    %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
-  } else {
-    %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
-  }
+  %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
+  %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
+  %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
+  %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
 }
 
 %-BW_CUSTOM_VARIABLE_END
@@ -574,20 +522,23 @@ static void TU_SetTime(uint32_t us) {
 bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 {
   PROG pr;
+  PROG last;
 
-  if((Program_Last->Instr != I_SEND && Program_isFull()) || Output_CountFree() < count) {
+  (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
+  if((last.Instr != I_SEND && %@Program@'ModuleName'%.NofFreeElements()==0) || (%@Output@'ModuleName'%.NofFreeElements() < count)) {
     return FALSE;
   }
   pr.Instr = I_SEND;
   pr.Count = count;
   for(;count>0;count--) {
-    Output_Put(*data);
+    (void)%@Output@'ModuleName'%.Put(*data);
     data++;
   }
-  if(Program_Last->Instr == I_SEND) {
-    Program_Last->Count += pr.Count;
+  if(last.Instr == I_SEND) { /* update last element */
+    last.Count += pr.Count; /* update */
+    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update */
   } else {
-    Program_Put(pr);
+    (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   }
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
@@ -636,12 +587,12 @@ void %'ModuleName'%.%i_run(void)
 %include Common\OneWirei_action.inc
 void %'ModuleName'%.%i_action(void)
 {
-  if(Program_isEmpty()) {
+  if(%@Program@'ModuleName'%.NofElements()==0) {
     TU_SetTime(%'ModuleName'%.SLOT_TIME);
     Data.Step = TS_NOTHING;
     return;
   }
-  Data.Prog = Program_Get();
+  (void)%@Program@'ModuleName'%.Get((uint8_t*)&Data.Prog);
   switch(Data.Prog.Instr) {
     case I_RESET:
       TU_SetTime(%'ModuleName'%.H_RESET_TIME);
@@ -658,7 +609,7 @@ void %'ModuleName'%.%i_action(void)
       Data.Step = TS_READ_LOW;
       break;
     case I_WAIT:
-      Data.WaitTime = Time_Get();
+      (void)%@Time@'ModuleName'%.Get(&Data.WaitTime);
       Data.WaitTotal = (uint32) Data.WaitTime * Data.Ticks * 1000U;
       Data.WaitDiv = Data.WaitTotal >> 16;
       Data.WaitRes = Data.WaitTotal & 0x0000FFFF;
@@ -726,11 +677,11 @@ bool %'ModuleName'%.%SendReset(void)
 {
   PROG pr;
 
-  if(Program_isFull()) {
+  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
     return FALSE;
   }
   pr.Instr = I_RESET;
-  Program_Put(pr);
+  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   if(!Data.Busy) { /* start action */
     %'ModuleName'%.i_action();
     %'ModuleName'%.i_reset();
@@ -768,7 +719,7 @@ void %'ModuleName'%.%i_send_float(void)
   DQ_Float();
   if(Data.WorkBitPos==0) { /* all bits sent? */
     if(Data.ToWork) {
-      Data.WorkByte = Output_Get();
+      (void)%@Output@'ModuleName'%.Get(&Data.WorkByte);
       Data.ToWork--;
     } else {
       %'ModuleName'%.i_action();
@@ -797,18 +748,21 @@ void %'ModuleName'%.%i_send_float(void)
 bool %'ModuleName'%.%SendByte(uint8_t data)
 {
   PROG pr;
+  PROG last;
 
-  if(Program_Last->Instr == I_SEND) {
-    Output_Put(data);
-    Program_Last->Count++;
+  (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
+  if(last.Instr == I_SEND) {
+    (void)%@Output@'ModuleName'%.Put(data);
+    last.Count++; /* update */
+    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update element */
   } else {
-    if(Program_isFull()) {
+    if(%@Program@'ModuleName'%.NofFreeElements()==0) {
       return FALSE;
     }
-    Output_Put(data);
+    (void)%@Output@'ModuleName'%.Put(data);
     pr.Instr = I_SEND;
     pr.Count = 1;
-    Program_Put(pr);
+    (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   }
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
@@ -834,7 +788,7 @@ void %'ModuleName'%.%i_recv_get(void)
   %'ModuleName'%.add_CRC(Data.WorkBit);
   Data.WorkByte += (Data.WorkBit ? 0x80 : 0);
   if(Data.WorkBitPos == 7) { //Full byte
-    Input_Put(Data.WorkByte);
+    (void)%@Input@'ModuleName'%.Put(Data.WorkByte);
     Data.ToWork--;
     if(Data.ToWork == 0) {  //finish
       if(Data.CRC){
@@ -897,12 +851,12 @@ bool %'ModuleName'%.%Receive(uint8_t counter)
 {
   PROG pr;
 
-  if(Program_isFull()) {
+  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
     return FALSE;
   }
   pr.Instr = I_RECV;
   pr.Count = counter;
-  Program_Put(pr);
+  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
     %'ModuleName'%.i_recv_low();
@@ -923,12 +877,12 @@ bool %'ModuleName'%.%ProgramEvent(uint8_t key)
 {
   PROG pr;
 
-  if(Program_isFull()) {
+  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
     return FALSE;
   }
   pr.Instr = I_EVENT;
   pr.Count = key;
-  Program_Put(pr);
+  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
   }
@@ -944,7 +898,9 @@ bool %'ModuleName'%.%ProgramEvent(uint8_t key)
 void %'ModuleName'%.%i_wait(void)
 {
   Data.WaitEvent = FALSE;
+%if defined(OnWaitEnd)
   %OnWaitEnd(Data.WaitKey);
+%endif
 }
 %endif %-i_wait
 %-BW_METHOD_END i_wait
@@ -961,14 +917,14 @@ bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
   PROG pr;
   %@CS@'ModuleName'%.CriticalVariable()
 
-  if(Program_isFull() || Time_isFull()) {
+  if((%@Program@'ModuleName'%.NofFreeElements()==0) || (%@Time@'ModuleName'%.NofFreeElements()==0)) {
     return FALSE;
   }
   %@CS@'ModuleName'%.EnterCritical();
   pr.Instr = I_WAIT;
   pr.Count = key;
-  Program_Put(pr);
-  Time_Put(time_ms);
+  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
+  (void)%@Time@'ModuleName'%.Put(time_ms);
   %@CS@'ModuleName'%.ExitCritical();
   return TRUE;
 }
@@ -982,7 +938,7 @@ bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
 %include Common\OneWireCount.inc
 uint8_t %'ModuleName'%.%Count(void)
 {
-  return Input_Count();
+  return %@Input@'ModuleName'%.NofElements();
 }
 %endif %-Count
 %-BW_METHOD_END Count
@@ -1013,10 +969,10 @@ void %'ModuleName'%.%add_CRC(uint8_t bitValue)
 %include Common\OneWireGetByte.inc
 bool %'ModuleName'%.%GetByte(uint8_t *data)
 {
-  if (Input_isEmpty()) {
+  if (%@Input@'ModuleName'%.NofElements()==0) {
     return FALSE;
   }
-  *data = Input_Get();
+  (void)%@Input@'ModuleName'%.Get(data);
   return TRUE;
 }
 %endif %- GetByte
@@ -1032,11 +988,11 @@ bool %'ModuleName'%.%GetByte(uint8_t *data)
 %include Common\OneWireGetBytes.inc
 bool %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
 {
-  if(count > Input_Count()) {
+  if(count > %@Input@'ModuleName'%.NofElements()) {
     return FALSE;
   }
   for(;count>0;count--) {
-    *data = Input_Get();
+    (void)%@Input@'ModuleName'%.Get(data);
     data++;
   }
   return TRUE;
@@ -1077,7 +1033,7 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 #endif
   switch(Data.Step) {
     case TS_NOTHING:
-      if(Program_isEmpty()) {
+      if(%@Program@'ModuleName'%.NofElements()==0) {
         %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
         Data.Busy = FALSE;
       } else {
@@ -1089,7 +1045,7 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
       break;
     case TS_RESET_FLOAT:
       DQ_Float();
-      TU_SetTime(%'ModuleName'%.I_RESPONSE_TIME); /* have it floting for this time until handling of TS_PRESENCE */
+      TU_SetTime(%'ModuleName'%.I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
       Data.Step = TS_PRESENCE;
       break;
     case TS_PRESENCE:

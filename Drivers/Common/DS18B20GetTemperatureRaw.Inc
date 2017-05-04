@@ -3,11 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (get_data)
+%include Common\GeneralMethod.inc (GetTemperatureRaw)
 %;**     Description :
-%;**         
-%include Common\GeneralParametersNone.inc
-%include Common\GeneralReturnNothing.inc
+%;**         Gets the temperature from memory in raw 32bit format
+%include Common\GeneralParameters.inc(27)
+%;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
+%;** %>29 if only using one sensor
+%;**     Returns     :
+%;**         ---%RetVal %>27 - 
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

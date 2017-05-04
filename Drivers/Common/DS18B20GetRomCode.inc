@@ -7,7 +7,8 @@
 %;**     Description :
 %;**         Gets the rom code from the memory.
 %include Common\GeneralParameters.inc(27)
-%;**       * sensor_index%Parsensor_index %>27 - 
+%;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
+%;** %>29 if only using one sensor
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Returns a pointer to the rom code array.
 %include Common\GeneralDamage.inc

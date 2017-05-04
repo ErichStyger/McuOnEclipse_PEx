@@ -212,9 +212,9 @@ LI.EXP {
  - Starts to read the rom code and saves it in memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ReadRom(void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool ReadRom(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>Return value:bool</i> - Returns FALSE if the device is busy in another operation.
 </li>
 </ul><br />
@@ -224,9 +224,9 @@ LI.EXP {
  - Gets the rom code from the memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> char* GetRomCode(void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> char* GetRomCode(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>Return value:char*</i> - Returns a pointer to the rom code array.
 </li>
 </ul><br />
@@ -247,23 +247,10 @@ LI.EXP {
  - Starts the conversion of temperature in the sensor.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool StartConversion(void* sensor_index, void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool StartConversion(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
-<li><i>sensor_index:void*</i> - Index of the sensor to start to convert the temperature.</li>
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>Return value:bool</i> - Returns FALSE if the device is busy.
-</li>
-</ul><br />
-</li>
-<li><a name="GetTemperature">
-<b>GetTemperature</b></a>
- - Gets the temperature from memory.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> int32_t GetTemperature(void* sensor_index)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - Index of the sensor to get the temperature value.</li>
-<li><i>Return Value:int32_t</i> - no hint
 </li>
 </ul><br />
 </li>
@@ -272,10 +259,34 @@ LI.EXP {
  - Read the temperature value from the sensor and stores it in memory
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ReadTemperature(void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool ReadTemperature(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:void*</i> - no hint</li>
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>Return Value:bool</i> - no hint
+</li>
+</ul><br />
+</li>
+<li><a name="GetTemperatureRaw">
+<b>GetTemperatureRaw</b></a>
+ - Gets the temperature from memory in raw 32bit format
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int32_t GetTemperatureRaw(<i>ComponentName_</i>uint16_t sensor_index)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>sensor_index:<a href="DS18B20User Types.html#uint16_t"><i>ComponentName_</i>uint16_t</a></i> - Sensor index, use zero if only using one sensor</li>
+<li><i>Return Value:int32_t</i> - no hint
+</li>
+</ul><br />
+</li>
+<li><a name="GetTemperatureFloat">
+<b>GetTemperatureFloat</b></a>
+ - Returns the temperature from memory in floating point format.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> float GetTemperatureFloat(uint8_t sensor_index)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
+<li><i>Return value:float</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -295,9 +306,9 @@ LI.EXP {
  - Sets the resolution
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SetResolution(void* config_bits, void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool SetResolution(DS18B20_ResolutionBits resolution, void* sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>config_bits:void*</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
+<li><i>config_bits:uint8_t</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
 <li><i>sensor_index:void*</i> - Index of the sensor to set the resolution.</li>
 <li><i>Return Value:bool</i> - no hint
 </li>

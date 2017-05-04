@@ -7,9 +7,8 @@
 %;**     Description :
 %;**         Starts the conversion of temperature in the sensor.
 %include Common\GeneralParameters.inc(27)
-%;**       * sensor_index%Parsensor_index %>27 - 
-%;**       * sensor_index%Parsensor_index %>27 - Index of the sensor to
-%;** %>29 start to convert the temperature.
+%;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
+%;** %>29 if only using one sensor
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Returns FALSE if the device is busy.
 %include Common\GeneralDamage.inc

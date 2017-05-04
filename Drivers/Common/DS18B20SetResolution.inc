@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         Sets the resolution
 %include Common\GeneralParameters.inc(27)
-%;**       * config_bits%Parconfig_bits %>27 - Two bits resolution config
+%;**         config_bits%Parconfig_bits %>27 - Two bits resolution config
 %;** %>29 value: 
 %;** %>29 [0b00] - 9 bits.
 %;** %>29 [0b01] - 10 bits.

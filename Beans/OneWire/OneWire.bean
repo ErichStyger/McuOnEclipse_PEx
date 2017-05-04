@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.077</Version>
+    <Version>01.083</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -14,7 +14,7 @@
     <DemoDriver>no</DemoDriver>
     <Category>SW-Communication</Category>
     <BeanLevel>High</BeanLevel>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Omar Isaí Pinales Ayala, 2014, all rights reserved.\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software driver for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) Original implementation: Omar Isaí Pinales Ayala, 2014, all rights reserved.\n * Updated and maintained by Erich Styger, 2014-2017\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <BW_HelpType>Default</BW_HelpType>
     <BW_HelpFiles>,Properties,Methods,Events,"User Types"</BW_HelpFiles>
     <OneBeanInstance>!yes</OneBeanInstance>
@@ -105,7 +105,7 @@
             <TIntgItem>
               <Name>A: Write 1 Low time (us)</Name>
               <Symbol>write1LowTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'. Default is 6</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>6</DefaultValue>
@@ -122,7 +122,7 @@
             <TIntgItem>
               <Name>B: Write 1 High time (us)</Name>
               <Symbol>write1HighTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '1'.</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'. Default is 64</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>64</DefaultValue>
@@ -139,7 +139,7 @@
             <TIntgItem>
               <Name>C: Write 0 Low time (us)</Name>
               <Symbol>write0LowTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'. Default is 60</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>60</DefaultValue>
@@ -156,7 +156,7 @@
             <TIntgItem>
               <Name>D: Write 0 High time (us)</Name>
               <Symbol>write0HighTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '0'.</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'. Default is 10</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>10</DefaultValue>
@@ -173,10 +173,10 @@
             <TIntgItem>
               <Name>E: delay time before read (us)</Name>
               <Symbol>beforeReadDelayTime</Symbol>
-              <Hint>Time to wait after releasing signal until to read the bit</Hint>
+              <Hint>Time to wait after releasing signal until to read the bit. Default is 9. Shorten this if read of bit is too late.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>9</DefaultValue>
+              <DefaultValue>3</DefaultValue>
               <MinValue>0</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
@@ -190,7 +190,7 @@
             <TIntgItem>
               <Name>F: After read delay time</Name>
               <Symbol>afterReadDelayTime</Symbol>
-              <Hint/>
+              <Hint>Delay time after reading the bit until the next slot.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>55</DefaultValue>
@@ -207,7 +207,7 @@
             <TIntgItem>
               <Name>H: Reset time (us)</Name>
               <Symbol>resetTime</Symbol>
-              <Hint>Duration of the reset pulse that the master send to slave devices.</Hint>
+              <Hint>Duration of the reset pulse that the master send to slave devices. Default 480</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>480</DefaultValue>
@@ -225,7 +225,7 @@
             <TIntgItem>
               <Name>I: Device response time (us)</Name>
               <Symbol>responseTime</Symbol>
-              <Hint>Time that master waits before read, after send the reset pulse.</Hint>
+              <Hint>Time that master waits before read, after send the reset pulse. Default 70.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>70</DefaultValue>
@@ -242,7 +242,7 @@
             <TIntgItem>
               <Name>Total slot time (us)</Name>
               <Symbol>slotTime</Symbol>
-              <Hint/>
+              <Hint>Total communication slot time. Default 100.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>100</DefaultValue>
@@ -270,72 +270,76 @@
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
-            <TIntgItem>
-              <Name>Output buffer size</Name>
-              <Symbol>szOutput</Symbol>
-              <Hint>Determines the output buffer size.</Hint>
+            <TInhrItem>
+              <Name>Output</Name>
+              <Symbol>Output</Symbol>
+              <TypeSpec>OneWire\RBOutput</TypeSpec>
+              <Hint>Output buffer</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>20</DefaultValue>
-              <MinValue>10</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>OutputRB</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
-              <Name>Input buffer size</Name>
-              <Symbol>szInput</Symbol>
-              <Hint/>
+            <TInhrItem>
+              <Name>Input</Name>
+              <Symbol>Input</Symbol>
+              <TypeSpec>OneWire\RBInput</TypeSpec>
+              <Hint>Input buffer</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>20</DefaultValue>
-              <MinValue>10</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>InputRB</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
-              <Name>Time buffer size</Name>
-              <Symbol>szTime</Symbol>
-              <Hint/>
+            <TInhrItem>
+              <Name>Time</Name>
+              <Symbol>Time</Symbol>
+              <TypeSpec>OneWire\RBTime</TypeSpec>
+              <Hint>Buffer for time</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>2</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>TimeRB</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
-              <Name>Program buffer size</Name>
-              <Symbol>szProgram</Symbol>
-              <Hint/>
+            <TInhrItem>
+              <Name>Program</Name>
+              <Symbol>Program</Symbol>
+              <TypeSpec>OneWire\RBProgram</TypeSpec>
+              <Hint>Buffer for program</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>10</DefaultValue>
-              <MinValue>5</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
               <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>ProgramRB</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
           </GrupItem>
         </Children>
       </TGrupItem>
@@ -1407,8 +1411,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-03</Date>
-      <Version>01.077</Version>
+      <Date>2017-05-04</Date>
+      <Version>01.083</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

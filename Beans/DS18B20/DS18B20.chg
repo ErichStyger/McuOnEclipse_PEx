@@ -3,16 +3,11 @@
 
 %set Init Selection always
 
-%set @OW@szOutput ReadOnly yes
-%set @OW@szInput ReadOnly yes
-%set @OW@szTime ReadOnly yes
-%set @OW@szProgram ReadOnly yes
-
-%if %get(readAuto, Bool) = 'yes'
-	%set ReadTemperature Selection never
-%else
-	%set ReadTemperature Selection enable
-%endif
+%- %if %get(readAuto, Bool) = 'yes'
+%-	%set ReadTemperature Selection never
+%- %else
+%- 	%set ReadTemperature Selection enable
+%- %endif
 
 %if %get(connMultiple, Bool) = 'yes'
 %- Functions and events
@@ -24,26 +19,18 @@
 %-		%set OnRomRead Selection never
 	%- *******
 %- Properties
-	
+
 %- inherited properties
 	%if %get(readAuto, Bool) = 'yes'
 		%set OnAllConverted Selection enable
-		%set @OW@szOutput Value D:40
-		%set @OW@szInput Value D:40
-		%set @OW@szTime Value D:10
-		%set @OW@szProgram Value D:20
 	%else
 		%set OnAllConverted Selection never
-		%set @OW@szOutput Value D:20
-		%set @OW@szInput Value D:20
-		%set @OW@szTime Value D:5
-		%set @OW@szProgram Value D:10
 	%endif
 %- Properties check
 	%for i from [0..%EXPR(%get(deviceCount, Value)-1)]
 		%setVariable(CRC, 0)
 		%setVariable(data, %get(rom0%i, Value))
-		%set itemSensor%i Value 
+		%set itemSensor%i Value
 		%for j from [0..6]
 			%setVariable(data, %get(rom%j%%i, Value))
 			%for k from [0..7]
@@ -74,11 +61,5 @@
 %-	%set StartConvInAll Selection enable
 %-	%set OnRomRead Selection enable
 	%- ******
-%- Properties
-	
-%- inherited properties
-	%set @OW@szOutput Value D:10
-	%set @OW@szInput Value D:10
-	%set @OW@szTime Value D:4
-	%set @OW@szProgram Value D:8
+
 %endif

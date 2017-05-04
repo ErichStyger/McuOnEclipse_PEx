@@ -3,15 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (ReadRom)
+%include Common\GeneralMethod.inc (GetTemperatureFloat)
 %;**     Description :
-%;**         Starts to read the rom code and saves it in memory.
+%;**         Returns the temperature from memory in floating point format.
 %include Common\GeneralParameters.inc(27)
 %;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
 %;** %>29 if only using one sensor
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Returns FALSE if the device is busy in
-%;** %>29 another operation.
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

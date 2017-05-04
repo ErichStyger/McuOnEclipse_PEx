@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.007</Version>
+    <Version>01.015</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -21,7 +21,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>RELEASE</BeanStatus>
     <Shortcut>DS</Shortcut>
@@ -135,13 +135,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* sensor_index)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -169,13 +169,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>char* #M#_#C#(void* sensor_index)</ANSIC>
+          <ANSIC>char* #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -228,56 +228,16 @@
         <InDefinition>true</InDefinition>
         <ReturnType>bool</ReturnType>
         <RetHint>Returns FALSE if the device is busy.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint/>
-        </Parameter>
-        <Parameter>
-          <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Index of the sensor to start to convert the temperature.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(void* sensor_index, void* sensor_index)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>GetTemperature</Name>
-        <Symbol>GetTemperature</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Gets the temperature from memory.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>int32_t</ReturnType>
-        <RetHint/>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Index of the sensor to get the temperature value.</ParHint>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>int32_t #M#_#C#(void* sensor_index)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -305,13 +265,81 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* sensor_index)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetTemperatureRaw</Name>
+        <Symbol>GetTemperatureRaw</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Gets the temperature from memory in raw 32bit format</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int32_t</ReturnType>
+        <RetHint/>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>sensor_index</ParName>
+          <ParType>uint16_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int32_t #M#_#C#(%'ModuleName'_uint16_t sensor_index)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetTemperatureFloat</Name>
+        <Symbol>GetTemperatureFloat</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the temperature from memory in floating point format.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>float</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>sensor_index</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>float #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -345,35 +373,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>get_data</Name>
-        <Symbol>get_data</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
-        <ItemLevel>BASIC</ItemLevel>
-        <Visible>false</Visible>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>SetResolution</Name>
         <Symbol>SetResolution</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -396,9 +395,10 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>config_bits</ParName>
-          <ParType>pointer</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Two bits resolution config value: &lt;br&gt;&lt;b&gt;0b00&lt;/b&gt; - 9 bits.&lt;br&gt;&lt;b&gt;0b01&lt;/b&gt; - 10 bits.&lt;br&gt;&lt;b&gt;0b10&lt;/b&gt; - 11 bits.&lt;br&gt;&lt;b&gt;0b11&lt;/b&gt; - 12 bits.</ParHint>
+          <ParUserDeclaration>DS18B20_ResolutionBits resolution</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -408,7 +408,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void* config_bits, void* sensor_index)</ANSIC>
+          <ANSIC>bool #M#_#C#(DS18B20_ResolutionBits resolution, void* sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
