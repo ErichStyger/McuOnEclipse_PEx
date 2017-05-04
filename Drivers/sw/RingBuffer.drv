@@ -228,6 +228,17 @@ uint8_t %'ModuleName'%.%Getn(%'ModuleName'_ElementType *buf, %'ModuleName'_BufSi
 
 %endif %- Getn
 %-BW_METHOD_END Getn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Update
+%ifdef Update
+uint8_t %'ModuleName'%.%Update(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP);
+%define! Parindex
+%define! ParelemP
+%define! RetVal
+%include Common\RingBufferUpdate.Inc
+
+%endif %- Update
+%-BW_METHOD_END Update
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -597,6 +608,34 @@ uint8_t %'ModuleName'%.%Delete(void)
 
 %endif %- Delete
 %-BW_METHOD_END Delete
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Update
+%ifdef Update
+%define! Parindex
+%define! ParelemP
+%define! RetVal
+%include Common\RingBufferUpdate.Inc
+uint8_t %'ModuleName'%.%Update(%'ModuleName'_BufSizeType index, %'ModuleName'_ElementType *elemP)
+{
+  uint8_t res = ERR_OK;
+  int idx; /* index inside ring buffer */
+  %'ModuleName'%.DEFINE_CRITICAL();
+
+  %'ModuleName'%.ENTER_CRITICAL();
+  if (index>=%'ModuleName'%.CONFIG_BUF_SIZE) {
+    res = ERR_OVERFLOW; /* asking for an element outside of ring buffer size */
+  } else if (index<%'ModuleName'%.inSize) {
+    idx = (%'ModuleName'%.outIdx+index)%%%'ModuleName'%.CONFIG_BUF_SIZE;
+    %'ModuleName'%.buffer[idx] = *elemP; /* replace element */
+  } else { /* asking for an element which does not exist */
+    res = ERR_RXEMPTY;
+  }
+  %'ModuleName'%.EXIT_CRITICAL();
+  return res;
+}
+
+%endif %- Update
+%-BW_METHOD_END Update
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
