@@ -629,7 +629,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     int32_t val;
 
     val = (SIM_SDID>>28)&0x3; /* bits 30..28 */
-    if (val>=0 && val<=(sizeof(KinetisM0FamilyStrings)/sizeof(KinetisM0FamilyStrings[0]))) {
+    if (val>=0 && val<=(int32_t)(sizeof(KinetisM0FamilyStrings)/sizeof(KinetisM0FamilyStrings[0]))) {
       return KinetisM0FamilyStrings[val];
     } else {
       return (%'ModuleName'_ConstCharPtr)"M0 Family Id out of bounds!";
@@ -640,7 +640,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     int32_t val;
 
     val = ((SIM->SDID)>>28)&0xF; /* bits 31..28 */
-    if (val>=0 && val<=(sizeof(KinetisM0FamilyStrings)/sizeof(KinetisM0FamilyStrings[0]))) {
+    if (val>=0 && val<=(int32_t)(sizeof(KinetisM0FamilyStrings)/sizeof(KinetisM0FamilyStrings[0]))) {
       return KinetisM0FamilyStrings[val];
     } else {
       return (%'ModuleName'_ConstCharPtr)"M0 Family ID out of bounds!";
@@ -653,7 +653,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   int32_t val;
 
   val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
-  if (val>=0 && val<=(sizeof(KinetisM4FamilyStrings)/sizeof(KinetisM4FamilyStrings[0]))) {
+  if (val>=0 && val<=(int32_t)(sizeof(KinetisM4FamilyStrings)/sizeof(KinetisM4FamilyStrings[0]))) {
     return KinetisM4FamilyStrings[val];
   } else {
     return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
