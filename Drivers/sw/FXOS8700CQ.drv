@@ -64,13 +64,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -86,9 +82,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -100,11 +93,7 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-%ifdef ParseCommand
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%else
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%endif %- ParseCommand
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  /* set to 1 if method ParseCommand() is present, 0 otherwise */
 
 /* 3-axis accelerometer control register addresses */
 #define %'ModuleName'_CTRL_REG_1 0x2A
@@ -1454,6 +1443,36 @@ void %OnError(void)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for FXOS8700CQ accelerometer
+ *
+ * This header file is used to configure settings of the FXOS8700CQ module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
+%ifdef ParseCommand
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  1
+%else
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  0
+%endif %- ParseCommand
+    /*!< 1: shell support enabled, 0: otherwise */
+#endif
+
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
