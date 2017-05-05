@@ -94,7 +94,9 @@
 %endif
 
 %if defined(RxPullupEnable) & %RxPullupEnable='yes'
-%if (CPUfamily<>"Kinetis")
-%warning Rx Pull-Up pin functionality is implemented with PDD and only available for Kinetis.
-%endif
+  %ifdef CPUfamily
+  %if (%CPUfamily<>"Kinetis")
+    %warning Rx Pull-Up pin functionality is implemented with PDD and only available for Kinetis.
+  %endif
+  %endif
 %endif
