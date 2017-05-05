@@ -10,22 +10,22 @@
 %-
 %- Percepio FreeRTOS Trace source files
 %-
-%if defined(TraceRecorderFolderName)
+%if defined(TraceRecorderFolderName) & %TraceRecorderFolderName <> ""
   %define  TraceRecorderFolder %'TraceRecorderFolderName'/
 %else
   %define  TraceRecorderFolder 
 %endif
-%if defined(TraceRecorderConfigFolderName)
+%if defined(TraceRecorderConfigFolderName) & %TraceRecorderConfigFolderName <> ""
   %define  TraceRecorderConfigFolder %'TraceRecorderConfigFolderName'/
 %else
   %define  TraceRecorderConfigFolder 
 %endif
-%if defined(TraceRecorderIncludeFolderName)
+%if defined(TraceRecorderIncludeFolderName) & %TraceRecorderIncludeFolderName <> ""
   %define  TraceRecorderIncludeFolder %'TraceRecorderIncludeFolderName'/
 %else
   %define  TraceRecorderIncludeFolder 
 %endif
-%if defined(TraceRecorderRTTIncludeFolderName)
+%if defined(TraceRecorderRTTIncludeFolderName) & %TraceRecorderRTTIncludeFolderName <> ""
   %define  TraceRecorderStreamPortJLinkRTTIncludeFolder %'TraceRecorderRTTIncludeFolderName'/
 %else
   %define  TraceRecorderStreamPortJLinkRTTIncludeFolder 

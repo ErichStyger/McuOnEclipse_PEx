@@ -10,12 +10,12 @@
 %-
 %- Segger SystemView files
 %-
-%if defined(SystemViewSrcFolderName)
+%if defined(SystemViewSrcFolderName) & %SystemViewSrcFolderName <> ""
   %define  SystemViewSrcFolder %'SystemViewSrcFolderName'/
 %else
   %define  SystemViewSrcFolder 
 %endif
-%if defined(SystemViewConfigFolderName)
+%if defined(SystemViewConfigFolderName) & %SystemViewConfigFolderName <> ""
   %define  SystemViewConfigFolder %'SystemViewConfigFolderName'/
 %else
   %define  SystemViewConfigFolder 
@@ -46,3 +46,6 @@
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_FreeRTOS.h
 %include Segger_SystemView\Sample\OS\SEGGER_SYSVIEW_FreeRTOS.h
 %endif
+
+%undef SystemViewSrcFolder
+%undef SystemViewConfigFolder

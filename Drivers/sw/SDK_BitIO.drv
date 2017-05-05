@@ -518,13 +518,19 @@ void %'ModuleName'%.%Deinit(void)
 %ALL_SYMBOLS
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk)
-  %define  ConfigSrcDirFolder /%%@sdk@ConfigFilesFolderName/
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for SDK_BitIO
+ *
+ * This header file is used to configure settings of the SDK Bit I/O module.
+ */
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 

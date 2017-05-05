@@ -10,32 +10,32 @@
 %-
 %- FreeRTOS source files
 %-
-%if defined(RTOSSrcFolderName)
+%if defined(RTOSSrcFolderName) & %RTOSSrcFolderName <> ""
   %define  RTOSSrcDirFolder %'RTOSSrcFolderName'/
 %else
   %define  RTOSSrcDirFolder 
 %endif
-%if defined(RTOSMemMangFolderName)
+%if defined(RTOSMemMangFolderName) & %RTOSMemMangFolderName <> ""
   %define  RTOSMemMangDirFolder %'RTOSMemMangFolderName'/
 %else
   %define  RTOSMemMangDirFolder
 %endif
-%if defined(RTOSHeaderFolderName)
+%if defined(RTOSHeaderFolderName) & %RTOSHeaderFolderName <> ""
   %define  RTOSHeaderDirFolder %'RTOSHeaderFolderName'/
 %else
   %define  RTOSHeaderDirFolder 
 %endif
-%if defined(RTOSPortFolderName)
+%if defined(RTOSPortFolderName) & %RTOSPortFolderName <> ""
   %define  RTOSPortDirFolder %'RTOSPortFolderName'/
 %else
   %define  RTOSPortDirFolder 
 %endif
-%if defined(RTOSConfigFolderName)
+%if defined(RTOSConfigFolderName) & %RTOSConfigFolderName <> ""
   %define  RTOSConfigDirFolder %'RTOSConfigFolderName'/
 %else
   %define  RTOSConfigDirFolder 
 %endif
-%if defined(RTOSCommonFolderName)
+%if defined(RTOSCommonFolderName) & %RTOSCommonFolderName <> ""
   %define  RTOSCommonDirFolder %'RTOSCommonFolderName'/
 %else
   %define  RTOSCommonDirFolder 
@@ -156,3 +156,4 @@
 %undef RTOSHeaderDirFolder
 %undef RTOSPortDirFolder
 %undef RTOSConfigDirFolder
+%undef RTOSCommonDirFolder
