@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (ConvertAll)
 %;**     Description :
-%;**         
+%;**         Convert temperature for all sensors
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
 %;**         ---%RetVal %>27 - 

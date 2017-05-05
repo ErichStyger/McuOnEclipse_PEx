@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.083</Version>
+    <Version>01.085</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -350,6 +350,20 @@
         <Symbol>CS</Symbol>
         <TypeSpec>OneWire\CS</TypeSpec>
         <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>OneWire\sdk</TypeSpec>
+        <Hint>Link to SDK used</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>
@@ -1060,7 +1074,7 @@
         <Name>isBusy</Name>
         <Symbol>isBusy</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Returns TRUE if the bus is busy, FALSE otherwise</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1137,9 +1151,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>generate code</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
@@ -1227,9 +1241,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>generate code</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
@@ -1266,9 +1280,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>generate code</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
@@ -1311,9 +1325,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>generate code</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
@@ -1350,9 +1364,9 @@
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>generate code</Description>
-        <Expanded>Yes</Expanded>
-        <DefaultValue>true</DefaultValue>
+        <Description>don't generate code</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
@@ -1411,8 +1425,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-04</Date>
-      <Version>01.083</Version>
+      <Date>2017-05-05</Date>
+      <Version>01.085</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

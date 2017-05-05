@@ -3,20 +3,17 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetResolution)
+%include Common\GeneralMethod.inc (ParseCommand)
 %;**     Description :
-%;**         Sets the resolution
+%;**         Shell Command Line parser. Method is only available if Shell
+%;**         is enabled in the component properties.
 %include Common\GeneralParameters.inc(27)
-%;**         config_bits%Parconfig_bits %>27 - Two bits resolution config
-%;** %>29 value: 
-%;** %>29 [0b00] - 9 bits.
-%;** %>29 [0b01] - 10 bits.
-%;** %>29 [0b10] - 11 bits.
-%;** %>29 [0b11] - 12 bits.
-%;**         sensor_index%Parsensor_index %>27 - Index of the sensor to
-%;** %>29 set the resolution.
+%;**         cmd%Parcmd %>27 - 
+%;**       * handled%Parhandled %>27 - Pointer to variable which tells if
+%;** %>29 the command has been handled or not
+%;**         io%Pario %>27 - Pointer to I/O structure
 %;**     Returns     :
-%;**         ---%RetVal %>27 - 
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

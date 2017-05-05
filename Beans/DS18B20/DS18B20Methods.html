@@ -271,9 +271,9 @@ LI.EXP {
  - Gets the temperature from memory in raw 32bit format
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> int32_t GetTemperatureRaw(<i>ComponentName_</i>uint16_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> int32_t GetTemperatureRaw(uint16_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>sensor_index:<a href="DS18B20User Types.html#uint16_t"><i>ComponentName_</i>uint16_t</a></i> - Sensor index, use zero if only using one sensor</li>
+<li><i>sensor_index:uint16_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>Return Value:int32_t</i> - no hint
 </li>
 </ul><br />
@@ -292,7 +292,7 @@ LI.EXP {
 </li>
 <li><a name="ConvertAll">
 <b>ConvertAll</b></a>
- - no hint
+ - Convert temperature for all sensors
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool ConvertAll(void)<br />
@@ -306,10 +306,10 @@ LI.EXP {
  - Sets the resolution
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SetResolution(DS18B20_ResolutionBits resolution, void* sensor_index)<br />
+<br /><i>ANSIC prototype:</i> bool SetResolution(DS18B20_ResolutionBits resolution, uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>config_bits:uint8_t</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
-<li><i>sensor_index:void*</i> - Index of the sensor to set the resolution.</li>
+<li><i>sensor_index:uint8_t</i> - Index of the sensor to set the resolution.</li>
 <li><i>Return Value:bool</i> - no hint
 </li>
 </ul><br />
@@ -321,6 +321,20 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="ParseCommand">
+<b>ParseCommand</b></a>
+ - Shell Command Line parser. Method is only available if Shell is enabled in the component properties.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd:byte</i> - no hint</li>
+<li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
+<li><i>io:byte</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 

@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (isBusy)
 %;**     Description :
-%;**         
+%;**         Returns TRUE if the bus is busy, FALSE otherwise
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
 %;**         ---%RetVal %>27 - TRUE if device is busy

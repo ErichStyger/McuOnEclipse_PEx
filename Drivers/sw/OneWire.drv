@@ -69,13 +69,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -91,9 +87,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -120,7 +113,7 @@ typedef enum {
 %-BW_METHOD_BEGIN GetError
 %ifdef GetError
 %include Common\OneWireGetError.inc
-%'ModuleName'%.Error %'ModuleName'%.%GetError();
+%'ModuleName'%.Error %'ModuleName'%.%GetError(void);
 %endif  %-GetError
 %-BW_METHOD_END GetError
 
@@ -129,7 +122,7 @@ typedef enum {
 %define! Pardata
 %define! RetVal
 %include Common\OneWireSendByte.inc
-bool %'ModuleName'%.%SendByte(byte data);
+bool %'ModuleName'%.%SendByte(uint8_t data);
 %endif %- SendByte
 
 %-*****************************************************************************************************
@@ -235,7 +228,7 @@ void %'ModuleName'%.%i_reset(void);
 %define! Partime_ms
 %define! RetVal
 %include Common\OneWireWaitms.inc
-bool %'ModuleName'%.%Waitms(byte key, uint8_t time_ms);
+bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms);
 %endif %- Waitms
 
 %-*****************************************************************************************************
@@ -260,7 +253,7 @@ uint8_t %'ModuleName'%.%Count(void);
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(byte counter);
+bool %'ModuleName'%.%Receive(uint8_t counter);
 %endif %- Receive
 
 %-*****************************************************************************************************
@@ -410,24 +403,12 @@ void %OnProgramEvent(uint8_t key4);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-#define %'ModuleName'%.DEBUG  1
+#define %'ModuleName'%.DEBUG  0
 
 #if %'ModuleName'%.DEBUG
   #include "Bit1.h"
   #include "Bit2.h"
 #endif
-
-/* timing */
-#define %'ModuleName'%.A_WRITE_1_LOW_TIME       %write1LowTime   %>50/* A */
-#define %'ModuleName'%.B_WRITE_1_HIGH_TIME      %write1HighTime  %>50/* B */
-#define %'ModuleName'%.C_WRITE_0_LOW_TIME       %write0LowTime   %>50/* C */
-#define %'ModuleName'%.D_WRITE_0_HIGH_TIME      %write0HighTime  %>50/* D */
-#define %'ModuleName'%.H_RESET_TIME             %resetTime       %>50/* H */
-#define %'ModuleName'%.I_RESPONSE_TIME          %responseTime    %>50/* I */
-#define %'ModuleName'%.A_READ_TIME              %'ModuleName'%.A_WRITE_1_LOW_TIME%>50/* A (for read) */
-#define %'ModuleName'%.E_BEFORE_READ_DELAY_TIME %beforeReadDelayTime%>50/* E */
-#define %'ModuleName'%.F_AFTER_READ_DELAY_TIME  %afterReadDelayTime%>50/* F */
-#define %'ModuleName'%.SLOT_TIME                %slotTime
 
 #define INPUT          0U
 #define OUTPUT         1U
@@ -588,14 +569,14 @@ void %'ModuleName'%.%i_run(void)
 void %'ModuleName'%.%i_action(void)
 {
   if(%@Program@'ModuleName'%.NofElements()==0) {
-    TU_SetTime(%'ModuleName'%.SLOT_TIME);
+    TU_SetTime(%'ModuleName'%.CONFIG_SLOT_TIME);
     Data.Step = TS_NOTHING;
     return;
   }
   (void)%@Program@'ModuleName'%.Get((uint8_t*)&Data.Prog);
   switch(Data.Prog.Instr) {
     case I_RESET:
-      TU_SetTime(%'ModuleName'%.H_RESET_TIME);
+      TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
       Data.Step = TS_RESET_LOW;
       break;
     case I_SEND:
@@ -605,7 +586,7 @@ void %'ModuleName'%.%i_action(void)
     case I_RECV:
       Data.ToWork = Data.Prog.Count;
       Data.WorkByte = 0;
-      TU_SetTime(%'ModuleName'%.A_READ_TIME);
+      TU_SetTime(%'ModuleName'%.CONFIG_A_READ_TIME);
       Data.Step = TS_READ_LOW;
       break;
     case I_WAIT:
@@ -622,7 +603,7 @@ void %'ModuleName'%.%i_action(void)
       }
       break;
     case I_EVENT:
-      TU_SetTime(%'ModuleName'%.H_RESET_TIME);
+      TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
       Data.Step = TS_EVENT;
       break;
     default:
@@ -662,7 +643,7 @@ void %'ModuleName'%.%i_presence(void)
 void %'ModuleName'%.%i_reset(void)
 {
   DQ_Low();
-  TU_SetTime(%'ModuleName'%.H_RESET_TIME);
+  TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
   Data.Step = TS_RESET_FLOAT;
 }
 %endif %-i_reset
@@ -700,10 +681,10 @@ void %'ModuleName'%.%i_send_low(void)
 {
   DQ_Low();
   if(Data.WorkBit) {
-    TU_SetTime(%'ModuleName'%.A_WRITE_1_LOW_TIME);
+    TU_SetTime(%'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME);
     Data.SkipWEvent = TRUE;
   } else {
-    TU_SetTime(%'ModuleName'%.C_WRITE_0_LOW_TIME);
+    TU_SetTime(%'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME);
   }
   Data.Step = TS_WRITE_FLOAT; /* next step is to release pin */
 }
@@ -729,9 +710,9 @@ void %'ModuleName'%.%i_send_float(void)
   Data.WorkBit = Data.WorkByte & 1;
   Data.WorkByte >>= 1;
   if(Data.WorkBit) { /* set time for when we will get back to floating */
-    TU_SetTime(%'ModuleName'%.B_WRITE_1_HIGH_TIME);
+    TU_SetTime(%'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME);
   } else {
-    TU_SetTime(%'ModuleName'%.D_WRITE_0_HIGH_TIME);
+    TU_SetTime(%'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME);
   }
   Data.WorkBitPos++;
   Data.Step = TS_WRITE_LOW; /* next action for the next bit: pull LOW to start new bit */
@@ -807,7 +788,7 @@ void %'ModuleName'%.%i_recv_get(void)
     }
   }
   Data.WorkBitPos++;
-  TU_SetTime(%'ModuleName'%.F_AFTER_READ_DELAY_TIME);
+  TU_SetTime(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME);
   Data.Step = TS_READ_LOW;
 }
 %endif %-i_recv_get
@@ -820,7 +801,7 @@ void %'ModuleName'%.%i_recv_get(void)
 void %'ModuleName'%.%i_recv_float(void)
 {
   DQ_Float();
-  TU_SetTime(%'ModuleName'%.E_BEFORE_READ_DELAY_TIME);
+  TU_SetTime(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME);
   Data.SkipWEvent = TRUE;
   Data.Step = TS_READ_GET;
 }
@@ -835,7 +816,7 @@ void %'ModuleName'%.%i_recv_low(void)
 {
   DQ_Low();
   Data.SkipWEvent = TRUE;
-  TU_SetTime(%'ModuleName'%.A_READ_TIME);
+  TU_SetTime(%'ModuleName'%.CONFIG_A_READ_TIME);
   Data.Step = TS_READ_FLOAT;
 }
 %endif %-i_recv_low
@@ -1045,7 +1026,7 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
       break;
     case TS_RESET_FLOAT:
       DQ_Float();
-      TU_SetTime(%'ModuleName'%.I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
+      TU_SetTime(%'ModuleName'%.CONFIG_I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
       Data.Step = TS_PRESENCE;
       break;
     case TS_PRESENCE:
@@ -1214,3 +1195,35 @@ void %OnProgramEvent(uint8_t key4)
 %DEBUG
 %ALL_SYMBOLS
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for 1-Wire
+ *
+ * This header file is used to configure settings of the 1-Wire module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* timing */
+#define %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME       %write1LowTime%>60/* A */
+#define %'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME      %write1HighTime%>60/* B */
+#define %'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME       %write0LowTime%>60/* C */
+#define %'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME      %write0HighTime%>60/* D */
+#define %'ModuleName'%.CONFIG_H_RESET_TIME             %resetTime%>60/* H */
+#define %'ModuleName'%.CONFIG_I_RESPONSE_TIME          %responseTime%>60/* I */
+#define %'ModuleName'%.CONFIG_A_READ_TIME              %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME%>60/* A (for read) */
+#define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME %beforeReadDelayTime%>60/* E */
+#define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME  %afterReadDelayTime%>60/* F */
+#define %'ModuleName'%.CONFIG_SLOT_TIME                %slotTime
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
