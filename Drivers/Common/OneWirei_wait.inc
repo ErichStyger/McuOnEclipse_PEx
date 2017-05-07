@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (i_wait)
 %;**     Description :
-%;**         
+%;**         wait instruction
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

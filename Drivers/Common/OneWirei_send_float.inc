@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (i_send_float)
 %;**     Description :
-%;**         
+%;**         using data pin in input mode
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (i_send_low)
 %;**     Description :
-%;**         
+%;**         sending a low signal
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

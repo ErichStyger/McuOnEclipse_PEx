@@ -9,7 +9,7 @@
 %include Common\GeneralParameters.inc(27)
 %;**       * data%Pardata %>27 - 
 %;**     Returns     :
-%;**         ---%RetVal %>27 - 
+%;**         ---%RetVal %>27 - error or not
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

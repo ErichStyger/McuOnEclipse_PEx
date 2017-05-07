@@ -235,13 +235,13 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t Count(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return Value:uint8_t</i> - no hint
+<li><i>Return value:uint8_t</i> - number of elements
 </li>
 </ul><br />
 </li>
 <li><a name="ProgramEvent">
 <b>ProgramEvent</b></a>
- - no hint
+ - Used to add a program event
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> bool ProgramEvent(uint8_t key)<br />
@@ -272,7 +272,7 @@ LI.EXP {
 <br /><i>ANSIC prototype:</i> bool SendByte(uint8_t data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data:uint8_t</i> - Variable to save the byte.</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:bool</i> - error or not
 </li>
 </ul><br />
 </li>
@@ -285,7 +285,7 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data: Pointer to uint8_t</i> - Array of bytes to add to output stream.</li>
 <li><i>count:uint8_t</i> - Number of bytes to add to output stream. (Valid range 0 - 31)</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:bool</i> - error or not
 </li>
 </ul><br />
 </li>
@@ -298,7 +298,7 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data: Pointer to uint8_t</i> - no hint</li>
 <li><i>count:uint8_t</i> - no hint</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:bool</i> - error or not
 </li>
 </ul><br />
 </li>
@@ -310,7 +310,7 @@ LI.EXP {
 <br /><i>ANSIC prototype:</i> bool GetByte(uint8_t *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data: Pointer to uint8_t</i> - no hint</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:bool</i> - error or not
 </li>
 </ul><br />
 </li>
@@ -332,6 +332,15 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>Return value:bool</i> - TRUE if device is busy
 </li>
+</ul><br />
+</li>
+<li><a name="Deinit">
+<b>Deinit</b></a>
+ - Driver de-initialization
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void %'ModuleName'%.Init(void) Deinit(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
 <li><a name="Init">

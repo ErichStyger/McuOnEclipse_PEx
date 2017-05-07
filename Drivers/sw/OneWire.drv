@@ -318,6 +318,14 @@ bool %'ModuleName'%.%isBusy(void);
 
 %endif %- isBusy
 %-BW_METHOD_END isBusy
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void);
+%include Common\OneWireDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -981,6 +989,19 @@ bool %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
 %endif %- GetBytes
 %-BW_METHOD_END GetBytes
 
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN isBusy
+%ifdef isBusy
+%define! RetVal
+%include Common\OneWireisBusy.Inc
+bool %'ModuleName'%.%isBusy(void)
+{
+  return (Data.Busy!=0);
+}
+
+%endif %- isBusy
+%-BW_METHOD_END isBusy
+
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
@@ -999,10 +1020,36 @@ void %'ModuleName'%.%Init(void)
   Data.Error = OWERR_OK;
 
   DQ_Float(); /* input mode, let the pull-up take the signal high */
-  %@DQ@'ModuleName'%.ClrVal(Data.TUDeviceDataPtr); /* load LOW to output register. We won't change that value afterwards, we only switch between output and input/float mode */
+  /* load LOW to output register. We won't change that value afterwards, we only switch between output and input/float mode */
+  %@DQ@'ModuleName'%.ClrVal(Data.TUDeviceDataPtr);
 }
 %endif %-Init
 %-BW_METHOD_END Init
+
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\OneWireDeinit.Inc
+void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void)
+{
+  %@DQ@'ModuleName'%.Deinit(Data.DQDeviceDataPtr); /* GPIO pin */
+  Data.DQDeviceDataPtr = NULL;
+  %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr); /* timer init */
+  Data.TUDeviceDataPtr = NULL;
+  Data.Ticks = 0;
+  Data.Busy = FALSE;
+  Data.WorkBitPos = 0;
+  Data.WaitEvent = FALSE;
+  Data.SkipWEvent = FALSE;
+  Data.Step = TS_NOTHING;
+  Data.CRC = 0;
+  Data.Error = OWERR_OK;
+
+  DQ_Float(); /* input mode, tristate pin */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 
 %-INHERITED_EVENT_BEGIN TU OnCounterRestart
 %ifdef @TU@OnCounterRestart
@@ -1082,19 +1129,6 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 }
 %endif %- @TU@OnCounterRestart
 %-INHERITED_EVENT_END TU OnCounterRestart
-
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN isBusy
-%ifdef isBusy
-%define! RetVal
-%include Common\OneWireisBusy.Inc
-bool %'ModuleName'%.%isBusy(void)
-{
-  return (Data.Busy!=0);
-}
-
-%endif %- isBusy
-%-BW_METHOD_END isBusy
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

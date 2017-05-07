@@ -3,12 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (read_Pin)
+%include Common\GeneralMethod.inc (Deinit)
 %;**     Description :
-%;**         read the data pin bit
+%;**         Driver de-initialization
 %include Common\GeneralParametersNone.inc
-%;**     Returns     :
-%;**         ---%RetVal %>27 - none
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

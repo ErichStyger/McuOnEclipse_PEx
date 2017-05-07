@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (ProgramEvent)
 %;**     Description :
-%;**         
+%;**         Used to add a program event
 %include Common\GeneralParameters.inc(27)
 %;**         key%Parkey %>27 - Key to identificate the event, applies
 %;** %>29 only if OnProgramEvent is enabled. (Valid
