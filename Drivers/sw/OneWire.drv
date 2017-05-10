@@ -134,15 +134,6 @@ bool OW1_GetByte(uint8_t *data);
 %endif %- GetByte
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN read_Pin
-%ifdef read_Pin
-%include Common\OneWireread_Pin.inc
-bool %'ModuleName'%.%read_Pin(void);
-%define!  RetVal
-%endif  %-read_Pin
-%-BW_METHOD_END read_Pin
-
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_recv_low
 %ifdef i_recv_low
 %include Common\OneWirei_recv_low.inc
@@ -321,11 +312,22 @@ bool %'ModuleName'%.%isBusy(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
-void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void);
+void %'ModuleName'%.%Deinit(void);
 %include Common\OneWireDeinit.Inc
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CalcCRC
+%ifdef CalcCRC
+uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize);
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\OneWireCalcCRC.Inc
+
+%endif %- CalcCRC
+%-BW_METHOD_END CalcCRC
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -411,18 +413,16 @@ void %OnProgramEvent(uint8_t key4);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-#define %'ModuleName'%.DEBUG  0
-
-#if %'ModuleName'%.DEBUG
-  #include "Bit1.h"
-  #include "Bit2.h"
-#endif
-
 #define INPUT          0U
 #define OUTPUT         1U
-#define DQ_Float()              %@DQ@'ModuleName'%.SetInput(Data.TUDeviceDataPtr);
-#define DQ_Low()                %@DQ@'ModuleName'%.SetOutput(Data.TUDeviceDataPtr);
-#define DQ_Read()               %'ModuleName'%.read_Pin()
+#define DQ_Floating()           %@DataPin@'ModuleName'%.SetInput()
+#define DQ_SetLow()             %@DataPin@'ModuleName'%.ClrVal()
+#define DQ_Low()                %@DataPin@'ModuleName'%.SetOutput()
+#if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
+  #define DQ_Read()               (%'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE(), %@DataPin@'ModuleName'%.GetVal()!=0)
+#else
+  #define DQ_Read()               %@DataPin@'ModuleName'%.GetVal()!=0
+#endif
 
 typedef enum {
   I_RESET, /* reset instruction */
@@ -457,7 +457,6 @@ typedef struct {
 } PROG;
 
 struct {
-  LDD_TDeviceData *DQDeviceDataPtr; /* DQ pin handle */
   LDD_TDeviceData *TUDeviceDataPtr; /* timer handle */
   %'ModuleName'%.TimerStep Step;
   uint16 Ticks; /* number of timer ticks for one us */
@@ -540,29 +539,11 @@ bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 %-BW_METHOD_END SendBytes
 
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN read_Pin
-%ifdef read_Pin
-%define! RetVal
-%include Common\OneWireread_Pin.inc
-bool %'ModuleName'%.%read_Pin(void)
-{
-#if %'ModuleName'%.DEBUG
-  Bit1_NegVal();
-#endif
-  return %@DQ@'ModuleName'%.GetVal(Data.TUDeviceDataPtr)!=0;
-}
-%endif %-read_Pin
-%-BW_METHOD_END read_Pin
-
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_run
 %ifdef i_run
 %include Common\OneWirei_run.inc
 void %'ModuleName'%.%i_run(void)
 {
-#if %'ModuleName'%.DEBUG
-  //Bit1_NegVal();
-#endif
   Data.Busy = TRUE;
   %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
   %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
@@ -627,9 +608,6 @@ void %'ModuleName'%.%i_action(void)
 %include Common\OneWirei_presence.inc
 void %'ModuleName'%.%i_presence(void)
 {
-#if %'ModuleName'%.DEBUG
-  //Bit1_NegVal();
-#endif
   if(DQ_Read()) {	//No response
     Data.Step = TS_NOTHING;
     Data.Error = OWERR_NO_DEVICE;
@@ -705,7 +683,7 @@ void %'ModuleName'%.%i_send_low(void)
 %include Common\OneWirei_send_float.inc
 void %'ModuleName'%.%i_send_float(void)
 {
-  DQ_Float();
+  DQ_Floating();
   if(Data.WorkBitPos==0) { /* all bits sent? */
     if(Data.ToWork) {
       (void)%@Output@'ModuleName'%.Get(&Data.WorkByte);
@@ -769,9 +747,6 @@ bool %'ModuleName'%.%SendByte(uint8_t data)
 %include Common\OneWirei_recv_get.inc
 void %'ModuleName'%.%i_recv_get(void)
 {
-#if %'ModuleName'%.DEBUG
-  //Bit1_NegVal();
-#endif
   Data.WorkByte >>= 1;
   Data.WorkBit = DQ_Read();
   %'ModuleName'%.add_CRC(Data.WorkBit);
@@ -808,7 +783,7 @@ void %'ModuleName'%.%i_recv_get(void)
 %include Common\OneWirei_recv_float.inc
 void %'ModuleName'%.%i_recv_float(void)
 {
-  DQ_Float();
+  DQ_Floating();
   TU_SetTime(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME);
   Data.SkipWEvent = TRUE;
   Data.Step = TS_READ_GET;
@@ -1008,7 +983,6 @@ bool %'ModuleName'%.%isBusy(void)
 %include Common\OneWireInit.inc
 void %'ModuleName'%.%Init(void)
 {
-  Data.DQDeviceDataPtr = %@DQ@'ModuleName'%.Init(NULL); /* GPIO pin init */
   Data.TUDeviceDataPtr = %@TU@'ModuleName'%.Init(NULL); /* timer init */
   Data.Ticks = %@TU@'ModuleName'%.GetInputFrequency(Data.TUDeviceDataPtr) / 1000000U;
   Data.Busy = FALSE;
@@ -1019,9 +993,9 @@ void %'ModuleName'%.%Init(void)
   Data.CRC = 0;
   Data.Error = OWERR_OK;
 
-  DQ_Float(); /* input mode, let the pull-up take the signal high */
+  DQ_Floating(); /* input mode, let the pull-up take the signal high */
   /* load LOW to output register. We won't change that value afterwards, we only switch between output and input/float mode */
-  %@DQ@'ModuleName'%.ClrVal(Data.TUDeviceDataPtr);
+  DQ_SetLow();
 }
 %endif %-Init
 %-BW_METHOD_END Init
@@ -1030,10 +1004,8 @@ void %'ModuleName'%.%Init(void)
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
 %include Common\OneWireDeinit.Inc
-void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void)
+void %'ModuleName'%.%Deinit(void)
 {
-  %@DQ@'ModuleName'%.Deinit(Data.DQDeviceDataPtr); /* GPIO pin */
-  Data.DQDeviceDataPtr = NULL;
   %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr); /* timer init */
   Data.TUDeviceDataPtr = NULL;
   Data.Ticks = 0;
@@ -1045,7 +1017,7 @@ void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void)
   Data.CRC = 0;
   Data.Error = OWERR_OK;
 
-  DQ_Float(); /* input mode, tristate pin */
+  DQ_Floating(); /* input mode, tristate pin */
 }
 
 %endif %- Deinit
@@ -1056,9 +1028,6 @@ void %'ModuleName'%.Init(void) %'ModuleName'%.%Deinit(void)
 %include Common\GeneralInternal.inc (OnCounterRestart)
 void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 {
-#if %'ModuleName'%.DEBUG
-  Bit2_NegVal();
-#endif
   switch(Data.Step) {
     case TS_NOTHING:
       if(%@Program@'ModuleName'%.NofElements()==0) {
@@ -1072,7 +1041,7 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
       %'ModuleName'%.i_reset();
       break;
     case TS_RESET_FLOAT:
-      DQ_Float();
+      DQ_Floating();
       TU_SetTime(%'ModuleName'%.CONFIG_I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
       Data.Step = TS_PRESENCE;
       break;
@@ -1129,6 +1098,35 @@ void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 }
 %endif %- @TU@OnCounterRestart
 %-INHERITED_EVENT_END TU OnCounterRestart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CalcCRC
+%ifdef CalcCRC
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\OneWireCalcCRC.Inc
+uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize)
+{
+  uint8_t crc, i, x, y;
+
+  crc = 0;
+  for(x=0;x<dataSize;x++){
+    y = data[x];
+    for(i=0;i<8;i++) { /* go through all bits of the data byte */
+      if((crc&0x01)^(y&0x01)) {
+        crc >>= 1;
+        crc ^= 0x8c;
+      } else {
+        crc >>= 1;
+      }
+      y >>= 1;
+    }
+  }
+  return crc;
+}
+
+%endif %- CalcCRC
+%-BW_METHOD_END CalcCRC
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1258,6 +1256,23 @@ void %OnProgramEvent(uint8_t key4)
 #define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME %beforeReadDelayTime%>60/* E */
 #define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME  %afterReadDelayTime%>60/* F */
 #define %'ModuleName'%.CONFIG_SLOT_TIME                %slotTime
+
+%if defined(DbgReadPin)
+#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED     (1)
+%else
+#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED     (0)
+%endif
+  /*!< 1: Toggle extra GPIO pin during 1-wire read access; 0: no debug */
+
+#if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
+%if defined(DbgReadPin)
+  #include "%@DbgReadPin@ModuleName.h" /* SDK and API used */
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   %@DbgReadPin@'ModuleName'%.NegVal()
+%else
+  #include "DbgReadPin.h"
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   DbgReadPin_NegVal()
+%endif
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

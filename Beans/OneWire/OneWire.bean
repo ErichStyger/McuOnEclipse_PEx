@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.087</Version>
+    <Version>01.095</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,7 +17,6 @@
     <Copyright> * Copyright (c) Original implementation: Omar Isaí Pinales Ayala, 2014, all rights reserved.\n * Updated and maintained by Erich Styger, 2014-2017\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <BW_HelpType>Default</BW_HelpType>
     <BW_HelpFiles>,Properties,Methods,Events,"User Types"</BW_HelpFiles>
-    <OneBeanInstance>!yes</OneBeanInstance>
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
@@ -41,9 +40,9 @@
     <Property>
       <TInhrItem>
         <Name>Data Pin I/O</Name>
-        <Symbol>DQ</Symbol>
-        <TypeSpec>OneWire\DQ</TypeSpec>
-        <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+        <Symbol>DataPin</Symbol>
+        <TypeSpec>OneWire\DataPin</TypeSpec>
+        <Hint>Data Pin used</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -177,7 +176,7 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>3</DefaultValue>
-              <MinValue>0</MinValue>
+              <MinValue>1</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
               <DefaultBase>DEC</DefaultBase>
@@ -194,7 +193,7 @@
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>55</DefaultValue>
-              <MinValue>0</MinValue>
+              <MinValue>1</MinValue>
               <MaxValue>-1</MaxValue>
               <Bases>DEC</Bases>
               <DefaultBase>DEC</DefaultBase>
@@ -345,6 +344,42 @@
       </TGrupItem>
     </Property>
     <Property>
+      <TBoolGrupItem>
+        <Name>Debug</Name>
+        <Symbol>DebugGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Additional debug support</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>Debug Read Pin</Name>
+              <Symbol>DbgReadPin</Symbol>
+              <TypeSpec>OneWire\DbgReadPin</TypeSpec>
+              <Hint>Optional debug GPIO pin which gets toggled for every read access to verify the 1-Wire timing</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
       <TInhrLinkItem>
         <Name>CriticalSection</Name>
         <Symbol>CS</Symbol>
@@ -374,170 +409,6 @@
     </Property>
   </PropertyList>
   <MethodList>
-    <Method>
-      <TMthdItem>
-        <Name>SendReset</Name>
-        <Symbol>SendReset</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Sends a reset to the bus</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Receive</Name>
-        <Symbol>Receive</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Programs a read operation after the master send all in output buffer. Don't use a SendReset while the data is coming.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>false</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>counter</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Number of bytes to receive from slave</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t counter)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Count</Name>
-        <Symbol>Count</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the number of elements stored on input buffer that are ready to read.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
-        <RetHint>number of elements</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>ProgramEvent</Name>
-        <Symbol>ProgramEvent</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Used to add a program event</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns false if the program buffer is full.</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>key</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t key)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Waitms</Name>
-        <Symbol>Waitms</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Programs a pause between instruccions.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns false if the program buffer or the time buffer is full.</RetHint>
-        <ParamCount>2</ParamCount>
-        <Parameter>
-          <ParName>key</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Key to identify the source of the event.</ParHint>
-        </Parameter>
-        <Parameter>
-          <ParName>time_ms</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Value of time to wait.</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t key, uint8_t time_ms)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
     <Method>
       <TMthdItem>
         <Name>add_CRC</Name>
@@ -865,16 +736,15 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>read_Pin</Name>
-        <Symbol>read_Pin</Symbol>
+        <Name>CalcCRC</Name>
+        <Symbol>CalcCRC</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>read the data pin bit</Hint>
+        <Hint>Calculates the CRC over a number of bytes</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <Visible>false</Visible>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
+        <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
@@ -883,12 +753,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>none</RetHint>
-        <ParamCount>0</ParamCount>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>calculated CRC</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>data</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to data</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>dataSize</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>number of data bytes</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data, uint8_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -923,6 +805,170 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>bool #M#_#C#(uint8_t data)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Receive</Name>
+        <Symbol>Receive</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Programs a read operation after the master send all in output buffer. Don't use a SendReset while the data is coming.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>false</InDefinition>
+        <ReturnType>bool</ReturnType>
+        <RetHint>Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>counter</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Number of bytes to receive from slave</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(uint8_t counter)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SendReset</Name>
+        <Symbol>SendReset</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sends a reset to the bus</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Count</Name>
+        <Symbol>Count</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns the number of elements stored on input buffer that are ready to read.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>number of elements</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Waitms</Name>
+        <Symbol>Waitms</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Programs a pause between instruccions.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>bool</ReturnType>
+        <RetHint>Returns false if the program buffer or the time buffer is full.</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>key</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Key to identify the source of the event.</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>time_ms</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Value of time to wait.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(uint8_t key, uint8_t time_ms)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ProgramEvent</Name>
+        <Symbol>ProgramEvent</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Used to add a program event</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>bool</ReturnType>
+        <RetHint>Returns false if the program buffer is full.</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>key</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Key to identificate the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>bool #M#_#C#(uint8_t key)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1452,8 +1498,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-07</Date>
-      <Version>01.087</Version>
+      <Date>2017-05-10</Date>
+      <Version>01.095</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

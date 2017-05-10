@@ -3,12 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (read_Pin)
+%include Common\GeneralMethod.inc (CalcCRC)
 %;**     Description :
-%;**         read the data pin bit
-%include Common\GeneralParametersNone.inc
+%;**         Calculates the CRC over a number of bytes
+%include Common\GeneralParameters.inc(27)
+%;**       * data%Pardata %>27 - Pointer to data
+%;**         dataSize%PardataSize %>27 - number of data bytes
 %;**     Returns     :
-%;**         ---%RetVal %>27 - none
+%;**         ---%RetVal %>27 - calculated CRC
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -115,6 +115,10 @@ typedef enum {
   DS18B20_RESOLUTION_BITS_12 =  0b11  /* max conf time: 750 ms */
 } DS18B20_ResolutionBits;
 
+#define DS18B20_FAMILY_CODE    0x28  /* 8-bit family code for DS128B20 */
+#define DS18B20_ROM_CODE_SIZE  8     /* 8 byte ROM code (family ID, 6 bytes for ID plus 1 byte CRC */
+
+
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
   /*!< set to 1 if method ParseCommand() is present, 0 otherwise */
 %-
@@ -330,7 +334,6 @@ enum {
   EV_READ_TEMP_ALL
 };
 
-#define DS18B20_FAMILY_CODE  0x28  /* 8-bit family code for DS128B20 */
 
 /* Rom commands */
 #define RC_READ_ROM          0x33
@@ -346,7 +349,7 @@ enum {
 
 typedef struct {
   int32 Temperature;
-  uint8 Rom[8];
+  uint8 Rom[DS18B20_ROM_CODE_SIZE]; /* family code (0x28), ROM code (6 bytes), CRC (1 byte) */
   union {
     uint8 ConfigByte;
       struct {
@@ -367,31 +370,52 @@ struct {
 } Device;
 
 static uint16 ConvTime[4] = {94, 188, 375, 750};
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
-  static Sensor_t Sensor[%'ModuleName'%.CONFIG_MULTIPLE_DEVICES_COUNT];
-#else
-  static Sensor_t Sensor;
-#endif
+static Sensor_t Sensor[%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES];
 
 %if defined(Shell)
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[32];
-  uint8_t res;
+  char *romCodePtr;
+  bool res;
   float temp;
+  int i, j;
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-  res = %'ModuleName'%.%StartConversion(0);
-  if (res) {
-    res = %'ModuleName'%.%ReadTemperature(0);
+  for(i=0;i<%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES;i++) {
+    %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), i); /* sensor number */
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)": ");
+    res = %'ModuleName'%.%ReadRom(i);
     if (res) {
-      temp = %'ModuleName'%.%GetTemperatureFloat(0);
-      %@Utility@'ModuleName'%.NumFloatToStr(buf, sizeof(buf), temp, 4);
-      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"°C\r\n");
+      for(j=0;j<DS18B20_ROM_CODE_SIZE;j++) {
+        %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), Sensor[i].Rom[j]);
+        if(j<DS18B20_ROM_CODE_SIZE-1) {
+          %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), '-');
+        }
+      }
+    } else {
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR");
     }
-  }
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  temperature", buf, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+    %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  ROM code", buf, io->stdOut);
+  } /* for */
+  for(i=0;i<%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES;i++) {
+    res = %'ModuleName'%.%StartConversion(i);
+    if (res) {
+      %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), i); /* sensor number */
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)": ");
+      res = %'ModuleName'%.%ReadTemperature(i);
+      if (res) {
+        temp = %'ModuleName'%.%GetTemperatureFloat(i);
+        %@Utility@'ModuleName'%.strcatNumFloat(buf, sizeof(buf), temp, 4);
+        %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"°C");
+      } else {
+        %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR");
+      }
+    }
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+    %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  temperature", buf, io->stdOut);
+  } /* for */
   return ERR_OK;
 }
 
@@ -420,10 +444,17 @@ bool %'ModuleName'%.%StartConversion(uint8_t sensor_index)
   if(Device.Busy) {
     return FALSE;
   }
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
   Device.Busy = TRUE;
   %@OW@'ModuleName'%.SendReset();
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   %@OW@'ModuleName'%.SendByte(RC_MATCH_ROM);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendBytes(Sensor[sensor_index].Rom, 8);
@@ -457,7 +488,7 @@ bool %'ModuleName'%.%StartConversion(uint8_t sensor_index)
   %@OW@'ModuleName'%.SendByte(FC_CONVERT_T);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
 #if %'ModuleName'%.CONFIG_READ_AUTO
-  %@OW@'ModuleName'%.Waitms(EV_NOTHING, ConvTime[Sensor.Resolution]);
+  %@OW@'ModuleName'%.Waitms(EV_NOTHING, ConvTime[Sensor[0].Resolution]);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendReset();
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
@@ -496,11 +527,18 @@ bool %'ModuleName'%.%SetResolution(DS18B20_ResolutionBits resolution, uint8_t se
   if(Device.Busy) {
     return FALSE;
   }
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
   config_bits = ((uint8_t)resolution)<<5; /* build proper configuration register mask */
   Device.Busy = TRUE;
   %@OW@'ModuleName'%.SendReset();
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   Device.WorkSensor = sensor_index;
   Sensor[sensor_index].ConfigByte = 0x1F;
   Sensor[sensor_index].Resolution = config_bits;
@@ -517,8 +555,8 @@ bool %'ModuleName'%.%SetResolution(DS18B20_ResolutionBits resolution, uint8_t se
   %@OW@'ModuleName'%.SendByte(Sensor[sensor_index].ConfigByte);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
 #else
-  Sensor.ConfigByte = 0x1F;
-  Sensor.Resolution = config_bits;
+  Sensor[0].ConfigByte = 0x1F;
+  Sensor[0].Resolution = config_bits;
   %@OW@'ModuleName'%.SendByte(RC_SKIP_ROM);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendByte(FC_WRITE_SCRATCHPAD);
@@ -527,7 +565,7 @@ bool %'ModuleName'%.%SetResolution(DS18B20_ResolutionBits resolution, uint8_t se
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendByte(0x10);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  %@OW@'ModuleName'%.SendByte(Sensor.ConfigByte);
+  %@OW@'ModuleName'%.SendByte(Sensor[0].ConfigByte);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
 #endif
   %@OW@'ModuleName'%.ProgramEvent(EV_NO_BUSY);
@@ -537,8 +575,6 @@ bool %'ModuleName'%.%SetResolution(DS18B20_ResolutionBits resolution, uint8_t se
 }
 %endif %- SetResolution
 %-BW_METHOD_END SetResolution
-
-%-*****************************************************************************************************
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN ConvertAll
@@ -596,10 +632,17 @@ bool %'ModuleName'%.%ReadTemperature(uint8_t sensor_index)
   if(Device.Busy) {
     return FALSE;
   }
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
   Device.Busy = TRUE;
   %@OW@'ModuleName'%.SendReset();
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   %@OW@'ModuleName'%.SendByte(RC_MATCH_ROM);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendBytes(Sensor[sensor_index].Rom, sizeof(Sensor[sensor_index].Rom));
@@ -619,7 +662,11 @@ bool %'ModuleName'%.%ReadTemperature(uint8_t sensor_index)
 
   res = %@OW@'ModuleName'%.GetBytes(&data[0], sizeof(data)); /* scratchpad with 9 bytes */
   /* temperature is in data[0] (LSB) and data[1] (MSB) */
-  Sensor.Temperature = (data[1]<<8)+data[0];
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  Sensor[sensor_index].Temperature = (data[1]<<8)+data[0];
+#else
+  Sensor[0].Temperature = (data[1]<<8)+data[0];
+#endif
   Device.Busy = FALSE;
   return TRUE;
 }
@@ -634,10 +681,17 @@ bool %'ModuleName'%.%ReadTemperature(uint8_t sensor_index)
 %include Common\DS18B20GetTemperature.inc
 int32_t %'ModuleName'%.%GetTemperatureRaw(uint16_t sensor_index)
 {
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   return Sensor[sensor_index].Temperature;
 #else
-  return Sensor.Temperature;
+  return Sensor[0].Temperature;
 #endif
 }
 %endif %- GetTemperatureRaw
@@ -654,10 +708,17 @@ float %'ModuleName'%.%GetTemperatureFloat(uint8_t sensor_index)
   float value;
   int16_t raw, intPart, fracPart;
 
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   raw = Sensor[sensor_index].Temperature;
 #else
-  raw = Sensor.Temperature;
+  raw = Sensor[0].Temperature;
 #endif
   intPart = raw>>4; /* integral part */
   fracPart = raw&0xf; /* fractional part */
@@ -688,10 +749,17 @@ bool %'ModuleName'%.%isBusy(void)
 %include Common\DS18B20GetRomCode.inc
 char* %'ModuleName'%.%GetRomCode(uint8_t sensor_index)
 {
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return NULL; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   return &Sensor[sensor_index].Rom[0];
 #else
-  return &Sensor.Rom[0];
+  return &Sensor[0].Rom[0];
 #endif
 }
 %endif %- GetRomCode
@@ -710,31 +778,60 @@ bool %'ModuleName'%.%ReadRom(uint8_t sensor_index)
   if(Device.Busy) {
     return FALSE;
   }
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
+    return FALSE; /* error */
+  }
+#else
+  (void)sensor_index; /* not used */
+#endif
   Device.Busy = TRUE;
-#if %'ModuleName'%.CONFIG_MULTIPLE_DEVICES
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   Device.WorkSensor = sensor_index;
 #endif
   %@OW@'ModuleName'%.SendReset();
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendByte(RC_READ_ROM);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  %@OW@'ModuleName'%.Receive(sizeof(Sensor.Rom)); /* 8 bytes */
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  %@OW@'ModuleName'%.Receive(sizeof(Sensor[sensor_index].Rom)); /* 8 bytes */
+#else
+  %@OW@'ModuleName'%.Receive(sizeof(Sensor[0].Rom)); /* 8 bytes */
+#endif
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.SendByte(0xFF);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   %@OW@'ModuleName'%.ProgramEvent(EV_READ_ROM);
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   /* copy ROM code */
-  res = %@OW@'ModuleName'%.GetBytes(&Sensor.Rom[0], sizeof(Sensor.Rom)); /* 8 bytes */
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  res = %@OW@'ModuleName'%.GetBytes(&Sensor[sensor_index].Rom[0], sizeof(Sensor[sensor_index].Rom)); /* 8 bytes */
+#else
+  res = %@OW@'ModuleName'%.GetBytes(&Sensor[0].Rom[0], sizeof(Sensor[0].Rom)); /* 8 bytes */
+#endif
   Device.Busy = FALSE;
   /* index 0  : family code
      index 1-6: 48bit serial number
      index 7  : CRC
   */
-  if (res && Sensor.Rom[0]!=DS18B20_FAMILY_CODE) {
+  if (!res) {
+    return FALSE; /* error */
+  }
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if (Sensor[sensor_index].Rom[0]!=DS18B20_FAMILY_CODE) {
+#else
+  if (Sensor[0].Rom[0]!=DS18B20_FAMILY_CODE) {
+#endif
     return FALSE; /* not a DS18B20? */
   }
-  return res;
+#if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
+  if (%@OW@'ModuleName'%.CalcCRC(&Sensor[sensor_index].Rom[0], %'ModuleName'%.ROM_CODE_SIZE-1)!=Sensor[sensor_index].Rom[%'ModuleName'%.ROM_CODE_SIZE-1]) {
+#else
+  if (%@OW@'ModuleName'%.CalcCRC(&Sensor[0].Rom[0], DS18B20_ROM_CODE_SIZE-1)!=Sensor[0].Rom[DS18B20_ROM_CODE_SIZE-1]) {
+#endif
+    return FALSE; /* wrong CRC? */
+  }
+  return TRUE; /* ok */
 }
 %endif %- ReadRom
 %-BW_METHOD_END ReadRom
@@ -748,14 +845,14 @@ void %'ModuleName'%.%Init(void)
 %if %get(connMultiple, Bool) = 'yes'
   uint8 i;
 
-  for(i=0;i<%'ModuleName'%.CONFIG_MULTIPLE_DEVICES_COUNT;i++) {
+  for(i=0;i<%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES;i++) {
     Sensor[i].Resolution = DS18B20_RESOLUTION_BITS_12;
   }
 %for i from [0..%EXPR(%get(deviceCount, Value)-1)]
   memcpy(Sensor[%i].Rom, "\x%#b%get(rom0%i, Value)\x%#b%get(rom1%i, Value)\x%#b%get(rom2%i, Value)\x%#b%get(rom3%i, Value)\x%#b%get(rom4%i, Value)\x%#b%get(rom5%i, Value)\x%#b%get(rom6%i, Value)\x%#b%get(rom7%i, Value)", 8);
 %endfor
 %else
-  Sensor.Resolution = DS18B20_RESOLUTION_BITS_12;
+  Sensor[0].Resolution = DS18B20_RESOLUTION_BITS_12;
 %endif
   Device.Value = 8500000;
 }
@@ -843,9 +940,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %include Common\DS18B20OnAllConverted.inc
 void %OnAllConverted()
 {
-%CODE_BEGIN
 /******Write your code here*******/
-%CODE_END
 }
 %endif %-OnAllConverted
 %-BW_METHOD_END OnAllConverted
@@ -928,12 +1023,12 @@ void %OnError(%@OW@'ModuleName'%.Error error)
 
 
 %if %get(connMultiple, Bool) = 'yes'
-#define %'ModuleName'%.CONFIG_MULTIPLE_DEVICES         (1)
-#define %'ModuleName'%.CONFIG_MULTIPLE_DEVICES_COUNT   (%get(deviceCount, Value))
+#define %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES        (%get(deviceCount, Value))
 %else
-#define %'ModuleName'%.CONFIG_MULTIPLE_DEVICES         (0)
-#define %'ModuleName'%.CONFIG_MULTIPLE_DEVICES_COUNT   (0)
+#define %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES        (1)
 %endif
+  /*!< Number of devices (1-n) */
+
 %if %get(readAuto, Bool) = 'yes'
 #define %'ModuleName'%.CONFIG_READ_AUTO                (1)
 %else

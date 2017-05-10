@@ -222,8 +222,8 @@ LI.EXP {
 <b>Component Name</b></a> - Name of the component.
 </li>
 <li>
-<a name="DQ">
-<b>Data Pin I/O</b></a> - Link component  (for details about settings see &lt;a href="../../DOCs/InheritanceAndSharing.html"&gt;Component Inheritance &amp;amp; Component Sharing&lt;/a&gt;).
+<a name="DataPin">
+<b>Data Pin I/O</b></a> - Data Pin used
 </li>
 <li>
 <a name="TU">
@@ -300,6 +300,18 @@ There are 2 options:<br />
   <li>
   <a name="Program">
   <b>Program</b></a> - Buffer for program
+  </li>
+</ul>
+</li>
+<li>
+<a name="DebugGroup">
+<b>Debug</b></a> - Additional debug support<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="DbgReadPin">
+  <b>Debug Read Pin</b></a> - Optional debug GPIO pin which gets toggled for every read access to verify the 1-Wire timing
   </li>
 </ul>
 </li>
