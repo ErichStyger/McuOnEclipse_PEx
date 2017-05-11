@@ -523,7 +523,7 @@ static void TU_SetTime(uint32_t us) {
   TU_Enable();
 }
 
-void %'ModuleName'%.OnTimerRestart(void) {
+static void %'ModuleName'%.OnTimerRestart(void) {
   switch(Data.Step) {
     case TS_NOTHING:
       if(%@Program@'ModuleName'%.NofElements()==0) {
