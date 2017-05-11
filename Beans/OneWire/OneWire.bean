@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.095</Version>
+    <Version>01.103</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -56,22 +56,72 @@
       </TInhrItem>
     </Property>
     <Property>
-      <TInhrItem>
-        <Name>TimerUnit</Name>
-        <Symbol>TU</Symbol>
-        <TypeSpec>OneWire\TU</TypeSpec>
-        <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+      <TBoolGrupItem>
+        <Name>Timer</Name>
+        <Symbol>Symbol</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group to configure the timer</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>-1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <InhrBeanBaseName>TU</InhrBeanBaseName>
-        <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-      </TInhrItem>
+        <Description>Enabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>TimerUnit</Name>
+              <Symbol>TU</Symbol>
+              <TypeSpec>OneWire\TU</TypeSpec>
+              <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>TU</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>RTOS</Name>
+        <Symbol>RTOSGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group to configure RTOS related settings</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>RTOS</Name>
+              <Symbol>RTOS</Symbol>
+              <TypeSpec>OneWire\RTOS</TypeSpec>
+              <Hint>Makes the component aware of the RTOS used.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
     <Property>
       <TGrupItem>
@@ -372,7 +422,7 @@
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <InhrBeanBaseName>DbgRd</InhrBeanBaseName>
               <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
           </GrupItem>
@@ -1498,8 +1548,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-10</Date>
-      <Version>01.095</Version>
+      <Date>2017-05-11</Date>
+      <Version>01.103</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

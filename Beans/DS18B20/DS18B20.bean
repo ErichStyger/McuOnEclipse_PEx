@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.023</Version>
+    <Version>01.025</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -224,18 +224,25 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>char*</ReturnType>
-        <RetHint>Returns a pointer to the rom code array.</RetHint>
-        <ParamCount>1</ParamCount>
+        <ReturnType>Boolean</ReturnType>
+        <RetHint>error code, TRUE for ok, FALSE for not OK</RetHint>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
+        <Parameter>
+          <ParName>romCodePtr</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to a pointer for the return value</ParHint>
+          <ParUserDeclaration>uint8_t **romCodePtr</ParUserDeclaration>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>char* #M#_#C#(uint8_t sensor_index)</ANSIC>
+          <ANSIC>bool #M#_#C#(uint8_t sensor_index, uint8_t **romCodePtr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -474,34 +481,6 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Initializes the device.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint/>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
         <Name>ParseCommand</Name>
         <Symbol>ParseCommand</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -545,6 +524,62 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Initializes the device.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint/>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver deinitialization routine</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

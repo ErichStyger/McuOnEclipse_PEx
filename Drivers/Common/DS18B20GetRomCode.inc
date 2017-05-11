@@ -9,8 +9,10 @@
 %include Common\GeneralParameters.inc(27)
 %;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
 %;** %>29 if only using one sensor
+%;**       * romCodePtr%ParromCodePtr %>27 - Pointer to a pointer for the
+%;** %>29 return value
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Returns a pointer to the rom code array.
+%;**         ---%RetVal %>27 - error code, TRUE for ok, FALSE for not OK
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -415,13 +415,50 @@ void %OnProgramEvent(uint8_t key4);
 %-
 #define INPUT          0U
 #define OUTPUT         1U
+#define DQ_Init()               %@DataPin@'ModuleName'%.Init()
 #define DQ_Floating()           %@DataPin@'ModuleName'%.SetInput()
 #define DQ_SetLow()             %@DataPin@'ModuleName'%.ClrVal()
 #define DQ_Low()                %@DataPin@'ModuleName'%.SetOutput()
 #if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
+  #define DBG_Init()              %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()
   #define DQ_Read()               (%'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE(), %@DataPin@'ModuleName'%.GetVal()!=0)
 #else
+  #define DBG_Init()              /* empty */
   #define DQ_Read()               %@DataPin@'ModuleName'%.GetVal()!=0
+#endif
+
+/* timer macros */
+#if %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
+  #define TU_Reset()
+#else
+#endif
+
+#if %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
+%if defined(TU)
+  #define TU_Init()              %@TU@'ModuleName'%.Init(NULL)
+  #define TU_Deinit()            %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr)
+  #define TU_GetTimerFrequency() %@TU@'ModuleName'%.GetInputFrequency(Data.TUDeviceDataPtr)
+  #define TU_Disable()           %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr)
+  #define TU_ResetCounter()      %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr)
+  #define TU_SetPeriodUS(us)     %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, (us)*Data.Ticks)
+  #define TU_Enable()            %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr)
+%else
+  #define TU_Init()               NULL
+  #define TU_Deinit()             /* empty */
+  #define TU_GetTimerFrequency()  0
+  #define TU_Disable()            /* empty */
+  #define TU_ResetCounter()       /* empty */
+  #define TU_SetPeriodUS(us)      /* empty */
+  #define TU_Enable()             /* empty */
+%endif
+#else
+  #define TU_Init()               NULL
+  #define TU_Deinit()             /* empty */
+  #define TU_GetTimerFrequency()  0
+  #define TU_Disable()            /* empty */
+  #define TU_ResetCounter()       /* empty */
+  #define TU_SetPeriodUS(us)      /* empty */
+  #define TU_Enable()             /* empty */
 #endif
 
 typedef enum {
@@ -457,7 +494,9 @@ typedef struct {
 } PROG;
 
 struct {
+#if !%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   LDD_TDeviceData *TUDeviceDataPtr; /* timer handle */
+#endif
   %'ModuleName'%.TimerStep Step;
   uint16 Ticks; /* number of timer ticks for one us */
   uint16 WaitTime;
@@ -478,10 +517,80 @@ struct {
 } Data;
 
 static void TU_SetTime(uint32_t us) {
-  %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
-  %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
-  %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, us*Data.Ticks);
-  %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
+  TU_Disable();
+  TU_ResetCounter();
+  TU_SetPeriodUS(us);
+  TU_Enable();
+}
+
+void %'ModuleName'%.OnTimerRestart(void) {
+  switch(Data.Step) {
+    case TS_NOTHING:
+      if(%@Program@'ModuleName'%.NofElements()==0) {
+        TU_Disable();
+        Data.Busy = FALSE;
+      } else {
+        %'ModuleName'%.i_action();
+      }
+      break;
+    case TS_RESET_LOW:
+      %'ModuleName'%.i_reset();
+      break;
+    case TS_RESET_FLOAT:
+      DQ_Floating();
+      TU_SetTime(%'ModuleName'%.CONFIG_I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
+      Data.Step = TS_PRESENCE;
+      break;
+    case TS_PRESENCE:
+      %'ModuleName'%.i_presence();
+      break;
+    case TS_WRITE_LOW:
+      %'ModuleName'%.i_send_low();
+      break;
+    case TS_WRITE_FLOAT:
+      %'ModuleName'%.i_send_float();
+      break;
+    case TS_READ_LOW:
+      %'ModuleName'%.i_recv_low();
+      break;
+    case TS_READ_FLOAT:
+      %'ModuleName'%.i_recv_float();
+      break;
+    case TS_READ_GET:
+      %'ModuleName'%.i_recv_get();
+      break;
+    case TS_WAIT_INTER:
+      Data.WaitDiv--;
+      if(Data.WaitDiv == 0) {
+        TU_SetPeriodUS(Data.WaitRes);
+        Data.Step = TS_WAIT;
+      }
+      break;
+    case TS_WAIT:
+      Data.WaitKey = Data.Prog.Count;
+      %'ModuleName'%.i_action();
+      Data.WaitEvent = TRUE;
+      Data.SkipWEvent = TRUE;
+      break;
+    case TS_EVENT:
+      %ifdef OnProgramEvent
+      %OnProgramEvent(Data.Prog.Count);
+      %endif %- OnProgramEvent
+      %'ModuleName'%.i_action();
+      break;
+    default:
+      break;
+  } /* switch */
+  if(Data.SkipWEvent) {
+    Data.SkipWEvent = FALSE;
+  } else {
+    if(Data.WaitEvent) {
+    %ifdef OnWaitEnd
+      %OnWaitEnd(Data.WaitKey);
+    %endif %- OnWaitEnd
+      Data.WaitEvent = FALSE;
+    }
+  }
 }
 
 %-BW_CUSTOM_VARIABLE_END
@@ -545,8 +654,8 @@ bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 void %'ModuleName'%.%i_run(void)
 {
   Data.Busy = TRUE;
-  %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr);
-  %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr);
+  TU_ResetCounter();
+  TU_Enable();
 }
 %endif %-i_run
 %-BW_METHOD_END i_run
@@ -584,10 +693,10 @@ void %'ModuleName'%.%i_action(void)
       Data.WaitDiv = Data.WaitTotal >> 16;
       Data.WaitRes = Data.WaitTotal & 0x0000FFFF;
       if(Data.WaitDiv == 0) {
-        %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, Data.WaitRes);
+        TU_SetPeriodUS(Data.WaitRes);
         Data.Step = TS_WAIT;
       } else {
-        %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, 0xFFFF);
+        TU_SetPeriodUS(0xFFFF);
         Data.Step = TS_WAIT_INTER;
       }
       break;
@@ -983,8 +1092,18 @@ bool %'ModuleName'%.%isBusy(void)
 %include Common\OneWireInit.inc
 void %'ModuleName'%.%Init(void)
 {
-  Data.TUDeviceDataPtr = %@TU@'ModuleName'%.Init(NULL); /* timer init */
-  Data.Ticks = %@TU@'ModuleName'%.GetInputFrequency(Data.TUDeviceDataPtr) / 1000000U;
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
+  /* using SDK, need to initialize inherited components */
+  DQ_Init();
+  DBG_Init();
+  %@Input@'ModuleName'%.Init(); /* input ringbuffer */
+  %@Output@'ModuleName'%.Init(); /* output ringbuffer */
+  %@Program@'ModuleName'%.Init(); /* program ringbuffer */
+  %@Time@'ModuleName'%.Init(); /* time ringbuffer */
+#else
+  Data.TUDeviceDataPtr = TU_Init(); /* timer init */
+#endif
+  Data.Ticks = TU_GetTimerFrequency()/1000000U;
   Data.Busy = FALSE;
   Data.WorkBitPos = 0;
   Data.WaitEvent = FALSE;
@@ -1006,8 +1125,10 @@ void %'ModuleName'%.%Init(void)
 %include Common\OneWireDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-  %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr); /* timer init */
+  TU_Deinit(); /* timer deinit */
+#if !%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   Data.TUDeviceDataPtr = NULL;
+#endif
   Data.Ticks = 0;
   Data.Busy = FALSE;
   Data.WorkBitPos = 0;
@@ -1028,73 +1149,7 @@ void %'ModuleName'%.%Deinit(void)
 %include Common\GeneralInternal.inc (OnCounterRestart)
 void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 {
-  switch(Data.Step) {
-    case TS_NOTHING:
-      if(%@Program@'ModuleName'%.NofElements()==0) {
-        %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr);
-        Data.Busy = FALSE;
-      } else {
-        %'ModuleName'%.i_action();
-      }
-      break;
-    case TS_RESET_LOW:
-      %'ModuleName'%.i_reset();
-      break;
-    case TS_RESET_FLOAT:
-      DQ_Floating();
-      TU_SetTime(%'ModuleName'%.CONFIG_I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
-      Data.Step = TS_PRESENCE;
-      break;
-    case TS_PRESENCE:
-      %'ModuleName'%.i_presence();
-      break;
-    case TS_WRITE_LOW:
-      %'ModuleName'%.i_send_low();
-      break;
-    case TS_WRITE_FLOAT:
-      %'ModuleName'%.i_send_float();
-      break;
-    case TS_READ_LOW:
-      %'ModuleName'%.i_recv_low();
-      break;
-    case TS_READ_FLOAT:
-      %'ModuleName'%.i_recv_float();
-      break;
-    case TS_READ_GET:
-      %'ModuleName'%.i_recv_get();
-      break;
-    case TS_WAIT_INTER:
-      Data.WaitDiv--;
-      if(Data.WaitDiv == 0) {
-        %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, Data.WaitRes);
-        Data.Step = TS_WAIT;
-      }
-      break;
-    case TS_WAIT:
-      Data.WaitKey = Data.Prog.Count;
-      %'ModuleName'%.i_action();
-      Data.WaitEvent = TRUE;
-      Data.SkipWEvent = TRUE;
-      break;
-    case TS_EVENT:
-      %ifdef OnProgramEvent
-      %OnProgramEvent(Data.Prog.Count);
-      %endif %- OnProgramEvent
-      %'ModuleName'%.i_action();
-      break;
-    default:
-      break;
-  } /* switch */
-  if(Data.SkipWEvent) {
-    Data.SkipWEvent = FALSE;
-  } else {
-    if(Data.WaitEvent) {
-    %ifdef OnWaitEnd
-      %OnWaitEnd(Data.WaitKey);
-    %endif %- OnWaitEnd
-      Data.WaitEvent = FALSE;
-    }
-  }
+  %'ModuleName'%.OnTimerRestart();
 }
 %endif %- @TU@OnCounterRestart
 %-INHERITED_EVENT_END TU OnCounterRestart
@@ -1267,12 +1322,22 @@ void %OnProgramEvent(uint8_t key4)
 #if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
 %if defined(DbgReadPin)
   #include "%@DbgReadPin@ModuleName.h" /* SDK and API used */
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()     %@DbgReadPin@'ModuleName'%.Init()
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   %@DbgReadPin@'ModuleName'%.NegVal()
 %else
   #include "DbgReadPin.h"
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()     DbgReadPin_Init()
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   DbgReadPin_NegVal()
 %endif
 #endif
+
+%if defined(TU)
+#define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD     (1)
+%else
+#define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD     (0)
+%endif
+  /*!< 1: using TimerUnit_LDD, 0: not using TimerUnit_LDD */
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

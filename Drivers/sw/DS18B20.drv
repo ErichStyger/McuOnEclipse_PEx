@@ -187,8 +187,9 @@ bool %'ModuleName'%.%isBusy(void);
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetRomCode
 %ifdef GetRomCode
-char* %'ModuleName'%.%GetRomCode(uint8_t sensor_index);
+bool %'ModuleName'%.%GetRomCode(uint8_t sensor_index, uint8_t **romCodePtr);
 %define! Parsensor_index
+%define! ParromCodePtr
 %define! RetVal
 %include Common\DS18B20GetRomCode.inc
 %endif %- GetRomCode
@@ -253,6 +254,14 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\DS18B20Deinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -376,7 +385,6 @@ static Sensor_t Sensor[%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES];
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[32];
-  char *romCodePtr;
   bool res;
   float temp;
   int i, j;
@@ -660,14 +668,21 @@ bool %'ModuleName'%.%ReadTemperature(uint8_t sensor_index)
   while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
   Device.Busy = FALSE;
 
+  /* extract data */
   res = %@OW@'ModuleName'%.GetBytes(&data[0], sizeof(data)); /* scratchpad with 9 bytes */
+  if (!res) {
+    return FALSE; /* failed getting data */
+  }
+  /* check CRC */
+  if (%@OW@'ModuleName'%.CalcCRC(&data[0], 8)!=data[8]) { /* last byte is CRC */
+    return FALSE; /* CRC error */
+  }
   /* temperature is in data[0] (LSB) and data[1] (MSB) */
 #if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   Sensor[sensor_index].Temperature = (data[1]<<8)+data[0];
 #else
   Sensor[0].Temperature = (data[1]<<8)+data[0];
 #endif
-  Device.Busy = FALSE;
   return TRUE;
 }
 %endif %- ReadTemperature
@@ -745,22 +760,24 @@ bool %'ModuleName'%.%isBusy(void)
 %-BW_METHOD_BEGIN GetRomCode
 %ifdef GetRomCode
 %define! Parsensor_index
+%define! ParromCodePtr
 %define! RetVal
 %include Common\DS18B20GetRomCode.inc
-char* %'ModuleName'%.%GetRomCode(uint8_t sensor_index)
+bool %'ModuleName'%.%GetRomCode(uint8_t sensor_index, uint8_t **romCodePtr)
 {
 #if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
   if(sensor_index>=%'ModuleName'%.CONFIG_NUMBER_OF_DEVICES) {
-    return NULL; /* error */
+    return FALSE; /* error */
   }
 #else
   (void)sensor_index; /* not used */
 #endif
 #if %'ModuleName'%.CONFIG_NUMBER_OF_DEVICES>1
-  return &Sensor[sensor_index].Rom[0];
+  *romCodePtr = &Sensor[sensor_index].Rom[0];
 #else
-  return &Sensor[0].Rom[0];
+  *romCodePtr = &Sensor[0].Rom[0];
 #endif
+  return TRUE; /* ok */
 }
 %endif %- GetRomCode
 %-BW_METHOD_END GetRomCode
@@ -835,6 +852,18 @@ bool %'ModuleName'%.%ReadRom(uint8_t sensor_index)
 }
 %endif %- ReadRom
 %-BW_METHOD_END ReadRom
+
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\DS18B20Deinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing special needed here */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
