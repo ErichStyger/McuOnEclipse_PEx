@@ -105,11 +105,11 @@
 #include <stddef.h> /* for size_t */
 %if defined(CDCDevice)
 
-/* Interfaces/wrappers to the CDC device class, needed by FSShell: */
-#define %'ModuleName'_SendString(str)   %@CDCDevice@'ModuleName'%.SendString(str)
-#define %'ModuleName'_RecvChar(chr)     %@CDCDevice@'ModuleName'%.GetChar(chr)
-#define %'ModuleName'_SendChar(chr)     %@CDCDevice@'ModuleName'%.SendChar(chr)
-#define %'ModuleName'_GetCharsInRxBuf() %@CDCDevice@'ModuleName'%.GetCharsInRxBuf()
+/* Interfaces/wrappers to the CDC device class, needed for Shell if using default serial/connection to USB (CDC): */
+#define %'ModuleName'_SendString      %@CDCDevice@'ModuleName'%.SendString
+#define %'ModuleName'_RecvChar        %@CDCDevice@'ModuleName'%.GetChar
+#define %'ModuleName'_SendChar        %@CDCDevice@'ModuleName'%.SendChar
+#define %'ModuleName'_GetCharsInRxBuf %@CDCDevice@'ModuleName'%.GetCharsInRxBuf
 %endif
 %-
 %-BW_CUSTOM_INCLUDE_END_H
