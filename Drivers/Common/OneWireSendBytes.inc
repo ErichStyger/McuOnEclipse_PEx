@@ -11,7 +11,7 @@
 %;**         count%Parcount %>27 - Number of bytes to add to output
 %;** %>29 stream. (Valid range 0 - 31)
 %;**     Returns     :
-%;**         ---%RetVal %>27 - error or not
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

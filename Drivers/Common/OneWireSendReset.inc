@@ -7,7 +7,8 @@
 %;**     Description :
 %;**         Sends a reset to the bus
 %include Common\GeneralParametersNone.inc
-%include Common\GeneralReturnNothing.inc
+%;**     Returns     :
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

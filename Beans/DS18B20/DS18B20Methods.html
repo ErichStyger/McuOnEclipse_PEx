@@ -212,10 +212,10 @@ LI.EXP {
  - Starts to read the rom code and saves it in memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ReadRom(uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadRom(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
-<li><i>Return value:bool</i> - Returns FALSE if the device is busy in another operation.
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -224,11 +224,11 @@ LI.EXP {
  - Gets the rom code from the memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool GetRomCode(uint8_t sensor_index, uint8_t **romCodePtr)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetRomCode(uint8_t sensor_index, uint8_t **romCodePtr)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
 <li><i>romCodePtr: Pointer to uint8_t</i> - Pointer to a pointer for the return value</li>
-<li><i>Return value:bool</i> - error code, TRUE for ok, FALSE for not OK
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -248,10 +248,10 @@ LI.EXP {
  - Starts the conversion of temperature in the sensor.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool StartConversion(uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t StartConversion(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
-<li><i>Return value:bool</i> - Returns FALSE if the device is busy.
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -260,10 +260,10 @@ LI.EXP {
  - Read the temperature value from the sensor and stores it in memory
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ReadTemperature(uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadTemperature(uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -272,10 +272,11 @@ LI.EXP {
  - Gets the temperature from memory in raw 32bit format
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> int32_t GetTemperatureRaw(uint16_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetTemperatureRaw(uint16_t sensor_index, uint32_t *raw)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint16_t</i> - Sensor index, use zero if only using one sensor</li>
-<li><i>Return Value:int32_t</i> - no hint
+<li><i>raw: Pointer to uint32_t</i> - Pointer to where to store the value</li>
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -284,10 +285,11 @@ LI.EXP {
  - Returns the temperature from memory in floating point format.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> float GetTemperatureFloat(uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetTemperatureFloat(uint8_t sensor_index, float *temperature)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
-<li><i>Return value:float</i> - Error code
+<li><i>temperature: Pointer to float</i> - Pointer to where to store the value</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -296,9 +298,9 @@ LI.EXP {
  - Convert temperature for all sensors
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool ConvertAll(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ConvertAll(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>
@@ -307,11 +309,11 @@ LI.EXP {
  - Sets the resolution
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool SetResolution(DS18B20_ResolutionBits resolution, uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetResolution(DS18B20_ResolutionBits resolution, uint8_t sensor_index)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>config_bits:uint8_t</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
 <li><i>sensor_index:uint8_t</i> - Index of the sensor to set the resolution.</li>
-<li><i>Return Value:bool</i> - no hint
+<li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
 </li>

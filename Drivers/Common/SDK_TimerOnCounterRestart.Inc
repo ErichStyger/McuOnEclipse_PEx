@@ -3,14 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetByte)
+%include Common\GeneralEvent.inc (OnCounterRestart)
 %;**     Description :
-%;**         Get a single byte from the bus
-%include Common\GeneralParameters.inc(27)
-%;**       * data%Pardata %>27 - Pointer to were to store the data
-%;**     Returns     :
-%;**         ---%RetVal %>27 - error code
-%include Common\GeneralDamage.inc
+%;**         Event called from timer overflow interrupt
+%include Common\GeneralParametersNone.inc
+%include Common\GeneralReturnNothing.inc
 %;** ===================================================================
 %ifndef CommentLine
 %}

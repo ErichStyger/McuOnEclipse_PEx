@@ -181,6 +181,15 @@ void %'ModuleName'%.%DisableOverflowIRQ(void);
 
 %endif %- DisableOverflowIRQ
 %-BW_METHOD_END DisableOverflowIRQ
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetInputFrequency
+%ifdef GetInputFrequency
+uint32_t %'ModuleName'%.%GetInputFrequency(void);
+%define! RetVal
+%include Common\SDK_TimerGetInputFrequency.Inc
+
+%endif %- GetInputFrequency
+%-BW_METHOD_END GetInputFrequency
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -189,14 +198,14 @@ void %'ModuleName'%.%DisableOverflowIRQ(void);
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
-%-BW_METHOD_BEGIN OnInterrupt
-%ifdef OnInterrupt
-%INTERFACE OnInterrupt
-void %OnInterrupt(void);
-%include Common\SDK_TimerOnInterrupt.Inc
+%-BW_METHOD_BEGIN OnCounterRestart
+%ifdef OnCounterRestart
+%INTERFACE OnCounterRestart
+void %OnCounterRestart(void);
+%include Common\SDK_TimerOnCounterRestart.Inc
 
-%endif %- OnInterrupt
-%-BW_METHOD_END OnInterrupt
+%endif %- OnCounterRestart
+%-BW_METHOD_END OnCounterRestart
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\SDK_TimerSettings.Inc
@@ -352,10 +361,22 @@ void %'ModuleName'%.%Init(void)
   /* Initialize TPM module */
   TPM_Init(%'ModuleName'%.CONFIG_TIMER_NAME, &tpmInfo);
 
-  %'ModuleName'%.%SetPeriodUs(1000); /* set initial period */
-  %'ModuleName'%.%EnableOverflowIRQ(); /* enable tower overflow interrupt */
-  %'ModuleName'%.%EnableIRQ(); /* enable timer interrupt */
+  %'ModuleName'%.%SetPeriodUs(%'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US); /* set initial period */
+#if %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_OVERFLOW_IRQ
+  %'ModuleName'%.%EnableOverflowIRQ(); /* enable timer overflow interrupt */
+#else
+  %'ModuleName'%.%DisableOverflowIRQ(); /* disable timer overflow interrupt */
+#endif
+#if %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_IRQ
+  %'ModuleName'%.%EnableIRQ(); /* enable timer interrupt in NVIC */
+#else
+  %'ModuleName'%.%DisableIRQ(); /* disable timer interrupt in NVIC */
+#endif
+#if %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_TIMER
   %'ModuleName'%.%Enable(); /* start timer */
+#else
+  %'ModuleName'%.%Disable(); /* do not start timer */
+#endif
 }
 
 %endif %- Init
@@ -366,11 +387,23 @@ void %'ModuleName'%.%Init(void)
 %include Common\SDK_TimerDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  %'ModuleName'%.%Disable(); /* stop timer */
 }
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetInputFrequency
+%ifdef GetInputFrequency
+%define! RetVal
+%include Common\SDK_TimerGetInputFrequency.Inc
+uint32_t %'ModuleName'%.%GetInputFrequency(void)
+{
+  return %'ModuleName'%.SOURCE_CLOCK_FREQUENCY; /* timer clock frequency in Hz */
+}
+
+%endif %- GetInputFrequency
+%-BW_METHOD_END GetInputFrequency
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -378,17 +411,17 @@ void %'ModuleName'%.%Deinit(void)
 %-
 %-
 %-BW_EVENT_IMPLEMENT_START
-%-BW_METHOD_BEGIN OnInterrupt
-%ifdef OnInterrupt
-%IMPLEMENTATION OnInterrupt
-%include Common\SDK_TimerOnInterrupt.Inc
-void %OnInterrupt(void)
+%-BW_METHOD_BEGIN OnCounterRestart
+%ifdef OnCounterRestart
+%IMPLEMENTATION OnCounterRestart
+%include Common\SDK_TimerOnCounterRestart.Inc
+void %OnCounterRestart(void)
 {
   /* Write your code here ... */
 }
 
-%endif %- OnInterrupt
-%-BW_METHOD_END OnInterrupt
+%endif %- OnCounterRestart
+%-BW_METHOD_END OnCounterRestart
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
@@ -429,7 +462,42 @@ void %OnInterrupt(void)
 #endif
 
 #define %'ModuleName'%.CONFIG_TIMER_IRQ  %TimerName##_IRQn
-/*TPM2_IRQn*/
+
+#ifndef %'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US
+%if defined(InitPeriodUS)
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US       %InitPeriodUS
+%else
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US       1000
+%endif
+    /*!< Initial period in micro-seconds */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_TIMER
+%if defined(InitEnableTimer) & %InitEnableTimer='yes'
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_TIMER       (1)
+%else
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_TIMER       (0)
+%endif
+    /*!< 1: Enable the timer in Init(); 0: Timer is disabled in Init() */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_IRQ
+%if defined(InitEnableIRQ) & %InitEnableIRQ='yes'
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_IRQ       (1)
+%else
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_IRQ       (0)
+%endif
+    /*!< 1: Enable NVIC IRQ for the timer in Init(); 0: Timer IRQ is disabled in Init() */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_OVERFLOW_IRQ
+%if defined(InitEnableOverflowIRQ) & %InitEnableOverflowIRQ='yes'
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_OVERFLOW_IRQ       (1)
+%else
+  #define %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_OVERFLOW_IRQ       (0)
+%endif
+    /*!< 1: Enable the timer overflow interrupt in Init(); 0: Timer overflow interrupt is disabled in Init() */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

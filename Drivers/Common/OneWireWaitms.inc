@@ -10,8 +10,7 @@
 %;**         key%Parkey %>27 - Key to identify the source of the event.
 %;**         time_ms%Partime_ms %>27 - Value of time to wait.
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Returns false if the program buffer or the
-%;** %>29 time buffer is full.
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

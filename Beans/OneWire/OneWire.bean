@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.103</Version>
+    <Version>01.105</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -57,8 +57,8 @@
     </Property>
     <Property>
       <TBoolGrupItem>
-        <Name>Timer</Name>
-        <Symbol>Symbol</Symbol>
+        <Name>Timer (LDD)</Name>
+        <Symbol>TimerLDDGroup</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
         <Hint>Group to configure the timer</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -75,7 +75,7 @@
               <Name>TimerUnit</Name>
               <Symbol>TU</Symbol>
               <TypeSpec>OneWire\TU</TypeSpec>
-              <Hint>Link component  (for details about settings see &amp;lt;a href="../../DOCs/InheritanceAndSharing.html"&amp;gt;Component Inheritance &amp;amp;amp; Component Sharing&amp;lt;/a&amp;gt;).</Hint>
+              <Hint>Interface to the LDD timer</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>false</EditLine>
               <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -86,6 +86,42 @@
               <IconPopup>false</IconPopup>
               <InhrBeanBaseName>TU</InhrBeanBaseName>
               <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Timer (SDK)</Name>
+        <Symbol>TimerSDKGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group to configure the timer</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>Timer</Name>
+              <Symbol>TUSDK</Symbol>
+              <TypeSpec>OneWire\SDKTimer</TypeSpec>
+              <Hint>Interface to the SDK Timer</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
           </GrupItem>
         </Children>
@@ -843,8 +879,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>error or not</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
@@ -854,7 +890,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -877,8 +913,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns FALSE if the program buffer is full or if count is greater than the free space of input buffer-</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>counter</ParName>
@@ -888,7 +924,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t counter)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t counter)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -911,12 +947,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
-        <RetHint>none</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -967,8 +1003,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns false if the program buffer or the time buffer is full.</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>key</ParName>
@@ -984,7 +1020,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t key, uint8_t time_ms)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t key, uint8_t time_ms)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1007,8 +1043,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns false if the program buffer is full.</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>key</ParName>
@@ -1018,7 +1054,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t key)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t key)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1041,8 +1077,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>error or not</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
@@ -1058,7 +1094,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1081,24 +1117,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>error or not</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>data</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint/>
+          <ParHint>Pointer to where to store the data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>count</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>Number of bytes</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data, uint8_t count)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1121,18 +1157,18 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>error or not</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>data</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
-          <ParHint/>
+          <ParHint>Pointer to were to store the data</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t *data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t *data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1156,7 +1192,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>error or not</RetHint>
+        <RetHint>error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1548,8 +1584,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-11</Date>
-      <Version>01.103</Version>
+      <Date>2017-05-12</Date>
+      <Version>01.105</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

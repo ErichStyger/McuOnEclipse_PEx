@@ -12,9 +12,7 @@
 %;**         counter%Parcounter %>27 - Number of bytes to receive from
 %;** %>29 slave
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Returns FALSE if the program buffer is
-%;** %>29 full or if count is greater than the free
-%;** %>29 space of input buffer-
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

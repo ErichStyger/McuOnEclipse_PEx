@@ -11,8 +11,7 @@
 %;** %>29 only if OnProgramEvent is enabled. (Valid
 %;** %>29 range 0 - 31)
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Returns false if the program buffer is
-%;** %>29 full.
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

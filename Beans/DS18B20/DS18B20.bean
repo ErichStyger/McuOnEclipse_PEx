@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.025</Version>
+    <Version>01.003</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -42,7 +42,7 @@
         <Name>Connection mode</Name>
         <Symbol>connMultiple</Symbol>
         <TypeSpec>typeConnMode</TypeSpec>
-        <Hint/>
+        <Hint>Configures if only one slave is on the bus. In that case, the ROM code does not need to be transmitted.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -54,9 +54,9 @@
         <Children>
           <GrupItem>
             <TListItemFromFile>
-              <Name>Number of devices to connect</Name>
+              <Name>Number of DS18B20 devices to connect</Name>
               <Symbol>deviceCount</Symbol>
-              <Hint/>
+              <Hint>List of DS18B20 devices on the bus</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <Description/>
@@ -96,7 +96,7 @@
         <Name>Read the temperature</Name>
         <Symbol>readAuto</Symbol>
         <TypeSpec>typeReadTemp</TypeSpec>
-        <Hint/>
+        <Hint>Configures how the temperature is read.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -190,8 +190,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns FALSE if the device is busy in another operation.</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -201,7 +201,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -224,8 +224,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>Boolean</ReturnType>
-        <RetHint>error code, TRUE for ok, FALSE for not OK</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -242,7 +242,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t sensor_index, uint8_t **romCodePtr)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index, uint8_t **romCodePtr)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -293,8 +293,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint>Returns FALSE if the device is busy.</RetHint>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -304,7 +304,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -327,8 +327,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
@@ -338,7 +338,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -361,18 +361,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>int32_t</ReturnType>
-        <RetHint/>
-        <ParamCount>1</ParamCount>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
           <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
+        <Parameter>
+          <ParName>raw</ParName>
+          <ParType>uint32_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the value</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>int32_t #M#_#C#(uint16_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint16_t sensor_index, uint32_t *raw)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -395,18 +401,24 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>float</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>sensor_index</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Sensor index, use zero if only using one sensor</ParHint>
         </Parameter>
+        <Parameter>
+          <ParName>temperature</ParName>
+          <ParType>float</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the value</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>float #M#_#C#(uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index, float *temperature)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -429,12 +441,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -457,8 +469,8 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>bool</ReturnType>
-        <RetHint/>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>config_bits</ParName>
@@ -475,7 +487,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>bool #M#_#C#(DS18B20_ResolutionBits resolution, uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(DS18B20_ResolutionBits resolution, uint8_t sensor_index)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -547,7 +559,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint/>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -575,7 +587,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>none</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>

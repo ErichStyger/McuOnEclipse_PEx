@@ -3,15 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (GetTemperatureRaw)
+%include Common\GeneralMethod.inc (GetInputFrequency)
 %;**     Description :
-%;**         Gets the temperature from memory in raw 32bit format
-%include Common\GeneralParameters.inc(27)
-%;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
-%;** %>29 if only using one sensor
-%;**       * raw%Parraw %>27 - Pointer to where to store the value
+%;**         Returns the base clock of the timer in Hz, at which the
+%;**         timer ticks are incremented.
+%include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - error code
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

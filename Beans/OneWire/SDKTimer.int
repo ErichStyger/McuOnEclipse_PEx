@@ -1,154 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Bean>
-  <Header>
-    <Name>SDK_Timer</Name>
-    <Description>SDK Timer</Description>
-    <Author>Erich Styger</Author>
-    <Version>01.019</Version>
-    <Icon>SIGNAL_LDD</Icon>
-    <TypesFiles>PE,SDK_Timer\SDK_Timer</TypesFiles>
-    <FileVersion>6</FileVersion>
-  </Header>
-  <Options>
-    <BW_HelpType>Default</BW_HelpType>
-    <BW_HelpFiles>,Properties,Methods,Events,"User Types"</BW_HelpFiles>
-    <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
-    <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
-    <BW_DetailedHelp>yes</BW_DetailedHelp>
-    <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
-    <BW_NeedCns>0</BW_NeedCns>
-    <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * Copyright (c) 2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
-    <Category>SW-User Components</Category>
-    <DemoDriver>no</DemoDriver>
-    <BeanLevel>High</BeanLevel>
-    <Shortcut>TMR</Shortcut>
-  </Options>
-  <PropertyList>
-    <Property>
-      <TCompNameItem>
-        <Name>Component name</Name>
-        <Symbol>DeviceName</Symbol>
-        <Hint>Name of the component.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue/>
-      </TCompNameItem>
-    </Property>
-    <Property>
-      <TInhrLinkItem>
-        <Name>SDK</Name>
-        <Symbol>sdk</Symbol>
-        <TypeSpec>SDK_Timer\sdk</TypeSpec>
-        <Hint>Link to SDK used</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <DefaultValue/>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <SortStyle/>
-      </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TStrgItem>
-        <Name>Timer Name</Name>
-        <Symbol>TimerName</Symbol>
-        <Hint>Name of Timer, e.g. TPM2 or TPM0</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>TPM0</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Property>
-    <Property>
-      <TGrupItem>
-        <Name>Init</Name>
-        <Symbol>InitGroup</Symbol>
-        <Hint>Group of initialization settings, applied in Init() method</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description/>
-        <Expanded>Yes</Expanded>
-        <Children>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Period (us)</Name>
-              <Symbol>InitPeriodUS</Symbol>
-              <Hint>Initial period in microseconds set during Init()</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>1000</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Enable</Name>
-              <Symbol>InitEnableTimer</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>Enables the timer during Init()</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Enable IRQ</Name>
-              <Symbol>InitEnableIRQ</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>Enables the timer interrupt in the interrupt controller (NVIC) durint Init()</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Enable Overflow IRQ</Name>
-              <Symbol>InitEnableOverflowIRQ</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>Enables the timer overflow interrupt in the timer during Init()</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-        </Children>
-      </TGrupItem>
-    </Property>
-  </PropertyList>
+<Interface>
+  <Name>SDKTimer</Name>
+  <Description>Interface "OneWire\SDKTimer" for component OneWire, generated by Component Wizard</Description>
+  <Author>Erich Styger</Author>
+  <Version>01.001</Version>
+  <FileVersion>2</FileVersion>
   <MethodList>
     <Method>
       <TMthdItem>
@@ -169,6 +25,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -197,6 +54,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -225,6 +83,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -253,6 +112,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -281,6 +141,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -309,6 +170,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -337,6 +199,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -371,6 +234,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
@@ -383,34 +247,6 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(uint32_t us)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>GetInputFrequency</Name>
-        <Symbol>GetInputFrequency</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Returns the base clock of the timer in Hz, at which the timer ticks are incremented.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>uint32_t</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>uint32_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -433,6 +269,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -461,6 +298,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
@@ -472,19 +310,6 @@
     </Method>
   </MethodList>
   <EventList>
-    <Event>
-      <TStrgItem>
-        <Name>Event module name</Name>
-        <Symbol>EventModule</Symbol>
-        <Hint>Name of the user module (without extension), where the events from this component are placed.</Hint>
-        <ItemLevel>ADVANCED</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>Events</DefaultValue>
-        <StrDefine>nothing</StrDefine>
-        <MinLength>0</MinLength>
-        <MaxLength>-1</MaxLength>
-      </TStrgItem>
-    </Event>
     <Event>
       <TEvntItem>
         <Name>OnCounterRestart</Name>
@@ -500,6 +325,7 @@
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <IsAssembler>false</IsAssembler>
+        <Mode>meiAlwReq_!Exist</Mode>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -525,10 +351,20 @@
       </TEvntItem>
     </Event>
   </EventList>
-  <Links>
-    <EmptySection_DummyValue/>
-  </Links>
-  <Revisions>
-    <RevisionVersion>2</RevisionVersion>
-  </Revisions>
-</Bean>
+  <Registration>
+    <Template>SDK_Timer</Template>
+  </Registration>
+  <UserTypes>
+    <Type>
+      <UsrType>TRetypeType</UsrType>
+      <Name>uint32_t</Name>
+      <Hint/>
+      <Generate>no</Generate>
+      <Unique>no</Unique>
+      <GenerateHelp>no</GenerateHelp>
+      <PreparedHint>  typedef dword uint32_t ;\n
+</PreparedHint>
+      <Type>32bit unsigned</Type>
+    </Type>
+  </UserTypes>
+</Interface>

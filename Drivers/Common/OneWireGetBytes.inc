@@ -7,10 +7,10 @@
 %;**     Description :
 %;**         Gets multiple bytes from the bus
 %include Common\GeneralParameters.inc(27)
-%;**       * data%Pardata %>27 - 
-%;**         count%Parcount %>27 - 
+%;**       * data%Pardata %>27 - Pointer to where to store the data
+%;**         count%Parcount %>27 - Number of bytes
 %;**     Returns     :
-%;**         ---%RetVal %>27 - error or not
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

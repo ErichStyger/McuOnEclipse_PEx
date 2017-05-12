@@ -9,7 +9,7 @@
 %include Common\GeneralParameters.inc(27)
 %;**         data%Pardata %>27 - Variable to save the byte.
 %;**     Returns     :
-%;**         ---%RetVal %>27 - error or not
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

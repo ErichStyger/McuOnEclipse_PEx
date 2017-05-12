@@ -8,6 +8,10 @@
         <Line>Multiple slaves</Line>
         <Line>One slave</Line>
       </Items>
+      <Hints lines_count="2">
+        <Line>Multiple slaves on the 1-Wire bus</Line>
+        <Line>The DS18B20 is the only device on the bus</Line>
+      </Hints>
       <Defines lines_count="2">
         <Line>CONN_MULTI_SLAVE</Line>
         <Line>CONN_ONE_SLAVE</Line>

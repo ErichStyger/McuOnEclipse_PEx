@@ -11,7 +11,7 @@
 %;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
 %;** %>29 if only using one sensor
 %;**     Returns     :
-%;**         ---%RetVal %>27 - 
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -229,6 +229,28 @@ LI.EXP {
 <a name="TimerName">
 <b>Timer Name</b></a> - Name of Timer, e.g. TPM2 or TPM0
 </li>
+<li>
+<a name="InitGroup">
+<b>Init</b></a> - Group of initialization settings, applied in Init() method
+<ul>
+  <li>
+  <a name="InitPeriodUS">
+  <b>Period (us)</b></a> - Initial period in microseconds set during Init()
+  </li>
+  <li>
+  <a name="InitEnableTimer">
+  <b>Enable</b></a> - Enables the timer during Init()
+  </li>
+  <li>
+  <a name="InitEnableIRQ">
+  <b>Enable IRQ</b></a> - Enables the timer interrupt in the interrupt controller (NVIC) durint Init()
+  </li>
+  <li>
+  <a name="InitEnableOverflowIRQ">
+  <b>Enable Overflow IRQ</b></a> - Enables the timer overflow interrupt in the timer during Init()
+  </li>
+</ul>
+</li>
 
      </ul>
 <!---USERBEG DON'T CHANGE THIS LINE-->

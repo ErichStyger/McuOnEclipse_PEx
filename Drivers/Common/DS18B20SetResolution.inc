@@ -16,7 +16,7 @@
 %;**         sensor_index%Parsensor_index %>27 - Index of the sensor to
 %;** %>29 set the resolution.
 %;**     Returns     :
-%;**         ---%RetVal %>27 - 
+%;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

@@ -9,6 +9,8 @@
 %include Common\GeneralParameters.inc(27)
 %;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
 %;** %>29 if only using one sensor
+%;**       * temperature%Partemperature %>27 - Pointer to where to store
+%;** %>29 the value
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

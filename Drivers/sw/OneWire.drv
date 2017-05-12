@@ -53,6 +53,11 @@
     %define! Description_%@TU@OnCounterRestart Called if counter overflow/underflow or counter is reinitialized by modulo or compare register matching. OnCounterRestart event and Timer unit must be enabled. See <a href="TimerUnit_LDDMethods.html#SetEventMask">SetEventMask</a> and <a href="TimerUnit_LDDMethods.html#GetEventMask">GetEventMask</a> methods.This event is available only if a <a href="TimerUnit_LDDProperties.html#IntServiceCounter">Interrupt</a> is enabled. The event services the event of the inherited component and eventually invokes other events.
   %endif %- @TU@OnCounterRestart
 %endif %- TU
+%ifdef TUSDK
+  %ifdef @TUSDK@OnCounterRestart
+    %define! Description_%@TUSDK@OnCounterRestart Event called from timer overflow interrupt The event services the event of the inherited component and eventually invokes other events.
+  %endif %- @TUSDK@OnCounterRestart
+%endif %- TUSDK
 %-BW_INTERN_COMMENTS_END
 %-
 %define CDEversion Community
@@ -72,12 +77,6 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -116,23 +115,6 @@ typedef enum {
 %'ModuleName'%.Error %'ModuleName'%.%GetError(void);
 %endif  %-GetError
 %-BW_METHOD_END GetError
-
-%-*****************************************************************************************************
-%ifdef SendByte
-%define! Pardata
-%define! RetVal
-%include Common\OneWireSendByte.inc
-bool %'ModuleName'%.%SendByte(uint8_t data);
-%endif %- SendByte
-
-%-*****************************************************************************************************
-%ifdef GetByte
-%define! Pardata
-%define! RetVal
-%include Common\OneWireGetByte.inc
-bool OW1_GetByte(uint8_t *data);
-%endif %- GetByte
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_recv_low
 %ifdef i_recv_low
@@ -140,7 +122,6 @@ bool OW1_GetByte(uint8_t *data);
 void %'ModuleName'%.%i_recv_low(void);
 %endif  %-i_recv_low
 %-BW_METHOD_END i_recv_low
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_wait
 %ifdef i_wait
@@ -148,7 +129,6 @@ void %'ModuleName'%.%i_recv_low(void);
 void %'ModuleName'%.%i_wait(void);
 %endif  %-i_wait
 %-BW_METHOD_END i_wait
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_presence
 %ifdef i_presence
@@ -156,7 +136,6 @@ void %'ModuleName'%.%i_wait(void);
 void %'ModuleName'%.%i_presence(void);
 %endif  %-i_presence
 %-BW_METHOD_END i_presence
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_action
 %ifdef i_action
@@ -164,7 +143,6 @@ void %'ModuleName'%.%i_presence(void);
 void %'ModuleName'%.%i_action(void);
 %endif  %-i_action
 %-BW_METHOD_END i_action
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_run
 %ifdef i_run
@@ -172,7 +150,6 @@ void %'ModuleName'%.%i_action(void);
 void %'ModuleName'%.%i_run(void);
 %endif  %-i_run
 %-BW_METHOD_END i_run
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_recv_get
 %ifdef i_recv_get
@@ -180,7 +157,6 @@ void %'ModuleName'%.%i_run(void);
 void %'ModuleName'%.%i_recv_get(void);
 %endif  %-i_recv_get
 %-BW_METHOD_END i_recv_get
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_recv_float
 %ifdef i_recv_float
@@ -188,7 +164,6 @@ void %'ModuleName'%.%i_recv_get(void);
 void %'ModuleName'%.%i_recv_float(void);
 %endif  %-i_recv_float
 %-BW_METHOD_END i_recv_float
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_send_float
 %ifdef i_send_float
@@ -196,7 +171,6 @@ void %'ModuleName'%.%i_recv_float(void);
 void %'ModuleName'%.%i_send_float(void);
 %endif  %-i_send_float
 %-BW_METHOD_END i_send_float
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_send_low
 %ifdef i_send_low
@@ -204,7 +178,6 @@ void %'ModuleName'%.%i_send_float(void);
 void %'ModuleName'%.%i_send_low(void);
 %endif  %-i_send_low
 %-BW_METHOD_END i_send_low
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN i_reset
 %ifdef i_reset
@@ -212,24 +185,21 @@ void %'ModuleName'%.%i_send_low(void);
 void %'ModuleName'%.%i_reset(void);
 %endif  %-i_reset
 %-BW_METHOD_END i_reset
-
 %-*****************************************************************************************************
 %ifdef Waitms
 %define! Parkey
 %define! Partime_ms
 %define! RetVal
 %include Common\OneWireWaitms.inc
-bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms);
+uint8_t %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms);
 %endif %- Waitms
-
 %-*****************************************************************************************************
 %ifdef ProgramEvent
 %define! Parkey
 %define! RetVal
 %include Common\OneWireProgramEvent.inc
-bool %'ModuleName'%.%ProgramEvent(uint8_t key);
+uint8_t %'ModuleName'%.%ProgramEvent(uint8_t key);
 %endif %- ProgramEvent
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Count
 %ifdef Count
@@ -238,40 +208,51 @@ uint8_t %'ModuleName'%.%Count(void);
 %define!  RetVal
 %endif  %-Count
 %-BW_METHOD_END Count
-
 %-*****************************************************************************************************
 %ifdef Receive
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(uint8_t counter);
+uint8_t %'ModuleName'%.%Receive(uint8_t counter);
 %endif %- Receive
-
+%-*****************************************************************************************************
+%ifdef SendByte
+%define! Pardata
+%define! RetVal
+%include Common\OneWireSendByte.inc
+uint8_t %'ModuleName'%.%SendByte(uint8_t data);
+%endif %- SendBytes
 %-*****************************************************************************************************
 %ifdef SendBytes
 %define! Pardata
 %define! Parcount
 %define! RetVal
 %include Common\OneWireSendBytes.inc
-bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count);
+uint8_t %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count);
 %endif %- SendBytes
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN SendReset
 %ifdef SendReset
+%define! RetVal
 %include Common\OneWireSendReset.inc
-bool %'ModuleName'%.%SendReset(void);
-%define!  RetVal
-%endif  %-SendReset
+uint8_t %'ModuleName'%.%SendReset(void);
+%endif %- SendReset
 %-BW_METHOD_END SendReset
-
 %-*****************************************************************************************************
 %ifdef add_CRC
 %define! ParbitValue
 %include Common\OneWireadd_CRC.inc
 void %'ModuleName'%.%add_CRC(uint8_t bitValue);
 %endif %- add_CRC
-
+%-*****************************************************************************************************
+%-BW_METHOD_BEGIN GetByte
+%ifdef GetBytes
+%define! Pardata
+%define! RetVal
+%include Common\OneWireGetByte.inc
+uint8_t %'ModuleName'%.%GetByte(uint8_t *data);
+%endif %- GetByte
+%-BW_METHOD_END GetByte
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetBytes
 %ifdef GetBytes
@@ -279,12 +260,9 @@ void %'ModuleName'%.%add_CRC(uint8_t bitValue);
 %define! Parcount
 %define! RetVal
 %include Common\OneWireGetBytes.inc
-bool %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count);
-%define! Parbytes_array
-%define! Parcount
+uint8_t %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count);
 %endif %- GetBytes
 %-BW_METHOD_END GetBytes
-
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
@@ -328,6 +306,14 @@ uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize);
 
 %endif %- CalcCRC
 %-BW_METHOD_END CalcCRC
+%-INHERITED_EVENT_BEGIN TUSDK OnCounterRestart
+%if defined(TUSDK)
+%ifdef @TUSDK@OnCounterRestart
+void %@TUSDK@OnCounterRestart(void);
+
+%endif %- @TUSDK@OnCounterRestart
+%endif
+%-INHERITED_EVENT_END TUSDK OnCounterRestart
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -616,14 +602,13 @@ static void %'ModuleName'%.OnTimerRestart(void) {
 %define! Parcount
 %define! RetVal
 %include Common\OneWireSendBytes.inc
-bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
+uint8_t %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 {
-  PROG pr;
-  PROG last;
+  PROG pr, last;
 
   (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
   if((last.Instr != I_SEND && %@Program@'ModuleName'%.NofFreeElements()==0) || (%@Output@'ModuleName'%.NofFreeElements() < count)) {
-    return FALSE;
+    return ERR_FAILED;
   }
   pr.Instr = I_SEND;
   pr.Count = count;
@@ -642,7 +627,7 @@ bool %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
     %'ModuleName'%.i_run();
     %'ModuleName'%.i_send_low();
   }
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- SendBytes
 %-BW_METHOD_END SendBytes
@@ -749,12 +734,12 @@ void %'ModuleName'%.%i_reset(void)
 %ifdef SendReset
 %define! RetVal
 %include Common\OneWireSendReset.inc
-bool %'ModuleName'%.%SendReset(void)
+uint8_t %'ModuleName'%.%SendReset(void)
 {
   PROG pr;
 
   if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return FALSE;
+    return ERR_FAILED;
   }
   pr.Instr = I_RESET;
   (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
@@ -763,9 +748,9 @@ bool %'ModuleName'%.%SendReset(void)
     %'ModuleName'%.i_reset();
     %'ModuleName'%.i_run();
   }
-  return TRUE;
+  return ERR_OK;
 }
-%endif %-SendReset
+%endif %- SendReset
 %-BW_METHOD_END SendReset
 
 %-*****************************************************************************************************
@@ -821,10 +806,9 @@ void %'ModuleName'%.%i_send_float(void)
 %define! Pardata
 %define! RetVal
 %include Common\OneWireSendByte.inc
-bool %'ModuleName'%.%SendByte(uint8_t data)
+uint8_t %'ModuleName'%.%SendByte(uint8_t data)
 {
-  PROG pr;
-  PROG last;
+  PROG pr, last;
 
   (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
   if(last.Instr == I_SEND) {
@@ -833,7 +817,7 @@ bool %'ModuleName'%.%SendByte(uint8_t data)
     (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update element */
   } else {
     if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-      return FALSE;
+      return ERR_FAILED;
     }
     (void)%@Output@'ModuleName'%.Put(data);
     pr.Instr = I_SEND;
@@ -845,7 +829,7 @@ bool %'ModuleName'%.%SendByte(uint8_t data)
     %'ModuleName'%.i_send_low();
     %'ModuleName'%.i_run();
   }
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- SendByte
 %-BW_METHOD_END SendByte
@@ -860,10 +844,10 @@ void %'ModuleName'%.%i_recv_get(void)
   Data.WorkBit = DQ_Read();
   %'ModuleName'%.add_CRC(Data.WorkBit);
   Data.WorkByte += (Data.WorkBit ? 0x80 : 0);
-  if(Data.WorkBitPos == 7) { //Full byte
+  if(Data.WorkBitPos == 7) { /* Full byte */
     (void)%@Input@'ModuleName'%.Put(Data.WorkByte);
     Data.ToWork--;
-    if(Data.ToWork == 0) {  //finish
+    if(Data.ToWork == 0) {  /* finish */
       if(Data.CRC){
         Data.Error = OWERR_CRC;
       %ifdef OnError
@@ -920,12 +904,12 @@ void %'ModuleName'%.%i_recv_low(void)
 %define! Parcounter
 %define! RetVal
 %include Common\OneWireReceive.inc
-bool %'ModuleName'%.%Receive(uint8_t counter)
+uint8_t %'ModuleName'%.%Receive(uint8_t counter)
 {
   PROG pr;
 
   if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return FALSE;
+    return ERR_FAILED;
   }
   pr.Instr = I_RECV;
   pr.Count = counter;
@@ -935,7 +919,7 @@ bool %'ModuleName'%.%Receive(uint8_t counter)
     %'ModuleName'%.i_recv_low();
     %'ModuleName'%.i_run();
   }
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- Receive
 %-BW_METHOD_END Receive
@@ -946,12 +930,12 @@ bool %'ModuleName'%.%Receive(uint8_t counter)
 %define! Parkey
 %define! RetVal
 %include Common\OneWireProgramEvent.inc
-bool %'ModuleName'%.%ProgramEvent(uint8_t key)
+uint8_t %'ModuleName'%.%ProgramEvent(uint8_t key)
 {
   PROG pr;
 
   if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return FALSE;
+    return ERR_FAILED;
   }
   pr.Instr = I_EVENT;
   pr.Count = key;
@@ -959,7 +943,7 @@ bool %'ModuleName'%.%ProgramEvent(uint8_t key)
   if(!Data.Busy) {
     %'ModuleName'%.i_action();
   }
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- ProgramEvent
 %-BW_METHOD_END ProgramEvent
@@ -985,13 +969,13 @@ void %'ModuleName'%.%i_wait(void)
 %define! Parkey
 %define! RetVal
 %include Common\OneWireWaitms.inc
-bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
+uint8_t %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
 {
   PROG pr;
   %@CS@'ModuleName'%.CriticalVariable()
 
   if((%@Program@'ModuleName'%.NofFreeElements()==0) || (%@Time@'ModuleName'%.NofFreeElements()==0)) {
-    return FALSE;
+    return ERR_FAILED;
   }
   %@CS@'ModuleName'%.EnterCritical();
   pr.Instr = I_WAIT;
@@ -999,7 +983,7 @@ bool %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
   (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
   (void)%@Time@'ModuleName'%.Put(time_ms);
   %@CS@'ModuleName'%.ExitCritical();
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- Waitms
 %-BW_METHOD_END Waitms
@@ -1040,13 +1024,13 @@ void %'ModuleName'%.%add_CRC(uint8_t bitValue)
 %define! Pardata
 %define! RetVal
 %include Common\OneWireGetByte.inc
-bool %'ModuleName'%.%GetByte(uint8_t *data)
+uint8_t %'ModuleName'%.%GetByte(uint8_t *data)
 {
   if (%@Input@'ModuleName'%.NofElements()==0) {
-    return FALSE;
+    return ERR_FAILED;
   }
   (void)%@Input@'ModuleName'%.Get(data);
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- GetByte
 %-BW_METHOD_END GetByte
@@ -1059,16 +1043,16 @@ bool %'ModuleName'%.%GetByte(uint8_t *data)
 %define! Parcount
 %define! RetVal
 %include Common\OneWireGetBytes.inc
-bool %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
+uint8_t %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
 {
   if(count > %@Input@'ModuleName'%.NofElements()) {
-    return FALSE;
+    return ERR_FAILED;
   }
   for(;count>0;count--) {
     (void)%@Input@'ModuleName'%.Get(data);
     data++;
   }
-  return TRUE;
+  return ERR_OK;
 }
 %endif %- GetBytes
 %-BW_METHOD_END GetBytes
@@ -1085,7 +1069,35 @@ bool %'ModuleName'%.%isBusy(void)
 
 %endif %- isBusy
 %-BW_METHOD_END isBusy
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN CalcCRC
+%ifdef CalcCRC
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\OneWireCalcCRC.Inc
+uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize)
+{
+  uint8_t crc, i, x, y;
 
+  crc = 0;
+  for(x=0;x<dataSize;x++){
+    y = data[x];
+    for(i=0;i<8;i++) { /* go through all bits of the data byte */
+      if((crc&0x01)^(y&0x01)) {
+        crc >>= 1;
+        crc ^= 0x8c;
+      } else {
+        crc >>= 1;
+      }
+      y >>= 1;
+    }
+  }
+  return crc;
+}
+
+%endif %- CalcCRC
+%-BW_METHOD_END CalcCRC
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
@@ -1145,43 +1157,29 @@ void %'ModuleName'%.%Deinit(void)
 %-BW_METHOD_END Deinit
 
 %-INHERITED_EVENT_BEGIN TU OnCounterRestart
+%if defined(TU)
 %ifdef @TU@OnCounterRestart
 %include Common\GeneralInternal.inc (OnCounterRestart)
 void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
 {
+  (void)UserDataPtr; /* not used */
   %'ModuleName'%.OnTimerRestart();
 }
 %endif %- @TU@OnCounterRestart
+%endif
 %-INHERITED_EVENT_END TU OnCounterRestart
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN CalcCRC
-%ifdef CalcCRC
-%define! Pardata
-%define! PardataSize
-%define! RetVal
-%include Common\OneWireCalcCRC.Inc
-uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize)
+%-INHERITED_EVENT_BEGIN TUSDK OnCounterRestart
+%if defined(TUSDK)
+%ifdef @TUSDK@OnCounterRestart
+%include Common\GeneralInternal.inc (OnCounterRestart)
+void %@TUSDK@OnCounterRestart(void)
 {
-  uint8_t crc, i, x, y;
-
-  crc = 0;
-  for(x=0;x<dataSize;x++){
-    y = data[x];
-    for(i=0;i<8;i++) { /* go through all bits of the data byte */
-      if((crc&0x01)^(y&0x01)) {
-        crc >>= 1;
-        crc ^= 0x8c;
-      } else {
-        crc >>= 1;
-      }
-      y >>= 1;
-    }
-  }
-  return crc;
+  %'ModuleName'%.OnTimerRestart();
 }
 
-%endif %- CalcCRC
-%-BW_METHOD_END CalcCRC
+%endif %- @TUSDK@OnCounterRestart
+%endif
+%-INHERITED_EVENT_END TUSDK OnCounterRestart
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
