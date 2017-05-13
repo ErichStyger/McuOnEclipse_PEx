@@ -378,7 +378,7 @@ struct {
   unsigned Busy:1;
 } Device;
 
-static uint16 ConvTime[4] = {94, 188, 375, 750};
+static const uint16 ConvTime[4] = {94, 188, 375, 750};
 static Sensor_t Sensor[%'ModuleName'%.CONFIG_NUMBER_OF_SENSORS];
 
 %if defined(Shell)
@@ -391,9 +391,14 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
   for(i=0;i<%'ModuleName'%.CONFIG_NUMBER_OF_SENSORS;i++) {
+    /* ROM Code */
     %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), i); /* sensor number */
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)": ");
-    res = %'ModuleName'%.%ReadRom(i);
+#if !%'ModuleName'%.CONFIG_NUMBER_OF_SENSORS
+    res = %'ModuleName'%.%ReadRom(i); /* only one device on the bus: issue READROM command */
+#else
+    res = ERR_OK; /* do not read the ROM code from the bus, use the stored ROM values */
+#endif
     if (res==ERR_OK) {
       for(j=0;j<DS18B20_ROM_CODE_SIZE;j++) {
         %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), Sensor[i].Rom[j]);
@@ -402,12 +407,14 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
         }
       }
     } else {
-      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR");
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR (");
+      %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res");
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")");
     }
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  ROM code", buf, io->stdOut);
-  } /* for */
-  for(i=0;i<%'ModuleName'%.CONFIG_NUMBER_OF_SENSORS;i++) {
+
+    /* Temperature */
     res = %'ModuleName'%.%StartConversion(i);
     if (res==ERR_OK) {
       %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), i); /* sensor number */
@@ -419,10 +426,14 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
           %@Utility@'ModuleName'%.strcatNumFloat(buf, sizeof(buf), temp, 4);
           %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"°C");
         } else {
-          %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR");
+          %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR (");
+          %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res");
+          %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")");
         }
       } else {
-        %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR");
+        %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR (");
+        %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res");
+        %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")");
       }
     }
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
@@ -431,8 +442,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   return ERR_OK;
 }
 
-static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
-{
+static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  readtemp <nr>", (unsigned char*)"Read temperature from sensor (starting with zero)\r\n", io->stdOut);
