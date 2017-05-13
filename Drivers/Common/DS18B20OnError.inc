@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnError)
 %;**     Description :
-%;**         
+%;**         Event called in error case
 %include Common\GeneralParameters.inc(27)
 %;**       * error%Parerror %>27 - 
 %include Common\GeneralReturnNothing.inc

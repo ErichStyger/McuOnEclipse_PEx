@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.003</Version>
+    <Version>01.006</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -36,6 +36,24 @@
         <EditLine>true</EditLine>
         <DefaultValue/>
       </TCompNameItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Temperature Reading</Name>
+        <Symbol>readAuto</Symbol>
+        <TypeSpec>typeReadTemp</TypeSpec>
+        <Hint>Configures how the temperature is read.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -90,24 +108,6 @@
         <IconPopup>false</IconPopup>
         <SortStyle/>
       </TInhrLinkItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Read the temperature</Name>
-        <Symbol>readAuto</Symbol>
-        <TypeSpec>typeReadTemp</TypeSpec>
-        <Hint>Configures how the temperature is read.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>true</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
     </Property>
     <Property>
       <TInhrLinkItem>
@@ -615,7 +615,7 @@
         <Name>OnError</Name>
         <Symbol>OnError</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Event called in error case</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -660,7 +660,7 @@
         <Name>OnTemperatureGet</Name>
         <Symbol>OnTemperatureGet</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Event called for getting temperature</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -711,7 +711,7 @@
         <Name>OnRomRead</Name>
         <Symbol>OnRomRead</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>Event called for reading ROM value</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
@@ -762,7 +762,7 @@
         <Name>OnAllConverted</Name>
         <Symbol>OnAllConverted</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint/>
+        <Hint>event called after all sensors have been converted</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>

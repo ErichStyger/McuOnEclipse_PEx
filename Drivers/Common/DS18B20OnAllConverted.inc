@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnAllConverted)
 %;**     Description :
-%;**         
+%;**         event called after all sensors have been converted
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================

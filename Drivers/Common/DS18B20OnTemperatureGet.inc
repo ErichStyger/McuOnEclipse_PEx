@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnTemperatureGet)
 %;**     Description :
-%;**         
+%;**         Event called for getting temperature
 %include Common\GeneralParameters.inc(27)
 %;**       * sensor_index%Parsensor_index %>27 - 
 %;**       * temperature%Partemperature %>27 - 

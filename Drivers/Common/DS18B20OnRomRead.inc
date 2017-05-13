@@ -5,7 +5,7 @@
 %;** ===================================================================
 %include Common\GeneralEvent.inc (OnRomRead)
 %;**     Description :
-%;**         
+%;**         Event called for reading ROM value
 %include Common\GeneralParameters.inc(27)
 %;**       * sensor_index%Parsensor_index %>27 - 
 %;**       * rom_code%Parrom_code %>27 - 

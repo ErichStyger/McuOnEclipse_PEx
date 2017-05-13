@@ -222,6 +222,16 @@ LI.EXP {
 <b>Component Name</b></a> - Name of the component.
 </li>
 <li>
+<a name="readAuto">
+<b>Temperature Reading</b></a> - Configures how the temperature is read.<br /><br />
+There are 2 options:<br />
+<ul>
+  <li><u>Auto</u>: Temperature is read in StartConversion()</li>
+  <li><u>With ReadTemperature()</u>: Use StartConversion() and then use ReadTemperature()</li>
+</ul><br />
+
+</li>
+<li>
 <a name="connMultiple">
 <b>Connection mode</b></a> - Configures if only one slave is on the bus. In that case, the ROM code does not need to be transmitted.<br />
 The following items are available only if the group is enabled (the value is "Multiple slaves"):<br />
@@ -273,10 +283,6 @@ The following items are available only if the group is enabled (the value is "Mu
 <li>
 <a name="OW">
 <b>One Wire</b></a> - Link to 1-Wire communication component
-</li>
-<li>
-<a name="readAuto">
-<b>Read the temperature</b></a> - Configures how the temperature is read.
 </li>
 <li>
 <a name="sdk">

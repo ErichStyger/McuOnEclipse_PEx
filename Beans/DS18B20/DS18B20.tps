@@ -24,6 +24,10 @@
         <Line>Auto</Line>
         <Line>With ReadTemperature()</Line>
       </Items>
+      <Hints lines_count="2">
+        <Line>Temperature is read in StartConversion()</Line>
+        <Line>Use StartConversion() and then use ReadTemperature()</Line>
+      </Hints>
       <Defines lines_count="2">
         <Line>DS_READ_AUTO</Line>
         <Line>DS_READ_MAN</Line>
