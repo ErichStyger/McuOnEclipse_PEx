@@ -4,7 +4,7 @@
     <Name>SDK_Timer</Name>
     <Description>SDK Timer</Description>
     <Author>Erich Styger</Author>
-    <Version>01.019</Version>
+    <Version>01.020</Version>
     <Icon>SIGNAL_LDD</Icon>
     <TypesFiles>PE,SDK_Timer\SDK_Timer</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -411,6 +411,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint32_t #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ResetCounter</Name>
+        <Symbol>ResetCounter</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Reset the timer counter back to zero</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

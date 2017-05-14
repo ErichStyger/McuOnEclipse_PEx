@@ -190,6 +190,14 @@ uint32_t %'ModuleName'%.%GetInputFrequency(void);
 
 %endif %- GetInputFrequency
 %-BW_METHOD_END GetInputFrequency
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ResetCounter
+%ifdef ResetCounter
+void %'ModuleName'%.%ResetCounter(void);
+%include Common\SDK_TimerResetCounter.Inc
+
+%endif %- ResetCounter
+%-BW_METHOD_END ResetCounter
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -404,6 +412,22 @@ uint32_t %'ModuleName'%.%GetInputFrequency(void)
 
 %endif %- GetInputFrequency
 %-BW_METHOD_END GetInputFrequency
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ResetCounter
+%ifdef ResetCounter
+%include Common\SDK_TimerResetCounter.Inc
+void %'ModuleName'%.%ResetCounter(void)
+{
+#if 1 /* does not exist in the SDK? Implementing it here .... */
+  TPM_Type *base;
+
+  base = %'ModuleName'%.CONFIG_TIMER_NAME;
+  base->CNT = 0; /* reset counter */
+#endif
+}
+
+%endif %- ResetCounter
+%-BW_METHOD_END ResetCounter
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

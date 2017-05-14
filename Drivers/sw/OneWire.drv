@@ -105,6 +105,14 @@ typedef enum {
   OWERR_CRC
 } %'ModuleName'%.Error;
 
+/* events */
+void %OnBlockReceived(void);
+void %OnError(void);
+void %OnProgramEvent(uint8_t key);
+void %OnWaitEnd(uint8_t key);
+void %OnSendEnd(void);
+void %OnSendedReset(void);
+
 %-BW_CUSTOM_USERTYPE_END
 
 %-BW_DEFINITION_START
@@ -382,10 +390,6 @@ void %OnProgramEvent(uint8_t key);
 
 /* MODULE %ModuleName. */
 
-%for var from EventModules
-#include "%var.h"
-%endfor
-
 #include "%'ModuleName'.h"
 #include "%@DataPin@ModuleName.h" /* data pin */
 #include "%@input@ModuleName.h" /* input ring buffer */
@@ -405,7 +409,6 @@ void %OnProgramEvent(uint8_t key);
 %-     #include "header_name.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
-
 %-BW_CUSTOM_VARIABLE_START
 %- Write your static variables here
 %-   Example:
@@ -437,12 +440,6 @@ void %OnProgramEvent(uint8_t key);
 #endif
 
 /* timer macros */
-#if %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
-  #define TU_Reset()
-#else
-#endif
-
-#if %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
 %if defined(TU)
   #define TU_Init              %@TU@'ModuleName'%.Init(NULL)
   #define TU_Deinit            %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr)
@@ -451,24 +448,15 @@ void %OnProgramEvent(uint8_t key);
   #define TU_ResetCounter      %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr)
   #define TU_SetPeriodUS(us)   %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, (us)*Data.Ticks)
   #define TU_Enable            %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr)
-%else
-  #define TU_Init               NULL
-  #define TU_Deinit             /* empty */
-  #define TU_GetTimerFrequency  0
-  #define TU_Disable            /* empty */
-  #define TU_ResetCounter       /* empty */
-  #define TU_SetPeriodUS(us)    /* empty */
-  #define TU_Enable             /* empty */
+%elif defined(TUSDK)
+  #define TU_Init              %@TUSDK@'ModuleName'%.Init()
+  #define TU_Deinit            %@TUSDK@'ModuleName'%.Deinit()
+  #define TU_GetTimerFrequency %@TUSDK@'ModuleName'%.GetInputFrequency()
+  #define TU_Disable           %@TUSDK@'ModuleName'%.Disable()
+  #define TU_ResetCounter      %@TUSDK@'ModuleName'%.ResetCounter()
+  #define TU_SetPeriodUS(us)   %@TUSDK@'ModuleName'%.SetPeriodTicks((us)*Data.Ticks)
+  #define TU_Enable            %@TUSDK@'ModuleName'%.Enable()
 %endif
-#else
-  #define TU_Init               NULL
-  #define TU_Deinit             /* empty */
-  #define TU_GetTimerFrequency  0
-  #define TU_Disable            /* empty */
-  #define TU_ResetCounter       /* empty */
-  #define TU_SetPeriodUS(us)    /* empty */
-  #define TU_Enable             /* empty */
-#endif
 
 typedef enum {
   I_RESET, /* reset instruction */
@@ -1131,10 +1119,11 @@ void %'ModuleName'%.%Init(void)
   /* using SDK, need to initialize inherited components */
   DQ_Init;
   DBG_Init;
-  %@Input@'ModuleName'%.Init(); /* input ringbuffer */
-  %@Output@'ModuleName'%.Init(); /* output ringbuffer */
-  %@Program@'ModuleName'%.Init(); /* program ringbuffer */
-  %@Time@'ModuleName'%.Init(); /* time ringbuffer */
+  %@Input@'ModuleName'%.Init(); /* input ring buffer */
+  %@Output@'ModuleName'%.Init(); /* output ring buffer */
+  %@Program@'ModuleName'%.Init(); /* program ring buffer */
+  %@Time@'ModuleName'%.Init(); /* time ring buffer */
+  %@TUSDK@'ModuleName'%.Init(); /* timer */
 #else
   Data.TUDeviceDataPtr = TU_Init; /* timer init */
 #endif
