@@ -82,12 +82,6 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -597,7 +591,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
         && resolution>=9 && resolution<=12
         )
     {
-      switch(resolution) {
+      switch((int)resolution) {
         case 9:  resolution = DS18B20_RESOLUTION_BITS_9; break;
         case 10: resolution = DS18B20_RESOLUTION_BITS_10; break;
         case 11: resolution = DS18B20_RESOLUTION_BITS_11; break;
