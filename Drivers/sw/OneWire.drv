@@ -106,12 +106,12 @@ typedef enum {
 } %'ModuleName'%.Error;
 
 /* events */
-void %OnBlockReceived(void);
-void %OnError(void);
-void %OnProgramEvent(uint8_t key);
-void %OnWaitEnd(uint8_t key);
-void %OnSendEnd(void);
-void %OnSendedReset(void);
+void %'ModuleName'%.OnBlockReceived(void);
+void %'ModuleName'%.OnError(void);
+void %'ModuleName'%.OnProgramEvent(uint8_t key);
+void %'ModuleName'%.OnWaitEnd(uint8_t key);
+void %'ModuleName'%.OnSendEnd(void);
+void %'ModuleName'%.OnSendedReset(void);
 
 %-BW_CUSTOM_USERTYPE_END
 
