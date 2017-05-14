@@ -304,15 +304,27 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ReadResolution">
+<b>ReadResolution</b></a>
+ - Read the sensor resolution sensor and stores it in memory
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadResolution(uint8_t sensor_index)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>sensor_index:uint8_t</i> - Sensor index, use zero if only using one sensor</li>
+<li><i>Return value:uint8_t</i> - error code
+</li>
+</ul><br />
+</li>
 <li><a name="SetResolution">
 <b>SetResolution</b></a>
  - Sets the resolution
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetResolution(DS18B20_ResolutionBits resolution, uint8_t sensor_index)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetResolution(uint8_t sensor_index, DS18B20_ResolutionBits resolution)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>config_bits:uint8_t</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
 <li><i>sensor_index:uint8_t</i> - Index of the sensor to set the resolution.</li>
+<li><i>config_bits:uint8_t</i> - Two bits resolution config value: <br /><b>0b00</b> - 9 bits.<br /><b>0b01</b> - 10 bits.<br /><b>0b10</b> - 11 bits.<br /><b>0b11</b> - 12 bits.</li>
 <li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />

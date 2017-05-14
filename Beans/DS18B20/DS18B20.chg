@@ -8,12 +8,6 @@
 
 %set Init Selection always
 
-%- %if %get(readAuto, Bool) = 'yes'
-%-	%set ReadTemperature Selection never
-%- %else
-%- 	%set ReadTemperature Selection enable
-%- %endif
-
 %if %get(connMultiple, Bool) = 'yes'
 %- Functions and events
 	%- Enable

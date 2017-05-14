@@ -3,18 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SetResolution)
+%include Common\GeneralMethod.inc (ReadResolution)
 %;**     Description :
-%;**         Sets the resolution
+%;**         Read the sensor resolution sensor and stores it in memory
 %include Common\GeneralParameters.inc(27)
-%;**         sensor_index%Parsensor_index %>27 - Index of the sensor to
-%;** %>29 set the resolution.
-%;**         config_bits%Parconfig_bits %>27 - Two bits resolution config
-%;** %>29 value: 
-%;** %>29 [0b00] - 9 bits.
-%;** %>29 [0b01] - 10 bits.
-%;** %>29 [0b10] - 11 bits.
-%;** %>29 [0b11] - 12 bits.
+%;**         sensor_index%Parsensor_index %>27 - Sensor index, use zero
+%;** %>29 if only using one sensor
 %;**     Returns     :
 %;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc

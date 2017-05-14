@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.006</Version>
+    <Version>01.009</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -115,6 +115,20 @@
         <Symbol>sdk</Symbol>
         <TypeSpec>DS18B20\sdk</TypeSpec>
         <Hint>Link to SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Wait</Name>
+        <Symbol>Wait</Symbol>
+        <TypeSpec>DS18B20\Wait</TypeSpec>
+        <Hint>Interface to waiting routines</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>
@@ -452,6 +466,40 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>ReadResolution</Name>
+        <Symbol>ReadResolution</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Read the sensor resolution sensor and stores it in memory</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>true</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>sensor_index</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Sensor index, use zero if only using one sensor</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>SetResolution</Name>
         <Symbol>SetResolution</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -473,21 +521,21 @@
         <RetHint>error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
+          <ParName>sensor_index</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Index of the sensor to set the resolution.</ParHint>
+        </Parameter>
+        <Parameter>
           <ParName>config_bits</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Two bits resolution config value: &lt;br&gt;&lt;b&gt;0b00&lt;/b&gt; - 9 bits.&lt;br&gt;&lt;b&gt;0b01&lt;/b&gt; - 10 bits.&lt;br&gt;&lt;b&gt;0b10&lt;/b&gt; - 11 bits.&lt;br&gt;&lt;b&gt;0b11&lt;/b&gt; - 12 bits.</ParHint>
           <ParUserDeclaration>DS18B20_ResolutionBits resolution</ParUserDeclaration>
         </Parameter>
-        <Parameter>
-          <ParName>sensor_index</ParName>
-          <ParType>uint8_t</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>Index of the sensor to set the resolution.</ParHint>
-        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(DS18B20_ResolutionBits resolution, uint8_t sensor_index)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index, DS18B20_ResolutionBits resolution)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

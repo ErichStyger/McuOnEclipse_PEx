@@ -367,8 +367,8 @@ void %OnError(%'ModuleName'_Error error);
 %-BW_METHOD_BEGIN OnProgramEvent
 %ifdef OnProgramEvent
 %INTERFACE OnProgramEvent
-void %OnProgramEvent(uint8_t key4);
-%define! Parkey4
+void %OnProgramEvent(uint8_t key);
+%define! Parkey
 %include Common\OneWireOnProgramEvent.inc
 %endif %- OnProgramEvent
 %-BW_METHOD_END OnProgramEvent
@@ -385,7 +385,20 @@ void %OnProgramEvent(uint8_t key4);
 %for var from EventModules
 #include "%var.h"
 %endfor
+
 #include "%'ModuleName'.h"
+#include "%@DataPin@ModuleName.h" /* data pin */
+#include "%@input@ModuleName.h" /* input ring buffer */
+#include "%@output@ModuleName.h" /* output ring buffer */
+#include "%@time@ModuleName.h" /* time ring buffer */
+#include "%@program@ModuleName.h" /* program ring buffer */
+%if defined(TU)
+#include "%@TU@ModuleName.h" /* Timer Unit */
+%endif
+%if defined(TUSDK)
+#include "%@TUSDK@ModuleName.h" /* Timer Unit */
+%endif
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -1263,9 +1276,9 @@ void %OnError(%'ModuleName'_Error error)
 %-BW_METHOD_BEGIN OnProgramEvent
 %ifdef OnProgramEvent
 %IMPLEMENTATION OnProgramEvent
-%define! Parkey4
+%define! Parkey
 %include Common\OneWireOnProgramEvent.inc
-void %OnProgramEvent(uint8_t key4)
+void %OnProgramEvent(uint8_t key)
 {
   /* Write your code here ... */
 }
@@ -1341,7 +1354,7 @@ void %OnProgramEvent(uint8_t key4)
 
 #ifndef %'ModuleName'%.CONFIG_WRITE_PIN
 %if defined(WritePin)
-  #define %'ModuleName'%.CONFIG_WRITE_PIN                        %>50 (1)
+  #define %'ModuleName'%.CONFIG_WRITE_PIN                        %>60 (1)
 %else
   #define %'ModuleName'%.CONFIG_WRITE_PIN                        %>60 (0)
 %endif
