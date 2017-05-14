@@ -162,8 +162,6 @@ typedef enum {
 %endif
 
 %-BW_CUSTOM_USERTYPE_END
-
-
 %-BW_DEFINITION_START
 %-Unused %-INHERITED_EVENT_BEGIN D_C BeforeNewSpeed
 %-Unused %ifdef @D_C@BeforeNewSpeed
@@ -190,7 +188,6 @@ typedef enum {
 %-Unused %endif %- @D_C@OnTrgOverrun
 %-Unused %-INHERITED_EVENT_END D_C OnTrgOverrun
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN Clear
 %ifdef Clear
 void %'ModuleName'%.%Clear(void);
@@ -198,7 +195,6 @@ void %'ModuleName'%.%Clear(void);
 
 %endif %- Clear
 %-BW_METHOD_END Clear
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
@@ -369,50 +365,30 @@ void %'ModuleName'%.%Deinit(void);
 
 uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
-%if defined(CSLDD)
-static LDD_TDeviceData *CS_DeviceData; /* device handle for CS pin */
-%endif
-%if defined(A0LDD)
-static LDD_TDeviceData *A0_DeviceData; /* device handle for A0 pin */
-%endif
-
 /* some aspects of the protocol are pretty timing sensitive... */
-%if %HardwareGroup='yes'
 #define SET_CS()   \
-    %@Wait@'ModuleName'%.Waitns(500); \
+    %@Wait@'ModuleName'%.Waitns(200); \
     %@CS@'ModuleName'%.SetVal(); \
-    %@Wait@'ModuleName'%.Waitns(500);
+    %@Wait@'ModuleName'%.Waitns(200)
 
 #define CLR_CS()   \
     %@Wait@'ModuleName'%.Waitns(100); \
     %@CS@'ModuleName'%.ClrVal(); \
-    %@Wait@'ModuleName'%.Waitns(100);
+    %@Wait@'ModuleName'%.Waitns(100)
 
 #define CLR_A0() \
-    %@A0@'ModuleName'%.ClrVal()
+		%@Wait@'ModuleName'%.Waitns(100); \
+    %@A0@'ModuleName'%.ClrVal();\
+    %@Wait@'ModuleName'%.Waitns(100)
 #define SET_A0() \
-    %@A0@'ModuleName'%.SetVal()
-%endif
+		%@Wait@'ModuleName'%.Waitns(100); \
+    %@A0@'ModuleName'%.SetVal(); \
+    %@Wait@'ModuleName'%.Waitns(100)
 
-%if %HardwareGroupLDD='yes'
-#define SET_CS()   \
-    %@Wait@'ModuleName'%.Waitns(500); \
-    %@CSLDD@'ModuleName'%.SetVal(CS_DeviceData); /* set bit */ \
-    %@Wait@'ModuleName'%.Waitns(500);
-
-#define CLR_CS()   \
-    %@Wait@'ModuleName'%.Waitns(100); \
-    %@CSLDD@'ModuleName'%.ClrVal(A0_DeviceData); /* clr bit */ \
-    %@Wait@'ModuleName'%.Waitns(100);
-
-#define CLR_CS()   %@CSLDD@'ModuleName'%.ClrVal(CS_DeviceData) /* clr bit */
-#define SET_CS()   %@CSLDD@'ModuleName'%.SetVal(CS_DeviceData) /* set bit */
-
-#define CLR_A0()   %@A0LDD@'ModuleName'%.ClrVal(A0_DeviceData) /* clr bit */
-#define SET_A0()   %@A0LDD@'ModuleName'%.SetVal(A0_DeviceData) /* set bit */
-
-static volatile bool %'ModuleName'%.DataReceivedFlag = FALSE;
-%endif
+#define CLR_RES() \
+    %@RES@'ModuleName'%.ClrVal()
+#define SET_RES() \
+    %@RES@'ModuleName'%.SetVal()
 
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -436,23 +412,9 @@ static void WriteData(uint8_t data);
 %include Common\GeneralInternalGlobal.inc (WriteCmd)
 static void WriteCmd(uint8_t cmd)
 {
-%if defined(SPILDD)
-  uint8_t dummy;
-
-%endif
-  CLR_CS();                                                      %>40/* CS1 low: select device */
   CLR_A0();                                                      %>40/* A0 low */
-%if defined(SPILDD)
-  %'ModuleName'%.DataReceivedFlag = FALSE;
-  %@SPILDD@'ModuleName'%.ReceiveBlock(%@SPILDD@'ModuleName'%.DeviceData, &dummy, 1);
-  %@SPILDD@'ModuleName'%.SendBlock(%@SPILDD@'ModuleName'%.DeviceData, &cmd, 1);
-  while (!%'ModuleName'%.DataReceivedFlag) {};                            /* Wait until data block is transmitted/received */
-%else
-%if defined(SPI)
+  CLR_CS();                                                      %>40/* CS1 low: select device */
   (void)%@SPI@'ModuleName'%.SendChar(cmd);                       %>40/* send command byte */
-%endif
-%endif
-  SET_A0();                                                      %>40/* \todo: A0 should be set at last bit?!! */
   SET_CS();                                                      %>40/* CS high: deselect device */
 }
 
@@ -463,23 +425,9 @@ static void WriteCmd(uint8_t cmd)
 %include Common\GeneralInternalGlobal.inc (WriteData)
 static void WriteData(uint8_t data)
 {
-%if defined(SPILDD)
-  uint8_t dummy;
-
-%endif
+  SET_A0();                                                      %>40/* A0 low */
   CLR_CS();                                                      %>40/* CS1 low: select device */
-  CLR_A0();                                                      %>40/* A0 low */
-%if defined(SPILDD)
-  %'ModuleName'%.DataReceivedFlag = FALSE;
-  %@SPILDD@'ModuleName'%.ReceiveBlock(%@SPILDD@'ModuleName'%.DeviceData, &dummy, 1);
-  %@SPILDD@'ModuleName'%.SendBlock(%@SPILDD@'ModuleName'%.DeviceData, &data, 1);
-  while (!%'ModuleName'%.DataReceivedFlag) {};                            /* Wait until data block is transmitted/received */
-%else
-%if defined(SPI)
   (void)%@SPI@'ModuleName'%.SendChar(data);                      %>40/* send data byte */
-%endif
-%endif
-  SET_A0();                                                      %>40/* \todo: A0 should be set at last bit?!! */
   SET_CS();                                                      %>40/* CS high: deselect device */
 }
 
@@ -505,22 +453,32 @@ void %'ModuleName'%.%Clear(void)
 %include Common\ST7565PInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-%if defined(CSLDD)
-  CS_DeviceData = %@CSLDD@'ModuleName'%.Init(NULL); /* device handle for CS1 pin */
-%endif
-%if defined(A0LDD)
-  A0_DeviceData = %@A0LDD@'ModuleName'%.Init(NULL); /* device handle for A0 pin */
-%endif
   /* boot display */
-  /*! \todo */
-  SET_CS();                                                      %>40 /* CS high: Disable device */
+  SET_RES();                                                     %>40 /* RES high: start reset sequence */
+  SET_CS ();                                                     %>40 /* CS high: Disable device */
   %@Wait@'ModuleName'%.Waitms(10);                               %>40 /* wait at least 10ms */
-  CLR_A0();                                                      %>40 /* Reset line low */
+  CLR_RES();                                                     %>40 /* Reset line low */
+  %@Wait@'ModuleName'%.Waitms(100);                              %>40 /* wait at least 100ms */
+  SET_RES();                                                     %>40 /* Awake LCD from RESET state. */
+  %@Wait@'ModuleName'%.Waitms(10);                               %>40 /* wait at least 10ms */
 
   /* initialize display */
-  WriteCmd(0x21);                                                %>40 /* Activate Chip and H=1 */
   %'ModuleName'%.%Clear();                                       %>40 /* Erase all pixel on the DDRAM */
-  WriteCmd(0x08);                                                %>40 /* Blank the Display */
+  WriteCmd(0xA0);                                                %>40 /* ADC segment driver direction normal */
+  WriteCmd(0xA2);                                                %>40 /* added 1/9 bias */
+  WriteCmd(0xA4);                                                %>40 /* Display all points: normal */
+  WriteCmd(0xA6);                                                %>40 /* Sets LCD display normal */
+
+  WriteCmd(0xC0);                                                %>40 /* COM output scan direction normal */
+  WriteCmd(0x2F);                                                %>40 /* Select internal power supply operating mode */
+
+  WriteCmd(0x40);                                                %>40 /* Display start line set to 0 */
+
+  WriteCmd(0x25);                                                %>40 /* set the resistor ratio */
+  WriteCmd(0x81);                                                %>40 /* electronic volume mode set */
+  WriteCmd(0x02);                                                %>40 /* electronic volume register set */
+
+  WriteCmd(0xAF);                                                %>40 /* LCD display on */
 }
 
 %endif %- Init
@@ -547,13 +505,19 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %include Common\ST7565PUpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
-  uint16_t numBytes = sizeof(%'ModuleName'_DisplayBuf);
-  uint8_t *data = (uint8_t*)%'ModuleName'_DisplayBuf;
+  uint8_t page;
+  uint8_t column;
 
-  while(numBytes>0) {
-    WriteData(*data++);                                          %>40 /* write data */
-    numBytes--;
-  }SET
+  /* iterate throught the pages */
+  for(page = 0; page < ((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1; page++) {
+    WriteCmd(0xB0 | page);                                       %>40 /* Sets actual display RAM page */
+    WriteCmd(0x10);                                              %>40 /* Sets actual display RAM column address to 0 */
+    WriteCmd(0x00);
+    /* iterate through the columns */
+    for(column = 0; column < %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS; column++) {
+      WriteData(NH1_DisplayBuf[page][NH1_DISPLAY_HW_NOF_COLUMNS-1-column]);
+    }
+  }
 }
 
 %endif %- UpdateFull
@@ -566,9 +530,9 @@ void %'ModuleName'%.%UpdateFull(void)
 void %'ModuleName'%.%SetMode(bool inverted)
 {
   if (inverted) {
-    WriteCmd(0x0C|1);                                            %>40 /* Inverted display mode */
+    WriteCmd(0xA6|1);                                            %>40 /* Inverted display mode */
   } else {
-    WriteCmd(0x0C);                                              %>40 /* Normal display mode */
+    WriteCmd(0xA6);                                              %>40 /* Normal display mode */
   }
 }
 
@@ -698,12 +662,6 @@ void %'ModuleName'%.%GiveLCD(void)
 %include Common\ST7565PDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-%if defined(CSLDD)
-  %@CSLDD@'ModuleName'%.Deinit(CS_DeviceData); /* device handle for CS1 pin */
-%endif
-%if defined(A0LDD)
-  %@A0LDD@'ModuleName'%.Deinit(A0_DeviceData); /* device handle for A0 pin */
-%endif
 }
 
 %endif %- Deinit

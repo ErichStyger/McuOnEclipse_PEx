@@ -4,7 +4,7 @@
     <Name>ST7565P</Name>
     <Description>Display driver for the Newhaven ST7565P display driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.001</Version>
+    <Version>01.002</Version>
     <Icon>ST7565P</Icon>
     <TypesFiles>PE,ST7565P\ST7565P</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -236,19 +236,15 @@
       </TBoolItem>
     </Property>
     <Property>
-      <TBoolGrupItem>
-        <Name>HW</Name>
-        <Symbol>HardwareGroup</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Group controlling the hardware settings.</Hint>
+      <TGrupItem>
+        <Name>Connection</Name>
+        <Symbol>ConnectionGroup</Symbol>
+        <Hint>Group of display hardware connection settings</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
+        <Description/>
+        <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
             <TInhrItem>
@@ -264,26 +260,8 @@
               <RuntimeProperty>false</RuntimeProperty>
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
-              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <InhrBeanBaseName>RES</InhrBeanBaseName>
               <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
-            </TInhrItem>
-          </GrupItem>
-          <GrupItem>
-            <TInhrItem>
-              <Name>CS</Name>
-              <Symbol>CS</Symbol>
-              <TypeSpec>ST7565P\SCE</TypeSpec>
-              <Hint>SPI Chip Enable/Select signal (low active)</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>-1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <InhrBeanBaseName>CSpin</InhrBeanBaseName>
-              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
           </GrupItem>
           <GrupItem>
@@ -305,39 +283,39 @@
             </TInhrItem>
           </GrupItem>
           <GrupItem>
-            <TBoolGrupItem>
-              <Name>SPI</Name>
-              <Symbol>SPIgroup</Symbol>
-              <TypeSpec>typeEnaDis</TypeSpec>
-              <Hint>Group to control the SPI.</Hint>
+            <TInhrItem>
+              <Name>CS</Name>
+              <Symbol>CS</Symbol>
+              <TypeSpec>ST7565P\SCE</TypeSpec>
+              <Hint>SPI Chip Enable/Select signal (low active)</Hint>
               <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
               <EditLine>false</EditLine>
-              <Description>Enabled</Description>
-              <Expanded>Yes</Expanded>
-              <DefaultValue>true</DefaultValue>
-              <DefineSymbol>YES_NO</DefineSymbol>
-              <IfDisabled>setNOTHING</IfDisabled>
-              <Children>
-                <GrupItem>
-                  <TInhrLinkItem>
-                    <Name>SPI</Name>
-                    <Symbol>SPI</Symbol>
-                    <TypeSpec>ST7565P\SPI</TypeSpec>
-                    <Hint>Interface to the SPI communication channel to the display.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <DefaultValue/>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <SortStyle/>
-                  </TInhrLinkItem>
-                </GrupItem>
-              </Children>
-            </TBoolGrupItem>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>CSpin</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SPI</Name>
+              <Symbol>SPI</Symbol>
+              <TypeSpec>ST7565P\SPI</TypeSpec>
+              <Hint>Interface to the SPI communication channel to the display.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
           </GrupItem>
         </Children>
-      </TBoolGrupItem>
+      </TGrupItem>
     </Property>
     <Property>
       <TGrupItem>
