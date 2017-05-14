@@ -401,10 +401,21 @@ void %OnProgramEvent(uint8_t key4);
 %-
 #define INPUT          0U
 #define OUTPUT         1U
-#define DQ_Init()               %@DataPin@'ModuleName'%.Init()
+
+#if %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN
+  #define DQ_Init()               %@DataPin@'ModuleName'%.Init(); \
+                                  %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_INIT()
+#else
+  #define DQ_Init()               %@DataPin@'ModuleName'%.Init()
+#endif
 #define DQ_Floating()           %@DataPin@'ModuleName'%.SetInput()
-#define DQ_SetLow()             %@DataPin@'ModuleName'%.ClrVal()
-#define DQ_Low()                %@DataPin@'ModuleName'%.SetOutput()
+#if %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN
+  #define DQ_SetLow()             %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_LOW()
+  #define DQ_Low()                %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_SETOUTPUT()
+#else
+  #define DQ_SetLow()             %@DataPin@'ModuleName'%.ClrVal()
+  #define DQ_Low()                %@DataPin@'ModuleName'%.SetOutput()
+#endif
 #if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
   #define DBG_Init()              %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()
   #define DQ_Read()               (%'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE(), %@DataPin@'ModuleName'%.GetVal()!=0)
@@ -1298,44 +1309,68 @@ void %OnProgramEvent(uint8_t key4)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* timing */
-#define %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME       %write1LowTime%>60/* A */
-#define %'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME      %write1HighTime%>60/* B */
-#define %'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME       %write0LowTime%>60/* C */
-#define %'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME      %write0HighTime%>60/* D */
-#define %'ModuleName'%.CONFIG_H_RESET_TIME             %resetTime%>60/* H */
-#define %'ModuleName'%.CONFIG_I_RESPONSE_TIME          %responseTime%>60/* I */
-#define %'ModuleName'%.CONFIG_A_READ_TIME              %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME%>60/* A (for read) */
-#define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME %beforeReadDelayTime%>60/* E */
-#define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME  %afterReadDelayTime%>60/* F */
-#define %'ModuleName'%.CONFIG_SLOT_TIME                %slotTime
+/* timing in micro seconds */
+#define %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME                 %>60 %write1LowTime%>60/* A */
+#define %'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME                %>60 %write1HighTime%>60/* B */
+#define %'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME                 %>60 %write0LowTime%>60/* C */
+#define %'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME                %>60 %write0HighTime%>60/* D */
+#define %'ModuleName'%.CONFIG_H_RESET_TIME                       %>60 %resetTime%>60/* H */
+#define %'ModuleName'%.CONFIG_I_RESPONSE_TIME                    %>60 %responseTime%>60/* I */
+#define %'ModuleName'%.CONFIG_A_READ_TIME                        %>60 %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME%>60/* A (for read) */
+#define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME           %>60 %beforeReadDelayTime%>60/* E */
+#define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME            %>60 %afterReadDelayTime%>60/* F */
+#define %'ModuleName'%.CONFIG_SLOT_TIME                          %>60 %slotTime
 
 %if defined(DbgReadPin)
-#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED     (1)
+#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED             %>60 (1)
 %else
-#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED     (0)
+#define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED             %>60 (0)
 %endif
   /*!< 1: Toggle extra GPIO pin during 1-wire read access; 0: no debug */
 
 #if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
 %if defined(DbgReadPin)
   #include "%@DbgReadPin@ModuleName.h" /* SDK and API used */
-  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()     %@DbgReadPin@'ModuleName'%.Init()
-  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   %@DbgReadPin@'ModuleName'%.NegVal()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()            %>60 %@DbgReadPin@'ModuleName'%.Init()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()          %>60 %@DbgReadPin@'ModuleName'%.NegVal()
 %else
   #include "DbgReadPin.h"
-  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()     DbgReadPin_Init()
-  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()   DbgReadPin_NegVal()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT()            %>60 DbgReadPin_Init()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE()          %>60 DbgReadPin_NegVal()
 %endif
 #endif
 
-%if defined(TU)
-#define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD     (1)
+#ifndef %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN
+%if defined(WritePin)
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN              %>50 (1)
 %else
-#define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD     (0)
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN              %>60 (0)
 %endif
-  /*!< 1: using TimerUnit_LDD, 0: not using TimerUnit_LDD */
+    /*!< 1: using dedicated write pin; 0: using single pin for read/write */
+#endif
 
+#if %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN
+%if defined(WritePin)
+  #include "%@WritePin@ModuleName.h" /* SDK and API used */
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_INIT()       %>60 %@WritePin@'ModuleName'%.Init()
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_LOW()        %>60 %@WritePin@'ModuleName'%.ClrVal()
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_SETOUTPUT    %>60 %@WritePin@'ModuleName'%.SetOutput()
+%else
+  #include "WritePin.h"
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_INIT()       %>60 WritePin_Init()
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_LOW()        %>60 WritePin_ClrVal()
+  #define %'ModuleName'%.CONFIG_DEDICATED_WRITE_PIN_SETOUTPUT    %>60 WritePin_SetOutput()
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
+%if defined(TU)
+  #define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD                   %>60 (1)
+%else
+  #define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD                   %>60 (0)
+%endif
+    /*!< 1: using TimerUnit_LDD, 0: not using TimerUnit_LDD */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.105</Version>
+    <Version>01.107</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -54,6 +54,42 @@
         <InhrBeanBaseName>DQ</InhrBeanBaseName>
         <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
       </TInhrItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Write Pin</Name>
+        <Symbol>Symbol</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>If a dedicated write pin shall be used. In that case the Data Pin I/O is used for reading only.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>Write Pin</Name>
+              <Symbol>WritePin</Symbol>
+              <TypeSpec>OneWire\WritePin</TypeSpec>
+              <Hint>Special pin which is used for writing only</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>Inhr</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -1450,7 +1486,7 @@
           <ParName>key2</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the source of the event.</ParHint>
+          <ParHint>Key to identify the source of the event.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1584,8 +1620,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-12</Date>
-      <Version>01.105</Version>
+      <Date>2017-05-13</Date>
+      <Version>01.107</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

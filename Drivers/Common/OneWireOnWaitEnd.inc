@@ -7,8 +7,7 @@
 %;**     Description :
 %;**         
 %include Common\GeneralParameters.inc(27)
-%;**         key2%Parkey2 %>27 - Key to identificate the source of the
-%;** %>29 event.
+%;**         key2%Parkey2 %>27 - Key to identify the source of the event.
 %include Common\GeneralReturnNothing.inc
 %;** ===================================================================
 %ifndef CommentLine
