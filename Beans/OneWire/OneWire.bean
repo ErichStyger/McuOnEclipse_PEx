@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the One Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.109</Version>
+    <Version>01.111</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -137,7 +137,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -159,38 +159,6 @@
               <InhrBeanBaseName>Timer</InhrBeanBaseName>
               <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
-          </GrupItem>
-        </Children>
-      </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TBoolGrupItem>
-        <Name>RTOS</Name>
-        <Symbol>RTOSGroup</Symbol>
-        <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>Group to configure RTOS related settings</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <BoldName>true</BoldName>
-        <EditLine>false</EditLine>
-        <Description>Disabled</Description>
-        <Expanded>No</Expanded>
-        <DefaultValue>false</DefaultValue>
-        <DefineSymbol>YES_NO</DefineSymbol>
-        <IfDisabled>setNOTHING</IfDisabled>
-        <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>RTOS</Name>
-              <Symbol>RTOS</Symbol>
-              <TypeSpec>OneWire\RTOS</TypeSpec>
-              <Hint>Makes the component aware of the RTOS used.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
           </GrupItem>
         </Children>
       </TBoolGrupItem>
@@ -528,6 +496,84 @@
         <IconPopup>false</IconPopup>
         <SortStyle/>
       </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>RTOS</Name>
+        <Symbol>RTOSGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Group to configure RTOS related settings</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>RTOS</Name>
+              <Symbol>RTOS</Symbol>
+              <TypeSpec>OneWire\RTOS</TypeSpec>
+              <Hint>Makes the component aware of the RTOS used.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Shell</Name>
+        <Symbol>ShellGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Enables optional shell/command line interface</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Shell</Name>
+              <Symbol>Shell</Symbol>
+              <TypeSpec>OneWire\Shell</TypeSpec>
+              <Hint>Interface to shell</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Utility</Name>
+              <Symbol>Utility</Symbol>
+              <TypeSpec>OneWire\Utility</TypeSpec>
+              <Hint>Interface to utility module</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
@@ -1266,6 +1312,54 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>ParseCommand</Name>
+        <Symbol>ParseCommand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Shell Command Line parser. Method is only available if Shell is enabled in the component properties.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>command string</ParHint>
+          <ParUserDeclaration>const unsigned char* cmd</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>handled</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to variable which tells if the command has been handled or not</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>io</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to I/O structure</ParHint>
+          <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>Deinit</Name>
         <Symbol>Deinit</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1620,8 +1714,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-14</Date>
-      <Version>01.109</Version>
+      <Date>2017-05-15</Date>
+      <Version>01.111</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

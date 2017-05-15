@@ -79,6 +79,12 @@
 #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #error "only SDK v2.x supported"
 #endif
+
+/* event handler interface */
+%if defined(OnCounterRestart)
+void %OnCounterRestart(void);
+%endif
+
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -248,11 +254,11 @@ void %OnCounterRestart(void);
 #define %'ModuleName'%.SOURCE_CLOCK_FREQUENCY (CLOCK_GetFreq(kCLOCK_McgIrc48MClk)/4)
   /*!< Timer Clock Frequency */
 
-void TPM2_IRQHandler(void) {
+void %'ModuleName'%.CONFIG_TIMER_IRQ_HANDLER_NAME(void) {
   /* Clear interrupt flag.*/
   TPM_ClearStatusFlags(%'ModuleName'%.CONFIG_TIMER_NAME, kTPM_TimeOverflowFlag);
-%if defined(OnInterrupt)
-  %OnInterrupt();
+%if defined(OnCounterRestart)
+  %OnCounterRestart();
 %endif
 }
 %-
@@ -352,6 +358,45 @@ void %'ModuleName'%.%DisableOverflowIRQ(void)
 %endif %- DisableOverflowIRQ
 %-BW_METHOD_END DisableOverflowIRQ
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN GetInputFrequency
+%ifdef GetInputFrequency
+%define! RetVal
+%include Common\SDK_TimerGetInputFrequency.Inc
+uint32_t %'ModuleName'%.%GetInputFrequency(void)
+{
+  return %'ModuleName'%.SOURCE_CLOCK_FREQUENCY; /* timer clock frequency in Hz */
+}
+
+%endif %- GetInputFrequency
+%-BW_METHOD_END GetInputFrequency
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ResetCounter
+%ifdef ResetCounter
+%include Common\SDK_TimerResetCounter.Inc
+void %'ModuleName'%.%ResetCounter(void)
+{
+#if 1 /* does not exist in the SDK? Implementing it here .... */
+  TPM_Type *base;
+
+  base = %'ModuleName'%.CONFIG_TIMER_NAME;
+  base->CNT = 0; /* reset counter */
+#endif
+}
+
+%endif %- ResetCounter
+%-BW_METHOD_END ResetCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\SDK_TimerDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  %'ModuleName'%.%Disable(); /* stop timer */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 %include Common\SDK_TimerInit.Inc
@@ -380,6 +425,7 @@ void %'ModuleName'%.%Init(void)
 #else
   %'ModuleName'%.%DisableIRQ(); /* disable timer interrupt in NVIC */
 #endif
+  NVIC_SetPriority(%'ModuleName'%.CONFIG_TIMER_IRQ, 0); /* set interrupt priority */
 #if %'ModuleName'%.CONFIG_TIMER_INIT_ENABLE_TIMER
   %'ModuleName'%.%Enable(); /* start timer */
 #else
@@ -389,45 +435,6 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN Deinit
-%ifdef Deinit
-%include Common\SDK_TimerDeinit.Inc
-void %'ModuleName'%.%Deinit(void)
-{
-  %'ModuleName'%.%Disable(); /* stop timer */
-}
-
-%endif %- Deinit
-%-BW_METHOD_END Deinit
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN GetInputFrequency
-%ifdef GetInputFrequency
-%define! RetVal
-%include Common\SDK_TimerGetInputFrequency.Inc
-uint32_t %'ModuleName'%.%GetInputFrequency(void)
-{
-  return %'ModuleName'%.SOURCE_CLOCK_FREQUENCY; /* timer clock frequency in Hz */
-}
-
-%endif %- GetInputFrequency
-%-BW_METHOD_END GetInputFrequency
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN ResetCounter
-%ifdef ResetCounter
-%include Common\SDK_TimerResetCounter.Inc
-void %'ModuleName'%.%ResetCounter(void)
-{
-#if 1 /* does not exist in the SDK? Implementing it here .... */
-  TPM_Type *base;
-
-  base = %'ModuleName'%.CONFIG_TIMER_NAME;
-  base->CNT = 0; /* reset counter */
-#endif
-}
-
-%endif %- ResetCounter
-%-BW_METHOD_END ResetCounter
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -485,8 +492,6 @@ void %OnCounterRestart(void)
     /*!< name of TIMER, is pointer to TPM_Type */
 #endif
 
-#define %'ModuleName'%.CONFIG_TIMER_IRQ  %TimerName##_IRQn
-
 #ifndef %'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US
 %if defined(InitPeriodUS)
   #define %'ModuleName'%.CONFIG_TIMER_INIT_PERIOD_US       %InitPeriodUS
@@ -522,6 +527,15 @@ void %OnCounterRestart(void)
 %endif
     /*!< 1: Enable the timer overflow interrupt in Init(); 0: Timer overflow interrupt is disabled in Init() */
 #endif
+
+#define %'ModuleName'%.CONFIG_TIMER_IRQ                          %>60 %TimerName##_IRQn
+  /*!< Interrupt vector number */
+
+#define %'ModuleName'%.CONFIG_TIMER_IRQ_HANDLER_NAME             %>60 %TimerName##_IRQHandler
+  /*!< Interrupt handler name */
+
+#define %'ModuleName'%.CONFIG_TIMER_IRQ_PRIORITY                 %>60 %IRQPriority
+  /*!< NVIC timer IRQ priority, unshifted */
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

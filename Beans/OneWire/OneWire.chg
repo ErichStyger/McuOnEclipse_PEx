@@ -6,3 +6,10 @@
 %else
   %error "no timer is enabled, at least one timer needs to be present"
 %endif
+
+%ifndef Shell
+  %set ParseCommand Selection never
+%else
+  %set ParseCommand Selection enable
+%endif
+

@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.009</Version>
+    <Version>01.010</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -147,7 +147,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -565,7 +565,7 @@
           <ParName>cmd</ParName>
           <ParType>8bit unsigned</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>command string</ParHint>
           <ParUserDeclaration>const unsigned char* cmd</ParUserDeclaration>
         </Parameter>
         <Parameter>

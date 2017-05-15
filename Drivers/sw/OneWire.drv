@@ -76,6 +76,9 @@
 /* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
+%if defined(Shell)
+#include "%@Shell@ModuleName.h" /* Shell */
+%endif
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -113,6 +116,8 @@ void %'ModuleName'%.OnWaitEnd(uint8_t key);
 void %'ModuleName'%.OnSendEnd(void);
 void %'ModuleName'%.OnSendedReset(void);
 
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+  /*!< set to 1 if method ParseCommand() is present, 0 otherwise */
 %-BW_CUSTOM_USERTYPE_END
 
 %-BW_DEFINITION_START
@@ -322,6 +327,18 @@ void %@TUSDK@OnCounterRestart(void);
 %endif %- @TUSDK@OnCounterRestart
 %endif
 %-INHERITED_EVENT_END TUSDK OnCounterRestart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseCommand
+%ifdef ParseCommand
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+%define! Parcmd
+%define! Parhandled
+%define! Pario
+%define! RetVal
+%include Common\OneWireParseCommand.Inc
+
+%endif %- ParseCommand
+%-BW_METHOD_END ParseCommand
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -589,6 +606,23 @@ static void %'ModuleName'%.OnTimerRestart(void) {
     }
   }
 }
+
+%if defined(Shell)
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  mode", (unsigned char*)"test\r\n", io->stdOut);
+  return ERR_OK;
+}
+
+static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  reset", (unsigned char*)"Sends a RESET command\r\n", io->stdOut);
+  return ERR_OK;
+}
+#endif /* %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED */
+%endif %- Shell
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -1192,6 +1226,53 @@ void %@TUSDK@OnCounterRestart(void)
 %endif %- @TUSDK@OnCounterRestart
 %endif
 %-INHERITED_EVENT_END TUSDK OnCounterRestart
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseCommand
+%ifdef ParseCommand
+%define! Parcmd
+%define! Parhandled
+%define! Pario
+%define! RetVal
+%include Common\OneWireParseCommand.Inc
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
+{
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+  uint8_t res = ERR_OK;
+  uint8_t buf[32];
+
+  if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP) == 0
+    || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help") == 0)
+  {
+    *handled = TRUE;
+    return PrintHelp(io);
+  } else if (   (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0)
+             || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)
+            )
+  {
+    *handled = TRUE;
+    res = PrintStatus(io);
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' reset")==0) {
+    *handled = TRUE;
+    res = %'ModuleName'%.%SendReset();
+    while(%'ModuleName'%.%isBusy()) { /* wait */ }
+    if (res!=ERR_OK) {
+      %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR (");
+      %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res);
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
+    }
+  }
+  return res;
+#else
+  (void)cmd;
+  (void)handled;
+  (void)io;
+  return ERR_OK;
+#endif
+}
+
+%endif %- ParseCommand
+%-BW_METHOD_END ParseCommand
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1371,6 +1452,15 @@ void %OnProgramEvent(uint8_t key)
   #define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD                   %>60 (0)
 %endif
     /*!< 1: using TimerUnit_LDD, 0: not using TimerUnit_LDD */
+#endif
+
+#if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
+%ifdef ParseCommand
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED            %>50(1)
+%else
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED            %>50()
+%endif %- ParseCommand
+    /*!< 1: shell support enabled, 0: otherwise */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */

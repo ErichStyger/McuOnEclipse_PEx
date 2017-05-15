@@ -671,7 +671,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %include Common\DS18B20StartConversion.inc
 uint8_t %'ModuleName'%.%StartConversion(uint8_t sensor_index)
 {
+#if %'ModuleName'%.CONFIG_READ_AUTO
   uint8_t res;
+#endif
 
   if(Device.Busy) {
     return ERR_BUSY;
