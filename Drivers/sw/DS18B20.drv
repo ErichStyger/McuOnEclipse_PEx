@@ -443,7 +443,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[48];
   uint8_t res;
   float temp;
-  int i, j;
+  int i;
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
 #if %'ModuleName'%.CONFIG_READ_AUTO
@@ -461,12 +461,8 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
       res = ERR_OK; /* do not read the ROM code from the bus, use the stored ROM values */
     }
     if (res==ERR_OK) {
-      for(j=0;j<DS18B20_ROM_CODE_SIZE;j++) {
-        %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), Sensor[i].Rom[j]);
-        if(j<DS18B20_ROM_CODE_SIZE-1) {
-          %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), '-');
-        }
-      }
+      buf[0] = '\0';
+      %@OW@'ModuleName'%.strcatRomCode(buf, sizeof(buf), Sensor[i].Rom);
     } else {
       %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"ERROR (");
       %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res);
@@ -989,25 +985,10 @@ uint8_t %'ModuleName'%.%ReadRom(uint8_t sensor_index)
 #if %'ModuleName'%.CONFIG_NUMBER_OF_SENSORS>1
   Device.WorkSensor = sensor_index;
 #endif
-  %@OW@'ModuleName'%.SendReset();
-  while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  %@OW@'ModuleName'%.SendByte(RC_READ_ROM);
-  while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
 #if %'ModuleName'%.CONFIG_NUMBER_OF_SENSORS>1
-  %@OW@'ModuleName'%.Receive(sizeof(Sensor[sensor_index].Rom)); /* 8 bytes */
+  res = %@OW@'ModuleName'%.ReadRomCode(Sensor[sensor_index].Rom);
 #else
-  %@OW@'ModuleName'%.Receive(sizeof(Sensor[0].Rom)); /* 8 bytes */
-#endif
-  while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  %@OW@'ModuleName'%.SendByte(0xFF);
-  while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  %@OW@'ModuleName'%.ProgramEvent(EV_READ_ROM);
-  while(%@OW@'ModuleName'%.isBusy()) { /* wait */ }
-  /* copy ROM code */
-#if %'ModuleName'%.CONFIG_NUMBER_OF_SENSORS>1
-  res = %@OW@'ModuleName'%.GetBytes(&Sensor[sensor_index].Rom[0], sizeof(Sensor[sensor_index].Rom)); /* 8 bytes */
-#else
-  res = %@OW@'ModuleName'%.GetBytes(&Sensor[0].Rom[0], sizeof(Sensor[0].Rom)); /* 8 bytes */
+  res = %@OW@'ModuleName'%.ReadRomCode(Sensor[0].Rom); /* 8 bytes */
 #endif
   Device.Busy = FALSE;
   /* index 0  : family code
@@ -1023,13 +1004,6 @@ uint8_t %'ModuleName'%.%ReadRom(uint8_t sensor_index)
   if (Sensor[0].Rom[0]!=DS18B20_FAMILY_CODE) {
 #endif
     return ERR_FAILED; /* not a DS18B20? */
-  }
-#if %'ModuleName'%.CONFIG_NUMBER_OF_SENSORS>1
-  if (%@OW@'ModuleName'%.CalcCRC(&Sensor[sensor_index].Rom[0], DS18B20_ROM_CODE_SIZE-1)!=Sensor[sensor_index].Rom[DS18B20_ROM_CODE_SIZE-1]) {
-#else
-  if (%@OW@'ModuleName'%.CalcCRC(&Sensor[0].Rom[0], DS18B20_ROM_CODE_SIZE-1)!=Sensor[0].Rom[DS18B20_ROM_CODE_SIZE-1]) {
-#endif
-    return ERR_CRC; /* wrong CRC? */
   }
   return ERR_OK; /* ok */
 }
