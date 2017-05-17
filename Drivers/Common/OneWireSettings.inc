@@ -16,8 +16,7 @@
 %;**%>14 Timer %>60: %get(TUSDK,Text)
 %else %- TimerSDKGroup
 %endif %- TimerSDKGroup
-%;**%>12 Connection time settings %>60: %get(connSettings,Text)
-%;**%>14 Connection Mode %>60: %get(connMode,Text)
+%;**%>12 Timing %>60: %get(connSettings,Text)
 %;**%>14 A: Write 1 Low time (us) %>60: %get(write1LowTime,Text)
 %;**%>14 B: Write 1 High time (us) %>60: %get(write1HighTime,Text)
 %;**%>14 C: Write 0 Low time (us) %>60: %get(write0LowTime,Text)
@@ -38,6 +37,8 @@
 %else %- DebugGroup
 %endif %- DebugGroup
 %;**%>12 CriticalSection %>60: %get(CS,Text)
+%;**%>12 Utility %>60: %get(Utility,Text)
+%;**%>12 Wait %>60: %get(Wait,Text)
 %;**%>12 SDK %>60: %get(sdk,Text)
 %;**%>12 RTOS %>60: %get(RTOSGroup,Text)
 %if %get(RTOSGroup, Bool) = 'yes'
@@ -47,6 +48,5 @@
 %;**%>12 Shell %>60: %get(ShellGroup,Text)
 %if %get(ShellGroup, Bool) = 'yes'
 %;**%>14 Shell %>60: %get(Shell,Text)
-%;**%>14 Utility %>60: %get(Utility,Text)
 %else %- ShellGroup
 %endif %- ShellGroup

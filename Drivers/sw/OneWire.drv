@@ -79,7 +79,7 @@
 %if defined(Shell)
 #include "%@Shell@ModuleName.h" /* Shell */
 %endif
-
+#include <stddef.h> /* for size_t */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -472,6 +472,8 @@ void %OnProgramEvent(uint8_t key);
 %if defined(TUSDK)
 #include "%@TUSDK@ModuleName.h" /* Timer Unit */
 %endif
+#include "%@Utility@ModuleName.h" /* Utility */
+#include "%@Wait@ModuleName.h" /* Waiting */
 
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
@@ -502,7 +504,7 @@ static uint8_t LastDeviceFlag;
 #define INPUT          0U
 #define OUTPUT         1U
 
-#if %'ModuleName'%.CONFIG_WRITE_PIN
+#if %'ModuleName'%.CONFIG_WRITE_PIN /* extra pin only for write bit */
   #define DQ_Init               %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_INIT
 #else
   #define DQ_Init               %@DataPin@'ModuleName'%.Init()
@@ -1264,13 +1266,13 @@ void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   /* using SDK, need to initialize inherited components */
-  DQ_Init;
-  DBG_Init;
+  TU_Init; /* timer */
+  DQ_Init; /* data pin */
+  DBG_Init; /* optional debug pin */
   %@Input@'ModuleName'%.Init(); /* input ring buffer */
   %@Output@'ModuleName'%.Init(); /* output ring buffer */
   %@Program@'ModuleName'%.Init(); /* program ring buffer */
   %@Time@'ModuleName'%.Init(); /* time ring buffer */
-  %@TUSDK@'ModuleName'%.Init(); /* timer */
 #else
   Data.TUDeviceDataPtr = TU_Init; /* timer init */
 #endif
@@ -1558,14 +1560,14 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode)
     res = %'ModuleName'%.%SendReset();
     while(%'ModuleName'%.%isBusy()) { /* wait */ }
     if (res!=ERR_OK || OW1_GetError()!=OWERR_OK) {
-      // reset the search
+      /* reset the search */
       LastDiscrepancy = 0;
       LastDeviceFlag = FALSE;
       LastFamilyDiscrepancy = 0;
       return FALSE;
     }
     /* issue the search command */
-    if (search_mode == true) {
+    if (search_mode) {
       %'ModuleName'%.%SendByte(RC_SEARCH);   /* NORMAL SEARCH */
       while(OW1_isBusy()) { /* wait */ }
     } else {
