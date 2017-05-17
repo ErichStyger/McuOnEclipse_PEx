@@ -1373,11 +1373,17 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 
     *handled = TRUE;
     res = %'ModuleName'%.%ReadRomCode(&rom[0]);
-    while(%'ModuleName'%.%isBusy()) { /* wait */ }
-    buf[0] = '\0';
-    (void)%'ModuleName'%.%strcatRomCode(buf, sizeof(buf), &rom[0]);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
-    %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+    if (res!=ERR_OK) {
+      %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ReadRomCode() ERROR (");
+      %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res);
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
+    } else {
+      buf[0] = '\0';
+      (void)%'ModuleName'%.%strcatRomCode(buf, sizeof(buf), &rom[0]);
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+    }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' reset")==0) {
     *handled = TRUE;
     res = %'ModuleName'%.%SendReset();
