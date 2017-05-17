@@ -613,18 +613,16 @@ static uint8_t read_bit(void) {
   %@CS@'ModuleName'%.EnterCritical();
   DQ_Low;
 #if %'ModuleName'%.CONFIG_A_READ_TIME>2
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_A_READ_TIME);
-#else /* shorten time to keep the needed timing */
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_A_READ_TIME-2);
 #endif
   DQ_Floating;
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME);
+#if %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME>2
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME-2);
+#endif
   bit = DQ_Read;
   %@CS@'ModuleName'%.ExitCritical();
 #if %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME>2
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME-2);
-#else
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME);
 #endif
   return bit;
 }
@@ -723,7 +721,11 @@ static void %'ModuleName'%.OnTimerRestart(void) {
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  mode", (unsigned char*)"test\r\n", io->stdOut);
+#if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  debug pin", (unsigned char*)"yes\r\n", io->stdOut);
+#else
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  debug pin", (unsigned char*)"no\r\n", io->stdOut);
+#endif
   return ERR_OK;
 }
 
@@ -1372,6 +1374,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     *handled = TRUE;
     res = %'ModuleName'%.%ReadRomCode(&rom[0]);
     while(%'ModuleName'%.%isBusy()) { /* wait */ }
+    buf[0] = '\0';
     (void)%'ModuleName'%.%strcatRomCode(buf, sizeof(buf), &rom[0]);
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
@@ -1441,8 +1444,6 @@ uint8_t %'ModuleName'%.%ReadRomCode(uint8_t *romCodeBuffer)
   while(%'ModuleName'%.%isBusy()) { /* wait */ }
   %'ModuleName'%.%SendByte(RC_RELEASE);
   while(%'ModuleName'%.%isBusy()) { /* wait */ }
-  //%'ModuleName'%.%ProgramEvent(EV_READ_ROM);
-  //while(%'ModuleName'%.%isBusy()) { /* wait */ }
   /* copy ROM code */
   res = %'ModuleName'%.%GetBytes(romCodeBuffer, %'ModuleName'%.ROM_CODE_SIZE); /* 8 bytes */
   if (res!=ERR_OK) {
