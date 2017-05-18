@@ -771,6 +771,7 @@ void %'ModuleName'%.%Init(void)
   WriteCmd(0x13);                                                %>40 /* Adjust voltage bias */
   WriteCmd(0x20);                                                %>40 /* Horizontal addressing and H=0 */
   WriteCmd(0x09);                                                %>40 /* Activate all segments */
+  %@Wait@'ModuleName'%.Waitms(20);                               %>40 /* added some delay, as some displays might not work otherwise */
   %'ModuleName'%.%Clear();                                       %>40 /* Erase all pixel on the DDRAM */
   WriteCmd(0x08);                                                %>40 /* Blank the Display */
 %if %DisplayMode='normal'
