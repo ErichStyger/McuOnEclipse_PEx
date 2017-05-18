@@ -4,7 +4,7 @@
     <Name>DS18B20</Name>
     <Description>Driver to read the temperature from DS18B20 sensor, using a TimerUnit to control the pulse generation.</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.010</Version>
+    <Version>01.013</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,DS18B20\DS18B20</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -14,7 +14,7 @@
     <DemoDriver>no</DemoDriver>
     <Category>SW-Communication</Category>
     <BeanLevel>High</BeanLevel>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Omar Isaí Pinales Ayala, 2014, all rights reserved.\nhttp      : http://www.mcuoneclipse.com\n\nThis an open source software driver for Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) Original implementation: Omar Isaí Pinales Ayala, 2014, all rights reserved.\n * Updated and maintained by Erich Styger, 2014-2017\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <BW_HelpType>Default</BW_HelpType>
     <BW_HelpFiles>,Properties,Methods,Events,"User Types"</BW_HelpFiles>
     <BW_AutoSaveHelp>yes</BW_AutoSaveHelp>
@@ -65,14 +65,14 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>One slave</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
           <GrupItem>
             <TListItemFromFile>
-              <Name>Number of DS18B20 devices to connect</Name>
+              <Name>Number of devices</Name>
               <Symbol>deviceCount</Symbol>
               <Hint>List of DS18B20 devices on the bus</Hint>
               <ItemLevel>BASIC</ItemLevel>
@@ -147,7 +147,7 @@
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>Yes</Expanded>
+        <Expanded>No</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -536,6 +536,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>uint8_t #M#_#C#(uint8_t sensor_index, DS18B20_ResolutionBits resolution)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SearchAndAssignROMCodes</Name>
+        <Symbol>SearchAndAssignROMCodes</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Scans the devices on the bus and assigns the ROM codes to the list of available sensors</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
