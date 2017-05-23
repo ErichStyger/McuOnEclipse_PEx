@@ -1304,6 +1304,13 @@ void %'ModuleName'%.%Deinit(void)
 #if !%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   Data.TUDeviceDataPtr = NULL;
 #endif
+  DQ_Deinit; /* data pin */
+  DQ_Floating; /* input mode, tristate pin */
+  DBG_Deinit; /* optional debug pin */
+  %@Input@'ModuleName'%.Deinit(); /* input ring buffer */
+  %@Output@'ModuleName'%.Deinit(); /* output ring buffer */
+  %@Program@'ModuleName'%.Deinit(); /* program ring buffer */
+  %@Time@'ModuleName'%.Deinit(); /* time ring buffer */
   Data.Ticks = 0;
   Data.Busy = FALSE;
   Data.WorkBitPos = 0;
@@ -1312,8 +1319,6 @@ void %'ModuleName'%.%Deinit(void)
   Data.Step = TS_NOTHING;
   Data.CRC = 0;
   Data.Error = OWERR_OK;
-
-  DQ_Floating; /* input mode, tristate pin */
 }
 
 %endif %- Deinit
