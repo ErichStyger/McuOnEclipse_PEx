@@ -93,6 +93,10 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if %'ModuleName'%.CONFIG_ELEM_SIZE==1
   typedef uint8_t %'ModuleName'_ElementType; /* type of single element */
 #elif %'ModuleName'%.CONFIG_ELEM_SIZE==2
@@ -317,10 +321,6 @@ void %OnClear(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #if %'ModuleName'%.CONFIG_REENTRANT
   #define %'ModuleName'%.DEFINE_CRITICAL() %@CriticalSection@'ModuleName'%.CriticalVariable()
   #define %'ModuleName'%.ENTER_CRITICAL()  %@CriticalSection@'ModuleName'%.EnterCritical()
