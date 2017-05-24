@@ -242,6 +242,10 @@ uint8_t %'ModuleName'%.%Update(%'ModuleName'_BufSizeType index, %'ModuleName'_El
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+
 #endif
 /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
@@ -313,6 +317,10 @@ void %OnClear(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if %'ModuleName'%.CONFIG_REENTRANT
   #define %'ModuleName'%.DEFINE_CRITICAL() %@CriticalSection@'ModuleName'%.CriticalVariable()
   #define %'ModuleName'%.ENTER_CRITICAL()  %@CriticalSection@'ModuleName'%.EnterCritical()
