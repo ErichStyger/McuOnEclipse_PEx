@@ -103,6 +103,10 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define %'ModuleName'%.WRITE_BUFFER_SIZE %WriteBufferSize /* size of internal buffer used, set in the component properties */
 
 typedef enum %'ModuleName'_EnumSendFlags_ {
@@ -311,7 +315,6 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
 %endif %- ReadBlockGeneric
 %-BW_METHOD_END ReadBlockGeneric
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadWordAddress8
 %ifdef ReadWordAddress8
 uint8_t %'ModuleName'%.%ReadWordAddress8(uint8_t i2cAddr, uint8_t memAddr, uint16_t *data);
@@ -337,6 +340,10 @@ uint8_t %'ModuleName'%.%WriteWordAddress8(uint8_t i2cAddr, uint8_t memAddr, uint
 %-BW_METHOD_END WriteWordAddress8
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
@@ -416,7 +423,7 @@ void %OnError(void);
 %if defined(LDD_I2C)
 typedef struct {
   volatile bool dataReceivedFlg; /* set to TRUE by the interrupt if we have received data */
-  volatile bool dataTransmittedFlg; /* set to TRUE by the interrupt if we have set data */
+  volatile bool dataTransmittedFlg; /* set to TRUE by the interrupt if we have sent data */
   LDD_TDeviceData *handle; /* pointer to the device handle */
 } %'ModuleName'%.TDataState;
 
