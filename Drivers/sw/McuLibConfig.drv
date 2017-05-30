@@ -66,6 +66,10 @@
 /* MODULE %ModuleName. */
 #include "%'ModuleName'config.h" /* include configuration header file */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if %'ModuleName'%.CONFIG_SDK_VERSION_USED == %'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   #ifndef __IASMARM__ /* not including standard header files if using IAR assembler */
 %ifdef SharedModules
@@ -157,12 +161,6 @@
   typedef unsigned long int       uint32;
 #endif
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -190,6 +188,10 @@
 %-BW_DEFINITION_START
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
