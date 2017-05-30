@@ -7,9 +7,9 @@
 %;**     Description :
 %;**         Used to add a program event
 %include Common\GeneralParameters.inc(27)
-%;**         key%Parkey %>27 - Key to identificate the event, applies
-%;** %>29 only if OnProgramEvent is enabled. (Valid
-%;** %>29 range 0 - 31)
+%;**         key%Parkey %>27 - Key to identify the event, applies only if
+%;** %>29 OnProgramEvent is enabled. (Valid range 0 -
+%;** %>29 31)
 %;**     Returns     :
 %;**         ---%RetVal %>27 - error code
 %include Common\GeneralDamage.inc

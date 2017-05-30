@@ -4,7 +4,7 @@
     <Name>OneWire</Name>
     <Description>Component for the 1-Wire Protocol</Description>
     <Author>Omar Isaí Pinales Ayala</Author>
-    <Version>01.130</Version>
+    <Version>01.136</Version>
     <Icon>OneWire</Icon>
     <TypesFiles>PE,OneWire\OneWire</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -178,7 +178,7 @@
             <TIntgItem>
               <Name>A: Write 1 Low time (us)</Name>
               <Symbol>write1LowTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '1'. Default is 6</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'. Standard is 6 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>6</DefaultValue>
@@ -195,7 +195,7 @@
             <TIntgItem>
               <Name>B: Write 1 High time (us)</Name>
               <Symbol>write1HighTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '1'. Default is 64</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '1'. Standard is 64 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>64</DefaultValue>
@@ -212,7 +212,7 @@
             <TIntgItem>
               <Name>C: Write 0 Low time (us)</Name>
               <Symbol>write0LowTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '0'. Default is 60</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'. Standard is 60 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>60</DefaultValue>
@@ -229,7 +229,7 @@
             <TIntgItem>
               <Name>D: Write 0 High time (us)</Name>
               <Symbol>write0HighTime</Symbol>
-              <Hint>Period that master holds the DQ signal low to send a bit '0'. Default is 10</Hint>
+              <Hint>Period that master holds the DQ signal low to send a bit '0'. Standard is 10 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>10</DefaultValue>
@@ -244,9 +244,9 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>E: Delay time before read (us)</Name>
+              <Name>E: Read delay time (us)</Name>
               <Symbol>beforeReadDelayTime</Symbol>
-              <Hint>Time to wait after releasing signal until to read the bit. Default is 9. Shorten this if read of bit is too late.</Hint>
+              <Hint>Time to wait after releasing signal until to read the bit. Standard is 9 us. Shorten this if read of bit is too late.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>3</DefaultValue>
@@ -261,9 +261,9 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>F: After read delay time</Name>
+              <Name>F: Read delay time</Name>
               <Symbol>afterReadDelayTime</Symbol>
-              <Hint>Delay time after reading the bit until the next slot.</Hint>
+              <Hint>Delay time after reading the bit until the next slot. Standard is 55 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>55</DefaultValue>
@@ -278,9 +278,9 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>H: Reset time (us)</Name>
+              <Name>H: Reset low time (us)</Name>
               <Symbol>resetTime</Symbol>
-              <Hint>Duration of the reset pulse that the master send to slave devices. Default 480</Hint>
+              <Hint>Duration of the reset pulse that the master send to slave devices. Standard is 480 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>480</DefaultValue>
@@ -296,9 +296,9 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
-              <Name>I: Device response time (us)</Name>
+              <Name>I: Reset response time (us)</Name>
               <Symbol>responseTime</Symbol>
-              <Hint>Time that master waits before read, after send the reset pulse. Default 70.</Hint>
+              <Hint>Time that master waits before read, after send the reset pulse. Standard is 70 us</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>70</DefaultValue>
@@ -313,9 +313,26 @@
           </GrupItem>
           <GrupItem>
             <TIntgItem>
+              <Name>J: Reset wait time after reading device presence (us)</Name>
+              <Symbol>ResetWaitTime</Symbol>
+              <Hint>Time that master after reading the device presence during reset sequence. Standard is  410 us</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>410</DefaultValue>
+              <MinValue>10</MinValue>
+              <MaxValue>500</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
               <Name>Total slot time (us)</Name>
               <Symbol>slotTime</Symbol>
-              <Hint>Total communication slot time. Default 100.</Hint>
+              <Hint>Total communication slot time. Standard is 100 us.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>100</DefaultValue>
@@ -1130,7 +1147,7 @@
           <ParName>key</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>Key to identificate the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
+          <ParHint>Key to identify the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -1895,8 +1912,8 @@
       <Comment>Auto Generated field</Comment>
     </Revision>
     <Revision>
-      <Date>2017-05-18</Date>
-      <Version>01.130</Version>
+      <Date>2017-05-27</Date>
+      <Version>01.136</Version>
       <Level>0</Level>
       <Author>Omar Isai Pinales Ayala</Author>
       <Verified/>

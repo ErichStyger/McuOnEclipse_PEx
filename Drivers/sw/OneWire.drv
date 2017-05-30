@@ -100,6 +100,10 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define %'ModuleName'%.ROM_CODE_SIZE   (8)
   /*!< Number of bytes for ROM code */
 
@@ -395,6 +399,10 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode);
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
+#ifdef __cplusplus
+}  /* extern "C" */
+#endif
+
 #endif
 /* ifndef __%'ModuleName'_H */
 %include Common\Header.End
@@ -487,6 +495,9 @@ void %OnProgramEvent(uint8_t key);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
+
+#define %'ModuleName'%.USE_TIMER   (0)
+
 // global search state
 static unsigned char ROM_NO[8];
 static uint8_t LastDiscrepancy;
@@ -506,8 +517,10 @@ static uint8_t LastDeviceFlag;
 
 #if %'ModuleName'%.CONFIG_WRITE_PIN /* extra pin only for write bit */
   #define DQ_Init               %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_INIT
+  #define DQ_Deinit             %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_DEINIT
 #else
   #define DQ_Init               %@DataPin@'ModuleName'%.Init()
+  #define DQ_Deinit             %@DataPin@'ModuleName'%.Deinit()
 #endif
 #define DQ_Floating             %@DataPin@'ModuleName'%.SetInput()
 #if %'ModuleName'%.CONFIG_WRITE_PIN
@@ -519,9 +532,11 @@ static uint8_t LastDeviceFlag;
 #endif
 #if %'ModuleName'%.CONFIG_DEBUG_READ_PIN_ENABLED
   #define DBG_Init              %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT
+  #define DBG_Deinit            %'ModuleName'%.CONFIG_DEBUG_READ_PIN_DEINIT
   #define DQ_Read               (%'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE, %@DataPin@'ModuleName'%.GetVal()!=0)
 #else
   #define DBG_Init              /* empty */
+  #define DBG_Deinit            /* empty */
   #define DQ_Read               (%@DataPin@'ModuleName'%.GetVal()!=0)
 #endif
 
@@ -608,27 +623,21 @@ static void TU_SetTime(uint32_t us) {
 
 static uint8_t read_bit(void) {
   uint8_t bit;
-  %@CS@'ModuleName'%.CriticalVariable()
+  %@CS@'ModuleName'%.CriticalVariable();
 
   %@CS@'ModuleName'%.EnterCritical();
   DQ_Low;
-#if %'ModuleName'%.CONFIG_A_READ_TIME>2
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_A_READ_TIME-2);
-#endif
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_A_READ_TIME);
   DQ_Floating;
-#if %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME>2
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME-2);
-#endif
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME);
   bit = DQ_Read;
   %@CS@'ModuleName'%.ExitCritical();
-#if %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME>2
-  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME-2);
-#endif
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME);
   return bit;
 }
 
 static void write_bit(uint8_t bit) {
-  %@CS@'ModuleName'%.CriticalVariable()
+  %@CS@'ModuleName'%.CriticalVariable();
 
   if (bit&1) {
     %@CS@'ModuleName'%.EnterCritical();
@@ -662,7 +671,7 @@ static void %'ModuleName'%.OnTimerRestart(void) {
       break;
     case TS_RESET_FLOAT:
       DQ_Floating;
-      TU_SetTime(%'ModuleName'%.CONFIG_I_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
+      TU_SetTime(%'ModuleName'%.CONFIG_I_RESET_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
       Data.Step = TS_PRESENCE;
       break;
     case TS_PRESENCE:
@@ -898,6 +907,7 @@ void %'ModuleName'%.%i_reset(void)
 %include Common\OneWireSendReset.inc
 uint8_t %'ModuleName'%.%SendReset(void)
 {
+#if %'ModuleName'%.USE_TIMER
   PROG pr;
 
   if(%@Program@'ModuleName'%.NofFreeElements()==0) {
@@ -910,6 +920,17 @@ uint8_t %'ModuleName'%.%SendReset(void)
     %'ModuleName'%.i_reset();
     %'ModuleName'%.i_run();
   }
+#else
+  %@CS@'ModuleName'%.CriticalVariable();
+
+  %@CS@'ModuleName'%.EnterCritical();
+  DQ_Low;
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_H_RESET_TIME);
+  DQ_Floating;
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_I_RESET_RESPONSE_TIME);
+  %@CS@'ModuleName'%.ExitCritical();
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_J_RESET_WAIT_TIME);
+#endif
   return ERR_OK;
 }
 %endif %- SendReset
@@ -970,13 +991,14 @@ void %'ModuleName'%.%i_send_float(void)
 %include Common\OneWireSendByte.inc
 uint8_t %'ModuleName'%.%SendByte(uint8_t data)
 {
+#if %'ModuleName'%.USE_TIMER
   PROG pr, last;
 
   (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
   if(last.Instr == I_SEND) {
     (void)%@Output@'ModuleName'%.Put(data);
     last.Count++; /* update */
-    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update element */
+    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update element */wi
   } else {
     if(%@Program@'ModuleName'%.NofFreeElements()==0) {
       return ERR_FAILED;
@@ -991,6 +1013,14 @@ uint8_t %'ModuleName'%.%SendByte(uint8_t data)
     %'ModuleName'%.i_send_low();
     %'ModuleName'%.i_run();
   }
+#else
+  int i;
+
+  for(i=0;i<8;i++) {
+    write_bit(data&1); /* send LSB first */
+    data >>= 1; /* next bit */
+  } /* for */
+#endif
   return ERR_OK;
 }
 %endif %- SendByte
@@ -1068,6 +1098,7 @@ void %'ModuleName'%.%i_recv_low(void)
 %include Common\OneWireReceive.inc
 uint8_t %'ModuleName'%.%Receive(uint8_t counter)
 {
+#if %'ModuleName'%.USE_TIMER
   PROG pr;
 
   if(%@Program@'ModuleName'%.NofFreeElements()==0) {
@@ -1081,6 +1112,22 @@ uint8_t %'ModuleName'%.%Receive(uint8_t counter)
     %'ModuleName'%.i_recv_low();
     %'ModuleName'%.i_run();
   }
+#else
+  int i;
+  uint8_t val, mask;
+
+  while(counter>0) {
+    val = 0; mask = 1;
+    for(i=0;i<8;i++) {
+      if (read_bit()) { /* read bits (LSB first) */
+        val |= mask;
+      }
+      mask <<= 1; /* next bit */
+    } /* for */
+    (void)%@Input@'ModuleName'%.Put(val); /* put it into the queue so it can be retrieved by GetBytes() */
+    counter--;
+  }
+#endif
   return ERR_OK;
 }
 %endif %- Receive
@@ -1134,7 +1181,7 @@ void %'ModuleName'%.%i_wait(void)
 uint8_t %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
 {
   PROG pr;
-  %@CS@'ModuleName'%.CriticalVariable()
+  %@CS@'ModuleName'%.CriticalVariable();
 
   if((%@Program@'ModuleName'%.NofFreeElements()==0) || (%@Time@'ModuleName'%.NofFreeElements()==0)) {
     return ERR_FAILED;
@@ -1786,16 +1833,21 @@ void %OnProgramEvent(uint8_t key)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* timing in micro seconds */
-#define %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME                 %>60 %write1LowTime%>60/* A */
-#define %'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME                %>60 %write1HighTime%>60/* B */
-#define %'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME                 %>60 %write0LowTime%>60/* C */
-#define %'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME                %>60 %write0HighTime%>60/* D */
-#define %'ModuleName'%.CONFIG_H_RESET_TIME                       %>60 %resetTime%>60/* H */
-#define %'ModuleName'%.CONFIG_I_RESPONSE_TIME                    %>60 %responseTime%>60/* I */
-#define %'ModuleName'%.CONFIG_A_READ_TIME                        %>60 %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME%>60/* A (for read) */
-#define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME           %>60 %beforeReadDelayTime%>60/* E */
-#define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME            %>60 %afterReadDelayTime%>60/* F */
+/* protocol timing in micro seconds */
+/* write */
+#define %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME                 %>60 %write1LowTime%>70/* A: standard 6 us, low time to write one bit */
+#define %'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME                %>60 %write1HighTime%>70/* B: standard 64 us, high time after writing one bit (A) */
+#define %'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME                 %>60 %write0LowTime%>70/* C: standard 60 us, Low time writing zero bit */
+#define %'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME                %>60 %write0HighTime%>70/* D: standard 10 us, High time after writing zero bit (C) */
+/* read */
+#define %'ModuleName'%.CONFIG_A_READ_TIME                        %>60 %'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME%>60/* Low time to start read */
+#define %'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME           %>60 %beforeReadDelayTime%>70/* E: standard 9 us, wait time after starting read (when to read bit) */
+#define %'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME            %>60 %afterReadDelayTime%>70/* F: standard 55 us, wait time after reading bit (E)  */
+/* reset */
+#define %'ModuleName'%.CONFIG_H_RESET_TIME                       %>60 %resetTime%>70/* H: standard 480 us, reset low time */
+#define %'ModuleName'%.CONFIG_I_RESET_RESPONSE_TIME              %>60 %responseTime%>70/* I: standard 70 us, wait time after reset low time (H) until read response */
+#define %'ModuleName'%.CONFIG_J_RESET_WAIT_TIME                  %>60 %ResetWaitTime%>70/* J: standard 410 us, wait time after reading presence (I)  */
+
 #define %'ModuleName'%.CONFIG_SLOT_TIME                          %>60 %slotTime
 
 %if defined(DbgReadPin)
@@ -1809,10 +1861,12 @@ void %OnProgramEvent(uint8_t key)
 %if defined(DbgReadPin)
   #include "%@DbgReadPin@ModuleName.h" /* SDK and API used */
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT              %>60 %@DbgReadPin@'ModuleName'%.Init()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_DEINIT            %>60 %@DbgReadPin@'ModuleName'%.Deinit()
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE            %>60 %@DbgReadPin@'ModuleName'%.NegVal()
 %else
   #include "DbgReadPin.h"
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_INIT              %>60 DbgReadPin_Init()
+  #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_DEINIT            %>60 DbgReadPin_Deinit()
   #define %'ModuleName'%.CONFIG_DEBUG_READ_PIN_TOGGLE            %>60 DbgReadPin_NegVal()
 %endif
 #endif
@@ -1830,11 +1884,13 @@ void %OnProgramEvent(uint8_t key)
 %if defined(WritePin)
   #include "%@WritePin@ModuleName.h" /* SDK and API used */
   #define %'ModuleName'%.CONFIG_WRITE_PIN_INIT                   %>60 %@WritePin@'ModuleName'%.Init()
+  #define %'ModuleName'%.CONFIG_WRITE_PIN_DEINIT                 %>60 %@WritePin@'ModuleName'%.Deinit()
   #define %'ModuleName'%.CONFIG_WRITE_PIN_LOW                    %>60 %@WritePin@'ModuleName'%.ClrVal()
   #define %'ModuleName'%.CONFIG_WRITE_PIN_SET_OUTPUT             %>60 %@WritePin@'ModuleName'%.SetOutput()
 %else
   #include "WritePin.h"
   #define %'ModuleName'%.CONFIG_WRITE_PIN_INIT                   %>60 WritePin_Init()
+  #define %'ModuleName'%.CONFIG_WRITE_PIN_DEINIT                 %>60 WritePin_Deinit()
   #define %'ModuleName'%.CONFIG_WRITE_PIN_LOW                    %>60 WritePin_ClrVal()
   #define %'ModuleName'%.CONFIG_WRITE_PIN_SET_OUTPUT             %>60 WritePin_SetOutput()
 %endif

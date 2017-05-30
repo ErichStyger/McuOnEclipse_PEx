@@ -267,39 +267,43 @@ The following items are available only if the group is enabled (the value is "En
 <ul>
   <li>
   <a name="write1LowTime">
-  <b>A: Write 1 Low time (us)</b></a> - Period that master holds the DQ signal low to send a bit '1'. Default is 6
+  <b>A: Write 1 Low time (us)</b></a> - Period that master holds the DQ signal low to send a bit '1'. Standard is 6 us
   </li>
   <li>
   <a name="write1HighTime">
-  <b>B: Write 1 High time (us)</b></a> - Period that master holds the DQ signal low to send a bit '1'. Default is 64
+  <b>B: Write 1 High time (us)</b></a> - Period that master holds the DQ signal low to send a bit '1'. Standard is 64 us
   </li>
   <li>
   <a name="write0LowTime">
-  <b>C: Write 0 Low time (us)</b></a> - Period that master holds the DQ signal low to send a bit '0'. Default is 60
+  <b>C: Write 0 Low time (us)</b></a> - Period that master holds the DQ signal low to send a bit '0'. Standard is 60 us
   </li>
   <li>
   <a name="write0HighTime">
-  <b>D: Write 0 High time (us)</b></a> - Period that master holds the DQ signal low to send a bit '0'. Default is 10
+  <b>D: Write 0 High time (us)</b></a> - Period that master holds the DQ signal low to send a bit '0'. Standard is 10 us
   </li>
   <li>
   <a name="beforeReadDelayTime">
-  <b>E: Delay time before read (us)</b></a> - Time to wait after releasing signal until to read the bit. Default is 9. Shorten this if read of bit is too late.
+  <b>E: Read delay time (us)</b></a> - Time to wait after releasing signal until to read the bit. Standard is 9 us. Shorten this if read of bit is too late.
   </li>
   <li>
   <a name="afterReadDelayTime">
-  <b>F: After read delay time</b></a> - Delay time after reading the bit until the next slot.
+  <b>F: Read delay time</b></a> - Delay time after reading the bit until the next slot. Standard is 55 us
   </li>
   <li>
   <a name="resetTime">
-  <b>H: Reset time (us)</b></a> - Duration of the reset pulse that the master send to slave devices. Default 480
+  <b>H: Reset low time (us)</b></a> - Duration of the reset pulse that the master send to slave devices. Standard is 480 us
   </li>
   <li>
   <a name="responseTime">
-  <b>I: Device response time (us)</b></a> - Time that master waits before read, after send the reset pulse. Default 70.
+  <b>I: Reset response time (us)</b></a> - Time that master waits before read, after send the reset pulse. Standard is 70 us
+  </li>
+  <li>
+  <a name="ResetWaitTime">
+  <b>J: Reset wait time after reading device presence (us)</b></a> - Time that master after reading the device presence during reset sequence. Standard is  410 us
   </li>
   <li>
   <a name="slotTime">
-  <b>Total slot time (us)</b></a> - Total communication slot time. Default 100.
+  <b>Total slot time (us)</b></a> - Total communication slot time. Standard is 100 us.
   </li>
 </ul>
 </li>

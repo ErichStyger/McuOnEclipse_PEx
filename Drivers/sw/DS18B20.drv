@@ -1136,13 +1136,11 @@ uint8_t %'ModuleName'%.%SearchAndAssignROMCodes(void)
   bool found;
   int i, nofFound = 0;
 
-  *handled = TRUE;
   %@OW@'ModuleName'%.ResetSearch(); /* reset search fields */
   %@OW@'ModuleName'%.TargetSearch(DS18B20_FAMILY_CODE); /* only search for DS18B20 */
   do {
     found = %@OW@'ModuleName'%.Search(&rom[0], TRUE);
     if (found) {
-      buf[0] = '\0';
       /* store ROM code in device list */
       for(i=0;i<%@OW@'ModuleName'%.ROM_CODE_SIZE;i++) {
         Sensor[nofFound].Rom[i] = rom[i];
