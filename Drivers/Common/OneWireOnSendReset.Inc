@@ -3,12 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (i_recv_get)
+%include Common\GeneralEvent.inc (OnSendReset)
 %;**     Description :
-%;**         instruction to get a bit
+%;**         
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
-%include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
 %}

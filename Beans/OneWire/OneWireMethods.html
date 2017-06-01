@@ -227,7 +227,20 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t SendByte(uint8_t data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:uint8_t</i> - Variable to save the byte.</li>
+<li><i>data:uint8_t</i> - the data byte to be sent</li>
+<li><i>Return value:uint8_t</i> - error code
+</li>
+</ul><br />
+</li>
+<li><a name="SendBytes">
+<b>SendBytes</b></a>
+ - Sends multiple bytes
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SendBytes(uint8_t *data, uint8_t count)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>data: Pointer to uint8_t</i> - Pointer to the array of bytes</li>
+<li><i>count:uint8_t</i> - Number of bytes to be sent</li>
 <li><i>Return value:uint8_t</i> - error code
 </li>
 </ul><br />
@@ -266,44 +279,6 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="Waitms">
-<b>Waitms</b></a>
- - Programs a pause between instruccions.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t Waitms(uint8_t key, uint8_t time_ms)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>key:uint8_t</i> - Key to identify the source of the event.</li>
-<li><i>time_ms:uint8_t</i> - Value of time to wait.</li>
-<li><i>Return value:uint8_t</i> - error code
-</li>
-</ul><br />
-</li>
-<li><a name="ProgramEvent">
-<b>ProgramEvent</b></a>
- - Used to add a program event
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t ProgramEvent(uint8_t key)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>key:uint8_t</i> - Key to identify the event, applies only if OnProgramEvent is enabled. (Valid range 0 - 31)</li>
-<li><i>Return value:uint8_t</i> - error code
-</li>
-</ul><br />
-</li>
-<li><a name="SendBytes">
-<b>SendBytes</b></a>
- - Sends multiple bytes
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SendBytes(uint8_t *data, uint8_t count)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data: Pointer to uint8_t</i> - Array of bytes to add to output stream.</li>
-<li><i>count:uint8_t</i> - Number of bytes to add to output stream. (Valid range 0 - 31)</li>
-<li><i>Return value:uint8_t</i> - error code
-</li>
-</ul><br />
-</li>
 <li><a name="GetBytes">
 <b>GetBytes</b></a>
  - Gets multiple bytes from the bus
@@ -326,26 +301,6 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data: Pointer to uint8_t</i> - Pointer to were to store the data</li>
 <li><i>Return value:uint8_t</i> - error code
-</li>
-</ul><br />
-</li>
-<li><a name="GetError">
-<b>GetError</b></a>
- - Returns the error
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void GetError(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
-<li><a name="isBusy">
-<b>isBusy</b></a>
- - Returns TRUE if the bus is busy, FALSE otherwise
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> bool isBusy(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:bool</i> - TRUE if device is busy
 </li>
 </ul><br />
 </li>

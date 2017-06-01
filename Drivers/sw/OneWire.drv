@@ -48,16 +48,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%ifdef TU
-  %ifdef @TU@OnCounterRestart
-    %define! Description_%@TU@OnCounterRestart Called if counter overflow/underflow or counter is reinitialized by modulo or compare register matching. OnCounterRestart event and Timer unit must be enabled. See <a href="TimerUnit_LDDMethods.html#SetEventMask">SetEventMask</a> and <a href="TimerUnit_LDDMethods.html#GetEventMask">GetEventMask</a> methods.This event is available only if a <a href="TimerUnit_LDDProperties.html#IntServiceCounter">Interrupt</a> is enabled. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @TU@OnCounterRestart
-%endif %- TU
-%ifdef TUSDK
-  %ifdef @TUSDK@OnCounterRestart
-    %define! Description_%@TUSDK@OnCounterRestart Event called from timer overflow interrupt The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @TUSDK@OnCounterRestart
-%endif %- TUSDK
 %-BW_INTERN_COMMENTS_END
 %-
 %define CDEversion Community
@@ -107,125 +97,25 @@ extern "C" {
 #define %'ModuleName'%.ROM_CODE_SIZE   (8)
   /*!< Number of bytes for ROM code */
 
-typedef enum {
-  OWERR_OK,
-  OWERR_NO_DEVICE,
-  OWERR_NO_RESPONSE,
-  OWERR_BUSY,
-  OWERR_CRC
-} %'ModuleName'%.Error;
-
 /* events */
 void %'ModuleName'%.OnBlockReceived(void);
 void %'ModuleName'%.OnError(void);
 void %'ModuleName'%.OnProgramEvent(uint8_t key);
 void %'ModuleName'%.OnWaitEnd(uint8_t key);
 void %'ModuleName'%.OnSendEnd(void);
-void %'ModuleName'%.OnSendedReset(void);
+void %'ModuleName'%.OnSendReset(void);
 
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED    %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
   /*!< set to 1 if method ParseCommand() is present, 0 otherwise */
 %-BW_CUSTOM_USERTYPE_END
 
 %-BW_DEFINITION_START
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN GetError
-%ifdef GetError
-%include Common\OneWireGetError.inc
-%'ModuleName'%.Error %'ModuleName'%.%GetError(void);
-%endif  %-GetError
-%-BW_METHOD_END GetError
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_low
-%ifdef i_recv_low
-%include Common\OneWirei_recv_low.inc
-void %'ModuleName'%.%i_recv_low(void);
-%endif  %-i_recv_low
-%-BW_METHOD_END i_recv_low
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_wait
-%ifdef i_wait
-%include Common\OneWirei_wait.inc
-void %'ModuleName'%.%i_wait(void);
-%endif  %-i_wait
-%-BW_METHOD_END i_wait
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_presence
-%ifdef i_presence
-%include Common\OneWirei_presence.inc
-void %'ModuleName'%.%i_presence(void);
-%endif  %-i_presence
-%-BW_METHOD_END i_presence
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_action
-%ifdef i_action
-%include Common\OneWirei_action.inc
-void %'ModuleName'%.%i_action(void);
-%endif  %-i_action
-%-BW_METHOD_END i_action
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_run
-%ifdef i_run
-%include Common\OneWirei_run.inc
-void %'ModuleName'%.%i_run(void);
-%endif  %-i_run
-%-BW_METHOD_END i_run
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_get
-%ifdef i_recv_get
-%include Common\OneWirei_recv_get.inc
-void %'ModuleName'%.%i_recv_get(void);
-%endif  %-i_recv_get
-%-BW_METHOD_END i_recv_get
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_float
-%ifdef i_recv_float
-%include Common\OneWirei_recv_float.inc
-void %'ModuleName'%.%i_recv_float(void);
-%endif  %-i_recv_float
-%-BW_METHOD_END i_recv_float
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_send_float
-%ifdef i_send_float
-%include Common\OneWirei_send_float.inc
-void %'ModuleName'%.%i_send_float(void);
-%endif  %-i_send_float
-%-BW_METHOD_END i_send_float
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_send_low
-%ifdef i_send_low
-%include Common\OneWirei_send_low.inc
-void %'ModuleName'%.%i_send_low(void);
-%endif  %-i_send_low
-%-BW_METHOD_END i_send_low
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_reset
-%ifdef i_reset
-%include Common\OneWirei_reset.inc
-void %'ModuleName'%.%i_reset(void);
-%endif  %-i_reset
-%-BW_METHOD_END i_reset
-%-*****************************************************************************************************
-%ifdef Waitms
-%define! Parkey
-%define! Partime_ms
-%define! RetVal
-%include Common\OneWireWaitms.inc
-uint8_t %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms);
-%endif %- Waitms
-%-*****************************************************************************************************
-%ifdef ProgramEvent
-%define! Parkey
-%define! RetVal
-%include Common\OneWireProgramEvent.inc
-uint8_t %'ModuleName'%.%ProgramEvent(uint8_t key);
-%endif %- ProgramEvent
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN Count
 %ifdef Count
+%define!  RetVal
 %include Common\OneWireCount.inc
 uint8_t %'ModuleName'%.%Count(void);
-%define!  RetVal
 %endif  %-Count
 %-BW_METHOD_END Count
 %-*****************************************************************************************************
@@ -259,14 +149,8 @@ uint8_t %'ModuleName'%.%SendReset(void);
 %endif %- SendReset
 %-BW_METHOD_END SendReset
 %-*****************************************************************************************************
-%ifdef add_CRC
-%define! ParbitValue
-%include Common\OneWireadd_CRC.inc
-void %'ModuleName'%.%add_CRC(uint8_t bitValue);
-%endif %- add_CRC
-%-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetByte
-%ifdef GetBytes
+%ifdef GetByte
 %define! Pardata
 %define! RetVal
 %include Common\OneWireGetByte.inc
@@ -290,23 +174,6 @@ uint8_t %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count);
 void %'ModuleName'%.%Init(void);
 %endif  %-Init
 %-BW_METHOD_END Init
-
-%-INHERITED_EVENT_BEGIN TU OnCounterRestart
-%ifdef @TU@OnCounterRestart
-void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr);
-
-%endif %- @TU@OnCounterRestart
-%-INHERITED_EVENT_END TU OnCounterRestart
-
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN isBusy
-%ifdef isBusy
-bool %'ModuleName'%.%isBusy(void);
-%define! RetVal
-%include Common\OneWireisBusy.Inc
-
-%endif %- isBusy
-%-BW_METHOD_END isBusy
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -326,14 +193,6 @@ uint8_t %'ModuleName'%.%CalcCRC(uint8_t *data, uint8_t dataSize);
 
 %endif %- CalcCRC
 %-BW_METHOD_END CalcCRC
-%-INHERITED_EVENT_BEGIN TUSDK OnCounterRestart
-%if defined(TUSDK)
-%ifdef @TUSDK@OnCounterRestart
-void %@TUSDK@OnCounterRestart(void);
-
-%endif %- @TUSDK@OnCounterRestart
-%endif
-%-INHERITED_EVENT_END TUSDK OnCounterRestart
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
@@ -409,13 +268,13 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode);
 %-
 %-BW_EVENT_DEFINITION_START
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendedReset
-%ifdef OnSendedReset
-%INTERFACE OnSendedReset
-void %OnSendedReset(void);
+%-BW_METHOD_BEGIN OnSendReset
+%ifdef OnSendReset
+%INTERFACE OnSendReset
+void %OnSendReset(void);
 %include Common\OneWireOnSendedReset.inc
-%endif %-OnSendedReset
-%-BW_METHOD_END OnSendedReset
+%endif %- OnSendReset
+%-BW_METHOD_END OnSendReset
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN OnSendEnd
 %ifdef OnSendEnd
@@ -471,15 +330,6 @@ void %OnProgramEvent(uint8_t key);
 #include "%'ModuleName'.h"
 #include "%@DataPin@ModuleName.h" /* data pin */
 #include "%@input@ModuleName.h" /* input ring buffer */
-#include "%@output@ModuleName.h" /* output ring buffer */
-#include "%@time@ModuleName.h" /* time ring buffer */
-#include "%@program@ModuleName.h" /* program ring buffer */
-%if defined(TU)
-#include "%@TU@ModuleName.h" /* Timer Unit */
-%endif
-%if defined(TUSDK)
-#include "%@TUSDK@ModuleName.h" /* Timer Unit */
-%endif
 #include "%@Utility@ModuleName.h" /* Utility */
 #include "%@Wait@ModuleName.h" /* Waiting */
 
@@ -495,10 +345,7 @@ void %OnProgramEvent(uint8_t key);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-
-#define %'ModuleName'%.USE_TIMER   (0)
-
-/* global search state */
+/* global search state and information */
 static unsigned char ROM_NO[8];
 static uint8_t LastDiscrepancy;
 static uint8_t LastFamilyDiscrepancy;
@@ -511,9 +358,6 @@ static uint8_t LastDeviceFlag;
 #define RC_SEARCH_COND       0xEC
 #define RC_SEARCH            0xF0
 #define RC_RELEASE           0xFF
-
-#define INPUT          0U
-#define OUTPUT         1U
 
 #if %'ModuleName'%.CONFIG_WRITE_PIN /* extra pin only for write bit */
   #define DQ_Init               %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_INIT
@@ -540,87 +384,6 @@ static uint8_t LastDeviceFlag;
   #define DBG_Deinit            /* empty */
   #define DQ_Read               (%@DataPin@'ModuleName'%.GetVal()!=0)
 #endif
-
-/* timer macros */
-%if defined(TU)
-  #define TU_Init              %@TU@'ModuleName'%.Init(NULL)
-  #define TU_Deinit            %@TU@'ModuleName'%.Deinit(Data.TUDeviceDataPtr)
-  #define TU_GetTimerFrequency %@TU@'ModuleName'%.GetInputFrequency(Data.TUDeviceDataPtr)
-  #define TU_Disable           %@TU@'ModuleName'%.Disable(Data.TUDeviceDataPtr)
-  #define TU_ResetCounter      %@TU@'ModuleName'%.ResetCounter(Data.TUDeviceDataPtr)
-  #define TU_SetPeriodUS(us)   %@TU@'ModuleName'%.SetPeriodTicks(Data.TUDeviceDataPtr, (us)*Data.Ticks)
-  #define TU_Enable            %@TU@'ModuleName'%.Enable(Data.TUDeviceDataPtr)
-%elif defined(TUSDK)
-  #define TU_Init              %@TUSDK@'ModuleName'%.Init()
-  #define TU_Deinit            %@TUSDK@'ModuleName'%.Deinit()
-  #define TU_GetTimerFrequency %@TUSDK@'ModuleName'%.GetInputFrequency()
-  #define TU_Disable           %@TUSDK@'ModuleName'%.Disable()
-  #define TU_ResetCounter      %@TUSDK@'ModuleName'%.ResetCounter()
-  #define TU_SetPeriodUS(us)   %@TUSDK@'ModuleName'%.SetPeriodTicks((us)*Data.Ticks)
-  #define TU_Enable            %@TUSDK@'ModuleName'%.Enable()
-%endif
-
-typedef enum {
-  I_RESET, /* reset instruction */
-  I_SEND,  /* send data instruction */
-  I_RECV,  /* receive data instruction */
-  I_WAIT,  /* wait instruction */
-  I_EVENT  /* event instruction */
-} INSTR;
-
-typedef enum {
-  TS_NOTHING, /* end of timer step */
-  /* I_RESET: reset sequence */
-  TS_RESET_LOW, /* start of reset, pulling pin LOW */
-  TS_RESET_FLOAT, /* reset sequence, release pin */
-  TS_PRESENCE, /* check for presence */
-  /* I_SEND: writing sequence */
-  TS_WRITE_LOW, /* strt of write, pulling pin LOW */
-  TS_WRITE_FLOAT, /* writing sequence, releasing pin */
-  /* I_RECV: reading sequence */
-  TS_READ_LOW, /* start of read, pulling pin low */
-  TS_READ_FLOAT, /* middle of read, releasing pin */
-  TS_READ_GET, /* reading data */
-  /* I_WAIT_ waiting sequence */
-  TS_WAIT_INTER,
-  TS_WAIT,
-  TS_EVENT
-} %'ModuleName'%.TimerStep;
-
-typedef struct {
-  INSTR Instr     :3; /* instruction code */
-  unsigned Count  :5; /* e.g. how many bytes to send */
-} PROG;
-
-struct {
-#if !%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
-  LDD_TDeviceData *TUDeviceDataPtr; /* timer handle */
-#endif
-  %'ModuleName'%.TimerStep Step;
-  uint16 Ticks; /* number of timer ticks for one us */
-  uint16 WaitTime;
-  uint32 WaitTotal;
-  uint16 WaitDiv;
-  uint16 WaitRes;
-  uint8 CRC;
-  %'ModuleName'%.Error Error;
-  PROG Prog;
-  uint8 WorkByte;
-  unsigned ToWork     :6;
-  unsigned WorkBit    :1;
-  volatile unsigned Busy       :1;
-  unsigned WorkBitPos :3;
-  unsigned WaitEvent  :1;
-  unsigned SkipWEvent :1;
-  unsigned WaitKey    :5;
-} Data;
-
-static void TU_SetTime(uint32_t us) {
-  TU_Disable;
-  TU_ResetCounter;
-  TU_SetPeriodUS(us);
-  TU_Enable;
-}
 
 static uint8_t read_bit(void) {
   uint8_t bit;
@@ -657,76 +420,6 @@ static void write_bit(uint8_t bit) {
   }
 }
 
-static void %'ModuleName'%.OnTimerRestart(void) {
-  switch(Data.Step) {
-    case TS_NOTHING:
-      if(%@Program@'ModuleName'%.NofElements()==0) {
-        TU_Disable;
-        Data.Busy = FALSE;
-      } else {
-        %'ModuleName'%.i_action();
-      }
-      break;
-    case TS_RESET_LOW:
-      %'ModuleName'%.i_reset();
-      break;
-    case TS_RESET_FLOAT:
-      DQ_Floating;
-      TU_SetTime(%'ModuleName'%.CONFIG_I_RESET_RESPONSE_TIME); /* have it floating for this time until handling of TS_PRESENCE */
-      Data.Step = TS_PRESENCE;
-      break;
-    case TS_PRESENCE:
-      %'ModuleName'%.i_presence();
-      break;
-    case TS_WRITE_LOW:
-      %'ModuleName'%.i_send_low();
-      break;
-    case TS_WRITE_FLOAT:
-      %'ModuleName'%.i_send_float();
-      break;
-    case TS_READ_LOW:
-      %'ModuleName'%.i_recv_low();
-      break;
-    case TS_READ_FLOAT:
-      %'ModuleName'%.i_recv_float();
-      break;
-    case TS_READ_GET:
-      %'ModuleName'%.i_recv_get();
-      break;
-    case TS_WAIT_INTER:
-      Data.WaitDiv--;
-      if(Data.WaitDiv == 0) {
-        TU_SetPeriodUS(Data.WaitRes);
-        Data.Step = TS_WAIT;
-      }
-      break;
-    case TS_WAIT:
-      Data.WaitKey = Data.Prog.Count;
-      %'ModuleName'%.i_action();
-      Data.WaitEvent = TRUE;
-      Data.SkipWEvent = TRUE;
-      break;
-    case TS_EVENT:
-      %ifdef OnProgramEvent
-      %OnProgramEvent(Data.Prog.Count);
-      %endif %- OnProgramEvent
-      %'ModuleName'%.i_action();
-      break;
-    default:
-      break;
-  } /* switch */
-  if(Data.SkipWEvent) {
-    Data.SkipWEvent = FALSE;
-  } else {
-    if(Data.WaitEvent) {
-    %ifdef OnWaitEnd
-      %OnWaitEnd(Data.WaitKey);
-    %endif %- OnWaitEnd
-      Data.WaitEvent = FALSE;
-    }
-  }
-}
-
 %if defined(Shell)
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
@@ -755,151 +448,6 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN GetError
-%ifdef GetError
-%include Common\OneWireGetError.inc
-%'ModuleName'%.Error %'ModuleName'%.%GetError(void)
-{
-  return Data.Error;
-}
-%endif %-GetError
-%-BW_METHOD_END GetError
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN SendBytes
-%ifdef SendBytes
-%define! Pardata
-%define! Parcount
-%define! RetVal
-%include Common\OneWireSendBytes.inc
-uint8_t %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
-{
-  PROG pr, last;
-
-  (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
-  if((last.Instr != I_SEND && %@Program@'ModuleName'%.NofFreeElements()==0) || (%@Output@'ModuleName'%.NofFreeElements() < count)) {
-    return ERR_FAILED;
-  }
-  pr.Instr = I_SEND;
-  pr.Count = count;
-  for(;count>0;count--) {
-    (void)%@Output@'ModuleName'%.Put(*data);
-    data++;
-  }
-  if(last.Instr == I_SEND) { /* update last element */
-    last.Count += pr.Count; /* update */
-    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update */
-  } else {
-    (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  }
-  if(!Data.Busy) {
-    %'ModuleName'%.i_action();
-    %'ModuleName'%.i_run();
-    %'ModuleName'%.i_send_low();
-  }
-  return ERR_OK;
-}
-%endif %- SendBytes
-%-BW_METHOD_END SendBytes
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_run
-%ifdef i_run
-%include Common\OneWirei_run.inc
-void %'ModuleName'%.%i_run(void)
-{
-  Data.Busy = TRUE;
-  TU_ResetCounter;
-  TU_Enable;
-}
-%endif %-i_run
-%-BW_METHOD_END i_run
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_action
-%ifdef i_action
-%include Common\OneWirei_action.inc
-void %'ModuleName'%.%i_action(void)
-{
-  if(%@Program@'ModuleName'%.NofElements()==0) {
-    TU_SetTime(%'ModuleName'%.CONFIG_SLOT_TIME);
-    Data.Step = TS_NOTHING;
-    return;
-  }
-  (void)%@Program@'ModuleName'%.Get((uint8_t*)&Data.Prog);
-  switch(Data.Prog.Instr) {
-    case I_RESET:
-      TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
-      Data.Step = TS_RESET_LOW;
-      break;
-    case I_SEND:
-      Data.ToWork = Data.Prog.Count;
-      %'ModuleName'%.i_send_float();
-      break;
-    case I_RECV:
-      Data.ToWork = Data.Prog.Count;
-      Data.WorkByte = 0;
-      TU_SetTime(%'ModuleName'%.CONFIG_A_READ_LOW_TIME);
-      Data.Step = TS_READ_LOW;
-      break;
-    case I_WAIT:
-      (void)%@Time@'ModuleName'%.Get(&Data.WaitTime);
-      Data.WaitTotal = (uint32) Data.WaitTime * Data.Ticks * 1000U;
-      Data.WaitDiv = Data.WaitTotal >> 16;
-      Data.WaitRes = Data.WaitTotal & 0x0000FFFF;
-      if(Data.WaitDiv == 0) {
-        TU_SetPeriodUS(Data.WaitRes);
-        Data.Step = TS_WAIT;
-      } else {
-        TU_SetPeriodUS(0xFFFF);
-        Data.Step = TS_WAIT_INTER;
-      }
-      break;
-    case I_EVENT:
-      TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
-      Data.Step = TS_EVENT;
-      break;
-    default:
-      break;
-  } /* switch */
-}
-%endif %-i_action
-%-BW_METHOD_END i_action
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_presence
-%ifdef i_presence
-%include Common\OneWirei_presence.inc
-void %'ModuleName'%.%i_presence(void)
-{
-  /* check response */
-  if(DQ_Read) { /* level must be pulled down by a device on the bus */
-    Data.Step = TS_NOTHING;
-    Data.Error = OWERR_NO_DEVICE;
-  %ifdef OnError
-    %OnError(Data.Error);
-  %endif
-  } else {
-    Data.Error = OWERR_OK;
-    %'ModuleName'%.i_action();
-  }
-}
-%endif %-i_presence
-%-BW_METHOD_END i_presence
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_reset
-%ifdef i_reset
-%include Common\OneWirei_reset.inc
-void %'ModuleName'%.%i_reset(void)
-{
-  DQ_Low;
-  TU_SetTime(%'ModuleName'%.CONFIG_H_RESET_TIME);
-  Data.Step = TS_RESET_FLOAT;
-}
-%endif %-i_reset
-%-BW_METHOD_END i_reset
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN SendReset
@@ -908,20 +456,7 @@ void %'ModuleName'%.%i_reset(void)
 %include Common\OneWireSendReset.inc
 uint8_t %'ModuleName'%.%SendReset(void)
 {
-#if %'ModuleName'%.USE_TIMER
-  PROG pr;
-
-  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return ERR_FAILED;
-  }
-  pr.Instr = I_RESET;
-  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  if(!Data.Busy) { /* start action */
-    %'ModuleName'%.i_action();
-    %'ModuleName'%.i_reset();
-    %'ModuleName'%.i_run();
-  }
-#else
+  uint8_t bit;
   %@CS@'ModuleName'%.CriticalVariable();
 
   %@CS@'ModuleName'%.EnterCritical();
@@ -929,60 +464,17 @@ uint8_t %'ModuleName'%.%SendReset(void)
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_H_RESET_TIME);
   DQ_Floating;
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_I_RESET_RESPONSE_TIME);
+  bit = DQ_Read;
   %@CS@'ModuleName'%.ExitCritical();
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'%.CONFIG_J_RESET_WAIT_TIME);
-#endif
-  return ERR_OK;
+  if (!bit) { /* a device pulled the data line low: at least one device is present */
+    return ERR_OK;
+  } else {
+    return ERR_BUSOFF; /* no device on the bus? */
+  }
 }
 %endif %- SendReset
 %-BW_METHOD_END SendReset
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_send_low
-%ifdef i_send_low
-%include Common\OneWirei_send_low.inc
-void %'ModuleName'%.%i_send_low(void)
-{
-  DQ_Low;
-  if(Data.WorkBit) {
-    TU_SetTime(%'ModuleName'%.CONFIG_A_WRITE_1_LOW_TIME);
-    Data.SkipWEvent = TRUE;
-  } else {
-    TU_SetTime(%'ModuleName'%.CONFIG_C_WRITE_0_LOW_TIME);
-  }
-  Data.Step = TS_WRITE_FLOAT; /* next step is to release pin */
-}
-%endif %-i_send_low
-%-BW_METHOD_END i_send_low
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_send_float
-%ifdef i_send_float
-%include Common\OneWirei_send_float.inc
-void %'ModuleName'%.%i_send_float(void)
-{
-  DQ_Floating;
-  if(Data.WorkBitPos==0) { /* all bits sent? */
-    if(Data.ToWork) {
-      (void)%@Output@'ModuleName'%.Get(&Data.WorkByte);
-      Data.ToWork--;
-    } else {
-      %'ModuleName'%.i_action();
-      return;
-    }
-  }
-  Data.WorkBit = Data.WorkByte & 1;
-  Data.WorkByte >>= 1;
-  if(Data.WorkBit) { /* set time for when we will get back to floating */
-    TU_SetTime(%'ModuleName'%.CONFIG_B_WRITE_1_HIGH_TIME);
-  } else {
-    TU_SetTime(%'ModuleName'%.CONFIG_D_WRITE_0_HIGH_TIME);
-  }
-  Data.WorkBitPos++;
-  Data.Step = TS_WRITE_LOW; /* next action for the next bit: pull LOW to start new bit */
-}
-%endif %-i_send_float
-%-BW_METHOD_END i_send_float
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN SendByte
@@ -992,105 +484,41 @@ void %'ModuleName'%.%i_send_float(void)
 %include Common\OneWireSendByte.inc
 uint8_t %'ModuleName'%.%SendByte(uint8_t data)
 {
-#if %'ModuleName'%.USE_TIMER
-  PROG pr, last;
-
-  (void)%@Program@'ModuleName'%.Peek(0, (uint8_t*)&last);
-  if(last.Instr == I_SEND) {
-    (void)%@Output@'ModuleName'%.Put(data);
-    last.Count++; /* update */
-    (void)%@Program@'ModuleName'%.Update(0, (uint8_t*)&last); /* update element */wi
-  } else {
-    if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-      return ERR_FAILED;
-    }
-    (void)%@Output@'ModuleName'%.Put(data);
-    pr.Instr = I_SEND;
-    pr.Count = 1;
-    (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  }
-  if(!Data.Busy) {
-    %'ModuleName'%.i_action();
-    %'ModuleName'%.i_send_low();
-    %'ModuleName'%.i_run();
-  }
-#else
   int i;
 
   for(i=0;i<8;i++) {
     write_bit(data&1); /* send LSB first */
     data >>= 1; /* next bit */
   } /* for */
-#endif
   return ERR_OK;
 }
 %endif %- SendByte
 %-BW_METHOD_END SendByte
 
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_get
-%ifdef i_recv_get
-%include Common\OneWirei_recv_get.inc
-void %'ModuleName'%.%i_recv_get(void)
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SendBytes
+%ifdef SendBytes
+%define! Pardata
+%define! Parcount
+%define! RetVal
+%include Common\OneWireSendBytes.Inc
+uint8_t %'ModuleName'%.%SendBytes(uint8_t *data, uint8_t count)
 {
-  Data.WorkByte >>= 1;
-  Data.WorkBit = DQ_Read;
-  %'ModuleName'%.add_CRC(Data.WorkBit);
-  Data.WorkByte += (Data.WorkBit ? 0x80 : 0);
-  if(Data.WorkBitPos == 7) { /* Full byte */
-    (void)%@Input@'ModuleName'%.Put(Data.WorkByte);
-    Data.ToWork--;
-    if(Data.ToWork == 0) {  /* finish */
-      if(Data.CRC){
-        Data.Error = OWERR_CRC;
-      %ifdef OnError
-        %OnError(Data.Error);
-      %endif
-      } else {
-        Data.Error = OWERR_OK;
-      %ifdef OnBlockReceived
-        %OnBlockReceived();
-      %endif
-      }
-      %'ModuleName'%.i_action();
-      return;
+  uint8_t res;
+
+  while(count>0) {
+    res = %'ModuleName'%.%SendByte(*data);
+    if (res!=ERR_OK) {
+      return res; /* failed */
     }
+    data++;
+    count--;
   }
-  Data.WorkBitPos++;
-  TU_SetTime(%'ModuleName'%.CONFIG_F_AFTER_READ_DELAY_TIME);
-  Data.Step = TS_READ_LOW;
+  return ERR_OK;
 }
-%endif %-i_recv_get
-%-BW_METHOD_END i_recv_get
 
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_float
-%ifdef i_recv_float
-%include Common\OneWirei_recv_float.inc
-void %'ModuleName'%.%i_recv_float(void)
-{
-  DQ_Floating;
-  TU_SetTime(%'ModuleName'%.CONFIG_E_BEFORE_READ_DELAY_TIME);
-  Data.SkipWEvent = TRUE;
-  Data.Step = TS_READ_GET;
-}
-%endif %-i_recv_float
-%-BW_METHOD_END i_recv_float
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_recv_low
-%ifdef i_recv_low
-%include Common\OneWirei_recv_low.inc
-void %'ModuleName'%.%i_recv_low(void)
-{
-  DQ_Low;
-  Data.SkipWEvent = TRUE;
-  TU_SetTime(%'ModuleName'%.CONFIG_A_READ_LOW_TIME);
-  Data.Step = TS_READ_FLOAT;
-}
-%endif %-i_recv_low
-%-BW_METHOD_END i_recv_low
-
+%endif %- SendBytes
+%-BW_METHOD_END SendBytes
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Receive
 %ifdef Receive
@@ -1099,21 +527,6 @@ void %'ModuleName'%.%i_recv_low(void)
 %include Common\OneWireReceive.inc
 uint8_t %'ModuleName'%.%Receive(uint8_t counter)
 {
-#if %'ModuleName'%.USE_TIMER
-  PROG pr;
-
-  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return ERR_FAILED;
-  }
-  pr.Instr = I_RECV;
-  pr.Count = counter;
-  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  if(!Data.Busy) {
-    %'ModuleName'%.i_action();
-    %'ModuleName'%.i_recv_low();
-    %'ModuleName'%.i_run();
-  }
-#else
   int i;
   uint8_t val, mask;
 
@@ -1128,75 +541,10 @@ uint8_t %'ModuleName'%.%Receive(uint8_t counter)
     (void)%@Input@'ModuleName'%.Put(val); /* put it into the queue so it can be retrieved by GetBytes() */
     counter--;
   }
-#endif
   return ERR_OK;
 }
 %endif %- Receive
 %-BW_METHOD_END Receive
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN ProgramEvent
-%ifdef ProgramEvent
-%define! Parkey
-%define! RetVal
-%include Common\OneWireProgramEvent.inc
-uint8_t %'ModuleName'%.%ProgramEvent(uint8_t key)
-{
-  PROG pr;
-
-  if(%@Program@'ModuleName'%.NofFreeElements()==0) {
-    return ERR_FAILED;
-  }
-  pr.Instr = I_EVENT;
-  pr.Count = key;
-  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  if(!Data.Busy) {
-    %'ModuleName'%.i_action();
-  }
-  return ERR_OK;
-}
-%endif %- ProgramEvent
-%-BW_METHOD_END ProgramEvent
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN i_wait
-%ifdef i_wait
-%include Common\OneWirei_wait.inc
-void %'ModuleName'%.%i_wait(void)
-{
-  Data.WaitEvent = FALSE;
-%if defined(OnWaitEnd)
-  %OnWaitEnd(Data.WaitKey);
-%endif
-}
-%endif %-i_wait
-%-BW_METHOD_END i_wait
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN Waitms
-%ifdef Waitms
-%define! Partime_ms
-%define! Parkey
-%define! RetVal
-%include Common\OneWireWaitms.inc
-uint8_t %'ModuleName'%.%Waitms(uint8_t key, uint8_t time_ms)
-{
-  PROG pr;
-  %@CS@'ModuleName'%.CriticalVariable();
-
-  if((%@Program@'ModuleName'%.NofFreeElements()==0) || (%@Time@'ModuleName'%.NofFreeElements()==0)) {
-    return ERR_FAILED;
-  }
-  %@CS@'ModuleName'%.EnterCritical();
-  pr.Instr = I_WAIT;
-  pr.Count = key;
-  (void)%@Program@'ModuleName'%.Put(*(uint8_t*)&pr);
-  (void)%@Time@'ModuleName'%.Put(time_ms);
-  %@CS@'ModuleName'%.ExitCritical();
-  return ERR_OK;
-}
-%endif %- Waitms
-%-BW_METHOD_END Waitms
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Count
@@ -1209,24 +557,6 @@ uint8_t %'ModuleName'%.%Count(void)
 }
 %endif %-Count
 %-BW_METHOD_END Count
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN add_CRC
-%ifdef add_CRC
-%define! ParbitValue
-%include Common\OneWireadd_CRC.inc
-void %'ModuleName'%.%add_CRC(uint8_t bitValue)
-{
-  bool fb;
-
-  fb = (Data.CRC & 0x01) ^ bitValue;
-  Data.CRC >>= 1;
-  if(fb) {
-    Data.CRC ^= 0x8C;
-  }
-}
-%endif %- add_CRC
-%-BW_METHOD_END add_CRC
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN GetByte
@@ -1268,18 +598,6 @@ uint8_t %'ModuleName'%.%GetBytes(uint8_t *data, uint8_t count)
 %-BW_METHOD_END GetBytes
 
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN isBusy
-%ifdef isBusy
-%define! RetVal
-%include Common\OneWireisBusy.Inc
-bool %'ModuleName'%.%isBusy(void)
-{
-  return (Data.Busy!=0);
-}
-
-%endif %- isBusy
-%-BW_METHOD_END isBusy
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN CalcCRC
 %ifdef CalcCRC
 %define! Pardata
@@ -1316,25 +634,10 @@ void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   /* using SDK, need to initialize inherited components */
-  TU_Init; /* timer */
   DQ_Init; /* data pin */
   DBG_Init; /* optional debug pin */
   %@Input@'ModuleName'%.Init(); /* input ring buffer */
-  %@Output@'ModuleName'%.Init(); /* output ring buffer */
-  %@Program@'ModuleName'%.Init(); /* program ring buffer */
-  %@Time@'ModuleName'%.Init(); /* time ring buffer */
-#else
-  Data.TUDeviceDataPtr = TU_Init; /* timer init */
 #endif
-  Data.Ticks = TU_GetTimerFrequency/1000000U;
-  Data.Busy = FALSE;
-  Data.WorkBitPos = 0;
-  Data.WaitEvent = FALSE;
-  Data.SkipWEvent = FALSE;
-  Data.Step = TS_NOTHING;
-  Data.CRC = 0;
-  Data.Error = OWERR_OK;
-
   DQ_Floating; /* input mode, let the pull-up take the signal high */
   /* load LOW to output register. We won't change that value afterwards, we only switch between output and input/float mode */
   DQ_SetLow;
@@ -1348,54 +651,15 @@ void %'ModuleName'%.%Init(void)
 %include Common\OneWireDeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-  TU_Deinit; /* timer deinit */
-#if !%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
-  Data.TUDeviceDataPtr = NULL;
-#endif
   DQ_Deinit; /* data pin */
   DQ_Floating; /* input mode, tristate pin */
   DBG_Deinit; /* optional debug pin */
   %@Input@'ModuleName'%.Deinit(); /* input ring buffer */
-  %@Output@'ModuleName'%.Deinit(); /* output ring buffer */
-  %@Program@'ModuleName'%.Deinit(); /* program ring buffer */
-  %@Time@'ModuleName'%.Deinit(); /* time ring buffer */
-  Data.Ticks = 0;
-  Data.Busy = FALSE;
-  Data.WorkBitPos = 0;
-  Data.WaitEvent = FALSE;
-  Data.SkipWEvent = FALSE;
-  Data.Step = TS_NOTHING;
-  Data.CRC = 0;
-  Data.Error = OWERR_OK;
 }
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
 
-%-INHERITED_EVENT_BEGIN TU OnCounterRestart
-%if defined(TU)
-%ifdef @TU@OnCounterRestart
-%include Common\GeneralInternal.inc (OnCounterRestart)
-void %@TU@OnCounterRestart(LDD_TUserData *UserDataPtr)
-{
-  (void)UserDataPtr; /* not used */
-  %'ModuleName'%.OnTimerRestart();
-}
-%endif %- @TU@OnCounterRestart
-%endif
-%-INHERITED_EVENT_END TU OnCounterRestart
-%-INHERITED_EVENT_BEGIN TUSDK OnCounterRestart
-%if defined(TUSDK)
-%ifdef @TUSDK@OnCounterRestart
-%include Common\GeneralInternal.inc (OnCounterRestart)
-void %@TUSDK@OnCounterRestart(void)
-{
-  %'ModuleName'%.OnTimerRestart();
-}
-
-%endif %- @TUSDK@OnCounterRestart
-%endif
-%-INHERITED_EVENT_END TUSDK OnCounterRestart
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
@@ -1440,17 +704,10 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' reset")==0) {
     *handled = TRUE;
     res = %'ModuleName'%.%SendReset();
-    while(%'ModuleName'%.%isBusy()) { /* wait */ }
-    if (%'ModuleName'%.%GetError()==OWERR_OK) {
+    if (res==ERR_OK) {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"Device present\r\n", io->stdOut);
     } else {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"No device present?\r\n", io->stdErr);
-    }
-    if (res!=ERR_OK) {
-      %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR (");
-      %@Utility@'ModuleName'%.strcatNum8u(buf, sizeof(buf), res);
-      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)")\r\n");
-      %@Shell@'ModuleName'%.SendStr(buf, io->stdErr);
     }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' search")==0) {
     uint8_t rom[%'ModuleName'%.ROM_CODE_SIZE];
@@ -1496,13 +753,9 @@ uint8_t %'ModuleName'%.%ReadRomCode(uint8_t *romCodeBuffer)
   uint8_t res;
 
   %'ModuleName'%.%SendReset();
-  while(%'ModuleName'%.%isBusy()) { /* wait */ }
   %'ModuleName'%.%SendByte(RC_READ_ROM);
-  while(%'ModuleName'%.%isBusy()) { /* wait */ }
   %'ModuleName'%.%Receive(%'ModuleName'%.ROM_CODE_SIZE); /* 8 bytes for the ROM code */
-  while(%'ModuleName'%.%isBusy()) { /* wait */ }
   %'ModuleName'%.%SendByte(RC_RELEASE);
-  while(%'ModuleName'%.%isBusy()) { /* wait */ }
   /* copy ROM code */
   res = %'ModuleName'%.%GetBytes(romCodeBuffer, %'ModuleName'%.ROM_CODE_SIZE); /* 8 bytes */
   if (res!=ERR_OK) {
@@ -1618,8 +871,7 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode)
   if (!LastDeviceFlag) {
     /* 1-Wire reset */
     res = %'ModuleName'%.%SendReset();
-    while(%'ModuleName'%.%isBusy()) { /* wait */ }
-    if (res!=ERR_OK || OW1_GetError()!=OWERR_OK) {
+    if (res!=ERR_OK) {
       /* reset the search */
       LastDiscrepancy = 0;
       LastDeviceFlag = FALSE;
@@ -1629,10 +881,8 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode)
     /* issue the search command */
     if (search_mode) {
       %'ModuleName'%.%SendByte(RC_SEARCH);   /* NORMAL SEARCH */
-      while(OW1_isBusy()) { /* wait */ }
     } else {
       %'ModuleName'%.%SendByte(RC_SEARCH_COND);   /* CONDITIONAL SEARCH */
-      while(OW1_isBusy()) { /* wait */ }
     }
     /* loop to do the search */
     do  {
@@ -1724,16 +974,16 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode)
 %-
 %-BW_EVENT_IMPLEMENT_START
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendedReset
-%ifdef OnSendedReset
-%IMPLEMENTATION OnSendedReset
+%-BW_METHOD_BEGIN OnSendReset
+%ifdef OnSendReset
+%IMPLEMENTATION OnSendReset
 %include Common\OneWireOnSendedReset.inc
-void %OnSendedReset(void)
+void %OnSendReset(void)
 {
   /* Write your code here ... */
 }
-%endif %-OnSendedReset
-%-BW_METHOD_END OnSendedReset
+%endif %- OnSendReset
+%-BW_METHOD_END OnSendReset
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN OnSendEnd
@@ -1901,15 +1151,6 @@ extern "C" {
   #define %'ModuleName'%.CONFIG_WRITE_PIN_HIGH                   %>60 WritePin_SetVal()
   #define %'ModuleName'%.CONFIG_WRITE_PIN_SET_OUTPUT             %>60 WritePin_SetOutput()
 %endif
-#endif
-
-#ifndef %'ModuleName'%.CONFIG_TIMER_UNIT_LDD
-%if defined(TU)
-  #define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD                   %>60 (1)
-%else
-  #define %'ModuleName'%.CONFIG_TIMER_UNIT_LDD                   %>60 (0)
-%endif
-    /*!< 1: using TimerUnit_LDD, 0: not using TimerUnit_LDD */
 #endif
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
