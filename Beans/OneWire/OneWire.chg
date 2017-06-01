@@ -1,12 +1,6 @@
 %-This is the Chg script. It is used for tests, verifications and
 %- validations of the component every time it is changed.
 %-
-%if defined(TU) | defined(TUSDK)
-  %- everything fine
-%else
-%-  %error "no timer is enabled, at least one timer needs to be present"
-%endif
-
 %ifndef Shell
   %set ParseCommand Selection never
 %else

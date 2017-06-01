@@ -199,7 +199,6 @@ void %'ModuleName'%.%Init(void);
 %-BW_METHOD_END Init
 
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN GetTemperatureFloat
 %ifdef GetTemperatureFloat
 uint8_t %'ModuleName'%.%GetTemperatureFloat(uint8_t sensor_index, float *temperature);
@@ -262,42 +261,6 @@ uint8_t %'ModuleName'%.%SearchAndAssignROMCodes(void);
 %-
 %-BW_EVENT_DEFINITION_START
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnAllConverted
-%ifdef OnAllConverted
-%INTERFACE OnAllConverted
-void %OnAllConverted(void);
-%include Common\DS18B20OnAllConverted.inc
-%endif %-OnAllConverted
-%-BW_METHOD_END OnAllConverted
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnRomRead
-%ifdef OnRomRead
-%INTERFACE OnRomRead
-void %OnRomRead(uint8_t sensor_index, uint8_t *rom_code);
-%define! Parrom_code
-%define! Parsensor_index
-%include Common\DS18B20OnRomRead.inc
-%endif %-OnRomRead
-%-BW_METHOD_END OnRomRead
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnTemperatureGet
-%ifdef OnTemperatureGet
-%INTERFACE OnTemperatureGet
-void %OnTemperatureGet(uint8_t sensor_index, int32_t temperature);
-%define! Parsensor_index
-%define! Partemperature
-%include Common\DS18B20OnTemperatureGet.inc
-%endif %-OnTemperatureGet
-%-BW_METHOD_END OnTemperatureGet
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnError
-%ifdef OnError
-%INTERFACE OnError
-void %OnError(%@OW@'ModuleName'%.Error error);
-%define! Parerror
-%include Common\DS18B20OnError.inc
-%endif %-OnError
-%-BW_METHOD_END OnError
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\DS18B20Settings.Inc
@@ -1028,7 +991,6 @@ void %'ModuleName'%.%Init(void)
 %-BW_METHOD_END Init
 
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN SearchAndAssignROMCodes
 %ifdef SearchAndAssignROMCodes
 %define! RetVal
@@ -1067,57 +1029,6 @@ uint8_t %'ModuleName'%.%SearchAndAssignROMCodes(void)
 %-
 %-BW_EVENT_IMPLEMENT_START
 %-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnAllConverted
-%ifdef OnAllConverted
-%IMPLEMENTATION OnAllConverted
-%include Common\DS18B20OnAllConverted.inc
-void %OnAllConverted(void)
-{
-  /* Write your code here ... */
-}
-%endif %-OnAllConverted
-%-BW_METHOD_END OnAllConverted
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnRomRead
-%ifdef OnRomRead
-%IMPLEMENTATION OnRomRead
-%define! Parsensor_index
-%define! Parrom_code
-%include Common\DS18B20OnRomRead.inc
-void %OnRomRead(uint8_t sensor_index, uint8_t *rom_code)
-{
-  /* Write your code here ... */
-}
-%endif %-OnRomRead
-%-BW_METHOD_END OnRomRead
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnTemperatureGet
-%ifdef OnTemperatureGet
-%IMPLEMENTATION OnTemperatureGet
-%define! Parsensor_index
-%define! Partemperature
-%include Common\DS18B20OnTemperatureGet.inc
-void %OnTemperatureGet(uint8_t sensor_index, int32_t temperature)
-{
-  /* Write your code here ... */
-}
-%endif %-OnTemperatureGet
-%-BW_METHOD_END OnTemperatureGet
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnError
-%ifdef OnError
-%IMPLEMENTATION OnError
-%define! Parerror
-%include Common\DS18B20OnError.inc
-void %OnError(%@OW@'ModuleName'%.Error error)
-{
-  /* Write your code here ... */
-}
-%endif %-OnError
-%-BW_METHOD_END OnError
 
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION

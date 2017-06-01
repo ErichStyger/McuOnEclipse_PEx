@@ -12,19 +12,6 @@
 %- Functions and events
 	%- Enable
 		%set ConvertAll Selection enable
-	%- Disable
-%-		%set ReadRom Selection never
-%-		%set StartConvInAll Selection never
-%-		%set OnRomRead Selection never
-	%- *******
-%- Properties
-
-%- inherited properties
-	%if %get(readAuto, Bool) = 'yes'
-		%set OnAllConverted Selection enable
-	%else
-		%set OnAllConverted Selection never
-	%endif
 %- Properties check
 	%for i from [0..%EXPR(%get(deviceCount, Value)-1)]
 		%setVariable(CRC, 0)
@@ -54,11 +41,6 @@
 %- Functions and events
 	%- Disable
 	%set ConvertAll Selection never
-	%set OnAllConverted Selection never
 	%- Enable
-%-	%set ReadRom Selection enable
-%-	%set StartConvInAll Selection enable
-%-	%set OnRomRead Selection enable
-	%- ******
 
 %endif

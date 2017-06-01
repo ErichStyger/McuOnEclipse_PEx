@@ -97,14 +97,6 @@ extern "C" {
 #define %'ModuleName'%.ROM_CODE_SIZE   (8)
   /*!< Number of bytes for ROM code */
 
-/* events */
-void %'ModuleName'%.OnBlockReceived(void);
-void %'ModuleName'%.OnError(void);
-void %'ModuleName'%.OnProgramEvent(uint8_t key);
-void %'ModuleName'%.OnWaitEnd(uint8_t key);
-void %'ModuleName'%.OnSendEnd(void);
-void %'ModuleName'%.OnSendReset(void);
-
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED    %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
   /*!< set to 1 if method ParseCommand() is present, 0 otherwise */
 %-BW_CUSTOM_USERTYPE_END
@@ -267,56 +259,6 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode);
 %include Common\Header.End
 %-
 %-BW_EVENT_DEFINITION_START
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendReset
-%ifdef OnSendReset
-%INTERFACE OnSendReset
-void %OnSendReset(void);
-%include Common\OneWireOnSendedReset.inc
-%endif %- OnSendReset
-%-BW_METHOD_END OnSendReset
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendEnd
-%ifdef OnSendEnd
-%INTERFACE OnSendEnd
-void %OnSendEnd(void);
-%include Common\OneWireOnSendEnd.inc
-%endif %-OnSendEnd
-%-BW_METHOD_END OnSendEnd
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnWaitEnd
-%ifdef OnWaitEnd
-%INTERFACE OnWaitEnd
-void %OnWaitEnd(uint8_t key2);
-%define! Parkey2
-%include Common\OneWireOnWaitEnd.inc
-%endif %- OnWaitEnd
-%-BW_METHOD_END OnWaitEnd
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnBlockReceived
-%ifdef OnBlockReceived
-%INTERFACE OnBlockReceived
-void %OnBlockReceived(void);
-%include Common\OneWireOnBlockReceived.inc
-%endif %-OnBlockReceived
-%-BW_METHOD_END OnBlockReceived
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnError
-%ifdef OnError
-%INTERFACE OnError
-void %OnError(%'ModuleName'_Error error);
-%include Common\OneWireOnError.inc
-%endif %-OnError
-%-BW_METHOD_END OnError
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnProgramEvent
-%ifdef OnProgramEvent
-%INTERFACE OnProgramEvent
-void %OnProgramEvent(uint8_t key);
-%define! Parkey
-%include Common\OneWireOnProgramEvent.inc
-%endif %- OnProgramEvent
-%-BW_METHOD_END OnProgramEvent
 %-*****************************************************************************************************
 
 %-BW_EVENT_DEFINITION_END
@@ -973,81 +915,6 @@ bool %'ModuleName'%.%Search(uint8_t *newAddr, bool search_mode)
 %-
 %-
 %-BW_EVENT_IMPLEMENT_START
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendReset
-%ifdef OnSendReset
-%IMPLEMENTATION OnSendReset
-%include Common\OneWireOnSendedReset.inc
-void %OnSendReset(void)
-{
-  /* Write your code here ... */
-}
-%endif %- OnSendReset
-%-BW_METHOD_END OnSendReset
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnSendEnd
-%ifdef OnSendEnd
-%IMPLEMENTATION OnSendEnd
-%include Common\OneWireOnSendEnd.inc
-void %OnSendEnd(void)
-{
-  /* Write your code here ... */
-}
-%endif %-OnSendEnd
-%-BW_METHOD_END OnSendEnd
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnWaitEnd
-%ifdef OnWaitEnd
-%IMPLEMENTATION OnWaitEnd
-%define! Parkey2
-%include Common\OneWireOnWaitEnd.inc
-void %OnWaitEnd(uint8_t key2)
-{
-  /* Write your code here ... */
-}
-%endif %- OnWaitEnd
-%-BW_METHOD_END OnWaitEnd
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnBlockReceived
-%ifdef OnBlockReceived
-%IMPLEMENTATION OnBlockReceived
-%include Common\OneWireOnBlockReceived.inc
-void %OnBlockReceived()
-{
-  /* Write your code here ... */
-}
-%endif %-OnBlockReceived
-%-BW_METHOD_END OnBlockReceived
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnError
-%ifdef OnError
-%IMPLEMENTATION OnError
-%define! Parerror
-%include Common\OneWireOnError.inc
-void %OnError(%'ModuleName'_Error error)
-{
-  /* Write your code here ... */
-}
-%endif %-OnError
-%-BW_METHOD_END OnError
-
-%-*****************************************************************************************************
-%-BW_METHOD_BEGIN OnProgramEvent
-%ifdef OnProgramEvent
-%IMPLEMENTATION OnProgramEvent
-%define! Parkey
-%include Common\OneWireOnProgramEvent.inc
-void %OnProgramEvent(uint8_t key)
-{
-  /* Write your code here ... */
-}
-%endif %- OnProgramEvent
-%-BW_METHOD_END OnProgramEvent
-
 %-*****************************************************************************************************
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
