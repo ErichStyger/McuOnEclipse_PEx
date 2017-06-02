@@ -508,6 +508,46 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>LuxToAmbientPercentage</Name>
+        <Symbol>LuxToAmbientPercentage</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Transformes the Lux value into an ambient percentage value (0-100%)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>none</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>luxVal</ParName>
+          <ParType>uint32_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Lux input value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>ambient</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to where to store the ambient percentage value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint32_t luxVal, uint8_t *ambient)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>ParseCommand</Name>
         <Symbol>ParseCommand</Symbol>
         <TypeSpec>typeMethod</TypeSpec>

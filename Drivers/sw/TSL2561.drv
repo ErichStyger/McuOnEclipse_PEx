@@ -100,6 +100,7 @@ extern "C" {
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -240,6 +241,16 @@ uint8_t %'ModuleName'%.%GetLux(uint32_t *lux);
 
 %endif %- GetLux
 %-BW_METHOD_END GetLux
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LuxToAmbientPercentage
+%ifdef LuxToAmbientPercentage
+void %'ModuleName'%.%LuxToAmbientPercentage(uint32_t luxVal, uint8_t *ambient);
+%define! ParluxVal
+%define! Parambient
+%include Common\TSL2561LuxToAmbientPercentage.Inc
+
+%endif %- LuxToAmbientPercentage
+%-BW_METHOD_END LuxToAmbientPercentage
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -381,13 +392,17 @@ static uint8_t _tsl2561Gain = TSL2561_GAIN_16X;
 %if defined(Shell)
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
-  uint8_t buf[24];
+  uint8_t buf[32], ambient;
   uint16_t broadband, ir;
   uint32_t lux;
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
 
-  %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), _tsl2561Gain);
+  if (_tsl2561Gain==TSL2561_GAIN_1X) {
+    %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), _tsl2561Gain+1); /* 1x is zero value */
+  } else {
+    %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), _tsl2561Gain);
+  }
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  gain", buf, io->stdOut);
 
@@ -412,7 +427,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  broadband", buf, io->stdOut);
   if (%'ModuleName'%.%ReadRawDataInfrared(&ir)==ERR_OK) {
     %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), ir);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"%%\r\n");
   } else {
     ir = 0;
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n");
@@ -428,6 +443,11 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  lux", buf, io->stdOut);
 
+  %'ModuleName'%.%LuxToAmbientPercentage(lux, &ambient);
+  %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), ambient);
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  ambient", buf, io->stdOut);
+
   %'ModuleName'%.%GetLuminosity(&broadband, &ir);
   %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"broad: ");
   %@Utility@'ModuleName'%.strcatNum16u(buf, sizeof(buf), broadband);
@@ -435,6 +455,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.strcatNum16u(buf, sizeof(buf), ir);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  luminosity", buf, io->stdOut);
+
   return ERR_OK;
 }
 
@@ -860,6 +881,23 @@ uint8_t %'ModuleName'%.%GetLux(uint32_t *lux)
 
 %endif %- GetLux
 %-BW_METHOD_END GetLux
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN LuxToAmbientPercentage
+%ifdef LuxToAmbientPercentage
+%define! ParluxVal
+%define! Parambient
+%include Common\TSL2561LuxToAmbientPercentage.Inc
+void %'ModuleName'%.%LuxToAmbientPercentage(uint32_t luxVal, uint8_t *ambient)
+{
+  if (luxVal<128) {
+    *ambient = (luxVal*100)>>7;
+  } else {
+    *ambient = 100;
+  }
+}
+
+%endif %- LuxToAmbientPercentage
+%-BW_METHOD_END LuxToAmbientPercentage
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

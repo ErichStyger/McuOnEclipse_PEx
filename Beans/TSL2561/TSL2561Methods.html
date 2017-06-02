@@ -326,6 +326,17 @@ LI.EXP {
 <li><i>ir: Pointer to uint16_t</i> - Pointer to store the infrared value</li>
 </ul><br />
 </li>
+<li><a name="LuxToAmbientPercentage">
+<b>LuxToAmbientPercentage</b></a>
+ - Transformes the Lux value into an ambient percentage value (0-100%)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void LuxToAmbientPercentage(uint32_t luxVal, uint8_t *ambient)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>luxVal:uint32_t</i> - Lux input value</li>
+<li><i>ambient: Pointer to uint8_t</i> - Pointer to where to store the ambient percentage value</li>
+</ul><br />
+</li>
 <li><a name="ParseCommand">
 <b>ParseCommand</b></a>
  - Shell Command Line parser. Method is only available if Shell is enabled in the component properties.
