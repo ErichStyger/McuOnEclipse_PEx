@@ -659,6 +659,9 @@ static void SendSeparatedStrings(const uint8_t *strA, const uint8_t *strB, uint8
 %include Common\ShellSendCh.Inc
 void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io)
 {
+  if (io==NULL) {
+    return;
+  }
   io(ch);
 }
 
@@ -677,6 +680,9 @@ void %'ModuleName'%.%SendCh(uint8_t ch, %'ModuleName'_StdIO_OutErr_FctType io)
  */
 void %'ModuleName'%.%SendStr(const uint8_t *str, %'ModuleName'_StdIO_OutErr_FctType io)
 {
+  if (io==NULL) {
+    return;
+  }
   while(*str!='\0') {
     io(*str++);
   }
