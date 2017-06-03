@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.045</Version>
+    <Version>01.048</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -146,7 +146,7 @@
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <InhrBeanBaseName>CDC</InhrBeanBaseName>
-              <ShowInheritedMethodsEventsInPrjTree>false</ShowInheritedMethodsEventsInPrjTree>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
           </GrupItem>
         </Children>
@@ -182,6 +182,42 @@
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <InhrBeanBaseName>HIDK</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>HID Joystick Device</Name>
+        <Symbol>HIDJDeviceGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>HID Joystick Device Class Interface</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrItem>
+              <Name>HID Joystick</Name>
+              <Symbol>HIDJDevice</Symbol>
+              <TypeSpec>FSL_USB_Stack\HIDJDevice</TypeSpec>
+              <Hint>Interface to HID Joystick class</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>HIDJ</InhrBeanBaseName>
               <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
             </TInhrItem>
           </GrupItem>
