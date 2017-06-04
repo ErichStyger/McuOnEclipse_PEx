@@ -51,11 +51,6 @@
 %- List of descriptions of internal methods
 %define! Description_usb_int_dis Disables USB interrupts (if supported)
 %define! Description_usb_int_en Enables USB interrupts (if supported).
-%ifdef HIDJDevice
-  %ifdef @HIDJDevice@OnEvent
-    %define! Description_%@HIDJDevice@OnEvent Hook called in case of an error The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @HIDJDevice@OnEvent
-%endif %- HIDJDevice
 %ifdef MSDHost
   %ifdef @MSDHost@OnError
     %define! Description_%@MSDHost@OnError Hook called in case of an error The event services the event of the inherited component and eventually invokes other events.
@@ -207,12 +202,6 @@ uint8_t %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
-%-INHERITED_EVENT_BEGIN HIDJDevice OnEvent
-%ifdef @HIDJDevice@OnEvent
-void %@HIDJDevice@OnEvent(byte error);
-
-%endif %- @HIDJDevice@OnEvent
-%-INHERITED_EVENT_END HIDJDevice OnEvent
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -499,16 +488,6 @@ void %@MSDHost@OnError(byte error)
 
 %endif %- @MSDHost@OnError
 %-INHERITED_EVENT_END MSDHost OnError
-%-INHERITED_EVENT_BEGIN HIDJDevice OnEvent
-%ifdef @HIDJDevice@OnEvent
-%include Common\GeneralInternal.inc (OnEvent)
-void %@HIDJDevice@OnEvent(byte error)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @HIDJDevice@OnEvent
-%-INHERITED_EVENT_END HIDJDevice OnEvent
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -3,13 +3,11 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SendStr)
+%include Common\GeneralMethod.inc (SetHatPos)
 %;**     Description :
-%;**         Puts an ASCII string into the buffer to be sent to the HID
-%;**         host. This function will translate the string into the
-%;**         correct status messages
+%;**         Sets the hat switch position
 %include Common\GeneralParameters.inc(27)
-%;**       * str%Parstr %>27 - Pointer to string to be sent
+%;**         position%Parposition %>27 - hat switch position
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

@@ -207,9 +207,9 @@ LI.EXP {
  - Application task to be called periodically from the main task.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte App_Task(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t App_Task(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code, returns ERR_OK if USB enumeration has been finished, error code otherwise.
+<li><i>Return value:uint8_t</i> - Error code, returns ERR_OK if USB enumeration has been finished, error code otherwise.
 </li>
 </ul><br />
 </li>
@@ -224,64 +224,53 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="HidCodeFromAscii">
-<b>HidCodeFromAscii</b></a>
- - Translates an ASCII code into the HID code
+<li><a name="SetButton">
+<b>SetButton</b></a>
+ - Sets the status of a button
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte HidCodeFromAscii(byte ch)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetButton(uint8_t button, bool isOn)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - ASCII code</li>
-<li><i>Return value:byte</i> - USB HID Key Code
+<li><i>button:uint8_t</i> - button number</li>
+<li><i>isOn:bool</i> - If button is on or off</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
-<li><a name="ModifierCodeFromAscii">
-<b>ModifierCodeFromAscii</b></a>
- - Translates an ASCII code into the HID code and returns the modifier.
+<li><a name="SetThrottle">
+<b>SetThrottle</b></a>
+ - Set Joystick throttle position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ModifierCodeFromAscii(byte ch)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetThrottle(int8_t throttle)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - ASCII code</li>
-<li><i>Return value:byte</i> - USB HID Modifier Key Code
+<li><i>throttle:int8_t</i> - throttle position</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
-<li><a name="SendStr">
-<b>SendStr</b></a>
- - Puts an ASCII string into the buffer to be sent to the HID host. This function will translate the string into the correct status messages
+<li><a name="SetHatPos">
+<b>SetHatPos</b></a>
+ - Sets the hat switch position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SendStr(byte *str)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetHatPos(uint8_t position)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>str: Pointer to byte</i> - Pointer to string to be sent</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>position:uint8_t</i> - hat switch position</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
-<li><a name="SendChar">
-<b>SendChar</b></a>
- - Puts a single ASCII character into the buffer to be sent to the HID host. This function will translate the string into the correct status messages
+<li><a name="SetXY">
+<b>SetXY</b></a>
+ - Set Joystick X and Y position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SendChar(byte ch)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetXY(int8_t x, int8_t y)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - character to be sent</li>
-<li><i>Return value:byte</i> - Error code
-</li>
-</ul><br />
-</li>
-<li><a name="Send">
-<b>Send</b></a>
- - Puts a message with modifier and key value into the buffer to be sent to the host.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Send(byte modifier, byte key)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>modifier:byte</i> - HID modifier value, e.g. MODIFERKEYS_LEFT_SHIFT</li>
-<li><i>key:byte</i> - HID key value, e.g. KEY_H</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>x:int8_t</i> - X position</li>
+<li><i>y:int8_t</i> - Y position</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -290,9 +279,9 @@ LI.EXP {
  - Deinitializes the driver
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Deinit(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Deinit(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>
@@ -301,9 +290,9 @@ LI.EXP {
  - Initializes the driver
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Init(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>

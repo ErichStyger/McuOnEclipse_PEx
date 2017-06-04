@@ -4,7 +4,7 @@
     <Name>FSL_USB_HID_Joystick_Device</Name>
     <Description>Freescale USB Stack (HID Joystick)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.066</Version>
+    <Version>01.001</Version>
     <Icon>FSL_USB_HID_Joystick_Device</Icon>
     <TypesFiles>PE,FSL_USB_HID_Joystick_Device\FSL_USB_HID_Joystick_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright>(c) Copyright Freescale, all rights reserved, 2013\nPorted as Processor Expert component: Erich Styger\nhttp: www.freescale.com</Copyright>
@@ -53,6 +53,40 @@
       </TEnumItem>
     </Property>
     <Property>
+      <TIntgItem>
+        <Name>Buttons</Name>
+        <Symbol>NofButtons</Symbol>
+        <Hint>Number of buttons</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>4</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Hat Positions</Name>
+        <Symbol>NofHatPositions</Symbol>
+        <Hint>Number of hat positions</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>4</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
+    </Property>
+    <Property>
       <TBoolGrupItem>
         <Name>HID Settings</Name>
         <Symbol>USBCDCenabled</Symbol>
@@ -75,7 +109,7 @@
               <Hint>This name shows up on the USB bus before drivers are installed. This string is used in usb_descriptor.c.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>FSL HID Joystick   </DefaultValue>
+              <DefaultValue>My HID Joystick   </DefaultValue>
               <StrDefine>nothing</StrDefine>
               <MinLength>-1</MinLength>
               <MaxLength>19</MaxLength>
@@ -88,7 +122,7 @@
               <Hint>This name shows up on the USB bus before drivers are installed. This string is used in usb_descriptor.c.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>FREESCALE INC.              </DefaultValue>
+              <DefaultValue>My Company INC.             </DefaultValue>
               <StrDefine>nothing</StrDefine>
               <MinLength>-1</MinLength>
               <MaxLength>28</MaxLength>
@@ -96,24 +130,6 @@
           </GrupItem>
         </Children>
       </TBoolGrupItem>
-    </Property>
-    <Property>
-      <TInhrItem>
-        <Name>Send Buffer</Name>
-        <Symbol>TxBuffer</Symbol>
-        <TypeSpec>FSL_USB_HID_Joystick_Device\Buffer</TypeSpec>
-        <Hint>Interface to ring buffer for sending data. Elements in the bufer must be 16bits each.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>-1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <InhrBeanBaseName>Tx</InhrBeanBaseName>
-        <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-      </TInhrItem>
     </Property>
     <Property>
       <TGrupItem>
@@ -186,12 +202,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, returns ERR_OK if USB enumeration has been finished, error code otherwise.</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -219,26 +235,26 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>controller_ID</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>controller ID</ParHint>
         </Parameter>
         <Parameter>
           <ParName>event_type</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>value of the event</ParHint>
         </Parameter>
         <Parameter>
           <ParName>val</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>gives the configuration value</ParHint>
           <ParUserDeclaration>void *val</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte controller_ID, byte event_type, void *val)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t controller_ID, uint8_t event_type, void *val)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -272,10 +288,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>HidCodeFromAscii</Name>
-        <Symbol>HidCodeFromAscii</Symbol>
+        <Name>SetButton</Name>
+        <Symbol>SetButton</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Translates an ASCII code into the HID code</Hint>
+        <Hint>Sets the status of a button</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -289,160 +305,132 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>USB HID Key Code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>ASCII code</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(byte ch)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>ModifierCodeFromAscii</Name>
-        <Symbol>ModifierCodeFromAscii</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Translates an ASCII code into the HID code and returns the modifier.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>USB HID Modifier Key Code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>ASCII code</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(byte ch)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SendStr</Name>
-        <Symbol>SendStr</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Puts an ASCII string into the buffer to be sent to the HID host. This function will translate the string into the correct status messages</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>str</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Address</ParPassing>
-          <ParHint>Pointer to string to be sent</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(byte *str)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>SendChar</Name>
-        <Symbol>SendChar</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Puts a single ASCII character into the buffer to be sent to the HID host. This function will translate the string into the correct status messages</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
-        <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
-        <Parameter>
-          <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
-          <ParPassing>Value</ParPassing>
-          <ParHint>character to be sent</ParHint>
-        </Parameter>
-        <Scope>PRIVATE</Scope>
-        <Declarations>
-          <ANSIC>byte #M#_#C#(byte ch)</ANSIC>
-        </Declarations>
-      </TMthdItem>
-    </Method>
-    <Method>
-      <TMthdItem>
-        <Name>Send</Name>
-        <Symbol>Send</Symbol>
-        <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Puts a message with modifier and key value into the buffer to be sent to the host.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
-        <IsAssembler>false</IsAssembler>
-        <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
-          <ParName>modifier</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParName>button</ParName>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>HID modifier value, e.g. MODIFERKEYS_LEFT_SHIFT</ParHint>
+          <ParHint>button number</ParHint>
         </Parameter>
         <Parameter>
-          <ParName>key</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParName>isOn</ParName>
+          <ParType>Boolean</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>HID key value, e.g. KEY_H</ParHint>
+          <ParHint>If button is on or off</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte modifier, byte key)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t button, bool isOn)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetThrottle</Name>
+        <Symbol>SetThrottle</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Set Joystick throttle position</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>throttle</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>throttle position</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(int8_t throttle)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetHatPos</Name>
+        <Symbol>SetHatPos</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the hat switch position</Hint>
+        <ItemLevel>ADVANCED</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>position</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>hat switch position</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t position)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetXY</Name>
+        <Symbol>SetXY</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Set Joystick X and Y position</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>X position</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>int8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Y position</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(int8_t x, int8_t y)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -465,12 +453,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -493,12 +481,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -535,13 +523,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>error</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Error or event code</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(byte error)</ANSIC>
+          <ANSIC>void #C#(uint8_t error)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

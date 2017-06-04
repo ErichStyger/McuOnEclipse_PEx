@@ -760,7 +760,11 @@ byte %'ModuleName'%.%Deinit(void)
 byte %'ModuleName'%.%Init(void)
 {
   uint8_t err;
+  int i;
 
+  for(i=0; i<sizeof(rpt_buf); i++) {
+    rpt_buf[i] = 0;
+  }
   transactionOngoing = FALSE;
   keyboard_init = FALSE;
   err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);

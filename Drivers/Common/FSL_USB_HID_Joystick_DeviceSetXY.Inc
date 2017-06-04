@@ -3,14 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (ModifierCodeFromAscii)
+%include Common\GeneralMethod.inc (SetXY)
 %;**     Description :
-%;**         Translates an ASCII code into the HID code and returns the
-%;**         modifier.
+%;**         Set Joystick X and Y position
 %include Common\GeneralParameters.inc(27)
-%;**         ch%Parch %>27 - ASCII code
+%;**         x%Parx %>27 - X position
+%;**         y%Pary %>27 - Y position
 %;**     Returns     :
-%;**         ---%RetVal %>27 - USB HID Modifier Key Code
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

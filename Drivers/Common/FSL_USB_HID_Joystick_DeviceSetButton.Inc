@@ -3,13 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (SendChar)
+%include Common\GeneralMethod.inc (SetButton)
 %;**     Description :
-%;**         Puts a single ASCII character into the buffer to be sent to
-%;**         the HID host. This function will translate the string into
-%;**         the correct status messages
+%;**         Sets the status of a button
 %include Common\GeneralParameters.inc(27)
-%;**         ch%Parch %>27 - character to be sent
+%;**         button%Parbutton %>27 - button number
+%;**         isOn%ParisOn %>27 - If button is on or off
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

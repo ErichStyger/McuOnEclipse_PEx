@@ -3,13 +3,13 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (HidCodeFromAscii)
+%include Common\GeneralMethod.inc (SetThrottle)
 %;**     Description :
-%;**         Translates an ASCII code into the HID code
+%;**         Set Joystick throttle position
 %include Common\GeneralParameters.inc(27)
-%;**         ch%Parch %>27 - ASCII code
+%;**         throttle%Parthrottle %>27 - throttle position
 %;**     Returns     :
-%;**         ---%RetVal %>27 - USB HID Key Code
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
