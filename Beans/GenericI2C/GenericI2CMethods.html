@@ -323,6 +323,32 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ReadByte">
+<b>ReadByte</b></a>
+ - Read a byte from the device. This writes (S+i2cAddr+0), (Sr+i2cAddr+1),(data+P)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadByte(uint8_t i2cAddr, uint8_t *data)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to read buffer (single byte)</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="WriteByte">
+<b>WriteByte</b></a>
+ - Write a byte to the device: (S+i2cAddr+0).(data+P)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t WriteByte(uint8_t i2cAddr, uint8_t data)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - I2C address of device</li>
+<li><i>data:uint8_t</i> - Data value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ReadByteAddress8">
 <b>ReadByteAddress8</b></a>
  - Read a byte from the device using an 8bit memory address. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)

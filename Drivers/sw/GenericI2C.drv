@@ -338,6 +338,28 @@ uint8_t %'ModuleName'%.%WriteWordAddress8(uint8_t i2cAddr, uint8_t memAddr, uint
 
 %endif %- WriteWordAddress8
 %-BW_METHOD_END WriteWordAddress8
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadByte
+%ifdef ReadByte
+uint8_t %'ModuleName'%.%ReadByte(uint8_t i2cAddr, uint8_t *data);
+%define! Pari2cAddr
+%define! Pardata
+%define! RetVal
+%include Common\GenericI2CReadByte.Inc
+
+%endif %- ReadByte
+%-BW_METHOD_END ReadByte
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteByte
+%ifdef WriteByte
+uint8_t %'ModuleName'%.%WriteByte(uint8_t i2cAddr, uint8_t data);
+%define! Pari2cAddr
+%define! Pardata
+%define! RetVal
+%include Common\GenericI2CWriteByte.Inc
+
+%endif %- WriteByte
+%-BW_METHOD_END WriteByte
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1406,6 +1428,34 @@ uint8_t %'ModuleName'%.%ProbeACK(void* data, uint16_t dataSize, %'ModuleName'_En
 
 %endif %- ProbeACK
 %-BW_METHOD_END ProbeACK
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadByte
+%ifdef ReadByte
+%define! Pari2cAddr
+%define! Pardata
+%define! RetVal
+%include Common\GenericI2CReadByte.Inc
+uint8_t %'ModuleName'%.%ReadByte(uint8_t i2cAddr, uint8_t *data)
+{
+  return %'ModuleName'%.ReadAddress(i2cAddr, NULL, 0, data, 1);
+}
+
+%endif %- ReadByte
+%-BW_METHOD_END ReadByte
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteByte
+%ifdef WriteByte
+%define! Pari2cAddr
+%define! Pardata
+%define! RetVal
+%include Common\GenericI2CWriteByte.Inc
+uint8_t %'ModuleName'%.%WriteByte(uint8_t i2cAddr, uint8_t data)
+{
+  return %'ModuleName'%.WriteAddress(i2cAddr, NULL, 0, &data, 1);
+}
+
+%endif %- WriteByte
+%-BW_METHOD_END WriteByte
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
