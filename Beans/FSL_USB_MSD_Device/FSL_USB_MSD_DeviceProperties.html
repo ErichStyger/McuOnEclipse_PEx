@@ -135,7 +135,7 @@ LI.EXP {
           <td width="4"></td>
           <td align="center" valign="middle" height="30" width="128">
             <span class="lefttitle">
-<b>FSL_USB_Stack</b>
+<b>FSL_USB_-<br />MSD_Device</b>
             </span>
           </td>
         </tr>
@@ -145,17 +145,17 @@ LI.EXP {
             &nbsp;<br />
             <div class="reflink">
 <!---HTMLLISTBEG_SHORT DON'T CHANGE THIS LINE-->
-<a href="FSL_USB_Stack.html">General Info</a><br />
-<a href="FSL_USB_StackApplication Notes.html">Application Notes</a><br />
-<a href="FSL_USB_StackEvents.html">Events</a><br />
-<a href="FSL_USB_StackMethods.html">Methods</a><br />
+<a href="FSL_USB_MSD_Device.html">General Info</a><br />
+<a href="FSL_USB_MSD_DeviceApplication Notes.html">Application Notes</a><br />
+<a href="FSL_USB_MSD_DeviceEvents.html">Events</a><br />
+<a href="FSL_USB_MSD_DeviceMethods.html">Methods</a><br />
 <i>Properties</i><br />
 <!---HTMLLISTEND DON'T CHANGE THIS LINE-->
 <br /><br /><br />
 
 <br /><br /><br />
 <center>
-<img src="FSL_USB_Stack_b.gif" alt="Bean icon"/>
+<img src="FSL_USB_MSD_Device_b.gif" alt="Bean icon"/>
 
 
 </center>
@@ -182,9 +182,9 @@ LI.EXP {
                 Bean
                 
                 
-                FSL_USB_Stack
+                FSL_USB_MSD_Device
               </div>
-              <div class="descrtext">Freescale USB Stack</div>
+              <div class="descrtext">USB MSD Device</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">High</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
@@ -217,161 +217,62 @@ LI.EXP {
 <b>Component name</b></a> - Name of the component.
 </li>
 <li>
-<a name="FSLUSBStackVersion">
-<b>Freescale USB Stack Version</b></a> - Version of the Freescale USB Stack used
-</li>
-<li>
-<a name="sdk">
-<b>SDK</b></a> - Link to SDK used
-</li>
-<li>
-<a name="USBDeviceClass">
-<b>Device Class</b></a> - Device class to be used<br /><br />
-There are 7 options:<br />
+<a name="CPUDevice">
+<b>CPU</b></a> - Device to be used.<br /><br />
+There are 22 options:<br />
 <ul>
-  <li><u>CDC Device</u>: Communication Device Class</li>
-  <li><u>CDC Host</u>: Communication Device Host</li>
-  <li><u>HID Keyboard Device</u>: Human Interface Device Class (Keyboard)</li>
-  <li><u>HID Mouse Device</u>: Human Interface Device Class (Mouse)</li>
-  <li><u>HID Joystick Device</u>: Human Interface Device Class (Joystick)</li>
-  <li><u>MSD Host</u>: Mass Storage Device (Host)</li>
-  <li><u>MSD Device</u>: Mass Storage Device (Device)</li>
+  <li><u>MC9S08JM16</u>: MC9S08JM16</li>
+  <li><u>MC9S08JM60</u>: MC9S08JM60</li>
+  <li><u>MC9S08MM128</u>: MC9S08MM128</li>
+  <li><u>MCF51JM64</u>: ColdFire V1 MCF51JM64</li>
+  <li><u>MCF51JM128</u>: ColdFire V1 MCF51JM128</li>
+  <li><u>MCF51MM256</u>: ColdFire V1 MCF51MM256</li>
+  <li><u>MCF52259</u>: ColdFire V2 MCF52259</li>
+  <li><u>Kinetis KL24Z48</u>: Kinetis KL24Z48</li>
+  <li><u>Kinetis KL25Z48</u>: Kinetis L2K family (e.g. KL25Z)</li>
+  <li><u>Kinetis KL26Z48</u>: E.g. FRDM-KL26Z48M</li>
+  <li><u>Kinetis KL46Z48</u>: E.g. TWR-KL46Z48M</li>
+  <li><u>Kinetis K20D50</u>: Kinetis K20D50 (e.g. FRDM-K20D50M)</li>
+  <li><u>Kinetis K20D72, K20D100</u>: Kinetis K20 72 MHz (K20DX) or K20 100 MHz (e.g. MK20DN512)</li>
+  <li><u>Kinetis K21D50</u>: Kinetis K21D50 (e.g. TWR-K21D50M)</li>
+  <li><u>Kinetis K21F120</u>: Kinetis K21F120 (e.g. TWR-K21F120M)</li>
+  <li><u>Kinetis K22F120</u>: Kinetis K22F50, K22F120</li>
+  <li><u>Kinetis K22FN120</u>: FRDM-K22F (Kinetis K2)</li>
+  <li><u>Kinetis K24FN120</u>: Kinetis K24FN120</li>
+  <li><u>Kinetis K40</u>: Kinetis K40</li>
+  <li><u>Kinetis K60</u>: Kinetis K60</li>
+  <li><u>Kinetis K64F</u>: Kinetis K64F (e.g. FRDM-K64F)</li>
+  <li><u>Kinetis K70</u>: Kinetis K70</li>
 </ul><br />
 
 </li>
 <li>
-<a name="CDCDeviceGroup">
-<b>CDC Device</b></a> - CDC Device Class Interface<br />
+<a name="USBCDCenabled">
+<b>HID Settings</b></a> - Settings for USB MSD Device class.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
 <ul>
   <li>
-  <a name="CDCDevice">
-  <b>CDCDevice</b></a> - Interface to CDC class
+  <a name="HidBusReportedDeviceDescriptionString">
+  <b>Bus reported device</b></a> - This name shows up on the USB bus before drivers are installed. This string is used in usb_descriptor.c.
+  </li>
+  <li>
+  <a name="HidBusReportedVendorString">
+  <b>Bus reported vendor</b></a> - This name shows up on the USB bus before drivers are installed. This string is used in usb_descriptor.c.
   </li>
 </ul>
 </li>
 <li>
-<a name="CDCHostGroup">
-<b>CDC Host</b></a> - CDC Host Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
+<a name="PowerOptionsGroup">
+<b>Power Options</b></a> - These options configure power options in the USB descriptor (g_config_descriptor[] inside usb_descriptor.c). S08/CFv1 are both self powered (its compulsory to set bus powered)
 <ul>
   <li>
-  <a name="CDCHost">
-  <b>CDCHost</b></a> - Interface to CDC class
-  </li>
-</ul>
-</li>
-<li>
-<a name="HIDKDeviceGroup">
-<b>HID Keyboard Device</b></a> - HID Keyboard Device Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="HIDKDevice">
-  <b>HID Keyboard</b></a> - Interface to HID Keyboard class
-  </li>
-</ul>
-</li>
-<li>
-<a name="HIDJDeviceGroup">
-<b>HID Joystick Device</b></a> - HID Joystick Device Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="HIDJDevice">
-  <b>HID Joystick</b></a> - Interface to HID Joystick class
-  </li>
-</ul>
-</li>
-<li>
-<a name="HIDMDeviceGroup">
-<b>HID Mouse Device</b></a> - HID Mouse Device Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="HIDMDevice">
-  <b>HID Mouse</b></a> - Interface to HID Mouse class
-  </li>
-</ul>
-</li>
-<li>
-<a name="MSDDeviceGroup">
-<b>MSD Device</b></a> - MSD Device Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="UseFreeRTOSMemory0">
-  <b>FreeRTOS Memory</b></a> - If enabled and FreeRTOS is present, it uses the FreeRTOS memory allocation, otherwise it uses normal malloc()/free().
+  <a name="ConfigBusPowered">
+  <b>Bus Powered</b></a> - This setting configures if BUS_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)
   </li>
   <li>
-  <a name="MSDDevice">
-  <b>MSD Device</b></a> - Interface to MSD Device
-  </li>
-</ul>
-</li>
-<li>
-<a name="MSDHostGroup">
-<b>MSD Host</b></a> - MSD Host Class Interface<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-<ul>
-  <li>
-  <a name="UseFreeRTOSMemory">
-  <b>FreeRTOS Memory</b></a> - If enabled and FreeRTOS is present, it uses the FreeRTOS memory allocation, otherwise it uses normal malloc()/free().
-  </li>
-  <li>
-  <a name="MSDHost">
-  <b>MSDHost</b></a> - Interface to MSD class
-  </li>
-</ul>
-</li>
-<li>
-<a name="DataBufSize">
-<b>DATA_BUFF_SIZE</b></a> - DATA_BUFF_SIZE should be greater than or equal to the endpoint buffer size, otherwise there will be data loss. For MC9S08JS16, maximum DATA_BUFF_SIZE supported is 16 Bytes.
-</li>
-<li>
-<a name="InitializationGrp">
-<b>Initialization</b></a> - Initialization
-<ul>
-  <li>
-  <a name="InitUSBFunctionName">
-  <b>Init USB Function</b></a> - Name of function to initialize the USB Peripheral. Typically USB0_Init. This function gets called if 'Inherited USB Init' is disabled.
-  </li>
-  <li>
-  <a name="InheritedUSBInitEnabled">
-  <b>Inherited USB Init</b></a> - If enabled, an inherited USB Init component can be used.<br />
-The following items are available only if the group is enabled (the value is "Enabled"):<br />
-
-  <ul>
-    <li>
-    <a name="USBInit">
-    <b>USB Init</b></a> - USB peripheral to initialize. <br />
-For ColdFire V1, select 'Init_USB_OTG_COLDFIREV1'.<br />
-For ColdFire V2, select 'Init_USB_OTG_MCF'.<br />
-For HCS08, select 'Init_USB_HCS08'.<br />
-For Kinetis, select 'Init_USB_OTG_VAR0'.
-    </li>
-  </ul>
-  </li>
-  <li>
-  <a name="InitializationGroup">
-  <b>Initialization</b></a> - Here the initialization of the USB stack can be configured
-  <ul>
-    <li>
-    <a name="UseUSBStackInitialization">
-    <b>Use USB Stack Inititalization</b></a> - This defines the value of the USB_USER_CONFIG_USE_STACK_INIT macro  in the usb_user_config.h. If set to yes, it uses the USB inititialization of the USB stack. If set to no, it uses the initialization of the Processor Expert USB Init component.
-    </li>
-    <li>
-    <a name="CallInitMethod">
-    <b>Call Init Method</b></a> - If set to yes, then the Init() method will be called in PE_low_level_init().
-    </li>
-  </ul>
+  <a name="ConfigSelfPowered">
+  <b>Self Powered</b></a> - This setting configures if SELF_POWERED is present in g_config_descriptor[] inside usb_descriptor.c (default: yes)
   </li>
 </ul>
 </li>

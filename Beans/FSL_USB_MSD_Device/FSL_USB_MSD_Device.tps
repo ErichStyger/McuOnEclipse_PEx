@@ -77,36 +77,5 @@
         <Line>Kinetis K70</Line>
       </Defines>
     </Type>
-    <Type>
-      <Type>TEnumSpec</Type>
-      <Name>typeUSBDeviceClass</Name>
-      <Items lines_count="7">
-        <Line>CDC Device</Line>
-        <Line>CDC Host</Line>
-        <Line>HID Keyboard Device</Line>
-        <Line>HID Mouse Device</Line>
-        <Line>HID Joystick Device</Line>
-        <Line>MSD Host</Line>
-        <Line>MSD Device</Line>
-      </Items>
-      <Hints lines_count="7">
-        <Line>Communication Device Class</Line>
-        <Line>Communication Device Host</Line>
-        <Line>Human Interface Device Class (Keyboard)</Line>
-        <Line>Human Interface Device Class (Mouse)</Line>
-        <Line>Human Interface Device Class (Joystick)</Line>
-        <Line>Mass Storage Device (Host)</Line>
-        <Line>Mass Storage Device (Device)</Line>
-      </Hints>
-      <Defines lines_count="7">
-        <Line>CDC Device</Line>
-        <Line>CDC Host</Line>
-        <Line>HID Keyboard Device</Line>
-        <Line>HID Mouse Device</Line>
-        <Line>HID Joystick Device</Line>
-        <Line>MSD Host</Line>
-        <Line>MSD Device</Line>
-      </Defines>
-    </Type>
   </Types>
 </TypesAndGlobals>

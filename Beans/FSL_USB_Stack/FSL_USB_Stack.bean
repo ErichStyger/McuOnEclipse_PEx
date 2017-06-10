@@ -4,7 +4,7 @@
     <Name>FSL_USB_Stack</Name>
     <Description>Freescale USB Stack</Description>
     <Author>Erich Styger</Author>
-    <Version>01.049</Version>
+    <Version>01.051</Version>
     <Icon>FSL_USB_Stack</Icon>
     <TypesFiles>PE,FSL_USB_Stack\FSL_USB_Stack</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -262,10 +262,64 @@
     </Property>
     <Property>
       <TBoolGrupItem>
+        <Name>MSD Device</Name>
+        <Symbol>MSDDeviceGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>MSD Device Class Interface</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>FreeRTOS Memory</Name>
+              <Symbol>UseFreeRTOSMemory0</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>If enabled and FreeRTOS is present, it uses the FreeRTOS memory allocation, otherwise it uses normal malloc()/free().</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrItem>
+              <Name>MSD Device</Name>
+              <Symbol>MSDDevice</Symbol>
+              <TypeSpec>FSL_USB_Stack\MSDDevice</TypeSpec>
+              <Hint>Interface to MSD Device</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>-1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <InhrBeanBaseName>MSDD</InhrBeanBaseName>
+              <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
+            </TInhrItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
         <Name>MSD Host</Name>
         <Symbol>MSDHostGroup</Symbol>
         <TypeSpec>typeEnaDis</TypeSpec>
-        <Hint>MSD Device Class Interface</Hint>
+        <Hint>MSD Host Class Interface</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>

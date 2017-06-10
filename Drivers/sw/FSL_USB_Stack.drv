@@ -74,6 +74,8 @@
   %define CPUDevice %@HIDMDevice@CPUDevice
 %elif defined(MSDHost)
   %define CPUDevice %@MSDHost@CPUDevice
+%elif defined(MSDDevice)
+  %define CPUDevice %@MSDDevice@CPUDevice
 %else
   %define CPUDevice "dummy"
 %endif
@@ -403,6 +405,8 @@ uint8_t %'ModuleName'%.%Deinit(void)
   err = %@HIDJDevice@'ModuleName'%.Deinit();
 %elif USBDeviceClass="HID Mouse Device"
   err = %@HIDMDevice@'ModuleName'%.Deinit();
+%elif USBDeviceClass="MSD Device"
+  err = %@MSDDevice@'ModuleName'%.Deinit();
 %elif USBDeviceClass="MSD Host"
   err = %@MSDHost@'ModuleName'%.Deinit();
 %else
@@ -459,6 +463,8 @@ uint8_t %'ModuleName'%.%Init(void)
   err = %@HIDJDevice@'ModuleName'%.Init();
 %elif USBDeviceClass="HID Mouse Device"
   err = %@HIDMDevice@'ModuleName'%.Init();
+%elif USBDeviceClass="MSD Device"
+  err = %@MSDDevice@'ModuleName'%.Init();
 %elif USBDeviceClass="MSD Host"
   err = %@MSDHost@'ModuleName'%.Init();
 %else

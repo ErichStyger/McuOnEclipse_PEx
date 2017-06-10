@@ -27,4 +27,3 @@
 %include FSL_USB_Stack\Host\source\classes\cdc\usb_host_cdc.h
 %FILE %'DirRel_Code'usb_host_cdc_intf.c
 %include FSL_USB_Stack\Host\source\classes\cdc\usb_host_cdc_intf.c
-

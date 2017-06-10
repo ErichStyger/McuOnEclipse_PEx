@@ -1,5 +1,5 @@
 %-
-%- Freescale USB Stack source files for CDC or HID Keyboard/Mouse/Joystick Devices
+%- Freescale USB Stack source files for CDC, MSD, HID Keyboard/Mouse/Joystick Devices
 %-
 %-
 %- Device\source\common -------------------------------------------
