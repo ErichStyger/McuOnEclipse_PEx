@@ -93,9 +93,6 @@
 
 #include "%ProcessorModule.h"
 
-#define  JOYSTICK_BUFF_SIZE    (4)   /*! \todo report buffer size */
-#define  REQ_DATA_SIZE         (1)
-
 /* error/event codes for events */
 #define %'ModuleName'%.USB_ERR_INIT            1  /* USB initialization error */
 #define %'ModuleName'%.USB_APP_BUS_RESET       2  /* bus has reset */
@@ -245,6 +242,7 @@ void %OnEvent(uint8_t error);
 #include <stdlib.h>
 #include <string.h>
 #include "usb_msc.h"
+#include "usb_class.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -253,94 +251,114 @@ void %OnEvent(uint8_t error);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-#define CONTROLLER_ID      (0)   /* ID to identify USB CONTROLLER */
+#define USB_CONTROLLER_ID      (0)   /* ID to identify USB CONTROLLER */
+#define LOGICAL_UNIT_SUPPORTED          (1)
 
-static boolean joystick_init=FALSE;           /* Joystick App Init Flag */
-static uint8_t rpt_buf[JOYSTICK_BUFF_SIZE];      /* Key Press Report Buffer */
-static uint8_t g_app_request_params[2];        /* for get/set idle and protocol requests */
-static volatile boolean transactionOngoing = FALSE; /* flag to know if a transaction is currently ongoing */
+#if RAM_DISK_APP
+  /* Change this to suit the available RAM size on the device */
+  #define TOTAL_LOGICAL_BLOCKS_ADDRESS    (2)
+  /* Length of each logical block address */
+  #define LENGTH_OF_EACH_LBA              (512)
+  /* Total number of logical blocks present */
+  #define DISK_SIZE                       (LENGTH_OF_EACH_LBA * TOTAL_LOGICAL_BLOCKS_ADDRESS)
+#endif
 
-/*****************************************************************************
- * Local Functions
- *****************************************************************************/
+typedef struct _disk_variable_struct {
+  uint8_t app_controller_ID;
+  boolean start_app;
+#if RAM_DISK_APP
+  /* disk space reserved */
+  uint8_t storage_disk[DISK_SIZE];
+#endif
+  uint8_t disk_lock;
+#if (defined __CC_ARM)
+  char reserved;
+#endif
+} DISK_GLOBAL_VARIABLE_STRUCT, *PTR_DISK_GLOBAL_VARIABLE_STRUCT;
+
+static DISK_GLOBAL_VARIABLE_STRUCT g_disk;
+
 /******************************************************************************
  *
- *    @name        USB_App_Param_Callback
+ *    @name        MSD_Event_Callback
  *
- *    @brief       This function handles USB-HID Class callback
+ *    @brief       This function handles the callback
  *
- *    @param       request  :  request type
- *    @param       value    :  give report type and id
- *    @param       data     :  pointer to the data
- *    @param       size     :  size of the transfer
+ *    @param       controller_ID : To Identify the controller
+ *    @param       event_type : value of the event
+ *    @param       val : gives the configuration value
  *
- *    @return      status
- *                 USB_OK   :  Always
+ *    @return      None
  *
- *****************************************************************************
- * This function is called whenever a HID class request is received. This
- * function handles these class requests.
  *****************************************************************************/
-static uint8_t USB_App_Param_Callback (
-      uint8_t request,       /* [IN] request type */
-      uint_16 value,         /* [IN] report type and ID */
-      uint_16 wIndex,        /* [IN] Interface */
-      uint8_t** data,        /* [OUT] pointer to the data */
-      USB_PACKET_SIZE* size  /* [OUT] size of the transfer */
-)
-{
-  uint8_t status = USB_OK;
-#if 0
-  uint8_t index = (byte)((request - 2) & USB_HID_REQUEST_TYPE_MASK);
-                                       /* index == 0 for get/set idle,
-                                          index == 1 for get/set protocol */
-  (void)wIndex;
-  *size = 0;
-  /* handle the class request */
-  switch(request) {
-    case USB_HID_GET_REPORT_REQUEST:
-      *data = &rpt_buf[0]; /* point to the report to send */
-      *size = JOYSTICK_BUFF_SIZE; /* report size */
-       break;
+void MSD_Event_Callback(uint_8 controller_ID, uint_8 event_type, void* val) {
+  PTR_LBA_APP_STRUCT lba_data_ptr;
+  uint_8_ptr prevent_removal_ptr, load_eject_start_ptr;
+  PTR_DEVICE_LBA_INFO_STRUCT device_lba_info_ptr;
 
-    case USB_HID_SET_REPORT_REQUEST:
-      for(index=0; index<JOYSTICK_BUFF_SIZE; index++) {
-        rpt_buf[index] = *(*data+index); /* copy the data sent by the host */
-      }
+  UNUSED (controller_ID)
+  switch(event_type) {
+    case USB_APP_DATA_RECEIVED :
       break;
-
-    case USB_HID_GET_IDLE_REQUEST:
-      /* point to the current idle rate */
-      *data = &g_app_request_params[index];
-      *size = REQ_DATA_SIZE;
+    case USB_APP_SEND_COMPLETE :
       break;
-
-    case USB_HID_SET_IDLE_REQUEST:
-      /* set the idle rate sent by the host */
-      if(index <2) {
-        g_app_request_params[index] =(byte)((value & MSB_MASK) >> HIGH_BYTE_SHIFT);
-      }
+    case USB_MSC_START_STOP_EJECT_MEDIA :
+      load_eject_start_ptr = (uint_8_ptr)val;
+      /* Code to be added by user for starting, stopping or
+         ejecting the disk drive. e.g. starting/stopping the motor in
+         case of CD/DVD*/
       break;
-
-    case USB_HID_GET_PROTOCOL_REQUEST:
-      /* point to the current protocol code
-        0 = Boot Protocol
-        1 = Report Protocol*/
-      *data = &g_app_request_params[index];
-      *size = REQ_DATA_SIZE;
-      break;
-
-    case USB_HID_SET_PROTOCOL_REQUEST:
-      /* set the protocol sent by the host
-         0 = Boot Protocol
-         1 = Report Protocol*/
-      if(index < 2) {
-        g_app_request_params[index] = (byte)(value);
-      }
-      break;
-    }
+    case USB_MSC_DEVICE_READ_REQUEST :
+      /* copy data from storage device before sending it on USB Bus
+        (Called before calling send_data on BULK IN endpoints)*/
+      lba_data_ptr = (PTR_LBA_APP_STRUCT)val;
+      /* read data from mass storage device to driver buffer */
+#if RAM_DISK_APP
+      USB_memcopy(g_disk.storage_disk + lba_data_ptr->offset,
+                  lba_data_ptr->buff_ptr,
+                  lba_data_ptr->size);
+#elif SD_CARD_APP
+      SD_Read_Block(lba_data_ptr);
 #endif
-    return status;
+      break;
+    case USB_MSC_DEVICE_WRITE_REQUEST :
+      /* copy data from USb buffer to Storage device
+                  (Called before after recv_data on BULK OUT endpoints)*/
+      lba_data_ptr = (PTR_LBA_APP_STRUCT)val;
+      /* read data from driver buffer to mass storage device */
+#if RAM_DISK_APP
+      USB_memcopy(lba_data_ptr->buff_ptr,
+                  g_disk.storage_disk + lba_data_ptr->offset,
+                  lba_data_ptr->size);
+#elif SD_CARD_APP
+      SD_Write_Block(lba_data_ptr);
+#endif
+      break;
+    case USB_MSC_DEVICE_FORMAT_COMPLETE :
+      break;
+    case USB_MSC_DEVICE_REMOVAL_REQUEST :
+      prevent_removal_ptr = (uint_8_ptr) val;
+      if(SUPPORT_DISK_LOCKING_MECHANISM) {
+        g_disk.disk_lock = *prevent_removal_ptr;
+      } else if((!SUPPORT_DISK_LOCKING_MECHANISM)&&(!(*prevent_removal_ptr))) {
+        /*there is no support for disk locking and removal of medium is enabled*/
+        /* code to be added here for this condition, if required */
+      }
+      break;
+    case USB_MSC_DEVICE_GET_INFO :
+      device_lba_info_ptr = (PTR_DEVICE_LBA_INFO_STRUCT)val;
+#if RAM_DISK_APP
+      device_lba_info_ptr->total_lba_device_supports = TOTAL_LOGICAL_BLOCKS_ADDRESS;
+      device_lba_info_ptr->length_of_each_lba_of_device = LENGTH_OF_EACH_LBA;
+#elif SD_CARD_APP
+      SD_Card_Info(&device_lba_info_ptr->total_lba_device_supports,
+      &device_lba_info_ptr->length_of_each_lba_of_device);
+#endif
+      device_lba_info_ptr->num_lun_supported = LOGICAL_UNIT_SUPPORTED;
+      break;
+    default:
+      break;
+  } /* switch */
 }
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -358,48 +376,24 @@ void %'ModuleName'%.App_Callback(uint8_t controller_ID, uint8_t event_type, void
 {
   UNUSED(controller_ID)
   UNUSED(val)
-#if 0
-  if((event_type == USB_APP_BUS_RESET) || (event_type == USB_APP_CONFIG_CHANGED)) {
-    joystick_init=FALSE;
-    transactionOngoing = FALSE;
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_BUS_RESET);
-    %endif
+  if(event_type == USB_APP_BUS_RESET) {
+    g_disk.start_app=FALSE;
   } else if(event_type == USB_APP_ENUM_COMPLETE) {
-    /* if enumeration is complete set joystick_init so that application can start */
-    joystick_init=TRUE;
-    transactionOngoing = FALSE;
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_ENUM_COMPLETE);
-    %endif
+#if HIGH_SPEED_DEVICE
+    _usb_device_recv_data(&controller_ID, BULK_OUT_ENDPOINT, (uint_8_ptr)msd_buff, BULK_OUT_ENDP_PACKET_SIZE);
+#endif // HIGH_SPEED_DEVICE
+    g_disk.start_app=TRUE;
   } else if(event_type == USB_APP_ERROR) {
-    joystick_init=FALSE;
-    transactionOngoing = FALSE;
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_ERROR);
-    %endif
-  } else if (event_type == USB_APP_BUS_SUSPEND) {
-    joystick_init=FALSE;
-    transactionOngoing = FALSE;
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_BUS_SUSPEND);
-    %endif
-  } else if (event_type == USB_APP_BUS_RESUME) {
-   /* For the joystick application, it is best to let the main app
-    * handle all resume processing. Because of the software flow, we know
-    * that after initiating the STOP mode and waking up, the application
-    * will just continue, so we can resume there.
-    */
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_BUS_RESUME);
-    %endif
-  } else if (event_type==USB_APP_SEND_COMPLETE && joystick_init) {
-    transactionOngoing = FALSE;
-    %if defined(OnEvent)
-    %OnEvent(%'ModuleName'%.USB_APP_SEND_COMPLETE);
-    %endif
+    /* add user code for error handling */
+  } else if(event_type == USB_APP_SEND_COMPLETE){
+#if HIGH_SPEED_DEVICE
+    _usb_device_recv_data(&controller_ID, BULK_OUT_ENDPOINT, (uint_8_ptr)msd_buff, BULK_OUT_ENDP_PACKET_SIZE);
+#endif // HIGH_SPEED_DEVICE
+  } else if(event_type == USB_APP_DATA_RECEIVED) {
+#if HIGH_SPEED_DEVICE
+    _usb_device_recv_data(&controller_ID, BULK_OUT_ENDPOINT, (uint_8_ptr)msd_buff, BULK_OUT_ENDP_PACKET_SIZE);
+#endif // HIGH_SPEED_DEVICE
   }
-#endif
 }
 
 %-INTERNAL_METHOD_END App_Callback
@@ -410,33 +404,12 @@ void %'ModuleName'%.App_Callback(uint8_t controller_ID, uint8_t event_type, void
 %include Common\FSL_USB_MSD_DeviceApp_Task.Inc
 uint8_t %'ModuleName'%.%App_Task(void)
 {
-#if 0
-  uint16_t hidCode; /* upper 8bits are modifier, lower 8bits are hid code value */
-
-  /* device is %CPUDevice */
-%if (CPUDevice="MC9S08JE128") | (CPUDevice="MC9S08JM16") | (CPUDevice="MC9S08JM60") | (CPUDevice="MC9S08JS16") | (CPUDevice="MC9S08MM128")
-  if (USB_PROCESS_PENDING()) { /* doing this only for MC9S08JE128, MC9S08JM16, MC9S08JM60, MC9S08JS16 and MC9S08MM128 */
-    USB_Engine();
+  /* call the periodic task function */
+  USB_MSC_Periodic_Task();
+  /* check whether enumeration is complete or not */
+  if(g_disk.start_app==TRUE) {
+    /* Disk_App(); */
   }
-%endif
-  USB_Class_HID_Periodic_Task(); /* call the periodic task function */
-  if (!joystick_init) {
-    return ERR_BUSOFF; /* USB bus not available yet */
-  }
-  transactionOngoing = TRUE;
-  if (USB_Class_HID_Send_Data(CONTROLLER_ID, HID_ENDPOINT, rpt_buf, sizeof(rpt_buf))!=USB_OK) {
-    transactionOngoing = FALSE;
-    return ERR_FAILED;
-  }
-  while(transactionOngoing) {
-    /* wait until we send the next transaction */
-%if (CPUDevice="MC9S08JE128") | (CPUDevice="MC9S08JM16") | (CPUDevice="MC9S08JM60") | (CPUDevice="MC9S08JS16") | (CPUDevice="MC9S08MM128")
-    if (USB_PROCESS_PENDING()) { /* doing this only for MC9S08JE128, MC9S08JM16, MC9S08JM60, MC9S08JS16 and MC9S08MM128 */
-      USB_Engine();
-    }
-%endif
-  } /* while */
-#endif
   return ERR_OK;
 }
 
@@ -451,9 +424,7 @@ uint8_t %'ModuleName'%.%Deinit(void)
 {
   uint8_t err;
 
-  err = USB_Class_HID_DeInit(CONTROLLER_ID);
-  transactionOngoing = FALSE;
-  joystick_init = FALSE;
+  err = USB_Class_MSC_DeInit(CONTROLLER_ID);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
 %if defined(OnEvent)
@@ -461,6 +432,7 @@ uint8_t %'ModuleName'%.%Deinit(void)
 %endif
     return ERR_FAILED;
   }
+  USB_memzero(&g_disk, sizeof(DISK_GLOBAL_VARIABLE_STRUCT));
   return ERR_OK;
 }
 
@@ -473,15 +445,12 @@ uint8_t %'ModuleName'%.%Deinit(void)
 %include Common\FSL_USB_MSD_DeviceInit.Inc
 uint8_t %'ModuleName'%.%Init(void)
 {
-  uint8_t err;
-  int i;
+  uint_8 err;
 
-  for(i=0; i<sizeof(rpt_buf); i++) {
-    rpt_buf[i] = 0;
-  }
-  transactionOngoing = FALSE;
-  joystick_init = FALSE;
-  err = USB_Class_HID_Init(CONTROLLER_ID, %'ModuleName'%.App_Callback, NULL, USB_App_Param_Callback);
+  /* initialize the Global Variable Structure */
+  USB_memzero(&g_disk, sizeof(DISK_GLOBAL_VARIABLE_STRUCT));
+  g_disk.app_controller_ID = USB_CONTROLLER_ID;
+  err = USB_Class_MSC_Init(g_disk.app_controller_ID, %'ModuleName'%.App_Callback, NULL, MSD_Event_Callback);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
 %if defined(OnEvent)
@@ -501,7 +470,7 @@ uint8_t %'ModuleName'%.%Init(void)
 %include Common\FSL_USB_MSD_DeviceisEnumerated.Inc
 bool %'ModuleName'%.%isEnumerated(void)
 {
-  return joystick_init;
+  return g_disk.start_app;
 }
 
 %endif %- isEnumerated

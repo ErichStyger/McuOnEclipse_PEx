@@ -9,10 +9,6 @@
 %include FSL_USB_Stack\Device\source\class\usb_msc.h
 
 %- \Device\app\msd -------------------------------------------
-%FILE %'DirRel_Code'disk.c
-%include FSL_USB_Stack\Device\app\msd\disk.c
-%FILE %'DirRel_Code'disk.h
-%include FSL_USB_Stack\Device\app\msd\disk.h
 %FILE %'DirRel_Code'usb_user_config.h
 %include FSL_USB_Stack\Device\app\msd\user_config.h
 %FILE %'DirRel_Code'USB_Config.h
