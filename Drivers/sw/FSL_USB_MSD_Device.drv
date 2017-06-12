@@ -278,6 +278,34 @@ typedef struct _disk_variable_struct {
 
 static DISK_GLOBAL_VARIABLE_STRUCT g_disk;
 
+void SD_Read_Block(PTR_LBA_APP_STRUCT lba_data_ptr) {
+  DRESULT res;
+
+  res = %@SDMemory@'ModuleName'%.disk_read(0, lba_data_ptr->buff_ptr, lba_data_ptr->offset, lba_data_ptr->size);
+}
+
+void SD_Write_Block(PTR_LBA_APP_STRUCT lba_data_ptr) {
+  DRESULT res;
+
+  res = %@SDMemory@'ModuleName'%.disk_write(0, lba_data_ptr->buff_ptr, lba_data_ptr->offset, lba_data_ptr->size);
+}
+
+void SD_Card_Info(uint_32_ptr max_blocks_ptr, uint_32_ptr block_size_ptr) {
+  int16_t val16;
+  int32_t val32;
+
+  if (disk_ioctl(0, MMC_GET_READ_BL_LEN, &val16)==RES_OK) {
+    *block_size_ptr = val16;
+  } else {
+    *block_size_ptr = 0; /* error case */
+  }
+  if (disk_ioctl(0, GET_SECTOR_COUNT, &val32)==RES_OK) {
+    *max_blocks_ptr = val32;
+  } else {
+    *max_blocks_ptr = 0; /* error case */
+  }
+}
+
 /******************************************************************************
  *
  *    @name        MSD_Event_Callback
@@ -424,7 +452,7 @@ uint8_t %'ModuleName'%.%Deinit(void)
 {
   uint8_t err;
 
-  err = USB_Class_MSC_DeInit(CONTROLLER_ID);
+  err = USB_Class_MSC_DeInit(USB_CONTROLLER_ID);
   if(err != USB_OK) {
     /* Error initializing USB HID Class */
 %if defined(OnEvent)

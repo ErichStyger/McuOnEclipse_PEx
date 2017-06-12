@@ -4,7 +4,7 @@
     <Name>FSL_USB_MSD_Device</Name>
     <Description>USB MSD Device</Description>
     <Author>Erich Styger</Author>
-    <Version>01.004</Version>
+    <Version>01.014</Version>
     <Icon>FSL_USB_MSD_Device</Icon>
     <TypesFiles>PE,FSL_USB_MSD_Device\FSL_USB_MSD_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -51,6 +51,38 @@
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
       </TEnumItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>RAM Disk</Name>
+        <Symbol>UseRamDisk</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>If using a RAM disk</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>SD Memory</Name>
+        <Symbol>SDMemory</Symbol>
+        <TypeSpec>FSL_USB_MSD_Device\SDMemory</TypeSpec>
+        <Hint>Link to SD memory card</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
     </Property>
     <Property>
       <TBoolGrupItem>
