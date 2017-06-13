@@ -92,19 +92,8 @@
 %-BW_METHOD_MACROS_END
 
 #include "%ProcessorModule.h"
+#include "usb_descriptor.h"
 
-#define %'ModuleName'%.NOF_BUTTONS         /* %NofButtons */ 4 /* currently fixed! */
-  /*<! number of push buttons */
-#define %'ModuleName'%.NOF_HAT_POSITIONS   /* %NofHatPositions */ 4 /* currently fixed! */
-  /*<! number of positions of the hat switch */
-
-/* buffer/data is currently fixed:
-  0: 8bit throttle
-  1: X value
-  2: Y value
-  3: 4 bit push button, 4 bits hat position
-*/
-#define  JOYSTICK_BUFF_SIZE    (4)   /* report buffer size */
 #define  REQ_DATA_SIZE         (1)
 
 /* error/event codes for events */
@@ -309,11 +298,6 @@ void %OnEvent(uint8_t error);
 
 static boolean joystick_init=FALSE;           /* Joystick App Init Flag */
 static uint8_t rpt_buf[JOYSTICK_BUFF_SIZE];      /* Key Press Report Buffer */
-/* 0: throttle
-   1: X
-   2: Y
-   3: upper 4 bits: buttons 0..3, lower 4 bits: hat switch position
- */
 static uint8_t g_app_request_params[2];        /* for get/set idle and protocol requests */
 static volatile boolean transactionOngoing = FALSE; /* flag to know if a transaction is currently ongoing */
 /*****************************************************************************
@@ -346,7 +330,6 @@ static uint8_t USB_App_Param_Callback (
 )
 {
   uint8_t status = USB_OK;
-  //uint_8 direction =  (uint_8)((request & USB_HID_REQUEST_DIR_MASK) >>3);
   uint8_t index = (byte)((request - 2) & USB_HID_REQUEST_TYPE_MASK);
                                        /* index == 0 for get/set idle,
                                           index == 1 for get/set protocol */
@@ -566,15 +549,19 @@ bool %'ModuleName'%.%isEnumerated(void)
 %include Common\FSL_USB_HID_Joystick_DeviceSetButton.Inc
 uint8_t %'ModuleName'%.%SetButton(uint8_t button, bool isOn)
 {
-  if (button>=%'ModuleName'%.NOF_BUTTONS) {
+#if JOYSTICK_NOF_BUTTONS>0
+  if (button>=JOYSTICK_NOF_BUTTONS) {
     return ERR_RANGE;
   }
   if (isOn) {
-    rpt_buf[3] |= (0x80>>(button%8)); /* set bit */
+    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS] |= 1<<(button%8); /* set bit */
   } else {
-    rpt_buf[3] &= ~(0x80>>(button%8));
+    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS] &= ~(1<<(button%8));
   }
   return ERR_OK;
+#else
+  return ERR_RANGE;
+#endif
 }
 
 %endif %- SetButton
@@ -588,9 +575,13 @@ uint8_t %'ModuleName'%.%SetButton(uint8_t button, bool isOn)
 %include Common\FSL_USB_HID_Joystick_DeviceSetXY.Inc
 uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y)
 {
-  rpt_buf[1] = x;
-  rpt_buf[2] = y;
+#if JOYSTICK_NOF_ANALOG>0
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG_X] = x;
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG_Y] = y;
   return ERR_OK;
+#else
+  return ERR_RANGE;
+#endif
 }
 
 %endif %- SetXY
@@ -603,8 +594,12 @@ uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y)
 %include Common\FSL_USB_HID_Joystick_DeviceSetThrottle.Inc
 uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle)
 {
-  rpt_buf[0] = throttle;
+#if JOYSTICK_NOF_THROTTLE>0
+  rpt_buf[JOYSTICK_BUFF_INDEX_THROTTLE] = throttle;
   return ERR_OK;
+#else
+  return ERR_RANGE;
+#endif
 }
 
 %endif %- SetThrottle
@@ -617,10 +612,12 @@ uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle)
 %include Common\FSL_USB_HID_Joystick_DeviceSetHatPos.Inc
 uint8_t %'ModuleName'%.%SetHatPos(uint8_t position)
 {
-  position &= 0x0F; /* mask to the 4 bits available */
-  rpt_buf[3] &= 0xF0; /* clear bits */
-  rpt_buf[3] |= position; /* set bits */
+#if JOYSTICK_NOF_HAT>0
+  rpt_buf[JOYSTICK_BUFF_INDEX_HAT] = position;
   return ERR_OK;
+#else
+  return ERR_RANGE;
+#endif
 }
 
 %endif %- SetHatPos
