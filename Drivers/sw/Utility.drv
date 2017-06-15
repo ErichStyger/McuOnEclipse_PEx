@@ -884,6 +884,20 @@ void %'ModuleName'%.%randomSetSeed(unsigned int seed);
 
 %endif %- randomSetSeed
 %-BW_METHOD_END randomSetSeed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN map64
+%ifdef map64
+int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t out_min, int64_t out_max);
+%define! Parx
+%define! Parin_min
+%define! Parin_max
+%define! Parout_min
+%define! Parout_max
+%define! RetVal
+%include Common\Utilitymap64.Inc
+
+%endif %- map64
+%-BW_METHOD_END map64
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -2986,7 +3000,15 @@ void %'ModuleName'%.%Init(void)
 %include Common\Utilitymap.Inc
 int32_t %'ModuleName'%.%map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)
 {
+#if 0 /* original Arduino implementation */
   return (x-in_min)*(out_max-out_min)/(in_max-in_min)+out_min;
+#else /* improved version, see https://github.com/arduino/Arduino/issues/2466 */
+  if ((in_max - in_min) > (out_max - out_min)) {
+    return (x - in_min) * (out_max - out_min+1) / (in_max - in_min+1) + out_min;
+  } else {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+#endif
 }
 
 %endif %- map
@@ -3040,6 +3062,27 @@ void %'ModuleName'%.%randomSetSeed(unsigned int seed)
 
 %endif %- randomSetSeed
 %-BW_METHOD_END randomSetSeed
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN map64
+%ifdef map64
+%define! Parx
+%define! Parin_min
+%define! Parin_max
+%define! Parout_min
+%define! Parout_max
+%define! RetVal
+%include Common\Utilitymap64.Inc
+int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t out_min, int64_t out_max)
+{
+  if ((in_max - in_min) > (out_max - out_min)) {
+    return (x - in_min) * (out_max - out_min+1) / (in_max - in_min+1) + out_min;
+  } else {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+}
+
+%endif %- map64
+%-BW_METHOD_END map64
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
