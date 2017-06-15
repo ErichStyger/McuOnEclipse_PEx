@@ -7,6 +7,7 @@
 %;**     Description :
 %;**         Set Joystick X and Y position
 %include Common\GeneralParameters.inc(27)
+%;**         analog%Paranalog %>27 - Analog control ID, starting with 0
 %;**         x%Parx %>27 - X position
 %;**         y%Pary %>27 - Y position
 %;**     Returns     :

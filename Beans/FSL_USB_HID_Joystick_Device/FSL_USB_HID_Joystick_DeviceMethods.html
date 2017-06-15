@@ -231,7 +231,7 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> uint8_t SetButton(uint8_t button, bool isOn)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>button:uint8_t</i> - button number</li>
+<li><i>button:uint8_t</i> - Button control ID, starting with 0</li>
 <li><i>isOn:bool</i> - If button is on or off</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
@@ -242,9 +242,10 @@ LI.EXP {
  - Set Joystick throttle position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetThrottle(int8_t throttle)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetThrottle(uint8_t throttle, int pos)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>throttle:int8_t</i> - throttle position</li>
+<li><i>throttle:uint8_t</i> - Throttle control ID, starting with zero</li>
+<li><i>pos:int8_t</i> - throttle position</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -254,8 +255,9 @@ LI.EXP {
  - Sets the hat switch position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetHatPos(uint8_t position)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetHatPos(uint8_t hat, uint8_t position)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>hat:uint8_t</i> - Hat control ID, starting with 0</li>
 <li><i>position:uint8_t</i> - hat switch position</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
@@ -266,8 +268,9 @@ LI.EXP {
  - Set Joystick X and Y position
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SetXY(int8_t x, int8_t y)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SetXY(uint8_t analog, int x, int y)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>analog:uint8_t</i> - Analog control ID, starting with 0</li>
 <li><i>x:int8_t</i> - X position</li>
 <li><i>y:int8_t</i> - Y position</li>
 <li><i>Return value:uint8_t</i> - Error code

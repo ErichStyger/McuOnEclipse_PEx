@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         Sets the status of a button
 %include Common\GeneralParameters.inc(27)
-%;**         button%Parbutton %>27 - button number
+%;**         button%Parbutton %>27 - Button control ID, starting with 0
 %;**         isOn%ParisOn %>27 - If button is on or off
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code

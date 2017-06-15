@@ -77,5 +77,21 @@
         <Line>Kinetis K70</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeAnalogBits</Name>
+      <Items lines_count="2">
+        <Line>8 bits</Line>
+        <Line>16 bits</Line>
+      </Items>
+      <Hints lines_count="2">
+        <Line>8bits for the analog value</Line>
+        <Line>16bits for the analog value</Line>
+      </Hints>
+      <Defines lines_count="2">
+        <Line>8</Line>
+        <Line>16</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>

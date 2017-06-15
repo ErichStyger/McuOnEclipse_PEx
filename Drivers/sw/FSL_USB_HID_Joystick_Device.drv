@@ -214,9 +214,10 @@ uint8_t %'ModuleName'%.%SetButton(uint8_t button, bool isOn);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetXY
 %ifdef SetXY
-uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y);
+uint8_t %'ModuleName'%.%SetXY(uint8_t analog, int x, int y);
 %define! Parx
 %define! Pary
+%define! Paranalog
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetXY.Inc
 
@@ -225,8 +226,9 @@ uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetThrottle
 %ifdef SetThrottle
-uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle);
+uint8_t %'ModuleName'%.%SetThrottle(uint8_t throttle, int pos);
 %define! Parthrottle
+%define! Parpos
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetThrottle.Inc
 
@@ -235,8 +237,9 @@ uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetHatPos
 %ifdef SetHatPos
-uint8_t %'ModuleName'%.%SetHatPos(uint8_t position);
+uint8_t %'ModuleName'%.%SetHatPos(uint8_t hat, uint8_t position);
 %define! Parposition
+%define! Parhat
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetHatPos.Inc
 
@@ -550,13 +553,16 @@ bool %'ModuleName'%.%isEnumerated(void)
 uint8_t %'ModuleName'%.%SetButton(uint8_t button, bool isOn)
 {
 #if JOYSTICK_NOF_BUTTONS>0
+  int offset;
+
   if (button>=JOYSTICK_NOF_BUTTONS) {
     return ERR_RANGE;
   }
+  offset = button/8; /* calculate index offset */
   if (isOn) {
-    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS] |= 1<<(button%8); /* set bit */
+    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS+offset] |= 1<<(button%%8); /* set bit */
   } else {
-    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS] &= ~(1<<(button%8));
+    rpt_buf[JOYSTICK_BUFF_INDEX_BUTTONS+offset] &= ~(1<<(button%%8));
   }
   return ERR_OK;
 #else
@@ -571,13 +577,26 @@ uint8_t %'ModuleName'%.%SetButton(uint8_t button, bool isOn)
 %ifdef SetXY
 %define! Parx
 %define! Pary
+%define! Paranalog
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetXY.Inc
-uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y)
+uint8_t %'ModuleName'%.%SetXY(uint8_t analog, int x, int y)
 {
 #if JOYSTICK_NOF_ANALOG>0
-  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG_X] = x;
-  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG_Y] = y;
+  if (analog>=JOYSTICK_NOF_ANALOG) {
+    return ERR_RANGE;
+  }
+#if JOYSTICK_NOF_ANALOG_RES_BITS==8
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+analog*2] = x;
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+analog*2+1] = y;
+#elif JOYSTICK_NOF_ANALOG_RES_BITS==16
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+(analog*2)] = x;
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+(analog*2)+1] = x>>8;
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+(analog*2)+2] = y;
+  rpt_buf[JOYSTICK_BUFF_INDEX_ANALOG+(analog*2)+3] = y>>8;
+#else
+  #error "not supported"
+#endif
   return ERR_OK;
 #else
   return ERR_RANGE;
@@ -590,12 +609,23 @@ uint8_t %'ModuleName'%.%SetXY(int8_t x, int8_t y)
 %-BW_METHOD_BEGIN SetThrottle
 %ifdef SetThrottle
 %define! Parthrottle
+%define! Parpos
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetThrottle.Inc
-uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle)
+uint8_t %'ModuleName'%.%SetThrottle(uint8_t throttle, int pos)
 {
 #if JOYSTICK_NOF_THROTTLE>0
-  rpt_buf[JOYSTICK_BUFF_INDEX_THROTTLE] = throttle;
+  if (throttle>=JOYSTICK_NOF_THROTTLE) {
+    return ERR_RANGE;
+  }
+#if JOYSTICK_NOF_THROTTLE_RES_BITS==8
+  rpt_buf[JOYSTICK_BUFF_INDEX_THROTTLE+throttle] = pos;
+#elif JOYSTICK_NOF_THROTTLE_RES_BITS==16
+  rpt_buf[JOYSTICK_BUFF_INDEX_THROTTLE+throttle] = pos;
+  rpt_buf[JOYSTICK_BUFF_INDEX_THROTTLE+throttle+1] = pos>>8;
+#else
+  #error "not supported"
+#endif
   return ERR_OK;
 #else
   return ERR_RANGE;
@@ -608,12 +638,16 @@ uint8_t %'ModuleName'%.%SetThrottle(int8_t throttle)
 %-BW_METHOD_BEGIN SetHatPos
 %ifdef SetHatPos
 %define! Parposition
+%define! Parhat
 %define! RetVal
 %include Common\FSL_USB_HID_Joystick_DeviceSetHatPos.Inc
-uint8_t %'ModuleName'%.%SetHatPos(uint8_t position)
+uint8_t %'ModuleName'%.%SetHatPos(uint8_t hat, uint8_t position)
 {
 #if JOYSTICK_NOF_HAT>0
-  rpt_buf[JOYSTICK_BUFF_INDEX_HAT] = position;
+  if (hat>=JOYSTICK_NOF_HAT) {
+    return ERR_RANGE;
+  }
+  rpt_buf[JOYSTICK_BUFF_INDEX_HAT+hat] = position;
   return ERR_OK;
 #else
   return ERR_RANGE;

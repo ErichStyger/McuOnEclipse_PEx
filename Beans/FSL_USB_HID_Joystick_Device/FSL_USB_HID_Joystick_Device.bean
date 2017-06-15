@@ -4,7 +4,7 @@
     <Name>FSL_USB_HID_Joystick_Device</Name>
     <Description>Freescale USB Stack (HID Joystick)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.005</Version>
+    <Version>01.003</Version>
     <Icon>FSL_USB_HID_Joystick_Device</Icon>
     <TypesFiles>PE,FSL_USB_HID_Joystick_Device\FSL_USB_HID_Joystick_Device</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -53,38 +53,177 @@
       </TEnumItem>
     </Property>
     <Property>
-      <TIntgItem>
-        <Name>Buttons</Name>
-        <Symbol>NofButtons</Symbol>
-        <Hint>Number of buttons</Hint>
+      <TGrupItem>
+        <Name>Throttle</Name>
+        <Symbol>ThrottleGroup</Symbol>
+        <Hint>Group for Throttle items</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>4</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>8</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Throttle</Name>
+              <Symbol>NofThrottle</Symbol>
+              <Hint>Number of analog throttle controls</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Throttle bits</Name>
+              <Symbol>NofThrottleResolutionBits</Symbol>
+              <TypeSpec>typeAnalogBits</TypeSpec>
+              <Hint>Number of bits used for the throttle control</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
-      <TIntgItem>
-        <Name>Hat Positions</Name>
-        <Symbol>NofHatPositions</Symbol>
-        <Hint>Number of hat positions</Hint>
+      <TGrupItem>
+        <Name>Analog</Name>
+        <Symbol>AnalogGroup</Symbol>
+        <Hint>Group for analog control items</Hint>
         <ItemLevel>BASIC</ItemLevel>
-        <EditLine>true</EditLine>
-        <DefaultValue>4</DefaultValue>
-        <MinValue>0</MinValue>
-        <MaxValue>8</MaxValue>
-        <Bases>DEC</Bases>
-        <DefaultBase>DEC</DefaultBase>
-        <ExtraHintDisabled>false</ExtraHintDisabled>
-        <ChangeValueIntoRange>false</ChangeValueIntoRange>
-        <RuntimeProperty>false</RuntimeProperty>
-      </TIntgItem>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Analog</Name>
+              <Symbol>NofAnalog</Symbol>
+              <Hint>Number of analog (X,Y) controls</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TEnumItem>
+              <Name>Analog bits</Name>
+              <Symbol>NofAnalogResolutionBits</Symbol>
+              <TypeSpec>typeAnalogBits</TypeSpec>
+              <Hint>number of bits used for the analog control</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>true</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+            </TEnumItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Hat</Name>
+        <Symbol>HatGroup</Symbol>
+        <Hint>Hat</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Hat Switches</Name>
+              <Symbol>NofHatSwitches</Symbol>
+              <Hint>Number of hat switches</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>1</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Hat Positions</Name>
+              <Symbol>NofHatPositions</Symbol>
+              <Hint>Number of hat positions. Currently only 4 are supported.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>4</DefaultValue>
+              <MinValue>4</MinValue>
+              <MaxValue>8</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Buttons</Name>
+        <Symbol>ButtonsGroup</Symbol>
+        <Hint>Group for button controls</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Buttons</Name>
+              <Symbol>NofButtons</Symbol>
+              <Hint>Number of buttons</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>4</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>128</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -312,7 +451,7 @@
           <ParName>button</ParName>
           <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint>button number</ParHint>
+          <ParHint>Button control ID, starting with 0</ParHint>
         </Parameter>
         <Parameter>
           <ParName>isOn</ParName>
@@ -347,16 +486,23 @@
         <InDefinition>true</InDefinition>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>throttle</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Throttle control ID, starting with zero</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>pos</ParName>
           <ParType>int8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>throttle position</ParHint>
+          <ParUserDeclaration>int pos</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(int8_t throttle)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t throttle, int pos)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -381,7 +527,13 @@
         <InDefinition>true</InDefinition>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>hat</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Hat control ID, starting with 0</ParHint>
+        </Parameter>
         <Parameter>
           <ParName>position</ParName>
           <ParType>uint8_t</ParType>
@@ -390,7 +542,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint8_t position)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t hat, uint8_t position)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -415,22 +567,30 @@
         <InDefinition>true</InDefinition>
         <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>2</ParamCount>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>analog</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Analog control ID, starting with 0</ParHint>
+        </Parameter>
         <Parameter>
           <ParName>x</ParName>
           <ParType>int8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>X position</ParHint>
+          <ParUserDeclaration>int x</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>y</ParName>
           <ParType>int8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Y position</ParHint>
+          <ParUserDeclaration>int y</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(int8_t x, int8_t y)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t analog, int x, int y)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

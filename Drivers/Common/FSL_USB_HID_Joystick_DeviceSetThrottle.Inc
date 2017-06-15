@@ -7,7 +7,9 @@
 %;**     Description :
 %;**         Set Joystick throttle position
 %include Common\GeneralParameters.inc(27)
-%;**         throttle%Parthrottle %>27 - throttle position
+%;**         throttle%Parthrottle %>27 - Throttle control ID, starting
+%;** %>29 with zero
+%;**         pos%Parpos %>27 - throttle position
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
