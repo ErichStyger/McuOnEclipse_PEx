@@ -524,8 +524,9 @@ static void RADIO_PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  power <number>", (unsigned char*)"Changes output power (0, -10, -12, -18)\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  sniff on|off", (unsigned char*)"Turns sniffing on or off\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  writereg 0xReg 0xVal", (unsigned char*)"Write a transceiver register\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  readreg 0xReg", (unsigned char*)"Read a transceiver register\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printregs", (unsigned char*)"Print the radio registers\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  flush", (unsigned char*)"Empty all queues\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  printreg", (unsigned char*)"Print the radio registers\r\n", io->stdOut);
 }
 
 static void RadioPrintRegisters(%@Shell@'ModuleName'%.ConstStdIOType *io) {
@@ -748,6 +749,23 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"Wrong arguments\r\n", io->stdErr);
       res = ERR_FAILED;
     }
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, (char*)"radio readreg", sizeof("radio readreg")-1)==0) {
+    uint8_t reg;
+    uint8_t buf[16];
+
+    p = cmd+sizeof("radio readreg");
+    if (%@Utility@'ModuleName'%.ScanHex8uNumber(&p, &reg)==ERR_OK) {
+      val = %@nRF24L01p@'ModuleName'%.ReadRegister(reg);
+      buf[0] = '\0';
+      %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (uint8_t*)"0x");
+      %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), val);
+      %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (uint8_t*)"\r\n");
+      %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
+      *handled = TRUE;
+    } else {
+      %@Shell@'ModuleName'%.SendStr((unsigned char*)"Wrong arguments\r\n", io->stdErr);
+      res = ERR_FAILED;
+    }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio flush")==0) {
     *handled = TRUE;
     if (RADIO_Flush()!=ERR_OK) {
@@ -758,7 +776,7 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"Flushing queues failed!\r\n", io->stdErr);
       res = ERR_FAILED;
     }
-  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio printreg")==0) {
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio printregs")==0) {
     RadioPrintRegisters(io);
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"radio datarate 250")==0) {
