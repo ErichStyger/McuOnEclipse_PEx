@@ -123,6 +123,11 @@
 %else
 #define configUSE_TIME_SLICING                                   %>50 0 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
 %endif
+%if NewlibReentrant='yes'
+#define configUSE_NEWLIB_REENTRANT                               %>50 1 /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
+%else
+#define configUSE_NEWLIB_REENTRANT                               %>50 0 /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
+%endif
 %ifdef vApplicationIdleHook
 #define configUSE_IDLE_HOOK                                      %>50 1 /* 1: use Idle hook; 0: no Idle hook */
 #define configUSE_IDLE_HOOK_NAME                                 %>50 %vApplicationIdleHook

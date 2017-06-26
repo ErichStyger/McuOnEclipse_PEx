@@ -533,7 +533,7 @@ Mapping for number to vector for the MCF52259:<br />
   </li>
   <li>
   <a name="KinetisCPUSpecific">
-  <b>ARM (Kinetis)</b></a> - This group is used to configure the RTOS for the Kinetis/ARM cores<br />
+  <b>ARM Cortex-M</b></a> - This group is used to configure the RTOS for the Kinetis/ARM cores<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />
 
   <ul>
@@ -671,6 +671,10 @@ There are 3 options:<br />
   <li>
   <a name="TaskExitErrorHandler">
   <b>TaskExitError Handler</b></a> - A function that implements a task must not exit or attempt to return to its caller as there is nothing to return to. If this setting is enabled, then the function prvTaskExitError() will be called if the task returns. Note that if enabled, it might confuse the GDB debugger and not properly show the task stack frames.
+  </li>
+  <li>
+  <a name="NewlibReentrant">
+  <b>Newlib Reentrant</b></a> - If configUSE_NEWLIB_REENTRANT is set to 'yes' then a newlib reent structure will be allocated for each created task. 
   </li>
 </ul>
 </li>
