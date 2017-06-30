@@ -296,6 +296,8 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
     %'ModuleName'%.BUF_BYTE(x,y)
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
   /* no byte access used */
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==24
+  /* Neopixels, no byte access used */
 #else
   #error "not supported"
 #endif
