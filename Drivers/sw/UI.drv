@@ -944,7 +944,7 @@ void %'ModuleName'%.%EnableElementSelection(%'ModuleName'_Element *elem)
 void %'ModuleName'%.%SelectNextElement(%'ModuleName'_Element *element, bool forward)
 {
 #if %'ModuleName'%.CONFIG_SELECTION_ENABLED
-  %'ModuleName'_Element *currElement, *e;                        %>40/* currently selected element */
+  %'ModuleName'_Element *currElement;                            %>40/* currently selected element */
   %'ModuleName'_Element *startElement;                           %>40/* starting element of iteration */
 
   if (element == NULL) {                                         %>40/* no element at all? */
@@ -1783,6 +1783,9 @@ uint8_t %'ModuleName'%.%MarkElementModal(%'ModuleName'_Element *element)
   }
   screen->modalElement = element;
   element->prop.flags |= %'ModuleName'_FLAGS_IS_MODAL;
+#else
+  /*! \todo NYI */
+  (void)element;
 #endif
   return ERR_OK;
 }
@@ -1809,6 +1812,9 @@ uint8_t %'ModuleName'%.%UnMarkElementModal(%'ModuleName'_Element *element)
   }
   screen->modalElement = NULL;
   element->prop.flags &= ~%'ModuleName'_FLAGS_IS_MODAL;
+#else
+  /*! \todo NYI */
+  (void)element;
 #endif
   return ERR_OK;
 }
@@ -1887,6 +1893,8 @@ bool %'ModuleName'%.%ElementFullyVisible(%'ModuleName'_Element *element)
   }
   return TRUE; /* element must be visible */
 #else
+  /*! \todo NYI */
+  (void)element;
   return FALSE;
 #endif
 }
