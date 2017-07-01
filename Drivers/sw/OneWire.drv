@@ -303,7 +303,7 @@ static uint8_t LastDeviceFlag;
 
 #if %'ModuleName'%.CONFIG_WRITE_PIN /* extra pin only for write bit */
   #define DQ_Init               %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_INIT
-  #define DQ_Deinit             %@DataPin@'ModuleName'%.Init(); %'ModuleName'%.CONFIG_WRITE_PIN_DEINIT
+  #define DQ_Deinit             %@DataPin@'ModuleName'%.Deinit(); %'ModuleName'%.CONFIG_WRITE_PIN_DEINIT
 #else
   #define DQ_Init               %@DataPin@'ModuleName'%.Init()
   #define DQ_Deinit             %@DataPin@'ModuleName'%.Deinit()
