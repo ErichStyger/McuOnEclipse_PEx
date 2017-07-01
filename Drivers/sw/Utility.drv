@@ -887,7 +887,9 @@ void %'ModuleName'%.%randomSetSeed(unsigned int seed);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN map64
 %ifdef map64
+#ifndef __HIWARE__ /* HIWARE compiler does not support 64bit data types */
 int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t out_min, int64_t out_max);
+#endif
 %define! Parx
 %define! Parin_min
 %define! Parin_max
@@ -3072,6 +3074,7 @@ void %'ModuleName'%.%randomSetSeed(unsigned int seed)
 %define! Parout_max
 %define! RetVal
 %include Common\Utilitymap64.Inc
+#ifndef __HIWARE__ /* HIWARE compiler does not support 64bit data types */
 int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t out_min, int64_t out_max)
 {
   if ((in_max - in_min) > (out_max - out_min)) {
@@ -3080,6 +3083,7 @@ int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
 }
+#endif
 
 %endif %- map64
 %-BW_METHOD_END map64
