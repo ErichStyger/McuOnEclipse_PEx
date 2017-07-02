@@ -4,26 +4,29 @@
     <Type>
       <Type>TEnumSpec</Type>
       <Name>typeMemAllocScheme</Name>
-      <Items lines_count="5">
+      <Items lines_count="6">
         <Line>Scheme 1: alloc only</Line>
         <Line>Scheme 2: no merge</Line>
         <Line>Scheme 3: malloc/free</Line>
         <Line>Scheme 4: merge free blocks</Line>
         <Line>Scheme 5: multiple regions</Line>
+        <Line>Scheme 6: newlib</Line>
       </Items>
-      <Hints lines_count="5">
+      <Hints lines_count="6">
         <Line>This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.</Line>
         <Line>This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.</Line>
         <Line>This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.</Line>
         <Line>This scheme includes memory block coalescence.</Line>
         <Line>This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().</Line>
+        <Line>This scheme uses the newlib wrappers provided by Dave Nadler. This setting turns on configUSE_NEWLIB_REENTRANT.</Line>
       </Hints>
-      <Defines lines_count="5">
+      <Defines lines_count="6">
         <Line>Scheme1</Line>
         <Line>Scheme2</Line>
         <Line>Scheme3</Line>
         <Line>Scheme4</Line>
         <Line>Scheme5</Line>
+        <Line>Scheme6</Line>
       </Defines>
     </Type>
     <Type>

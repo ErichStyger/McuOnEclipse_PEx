@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.541</Version>
+    <Version>01.546</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1283,24 +1283,6 @@ To use this method in combination with method 1 set configCHECK_FOR_STACK_OVERFL
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Newlib Reentrant</Name>
-              <Symbol>NewlibReentrant</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>If configUSE_NEWLIB_REENTRANT is set to 'yes' then a newlib reent structure will be allocated for each created task. </Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>1</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>false</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
         </Children>
       </TGrupItem>
     </Property>
@@ -1731,6 +1713,24 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
               <IfDisabled>setNOTHING</IfDisabled>
               <Children>
                 <GrupItem>
+                  <TBoolItem>
+                    <Name>Application allocated Heap</Name>
+                    <Symbol>ApplicationAllocatedHeap</Symbol>
+                    <TypeSpec>typeYesNo</TypeSpec>
+                    <Hint>Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>false</EditLine>
+                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+                    <DefaultIndex>1</DefaultIndex>
+                    <TextValueIndex>false</TextValueIndex>
+                    <RuntimeProperty>false</RuntimeProperty>
+                    <CanDelete>false</CanDelete>
+                    <IconPopup>false</IconPopup>
+                    <DefaultValue>false</DefaultValue>
+                    <Popup>false</Popup>
+                  </TBoolItem>
+                </GrupItem>
+                <GrupItem>
                   <TIntgItem>
                     <Name>Heap Size</Name>
                     <Symbol>TotalHeapSize</Symbol>
@@ -1748,22 +1748,43 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
                   </TIntgItem>
                 </GrupItem>
                 <GrupItem>
-                  <TBoolItem>
-                    <Name>Application allocated Heap</Name>
-                    <Symbol>ApplicationAllocatedHeap</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.</Hint>
+                  <TStrgItem>
+                    <Name>Linker Heap Base Symbol</Name>
+                    <Symbol>LinkerHeapBaseSymbolName</Symbol>
+                    <Hint>Linker defined symbol for the heap base address (configLINKER_HEAP_BASE_SYMBOL) used for Scheme 6. Commonly used name is __HeapBase. Check your linker file.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>false</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>__HeapBase</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Linker Heap Limit Symbol</Name>
+                    <Symbol>LinkerHeapLimitSymbolName</Symbol>
+                    <Hint>Linker defined symbol for the heap limit address (configLINKER_HEAP_LIMIT_SYMBOL) used for Scheme 6. Commonly used name is __HeapLimit. Check your linker file.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>__HeapLimit</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TStrgItem>
+                    <Name>Linker Heap Size Symbol</Name>
+                    <Symbol>LinkerHeapSizeSymbolName</Symbol>
+                    <Hint>Linker defined symbol for the heap size (configLINKER_HEAP_SIZE_SYMBOL) used for Scheme 6. Commonly used names are __heap_size or HEAP_SIZE. Check your linker file.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>__heap_size</DefaultValue>
+                    <StrDefine>nothing</StrDefine>
+                    <MinLength>0</MinLength>
+                    <MaxLength>-1</MaxLength>
+                  </TStrgItem>
                 </GrupItem>
                 <GrupItem>
                   <TEnumItem>

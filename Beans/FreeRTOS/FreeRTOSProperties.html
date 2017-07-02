@@ -672,10 +672,6 @@ There are 3 options:<br />
   <a name="TaskExitErrorHandler">
   <b>TaskExitError Handler</b></a> - A function that implements a task must not exit or attempt to return to its caller as there is nothing to return to. If this setting is enabled, then the function prvTaskExitError() will be called if the task returns. Note that if enabled, it might confuse the GDB debugger and not properly show the task stack frames.
   </li>
-  <li>
-  <a name="NewlibReentrant">
-  <b>Newlib Reentrant</b></a> - If configUSE_NEWLIB_REENTRANT is set to 'yes' then a newlib reent structure will be allocated for each created task. 
-  </li>
 </ul>
 </li>
 <li>
@@ -817,23 +813,36 @@ The following items are available only if the group is enabled (the value is "En
 
   <ul>
     <li>
-    <a name="TotalHeapSize">
-    <b>Heap Size</b></a> - The total amount of RAM available to the kernel. This value is used by the memory allocation schemes. Value not used if using Scheme3 (malloc/free).
-    </li>
-    <li>
     <a name="ApplicationAllocatedHeap">
     <b>Application allocated Heap</b></a> - Configures configAPPLICATION_ALLOCATED_HEAP in FreeRTOSConfig.h. If set to yes, the application needs to define the heap memory variable, e.g. to use special segment attributes.
     </li>
     <li>
+    <a name="TotalHeapSize">
+    <b>Heap Size</b></a> - The total amount of RAM available to the kernel. This value is used by the memory allocation schemes. Value not used if using Scheme3 (malloc/free).
+    </li>
+    <li>
+    <a name="LinkerHeapBaseSymbolName">
+    <b>Linker Heap Base Symbol</b></a> - Linker defined symbol for the heap base address (configLINKER_HEAP_BASE_SYMBOL) used for Scheme 6. Commonly used name is __HeapBase. Check your linker file.
+    </li>
+    <li>
+    <a name="LinkerHeapLimitSymbolName">
+    <b>Linker Heap Limit Symbol</b></a> - Linker defined symbol for the heap limit address (configLINKER_HEAP_LIMIT_SYMBOL) used for Scheme 6. Commonly used name is __HeapLimit. Check your linker file.
+    </li>
+    <li>
+    <a name="LinkerHeapSizeSymbolName">
+    <b>Linker Heap Size Symbol</b></a> - Linker defined symbol for the heap size (configLINKER_HEAP_SIZE_SYMBOL) used for Scheme 6. Commonly used names are __heap_size or HEAP_SIZE. Check your linker file.
+    </li>
+    <li>
     <a name="MemoryScheme">
     <b>Memory Allocation Scheme</b></a> - Configures configUSE_HEAP_SCHEME.<br />Scheme 1:<br />This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.<br /><br />Scheme 2:<br />This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.<br /><br />Scheme 3:<br />This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.<br /><br />Scheme 4:<br />This scheme uses a first fit algorithm and, unlike scheme 2, does combine adjacent free memory blocks into a single large block (it does include a coalescence algorithm).<br /><br />Scheme 5:<br />This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().<br /><br />
-There are 5 options:<br />
+There are 6 options:<br />
 <ul>
   <li><u>Scheme 1: alloc only</u>: This is the simplest scheme of all. It does not permit memory to be freed once it has been allocated, but despite this is suitable for a surprisingly large number of applications.</li>
   <li><u>Scheme 2: no merge</u>: This scheme uses a best fit algorithm and, unlike scheme 1, allows previously allocated blocks to be freed. It does not however combine adjacent free blocks into a single large block.</li>
   <li><u>Scheme 3: malloc/free</u>: This is just a wrapper for the standard malloc() and free() functions. It makes them thread safe.</li>
   <li><u>Scheme 4: merge free blocks</u>: This scheme includes memory block coalescence.</li>
   <li><u>Scheme 5: multiple regions</u>: This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().</li>
+  <li><u>Scheme 6: newlib</u>: This scheme uses the newlib wrappers provided by Dave Nadler. This setting turns on configUSE_NEWLIB_REENTRANT.</li>
 </ul><br />
 
     </li>

@@ -68,6 +68,11 @@
 %FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_5.c
 %include freeRTOS\Source\portable\MemMang\heap_5.c
 
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_useNewlib.c
+%include freeRTOS\Source\portable\MemMang\heap_useNewlib.c
+%FILE %'DirRel_Code'%'RTOSMemMangDirFolder'heap_useNewlib.txt
+%include freeRTOS\Source\portable\MemMang\heap_useNewlib.txt
+
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'FreeRTOS_license.txt
 %include freeRTOS\License\license.txt
 

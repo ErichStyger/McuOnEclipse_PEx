@@ -123,11 +123,6 @@
 %else
 #define configUSE_TIME_SLICING                                   %>50 0 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
 %endif
-%if NewlibReentrant='yes'
-#define configUSE_NEWLIB_REENTRANT                               %>50 1 /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
-%else
-#define configUSE_NEWLIB_REENTRANT                               %>50 0 /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
-%endif
 %ifdef vApplicationIdleHook
 #define configUSE_IDLE_HOOK                                      %>50 1 /* 1: use Idle hook; 0: no Idle hook */
 #define configUSE_IDLE_HOOK_NAME                                 %>50 %vApplicationIdleHook
@@ -202,18 +197,20 @@
 /* Heap Memory */
 %if defined(MemoryScheme)
 %if MemoryScheme = "Scheme1"
-#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme2"
-#define configUSE_HEAP_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme3"
-#define configUSE_HEAP_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme4"
-#define configUSE_HEAP_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme5"
-#define configUSE_HEAP_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+%elif MemoryScheme = "Scheme6"
+#define configUSE_HEAP_SCHEME                 %>50 6 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %endif
 %else
-#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks) */
+#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %endif
 #define configFRTOS_MEMORY_SCHEME                                %>50 configUSE_HEAP_SCHEME /* for backwards compatible only with legacy name */
 %if defined(TotalHeapSize)
@@ -248,6 +245,7 @@
 %else
 #define configSUPPORT_STATIC_ALLOCATION                          %>50 0 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
 %endif
+#define configUSE_NEWLIB_REENTRANT                               %>50 (configUSE_HEAP_SCHEME==6) /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
 /*----------------------------------------------------------*/
 #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
 %if %UseTraceFacility='yes'

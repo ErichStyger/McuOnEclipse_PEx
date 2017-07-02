@@ -198,11 +198,22 @@
   %set xQueueSelectFromSetFromISR Selection never
 %endif
 
+%- heap scheme
 %if defined(MemoryScheme) & %MemoryScheme='Scheme3'
-  %- malloc scheme
   %set TotalHeapSize ReadOnly yes
+  %set LinkerHeapSizeSymbolName ReadOnly yes
+  %set LinkerHeapBaseSymbolName ReadOnly yes
+  %set LinkerHeapLimitSymbolName ReadOnly yes
+%elif defined(MemoryScheme) & %MemoryScheme='Scheme6'
+  %set TotalHeapSize ReadOnly yes
+  %set LinkerHeapSizeSymbolName ReadOnly no
+  %set LinkerHeapBaseSymbolName ReadOnly no
+  %set LinkerHeapLimitSymbolName ReadOnly no
 %else
   %set TotalHeapSize ReadOnly no
+  %set LinkerHeapSizeSymbolName ReadOnly yes
+  %set LinkerHeapBaseSymbolName ReadOnly yes
+  %set LinkerHeapLimitSymbolName ReadOnly yes
 %endif
 
 %endif %- CPUfamily
