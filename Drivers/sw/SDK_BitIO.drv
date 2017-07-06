@@ -286,10 +286,18 @@ void %'ModuleName'%.%PutVal(bool Val);
     {
       .pinName = %'PinSymbol',
     #if FSL_FEATURE_PORT_HAS_PULL_ENABLE
+      #if %'ModuleName'%.CONFIG_PULL_RESISTOR==0 /* 0: no pull resistor, 1: pull-up, 2: pull-down, 3: pull-up or no pull, 4: pull-down or no pull: 4: autoselect-pull */
+      .config.isPullEnable = false,
+      #else
       .config.isPullEnable = true,
+      #endif
     #endif
     #if FSL_FEATURE_PORT_HAS_PULL_SELECTION
+      #if %'ModuleName'%.CONFIG_PULL_RESISTOR==1
+      .config.pullSelect = kPortPullUp,
+      #else
       .config.pullSelect = kPortPullDown,
+      #endif
     #endif
     #if FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
       .config.isPassiveFilterEnabled = true,
@@ -468,14 +476,14 @@ void %'ModuleName'%.%Init(void)
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
   PORT_SetPinMux(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, kPORT_MuxAsGpio); /* mux as GPIO */
   #endif
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
+  /*! \todo Pin Muxing not implemented */
+  GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
+#endif
 #if %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
   %'ModuleName'%.%SetInput();
 #elif %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_OUTPUT
   %'ModuleName'%.%SetOutput();
-#endif
-#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  /*! \todo Pin Muxing not implemented */
-  GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
 #endif
 }
 
@@ -581,6 +589,17 @@ void %'ModuleName'%.%Deinit(void)
 %endif
   /*!< 1: perform pin muxing in Init(), 0: do not do pin muxing */
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_PULL_RESISTOR
+%if defined(PullResistor)
+  #define %'ModuleName'%.CONFIG_PULL_RESISTOR  %PullResistor
+%else
+  #define %'ModuleName'%.CONFIG_PULL_RESISTOR  0
+%endif
+  /*!< pull resistor setting. 0: no pull resistor, 1: pull-up, 2: pull-down, 3: pull-up or no pull, 4: pull-down or no pull: 4: autoselect-pull */
+#endif
+
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

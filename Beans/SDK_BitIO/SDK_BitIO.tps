@@ -36,5 +36,21 @@
         <Line>1</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typePullResistor</Name>
+      <Items lines_count="2">
+        <Line>Pull-Up</Line>
+        <Line>Pull-Down</Line>
+      </Items>
+      <Hints lines_count="2">
+        <Line>Pull-up resistor</Line>
+        <Line>Pull-down resistor</Line>
+      </Hints>
+      <Defines lines_count="2">
+        <Line>up</Line>
+        <Line>down</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>
