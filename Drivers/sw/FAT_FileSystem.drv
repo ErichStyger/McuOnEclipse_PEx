@@ -865,6 +865,18 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
 
 %endif %- f_closedir
 %-BW_METHOD_END f_closedir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_readdir
+%ifdef f_readdir
+#define %'ModuleName'%.%f_readdir(dj, fno) \
+  f_readdir(dj, fno)
+%define! Pardir
+%define! Parfno
+%define! RetVal
+%include Common\FAT_FileSystemf_readdir.Inc
+
+%endif %- f_readdir
+%-BW_METHOD_END f_readdir
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3536,6 +3548,22 @@ FRESULT %'ModuleName'%.%f_closedir(DIR* dp)
 
 %endif %- f_closedir
 %-BW_METHOD_END f_closedir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_readdir
+%ifdef f_readdir
+%define! Pardir
+%define! Parfno
+%define! RetVal
+%include Common\FAT_FileSystemf_readdir.Inc
+/*
+FRESULT %'ModuleName'%.%f_readdir(DIR *dj, FILINFO *fno)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_readdir
+%-BW_METHOD_END f_readdir
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

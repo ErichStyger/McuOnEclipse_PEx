@@ -727,6 +727,19 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="f_readdir">
+<b>f_readdir</b></a>
+ - Read a directory item
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> FRESULT f_readdir(DIR *dj, FILINFO *fno)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dir:byte</i> - Pointer to the open directory object</li>
+<li><i>fno:byte</i> - Pointer to the file information structure</li>
+<li><i>Return value:FRESULT</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="f_closedir">
 <b>f_closedir</b></a>
  - Close a directory

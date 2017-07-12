@@ -4,7 +4,7 @@
     <Name>FAT_FileSystem</Name>
     <Description>FAT file system module</Description>
     <Author>ChaN, adopted by Erich Styger for Processor Expert</Author>
-    <Version>01.202</Version>
+    <Version>01.203</Version>
     <Icon>FAT_FileSystem</Icon>
     <TypesFiles>PE,FAT_FileSystem\FAT_FileSystem</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -2274,6 +2274,48 @@ The truncate() function truncates the file size to the current file read/write p
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>FRESULT #M#_#C#(DIR* dp, const TCHAR* path)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>f_readdir</Name>
+        <Symbol>f_readdir</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Read a directory item</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>FRESULT</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>dir</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the open directory object</ParHint>
+          <ParUserDeclaration>DIR *dj</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>fno</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to the file information structure</ParHint>
+          <ParUserDeclaration>FILINFO *fno</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>FRESULT #M#_#C#(DIR *dj, FILINFO *fno)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
