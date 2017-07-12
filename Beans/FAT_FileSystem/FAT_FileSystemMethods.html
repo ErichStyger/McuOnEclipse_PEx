@@ -714,6 +714,31 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="f_opendir">
+<b>f_opendir</b></a>
+ - Open a directory
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> FRESULT f_opendir(DIR* dp, const TCHAR* path)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dp:byte</i> - Pointer to the open directory object</li>
+<li><i>path:byte</i> - path of directory</li>
+<li><i>Return value:FRESULT</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="f_closedir">
+<b>f_closedir</b></a>
+ - Close a directory
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> FRESULT f_closedir(DIR* dp)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dp:byte</i> - Pointer to the open directory object</li>
+<li><i>Return value:FRESULT</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="get_fattime">
 <b>get_fattime</b></a>
  - Returns the current time

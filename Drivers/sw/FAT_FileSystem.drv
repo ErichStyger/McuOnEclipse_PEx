@@ -842,6 +842,29 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
 
 %endif %- f_findnext
 %-BW_METHOD_END f_findnext
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_opendir
+%ifdef f_opendir
+#define %'ModuleName'%.%f_opendir(dp, path) \
+  f_opendir(dp, path)
+%define! Pardp
+%define! Parpath
+%define! RetVal
+%include Common\FAT_FileSystemf_opendir.Inc
+
+%endif %- f_opendir
+%-BW_METHOD_END f_opendir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_closedir
+%ifdef f_closedir
+#define %'ModuleName'%.%f_closedir(dp) \
+  f_closedir(dp)
+%define! Pardp
+%define! RetVal
+%include Common\FAT_FileSystemf_closedir.Inc
+
+%endif %- f_closedir
+%-BW_METHOD_END f_closedir
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3482,6 +3505,37 @@ FRESULT %'ModuleName'%.%f_findnext(DIR* dp, FILINFO* fno)
 
 %endif %- f_findnext
 %-BW_METHOD_END f_findnext
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_opendir
+%ifdef f_opendir
+%define! Pardp
+%define! Parpath
+%define! RetVal
+%include Common\FAT_FileSystemf_opendir.Inc
+/*
+FRESULT %'ModuleName'%.%f_opendir(DIR* dp, const TCHAR* path)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_opendir
+%-BW_METHOD_END f_opendir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN f_closedir
+%ifdef f_closedir
+%define! Pardp
+%define! RetVal
+%include Common\FAT_FileSystemf_closedir.Inc
+/*
+FRESULT %'ModuleName'%.%f_closedir(DIR* dp)
+{
+  *** method is implemented as macro in the header file
+}
+*/
+
+%endif %- f_closedir
+%-BW_METHOD_END f_closedir
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
