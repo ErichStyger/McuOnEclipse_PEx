@@ -415,10 +415,12 @@ void %'ModuleName'%.%SoftwareReset(void)
      To write to this register, you must write 0x5FA to the VECTKEY field, otherwise the processor ignores the write.
      SYSRESETREQ will cause a system reset asynchronously, so need to wait afterwards.
    */
+#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_PEX_SDK_USED
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
 #else
   SCB->AIRCR = (0x5FA<<SCB_AIRCR_VECTKEY_Pos)|SCB_AIRCR_SYSRESETREQ_Msk;
+#endif
 #endif
   for(;;) {
     /* wait until reset */
@@ -440,6 +442,7 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
+#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   sim_uid_t tmp;
   int i, j;
@@ -523,6 +526,9 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 #endif
 #endif /* SDK V2.0 */
   return ERR_OK;
+#else
+  return ERR_FAILED;
+#endif
 }
 
 %endif %- UIDGet
@@ -624,6 +630,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %include Common\KinetisToolsGetKinetisFamilyString.Inc
 %'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void)
 {
+#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0
   #ifdef SIM_SDID /* normal Kinetis define this */
     int32_t val;
@@ -632,7 +639,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     if (val>=0 && val<=(int32_t)(sizeof(KinetisM0FamilyStrings)/sizeof(KinetisM0FamilyStrings[0]))) {
       return KinetisM0FamilyStrings[val];
     } else {
-      return (%'ModuleName'_ConstCharPtr)"M0 Family Id out of bounds!";
+      return (%'ModuleName'_ConstCharPtr)"M0 Family ID out of bounds!";
     }
   #elif defined(SIM_SRSID_FAMID) /* MKE02Z4 defines this, hopefully all other KE too... */
     return "KE0x Family"; /* 0000 only KE0x supported */
@@ -663,6 +670,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 #else
   #error "Unknown architecture!"
   return (%'ModuleName'_ConstCharPtr)"ERROR";
+#endif
+#else
+  return (%'ModuleName'_ConstCharPtr)"NOT KINETIS";
 #endif
 }
 
@@ -851,9 +861,9 @@ uint32_t %'ModuleName'%.%GetCycleCounter(void)
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
 %ifdef ParseCommand
-  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  1
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  (1)
 %else
-  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  0
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  (0)
 %endif %- ParseCommand
     /*!< 1: shell support enabled, 0: otherwise */
 #endif

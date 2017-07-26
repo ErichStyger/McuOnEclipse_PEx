@@ -79,12 +79,13 @@
 %-     #include "header_name.h"
 
 /* other includes needed */
+#if McuWait_CONFIG_USE_RTOS_WAIT
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
 /* include RTOS header files */
-#include "FreeRTOS.h" /* for vTaskDelay() */
-#include "task.h"
+  #include "FreeRTOS.h" /* for vTaskDelay() */
+  #include "task.h"
 %endif
-
+#endif
 %-
 %-BW_CUSTOM_INCLUDE_END_H
 %-
