@@ -315,7 +315,7 @@ _vPortStartFirstTask:
   EXTERN vTaskSwitchContext
   EXTERN xTaskIncrementTick
 
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
   PUBLIC SysTick_Handler
   PUBLIC PendSV_Handler
   PUBLIC SVC_Handler
@@ -333,7 +333,7 @@ _vPortStartFirstTask:
   PUBLIC vPortEnableVFP
 #endif
 /*-----------------------------------------------------------*/
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 SysTick_Handler:
 #else
 vPortTickHandler:
@@ -355,7 +355,7 @@ vSetMSP:
   bx lr
   nop
 /*-----------------------------------------------------------*/
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 PendSV_Handler:
 #else
 vPortPendSVHandler:
@@ -461,7 +461,7 @@ vPortClearInterruptMask:
   bx r14
   nop
 /*-----------------------------------------------------------*/
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 SVC_Handler
 #else
 vPortSVCHandler:

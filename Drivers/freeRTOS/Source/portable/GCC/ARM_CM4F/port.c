@@ -97,7 +97,7 @@
 /* macros dealing with tick counter */
 %if (CPUfamily = "Kinetis")
 #if configSYSTICK_USE_LOW_POWER_TIMER
-  #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED
     /*! \todo */
     #define LPTMR0_BASE_PTR             LPTMR0  /* low power timer address base */
     #define configLOW_POWER_TIMER_VECTOR_NUMBER   LPTMR0_IRQn /* low power timer IRQ number */
@@ -143,11 +143,11 @@ typedef unsigned long TickCounter_t; /* enough for 24 bit Systick */
 #if configSYSTICK_USE_LOW_POWER_TIMER
   #define TICK_NOF_BITS               16
   #define COUNTS_UP                   1 /* LPTMR is counting up */
-  #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED
     #define SET_TICK_DURATION(val)      LPTMR_SetTimerPeriod(LPTMR0_BASE_PTR, val);
     #define GET_TICK_DURATION()         LPTMR0_BASE_PTR->CNR /*! \todo SDK has no access method for this */
     #define GET_TICK_CURRENT_VAL(addr)  *(addr)=LPTMR_GetCurrentTimerCount(LPTMR0_BASE_PTR)
-  #elif %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  #else
     #define SET_TICK_DURATION(val)      LPTMR_PDD_WriteCompareReg(LPTMR0_BASE_PTR, val)
     #define GET_TICK_DURATION()         LPTMR_PDD_ReadCompareReg(LPTMR0_BASE_PTR)
     #define GET_TICK_CURRENT_VAL(addr)  *(addr)=LPTMR_PDD_ReadCounterReg(LPTMR0_BASE_PTR)
@@ -201,10 +201,10 @@ typedef %@TickCntr@'ModuleName'%.TTimerValue TickCounter_t; /* for holding count
 %endif
     #if configSYSTICK_USE_LOW_POWER_TIMER
       /* using Low Power Timer */
-      #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+      #if CONFIG_PEX_SDK_USED%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED
         #define LPTMR_CSR_TCF_MASK           0x80u
         #define TICK_INTERRUPT_HAS_FIRED()   (LPTMR0_BASE_PTR->CSR&LPTMR_CSR_TCF_MASK)!=0/*! \todo */  /* returns TRUE if tick interrupt had fired */
-     #elif %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+      #else
         #define TICK_INTERRUPT_HAS_FIRED()   (LPTMR_PDD_GetInterruptFlag(LPTMR0_BASE_PTR)!=0)  /* returns TRUE if tick interrupt had fired */
       #endif
       #define TICK_INTERRUPT_FLAG_RESET()  /* not needed */
@@ -1571,7 +1571,7 @@ portLONG uxGetTickCounterValue(void) {
 /*-----------------------------------------------------------*/
 %endif
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 #if configSYSTICK_USE_LOW_POWER_TIMER
 void LPTMR0_IRQHandler(void) { /* low power timer */
 #else
@@ -1615,7 +1615,7 @@ void vPortTickHandler(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='yes'
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 #if configSYSTICK_USE_LOW_POWER_TIMER
 void LPTMR0_IRQHandler(void) { /* low power timer */
 #else
@@ -1625,7 +1625,7 @@ void SysTick_Handler(void) { /* normal SysTick */
 void vPortTickHandler(void) {
 #endif
 %else
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 #if configSYSTICK_USE_LOW_POWER_TIMER
   __attribute__ ((naked)) void LPTMR0_IRQHandler(void) { /* low power timer */
 #else
@@ -1905,7 +1905,7 @@ void vPortStartFirstTask(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
@@ -1934,7 +1934,7 @@ __asm void vPortSVCHandler(void) {
 }
 /*-----------------------------------------------------------*/
 #elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Cortex M0+ and Keil */
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
 __asm void vPortSVCHandler(void) {
@@ -1946,7 +1946,7 @@ __asm void vPortSVCHandler(void) {
 #endif
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void SVC_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortSVCHandler(void) {
@@ -1983,7 +1983,7 @@ __asm volatile (
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4 or M7 */
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
 __asm void vPortPendSVHandler(void) {
@@ -2027,7 +2027,7 @@ __asm void vPortPendSVHandler(void) {
   nop
 }
 #elif configCPU_FAMILY_IS_ARM_M0(configCPU_FAMILY) /* Keil: Cortex M0+ */
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
 __asm void vPortPendSVHandler(void) {
@@ -2082,7 +2082,7 @@ __attribute__ ((naked)) void vPortPendSVHandler_native(void);
 __attribute__ ((naked)) void PendSV_Handler_jumper(void);
 
 __attribute__ ((naked)) void vPortPendSVHandler_native(void) {
-#elif %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#elif !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {
@@ -2209,7 +2209,7 @@ __attribute__ ((naked)) void PendSV_Handler_jumper(void) {
   __asm volatile("b vPortPendSVHandler_native \n");
 }
 
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED /* the SDK expects different interrupt handler names */
+#if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {

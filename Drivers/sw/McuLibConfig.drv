@@ -277,12 +277,14 @@ extern "C" {
   /*!< 1: NXP Kinetis CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP LPC CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 %else
-#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
+#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP Kinetis CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+#define %'ModuleName'%.CONFIG_CPU_IS_LPC             (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP LPC CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */

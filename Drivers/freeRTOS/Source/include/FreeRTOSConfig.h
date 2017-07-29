@@ -152,8 +152,8 @@
 #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 0 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
 #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1 /* 1 kHz LPO timer. Set to 1 if not used */
 %endif
-#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
-/* The SDK variable SystemCoreClock contains the current clock speed */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED || %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_GENERIC
+/* The CMSIS variable SystemCoreClock contains the current clock speed */
   extern uint32_t SystemCoreClock;
   #define configCPU_CLOCK_HZ                                       %>50 SystemCoreClock /* CPU clock frequency */
   #define configBUS_CLOCK_HZ                                       %>50 SystemCoreClock /* Bus clock frequency */
@@ -162,9 +162,9 @@
   #define configCPU_CLOCK_HZ                                       %>50 %configCPU_CLOCK_HZ /* CPU clock frequency */
 %else
   #if configCPU_FAMILY_IS_ARM(configCPU_FAMILY) /* Kinetis defines this one in Cpu.h */
-    #define configCPU_CLOCK_HZ                                       %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
+    #define configCPU_CLOCK_HZ                                     %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
   #else
-    #define configCPU_CLOCK_HZ                                       %>50 CPU_INSTR_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
+    #define configCPU_CLOCK_HZ                                     %>50 CPU_INSTR_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
   #endif
 %endif
 %if defined(configBUS_CLOCK_HZ)
