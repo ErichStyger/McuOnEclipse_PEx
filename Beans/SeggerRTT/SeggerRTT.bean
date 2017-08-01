@@ -4,7 +4,7 @@
     <Name>SeggerRTT</Name>
     <Description>Segger RTT (Real Time Terminal)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.081</Version>
+    <Version>01.082</Version>
     <Icon>SeggerRTT</Icon>
     <TypesFiles>PE,SeggerRTT\SeggerRTT</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -405,6 +405,46 @@
         <IconPopup>false</IconPopup>
         <SortStyle/>
       </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Source Folders</Name>
+        <Symbol>FolderGroup</Symbol>
+        <Hint>Configures the source folder names</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TStrgItem>
+              <Name>Source Folder</Name>
+              <Symbol>SeggerRTTSrcFolderName</Symbol>
+              <Hint>Folder name where to store the Segger RTT source files. Setting can be empty.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
+          </GrupItem>
+          <GrupItem>
+            <TStrgItem>
+              <Name>Config Folder</Name>
+              <Symbol>SeggerRTTConfigFolderName</Symbol>
+              <Hint>Folder name where to store the Segger RTT configuration source files. Setting can be empty.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
