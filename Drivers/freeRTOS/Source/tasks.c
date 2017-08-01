@@ -404,12 +404,26 @@ which static variables must be declared volatile. */
 PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 
 /* Lists for ready and blocked tasks. --------------------*/
-PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
-PRIVILEGED_DATA static List_t xDelayedTaskList1;						/*< Delayed tasks. */
-PRIVILEGED_DATA static List_t xDelayedTaskList2;						/*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
-PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;				/*< Points to the delayed task list currently being used. */
-PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;		/*< Points to the delayed task list currently being used to hold tasks that have overflowed the current tick count. */
-PRIVILEGED_DATA static List_t xPendingReadyList;						/*< Tasks that have been readied while the scheduler was suspended.  They will be moved to the ready list when the scheduler is resumed. */
+#if configLTO_HELPER /* << EST */
+  /* If using -lto (Link Time Optimization), the linker might replace/remove the names of the following variables.
+   * If using a FreeRTOS Kernel aware debugger (e.g. Segger FreeRTOS task aware plugin), then the debugger won't be able to see the symbols and will fail.
+   * Therefore (more as of a hack) the symbols are defined with external linkage, even if not used from other modules.
+   * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
+   */
+  PRIVILEGED_DATA /*static*/ List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
+  PRIVILEGED_DATA /*static*/ List_t xDelayedTaskList1;            /*< Delayed tasks. */
+  PRIVILEGED_DATA /*static*/ List_t xDelayedTaskList2;            /*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
+  PRIVILEGED_DATA /*static*/ List_t * volatile pxDelayedTaskList;       /*< Points to the delayed task list currently being used. */
+  PRIVILEGED_DATA /*static*/ List_t * volatile pxOverflowDelayedTaskList;   /*< Points to the delayed task list currently being used to hold tasks that have overflowed the current tick count. */
+  PRIVILEGED_DATA /*static*/ List_t xPendingReadyList;            /*< Tasks that have been readied while the scheduler was suspended.  They will be moved to the ready list when the scheduler is resumed. */
+#else
+  PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
+  PRIVILEGED_DATA static List_t xDelayedTaskList1;            /*< Delayed tasks. */
+  PRIVILEGED_DATA static List_t xDelayedTaskList2;            /*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
+  PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;       /*< Points to the delayed task list currently being used. */
+  PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;   /*< Points to the delayed task list currently being used to hold tasks that have overflowed the current tick count. */
+  PRIVILEGED_DATA static List_t xPendingReadyList;            /*< Tasks that have been readied while the scheduler was suspended.  They will be moved to the ready list when the scheduler is resumed. */
+#endif
 
 #if( INCLUDE_vTaskDelete == 1 )
 
@@ -419,15 +433,40 @@ PRIVILEGED_DATA static List_t xPendingReadyList;						/*< Tasks that have been r
 #endif
 
 #if ( INCLUDE_vTaskSuspend == 1 )
-
+#if configLTO_HELPER /* << EST */
+  /* If using -lto (Link Time Optimization), the linker might replace/remove the names of the following variables.
+   * If using a FreeRTOS Kernel aware debugger (e.g. Segger FreeRTOS task aware plugin), then the debugger won't be able to see the symbols and will fail.
+   * Therefore (more as of a hack) the symbols are defined with external linkage, even if not used from other modules.
+   * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
+   */
+  PRIVILEGED_DATA /*static*/ List_t xSuspendedTaskList;         /*< Tasks that are currently suspended. */
+#else
 	PRIVILEGED_DATA static List_t xSuspendedTaskList;					/*< Tasks that are currently suspended. */
-
+#endif
 #endif
 
 /* Other file private variables. --------------------------------*/
-PRIVILEGED_DATA static volatile UBaseType_t uxCurrentNumberOfTasks 	= ( UBaseType_t ) 0U;
+#if configLTO_HELPER /* << EST */
+  /* If using -lto (Link Time Optimization), the linker might replace/remove the names of the following variables.
+   * If using a FreeRTOS Kernel aware debugger (e.g. Segger FreeRTOS task aware plugin), then the debugger won't be able to see the symbols and will fail.
+   * Therefore (more as of a hack) the symbols are defined with external linkage, even if not used from other modules.
+   * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
+   */
+	PRIVILEGED_DATA /*static*/ volatile UBaseType_t uxCurrentNumberOfTasks 	= ( UBaseType_t ) 0U;
+#else
+  PRIVILEGED_DATA static volatile UBaseType_t uxCurrentNumberOfTasks  = ( UBaseType_t ) 0U;
+#endif
 PRIVILEGED_DATA static volatile TickType_t xTickCount 				= ( TickType_t ) 0U;
-PRIVILEGED_DATA static volatile UBaseType_t uxTopReadyPriority 		= tskIDLE_PRIORITY;
+#if configLTO_HELPER /* << EST */
+  /* If using -lto (Link Time Optimization), the linker might replace/remove the names of the following variables.
+   * If using a FreeRTOS Kernel aware debugger (e.g. Segger FreeRTOS task aware plugin), then the debugger won't be able to see the symbols and will fail.
+   * Therefore (more as of a hack) the symbols are defined with external linkage, even if not used from other modules.
+   * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
+   */
+  PRIVILEGED_DATA /*static*/ volatile UBaseType_t uxTopReadyPriority 		= tskIDLE_PRIORITY;
+#else
+  PRIVILEGED_DATA static volatile UBaseType_t uxTopReadyPriority    = tskIDLE_PRIORITY;
+#endif
 PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning 		= pdFALSE;
 PRIVILEGED_DATA static volatile UBaseType_t uxPendedTicks 			= ( UBaseType_t ) 0U;
 PRIVILEGED_DATA static volatile BaseType_t xYieldPending 			= pdFALSE;

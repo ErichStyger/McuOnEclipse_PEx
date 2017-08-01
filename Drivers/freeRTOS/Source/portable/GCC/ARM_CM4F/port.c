@@ -1215,7 +1215,7 @@ void vPortStopTickTimer(void) {
 #if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 /* added noinline attribute to prevent the GNU linker to optimize the following function. That symbol is required for the FreeRTOS GDB thread awareness by Segger */
-void __attribute__ ((noinline)) vPortEnableVFP(void) {
+void __attribute__ ((noinline, used)) vPortEnableVFP(void) {
   /* The FPU enable bits are in the CPACR. */
   __asm volatile (
     "  ldr.w r0, =0xE000ED88  \n" /* CAPCR, 0xE000ED88 */
@@ -1849,8 +1849,8 @@ __asm void vPortStartFirstTask(void) {
 /* Need the 'noinline', as latest gcc with -O3 tries to inline it, and gives error message: "Error: symbol `pxCurrentTCBConst2' is already defined" */
 __attribute__((noinline))
 void vPortStartFirstTask(void) {
-#if configUSE_TOP_USED_PRIORITY
-  /* only needed for openOCD thread awareness. It needs the symbol uxTopUsedPriority present after linking */
+#if configUSE_TOP_USED_PRIORITY || configLTO_HELPER
+  /* only needed for openOCD or Segger FreeRTOS thread awareness. It needs the symbol uxTopUsedPriority present after linking */
   {
     extern volatile const int uxTopUsedPriority;
     __attribute__((__unused__)) volatile uint8_t dummy_value_for_openocd;

@@ -371,6 +371,10 @@ There are 4 options:<br />
   <b>Enable GDB Debug Helper</b></a> - If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. 
   </li>
   <li>
+  <a name="EnableLTODebugHelper">
+  <b>Enable LinkTimeOptimizer Helper</b></a> - This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.
+  </li>
+  <li>
   <a name="uxTopUsedPriority">
   <b>uxTopUsedPriority</b></a> - Configures configUSE_TOP_USED_PRIORITY. OpenOCD Thread Aware debugging needs the variable uxTopUsedPriority present.
   </li>

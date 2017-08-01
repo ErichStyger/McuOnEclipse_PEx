@@ -4763,6 +4763,15 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
    /*!< 1: enable special GDB stack backtrace debug helper; 0: disabled */
 #endif
 
+#ifndef configLTO_HELPER
+%if defined(EnableLTODebugHelper) & %EnableLTODebugHelper='yes'
+  #define configLTO_HELPER                                       %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC))
+%else
+  #define configLTO_HELPER                                       %>50 (0 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY) && (configCOMPILER==configCOMPILER_ARM_GCC))
+%endif
+   /*!< 1: enable special GNU Link Time Optimizer (-lto) debug helper code; 0: disabled */
+#endif
+
 #ifndef configHEAP_SCHEME_IDENTIFICATION
 %if defined(freeRTOSMemorySchemeConstant) & %freeRTOSMemorySchemeConstant='yes'
   #define configHEAP_SCHEME_IDENTIFICATION                       %>50 (1 && configCPU_FAMILY_IS_ARM(configCPU_FAMILY))
