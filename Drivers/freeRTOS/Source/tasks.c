@@ -427,7 +427,16 @@ PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 
 #if( INCLUDE_vTaskDelete == 1 )
 
+#if configLTO_HELPER /* << EST */
+  /* If using -lto (Link Time Optimization), the linker might replace/remove the names of the following variables.
+   * If using a FreeRTOS Kernel aware debugger (e.g. Segger FreeRTOS task aware plugin), then the debugger won't be able to see the symbols and will fail.
+   * Therefore (more as of a hack) the symbols are defined with external linkage, even if not used from other modules.
+   * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
+   */
 	PRIVILEGED_DATA static List_t xTasksWaitingTermination;				/*< Tasks that have been deleted - but their memory not yet freed. */
+#else
+  PRIVILEGED_DATA /*static*/ List_t xTasksWaitingTermination;       /*< Tasks that have been deleted - but their memory not yet freed. */
+#endif
 	PRIVILEGED_DATA static volatile UBaseType_t uxDeletedTasksWaitingCleanUp = ( UBaseType_t ) 0U;
 
 #endif
