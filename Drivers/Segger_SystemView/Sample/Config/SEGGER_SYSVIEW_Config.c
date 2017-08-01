@@ -72,10 +72,10 @@ Revision: $Rev: 3734 $
 **********************************************************************
 */
 #include "%sdk.h"
-#define SYSVIEW_USING_KINETIS_SDK                                    %>50 (%@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
+#define SYSVIEW_USING_PEX                                            %>50 (%@sdk@'ModuleName'%.CONFIG_PEX_SDK_USED) /* 1: project is a Kinetis SDK Processor Expert project; 0: No Kinetis Processor Expert project */
 #define SYSVIEW_USING_FREERTOS                                       %>50 SEGGER_RTT_FREERTOS_PRESENT /* 1: using FreeRTOS; 0: Bare metal */
 
-#if !SYSVIEW_USING_KINETIS_SDK
+#if SYSVIEW_USING_PEX
   #include "%ProcessorModule.h"
 #endif
 #if SYSVIEW_USING_FREERTOS
@@ -99,14 +99,14 @@ Revision: $Rev: 3734 $
 #define SYSVIEW_DEVICE_NAME     %SysViewDeviceName /* device name, configured in properties */
 
 // System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
-#if SYSVIEW_USING_KINETIS_SDK
+#if SYSVIEW_USING_FREERTOS
+  #define SYSVIEW_CPU_FREQ                                       %>50 configCPU_CLOCK_HZ
+#elif SYSVIEW_USING_PEX
+  #define SYSVIEW_CPU_FREQ                                       %>50 configCPU_CLOCK_HZ
+#else
   /* The SDK variable SystemCoreClock contains the current clock speed */
   extern uint32_t SystemCoreClock;
   #define SYSVIEW_CPU_FREQ                                       %>50 (SystemCoreClock) /* CPU clock frequency */
-#elif SYSVIEW_USING_FREERTOS
-  #define SYSVIEW_CPU_FREQ                                       %>50 configCPU_CLOCK_HZ
-#else
-  #define SYSVIEW_CPU_FREQ                                       %>50 CPU_CORE_CLK_HZ /* CPU core clock defined in %ProcessorModule.h */
 #endif /* SYSVIEW_USING_KINETIS_SDK */
 
 // Frequency of the timestamp. Must match SEGGER_SYSVIEW_Conf.h
