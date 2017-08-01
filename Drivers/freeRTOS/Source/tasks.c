@@ -464,10 +464,11 @@ PRIVILEGED_DATA static volatile TickType_t xTickCount 				= ( TickType_t ) 0U;
    * See https://mcuoneclipse.com/2017/07/27/troubleshooting-tips-for-freertos-thread-aware-debugging-in-eclipse/
    */
   PRIVILEGED_DATA /*static*/ volatile UBaseType_t uxTopReadyPriority 		= tskIDLE_PRIORITY;
+  PRIVILEGED_DATA /*static*/ volatile BaseType_t xSchedulerRunning    = pdFALSE;
 #else
   PRIVILEGED_DATA static volatile UBaseType_t uxTopReadyPriority    = tskIDLE_PRIORITY;
+  PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning    = pdFALSE;
 #endif
-PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning 		= pdFALSE;
 PRIVILEGED_DATA static volatile UBaseType_t uxPendedTicks 			= ( UBaseType_t ) 0U;
 PRIVILEGED_DATA static volatile BaseType_t xYieldPending 			= pdFALSE;
 PRIVILEGED_DATA static volatile BaseType_t xNumOfOverflows 			= ( BaseType_t ) 0;
