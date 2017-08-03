@@ -1857,6 +1857,15 @@ void vPortStartFirstTask(void) {
     dummy_value_for_openocd = uxTopUsedPriority;
   }
 #endif
+#if( configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H == 1 && configUSE_TRACE_FACILITY==1)
+  /* reference FreeRTOSDebugConfig, otherwise it might get removed by the linker or optimizations */
+  {
+    extern const uint8_t FreeRTOSDebugConfig[];
+    if (FreeRTOSDebugConfig[0]==0) { /* just use it, so the linker cannot remove FreeRTOSDebugConfig[] */
+      for(;;); /* FreeRTOSDebugConfig[0] should always be non-zero, so this should never happen! */
+    }
+  }
+#endif
 #if configHEAP_SCHEME_IDENTIFICATION
   extern const uint8_t freeRTOSMemoryScheme; /* constant for NXP Kernel Awareness to indicate heap scheme */
   if (freeRTOSMemoryScheme>100) { /* reference/use variable so it does not get optimized by the linker */
