@@ -2716,6 +2716,7 @@ uint8_t %'ModuleName'%.%CopyFile(const uint8_t*srcFileName, const uint8_t *dstFi
   /* create destination file */
   fres = %'ModuleName'%.open(&fdst, (char*)dstFileName, FA_CREATE_ALWAYS | FA_WRITE);
   if (fres != FR_OK) {
+    (void)%'ModuleName'%.close(&fsrc); /* close the source file which we have open */
     FatFsFResultMsg((unsigned char*)"open destination file failed", fres, io);
     return ERR_FAILED;
   }
