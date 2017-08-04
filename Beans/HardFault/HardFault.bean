@@ -4,7 +4,7 @@
     <Name>HardFault</Name>
     <Description>Hard Fault Handler for ARM/Kinetis Cores</Description>
     <Author>Erich Styger</Author>
-    <Version>01.018</Version>
+    <Version>01.019</Version>
     <Icon>CPU_CHIP2</Icon>
     <TypesFiles>PE,HardFault\HardFault</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -52,7 +52,7 @@
     </Property>
     <Property>
       <TBoolItem>
-        <Name>Disabling write buffer</Name>
+        <Name>Disable write buffer</Name>
         <Symbol>DisableWriteBuffer</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>Only for ARM Cortex-M3 or later: Disables write buffer use during default memory map accesses. This causes all bus faults to be precise, but decreases the performance of the processor because stores to memory must complete before the next instruction can be executed. See https://community.nxp.com/docs/DOC-103810</Hint>
