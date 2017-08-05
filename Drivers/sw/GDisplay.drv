@@ -954,7 +954,7 @@ void %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %@Display@'ModuleName'%.NegPixel(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
   %'ModuleName'%.BUF_WORD(x,y) ^= %'ModuleName'%.BUF_WORD(x,y);
-#else %- use memory buffer
+#else
   %'ModuleName'%.BUF_BYTE(x,y) ^= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
 }
@@ -1000,7 +1000,7 @@ void %'ModuleName'%.%UpdateFull(void)
   return %'ModuleName'%.BUF_WORD(x,y);
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   return %@Display@'ModuleName'%.GetPixel(x, y);
-#else %- use memory buffer
+#else
   return (%'ModuleName'_PixelColor)%'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y);
 #endif
 }
