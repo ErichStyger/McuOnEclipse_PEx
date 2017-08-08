@@ -1159,7 +1159,7 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"Directory of ", io->stdOut);
   %@Shell@'ModuleName'%.SendStr(dirPathPtr, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-  fres = %'ModuleName'%.opendir(&dir, (char*)dirPathPtr);
+  fres = %'ModuleName'%.f_opendir(&dir, (char*)dirPathPtr);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"opendir failed", fres, io);
     return ERR_FAULT;
@@ -1259,6 +1259,7 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
     %@Shell@'ModuleName'%.SendStr((unsigned char*)" KBytes free", io->stdOut);
   }
 #endif
+  (void)%'ModuleName'%.f_closedir(&dir); /* close directory */
   io->stdOut('\r');
   io->stdOut('\n');
   return ERR_OK;
