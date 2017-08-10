@@ -265,7 +265,7 @@ void %'ModuleName'%.%Waitns(uint16_t ns);
 %-BW_METHOD_BEGIN WaitOSms
 %ifdef WaitOSms
 #if %'ModuleName'%.CONFIG_USE_RTOS_WAIT
-  #define %'ModuleName'%.%WaitOSms(ms) vTaskDelay(ms/portTICK_PERIOD_MS) /* use FreeRTOS API */
+  #define %'ModuleName'%.%WaitOSms(ms) vTaskDelay(pdMS_TO_TICKS(ms)) /* use FreeRTOS API */
 #else
   #define %'ModuleName'%.%WaitOSms(ms)  %'ModuleName'%.%Waitms(ms) /* use normal wait */
 #endif
