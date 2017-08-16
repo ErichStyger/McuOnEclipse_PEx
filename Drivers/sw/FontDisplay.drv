@@ -89,6 +89,10 @@
 
 #include "%ProcessorModule.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef %@GDisplay@'ModuleName'%.PixelDim   %'ModuleName'%.PixelDim;%>40/* type which can hold a integral type for the x/y pixel dimension. This is depending on the display used. */
 typedef %@GDisplay@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor;%>40/* Type definining the color type (depens on display used). */
 typedef GFONT_Callbacks %'ModuleName'%.Font;                     %>40/* Pointer to GFONT_Callbacks */
@@ -184,6 +188,10 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %-************************************************************************************************************
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */

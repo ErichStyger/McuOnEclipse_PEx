@@ -74,6 +74,11 @@
   %endfor
 %endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -666,6 +671,10 @@ void %'ModuleName'%.%Init(void);
 %-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /* ifndef __%'ModuleName'_H */
