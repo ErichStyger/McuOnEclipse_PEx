@@ -415,7 +415,7 @@ void %'ModuleName'%.%SoftwareReset(void)
      To write to this register, you must write 0x5FA to the VECTKEY field, otherwise the processor ignores the write.
      SYSRESETREQ will cause a system reset asynchronously, so need to wait afterwards.
    */
-#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_PEX_SDK_USED
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
 #else
@@ -442,7 +442,7 @@ void %'ModuleName'%.%SoftwareReset(void)
  */
 uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 {
-#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   sim_uid_t tmp;
   int i, j;
@@ -630,7 +630,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %include Common\KinetisToolsGetKinetisFamilyString.Inc
 %'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void)
 {
-#if %'ModuleName'%.CONFIG_CPU_IS_KINETIS
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0
   #ifdef SIM_SDID /* normal Kinetis define this */
     int32_t val;
