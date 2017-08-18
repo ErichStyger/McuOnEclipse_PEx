@@ -133,6 +133,8 @@
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'event_groups.h
 %include freeRTOS\Source\include\event_groups.h
 
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'freertos_tasks_c_additions.h
+%include freeRTOS\Source\include\freertos_tasks_c_additions.h
 %- -----------------------------------------
 %- MPU support files
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_wrappers.h
@@ -151,9 +153,6 @@
 
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'.gdbinit-FreeRTOS-helpers
 %include freeRTOS\gdbBacktraceDebug\.gdbinit-FreeRTOS-helpers
-
-%FILE %'DirRel_Code'%'RTOSPortDirFolder'freertos_tasks_c_additions.h
-%include freeRTOS\gdbBacktraceDebug\freertos_tasks_c_additions.h
 %- -----------------------------------------
 
 %undef RTOSSrcDirFolder
