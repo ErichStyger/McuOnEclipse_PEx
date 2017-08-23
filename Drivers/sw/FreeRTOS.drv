@@ -90,14 +90,16 @@
 
 /* MODULE %ModuleName. */
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
+#include "FreeRTOSConfig.h"
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
+#if configUSE_SHELL
+%if defined(Shell)
+  #include "%@Shell@ModuleName.h"
+%else
+  #include "McuShell.h"
 %endif
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -117,11 +119,7 @@
 #include <stddef.h>                                              %>40/* for size_t type */
 
 /* Macro for shell support */
-%ifdef ParseCommand
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED                     %>45 1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%else
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED                     %>45 0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%endif %- ParseCommand
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED                     %>45 (configUSE_SHELL) /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %if defined(GenerateRTOSPExMacros) & %GenerateRTOSPExMacros='no'
 #define %'ModuleName'%.GENERATE_PEX_RTOS_MACROS                  %>45 0  /* set to 1 to generate the RTOS macros PEX_RTOS_INIT() and PEX_RTOS_START() */
 %else
@@ -882,12 +880,14 @@ void %@TickCntr@OnInterrupt(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
+#if configUSE_SHELL
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
 %define! RetVal
 %include Common\FreeRTOSParseCommand.Inc
+#endif
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
@@ -1944,6 +1944,7 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
 %endif
 
 %if defined(Shell)
+#if configUSE_SHELL
 static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   #define SHELL_MAX_NOF_TASKS %ShellMaxNofTasks /* maximum number of tasks, as specified in the properties */
   UBaseType_t nofTasks, i;
@@ -2206,7 +2207,9 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   } /* if */
   return res;
 }
+#endif
 
+#if configUSE_SHELL
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
@@ -2226,13 +2229,16 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 #endif
   return ERR_OK;
 }
+#endif
 
+#if configUSE_SHELL
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  tasklist", (unsigned char*)"Print tasklist\r\n", io->stdOut);
   return ERR_OK;
 }
+#endif
 
 %endif
 %if defined(GenerateOSAFunctions) & %GenerateOSAFunctions='yes'
@@ -3248,6 +3254,7 @@ bool %'ModuleName'%.%xSemaphoreTakeFromISR(xSemaphoreHandle xSemaphore, signed_p
 %define! Pario
 %define! RetVal
 %include Common\FreeRTOSParseCommand.Inc
+#if configUSE_SHELL
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   if (%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_HELP)==0 || %@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' help")==0) {
@@ -3262,6 +3269,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   }
   return ERR_OK;
 }
+#endif
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
@@ -4650,6 +4658,8 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
+
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #include <hidef.h>
 %endif
@@ -4711,35 +4721,51 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 #define configCPU_FAMILY_IS_ARM_FPU(fam)                         %>50 (((fam)==configCPU_FAMILY_ARM_M4F) || ((fam)==configCPU_FAMILY_ARM_M7F))
 #define configCPU_FAMILY_IS_ARM(fam)                             %>50 (configCPU_FAMILY_IS_ARM_M0(fam) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam))
 
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+  /* determine core based on library configuration */
+  #if %@KinetisSDK@'ModuleName'%.CONFIG_CORTEX_M==0
+    #define configCPU_FAMILY                                     %>50 configCPU_FAMILY_ARM_M0P
+  #elif %@KinetisSDK@'ModuleName'%.CONFIG_CORTEX_M==4 && %@KinetisSDK@'ModuleName'%.CONFIG_FPU_PRESENT
+    #define configCPU_FAMILY                                     %>50 configCPU_FAMILY_ARM_M4F
+  #elif %@KinetisSDK@'ModuleName'%.CONFIG_CORTEX_M==4
+    #define configCPU_FAMILY                                     %>50 configCPU_FAMILY_ARM_M4
+  #elif %@KinetisSDK@'ModuleName'%.CONFIG_CORTEX_M==7 && %@KinetisSDK@'ModuleName'%.CONFIG_FPU_PRESENT
+    #define configCPU_FAMILY                                     %>50 configCPU_FAMILY_ARM_M7F
+  #elif %@KinetisSDK@'ModuleName'%.CONFIG_CORTEX_M==7
+    #define configCPU_FAMILY                                     %>50 configCPU_FAMILY_ARM_M7
+  #else
+    #error "unsupported configuaration!"
+  #endif
+#else
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_S08
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_S08
 %elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_S12
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_S12
 %elif (CPUfamily = "ColdFireV1")
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_CF1
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_CF1
 %elif (CPUfamily = "MCF")
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_CF2
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_CF2
 %elif (CPUfamily = "56800")
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_DSC
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_DSC
 %elif (CPUfamily = "Kinetis")
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes' %- Note: for IAR this is defined in portasm.s too!
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_ARM_M0P
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_ARM_M0P
 %elif %ARMFamilyType="M7"
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_ARM_M7
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_ARM_M7
 %elif %ARMFamilyType="M7F"
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_ARM_M7F
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_ARM_M7F
 %else %-M4, M4F or M7
  %if %CPUDB_prph_has_feature(CPU, FPU) = 'no'
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_ARM_M4
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_ARM_M4
  %else
-#define configCPU_FAMILY                                         %>50 configCPU_FAMILY_ARM_M4F
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_ARM_M4F
  %endif
 %endif
 %else
-#define configCPU_FAMILY                                         %>50 0
-#error "Unknown CPU family %CPUfamily?"
+  #define configCPU_FAMILY                                       %>50 0
+  #error "Unknown CPU family %CPUfamily?"
 %endif
-
+#endif
 /* MPU support: portUSING_MPU_WRAPPERS is defined (or not) in portmacro.h and turns on MPU support. Currently only supported for ARM Cortex-M4/M3 ports */
 #ifndef configUSE_MPU_SUPPORT
 %if defined(useMPUsupport) & %useMPUsupport='yes'
@@ -4804,6 +4830,16 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
   #define configLINKER_HEAP_SIZE_SYMBOL                          %>50 %LinkerHeapSizeSymbolName
     /*!< Linker symbol used to denote the size of the heap, used for heap memory scheme 6 (newlib) */
 #endif
+
+#ifndef configUSE_SHELL
+%if defined(Shell)
+  #define configUSE_SHELL                                        %>50 (1)
+%else
+  #define configUSE_SHELL                                        %>50 (0)
+%endif
+   /*!< 1: enable Shell and command line support; 0: disabled */
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

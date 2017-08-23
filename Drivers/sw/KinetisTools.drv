@@ -67,12 +67,10 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+#include <stddef.h> /* for size_t */
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+  #include "%@Shell@ModuleName.h" /* Command line shell */
+#endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -140,12 +138,14 @@ extern "C" {
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
 %define! RetVal
 %include Common\KinetisToolsParseCommand.Inc
+#endif
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
@@ -324,7 +324,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-#include <stddef.h> /* for size_t */
+#include "%@Utility@ModuleName.h" /* various utility functions */
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #include "fsl_sim.h" /* system integration module */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
@@ -372,6 +372,7 @@ static const unsigned char *KinetisM0FamilyStrings[] =
 #endif
 
 %if defined(Shell)
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 {
   uint8_t buf[1+(16*5)+1+1]; /* "{0xAA,...0xBB}" */
@@ -393,7 +394,9 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   return ERR_OK;
 }
+#endif
 
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
 {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
@@ -401,6 +404,7 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
   return ERR_OK;
 }
+#endif
 %endif %- Shell
 
 %-BW_IMPLEMENT_START
@@ -600,6 +604,7 @@ uint8_t %'ModuleName'%.%UIDtoString(const %'ModuleName'_UID *uid, uint8_t *buf, 
 %define! Pario
 %define! RetVal
 %include Common\KinetisToolsParseCommand.Inc
+#if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   uint8_t res = ERR_OK;
@@ -620,6 +625,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   }
   return res;
 }
+#endif
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
