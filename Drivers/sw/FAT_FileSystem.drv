@@ -1159,7 +1159,7 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"Directory of ", io->stdOut);
   %@Shell@'ModuleName'%.SendStr(dirPathPtr, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-  fres = %'ModuleName'%.f_opendir(&dir, (char*)dirPathPtr);
+  fres = %'ModuleName'%.f_opendir(&dir, (const TCHAR*)dirPathPtr);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"opendir failed", fres, io);
     return ERR_FAULT;
@@ -1247,7 +1247,7 @@ static uint8_t PrintDir(const uint8_t *dirPathPtr, const %@Shell@'ModuleName'%.S
   %@Shell@'ModuleName'%.SendStr((unsigned char*)" Dir(s)", io->stdOut);
 #if !%'ModuleName'%.FS_READONLY
   /* number of free bytes */
-  fres = %'ModuleName'%.getfree((char*)dirPathPtr, &p1, &fs);
+  fres = %'ModuleName'%.getfree((const TCHAR*)dirPathPtr, &p1, &fs);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"getfree failed", fres, io);
   } else {
@@ -1289,7 +1289,7 @@ static uint8_t DirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Cons
   } else { /* use current directory */
 #if %'ModuleName'%.FS_RPATH >= 2
     %'ModuleName'%.FRESULT fres;
-    fres = %'ModuleName'%.getcwd((char*)%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName));
+    fres = %'ModuleName'%.getcwd((TCHAR*)%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName));
     if(fres!=FR_OK) {
       FatFsFResultMsg((unsigned char*)"getcwd failed", fres, io);
       res = ERR_FAILED;
@@ -1508,7 +1508,7 @@ static uint8_t CdCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Const
 #if %'ModuleName'%.FS_RPATH >= 2
     %'ModuleName'%.FRESULT fres;
 
-    fres = %'ModuleName'%.getcwd((char*)%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName));
+    fres = %'ModuleName'%.getcwd((TCHAR*)%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName));
     if(fres!=FR_OK) {
       FatFsFResultMsg((unsigned char*)"getcwd failed", fres, io);
       res = ERR_FAILED;
@@ -2709,13 +2709,13 @@ uint8_t %'ModuleName'%.%CopyFile(const uint8_t*srcFileName, const uint8_t *dstFi
     return ERR_FAILED;
   }
   /* open source file */
-  fres = %'ModuleName'%.open(&fsrc, (char*)srcFileName, FA_OPEN_EXISTING | FA_READ);
+  fres = %'ModuleName'%.open(&fsrc, (const TCHAR*)srcFileName, FA_OPEN_EXISTING | FA_READ);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"open source file failed", fres, io);
     return ERR_FAILED;
   }
   /* create destination file */
-  fres = %'ModuleName'%.open(&fdst, (char*)dstFileName, FA_CREATE_ALWAYS | FA_WRITE);
+  fres = %'ModuleName'%.open(&fdst, (const TCHAR*)dstFileName, FA_CREATE_ALWAYS | FA_WRITE);
   if (fres != FR_OK) {
     (void)%'ModuleName'%.close(&fsrc); /* close the source file which we have open */
     FatFsFResultMsg((unsigned char*)"open destination file failed", fres, io);
@@ -2787,7 +2787,7 @@ uint8_t %'ModuleName'%.%DeleteFile(const uint8_t *fileName, const %@Shell@'Modul
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  fres = %'ModuleName'%.unlink((char*)fileName);
+  fres = %'ModuleName'%.unlink((const TCHAR*)fileName);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"unlink failed", fres, io);
     return ERR_FAILED;
@@ -2813,7 +2813,7 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  fres = %'ModuleName'%.open(&fp, (char*)fileName, FA_CREATE_NEW);
+  fres = %'ModuleName'%.open(&fp, (const TCHAR*)fileName, FA_CREATE_NEW);
   if (fres != FR_OK) {
     FatFsFResultMsg((unsigned char*)"creating new file failed", fres, io);
     return ERR_FAILED;
@@ -2964,7 +2964,7 @@ uint8_t %'ModuleName'%.%MakeDirectory(const uint8_t *dirName, const %@Shell@'Mod
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  fres = %'ModuleName'%.mkdir((char*)dirName);
+  fres = %'ModuleName'%.mkdir((const TCHAR*)dirName);
   if(fres!=FR_OK) {
     FatFsFResultMsg((unsigned char*)"mkdir failed", fres, io);
     return ERR_FAILED;
@@ -2986,7 +2986,7 @@ uint8_t %'ModuleName'%.%ChangeDirectory(const uint8_t *dirName, const %@Shell@'M
 #if %'ModuleName'%.FS_RPATH > 0
   %'ModuleName'%.FRESULT fres;
 
-  if ((fres=%'ModuleName'%.chdir((char*)dirName)) != FR_OK) {
+  if ((fres=%'ModuleName'%.chdir((const TCHAR*)dirName)) != FR_OK) {
     FatFsFResultMsg((unsigned char*)"chdir failed", fres, io);
     return ERR_FAILED;
   }
@@ -3024,7 +3024,7 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  fres = %'ModuleName'%.rename((char*)srcFileName, (char*)dstFileName);
+  fres = %'ModuleName'%.rename((const TCHAR*)srcFileName, (const TCHAR*)dstFileName);
   if(fres!=FR_OK) {
     FatFsFResultMsg((unsigned char*)"rename failed", fres, io);
     return ERR_FAILED;
@@ -3376,7 +3376,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
 
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Create benchmark file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
-  if (%'ModuleName'%.%open(&fp, "./bench.txt", FA_CREATE_ALWAYS|FA_WRITE)!=FR_OK) {
+  if (%'ModuleName'%.%open(&fp, (const TCHAR*)"./bench.txt", FA_CREATE_ALWAYS|FA_WRITE)!=FR_OK) {
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -3399,7 +3399,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   /* read benchmark */
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)"Read 100kB benchmark file...\r\n", io->stdOut);
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
-  if (%'ModuleName'%.%open(&fp, "./bench.txt", FA_READ)!=FR_OK) {
+  if (%'ModuleName'%.%open(&fp, (const TCHAR*)"./bench.txt", FA_READ)!=FR_OK) {
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"*** Failed opening benchmark file!\r\n", io->stdErr);
     return ERR_FAILED;
   }
