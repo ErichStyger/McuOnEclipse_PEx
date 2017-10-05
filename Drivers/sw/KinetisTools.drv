@@ -69,7 +69,11 @@
 
 #include <stddef.h> /* for size_t */
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+%if defined(Shell)
   #include "%@Shell@ModuleName.h" /* Command line shell */
+%else
+  #include "McuShell.h" /* Command line shell */
+%endif
 #endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
