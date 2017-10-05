@@ -696,10 +696,10 @@ void %'ModuleName'%.%vTraceSetMutexName(void *mutex, char *name)
 %include Common\PercepioTraceStartup.Inc
 void %'ModuleName'%.%Startup(void)
 {
-#if configUSE_TRACE_HOOKS /* FreeRTOS using Percepio Trace */
+#if configUSE_PERCEPIO_TRACE_HOOKS /* FreeRTOS using Percepio Trace */
   vTraceSetFrequency(configSYSTICK_CLOCK_HZ);
   vTraceEnable(%'ModuleName'%.CONFIG_START_TRACE_IN_STARTUP_MODE); /* snapshot trace, from startup */
-#endif /* configUSE_TRACE_HOOKS */
+#endif /* configUSE_PERCEPIO_TRACE_HOOKS */
 }
 
 %endif %- Startup

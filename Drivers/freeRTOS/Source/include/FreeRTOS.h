@@ -335,15 +335,10 @@ extern "C" {
 #endif
 
 %- << EST: Modification for Processor Expert port
-#if configUSE_TRACE_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
-  #error "Only one trace implementation can be active"
-#endif
-#if configUSE_TRACE_HOOKS /* << EST */
-  //#include "trcKernelPort.h" /* include Percepio trace macro definition */
-#endif
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
   #include "SEGGER_SYSVIEW_FreeRTOS.h" /* include Segger System Viewer macro definitions */
 #endif
+%- << EST: end
 
 /* Remove any unused trace macros. */
 #ifndef traceSTART
@@ -1112,7 +1107,7 @@ typedef struct xSTATIC_TIMER
 
 #endif /* INC_FREERTOS_H */
 
-#if configUSE_TRACE_HOOKS /* << EST */
+#if configUSE_PERCEPIO_TRACE_HOOKS /* << EST */
   #include "trcRecorder.h"
 #endif
 

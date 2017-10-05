@@ -118,6 +118,14 @@
 #include "timers.h"                                              %>40/* timer module API */
 #include <stddef.h>                                              %>40/* for size_t type */
 
+#if configUSE_PERCEPIO_TRACE_HOOKS
+%if defined(FRTrace)
+  #include "%@FRTrace@ModuleName.h" /* Interface to Percpio Trace */
+%else
+  #include "McuPercepio.h" /* Interface to Percpio Trace */
+%endif
+#endif
+
 /* Macro for shell support */
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED                     %>45 (configUSE_SHELL) /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %if defined(GenerateRTOSPExMacros) & %GenerateRTOSPExMacros='no'
@@ -2250,8 +2258,10 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
  * \return Error code, kStatus_OSA_Success if everything is ok.
  */
 osa_status_t OSA_Init(void) {
-%if %UseTraceHooksGroup='yes'
-  %@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
+%if defined(FRTrace)
+  %@FRTrace@'ModuleName'%.Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
+%else
+  McuPercepio_Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %endif
   return kStatus_OSA_Success;
 }
@@ -3290,13 +3300,13 @@ void %'ModuleName'%.%Init(void)
   SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
 #endif
   vPortStopTickTimer(); /* tick timer shall not run until the RTOS scheduler is started */
-%if %UseTraceHooksGroup='yes'
-  %@FRTrace@'ModuleName'%.Startup();/* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
+#if configUSE_PERCEPIO_TRACE_HOOKS
+%if defined(FRTrace)
+  %@FRTrace@'ModuleName'%.Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %else
-  /* no Percepio Trace Hooks enabled with configUSE_TRACE_HOOKS */
+  McuPercepio_Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %endif
-  //vPortInitTickTimer();
-  //vPortStopTickTimer();
+#endif
 }
 
 %endif %- Init
@@ -4852,6 +4862,30 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
    /*!< 1: enable Shell and command line support; 0: disabled */
 #endif
 
+/*-----------------------------------------------------------
+ * FreeRTOS Trace hook support
+ *----------------------------------------------------------- */
+#ifndef configUSE_PERCEPIO_TRACE_HOOKS
+%if defined(UseTraceHooksGroup) & %UseTraceHooksGroup='yes' & defined(FRTrace)
+  #define configUSE_PERCEPIO_TRACE_HOOKS                         %>50 1 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
+%else
+  #define configUSE_PERCEPIO_TRACE_HOOKS                         %>50 0 /* 1: Percepio Trace hooks, 0: not using Percepio Trace hooks */
+%endif
+#endif
+#define configUSE_TRACE_HOOKS                                    %>50 configUSE_PERCEPIO_TRACE_HOOKS /* legacy configUSE_TRACE_HOOKS should not be used any more */
+
+#ifndef configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+%if defined(SeggerSystemViewerGroup) & %SeggerSystemViewerGroup='yes' & defined(SeggerSystemViewer)
+  #define configUSE_SEGGER_SYSTEM_VIEWER_HOOKS                   %>50 1 /* 1: Segger System Viewer hooks, 0: not using Segger System Viewer hooks */
+%else
+  #define configUSE_SEGGER_SYSTEM_VIEWER_HOOKS                   %>50 0 /* 1: Segger System Viewer hooks, 0: not using Segger System Viewer hooks */
+%endif
+#endif
+
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_PERCEPIO_TRACE_HOOKS
+  #error "only one trace method can be active!"
+#endif
+/*----------------------------------------------------------- */
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
