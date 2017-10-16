@@ -347,6 +347,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
 static const unsigned char *KinetisM4FamilyStrings[] =
 { /* FAMID (3 bits) are used as index */
@@ -373,6 +374,7 @@ static const unsigned char *KinetisM0FamilyStrings[] =
   (const unsigned char *)"Reserved",      /* 0110 */
   (const unsigned char *)"Reserved"       /* 0111 */
 };
+#endif
 #endif
 
 %if defined(Shell)
@@ -535,6 +537,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
 #endif /* SDK V2.0 */
   return ERR_OK;
 #else
+  (void)uid; /* not used */
   return ERR_FAILED;
 #endif
 }
@@ -652,7 +655,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
       return (%'ModuleName'_ConstCharPtr)"M0 Family ID out of bounds!";
     }
   #elif defined(SIM_SRSID_FAMID) /* MKE02Z4 defines this, hopefully all other KE too... */
-    return "KE0x Family"; /* 0000 only KE0x supported */
+    return (%'ModuleName'_ConstCharPtr)"KE0x Family"; /* 0000 only KE0x supported */
   #elif defined(SIM_SDID_FAMID)
     int32_t val;
 
@@ -667,14 +670,28 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     return (%'ModuleName'_ConstCharPtr)"ERROR";
   #endif
 #elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
-  int32_t val;
+  #ifdef SIM_SDID /* normal Kinetis define this */
+    int32_t val;
 
-  val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
-  if (val>=0 && val<=(int32_t)(sizeof(KinetisM4FamilyStrings)/sizeof(KinetisM4FamilyStrings[0]))) {
-    return KinetisM4FamilyStrings[val];
-  } else {
-    return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
-  }
+    val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
+    if (val>=0 && val<=(int32_t)(sizeof(KinetisM4FamilyStrings)/sizeof(KinetisM4FamilyStrings[0]))) {
+      return KinetisM4FamilyStrings[val];
+    } else {
+      return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
+    }
+  #elif defined(SIM_SDID_FAMID)
+    int32_t val;
+
+    val = ((SIM->SDID)>>4)&0x3; /* bits 6..4 */
+    if (val>=0 && val<=(int32_t)(sizeof(KinetisM4FamilyStrings)/sizeof(KinetisM4FamilyStrings[0]))) {
+      return KinetisM4FamilyStrings[val];
+    } else {
+      return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
+    }
+  #else
+    #error "Unknown architecture!"
+    return (%'ModuleName'_ConstCharPtr)"ERROR";
+  #endif
 #elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==7
   return (%'ModuleName'_ConstCharPtr)"Cortex-M7";
 #else
