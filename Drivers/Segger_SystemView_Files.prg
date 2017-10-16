@@ -16,18 +16,21 @@
   %define  SystemViewSrcFolder 
 %endif
 %if defined(SystemViewConfigFolderName) & %SystemViewConfigFolderName <> ""
-  %define  SystemViewConfigFolder %'SystemViewConfigFolderName'/
+  %define  ConfigFolder %'SystemViewConfigFolderName'/
 %else
-  %define  SystemViewConfigFolder 
+  %define  ConfigFolder 
 %endif
 %-
+%FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Config.c
+%include Segger_SystemView\Sample\Config\SEGGER_SYSVIEW_Config.c
+
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW.c
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW.c
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW.h
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW.h
 
-%FILE %'DirRel_Code'%'SystemViewConfigFolder'SEGGER_SYSVIEW_Conf.h
+%FILE %'DirRel_Code'%'ConfigFolder'SEGGER_SYSVIEW_Conf.h
 %include Segger_SystemView\Config\SEGGER_SYSVIEW_Conf.h
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Int.h
@@ -35,9 +38,6 @@
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_ConfDefaults.h
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW_ConfDefaults.h
-
-%FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Config.c
-%include Segger_SystemView\Sample\Config\SEGGER_SYSVIEW_Config.c
 
 %if defined(OperatingSystemId) & %OperatingSystemId='FreeRTOS'
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_FreeRTOS.c
@@ -48,4 +48,4 @@
 %endif
 
 %undef SystemViewSrcFolder
-%undef SystemViewConfigFolder
+%undef ConfigFolder
