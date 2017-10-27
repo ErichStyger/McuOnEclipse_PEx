@@ -142,7 +142,7 @@ Additional information:
 **********************************************************************
 */
 
-static unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+static const unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 /*********************************************************************
 *
@@ -154,8 +154,8 @@ static unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7'
 // Allocate buffers for channel 0
 //
 #if SEGGER_RTT_CHANNEL_0_ENABLED /* << EST */
-static char _acUpBuffer  [BUFFER_SIZE_UP];
-static char _acDownBuffer[BUFFER_SIZE_DOWN];
+static char _acUpBuffer  [SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_UP];
+static char _acDownBuffer[SEGGER_RTT_CHANNEL_0_BUFFER_SIZE_DOWN];
 #endif
 //
 // Initialize SEGGER Real-time-Terminal control block (CB)
@@ -200,7 +200,7 @@ static void _DoInit(void) {
   p->aUp[0].SizeOfBuffer  = sizeof(_acUpBuffer);
   p->aUp[0].RdOff         = 0u;
   p->aUp[0].WrOff         = 0u;
-  p->aUp[0].Flags         = SEGGER_RTT_MODE_DEFAULT;
+  p->aUp[0].Flags         = SEGGER_RTT_CHANNEL_0_MODE_UP;
   //
   // Initialize down buffer 0
   //
@@ -209,7 +209,7 @@ static void _DoInit(void) {
   p->aDown[0].SizeOfBuffer  = sizeof(_acDownBuffer);
   p->aDown[0].RdOff         = 0u;
   p->aDown[0].WrOff         = 0u;
-  p->aDown[0].Flags         = SEGGER_RTT_MODE_DEFAULT;
+  p->aDown[0].Flags         = SEGGER_RTT_CHANNEL_0_MODE_DOWN;
 #endif
   //
   // Finish initialization of the control block.
@@ -1297,5 +1297,14 @@ int SEGGER_RTT_TerminalOut (char TerminalId, const char* s) {
   return Status;
 }
 
+unsigned int SEGGER_RTT_GetUpBufferFreeSize(unsigned int bufferIndex) { /* << EST */
+  unsigned int avail;
+
+  INIT();
+  SEGGER_RTT_LOCK();
+  avail = _GetAvailWriteSpace(&_SEGGER_RTT.aUp[bufferIndex]);
+  SEGGER_RTT_UNLOCK();
+  return avail;
+}
 
 /*************************** End of file ****************************/
