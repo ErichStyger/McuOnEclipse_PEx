@@ -315,6 +315,7 @@ void %OnRxChar(void);
 #if %'ModuleName'%.HAS_RTOS
   /* include RTOS header files */
   #include "FreeRTOS.h" /* for yielding */
+  #include "task.h"
 #endif
 
 #if %'ModuleName'%.HAS_RTOS && %'ModuleName'%.YIELD
