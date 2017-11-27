@@ -1,0 +1,29 @@
+%if defined(useRAMBuffer)
+  %if %useRAMBuffer='yes'
+    %- if using RAM buffer, we do not directly write to display memory
+    %set DisplayMemoryWrite Value no
+  %else
+    %set DisplayMemoryWrite Value yes
+  %endif
+%endif
+
+%- cannot read from display with serial interface
+%set ReadDataWord Selection never
+
+%if %displayType='128x64'
+  %if %Orientation='landscape' | %Orientation='landscape180'
+    %set Width Value 128
+    %set Height Value 64
+  %else
+    %set Width Value 64
+    %set Height Value 128
+  %endif
+%elif %displayType='128x32'
+  %if %Orientation='landscape' | %Orientation='landscape180'
+    %set Width Value 128
+    %set Height Value 32
+  %else
+    %set Width Value 32
+    %set Height Value 128
+  %endif
+%endif
