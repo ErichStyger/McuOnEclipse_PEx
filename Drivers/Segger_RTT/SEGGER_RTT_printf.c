@@ -455,7 +455,8 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
     if (BufferDesc.Cnt != 0u) {
       SEGGER_RTT_Write(BufferIndex, acBuffer, BufferDesc.Cnt);
     }
-    BufferDesc.ReturnValue += (int)BufferDesc.Cnt;
+    //BufferDesc.ReturnValue += (int)BufferDesc.Cnt; << EST: wrong
+    return BufferDesc.Cnt; /* << EST return number of characters written */
   }
   return BufferDesc.ReturnValue;
 }
