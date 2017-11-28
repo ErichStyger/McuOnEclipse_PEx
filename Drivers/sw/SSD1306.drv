@@ -120,13 +120,15 @@ typedef bool %'ModuleName'_PixelColor;                           %>40/* type to 
 typedef uint8_t %'ModuleName'_PixelDim;                          %>40/* one byte is enough to describe the x/y position */
 typedef uint16_t %'ModuleName'_PixelCount;                       %>40/* needed type to hold the number of pixels on the display. */
 
-extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+extern uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 #define %'ModuleName'%.PIXEL_BLACK  0 /* 0 is a black pixel */
 #define %'ModuleName'%.PIXEL_WHITE  1 /* 1 is a color/white pixel */
 #define %'ModuleName'%.COLOR_PIXEL_SET      %'ModuleName'%.PIXEL_WHITE /* color for a pixel set */
 #define %'ModuleName'%.COLOR_PIXEL_CLR      %'ModuleName'%.PIXEL_BLACK /* color for a pixel cleared */
 
+#define %'ModuleName'%.COLOR_BLACK          %'ModuleName'%.COLOR_BLACK
+#define %'ModuleName'%.COLOR_WHITE          %'ModuleName'%.COLOR_WHITE
 #define %'ModuleName'%.COLOR_RED            %'ModuleName'%.COLOR_BLACK
 #define %'ModuleName'%.COLOR_BRIGHT_RED     %'ModuleName'%.COLOR_WHITE
 #define %'ModuleName'%.COLOR_DARK_RED       %'ModuleName'%.COLOR_BLACK
@@ -702,7 +704,7 @@ static uint8_t actPage = 0;
 
 static void SSD1306_SetPageStartAddr(uint8_t page) {
   actPage = page;
-  if(actPage >= SSD1306_DISPLAY_HW_NOF_PAGES) {
+  if(actPage>=SSD1306_DISPLAY_HW_NOF_PAGES) {
     return;
   }
   SSD1306_WriteCommand(0xB0 | actPage);
@@ -710,7 +712,7 @@ static void SSD1306_SetPageStartAddr(uint8_t page) {
 
 static void SSD1306_SetColStartAddr(uint8_t col){
   actCol = col;
-  if(actCol >= SSD1306_DISPLAY_HW_NOF_COLUMNS) {
+  if(actCol>=SSD1306_DISPLAY_HW_NOF_COLUMNS) {
     return;
   }
   SSD1306_WriteCommand(0x10 | (actCol>>4));
@@ -718,10 +720,12 @@ static void SSD1306_SetColStartAddr(uint8_t col){
 }
 
 static void SSD1306_Clear(void) {
-  for(uint8_t page = 0 ; page < SSD1306_DISPLAY_HW_NOF_PAGES; page++) {
+  uint8_t col, page;
+
+  for(page=0; page<SSD1306_DISPLAY_HW_NOF_PAGES; page++) {
     SSD1306_SetPageStartAddr(page);
     SSD1306_SetColStartAddr(0);
-    for(uint8_t col  = 0 ; col < SSD1306_DISPLAY_HW_NOF_COLUMNS ; col++) {
+    for(col=0; col<SSD1306_DISPLAY_HW_NOF_COLUMNS ; col++) {
       SSD1306_WriteData(0x00);
     }
   }
@@ -738,7 +742,9 @@ static void SSD1306_InvertDisplay(bool invert){
 }
 
 static void SSD1306_PrintChar(uint8_t ch) {
-  for(uint8_t i = 0; i<5; i++) {
+  uint8_t i;
+
+  for(i = 0; i<5; i++) {
     SSD1306_WriteData(font[((ch-0x20)*6)+i]);
   }
 }
@@ -865,6 +871,15 @@ void %'ModuleName'%.%Clear(void)
 %include Common\SSD1306UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
+  uint8_t col, page;
+
+  for(page=0; page<SSD1306_DISPLAY_HW_NOF_PAGES; page++) {
+    SSD1306_SetPageStartAddr(page);
+    SSD1306_SetColStartAddr(0);
+    for(col=0; col<SSD1306_DISPLAY_HW_NOF_COLUMNS ; col++) {
+      SSD1306_WriteData(%'ModuleName'%.DisplayBuf[page][col]);
+    }
+  }
 }
 
 %endif %- UpdateFull
