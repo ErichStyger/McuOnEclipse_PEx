@@ -389,15 +389,6 @@ LI.EXP {
 <li><i>h:<i>ComponentName_</i>PixelDim</i> - Height of the region</li>
 </ul><br />
 </li>
-<li><a name="Init">
-<b>Init</b></a>
- - Display driver initialization
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Init(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
 <li><a name="InitCommChannel">
 <b>InitCommChannel</b></a>
  - Method to initialize communication to the LCD. Needed if the bus to the LCD is shared with other components and settings are different.
@@ -405,6 +396,42 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void InitCommChannel(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="SetContrast">
+<b>SetContrast</b></a>
+ - Sets the display contrast level (default:0x7F)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetContrast(uint8_t contrast)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>contrast:uint8_t</i> - Contrast level (default 0x7F). Contrast increases as the value increases.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="DisplayOn">
+<b>DisplayOn</b></a>
+ - Turns the display on or off (sleep)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t DisplayOn(bool on)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>on:bool</i> - turns the display on or off</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="DisplayInvert">
+<b>DisplayInvert</b></a>
+ - Used to inverse the display. In normal mode, 1 one in the display RAM is a pixel set and a 0 means pixel clear.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t DisplayInvert(bool invert)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>invert:bool</i> - if TRUE, a 1 is pixel clear and a 0 is a pixel set.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
 </ul><br />
 </li>
 <li><a name="GetLCD">
@@ -422,6 +449,15 @@ LI.EXP {
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void GiveLCD(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="Init">
+<b>Init</b></a>
+ - Display driver initialization
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Init(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>

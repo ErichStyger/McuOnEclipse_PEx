@@ -92,6 +92,13 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
+%if defined(RecvBlockCustom)
+#define %'ModuleName'%.RecvBlockCustom  (1)
+%else
+#define %'ModuleName'%.RecvBlockCustom  (0)
+%endif
+  /*!< Define which can be used to check if the function RecvBlockCustom() is available */
+
 typedef enum %'ModuleName'%.EnumStartFlags_ {
   %'ModuleName'%.SEND_START,        /* Start is sent */
   %'ModuleName'%.DO_NOT_SEND_START  /* Start is not sent */

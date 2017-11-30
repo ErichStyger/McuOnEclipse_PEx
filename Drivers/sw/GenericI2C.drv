@@ -621,6 +621,7 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
     break; /* break for(;;) */
   } /* for(;;) */
 %else
+#if defined(%@I2C@'ModuleName'%.RecvBlockCustom) && %@I2C@'ModuleName'%.RecvBlockCustom==1
   for(;;) { /* breaks */
     res = %@I2C@'ModuleName'%.RecvBlockCustom(data, dataSize, &nof, flagsStart, flagsAck);
     if (res!=ERR_OK) {
@@ -640,6 +641,9 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
     }
     break; /* break for(;;) */
   } /* for(;;) */
+#else
+  return ERR_FAILED; /* RecvBlockCustom() is not available (e.g. not available in the Hardware I2C component */
+#endif
 %endif
   return res;
 }

@@ -127,22 +127,22 @@ extern uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)
 #define %'ModuleName'%.COLOR_PIXEL_SET      %'ModuleName'%.PIXEL_WHITE /* color for a pixel set */
 #define %'ModuleName'%.COLOR_PIXEL_CLR      %'ModuleName'%.PIXEL_BLACK /* color for a pixel cleared */
 
-#define %'ModuleName'%.COLOR_BLACK          %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_WHITE          %'ModuleName'%.COLOR_WHITE
-#define %'ModuleName'%.COLOR_RED            %'ModuleName'%.COLOR_BLACK
+#define %'ModuleName'%.COLOR_BLACK          %'ModuleName'%.PIXEL_BLACK
+#define %'ModuleName'%.COLOR_WHITE          %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_RED            %'ModuleName'%.PIXEL_WHITE
 #define %'ModuleName'%.COLOR_BRIGHT_RED     %'ModuleName'%.COLOR_WHITE
-#define %'ModuleName'%.COLOR_DARK_RED       %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_GREEN          %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_BRIGHT_GREEN   %'ModuleName'%.COLOR_WHITE
-#define %'ModuleName'%.COLOR_DARK_GREEN     %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_BLUE           %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_BRIGHT_BLUE    %'ModuleName'%.COLOR_WHITE
-#define %'ModuleName'%.COLOR_DARK_BLUE      %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_YELLOW         %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  %'ModuleName'%.COLOR_WHITE
-#define %'ModuleName'%.COLOR_ORANGE         %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_GREY           %'ModuleName'%.COLOR_BLACK
-#define %'ModuleName'%.COLOR_BRIGHT_GREY    %'ModuleName'%.COLOR_WHITE
+#define %'ModuleName'%.COLOR_DARK_RED       %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_GREEN          %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_BRIGHT_GREEN   %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_DARK_GREEN     %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_BLUE           %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_BRIGHT_BLUE    %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_DARK_BLUE      %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_YELLOW         %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_ORANGE         %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_GREY           %'ModuleName'%.PIXEL_WHITE
+#define %'ModuleName'%.COLOR_BRIGHT_GREY    %'ModuleName'%.PIXEL_WHITE
 
 #define %'ModuleName'%.PIXEL_ON  %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
@@ -392,7 +392,6 @@ void %'ModuleName'%.%InitCommChannel(void);
 %endif %- InitCommChannel
 %-BW_METHOD_END InitCommChannel
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteDataBlock
 %ifdef WriteDataBlock
 void %'ModuleName'%.%WriteDataBlock(uint8_t *data, size_t dataSize);
@@ -430,6 +429,36 @@ void %@I2C@OnError(void);
 
 %endif %- @I2C@OnError
 %-INHERITED_EVENT_END I2C OnError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetContrast
+%ifdef SetContrast
+uint8_t %'ModuleName'%.%SetContrast(uint8_t contrast);
+%define! Parcontrast
+%define! RetVal
+%include Common\SSD1306SetContrast.Inc
+
+%endif %- SetContrast
+%-BW_METHOD_END SetContrast
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisplayOn
+%ifdef DisplayOn
+uint8_t %'ModuleName'%.%DisplayOn(bool on);
+%define! Paron
+%define! RetVal
+%include Common\SSD1306DisplayOn.Inc
+
+%endif %- DisplayOn
+%-BW_METHOD_END DisplayOn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisplayInvert
+%ifdef DisplayInvert
+uint8_t %'ModuleName'%.%DisplayInvert(bool invert);
+%define! Parinvert
+%define! RetVal
+%include Common\SSD1306DisplayInvert.Inc
+
+%endif %- DisplayInvert
+%-BW_METHOD_END DisplayInvert
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -478,38 +507,11 @@ void %OnGiveLCD(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-%'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
-
-%if ResetPinEnabled='yes'
-#define RESET_INIT()  /* no special init needed, is done during component init */
-#define RESET_LOW()   %@RES@'ModuleName'%.ClrVal()               %>40 /* RESET signal low (reset is low active) */
-#define RESET_HIGH()  %@RES@'ModuleName'%.SetVal()               %>40 /* RESET signal high */
-%else
-#define RESET_INIT()  /* no special init needed, is done during component init */
-#define RESET_LOW()   /* empty */
-#define RESET_HIGH()  /* empty */
-%endif
+uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   static %'ModuleName'_DisplayOrientation currentOrientation;
 #endif
-
-/* OLED specific defines and information */
-%if %displayType='128x32'
-  #define SSD1306_128X32
-%elif %displayType='128x64'
-  #define SSD1306_128X64
-%else
-  #error "unsupported display size (%displayType)"
-%endif
-
-#define SSD1306_EXTERNAL        0        // set to 1 if external vcc is connected, otherwise 0 if internal dc/dc converter is used
-
-//#define SSD1306_I2C_ADDR        0X3C  /* 0b011110 or 0b0111101 */
-#define SSD1306_I2C_ADDR  (0x78>>1) /* 0b0111100x */
-//#define SSD1306_I2C_ADDR  (0x7A>>1) /* 0b011101x */
-
-#define SSD1306_HAS_RST  (0) /* if we have a reset line to the display */
 
 /** tiny 5x8 font. */
 static unsigned char font[] = {
@@ -672,31 +674,32 @@ static unsigned char font[] = {
 #define SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 0x29
 #define SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
 
-#ifdef SSD1306_128X64
-  #define SSD1306_LCDWIDTH                  128
-  #define SSD1306_LCDHEIGHT                 64
-#endif
-#ifdef SSD1306_128X32
-  #define SSD1306_LCDWIDTH                  128
-  #define SSD1306_LCDHEIGHT                 32
-#endif
-
-#ifdef SSD1306_128X64
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  #define SSD1306_LCDWIDTH                      128
+  #define SSD1306_LCDHEIGHT                     64
   #define SSD1306_DISPLAY_HW_NOF_COLUMNS        128u /* number of columns in hardware */
   #define SSD1306_DISPLAY_HW_NOF_ROWS           64u /* number of rows in hardware */
   #define SSD1306_DISPLAY_HW_NOF_PAGES          8u
-#elif defined(SSD1306_128x32)
+#elif %'ModuleName'_CONFIG_SSD1306_128X32
+  #define SSD1306_LCDWIDTH                      128
+  #define SSD1306_LCDHEIGHT                     32
   #define SSD1306_DISPLAY_HW_NOF_COLUMNS        128u /* number of columns in hardware */
   #define SSD1306_DISPLAY_HW_NOF_ROWS           32u /* number of rows in hardware */
   #define SSD1306_DISPLAY_HW_NOF_PAGES          4u
 #endif
 
 static void SSD1306_WriteCommand(uint8_t cmd) {
-  %@I2C@'ModuleName'%.WriteByteAddress8(SSD1306_I2C_ADDR, SSD1306_CMD_REG, cmd);
+  %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_CONFIG_SSD1306_I2C_ADDR, SSD1306_CMD_REG, cmd);
+#if %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US>0
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US);
+#endif
 }
 
 static void SSD1306_WriteData(uint8_t data) {
-  %@I2C@'ModuleName'%.WriteByteAddress8(SSD1306_I2C_ADDR, SSD1306_DATA_REG, data);
+  %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_CONFIG_SSD1306_I2C_ADDR, SSD1306_DATA_REG, data);
+#if %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US>0
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US);
+#endif
 }
 
 static uint8_t actCol = 0;
@@ -731,14 +734,6 @@ static void SSD1306_Clear(void) {
   }
   actPage = 0;
   actCol = 0;
-}
-
-static void SSD1306_InvertDisplay(bool invert){
-  if(invert) {
-    SSD1306_WriteCommand(SSD1306_INVERT_DISPLAY);
-  } else {
-    SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);
-  }
 }
 
 static void SSD1306_PrintChar(uint8_t ch) {
@@ -861,6 +856,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 %include Common\SSD1306Clear.Inc
 void %'ModuleName'%.%Clear(void)
 {
+  SSD1306_Clear();
 }
 
 %endif %- Clear
@@ -1068,76 +1064,79 @@ void %'ModuleName'%.%InitCommChannel(void)
 %include Common\SSD1306Init.Inc
 void %'ModuleName'%.%Init(void)
 {
-#if SSD1306_HAS_RST
-  RST_ClrVal();
-  %@Wait@'ModuleName'%.Waitms(1);
-  RST_SetVal();
+#if %'ModuleName'_CONFIG_SSD1306_HAS_RST
+  %'ModuleName'_CONFIG_SSD1306_RESET_LOW();
+  %@Wait@'ModuleName'%.Waitms(1);                                %>70/* wait for 1 ms */
+  %'ModuleName'_CONFIG_SSD1306_RESET_HIGH();
 #endif
-  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                                // turn of display
-  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);        // set display clock divide ratio/oscillator frequency
-  SSD1306_WriteCommand(0x80);                                                                // the suggested ratio 0x80
+  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                     %>70/* turn of display */
+  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);           %>70/* set display clock divide ratio/oscillator frequency */
+  SSD1306_WriteCommand(0x80);                                    %>70/* the suggested ratio 0x80 */
 
-  SSD1306_WriteCommand(SSD1306_SET_MULTIPLEX);                        // set multiplex ratio(1 to 64)
-#ifdef SSD1306_128X64
-  SSD1306_WriteCommand(0x3F);                                                                // the suggested 1/64 duty
-#else
+  SSD1306_WriteCommand(SSD1306_SET_MULTIPLEX);                   %>70/* set multiplex ratio(1 to 64) */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  SSD1306_WriteCommand(0x3F);                                    %>70/* the suggested 1/64 duty */
+#elif %'ModuleName'_CONFIG_SSD1306_128X32
   SSD1306_WriteCommand(0x1F);
+#else
+  #error "not supported"
 #endif
 
-  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_OFFSET);                // set display offset
-  SSD1306_WriteCommand(0x00);                                                                // no offset
-  SSD1306_WriteCommand(SSD1306_SET_START_LINE | 0x00);        // set start line address
+  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_OFFSET);              %>70/* set display offset */
+  SSD1306_WriteCommand(0x00);                                    %>70/* no offset */
+  SSD1306_WriteCommand(SSD1306_SET_START_LINE | 0x00);           %>70/* set start line address */
 
-  SSD1306_WriteCommand(SSD1306_COLUMN_ADDR);                                // set start and end address of the columns
+  SSD1306_WriteCommand(SSD1306_COLUMN_ADDR);                     %>70/* set start and end address of the columns */
   SSD1306_WriteCommand(0);
   SSD1306_WriteCommand(SSD1306_DISPLAY_HW_NOF_COLUMNS-1);
 
-  SSD1306_WriteCommand(SSD1306_PAGE_ADDR);                                // set start and end address of the pages
+  SSD1306_WriteCommand(SSD1306_PAGE_ADDR);                       %>70/* set start and end address of the pages */
   SSD1306_WriteCommand(0);
   SSD1306_WriteCommand(SSD1306_DISPLAY_HW_NOF_PAGES-1);
 
-  SSD1306_WriteCommand(SSD1306_CHARGE_PUMP);                                // set charge pump enable/disable
-#if SSD1306_EXTERNAL == 1
-  SSD1306_WriteCommand(0x10);                                                                // set to disabled
+  SSD1306_WriteCommand(SSD1306_CHARGE_PUMP);                     %>70/* set charge pump enable/disable */
+#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
+  SSD1306_WriteCommand(0x10);                                    %>70/* set to disabled */
 #else
-  SSD1306_WriteCommand(0x14);                                                                // set to enabled
+  SSD1306_WriteCommand(0x14);                                    %>70/* set to enabled */
 #endif
 
-  SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                                // set memory mode
+  SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                     %>70/* set memory mode */
   SSD1306_WriteCommand(0x00);
 
-  SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);                        // set segment re-map 128 to 0
-  SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                                // set COM output scan direction 64 to 0
-  SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                                // set COM pins hardware configuration
-#ifdef SSD1306_128X64
-  SSD1306_WriteCommand(0x12);                                                                // the suggested 1/64 duty
+  SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);                %>70/* set segment re-map 128 to 0 */
+  SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                    %>70/* set COM output scan direction 64 to 0 */
+  SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  SSD1306_WriteCommand(0x12);                                    %>70/* the suggested 1/64 duty */
 #else
   SSD1306_WriteCommand(0x02);
 #endif
 
-  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                                // set contrast control register
-#ifdef SSD1306_128X64
-#if SSD1306_EXTERNAL == 1
+  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  #if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
   SSD1306_WriteCommand(0x9F);
-#else
+  #else
   SSD1306_WriteCommand(0xCF);
-#endif
+  #endif
 #else
   SSD1306_WriteCommand(0x8F);
 #endif
-  SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                        // set pre-charge period
-#if SSD1306_EXTERNAL == 1
+
+  SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                   %>70/* set pre-charge period */
+#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
   SSD1306_WriteCommand(0x22);
 #else
   SSD1306_WriteCommand(0xF1);
 #endif
   SSD1306_WriteCommand(0xF1);
-  SSD1306_WriteCommand(SSD1306_SET_VCOM_DETECT);                        // set vcomh
+  SSD1306_WriteCommand(SSD1306_SET_VCOM_DETECT);                 %>70/* set vcomh */
   SSD1306_WriteCommand(0x40);
 
-  SSD1306_WriteCommand(SSD1306_DISPLAY_ALL_ON_RESUME);        // disable entire display on
-  SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);                        // set normal display
-  SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                                // turn on oled panel
+  SSD1306_WriteCommand(SSD1306_DISPLAY_ALL_ON_RESUME);           %>70/* disable entire display on */
+  SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);                  %>70/* set normal display */
+  SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                      %>70/* turn on oled panel */
 
 #if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
@@ -1186,6 +1185,57 @@ void %@I2C@OnError(void)
 
 %endif %- @I2C@OnError
 %-INHERITED_EVENT_END I2C OnError
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetContrast
+%ifdef SetContrast
+%define! Parcontrast
+%define! RetVal
+%include Common\SSD1306SetContrast.Inc
+uint8_t %'ModuleName'%.%SetContrast(uint8_t contrast)
+{
+  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);
+  SSD1306_WriteCommand(contrast);
+  return ERR_OK;
+}
+
+%endif %- SetContrast
+%-BW_METHOD_END SetContrast
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisplayOn
+%ifdef DisplayOn
+%define! Paron
+%define! RetVal
+%include Common\SSD1306DisplayOn.Inc
+uint8_t %'ModuleName'%.%DisplayOn(bool on)
+{
+  if(on) {
+    SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                    %>70/* turn display on */
+  } else {
+    SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                   %>70/* turn display off */
+  }
+  return ERR_OK;
+}
+
+%endif %- DisplayOn
+%-BW_METHOD_END DisplayOn
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DisplayInvert
+%ifdef DisplayInvert
+%define! Parinvert
+%define! RetVal
+%include Common\SSD1306DisplayInvert.Inc
+uint8_t %'ModuleName'%.%DisplayInvert(bool invert)
+{
+  if(invert) {
+    SSD1306_WriteCommand(SSD1306_INVERT_DISPLAY);
+  } else {
+    SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);
+  }
+  return ERR_OK;
+}
+
+%endif %- DisplayInvert
+%-BW_METHOD_END DisplayInvert
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1262,24 +1312,43 @@ void %OnGiveLCD(void)
     /*!< Header file to be included for the SPI driver */
 #endif
 
-#if 0 /* \todo */
-#ifndef %'ModuleName'_CONFIG_SPI_SEND_CHAR
-%if defined(SWSPI)
-  #define %'ModuleName'_CONFIG_SPI_SEND_CHAR                     %>40 %@SWSPI@'ModuleName'%.SendChar
-%elif defined(HWSPI)
-  #define %'ModuleName'_CONFIG_SPI_SEND_CHAR                     %>40 %@HWSPI@'ModuleName'%.SendChar
+/* Which display is used */
+%if %displayType='128x64'
+#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (1)
+#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (0)
+%elif %displayType='128x32'
+#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (0)
+#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (1)
+%else
+#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (0)
+#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (0)
+#error "unsupported display size (%displayType)"
 %endif
-  /*!< method to send a character */
+
+#ifndef %'ModuleName'_CONFIG_SSD1306_HAS_RST
+%if defined(RES)
+  #define %'ModuleName'_CONFIG_SSD1306_HAS_RST         (1)
+    /*!< if we have a reset line to the display */
+  #define %'ModuleName'_CONFIG_SSD1306_RESET_LOW()     %@RES@'ModuleName'%.ClrVal()%>40 /* RESET signal low (reset is low active) */
+  #define %'ModuleName'_CONFIG_SSD1306_RESET_HIGH()    %@RES@'ModuleName'%.SetVal()%>40 /* RESET signal high */
+%else
+  #define %'ModuleName'_CONFIG_SSD1306_HAS_RST         (0)
+  #define %'ModuleName'_CONFIG_SSD1306_RESET_LOW()     Reset_ClrVal()%>40 /* RESET signal low (reset is low active) */
+  #define %'ModuleName'_CONFIG_SSD1306_RESET_HIGH()    Reset_SetVal()%>40 /* RESET signal high */
+%endif
+#endif
+#ifndef %'ModuleName'_CONFIG_SSD1306_EXTERNAL
+  #define %'ModuleName'_CONFIG_SSD1306_EXTERNAL        (0)
+    /*!< set to 1 if external vcc is connected, otherwise 0 if internal dc/dc converter is used */
+#endif
+#ifndef %'ModuleName'_CONFIG_SSD1306_I2C_ADDR
+  #define %'ModuleName'_CONFIG_SSD1306_I2C_ADDR        (%I2CDeviceAddress)
+    /*!< I2C 7bit (unshifted) device address, usually 0x3C (0b11'1100) or 0x3D (0b11'1101) */
 #endif
 
-#ifndef %'ModuleName'_CONFIG_NOF_TX_CHAR
-%if defined(SWSPI)
-  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@SWSPI@'ModuleName'%.CharsInTxBuf
-%elif defined(HWSPI)
-  #define %'ModuleName'_CONFIG_NOF_TX_CHAR                       %>40 %@HWSPI@'ModuleName'%.GetCharsInTxBuf
-%endif
-  /*!< method which returns how many characters are in the tx buffer */
-#endif
+#ifndef %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US
+  #define %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US    (%I2CTransactionDelay)
+    /*!< I2C transacation delay in us */
 #endif
 
 #ifndef %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION

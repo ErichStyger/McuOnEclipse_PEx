@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.004</Version>
+    <Version>01.011</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -61,7 +61,7 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>2</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>true</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
@@ -152,12 +152,12 @@
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
@@ -186,6 +186,7 @@
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>If the display is able to use a local window on the device to write data.</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>1</DefaultIndex>
@@ -244,12 +245,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
+        <DefaultIndex>0</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
+        <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
@@ -301,6 +302,40 @@
         <Expanded>Yes</Expanded>
         <Children>
           <GrupItem>
+            <TIntgItem>
+              <Name>I2C Device Address</Name>
+              <Symbol>I2CDeviceAddress</Symbol>
+              <Hint>I2C address of the device (7bit, unshifted address), usually 0x3C (0b11'1100)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>60</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>BIN DEC HEX</Bases>
+              <DefaultBase>HEX</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>I2C Transaction Delay (us)</Name>
+              <Symbol>I2CTransactionDelay</Symbol>
+              <Hint>Optional delay added after writing data to the I2C bus. Needed in case the display is not able to consume the data fast enough.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>100</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>-1</MaxValue>
+              <Bases>DEC</Bases>
+              <DefaultBase>DEC</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
             <TInhrLinkItem>
               <Name>I2C</Name>
               <Symbol>I2C</Symbol>
@@ -324,7 +359,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -344,23 +379,6 @@
                     <CanDelete>false</CanDelete>
                     <IconPopup>false</IconPopup>
                     <InhrBeanBaseName>RESpin</InhrBeanBaseName>
-                    <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
-                  </TInhrItem>
-                </GrupItem>
-                <GrupItem>
-                  <TInhrItem>
-                    <Name>D_C</Name>
-                    <Symbol>D_C</Symbol>
-                    <Hint>Data/Command mode select pin. Low level is command mode.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>-1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <InhrBeanBaseName>D_Cpin</InhrBeanBaseName>
                     <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
                   </TInhrItem>
                 </GrupItem>
@@ -990,10 +1008,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
+        <Name>InitCommChannel</Name>
+        <Symbol>InitCommChannel</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Display driver initialization</Hint>
+        <Hint>Method to initialize communication to the LCD. Needed if the bus to the LCD is shared with other components and settings are different.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1018,10 +1036,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>InitCommChannel</Name>
-        <Symbol>InitCommChannel</Symbol>
+        <Name>SetContrast</Name>
+        <Symbol>SetContrast</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Method to initialize communication to the LCD. Needed if the bus to the LCD is shared with other components and settings are different.</Hint>
+        <Hint>Sets the display contrast level (default:0x7F)</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1035,12 +1053,86 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>void</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>0</ParamCount>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>contrast</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Contrast level (default 0x7F). Contrast increases as the value increases.</ParHint>
+        </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t contrast)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DisplayOn</Name>
+        <Symbol>DisplayOn</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Turns the display on or off (sleep)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>on</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>turns the display on or off</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(bool on)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DisplayInvert</Name>
+        <Symbol>DisplayInvert</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Used to inverse the display. In normal mode, 1 one in the display RAM is a pixel set and a 0 means pixel clear.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>invert</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>if TRUE, a 1 is pixel clear and a 0 is a pixel set.</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(bool invert)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1093,6 +1185,34 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>none</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Display driver initialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>

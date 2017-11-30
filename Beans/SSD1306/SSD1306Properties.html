@@ -297,6 +297,14 @@ There are 4 options:<br />
 <b>HW</b></a> - Group controlling the hardware settings.
 <ul>
   <li>
+  <a name="I2CDeviceAddress">
+  <b>I2C Device Address</b></a> - I2C address of the device (7bit, unshifted address), usually 0x3C (0b11'1100)
+  </li>
+  <li>
+  <a name="I2CTransactionDelay">
+  <b>I2C Transaction Delay (us)</b></a> - Optional delay added after writing data to the I2C bus. Needed in case the display is not able to consume the data fast enough.
+  </li>
+  <li>
   <a name="I2C">
   <b>I2C</b></a> - Interface to I2C
   </li>
@@ -309,10 +317,6 @@ The following items are available only if the group is enabled (the value is "En
     <li>
     <a name="RES">
     <b>Reset</b></a> - Display reset signal (low active)
-    </li>
-    <li>
-    <a name="D_C">
-    <b>D_C</b></a> - Data/Command mode select pin. Low level is command mode.
     </li>
   </ul>
   </li>

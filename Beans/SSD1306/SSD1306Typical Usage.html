@@ -212,11 +212,8 @@ LI.EXP {
    The Processor Expert application initialization code will initialize the driver.
 </div>
 <PRE>
-  PDC1_Clear();
-  PDC1_SetPos(0,0);
-  PDC1_WriteLineStr(1, "Hello World!");
-  PDC1_WriteLineStr(2, "using 8x5");
-  PDC1_WriteLineStr(3, "line font");
+  LCD1_Clear();
+  LCD1_WriteStr("Hello World!");
 </PRE>
 <!---DESCEND DON'T CHANGE THIS-->
 </div>
