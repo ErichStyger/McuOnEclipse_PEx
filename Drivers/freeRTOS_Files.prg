@@ -112,8 +112,8 @@
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'semphr.h
 %include freeRTOS\Source\include\semphr.h
 
-%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'StackMacros.h
-%include freeRTOS\Source\include\StackMacros.h
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'stack_macros.h
+%include freeRTOS\Source\include\stack_macros.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'task.h
 %include freeRTOS\Source\include\task.h
@@ -132,6 +132,15 @@
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'event_groups.h
 %include freeRTOS\Source\include\event_groups.h
+
+%FILE %'DirRel_Code'%'RTOSSrcDirFolder'stream_buffer.c
+%include freeRTOS\Source\stream_buffer.c
+
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'stream_buffer.h
+%include freeRTOS\Source\include\stream_buffer.h
+
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'message_buffer.h
+%include freeRTOS\Source\include\message_buffer.h
 
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'freertos_tasks_c_additions.h
 %include freeRTOS\Source\include\freertos_tasks_c_additions.h
