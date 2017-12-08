@@ -21,17 +21,17 @@
   %define  ConfigFolder 
 %endif
 %-
+%FILE %'DirRel_Code'%'ConfigFolder'SEGGER_SYSVIEW_Conf.h
+%include Segger_SystemView\Config\SEGGER_SYSVIEW_Conf.h
+
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Config.c
-%include Segger_SystemView\Sample\Config\SEGGER_SYSVIEW_Config.c
+%include Segger_SystemView\Config\SEGGER_SYSVIEW_Config.c
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW.c
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW.c
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW.h
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW.h
-
-%FILE %'DirRel_Code'%'ConfigFolder'SEGGER_SYSVIEW_Conf.h
-%include Segger_SystemView\Config\SEGGER_SYSVIEW_Conf.h
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Int.h
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW_Int.h
@@ -41,10 +41,10 @@
 
 %if defined(OperatingSystemId) & %OperatingSystemId='FreeRTOS'
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_FreeRTOS.c
-%include Segger_SystemView\Sample\OS\SEGGER_SYSVIEW_FreeRTOS.c
+%include Segger_SystemView\Sample\FreeRTOSV10\SEGGER_SYSVIEW_FreeRTOS.c
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_FreeRTOS.h
-%include Segger_SystemView\Sample\OS\SEGGER_SYSVIEW_FreeRTOS.h
+%include Segger_SystemView\Sample\FreeRTOSV10\SEGGER_SYSVIEW_FreeRTOS.h
 %endif
 
 %undef SystemViewSrcFolder

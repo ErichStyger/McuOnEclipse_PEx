@@ -4,7 +4,7 @@
     <Name>SeggerSystemView</Name>
     <Description>Segger System View Component</Description>
     <Author>Erich Styger</Author>
-    <Version>01.053</Version>
+    <Version>01.056</Version>
     <Icon>SeggerSystemView</Icon>
     <TypesFiles>PE,SeggerSystemView\SeggerSystemView</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -44,7 +44,7 @@
         <Hint>Identifies the SEGGER SystemView Version</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V2.42</DefaultValue>
+        <DefaultValue>V2.52a</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -168,6 +168,24 @@
         <Symbol>SeggerSysviewPostMortem</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
         <Hint>If set to 'yes', the buffer will be used in post mortem mode</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>1</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>false</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Implicit Format for printf()</Name>
+        <Symbol>SysviewPrintfImplicitFormat</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>Using printf() implicit parameter formatting</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

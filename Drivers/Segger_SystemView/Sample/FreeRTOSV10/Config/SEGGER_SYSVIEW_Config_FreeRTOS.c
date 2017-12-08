@@ -52,14 +52,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.42                                    *
+*       SystemView version: V2.52a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_Config_FreeRTOS.c
 Purpose : Sample setup configuration of SystemView with FreeRTOS.
-Revision: $Rev: 3734 $
+Revision: $Rev: 7745 $
 */
 #include "FreeRTOS.h"
 #include "SEGGER_SYSVIEW.h"

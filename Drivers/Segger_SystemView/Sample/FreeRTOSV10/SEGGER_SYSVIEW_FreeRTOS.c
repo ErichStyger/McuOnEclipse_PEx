@@ -52,52 +52,35 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.42                                    *
+*       SystemView version: V2.52a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
-File    : SEGGER_SYSVIEW_uCOSIII.c
-Purpose : Interface between Micrium uC/OS-III and SystemView.
-Revision: $Rev: 3809 $
+File    : SEGGER_SYSVIEW_FreeRTOS.c
+Purpose : Interface between FreeRTOS and SystemView.
+Revision: $Rev: 7947 $
 */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "SEGGER_SYSVIEW.h"
+#include "SEGGER_SYSVIEW_FreeRTOS.h"
+#include "string.h" // Required for memset
 
-#include <os_trace_events.h>
 
-#ifndef SYSVIEW_MEMSET
-  #include <string.h>
-  #define SYSVIEW_MEMSET(p, v, n)   memset(p, v, n)
-#endif
 
-#ifndef  OS_CFG_TRACE_MAX_RESOURCES
-#define  OS_CFG_TRACE_MAX_RESOURCES              0
-#endif
+typedef struct SYSVIEW_FREERTOS_TASK_STATUS SYSVIEW_FREERTOS_TASK_STATUS;
 
-typedef struct SYSVIEW_UCOSIII_TASK_STATUS SYSVIEW_UCOSIII_TASK_STATUS;
-
-struct SYSVIEW_UCOSIII_TASK_STATUS {
-  U32           TaskID;
-  const char*   NamePtr;
-  OS_PRIO       Prio;
-  CPU_STK*      StkBasePtr;
-  CPU_STK_SIZE  StkSize;
+struct SYSVIEW_FREERTOS_TASK_STATUS {
+  U32         xHandle;
+  const char* pcTaskName;
+  unsigned    uxCurrentPriority;
+  U32         pxStack;
+  unsigned    uStackHighWaterMark;
 };
 
-typedef struct SYSVIEW_UCOSIII_RESOURCE SYSVIEW_UCOSIII_RESOURCE;
-
-struct SYSVIEW_UCOSIII_RESOURCE {
-  U32         ResourceId;
-  const char* sResource;
-  U32         Registered;
-};
-
-static SYSVIEW_UCOSIII_TASK_STATUS _aTasks[OS_CFG_TRACE_MAX_TASK];
+static SYSVIEW_FREERTOS_TASK_STATUS _aTasks[SYSVIEW_FREERTOS_MAX_NOF_TASKS];
 static unsigned _NumTasks;
-
-#if OS_CFG_TRACE_MAX_RESOURCES > 0
-static SYSVIEW_UCOSIII_RESOURCE _aResources[OS_CFG_TRACE_MAX_RESOURCES];
-static unsigned                 _NumResources;
-#endif
 
 /*********************************************************************
 *
@@ -112,7 +95,10 @@ static void _cbSendTaskList(void) {
   unsigned n;
 
   for (n = 0; n < _NumTasks; n++) {
-    SYSVIEW_SendTaskInfo((U32)_aTasks[n].TaskID, _aTasks[n].NamePtr, (unsigned)_aTasks[n].Prio, (U32)_aTasks[n].StkBasePtr, (unsigned)_aTasks[n].StkSize);
+#if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+    _aTasks[n].uStackHighWaterMark = uxTaskGetStackHighWaterMark((TaskHandle_t)_aTasks[n].xHandle);
+#endif
+    SYSVIEW_SendTaskInfo((U32)_aTasks[n].xHandle, _aTasks[n].pcTaskName, (unsigned)_aTasks[n].uxCurrentPriority, (U32)_aTasks[n].pxStack, (unsigned)_aTasks[n].uStackHighWaterMark);
   }
 }
 
@@ -126,14 +112,12 @@ static void _cbSendTaskList(void) {
 *    current system time in micro seconds.
 */
 static U64 _cbGetTime(void) {
-  OS_ERR Err;
-  OS_TICK Tick;
+  U64 Time;
 
-  Tick = OSTimeGet(&Err);
-  if (Err != OS_ERR_NONE) {
-    Tick = 0;
-  }
-  return Tick * 1000;
+  Time = xTaskGetTickCountFromISR();
+  Time *= portTICK_PERIOD_MS;
+  Time *= 1000;
+  return Time;
 }
 
 /*********************************************************************
@@ -142,49 +126,6 @@ static U64 _cbGetTime(void) {
 *
 **********************************************************************
 */
-
-/*********************************************************************
-*
-*       SYSVIEW_TaskReady()
-*
-*  Function description
-*    Record when a task is ready for execution.
-*/
-void SYSVIEW_TaskReady(U32 TaskID) {
-  if (TaskID != (U32)&OSIdleTaskTCB) {
-    SEGGER_SYSVIEW_OnTaskStartReady(TaskID);
-  }
-}
-
-/*********************************************************************
-*
-*       SYSVIEW_TaskSwitchedIn()
-*
-*  Function description
-*    Record when a task starts/continues execution.
-*    If the idle task continues, record an on idle event.
-*/
-void SYSVIEW_TaskSwitchedIn(U32 TaskID) {
-  if (TaskID != (U32)&OSIdleTaskTCB) {
-    SEGGER_SYSVIEW_OnTaskStartExec(TaskID);
-  } else {
-    SEGGER_SYSVIEW_OnIdle();
-  }
-}
-
-/*********************************************************************
-*
-*       SYSVIEW_TaskSuspend()
-*
-*  Function description
-*    Record when a task is suspended.
-*/
-void SYSVIEW_TaskSuspend(U32 TaskID) {
-  if (TaskID != (U32)&OSIdleTaskTCB) {
-    SEGGER_SYSVIEW_OnTaskStopReady(TaskID,  (1u << 2));
-  }
-}
-
 /*********************************************************************
 *
 *       SYSVIEW_AddTask()
@@ -192,23 +133,27 @@ void SYSVIEW_TaskSuspend(U32 TaskID) {
 *  Function description
 *    Add a task to the internal list and record its information.
 */
-void SYSVIEW_AddTask(U32 TaskID, const char* NamePtr, OS_PRIO Prio, CPU_STK* StkBasePtr, CPU_STK_SIZE StkSize) {
-  if (TaskID != (U32)&OSIdleTaskTCB) {
-    if (_NumTasks >= OS_CFG_TRACE_MAX_TASK) {
-      SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks reached.");
-      return;
-    }
-
-    _aTasks[_NumTasks].TaskID = TaskID;
-    _aTasks[_NumTasks].NamePtr = NamePtr;
-    _aTasks[_NumTasks].Prio = Prio;
-    _aTasks[_NumTasks].StkBasePtr = StkBasePtr;
-    _aTasks[_NumTasks].StkSize = StkSize;
-
-    _NumTasks++;
-
-    SYSVIEW_SendTaskInfo(TaskID, NamePtr, (unsigned)Prio, (U32)StkBasePtr, (unsigned)StkSize);
+void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack, unsigned uStackHighWaterMark) {
+  
+  if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+    return;
   }
+  
+  if (_NumTasks >= SYSVIEW_FREERTOS_MAX_NOF_TASKS) {
+    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks reached.");
+    return;
+  }
+
+  _aTasks[_NumTasks].xHandle = xHandle;
+  _aTasks[_NumTasks].pcTaskName = pcTaskName;
+  _aTasks[_NumTasks].uxCurrentPriority = uxCurrentPriority;
+  _aTasks[_NumTasks].pxStack = pxStack;
+  _aTasks[_NumTasks].uStackHighWaterMark = uStackHighWaterMark;
+
+  _NumTasks++;
+
+  SYSVIEW_SendTaskInfo(xHandle, pcTaskName,uxCurrentPriority, pxStack, uStackHighWaterMark);
+
 }
 
 /*********************************************************************
@@ -218,25 +163,68 @@ void SYSVIEW_AddTask(U32 TaskID, const char* NamePtr, OS_PRIO Prio, CPU_STK* Stk
 *  Function description
 *    Update a task in the internal list and record its information.
 */
-void SYSVIEW_UpdateTask(U32 TaskID, const char* NamePtr, OS_PRIO Prio, CPU_STK* StkBasePtr, CPU_STK_SIZE StkSize) {
+void SYSVIEW_UpdateTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32 pxStack, unsigned uStackHighWaterMark) {
   unsigned n;
+  
+  if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+    return;
+  }
 
-  if (TaskID != (U32)&OSIdleTaskTCB) {
-    for (n = 0; n < _NumTasks; n++) {
-      if (_aTasks[n].TaskID == TaskID) {
-        break;
-      }
+  for (n = 0; n < _NumTasks; n++) {
+    if (_aTasks[n].xHandle == xHandle) {
+      break;
     }
-    if (n < _NumTasks) {
-      _aTasks[n].NamePtr = NamePtr;
-      _aTasks[n].Prio = Prio;
-      _aTasks[n].StkBasePtr = StkBasePtr;
-      _aTasks[n].StkSize = StkSize;
+  }
+  if (n < _NumTasks) {
+    _aTasks[n].pcTaskName = pcTaskName;
+    _aTasks[n].uxCurrentPriority = uxCurrentPriority;
+    _aTasks[n].pxStack = pxStack;
+    _aTasks[n].uStackHighWaterMark = uStackHighWaterMark;
 
-      SYSVIEW_SendTaskInfo(TaskID, NamePtr, (unsigned)Prio, (U32)StkBasePtr, (unsigned)StkSize);
-    } else {
-      SYSVIEW_AddTask(TaskID, NamePtr, Prio, StkBasePtr, StkSize);
+    SYSVIEW_SendTaskInfo(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+  } else {
+    SYSVIEW_AddTask(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+  }
+}
+
+/*********************************************************************
+*
+*       SYSVIEW_DeleteTask()
+*
+*  Function description
+*    Delete a task from the internal list.
+*/
+void SYSVIEW_DeleteTask(U32 xHandle) {
+  unsigned n;
+  
+  if (_NumTasks == 0) {
+    return; // Early out
+  }  
+  for (n = 0; n < _NumTasks; n++) {
+    if (_aTasks[n].xHandle == xHandle) {
+      break;
     }
+  }
+  if (n == (_NumTasks - 1)) {  
+    //
+    // Task is last item in list.
+    // Simply zero the item and decrement number of tasks.
+    //
+    memset(&_aTasks[n], 0, sizeof(_aTasks[n]));
+    _NumTasks--;
+  } else if (n < _NumTasks) {
+    //
+    // Task is in the middle of the list.
+    // Move last item to current position and decrement number of tasks.
+    // Order of tasks does not really matter, so no need to move all following items.
+    //
+    _aTasks[n].xHandle             = _aTasks[_NumTasks - 1].xHandle;
+    _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+    _aTasks[n].uxCurrentPriority   = _aTasks[_NumTasks - 1].uxCurrentPriority;
+    _aTasks[n].pxStack             = _aTasks[_NumTasks - 1].pxStack;
+    _aTasks[n].uStackHighWaterMark = _aTasks[_NumTasks - 1].uStackHighWaterMark;
+    memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+    _NumTasks--;
   }
 }
 
@@ -250,10 +238,7 @@ void SYSVIEW_UpdateTask(U32 TaskID, const char* NamePtr, OS_PRIO Prio, CPU_STK* 
 void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned StackSize) {
   SEGGER_SYSVIEW_TASKINFO TaskInfo;
 
-  //
-  // Fill all elements with 0 to allow extending the structure in future version without breaking the code
-  //
-  SYSVIEW_MEMSET(&TaskInfo, 0, sizeof(TaskInfo));
+  memset(&TaskInfo, 0, sizeof(TaskInfo)); // Fill all elements with 0 to allow extending the structure in future version without breaking the code
   TaskInfo.TaskID     = TaskID;
   TaskInfo.sName      = sName;
   TaskInfo.Prio       = Prio;
@@ -301,43 +286,6 @@ void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3
       pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para4);             // Add the fifth parameter to the packet
       //
       SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
-}
-/*********************************************************************
-*
-*       SYSVIEW_RecordU32Register()
-*
-*  Function description
-*    Record an event with 1 parameter and register the resource to be 
-*    sent in the system description.
-*/
-void SYSVIEW_RecordU32Register(unsigned EventId, U32 ResourceId, const char* sResource) {  
-  SEGGER_SYSVIEW_NameResource(ResourceId, sResource);
-  SEGGER_SYSVIEW_RecordU32(EventId, SEGGER_SYSVIEW_ShrinkId(ResourceId));
-#if OS_CFG_TRACE_MAX_RESOURCES > 0
-  if (_NumResources >= OS_CFG_TRACE_MAX_RESOURCES) {
-    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not register resource name. Maximum number of resources reached.");
-    return;
-  }
-
-  _aResources[_NumResources].ResourceId = ResourceId;
-  _aResources[_NumResources].sResource  = sResource;
-  _aResources[_NumResources].Registered = 0;
-
-  _NumResources++;
-#endif
-}
-
-void SYSVIEW_SendResourceList(void) {
-#if OS_CFG_TRACE_MAX_RESOURCES > 0
-  unsigned int n;
-
-  for (n = 0; n < _NumResources; n++) {
-    if (_aResources[n].Registered == 0) {
-      SEGGER_SYSVIEW_NameResource(_aResources[n].ResourceId, _aResources[n].sResource);
-      _aResources[n].Registered = 1;
-    }
-  }
-#endif
 }
 
 /*********************************************************************
