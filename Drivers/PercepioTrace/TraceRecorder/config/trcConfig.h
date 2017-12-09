@@ -286,7 +286,11 @@ extern "C" {
  *
  * Default value is 0 since dependent on timers.c
  *****************************************************************************/
+%if defined(IncludePendFuncCallEvents) & %IncludePendFuncCallEvents='yes'
 #define TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS 1
+%else
+#define TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS 0
+%endif
 
  /*****************************************************************************
  * TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS
@@ -297,7 +301,11 @@ extern "C" {
  *
  * Default value is 0 (excluded) since dependent on event_groups.c
  *****************************************************************************/
+%if defined(IncludeEventGroupEvents) & %IncludeEventGroupEvents='yes'
+#define TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS 1
+%else
 #define TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS 0
+%endif
 
  /*****************************************************************************
  * TRC_CFG_INCLUDE_TIMER_EVENTS

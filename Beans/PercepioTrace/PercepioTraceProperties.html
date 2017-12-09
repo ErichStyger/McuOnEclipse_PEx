@@ -250,6 +250,51 @@ There are 3 options:<br />
 <b>Max ISR Nesting</b></a> - Defines the maxium level of ISR nesting
 </li>
 <li>
+<a name="EventsCreationGroup">
+<b>Events Creation</b></a> - Configures which events are created
+<ul>
+  <li>
+  <a name="IncludeOSTickEvents">
+  <b>Include OS Tick events</b></a> - This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. 
+  </li>
+  <li>
+  <a name="IncludeReadyEvents">
+  <b>Include ready events</b></a> - This sets INCLUDE_READY_EVENTS in trcConfig.h<br />
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.
+  </li>
+  <li>
+  <a name="IncludeMemManageEvents">
+  <b>Include memory manager events</b></a> - This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h<br />
+This must be enabled (1) if memory allocation and deallocatinon have to be traced.
+  </li>
+  <li>
+  <a name="IncludeISRTracing">
+  <b>Include ISR tracing</b></a> - This sets INCLUDE_ISR_TRACING in trcConfig.h<br />
+If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.
+  </li>
+  <li>
+  <a name="IncludeObjectDelete">
+  <b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
+This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
+  </li>
+  <li>
+  <a name="IncludeUserEvents">
+  <b>Include user events</b></a> - This sets TRC_CFG_INCLUDE_USER_EVENTS.<br />
+If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like &quot;printf&quot; but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.
+  </li>
+  <li>
+  <a name="IncludePendFuncCallEvents">
+  <b>Include pend function call events</b></a> - This sets TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS.<br />
+If this is zero (0), the trace will exclude any &quot;pending function call&quot; events, such as xTimerPendFunctionCall().
+  </li>
+  <li>
+  <a name="IncludeEventGroupEvents">
+  <b>Include event group events</b></a> - This sets TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS.<br />
+If this is zero (0), the trace will exclude any &quot;event group&quot; events.
+  </li>
+</ul>
+</li>
+<li>
 <a name="SnapshotModeGroup">
 <b>Snapshot Mode</b></a> - Settings for Snapshot mode, stored in trcSnapshotConfig.h
 <ul>
@@ -456,41 +501,6 @@ be truncated when stored in the recorder.
 Macros that specify the maximum lengths (number of characters) for names of<br />
 kernel objects, such as tasks and queues. If longer names are used, they will<br />
 be truncated when stored in the recorder.
-    </li>
-  </ul>
-  </li>
-  <li>
-  <a name="EventsCreationGroup">
-  <b>Events Creation</b></a> - Configures which events are created
-  <ul>
-    <li>
-    <a name="IncludeOSTickEvents">
-    <b>Include OS Tick events</b></a> - This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. 
-    </li>
-    <li>
-    <a name="IncludeReadyEvents">
-    <b>Include ready events</b></a> - This sets INCLUDE_READY_EVENTS in trcConfig.h<br />
-If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.
-    </li>
-    <li>
-    <a name="IncludeMemManageEvents">
-    <b>Include memory manager events</b></a> - This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h<br />
-This must be enabled (1) if memory allocation and deallocatinon have to be traced.
-    </li>
-    <li>
-    <a name="IncludeISRTracing">
-    <b>Include ISR tracing</b></a> - This sets INCLUDE_ISR_TRACING in trcConfig.h<br />
-If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.
-    </li>
-    <li>
-    <a name="IncludeObjectDelete">
-    <b>Include object delete events</b></a> - This sets INCLUDE_OBJECT_DELETE in trcConfig.h<br />
-This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. 
-    </li>
-    <li>
-    <a name="IncludeUserEvents">
-    <b>Include user events</b></a> - This sets TRC_CFG_INCLUDE_USER_EVENTS.<br />
-If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like &quot;printf&quot; but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.
     </li>
   </ul>
   </li>

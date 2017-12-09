@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.133</Version>
+    <Version>01.134</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -98,6 +98,171 @@
         <ChangeValueIntoRange>false</ChangeValueIntoRange>
         <RuntimeProperty>false</RuntimeProperty>
       </TIntgItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Events Creation</Name>
+        <Symbol>EventsCreationGroup</Symbol>
+        <Hint>Configures which events are created</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include OS Tick events</Name>
+              <Symbol>IncludeOSTickEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. </Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include ready events</Name>
+              <Symbol>IncludeReadyEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_READY_EVENTS in trcConfig.h\n
+If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include memory manager events</Name>
+              <Symbol>IncludeMemManageEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h\n
+This must be enabled (1) if memory allocation and deallocatinon have to be traced.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include ISR tracing</Name>
+              <Symbol>IncludeISRTracing</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_ISR_TRACING in trcConfig.h\n
+If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include object delete events</Name>
+              <Symbol>IncludeObjectDelete</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets INCLUDE_OBJECT_DELETE in trcConfig.h\n
+This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. </Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include user events</Name>
+              <Symbol>IncludeUserEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_USER_EVENTS.\n
+If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like "printf" but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include pend function call events</Name>
+              <Symbol>IncludePendFuncCallEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_PEND_FUNC_CALL_EVENTS.\n
+If this is zero (0), the trace will exclude any "pending function call" events, such as xTimerPendFunctionCall().</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Include event group events</Name>
+              <Symbol>IncludeEventGroupEvents</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This sets TRC_CFG_INCLUDE_EVENT_GROUP_EVENTS.\n
+If this is zero (0), the trace will exclude any "event group" events.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TGrupItem>
@@ -698,133 +863,6 @@ be truncated when stored in the recorder.</Hint>
                     <ChangeValueIntoRange>false</ChangeValueIntoRange>
                     <RuntimeProperty>false</RuntimeProperty>
                   </TIntgItem>
-                </GrupItem>
-              </Children>
-            </TGrupItem>
-          </GrupItem>
-          <GrupItem>
-            <TGrupItem>
-              <Name>Events Creation</Name>
-              <Symbol>EventsCreationGroup</Symbol>
-              <Hint>Configures which events are created</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <BoldName>true</BoldName>
-              <EditLine>false</EditLine>
-              <Description/>
-              <Expanded>Yes</Expanded>
-              <Children>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include OS Tick events</Name>
-                    <Symbol>IncludeOSTickEvents</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets TRC_CFG_INCLUDE_OSTICK_EVENTS. </Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>false</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include ready events</Name>
-                    <Symbol>IncludeReadyEvents</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets INCLUDE_READY_EVENTS in trcConfig.h\n
-If this is set to 'no', the code for recording Ready events is excluded. Note, this will make it impossible to calculate the correct response times.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>0</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>true</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include memory manager events</Name>
-                    <Symbol>IncludeMemManageEvents</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets TRC_CFG_INCLUDE_MEMMANG_EVENTS in trcConfig.h\n
-This must be enabled (1) if memory allocation and deallocatinon have to be traced.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>1</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>false</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include ISR tracing</Name>
-                    <Symbol>IncludeISRTracing</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets INCLUDE_ISR_TRACING in trcConfig.h\n
-If this is zero (0), the code for recording Interrupt Service Routines is excluded to reduce code size. Note, recording ISRs require that you insert calls to vTraceStoreISRBegin and vTraceStoreISREnd in your interrupt handlers. There is no automatic recording of ISRs like for task scheduling, since FreeRTOS does not have a central interrupt dispatcher.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>0</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>true</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include object delete events</Name>
-                    <Symbol>IncludeObjectDelete</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets INCLUDE_OBJECT_DELETE in trcConfig.h\n
-This must be enabled (1) if tasks, queues or other traced kernel objects are deleted at runtime, e.g., using vTaskDelete or vQueueDelete. If no deletes are made, this can be set to 0 in order to exclude the delete-handling code. </Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>0</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>true</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
-                </GrupItem>
-                <GrupItem>
-                  <TBoolItem>
-                    <Name>Include user events</Name>
-                    <Symbol>IncludeUserEvents</Symbol>
-                    <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>This sets TRC_CFG_INCLUDE_USER_EVENTS.\n
-If this is zero (0) the code for creating User Events is excluded to reduce code size. User Events are application-generated events, like "printf" but for the trace log instead of console output. User Events are much faster than a printf and can therefore be used in timing critical code. See vTraceUserEvent() and vTracePrintF() in trcUser.h.</Hint>
-                    <ItemLevel>BASIC</ItemLevel>
-                    <EditLine>false</EditLine>
-                    <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-                    <DefaultIndex>0</DefaultIndex>
-                    <TextValueIndex>false</TextValueIndex>
-                    <RuntimeProperty>false</RuntimeProperty>
-                    <CanDelete>false</CanDelete>
-                    <IconPopup>false</IconPopup>
-                    <DefaultValue>true</DefaultValue>
-                    <Popup>false</Popup>
-                  </TBoolItem>
                 </GrupItem>
               </Children>
             </TGrupItem>
