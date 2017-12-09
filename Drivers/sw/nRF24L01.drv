@@ -1025,7 +1025,11 @@ static void SPIWriteBuffer(uint8_t *bufOut, uint8_t bufSize)
 %include Common\nRF24L01Deinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-  /* nothing needed */
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  vQueueUnregisterQueue(%'ModuleName'%.Mutex);
+  vSemaphoreDelete(%'ModuleName'%.Mutex);
+  %'ModuleName'%.Mutex = NULL;
+#endif
 }
 
 %endif %- Deinit
@@ -1046,6 +1050,10 @@ void %'ModuleName'%.%Init(void)
   #else
   %'ModuleName'%.Mutex = xSemaphoreCreateRecursiveMutex();
   #endif
+  if (%'ModuleName'%.Mutex==NULL) { /* semaphore creation failed */
+    for(;;) {} /* error, not enough memory? */
+  }
+  vQueueAddToRegistry(%'ModuleName'%.Mutex, "%'ModuleName'%.Mutex");
 #endif
   %'ModuleName'%.CE_LOW();   /* CE high: do not send or receive data */
   %'ModuleName'%.CSN_HIGH(); /* CSN low: not sending commands to the device */
