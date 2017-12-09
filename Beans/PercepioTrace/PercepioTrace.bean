@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.132</Version>
+    <Version>01.133</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1153,7 +1153,7 @@ By setting USE_IMPLICIT_IFE_RULES to zero (0), the implicit IFEs are disabled fo
               <Hint>CTRL_TASK_STACK_SIZE: The stack size of the Ctrl task, that receive commands.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>configMINIMAL_STACK_SIZE</DefaultValue>
+              <DefaultValue>500/sizeof(StackType_t)</DefaultValue>
               <StrDefine>nothing</StrDefine>
               <MinLength>0</MinLength>
               <MaxLength>-1</MaxLength>

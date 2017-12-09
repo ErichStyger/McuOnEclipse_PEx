@@ -79,6 +79,9 @@
 %FILE %'DirRel_Code'%'TraceRecorderStreamPortJLinkRTTIncludeFolder'trcStreamingPort.h
 %include PercepioTrace\TraceRecorder\streamports\Jlink_RTT\include\trcStreamingPort.h
 
+%FILE %'DirRel_Code'%'TraceRecorderFolder'trcStreamingPort.c
+%include PercepioTrace\TraceRecorder\streamports\Jlink_RTT\trcStreamingPort.c
+
 %- ---------------------------------------
 %undef TraceRecorderFolder
 %undef TraceRecorderConfigFolder
