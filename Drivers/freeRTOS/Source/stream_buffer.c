@@ -27,7 +27,13 @@
  */
 
 /* Standard includes. */
-#include <stdint.h>
+#ifdef __HIWARE__ /* << EST */
+  #ifndef UINT32_MAX
+     #define UINT32_MAX 0xffffffff
+  #endif
+#else
+  #include <stdint.h>
+#endif /* << EST */
 #include <string.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
