@@ -34,8 +34,8 @@
 %- ---------------------------------------
 %- TraceRecorder
 %- ---------------------------------------
-%FILE %'DirRel_Code'%'TraceRecorderFolder'trc_readme.txt
-%include PercepioTrace\TraceRecorder\readme.txt
+%FILE %'DirRel_Code'%'TraceRecorderFolder'tracealyzer_readme.txt
+%include PercepioTrace\TraceRecorder\tracealyzer_readme.txt
 
 %FILE %'DirRel_Code'%'TraceRecorderFolder'trcKernelPort.c
 %include PercepioTrace\TraceRecorder\trcKernelPort.c

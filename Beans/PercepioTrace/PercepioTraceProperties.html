@@ -394,6 +394,14 @@ This does not limit the total amount of objects created, if objects are deleted 
     <b>Number of event groups</b></a> - This sets the TRC_CFG_NEVENTGROUP macro.
     </li>
     <li>
+    <a name="NStreamBuffers">
+    <b>Number of stream buffers</b></a> - This sets the TRC_CFG_NSTREAMBUFFER macro.
+    </li>
+    <li>
+    <a name="NMessageBuffers">
+    <b>Number of message buffers</b></a> - This sets the TRC_CFG_NSTREAMBUFFER macro.
+    </li>
+    <li>
     <a name="NameLenISR">
     <b>Name length for ISR</b></a> - TRC_CFG_NAME_LEN_ISR:<br />
 Macros that specify the maximum lengths (number of characters) for names of<br />
@@ -431,6 +439,20 @@ be truncated when stored in the recorder.
     <li>
     <a name="NameLenEventGroup">
     <b>Name length for event group</b></a> - TRC_CFG_NAME_LEN_EVENTGROUP:<br />
+Macros that specify the maximum lengths (number of characters) for names of<br />
+kernel objects, such as tasks and queues. If longer names are used, they will<br />
+be truncated when stored in the recorder.
+    </li>
+    <li>
+    <a name="NameLenStreamBuffer">
+    <b>Name length for stream buffer</b></a> - TRC_CFG_NAME_LEN_STREAMBUFFER:<br />
+Macros that specify the maximum lengths (number of characters) for names of<br />
+kernel objects, such as tasks and queues. If longer names are used, they will<br />
+be truncated when stored in the recorder.
+    </li>
+    <li>
+    <a name="NameLenMessageBuffer">
+    <b>Name length for message buffer</b></a> - TRC_CFG_NAME_LEN_MESSAGEBUFFER:<br />
 Macros that specify the maximum lengths (number of characters) for names of<br />
 kernel objects, such as tasks and queues. If longer names are used, they will<br />
 be truncated when stored in the recorder.

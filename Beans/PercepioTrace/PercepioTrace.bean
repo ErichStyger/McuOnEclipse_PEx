@@ -4,7 +4,7 @@
     <Name>PercepioTrace</Name>
     <Description>Percepio FreeRTOS Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.127</Version>
+    <Version>01.132</Version>
     <Icon>irc</Icon>
     <TypesFiles>PE,PercepioTrace\PercepioTrace</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -44,7 +44,7 @@
         <Hint>Identifies the RTOS+Trace version used from Percepio AB</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>true</EditLine>
-        <DefaultValue>V3.1.1</DefaultValue>
+        <DefaultValue>V3.3.0</DefaultValue>
         <StrDefine>nothing</StrDefine>
         <MinLength>0</MinLength>
         <MaxLength>-1</MaxLength>
@@ -353,7 +353,7 @@ a default format string for the channel.</Hint>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description/>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <Children>
                 <GrupItem>
                   <TIntgItem>
@@ -507,6 +507,40 @@ This does not limit the total amount of objects created, if objects are deleted 
                 </GrupItem>
                 <GrupItem>
                   <TIntgItem>
+                    <Name>Number of stream buffers</Name>
+                    <Symbol>NStreamBuffers</Symbol>
+                    <Hint>This sets the TRC_CFG_NSTREAMBUFFER macro.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>3</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>Number of message buffers</Name>
+                    <Symbol>NMessageBuffers</Symbol>
+                    <Hint>This sets the TRC_CFG_NSTREAMBUFFER macro.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>3</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
                     <Name>Name length for ISR</Name>
                     <Symbol>NameLenISR</Symbol>
                     <Hint>TRC_CFG_NAME_LEN_ISR:\n
@@ -625,6 +659,46 @@ be truncated when stored in the recorder.</Hint>
                     <RuntimeProperty>false</RuntimeProperty>
                   </TIntgItem>
                 </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>Name length for stream buffer</Name>
+                    <Symbol>NameLenStreamBuffer</Symbol>
+                    <Hint>TRC_CFG_NAME_LEN_STREAMBUFFER:\n
+Macros that specify the maximum lengths (number of characters) for names of\n
+kernel objects, such as tasks and queues. If longer names are used, they will\n
+be truncated when stored in the recorder.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>15</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
+                <GrupItem>
+                  <TIntgItem>
+                    <Name>Name length for message buffer</Name>
+                    <Symbol>NameLenMessageBuffer</Symbol>
+                    <Hint>TRC_CFG_NAME_LEN_MESSAGEBUFFER:\n
+Macros that specify the maximum lengths (number of characters) for names of\n
+kernel objects, such as tasks and queues. If longer names are used, they will\n
+be truncated when stored in the recorder.</Hint>
+                    <ItemLevel>BASIC</ItemLevel>
+                    <EditLine>true</EditLine>
+                    <DefaultValue>15</DefaultValue>
+                    <MinValue>0</MinValue>
+                    <MaxValue>-1</MaxValue>
+                    <Bases>DEC</Bases>
+                    <DefaultBase>DEC</DefaultBase>
+                    <ExtraHintDisabled>false</ExtraHintDisabled>
+                    <ChangeValueIntoRange>false</ChangeValueIntoRange>
+                    <RuntimeProperty>false</RuntimeProperty>
+                  </TIntgItem>
+                </GrupItem>
               </Children>
             </TGrupItem>
           </GrupItem>
@@ -637,7 +711,7 @@ be truncated when stored in the recorder.</Hint>
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description/>
-              <Expanded>No</Expanded>
+              <Expanded>Yes</Expanded>
               <Children>
                 <GrupItem>
                   <TBoolItem>
@@ -1364,8 +1438,8 @@ By setting USE_IMPLICIT_IFE_RULES to zero (0), the implicit IFEs are disabled fo
     </Method>
     <Method>
       <TMthdItem>
-        <Name>vTraceGetTraceBuffer</Name>
-        <Symbol>vTraceGetTraceBuffer</Symbol>
+        <Name>xTraceGetTraceBuffer</Name>
+        <Symbol>xTraceGetTraceBuffer</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Return a pointer to the recorder data structure. Use this together with uiTraceGetTraceBufferSize if you wish to implement an own store/upload solution, e.g., in case a debugger connection is not available for uploading the data.</Hint>
         <ItemLevel>BASIC</ItemLevel>

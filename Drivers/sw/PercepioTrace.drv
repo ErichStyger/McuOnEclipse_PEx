@@ -127,16 +127,16 @@
 %endif %- uiTraceGetTraceBufferSize
 %-BW_METHOD_END uiTraceGetTraceBufferSize
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceGetTraceBuffer
-%ifdef vTraceGetTraceBuffer
-#define %'ModuleName'%.%vTraceGetTraceBuffer() \
-  vTraceGetTraceBuffer()
+%-BW_METHOD_BEGIN xTraceGetTraceBuffer
+%ifdef xTraceGetTraceBuffer
+#define %'ModuleName'%.%xTraceGetTraceBuffer() \
+  xTraceGetTraceBuffer()
 
 %define! RetVal
-%include Common\PercepioTracevTraceGetTraceBuffer.Inc
+%include Common\PercepioTracexTraceGetTraceBuffer.Inc
 
-%endif %- vTraceGetTraceBuffer
-%-BW_METHOD_END vTraceGetTraceBuffer
+%endif %- xTraceGetTraceBuffer
+%-BW_METHOD_END xTraceGetTraceBuffer
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN uiTraceStart
 %ifdef uiTraceStart
@@ -412,19 +412,19 @@ dword %'ModuleName'%.%uiTraceGetTraceBufferSize(void)
 %endif %- uiTraceGetTraceBufferSize
 %-BW_METHOD_END uiTraceGetTraceBufferSize
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN vTraceGetTraceBuffer
-%ifdef vTraceGetTraceBuffer
+%-BW_METHOD_BEGIN xTraceGetTraceBuffer
+%ifdef xTraceGetTraceBuffer
 %define! RetVal
-%include Common\PercepioTracevTraceGetTraceBuffer.Inc
+%include Common\PercepioTracexTraceGetTraceBuffer.Inc
 /*
-void* %'ModuleName'%.%vTraceGetTraceBuffer(void)
+void* %'ModuleName'%.%xTraceGetTraceBuffer(void)
 {
   *** Implemented as macro in the header file
 }
 */
 
-%endif %- vTraceGetTraceBuffer
-%-BW_METHOD_END vTraceGetTraceBuffer
+%endif %- xTraceGetTraceBuffer
+%-BW_METHOD_END xTraceGetTraceBuffer
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN uiTraceStart
 %ifdef uiTraceStart
@@ -589,7 +589,7 @@ void %'ModuleName'%.%vGetGDBDumpCommand(uint8_t *buf, uint16_t bufSize, uint8_t 
   uint8_t *ptr; /* pointer to data */
   size_t len; /* size/length of data */
 
-  ptr = (uint8_t*)%'ModuleName'%.%vTraceGetTraceBuffer();
+  ptr = (uint8_t*)%'ModuleName'%.%xTraceGetTraceBuffer();
   len = %'ModuleName'%.%uiTraceGetTraceBufferSize();
   %@Utility@'ModuleName'%.strcpy(buf, bufSize, (unsigned char*)"dump binary memory ");
   %@Utility@'ModuleName'%.strcat(buf, bufSize, fileName);

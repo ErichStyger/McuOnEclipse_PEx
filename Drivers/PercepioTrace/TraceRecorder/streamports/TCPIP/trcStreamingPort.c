@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.1.1
+ * Trace Recorder Library for Tracealyzer v3.3.0
  * Percepio AB, www.percepio.com
  *
  * trcStreamingPort.c
@@ -50,7 +50,7 @@
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)  
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 	
-/* TCP/IP includes */
+/* TCP/IP includes - for lwIP in this case */
 #include "lwip/tcpip.h"
 #include "lwip/sockets.h"
 
@@ -67,6 +67,9 @@ int32_t trcSocketSend( void* data, int32_t size, int32_t* bytesWritten )
 {
   if (new_sd < 0)
     return -1;
+  
+  if (bytesWritten == NULL)
+	return -1;
   
   *bytesWritten = send( new_sd, data, size, 0 );
   if (*bytesWritten < 0)
