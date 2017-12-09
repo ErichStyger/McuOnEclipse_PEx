@@ -930,7 +930,9 @@ static void prvTraceStoreWarnings(void)
 
 		if (errStr != NULL)
 		{
-			vTracePrint(trcWarningChannel, errStr);
+#if TRC_CFG_INCLUDE_USER_EVENTS /* << EST only available if TRC_CFG_INCLUDE_USER_EVENTS is turned on */
+		  vTracePrint(trcWarningChannel, errStr);
+#endif
 		}
 	}
 }
@@ -1542,7 +1544,9 @@ void prvTraceError(int errCode)
 	{
 		errorCode = errCode;
 		prvTraceStoreWarnings();
+#if TRC_CFG_INCLUDE_USER_EVENTS /* << EST only available if TRC_CFG_INCLUDE_USER_EVENTS is turned on */
 		vTracePrintF(trcWarningChannel, "Recorder stopped in prvTraceError()");
+#endif
 
 		prvSetRecorderEnabled(0);
 	}
