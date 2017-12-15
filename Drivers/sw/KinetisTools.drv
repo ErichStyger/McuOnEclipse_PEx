@@ -383,21 +383,24 @@ static const unsigned char *KinetisM0FamilyStrings[] =
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 {
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
   uint8_t buf[1+(16*5)+1+1]; /* "{0xAA,...0xBB}" */
   uint8_t res;
   %'ModuleName'%.UID uid;
+#endif
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
   res = %'ModuleName'%.%UIDGet(&uid);
   if (res==ERR_OK) {
     res = %'ModuleName'%.%UIDtoString(&uid, buf, sizeof(buf));
   }
   if (res!=ERR_OK) {
-    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n");
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR");
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  UID", buf, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-
+#endif
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Family", (uint8_t*)%'ModuleName'%.%GetKinetisFamilyString(), io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   return ERR_OK;
