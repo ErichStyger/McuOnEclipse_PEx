@@ -357,6 +357,10 @@ extern "C" {
 
 /* specify the SDK and API used */
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_USED
+#if %'ModuleName'%.CONFIG_CPU_IS_STM32
+  #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_GENERIC
+    /*!< identify the version of SDK/API used. For STM32 we are using a generic SDK (actually the CubeMX one) */
+#else
 %if %SDK='Generic'
   #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_GENERIC
 %elif %SDK='ProcessorExpertSDK'
@@ -371,6 +375,7 @@ extern "C" {
   #error "unknown SDK!?!"
 %endif
     /*!< identify the version of SDK/API used */
+#endif
 #endif
 
 /* special macro to identify a set of SDKs used */
