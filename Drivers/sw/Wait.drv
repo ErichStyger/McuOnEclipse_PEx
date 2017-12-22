@@ -67,20 +67,17 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#include "%@CortexTools@ModuleName.h"
 
 /* other includes needed */
 #if %'ModuleName'%.CONFIG_USE_RTOS_WAIT
   /* include RTOS header files */
+  #include "%@CortexTools@ModuleName.h"
+  #include "%@RTOS@ModuleName.h"
   #include "FreeRTOS.h" /* for vTaskDelay() */
   #include "task.h"
 #endif

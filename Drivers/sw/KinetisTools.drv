@@ -430,7 +430,7 @@ void %'ModuleName'%.%SoftwareReset(void)
      To write to this register, you must write 0x5FA to the VECTKEY field, otherwise the processor ignores the write.
      SYSRESETREQ will cause a system reset asynchronously, so need to wait afterwards.
    */
-#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_CORTEX_M
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
 #if %@sdk@'ModuleName'%.CONFIG_PEX_SDK_USED
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
 #else
@@ -906,7 +906,9 @@ uint32_t %'ModuleName'%.%GetCycleCounter(void)
   /* will include system header file in the implementation file */
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
   /* include here the low level CMSIS header files, e.g. with */
-  //#include "stm32f3xx_hal.h"
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM32
+    #include "stm32f3xx_hal.h" /* header file for STM32F303K8 */
+  #endif
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */

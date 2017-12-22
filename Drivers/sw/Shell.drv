@@ -801,7 +801,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const uint8_t *cmd, bool *handled, %'Module
     %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
     %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.DASH_LINE, io->stdOut);
     %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
-    %'ModuleName'%.%SendStr((unsigned char*)"%ProjectNameStr", io->stdOut);
+    %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.CONFIG_PROJECT_NAME_STRING, io->stdOut);
     %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
     %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.DASH_LINE, io->stdOut);
     %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
@@ -844,7 +844,8 @@ uint8_t %'ModuleName'%.%ParseCommand(const uint8_t *cmd, bool *handled, %'Module
 %include Common\ShellPrintPrompt.Inc
 void %'ModuleName'%.%PrintPrompt(%'ModuleName'_ConstStdIOType *io)
 {
-  %'ModuleName'%.%SendStr((unsigned char*)%Prompt, io->stdOut);
+  %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut); /* ensure that there is a new line */
+  %'ModuleName'%.%SendStr((unsigned char*)%'ModuleName'%.CONFIG_PROMPT_STRING, io->stdOut);
 }
 
 %endif %- PrintPrompt
@@ -1773,6 +1774,23 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %endif
     /*!< Function name to check if there is anything available to receive and returns TRUE, otherwise FALSE */
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_PROMPT_STRING
+%if defined(Prompt)
+  #define %'ModuleName'%.CONFIG_PROMPT_STRING    %Prompt
+%else
+  #define %'ModuleName'%.CONFIG_PROMPT_STRING    "CMD>"
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_PROJECT_NAME_STRING
+%if defined(ProjectNameStr)
+  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING    "%ProjectNameStr"
+%else
+  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING    "My Project"
+%endif
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
