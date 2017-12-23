@@ -71,13 +71,14 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
-#include "%@CortexTools@ModuleName.h"
-
 /* other includes needed */
 #if %'ModuleName'%.CONFIG_USE_RTOS_WAIT
   /* include RTOS header files */
-  #include "%@CortexTools@ModuleName.h"
+  %if defined(RTOS)
   #include "%@RTOS@ModuleName.h"
+  %else
+  #include "McuRTOS.h"
+  %endif
   #include "FreeRTOS.h" /* for vTaskDelay() */
   #include "task.h"
 #endif
