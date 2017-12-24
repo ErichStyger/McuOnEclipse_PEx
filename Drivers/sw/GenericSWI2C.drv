@@ -93,9 +93,9 @@
 %-    typedef int TMyInteger;
 %-
 %if defined(RecvBlockCustom)
-#define %'ModuleName'%.RecvBlockCustom  (1)
+#define %'ModuleName'%.RecvBlockCustomAvailable  (1)
 %else
-#define %'ModuleName'%.RecvBlockCustom  (0)
+#define %'ModuleName'%.RecvBlockCustomAvailable  (0)
 %endif
   /*!< Define which can be used to check if the function RecvBlockCustom() is available */
 
