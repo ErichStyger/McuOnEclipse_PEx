@@ -73,6 +73,8 @@
   {
     __asm volatile ("MSR primask, %%0" : : "r" (priMask) : "memory");
   }
+#elif McuLib_CONFIG_CPU_IS_STM32
+  #include "stm32f3xx_hal.h" /* header file for STM32F303K8 */
 #else
   #include "fsl_device_registers.h"
 #endif /* #if %@sdk@'ModuleName'_CONFIG_PEX_SDK_USED */
