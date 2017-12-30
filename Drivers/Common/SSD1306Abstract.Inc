@@ -1,2 +1,1 @@
-%;**%>12
-Display driver for the SSD1351 (e.g. found on Hexiwear).
+%;**                                                             %>12Display driver for the SSD1306 OLED module

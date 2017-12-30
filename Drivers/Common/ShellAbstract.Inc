@@ -1,2 +1,2 @@
 %-ABSTRACT_HEADER_START
-%;**%>12
+%;**                                                             %>12Module implementing a command line shell.

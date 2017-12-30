@@ -416,7 +416,6 @@ void %OnError(void);
 /* MODULE %ModuleName. */
 
 #include "%'ModuleName'.h"
-
 #include "%@Wait@ModuleName.h"
 %if defined(Wait)
 #include "%@Wait@ModuleName.h"
@@ -459,9 +458,9 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 #define %'ModuleName'%.TIMEOUT_TICKS(factor) (%'ModuleName'%.TIMEOUT_NOF_TICKS(factor)>0?%'ModuleName'%.TIMEOUT_NOF_TICKS(factor):1)  /* at least one tick */
 %endif
 %endif
-%if defined(RTOS) & %UseSemaphore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
 static xSemaphoreHandle %'ModuleName'%.busSem = NULL; /* Semaphore to protect I2C bus access */
-%endif
+#endif
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
@@ -477,13 +476,10 @@ void %'ModuleName'%.%RequestBus(void)
 #if %'ModuleName'%.CONFIG_USE_ON_REQUEST_BUS_EVENT
   %'ModuleName'%.CONFIG_ON_REQUEST_BUS_EVENT();
 #endif
-%if defined(OnRequestBus)
-  %OnRequestBus();
-%endif
   /*lint -restore */
-%if defined(RTOS) & %UseSemaphore='yes'
-  (void)%@RTOS@'ModuleName'%.xSemaphoreTakeRecursive(%'ModuleName'%.busSem, portMAX_DELAY);
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreTakeRecursive(%'ModuleName'%.busSem, portMAX_DELAY);
+#endif
 }
 
 %endif %- RequestBus
@@ -494,9 +490,9 @@ void %'ModuleName'%.%RequestBus(void)
 %include Common\GenericI2CReleaseBus.Inc
 void %'ModuleName'%.%ReleaseBus(void)
 {
-%if defined(RTOS) & %UseSemaphore='yes'
-  (void)%@RTOS@'ModuleName'%.xSemaphoreGiveRecursive(%'ModuleName'%.busSem);
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  (void)xSemaphoreGiveRecursive(%'ModuleName'%.busSem);
+#endif
   /*lint -save -e522 function lacks side effect  */
 #if %'ModuleName'%.CONFIG_USE_ON_RELEASE_BUS_EVENT
   %'ModuleName'%.CONFIG_ON_RELEASE_BUS_EVENT();
@@ -514,14 +510,10 @@ void %'ModuleName'%.%ReleaseBus(void)
 %include Common\GenericI2CSelectSlave.Inc
 uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr)
 {
-%if (defined(OnRequestBus)) | (defined(RTOS) & %UseSemaphore='yes')
   %'ModuleName'%.%RequestBus();
-%endif
 %if defined(LDD_I2C)
   if (%@LDD_I2C@'ModuleName'%.SelectSlaveDevice(%'ModuleName'%.deviceData.handle, LDD_I2C_ADDRTYPE_7BITS, i2cAddr)!=ERR_OK) {
-  %if (defined(OnReleaseBus)) | (defined(RTOS) & %UseSemaphore='yes')
     %'ModuleName'%.%ReleaseBus();
-  %endif
   #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
     %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
   #endif
@@ -530,9 +522,7 @@ uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr)
 %endif
 %if defined(I2C)
   if (%@I2C@'ModuleName'%.SelectSlave(i2cAddr)!=ERR_OK) {
-  %if (defined(OnReleaseBus)) | (defined(RTOS) & %UseSemaphore='yes')
     %'ModuleName'%.%ReleaseBus();
-  %endif
   #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
     %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
   #endif
@@ -551,9 +541,7 @@ uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr)
 %include Common\GenericI2CUnselectSlave.Inc
 uint8_t %'ModuleName'%.%UnselectSlave(void)
 {
-%if (defined(OnReleaseBus)) | (defined(RTOS) & %UseSemaphore='yes')
   %'ModuleName'%.%ReleaseBus();
-%endif
   return ERR_OK;
 }
 
@@ -1168,7 +1156,7 @@ void %'ModuleName'%.%Init(void)
     for(;;){} /* failure! */
   }
 %endif
-%if defined(RTOS) & %UseSemaphore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.busSem = xSemaphoreCreateRecursiveMutex();
   if (%'ModuleName'%.busSem==NULL) { /* semaphore creation failed */
   #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -1177,7 +1165,7 @@ void %'ModuleName'%.%Init(void)
     for(;;) {} /* error, not enough memory? */
   }
   vQueueAddToRegistry(%'ModuleName'%.busSem, "%'ModuleName'_Mutex");
-%endif
+#endif
 }
 
 %endif %- Init
@@ -1191,11 +1179,11 @@ void %'ModuleName'%.%Deinit(void)
 %if defined(LDD_I2C)
   %@LDD_I2C@'ModuleName'%.Deinit(&%'ModuleName'%.deviceData);
 %endif
-%if defined(RTOS) & %UseSemaphore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   vQueueUnregisterQueue(%'ModuleName'%.busSem);
-  %@RTOS@'ModuleName'%.vSemaphoreDelete(%'ModuleName'%.busSem);
+  vSemaphoreDelete(%'ModuleName'%.busSem);
   %'ModuleName'%.busSem = NULL;
-%endif
+#endif
 }
 
 %endif %- Deinit
@@ -1207,11 +1195,11 @@ void %'ModuleName'%.%Deinit(void)
 %include Common\GenericI2CGetSemaphore.Inc
 void* %'ModuleName'%.%GetSemaphore(void)
 {
-%if defined(RTOS) & %UseSemaphore='yes'
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   return %'ModuleName'%.busSem;
-%else
+#else
   return NULL; /* RTOS and Semaphore enabled in properties */
-%endif
+#endif
 }
 
 %endif %- GetSemaphore
@@ -1577,6 +1565,17 @@ void %OnError(void)
   void %'ModuleName'%.CONFIG_ON_ERROR_EVENT(void); /* prototype */
   %endif
 #endif
+
+#if !defined(%'ModuleName'%.CONFIG_USE_MUTEX)
+  %if defined(RTOS) & %UseSemaphore='yes'
+  #define %'ModuleName'%.CONFIG_USE_MUTEX             (1)
+    /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
+  %else
+  #define %'ModuleName'%.CONFIG_USE_MUTEX             (0)
+    /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
+  %endif
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
