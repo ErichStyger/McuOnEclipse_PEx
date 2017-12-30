@@ -49,21 +49,6 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
-%ifdef I2C
-  %ifdef @I2C@OnRequestBus
-    %define! Description_%@I2C@OnRequestBus User event which will be called before accessing the I2C bus. Useful for starting a critical section. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @I2C@OnRequestBus
-%endif %- I2C
-%ifdef I2C
-  %ifdef @I2C@OnReleaseBus
-    %define! Description_%@I2C@OnReleaseBus User event which will be called after accessing the I2C bus. Useful for ending a critical section. The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @I2C@OnReleaseBus
-%endif %- I2C
-%ifdef I2C
-  %ifdef @I2C@OnError
-    %define! Description_%@I2C@OnError Event called in case of error condition The event services the event of the inherited component and eventually invokes other events.
-  %endif %- @I2C@OnError
-%endif %- I2C
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -401,24 +386,6 @@ void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof);
 
 %endif %- WriteDataWordRepeated
 %-BW_METHOD_END WriteDataWordRepeated
-%-INHERITED_EVENT_BEGIN I2C OnRequestBus
-%ifdef @I2C@OnRequestBus
-void %@I2C@OnRequestBus(void);
-
-%endif %- @I2C@OnRequestBus
-%-INHERITED_EVENT_END I2C OnRequestBus
-%-INHERITED_EVENT_BEGIN I2C OnReleaseBus
-%ifdef @I2C@OnReleaseBus
-void %@I2C@OnReleaseBus(void);
-
-%endif %- @I2C@OnReleaseBus
-%-INHERITED_EVENT_END I2C OnReleaseBus
-%-INHERITED_EVENT_BEGIN I2C OnError
-%ifdef @I2C@OnError
-void %@I2C@OnError(void);
-
-%endif %- @I2C@OnError
-%-INHERITED_EVENT_END I2C OnError
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetContrast
 %ifdef SetContrast
@@ -489,6 +456,7 @@ void %OnGiveLCD(void);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#include "%@Wait@ModuleName.h" /* Waiting routines */
 #include %'ModuleName'_CONFIG_I2C_HEADER_FILE  /* I2C driver */
 %-
 %-BW_CUSTOM_INCLUDE_END_M
@@ -1146,36 +1114,6 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-INHERITED_EVENT_BEGIN I2C OnRequestBus
-%ifdef @I2C@OnRequestBus
-%include Common\GeneralInternal.inc (OnRequestBus)
-void %@I2C@OnRequestBus(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @I2C@OnRequestBus
-%-INHERITED_EVENT_END I2C OnRequestBus
-%-INHERITED_EVENT_BEGIN I2C OnReleaseBus
-%ifdef @I2C@OnReleaseBus
-%include Common\GeneralInternal.inc (OnReleaseBus)
-void %@I2C@OnReleaseBus(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @I2C@OnReleaseBus
-%-INHERITED_EVENT_END I2C OnReleaseBus
-%-INHERITED_EVENT_BEGIN I2C OnError
-%ifdef @I2C@OnError
-%include Common\GeneralInternal.inc (OnError)
-void %@I2C@OnError(void)
-{
-  /* Write your code here ... */
-}
-
-%endif %- @I2C@OnError
-%-INHERITED_EVENT_END I2C OnError
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetContrast
 %ifdef SetContrast
