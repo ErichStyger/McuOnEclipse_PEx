@@ -4,7 +4,7 @@
     <Name>FontDisplay</Name>
     <Description>Graphical font driver</Description>
     <Author>Damian Schmid, Erich Styger</Author>
-    <Version>01.196</Version>
+    <Version>01.198</Version>
     <Icon>FontDisplay</Icon>
     <TypesFiles>PE,FontDisplay\FontDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>3</BW_NeedUst>
+    <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright> * Copyright (c) 2011-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
@@ -47,6 +47,20 @@
         <Description/>
         <Expanded>Yes</Expanded>
         <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>FontDisplay\sdk</TypeSpec>
+              <Hint>SDK to be used</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
           <GrupItem>
             <TInhrLinkItem>
               <Name>Display</Name>
@@ -182,7 +196,7 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>str</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the string.</ParHint>
         </Parameter>
@@ -200,7 +214,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace)</ANSIC>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -228,7 +242,7 @@
         <ParamCount>4</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>character for which to calculate the width</ParHint>
         </Parameter>
@@ -252,7 +266,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -281,7 +295,7 @@
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>str</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the string.</ParHint>
         </Parameter>
@@ -299,7 +313,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace)</ANSIC>
+          <ANSIC>%'ModuleName'_PixelDim #M#_#C#(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -327,7 +341,7 @@
         <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>str</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the character string</ParHint>
         </Parameter>
@@ -357,7 +371,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -385,7 +399,7 @@
         <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the character to print</ParHint>
         </Parameter>
@@ -415,7 +429,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

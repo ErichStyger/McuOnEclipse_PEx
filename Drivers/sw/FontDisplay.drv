@@ -64,19 +64,10 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+#include "%@GDisplay@ModuleName.h" /* Graphic display interface */
+#include "%@font@ModuleName.h" /* Font interface */
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -87,16 +78,13 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef %@GDisplay@'ModuleName'%.PixelDim   %'ModuleName'%.PixelDim;%>40/* type which can hold a integral type for the x/y pixel dimension. This is depending on the display used. */
-typedef %@GDisplay@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor;%>40/* Type definining the color type (depens on display used). */
+typedef %@GDisplay@'ModuleName'%.PixelDim   %'ModuleName'%.PixelDim;%>40/* Type which can hold a integral type for the x/y pixel dimension. This is depending on the display used. */
+typedef %@GDisplay@'ModuleName'%.PixelColor %'ModuleName'%.PixelColor;%>40/* Type defining the color type (depends on display used). */
 typedef GFONT_Callbacks %'ModuleName'%.Font;                     %>40/* Pointer to GFONT_Callbacks */
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -115,7 +103,7 @@ typedef GFONT_Callbacks %'ModuleName'%.Font;                     %>40/* Pointer 
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteString
 %ifdef WriteString
-void %'ModuleName'%.%WriteString(byte *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font);
+void %'ModuleName'%.%WriteString(uint8_t *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font);
 %define! Parstr
 %define! Parcolor
 %define! ParxCursor
@@ -128,7 +116,7 @@ void %'ModuleName'%.%WriteString(byte *str, %'ModuleName'_PixelColor color, %'Mo
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteChar
 %ifdef WriteChar
-void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font);
+void %'ModuleName'%.%WriteChar(uint8_t ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font);
 %define! Parcolor
 %define! Parch
 %define! ParxCursor
@@ -141,7 +129,7 @@ void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'Module
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetCharWidth
 %ifdef GetCharWidth
-void %'ModuleName'%.%GetCharWidth(byte ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font);
+void %'ModuleName'%.%GetCharWidth(uint8_t ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font);
 %define! ParcharWidth
 %define! PartotalWidth
 %define! Parfont
@@ -153,7 +141,7 @@ void %'ModuleName'%.%GetCharWidth(byte ch, %'ModuleName'_PixelDim *charWidth, %'
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetStringWidth
 %ifdef GetStringWidth
-%'ModuleName'_PixelDim %'ModuleName'%.%GetStringWidth(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace);
+%'ModuleName'_PixelDim %'ModuleName'%.%GetStringWidth(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace);
 %define! Parstr
 %define! Parfont
 %define! ParlastCharSpace
@@ -176,7 +164,7 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetStringHeight
 %ifdef GetStringHeight
-%'ModuleName'_PixelDim %'ModuleName'%.%GetStringHeight(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace);
+%'ModuleName'_PixelDim %'ModuleName'%.%GetStringHeight(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace);
 %define! Parstr
 %define! Parfont
 %define! ParlastLineSpace
@@ -238,12 +226,12 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %define! ParyCursor
 %define! Parfont
 %include Common\FontDisplayWriteChar.Inc
-void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)
+void %'ModuleName'%.%WriteChar(uint8_t ch, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)
 {
   PGFONT_CharInfo charStruct;                                    %>40/* font information */
-  byte *data;                                                    %>40/* actual character of string text[] */
-  byte w;                                                        %>40/* counter variable row bits of character */
-  byte h;                                                        %>40/* counter variable column bits of character */
+  uint8_t *data;                                                 %>40/* actual character of string text[] */
+  uint8_t w;                                                     %>40/* counter variable row bits of character */
+  uint8_t h;                                                     %>40/* counter variable column bits of character */
   %'ModuleName'%.PixelDim currY;
   %'ModuleName'%.PixelDim currX;
   signed char b;                                                 %>40/* bit position in byte stream */
@@ -251,7 +239,7 @@ void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'Module
   if (ch=='\t') {                                                %>40/* tabulator */
    ch = ' ';                                                     %>40/* use a space instead */
   }
-  charStruct = font->GetFontChar((byte)ch);
+  charStruct = font->GetFontChar((uint8_t)ch);
   if (ch=='\n') {                                                %>40/* move to a new line */
    *yCursor += font->boundingBoxHeight;                          %>40/* set next cursor position */
    return;
@@ -259,7 +247,7 @@ void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'Module
   if (ch=='\r') {                                                %>40/* move to beginning of line */
    return;                                                       %>40/* do nothing. Only the caller may know what the beginning of line is */
   }
-  data = (byte*)charStruct->CharBMP;                             %>40/* get the pointer */
+  data = (uint8_t*)charStruct->CharBMP;                          %>40/* get the pointer */
   if (data != NULL) {                                            %>40/* printable character. Only if we have a character info. This is not the case e.g. for \n */
     currY =  (%'ModuleName'%.PixelDim)(*yCursor
            + font->boundingBoxHeight                             %>40/* height of box. This includes the space between lines plus the space under the base line */
@@ -312,7 +300,7 @@ void %'ModuleName'%.%WriteChar(byte ch, %'ModuleName'_PixelColor color, %'Module
 %define! ParyCursor
 %define! Parfont
 %include Common\FontDisplayWriteString.Inc
-void %'ModuleName'%.%WriteString(byte *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)
+void %'ModuleName'%.%WriteString(uint8_t *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font)
 {
   %'ModuleName'_PixelDim x = *xCursor;
 
@@ -339,11 +327,11 @@ void %'ModuleName'%.%WriteString(byte *str, %'ModuleName'_PixelColor color, %'Mo
 %define! Parfont
 %define! Parch
 %include Common\FontDisplayGetCharWidth.Inc
-void %'ModuleName'%.%GetCharWidth(byte ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font)
+void %'ModuleName'%.%GetCharWidth(uint8_t ch, %'ModuleName'_PixelDim *charWidth, %'ModuleName'_PixelDim *totalWidth, %'ModuleName'_Font *font)
 {
   PGFONT_CharInfo charStruct;
 
-  charStruct = font->GetFontChar((byte)ch);
+  charStruct = font->GetFontChar((uint8_t)ch);
   if (charStruct != NULL) {
     *charWidth = (%'ModuleName'_PixelDim)(charStruct->width+charStruct->offsetX);
     *totalWidth = (%'ModuleName'_PixelDim)charStruct->dwidth;
@@ -363,7 +351,7 @@ void %'ModuleName'%.%GetCharWidth(byte ch, %'ModuleName'_PixelDim *charWidth, %'
 %define! ParlastCharSpace
 %define! RetVal
 %include Common\FontDisplayGetStringWidth.Inc
-%'ModuleName'_PixelDim %'ModuleName'%.%GetStringWidth(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace)
+%'ModuleName'_PixelDim %'ModuleName'%.%GetStringWidth(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastCharSpace)
 {
   unsigned char *p;                                              %>40/* pointer to the actual character */
   %'ModuleName'_PixelDim currWidth;                              %>40/* current width of string */
@@ -425,7 +413,7 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %define! ParlastLineSpace
 %define! RetVal
 %include Common\FontDisplayGetStringHeight.Inc
-%'ModuleName'_PixelDim %'ModuleName'%.%GetStringHeight(byte *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace)
+%'ModuleName'_PixelDim %'ModuleName'%.%GetStringHeight(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace)
 {
   word nofLines;
   %'ModuleName'_PixelDim charHeight, totalHeight;
@@ -470,6 +458,23 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %CODE_BEGIN
 %CODE_END
 %-
+%-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* no configuration supported yet */
+%- #define %'ModuleName'%.CONFIG_SETTING
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

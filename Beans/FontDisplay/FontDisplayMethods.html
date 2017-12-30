@@ -224,9 +224,9 @@ LI.EXP {
  - returns the height (in pixels) of a font string. For multiple line strings (separated by newline) or for strings with \r it returns the longest list.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>PixelDim GetStringHeight(byte *str, <i>ComponentName_</i>Font *font, <i>ComponentName_</i>PixelDim *lastLineSpace)<br />
+<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>PixelDim GetStringHeight(uint8_t *str, <i>ComponentName_</i>Font *font, <i>ComponentName_</i>PixelDim *lastLineSpace)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>str: Pointer to byte</i> - Pointer to the string.</li>
+<li><i>str: Pointer to uint8_t</i> - Pointer to the string.</li>
 <li><i>font: Pointer to <i>ComponentName_</i>Font</i> - Pointer to font information</li>
 <li><i>lastLineSpace: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to the height of the last line space, useful if you combine multiple strings. The pointer may be NULL.</li>
 <li><i>Return value:<i>ComponentName_</i>PixelDim</i> - Error code
@@ -238,9 +238,9 @@ LI.EXP {
  - returns the width (in pixels) of a font character.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void GetCharWidth(byte ch, <i>ComponentName_</i>PixelDim *charWidth, <i>ComponentName_</i>PixelDim *totalWidth, <i>ComponentName_</i>Font *font)<br />
+<br /><i>ANSIC prototype:</i> void GetCharWidth(uint8_t ch, <i>ComponentName_</i>PixelDim *charWidth, <i>ComponentName_</i>PixelDim *totalWidth, <i>ComponentName_</i>Font *font)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - character for which to calculate the width</li>
+<li><i>ch:uint8_t</i> - character for which to calculate the width</li>
 <li><i>charWidth: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to width of the character in pixels (this is only for the character, without the space after the character)</li>
 <li><i>totalWidth: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to the total width of the character, including to the space after the character.</li>
 <li><i>font: Pointer to <i>ComponentName_</i>Font</i> - Pointer to font information</li>
@@ -251,9 +251,9 @@ LI.EXP {
  - returns the width (in pixels) of a font string. For multiple line strings (separated by \<br />) or for strings with \r it returns the longest string length.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>PixelDim GetStringWidth(byte *str, <i>ComponentName_</i>Font *font, <i>ComponentName_</i>PixelDim *lastCharSpace)<br />
+<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>PixelDim GetStringWidth(uint8_t *str, <i>ComponentName_</i>Font *font, <i>ComponentName_</i>PixelDim *lastCharSpace)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>str: Pointer to byte</i> - Pointer to the string.</li>
+<li><i>str: Pointer to uint8_t</i> - Pointer to the string.</li>
 <li><i>font: Pointer to <i>ComponentName_</i>Font</i> - Pointer to font information</li>
 <li><i>lastCharSpace: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to the width of the last character space, useful if you combine multiple strings. The pointer may be NULL.</li>
 <li><i>Return value:<i>ComponentName_</i>PixelDim</i> - Error code
@@ -265,9 +265,9 @@ LI.EXP {
  - Function to write a string or character at the startpoint. Set the startpoint with the function setCursor.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteString(byte *str, <i>ComponentName_</i>PixelColor color, <i>ComponentName_</i>PixelDim *xCursor, <i>ComponentName_</i>PixelDim *yCursor, <i>ComponentName_</i>Font *font)<br />
+<br /><i>ANSIC prototype:</i> void WriteString(uint8_t *str, <i>ComponentName_</i>PixelColor color, <i>ComponentName_</i>PixelDim *xCursor, <i>ComponentName_</i>PixelDim *yCursor, <i>ComponentName_</i>Font *font)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>str: Pointer to byte</i> - Pointer to the character string</li>
+<li><i>str: Pointer to uint8_t</i> - Pointer to the character string</li>
 <li><i>color:<i>ComponentName_</i>PixelColor</i> - Foreground color to be used (for the character pixels)</li>
 <li><i>xCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to x position of first character (upper left corner). On return this will contain the next y position.</li>
 <li><i>yCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to y position of character (upper left corner). On return this will contain the next y position.</li>
@@ -279,9 +279,9 @@ LI.EXP {
  - Function to write a character at the start point. Set the start point with the function setCursor.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteChar(byte ch, <i>ComponentName_</i>PixelColor color, <i>ComponentName_</i>PixelDim *xCursor, <i>ComponentName_</i>PixelDim *yCursor, <i>ComponentName_</i>Font *font)<br />
+<br /><i>ANSIC prototype:</i> void WriteChar(uint8_t ch, <i>ComponentName_</i>PixelColor color, <i>ComponentName_</i>PixelDim *xCursor, <i>ComponentName_</i>PixelDim *yCursor, <i>ComponentName_</i>Font *font)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>ch:byte</i> - the character to print</li>
+<li><i>ch:uint8_t</i> - the character to print</li>
 <li><i>color:<i>ComponentName_</i>PixelColor</i> - Foreground color to be used (for the character pixels)</li>
 <li><i>xCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to x position of character (upper left corner). On return this will contain the next x position.</li>
 <li><i>yCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to y position of character (upper left corner). On return this will contain the next y position.</li>
