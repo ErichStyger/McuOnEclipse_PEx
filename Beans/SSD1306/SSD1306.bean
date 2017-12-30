@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.011</Version>
+    <Version>01.013</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -359,7 +359,7 @@
               <BoldName>true</BoldName>
               <EditLine>false</EditLine>
               <Description>Disabled</Description>
-              <Expanded>Yes</Expanded>
+              <Expanded>No</Expanded>
               <DefaultValue>false</DefaultValue>
               <DefineSymbol>YES_NO</DefineSymbol>
               <IfDisabled>setNOTHING</IfDisabled>
@@ -452,7 +452,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>PixelDim</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>Width of display</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -480,7 +480,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>PixelDim</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>Height of display</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -508,7 +508,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>PixelDim</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>number of pixels</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -536,7 +536,7 @@
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>PixelDim</ReturnType>
-        <RetHint>Error code</RetHint>
+        <RetHint>number of pixels</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
@@ -549,7 +549,7 @@
         <Name>SetDisplayOrientation</Name>
         <Symbol>SetDisplayOrientation</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Sets the display orienation. If you enable this method, then the orientation of the display can be changed at runtime. However, this requires additional ressources.</Hint>
+        <Hint>Sets the display orientation. If you enable this method, then the orientation of the display can be changed at runtime. However, this requires additional resources.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -625,12 +625,12 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>16bit unsigned</ReturnType>
+        <ReturnType>uint16_t</ReturnType>
         <RetHint>data word from the display</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>word #M#_#C#(void)</ANSIC>
+          <ANSIC>uint16_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -732,7 +732,7 @@
         </Parameter>
         <Parameter>
           <ParName>nof</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>How many times the data word shall be sent</ParHint>
           <ParUserDeclaration>size_t nof</ParUserDeclaration>
@@ -773,7 +773,7 @@
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint/>
           <ParUserDeclaration>size_t dataSize</ParUserDeclaration>

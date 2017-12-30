@@ -67,13 +67,6 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -105,14 +98,14 @@ extern "C" {
 #if 0
 %endif
 /* this type is declared in PE_Types.h for non-LDD processors, need to declare it locally otherwise */
-typedef struct {                       /* Image */
-  uint16_t width;                          /* Image width  */
-  uint16_t height;                         /* Image height */
-  const uint8_t * pixmap;                 /* Image pixel bitmap */
-  uint16_t size;                           /* Image size   */
-  const char_t * name;                 /* Image name   */
+typedef struct {                         /* Image */
+  uint16_t width;                        /* Image width  */
+  uint16_t height;                       /* Image height */
+  const uint8_t *pixmap;                 /* Image pixel bitmap */
+  uint16_t size;                         /* Image size   */
+  const char *name;                      /* Image name   */
 } TIMAGE;
-typedef TIMAGE* PIMAGE ;               /* Pointer to image */
+typedef TIMAGE* PIMAGE ;                 /* Pointer to image */
 %if (CPUfamily = "Kinetis")
 %else
 #endif
@@ -248,43 +241,43 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 #define %'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y) /* pixel bit number inside display buffer byte (0 is LSB, 7 MSB) */ \
   %if %Orientation='Landscape'
     %if   %@Display@BytesInRows='yes' & %@Display@MSBfirst='yes'
-      ((byte)(7-((x)%%8)))
+      ((uint8_t)(7-((x)%%8)))
     %elif %@Display@BytesInRows='yes' & %@Display@MSBfirst='no'
-      ((byte)((x)%%8))
+      ((uint8_t)((x)%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='no'  %- Kent 132x64, Nokia
-      ((byte)((y)%%8))
+      ((uint8_t)((y)%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='yes'
-      ((byte)(7-((y)%%8)))
+      ((uint8_t)(7-((y)%%8)))
     %endif
   %elif %Orientation='Landscape180'
     %if   %@Display@BytesInRows='yes' & %@Display@MSBfirst='yes'
-      ((byte)(7-((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8)))
+      ((uint8_t)(7-((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8)))
     %elif %@Display@BytesInRows='yes' & %@Display@MSBfirst='no'
-      ((byte)((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8))
+      ((uint8_t)((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='no' %- Kent 132x64, Nokia
-      ((byte)(7-((y)%%8)))
+      ((uint8_t)(7-((y)%%8)))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='yes'
-      ((byte)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
+      ((uint8_t)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
     %endif
   %elif %Orientation='Portrait'
     %if   %@Display@BytesInRows='yes' & %@Display@MSBfirst='yes'
-      ((byte)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
+      ((uint8_t)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
     %elif %@Display@BytesInRows='yes' & %@Display@MSBfirst='no'
-      ((byte)((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8))
+      ((uint8_t)((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='no' %- Kent 132x64, Nokia
-      ((byte)(7-((x)%%8)))
+      ((uint8_t)(7-((x)%%8)))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='yes'
-      ((byte)(7-((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8)))
+      ((uint8_t)(7-((%@Display@'ModuleName'%.GetWidth()-1-(x))%%8)))
     %endif
   %elif %Orientation='Portrait180'
     %if   %@Display@BytesInRows='yes' & %@Display@MSBfirst='yes'
-      //((byte)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
+      //((uint8_t)(7-((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8)))
     %elif %@Display@BytesInRows='yes' & %@Display@MSBfirst='no'
-      //((byte)((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8))
+      //((uint8_t)((%@Display@'ModuleName'%.GetHeight()-1-(y))%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='no' %- Kent 132x64, Nokia
-      ((byte)((x)%%8))
+      ((uint8_t)((x)%%8))
     %elif %@Display@BytesInRows='no' & %@Display@MSBfirst='yes'
-      //((byte)(7-((x)%%8)))
+      //((uint8_t)(7-((x)%%8)))
     %endif
   %endif
 %endif
@@ -444,7 +437,7 @@ void %'ModuleName'%.%DrawVLine(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim 
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawBarChart
 %ifdef DrawBarChart
-void %'ModuleName'%.%DrawBarChart(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, byte *data, byte nofData, %'ModuleName'_PixelColor barColor, byte borderWidth, %'ModuleName'_PixelColor borderColor, byte borderSpace);
+void %'ModuleName'%.%DrawBarChart(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, uint8_t *data, uint8_t nofData, %'ModuleName'_PixelColor barColor, uint8_t borderWidth, %'ModuleName'_PixelColor borderColor, uint8_t borderSpace);
 %define! Parx
 %define! Pary
 %define! Parwidth
@@ -498,7 +491,7 @@ void %'ModuleName'%.%DrawCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Draw65kBitmap
 %ifdef Draw65kBitmap
-void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, word *bmp, bool compressed);
+void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint16_t *bmp, bool compressed);
 %define! Parx1
 %define! Pary1
 %define! Parx2
@@ -512,7 +505,7 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Draw256BitmapLow
 %ifdef Draw256BitmapLow
-void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, bool compressed);
+void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, bool compressed);
 %define! Parx1
 %define! Pary1
 %define! Parx2
@@ -526,7 +519,7 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Draw256BitmapHigh
 %ifdef Draw256BitmapHigh
-void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed);
+void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed);
 %define! Parx1
 %define! Pary1
 %define! Parx2
@@ -786,7 +779,7 @@ static xSemaphoreHandle %'ModuleName'%.displayMutex;
 %- Row8  bit0
 %-       ...
 %-
-static const word c332to565[256] = { /* converts a 3-3-2 RBG value into a 5-6-5 RGB value */
+static const uint16_t c332to565[256] = { /* converts a 3-3-2 RBG value into a 5-6-5 RGB value */
  0x0000, 0x000A, 0x0014, 0xF81E, 0x0120, 0x012A, 0x0134, 0xF93E,
  0x0240, 0x024A, 0x0254, 0xFA5E, 0x0360, 0x036A, 0x0374, 0xFB7E,
  0x0480, 0x048A, 0x0494, 0xFC9E, 0x05A0, 0x05AA, 0x05B4, 0xFDBE,
@@ -836,9 +829,9 @@ void %'ModuleName'%.%Clear(void)
 %else %- use display buffer
   uint8_t *p = (uint8_t*)(&%@Display@'ModuleName'%.DisplayBuf[0][0]); /* first element in display buffer */
 
-  while (p<((byte*)%@Display@'ModuleName'%.DisplayBuf)+sizeof(%@Display@'ModuleName'%.DisplayBuf)) {
+  while (p<((uint8_t*)%@Display@'ModuleName'%.DisplayBuf)+sizeof(%@Display@'ModuleName'%.DisplayBuf)) {
  #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
-    *p++ = (byte)(  (%'ModuleName'%.COLOR_WHITE<<7)
+    *p++ = (uint8_t)(  (%'ModuleName'%.COLOR_WHITE<<7)
                   | (%'ModuleName'%.COLOR_WHITE<<6)
                   | (%'ModuleName'%.COLOR_WHITE<<5)
                   | (%'ModuleName'%.COLOR_WHITE<<4)
@@ -1206,8 +1199,8 @@ void %'ModuleName'%.%DrawMonoBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_Pixe
 {
   %'ModuleName'%.PixelDim x0, y0, xe, ye;
   %'ModuleName'%.PixelColor pixel;
-  byte i;
-  const byte *data;
+  uint8_t i;
+  const uint8_t *data;
 
 %ifdef OnError
   if (   image->width==0 || image->height==0
@@ -1258,7 +1251,7 @@ void %'ModuleName'%.%DrawColorBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_Pix
 {
   %'ModuleName'%.PixelDim x0, y0, xe, ye;
   %'ModuleName'%.PixelColor pixel;
-  const byte *data;
+  const uint8_t *data;
 
 %ifdef OnError
   if (   image->width==0 || image->height==0
@@ -1353,7 +1346,7 @@ void %'ModuleName'%.%DrawVLine(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim 
 %define! ParborderColor
 %define! ParborderSpace
 %include Common\GDisplayDrawBarChart.Inc
-void %'ModuleName'%.%DrawBarChart(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, byte *data, byte nofData, %'ModuleName'_PixelColor barColor, byte borderWidth, %'ModuleName'_PixelColor borderColor, byte borderSpace)
+void %'ModuleName'%.%DrawBarChart(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, uint8_t *data, uint8_t nofData, %'ModuleName'_PixelColor barColor, uint8_t borderWidth, %'ModuleName'_PixelColor borderColor, uint8_t borderSpace)
 {
   uint8_t i;
   %'ModuleName'%.PixelDim barHeight; /* for calculation of each bar height */
@@ -1529,7 +1522,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %define! Parcompressed
 %define! Parbmp
 %include Common\GDisplayDraw65kBitmap.Inc
-void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, word *bmp, bool compressed)
+void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint16_t *bmp, bool compressed)
 {
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
@@ -1568,7 +1561,7 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
       }
     }
   } else {
-    word i;
+    uint16_t i;
     %'ModuleName'_PixelColor pixelColor;
 
     for(i=0; i<pixelCount; i++) {
@@ -1599,7 +1592,7 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
 %define! ParColorTable
 %define! Parbmp
 %include Common\GDisplayDraw256BitmapHigh.Inc
-void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed)
+void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed)
 {
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
@@ -1611,12 +1604,12 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
-    byte PixelColorIndex = 0;
+    uint8_t PixelColorIndex = 0;
     uint16_t Pos = 0;
     bool FirstRead = TRUE;
     uint16_t i;
-    byte LastPixelIndex;
-    byte Repeat;
+    uint8_t LastPixelIndex;
+    uint8_t Repeat;
 
     for (i=0; i<pixelCount; i++) {
       if (FirstRead) {                                           %>40 /* read first pixel after first start or after finishing a compressed bunch of data */
@@ -1670,7 +1663,7 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
 %define! Parcompressed
 %define! Parbmp
 %include Common\GDisplayDraw256BitmapLow.Inc
-void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, bool compressed)
+void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, bool compressed)
 {
 /* For uncompressed bitmap data:
       The pixels are provided in an array of 8bit pixel information (bmp[]).
@@ -1692,11 +1685,11 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
     /* compressed pixel information */
-    byte pixelColor = 0;
-    byte lastPixel;
+    uint8_t pixelColor = 0;
+    uint8_t lastPixel;
     %'ModuleName'_PixelCount pos = 0;
     bool first = TRUE;                                           %>40 /* if we read the first time, or if we may have a new sequence */
-    byte repeat;
+    uint8_t repeat;
 
     while(pixelCount!=0) {                                       %>40 /* while there are pixels to write... */
       if (first) {                                               %>40 /* first pixel, or first after a compressed sequence */
@@ -1951,6 +1944,25 @@ void %OnGiveDisplay(void)
 
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'_CONFIG_DISPLAY_MODULE_NAME
+%if defined(Display)
+  #define %'ModuleName'_CONFIG_DISPLAY_MODULE_NAME               %>40 %@Display@'ModuleName'
+%else
+  #define %'ModuleName'_CONFIG_DISPLAY_MODULE_NAME               %>40 Display
+%endif
+    /*!< Symbol name used for module */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_DISPLAY_HEADER_FILE
+%if defined(Display)
+  #define %'ModuleName'_CONFIG_DISPLAY_HEADER_FILE               %>40 "%@Display@'ModuleName'.h"
+%else
+  #define %'ModuleName'_CONFIG_DISPLAY_HEADER_FILE               %>40 "Display.h"
+%endif
+    /*!< Header file to be included as interface to the display */
+#endif
+#include %'ModuleName'_CONFIG_DISPLAY_HEADER_FILE  /* include LCD interface */
 
 #ifndef %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
 %if %@Display@WindowCapability='yes'

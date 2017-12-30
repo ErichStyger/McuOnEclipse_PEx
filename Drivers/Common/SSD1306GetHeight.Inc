@@ -8,7 +8,7 @@
 %;**         Returns the height of the display in pixels (in y direction)
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - Height of display
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

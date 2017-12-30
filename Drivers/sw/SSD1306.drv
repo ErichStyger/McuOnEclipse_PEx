@@ -79,19 +79,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
-
-/* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 #include <stddef.h> /* for size_t */
-
-/* Include inherited components */
-#include %'ModuleName'_CONFIG_I2C_HEADER_FILE  /* I2C driver */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -343,7 +333,7 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadDataWord
 %ifdef ReadDataWord
-word %'ModuleName'%.%ReadDataWord(void);
+uint16_t %'ModuleName'%.%ReadDataWord(void);
 %define! RetVal
 %include Common\SSD1306ReadDataWord.Inc
 
@@ -499,6 +489,7 @@ void %OnGiveLCD(void);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#include %'ModuleName'_CONFIG_I2C_HEADER_FILE  /* I2C driver */
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
@@ -771,7 +762,7 @@ void SSD1306_PrintString(uint8_t *ch) {
 %ifdef ReadDataWord
 %define! RetVal
 %include Common\SSD1306ReadDataWord.Inc
-word %'ModuleName'%.%ReadDataWord(void)
+uint16_t %'ModuleName'%.%ReadDataWord(void)
 {
   /* sorry, with the serial interface it is NOT possible to read from display memory */
   return 0;
@@ -1331,12 +1322,18 @@ void %OnGiveLCD(void)
     /*!< if we have a reset line to the display */
   #define %'ModuleName'_CONFIG_SSD1306_RESET_LOW()     %@RES@'ModuleName'%.ClrVal()%>40 /* RESET signal low (reset is low active) */
   #define %'ModuleName'_CONFIG_SSD1306_RESET_HIGH()    %@RES@'ModuleName'%.SetVal()%>40 /* RESET signal high */
+  #define %'ModuleName'_CONFIG_RESET_HEADER_FILE       "%@RES@'ModuleName'.h"
 %else
   #define %'ModuleName'_CONFIG_SSD1306_HAS_RST         (0)
   #define %'ModuleName'_CONFIG_SSD1306_RESET_LOW()     Reset_ClrVal()%>40 /* RESET signal low (reset is low active) */
   #define %'ModuleName'_CONFIG_SSD1306_RESET_HIGH()    Reset_SetVal()%>40 /* RESET signal high */
+  #define %'ModuleName'_CONFIG_RESET_HEADER_FILE       "ResetPin.h"
 %endif
 #endif
+#if %'ModuleName'_CONFIG_SSD1306_HAS_RST
+  #include %'ModuleName'_CONFIG_RESET_HEADER_FILE  /* reset pin interface */
+#endif
+
 #ifndef %'ModuleName'_CONFIG_SSD1306_EXTERNAL
   #define %'ModuleName'_CONFIG_SSD1306_EXTERNAL        (0)
     /*!< set to 1 if external vcc is connected, otherwise 0 if internal dc/dc converter is used */
@@ -1348,7 +1345,7 @@ void %OnGiveLCD(void)
 
 #ifndef %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US
   #define %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US    (%I2CTransactionDelay)
-    /*!< I2C transacation delay in us */
+    /*!< I2C transaction delay in us */
 #endif
 
 #ifndef %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION

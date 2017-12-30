@@ -415,7 +415,7 @@ void %'ModuleName'%.%GetFontHeight(%'ModuleName'_Font *font, %'ModuleName'_Pixel
 %include Common\FontDisplayGetStringHeight.Inc
 %'ModuleName'_PixelDim %'ModuleName'%.%GetStringHeight(uint8_t *str, %'ModuleName'_Font *font, %'ModuleName'_PixelDim *lastLineSpace)
 {
-  word nofLines;
+  uint16_t nofLines;
   %'ModuleName'_PixelDim charHeight, totalHeight;
 
   if (*str == '\0') {

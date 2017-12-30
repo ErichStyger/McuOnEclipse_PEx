@@ -373,18 +373,18 @@ LI.EXP {
  - Draws a series of bars for a chart
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void DrawBarChart(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, <i>ComponentName_</i>PixelDim width, <i>ComponentName_</i>PixelDim height, byte *data, byte nofData, <i>ComponentName_</i>PixelColor barColor, byte borderWidth, <i>ComponentName_</i>PixelColor borderColor, byte borderSpace)<br />
+<br /><i>ANSIC prototype:</i> void DrawBarChart(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, <i>ComponentName_</i>PixelDim width, <i>ComponentName_</i>PixelDim height, uint8_t *data, uint8_t nofData, <i>ComponentName_</i>PixelColor barColor, uint8_t borderWidth, <i>ComponentName_</i>PixelColor borderColor, uint8_t borderSpace)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x:<i>ComponentName_</i>PixelDim</i> - upper left corner x coordinate</li>
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - upper left corner y coordinate</li>
 <li><i>width:<i>ComponentName_</i>PixelDim</i> - Chart box width</li>
 <li><i>height:<i>ComponentName_</i>PixelDim</i> - Chart box height</li>
-<li><i>data: Pointer to byte</i> - Pointer to data (series of % values from 0...100%)</li>
-<li><i>nofData:byte</i> - number of data bytes</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to data (series of % values from 0...100%)</li>
+<li><i>nofData:uint8_t</i> - number of data bytes</li>
 <li><i>barColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for the bars.</li>
-<li><i>borderWidth:byte</i> - width of a border to be draw. Pass zero if there shall be no border.</li>
+<li><i>borderWidth:uint8_t</i> - width of a border to be draw. Pass zero if there shall be no border.</li>
 <li><i>borderColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for the border (if borderWidth is not zero)</li>
-<li><i>borderSpace:byte</i> - Space to be used in pixels between border and bars.</li>
+<li><i>borderSpace:uint8_t</i> - Space to be used in pixels between border and bars.</li>
 </ul><br />
 </li>
 <li><a name="DrawMonoBitmap">
@@ -396,7 +396,7 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x:<i>ComponentName_</i>PixelDim</i> - x position of left upper corner</li>
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - y position of left upper corner</li>
-<li><i>image:byte</i> - Pointer to image structure and information.</li>
+<li><i>image:uint8_t</i> - Pointer to image structure and information.</li>
 <li><i>pixelColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for pixels (pixel set)</li>
 <li><i>backgroundColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for background (pixel not set)</li>
 </ul><br />
@@ -410,7 +410,7 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x:<i>ComponentName_</i>PixelDim</i> - x position of left upper corner</li>
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - y position of left upper corner</li>
-<li><i>image:byte</i> - Pointer to image structure and information.</li>
+<li><i>image:uint8_t</i> - Pointer to image structure and information.</li>
 </ul><br />
 </li>
 <li><a name="Draw65kBitmap">
@@ -418,13 +418,13 @@ LI.EXP {
  - Draws a 65k color bitmap (compressed or uncompressed)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Draw65kBitmap(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, word *bmp, bool compressed)<br />
+<br /><i>ANSIC prototype:</i> void Draw65kBitmap(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, uint16_t *bmp, bool compressed)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>y1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>x2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
 <li><i>y2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
-<li><i>bmp: Pointer to word</i> - Pointer to bitmap</li>
+<li><i>bmp: Pointer to uint16_t</i> - Pointer to bitmap</li>
 <li><i>compressed:bool</i> - no hint</li>
 </ul><br />
 </li>
@@ -433,13 +433,13 @@ LI.EXP {
  - Draws a 256 color bitmap (compressed or uncompressed)
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Draw256BitmapLow(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, byte *bmp, bool compressed)<br />
+<br /><i>ANSIC prototype:</i> void Draw256BitmapLow(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, uint8_t *bmp, bool compressed)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>y1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>x2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
 <li><i>y2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
-<li><i>bmp: Pointer to byte</i> - Pointer to bitmap</li>
+<li><i>bmp: Pointer to uint8_t</i> - Pointer to bitmap</li>
 <li><i>compressed:bool</i> - no hint</li>
 </ul><br />
 </li>
@@ -448,13 +448,13 @@ LI.EXP {
  - Draws a 256 color bitmap (compressed or uncompressed) with a color table.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Draw256BitmapHigh(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, byte *bmp, <i>ComponentName_</i>PixelColor *ColorTable, bool compressed)<br />
+<br /><i>ANSIC prototype:</i> void Draw256BitmapHigh(<i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1, <i>ComponentName_</i>PixelDim x2, <i>ComponentName_</i>PixelDim y2, uint8_t *bmp, <i>ComponentName_</i>PixelColor *ColorTable, bool compressed)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>y1:<i>ComponentName_</i>PixelDim</i> - left upper starting corner</li>
 <li><i>x2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
 <li><i>y2:<i>ComponentName_</i>PixelDim</i> - right lower corner</li>
-<li><i>bmp: Pointer to byte</i> - Pointer to bitmap</li>
+<li><i>bmp: Pointer to uint8_t</i> - Pointer to bitmap</li>
 <li><i>ColorTable: Pointer to <i>ComponentName_</i>PixelColor</i> - Pointer to array of colors (color table)</li>
 <li><i>compressed:bool</i> - no hint</li>
 </ul><br />

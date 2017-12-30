@@ -4,7 +4,7 @@
     <Name>GDisplay</Name>
     <Description>Graphic Display Driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.197</Version>
+    <Version>01.199</Version>
     <Icon>GDisplay</Icon>
     <TypesFiles>PE,GDisplay\GDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,7 +16,7 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>4</BW_NeedUst>
+    <BW_NeedUst>6</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
     <Copyright> * Copyright (c) 2013-2017, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
@@ -885,13 +885,13 @@
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to data (series of % values from 0...100%)</ParHint>
         </Parameter>
         <Parameter>
           <ParName>nofData</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>number of data bytes</ParHint>
         </Parameter>
@@ -903,7 +903,7 @@
         </Parameter>
         <Parameter>
           <ParName>borderWidth</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>width of a border to be draw. Pass zero if there shall be no border.</ParHint>
         </Parameter>
@@ -915,13 +915,13 @@
         </Parameter>
         <Parameter>
           <ParName>borderSpace</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Space to be used in pixels between border and bars.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, byte *data, byte nofData, %'ModuleName'_PixelColor barColor, byte borderWidth, %'ModuleName'_PixelColor borderColor, byte borderSpace)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim width, %'ModuleName'_PixelDim height, uint8_t *data, uint8_t nofData, %'ModuleName'_PixelColor barColor, uint8_t borderWidth, %'ModuleName'_PixelColor borderColor, uint8_t borderSpace)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -961,7 +961,7 @@
         </Parameter>
         <Parameter>
           <ParName>image</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to image structure and information.</ParHint>
           <ParUserDeclaration>PIMAGE image</ParUserDeclaration>
@@ -1020,7 +1020,7 @@
         </Parameter>
         <Parameter>
           <ParName>image</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pointer to image structure and information.</ParHint>
           <ParUserDeclaration>PIMAGE image</ParUserDeclaration>
@@ -1079,7 +1079,7 @@
         </Parameter>
         <Parameter>
           <ParName>bmp</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to bitmap</ParHint>
         </Parameter>
@@ -1091,7 +1091,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, word *bmp, bool compressed)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint16_t *bmp, bool compressed)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1143,7 +1143,7 @@
         </Parameter>
         <Parameter>
           <ParName>bmp</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to bitmap</ParHint>
         </Parameter>
@@ -1155,7 +1155,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, bool compressed)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, bool compressed)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1207,7 +1207,7 @@
         </Parameter>
         <Parameter>
           <ParName>bmp</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to bitmap</ParHint>
         </Parameter>
@@ -1225,7 +1225,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, byte *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1, %'ModuleName'_PixelDim x2, %'ModuleName'_PixelDim y2, uint8_t *bmp, %'ModuleName'_PixelColor *ColorTable, bool compressed)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

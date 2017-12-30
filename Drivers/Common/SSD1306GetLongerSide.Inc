@@ -8,7 +8,7 @@
 %;**         Returns the size of the longer side of the display
 %include Common\GeneralParametersNone.inc
 %;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%;**         ---%RetVal %>27 - number of pixels
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
