@@ -416,7 +416,6 @@ void %OnError(void);
 /* MODULE %ModuleName. */
 
 #include "%'ModuleName'.h"
-#include "%@Wait@ModuleName.h"
 %if defined(Wait)
 #include "%@Wait@ModuleName.h"
 %endif
@@ -425,6 +424,9 @@ void %OnError(void);
 %endif
 %if defined(I2C)
 #include "%@I2C@ModuleName.h"
+%endif
+%if defined(LDD_I2C)
+#include "%@LDD_I2C@ModuleName.h"
 %endif
 
 %-BW_CUSTOM_INCLUDE_START_M
