@@ -428,6 +428,9 @@ void %OnError(void);
 %if defined(LDD_I2C)
 #include "%@LDD_I2C@ModuleName.h"
 %endif
+%if defined(Timeout)
+#include "%@Timeout@ModuleName.h"
+%endif
 
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
