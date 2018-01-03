@@ -347,11 +347,12 @@ void %'ModuleName'%.%DeInit(void);
 %-BW_METHOD_BEGIN Wait10Cycles
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
-%if (CPU_FAMILY = "Kinetis") & %Compiler = "GNUC"
-__attribute__((naked, no_instrument_function)) void %'ModuleName'%.%Wait10Cycles(void)
-%else
+#ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+  __attribute__((naked))
+#else
+  __attribute__((naked, no_instrument_function))
+#endif
 void %'ModuleName'%.%Wait10Cycles(void)
-%endif
 {
   /* This function will wait 10 CPU cycles (including call overhead). */
   /*lint -save -e522 function lacks side effect. */
@@ -432,7 +433,14 @@ void %'ModuleName'%.%Wait10Cycles(void)
   /* Implemented in assembly file, as IAR does not support labels in HLI */
 %else
 %if (CPU_FAMILY = "Kinetis") & %Compiler = "GNUC"
-__attribute__((naked, no_instrument_function)) void %'ModuleName'%.%Wait100Cycles(void)
+#ifdef __GNUC__
+#ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+  __attribute__((naked))
+#else
+  __attribute__((naked, no_instrument_function))
+#endif
+#endif
+void %'ModuleName'%.%Wait100Cycles(void)
 %elif (CPU_FAMILY = "Kinetis") & (%Compiler = "ARM_CC") %- Keil/ARM compiler
 __asm void %'ModuleName'%.%Wait100Cycles(void)
 %else
