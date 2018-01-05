@@ -1068,23 +1068,20 @@ void %'ModuleName'%.%PrintString(uint8_t *str)
 %include Common\SSD1306Init.Inc
 void %'ModuleName'%.%Init(void)
 {
+#if %'ModuleName'_CONFIG_INIT_DELAY_MS>0
+  %@Wait@'ModuleName'%.Waitms(%'ModuleName'_CONFIG_INIT_DELAY_MS);%>70/* give hardware time to power up*/
+#endif
 #if %'ModuleName'_CONFIG_SSD1306_HAS_RST
   %'ModuleName'_CONFIG_SSD1306_RESET_LOW();
   %@Wait@'ModuleName'%.Waitms(1);                                %>70/* wait for 1 ms */
   %'ModuleName'_CONFIG_SSD1306_RESET_HIGH();
 #endif
-  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                     %>70/* turn of display */
+  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                     %>70/* turn off display */
   SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);           %>70/* set display clock divide ratio/oscillator frequency */
   SSD1306_WriteCommand(0x80);                                    %>70/* the suggested ratio 0x80 */
 
   SSD1306_WriteCommand(SSD1306_SET_MULTIPLEX);                   %>70/* set multiplex ratio(1 to 64) */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  SSD1306_WriteCommand(0x3F);                                    %>70/* the suggested 1/64 duty */
-#elif %'ModuleName'_CONFIG_SSD1306_128X32
-  SSD1306_WriteCommand(0x1F);
-#else
-  #error "not supported"
-#endif
+  SSD1306_WriteCommand(%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1);    %>70/* multiplex depending on number of rows */
 
   SSD1306_WriteCommand(SSD1306_SET_DISPLAY_OFFSET);              %>70/* set display offset */
   SSD1306_WriteCommand(0x00);                                    %>70/* no offset */
@@ -1104,22 +1101,20 @@ void %'ModuleName'%.%Init(void)
 #else
   SSD1306_WriteCommand(0x14);                                    %>70/* set to enabled */
 #endif
+#if %'ModuleName'_CONFIG_SSD1306_128X32
   SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  SSD1306_WriteCommand(0x12);                                    %>70/* the suggested 1/64 duty */
-#else
   SSD1306_WriteCommand(0x02);
-#endif
-
   SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
+  SSD1306_WriteCommand(0x8F);
+#else
+  SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
+  SSD1306_WriteCommand(0x12);
+  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
   #if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
   SSD1306_WriteCommand(0x9F);
   #else
   SSD1306_WriteCommand(0xCF);
   #endif
-#else
-  SSD1306_WriteCommand(0x8F);
 #endif
 
   SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                   %>70/* set pre-charge period */
@@ -1128,12 +1123,12 @@ void %'ModuleName'%.%Init(void)
 #else
   SSD1306_WriteCommand(0xF1);
 #endif
-  SSD1306_WriteCommand(0xF1);
   SSD1306_WriteCommand(SSD1306_SET_VCOM_DETECT);                 %>70/* set vcomh */
   SSD1306_WriteCommand(0x40);
 
   SSD1306_WriteCommand(SSD1306_DISPLAY_ALL_ON_RESUME);           %>70/* disable entire display on */
   SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);                  %>70/* set normal display */
+  SSD1306_WriteCommand(SSD1306_DEACTIVATE_SCROLL);               %>70/* Deactivate scrolling */
   SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                      %>70/* turn on oled panel */
 
 %if defined(SetDisplayOrientation)
@@ -1320,6 +1315,15 @@ void %OnGiveLCD(void)
   #define %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT             %>40 (0)
 %endif
   /*!< 1: Clear display at the end of Init(); 0: Do not clear display at the end of Init() */
+#endif
+
+#ifndef %'ModuleName'_CONFIG_INIT_DELAY_MS
+%if defined(InitDelayMs)
+  #define %'ModuleName'_CONFIG_INIT_DELAY_MS                     %>40 (%InitDelayMs)
+%else
+  #define %'ModuleName'_CONFIG_INIT_DELAY_MS                     %>40 (0)
+%endif
+  /*!< Additional delay (milliseconds) in Init(). Use zero for no delay. */
 #endif
 
 #ifndef %'ModuleName'_CONFIG_USE_RAM_BUFFER

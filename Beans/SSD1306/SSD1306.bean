@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.024</Version>
+    <Version>01.025</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -290,6 +290,23 @@
         <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Init Delay (ms)</Name>
+        <Symbol>InitDelayMs</Symbol>
+        <Hint>Additional delay in initialization (in milli-seconds) go give hardware time to power up. Use zero for no delay.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>5</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>-1</MaxValue>
+        <Bases>DEC</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
     </Property>
     <Property>
       <TGrupItem>
