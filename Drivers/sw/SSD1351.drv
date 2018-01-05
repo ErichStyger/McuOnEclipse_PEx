@@ -936,7 +936,6 @@ void %'ModuleName'%.%CloseWindow(void)
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
-
   uint8_t remap;
   currentOrientation = newOrientation;
   #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */

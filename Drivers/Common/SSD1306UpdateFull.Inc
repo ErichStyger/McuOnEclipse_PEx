@@ -5,8 +5,8 @@
 %;** ===================================================================
 %include Common\GeneralMethod.inc (UpdateFull)
 %;**     Description :
-%;**         Updates the whole display. This is only a stub for this
-%;**         display as we are using windowing.
+%;**         Updates the whole display from the microcontroller RAM
+%;**         display buffer.
 %include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

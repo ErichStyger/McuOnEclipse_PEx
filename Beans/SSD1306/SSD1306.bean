@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.014</Version>
+    <Version>01.024</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -59,6 +59,7 @@
         <TypeSpec>typeOrientation</TypeSpec>
         <Hint>Orientation of the display.</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>true</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
         <DefaultIndex>0</DefaultIndex>
@@ -553,12 +554,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -587,12 +588,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -613,16 +614,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Writes a single word to the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>uint16_t</ReturnType>
@@ -641,16 +643,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Writes a data byte to the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
@@ -675,16 +678,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Sends a data word to the display</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
@@ -709,16 +713,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Sends a data word to the display a number of times</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
@@ -750,16 +755,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Sends a data buffer to the display</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
@@ -791,16 +797,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Sends a command byte to the bus</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>false</InDefinition>
         <ReturnType>void</ReturnType>
@@ -825,16 +832,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Opens a window inside the display we want to write to.</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
@@ -877,16 +885,17 @@
         <TypeSpec>typeMethod</TypeSpec>
         <Hint>Closes a window previously opened with OpenWindow()</Hint>
         <ItemLevel>BASIC</ItemLevel>
+        <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
-        <PublicMethod>true</PublicMethod>
+        <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
@@ -931,7 +940,7 @@
         <Name>UpdateFull</Name>
         <Symbol>UpdateFull</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Updates the whole display. This is only a stub for this display as we are using windowing.</Hint>
+        <Hint>Updates the whole display from the microcontroller RAM display buffer.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -963,12 +972,12 @@
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
+        <DefaultIndex>1</DefaultIndex>
         <TextValueIndex>false</TextValueIndex>
         <RuntimeProperty>false</RuntimeProperty>
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
+        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
@@ -1189,6 +1198,40 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>PrintString</Name>
+        <Symbol>PrintString</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Simple low level method printing text to the display. Newline is supported.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>str</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to string to be printed on display</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(uint8_t *str)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

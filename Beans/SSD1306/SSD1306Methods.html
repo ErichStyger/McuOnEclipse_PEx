@@ -273,91 +273,6 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
-<li><a name="ReadDataWord">
-<b>ReadDataWord</b></a>
- - Writes a single word to the bus
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint16_t ReadDataWord(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:uint16_t</i> - data word from the display
-</li>
-</ul><br />
-</li>
-<li><a name="WriteData">
-<b>WriteData</b></a>
- - Writes a data byte to the bus
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteData(uint8_t data)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:uint8_t</i> - data byte to send</li>
-</ul><br />
-</li>
-<li><a name="WriteDataWord">
-<b>WriteDataWord</b></a>
- - Sends a data word to the display
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteDataWord(uint16_t data)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:uint16_t</i> - data to write</li>
-</ul><br />
-</li>
-<li><a name="WriteDataWordRepeated">
-<b>WriteDataWordRepeated</b></a>
- - Sends a data word to the display a number of times
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteDataWordRepeated(uint16_t data, size_t nof)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data:uint16_t</i> - data to write</li>
-<li><i>nof:uint8_t</i> - How many times the data word shall be sent</li>
-</ul><br />
-</li>
-<li><a name="WriteDataBlock">
-<b>WriteDataBlock</b></a>
- - Sends a data buffer to the display
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteDataBlock(uint8_t *data, size_t dataSize)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>data: Pointer to uint8_t</i> - Pointer to data to write</li>
-<li><i>dataSize:uint8_t</i> - no hint</li>
-</ul><br />
-</li>
-<li><a name="WriteCommand">
-<b>WriteCommand</b></a>
- - Sends a command byte to the bus
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteCommand(uint8_t cmd)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd:uint8_t</i> - the command to be sent</li>
-</ul><br />
-</li>
-<li><a name="OpenWindow">
-<b>OpenWindow</b></a>
- - Opens a window inside the display we want to write to.
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void OpenWindow(<i>ComponentName_</i>PixelDim x0, <i>ComponentName_</i>PixelDim y0, <i>ComponentName_</i>PixelDim x1, <i>ComponentName_</i>PixelDim y1)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>x0:<i>ComponentName_</i>PixelDim</i> - no hint</li>
-<li><i>y0:<i>ComponentName_</i>PixelDim</i> - no hint</li>
-<li><i>x1:<i>ComponentName_</i>PixelDim</i> - no hint</li>
-<li><i>y1:<i>ComponentName_</i>PixelDim</i> - no hint</li>
-</ul><br />
-</li>
-<li><a name="CloseWindow">
-<b>CloseWindow</b></a>
- - Closes a window previously opened with OpenWindow()
-<ul>
-<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void CloseWindow(void)<br />
-<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-</ul><br />
-</li>
 <li><a name="Clear">
 <b>Clear</b></a>
  - Clears the whole display memory.
@@ -369,7 +284,7 @@ LI.EXP {
 </li>
 <li><a name="UpdateFull">
 <b>UpdateFull</b></a>
- - Updates the whole display. This is only a stub for this display as we are using windowing.
+ - Updates the whole display from the microcontroller RAM display buffer.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void UpdateFull(void)<br />
@@ -450,6 +365,16 @@ LI.EXP {
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void GiveLCD(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
+<li><a name="PrintString">
+<b>PrintString</b></a>
+ - Simple low level method printing text to the display. Newline is supported.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void PrintString(uint8_t *str)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>str: Pointer to uint8_t</i> - Pointer to string to be printed on display</li>
 </ul><br />
 </li>
 <li><a name="Init">

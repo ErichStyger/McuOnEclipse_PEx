@@ -3,10 +3,12 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (CloseWindow)
+%include Common\GeneralMethod.inc (PrintString)
 %;**     Description :
-%;**         Closes a window previously opened with OpenWindow()
-%include Common\GeneralParametersNone.inc
+%;**         Simple low level method printing text to the display.
+%;**         Newline is supported.
+%include Common\GeneralParameters.inc(27)
+%;**       * str%Parstr %>27 - Pointer to string to be printed on display
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

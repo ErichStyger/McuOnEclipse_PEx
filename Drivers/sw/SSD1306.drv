@@ -49,6 +49,14 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
+%define! Description_ReadDataWord Writes a single word to the bus
+%define! Description_WriteData Writes a data byte to the bus
+%define! Description_WriteDataWord Sends a data word to the display
+%define! Description_WriteDataWordRepeated Sends a data word to the display a number of times
+%define! Description_WriteDataBlock Sends a data buffer to the display
+%define! Description_WriteCommand Sends a command byte to the bus
+%define! Description_OpenWindow Opens a window inside the display we want to write to.
+%define! Description_CloseWindow Closes a window previously opened with OpenWindow()
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -88,8 +96,15 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-#define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  %'Width'u         %>40/* number of columns in hardware */
-#define %'ModuleName'%.DISPLAY_HW_NOF_ROWS     %'Height'u        %>40/* number of rows in hardware */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  128u            %>40/* number of columns in hardware */
+  #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS      64u            %>40/* number of rows in hardware */
+  #define %'ModuleName'%.DISPLAY_HW_NOF_PAGES      8u            %>40/* number of pages in hardware */
+#elif %'ModuleName'_CONFIG_SSD1306_128X32
+  #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  128u            %>40/* number of columns in hardware */
+  #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS      32u            %>40/* number of rows in hardware */
+  #define %'ModuleName'%.DISPLAY_HW_NOF_PAGES      4u            %>40/* number of pages in hardware */
+#endif
 
 typedef bool %'ModuleName'_PixelColor;                           %>40/* type to hold color information */
 typedef uint8_t %'ModuleName'_PixelDim;                          %>40/* one byte is enough to describe the x/y position */
@@ -210,35 +225,29 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN OpenWindow
-%ifdef OpenWindow
-void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1);
+%-INTERNAL_METHOD_BEG OpenWindow
+void %'ModuleName'%.OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1);
 %define! Parx0
 %define! Pary0
 %define! Parx1
 %define! Pary1
-%include Common\SSD1306OpenWindow.Inc
+%include Common\GeneralInternal.inc (OpenWindow)
 
-%endif %- OpenWindow
-%-BW_METHOD_END OpenWindow
+%-INTERNAL_METHOD_END OpenWindow
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CloseWindow
-%ifdef CloseWindow
+%-INTERNAL_METHOD_BEG CloseWindow
 #define %'ModuleName'%.CloseWindow()  /* nothing to do */
 
-%include Common\SSD1306CloseWindow.Inc
+%include Common\GeneralInternal.inc (CloseWindow)
 
-%endif %- CloseWindow
-%-BW_METHOD_END CloseWindow
+%-INTERNAL_METHOD_END CloseWindow
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteData
-%ifdef WriteData
-void %'ModuleName'%.%WriteData(uint8_t data);
+%-INTERNAL_METHOD_BEG WriteData
+void %'ModuleName'%.WriteData(uint8_t data);
 %define! Pardata
-%include Common\SSD1306WriteData.Inc
+%include Common\GeneralInternal.inc (WriteData)
 
-%endif %- WriteData
-%-BW_METHOD_END WriteData
+%-INTERNAL_METHOD_END WriteData
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDisplayOrientation
 %ifdef GetDisplayOrientation
@@ -316,32 +325,12 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %endif %- GetShorterSide
 %-BW_METHOD_END GetShorterSide
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN ReadDataWord
-%ifdef ReadDataWord
-uint16_t %'ModuleName'%.%ReadDataWord(void);
+%-INTERNAL_METHOD_BEG ReadDataWord
+uint16_t %'ModuleName'%.ReadDataWord(void);
 %define! RetVal
-%include Common\SSD1306ReadDataWord.Inc
+%include Common\GeneralInternal.inc (ReadDataWord)
 
-%endif %- ReadDataWord
-%-BW_METHOD_END ReadDataWord
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteCommand
-%ifdef WriteCommand
-void %'ModuleName'%.%WriteCommand(uint8_t cmd);
-%define! Parcmd
-%include Common\SSD1306WriteCommand.Inc
-
-%endif %- WriteCommand
-%-BW_METHOD_END WriteCommand
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataWord
-%ifdef WriteDataWord
-void %'ModuleName'%.%WriteDataWord(uint16_t data);
-%define! Pardata
-%include Common\SSD1306WriteDataWord.Inc
-
-%endif %- WriteDataWord
-%-BW_METHOD_END WriteDataWord
+%-INTERNAL_METHOD_END ReadDataWord
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetLCD
 %ifdef GetLCD
@@ -366,26 +355,6 @@ void %'ModuleName'%.%InitCommChannel(void);
 
 %endif %- InitCommChannel
 %-BW_METHOD_END InitCommChannel
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataBlock
-%ifdef WriteDataBlock
-void %'ModuleName'%.%WriteDataBlock(uint8_t *data, size_t dataSize);
-%define! Pardata
-%define! PardataSize
-%include Common\SSD1306WriteDataBlock.Inc
-
-%endif %- WriteDataBlock
-%-BW_METHOD_END WriteDataBlock
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataWordRepeated
-%ifdef WriteDataWordRepeated
-void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof);
-%define! Pardata
-%define! Parnof
-%include Common\SSD1306WriteDataWordRepeated.Inc
-
-%endif %- WriteDataWordRepeated
-%-BW_METHOD_END WriteDataWordRepeated
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SetContrast
 %ifdef SetContrast
@@ -416,6 +385,15 @@ uint8_t %'ModuleName'%.%DisplayInvert(bool invert);
 
 %endif %- DisplayInvert
 %-BW_METHOD_END DisplayInvert
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintString
+%ifdef PrintString
+void %'ModuleName'%.%PrintString(uint8_t *str);
+%define! Parstr
+%include Common\SSD1306PrintString.Inc
+
+%endif %- PrintString
+%-BW_METHOD_END PrintString
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -624,7 +602,7 @@ static unsigned char font[] = {
 #define SSD1306_EXTERNAL_VCC 0x1
 #define SSD1306_SWITCH_CAP_VCC 0x2
 
-// Scrolling #defines
+/* Scrolling #defines */
 #define SSD1306_ACTIVATE_SCROLL 0x2F
 #define SSD1306_DEACTIVATE_SCROLL 0x2E
 #define SSD1306_SET_VERTICAL_SCROLL_AREA 0xA3
@@ -632,20 +610,6 @@ static unsigned char font[] = {
 #define SSD1306_LEFT_HORIZONTAL_SCROLL 0x27
 #define SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 0x29
 #define SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
-
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  #define SSD1306_LCDWIDTH                      128
-  #define SSD1306_LCDHEIGHT                     64
-  #define SSD1306_DISPLAY_HW_NOF_COLUMNS        128u /* number of columns in hardware */
-  #define SSD1306_DISPLAY_HW_NOF_ROWS           64u /* number of rows in hardware */
-  #define SSD1306_DISPLAY_HW_NOF_PAGES          8u
-#elif %'ModuleName'_CONFIG_SSD1306_128X32
-  #define SSD1306_LCDWIDTH                      128
-  #define SSD1306_LCDHEIGHT                     32
-  #define SSD1306_DISPLAY_HW_NOF_COLUMNS        128u /* number of columns in hardware */
-  #define SSD1306_DISPLAY_HW_NOF_ROWS           32u /* number of rows in hardware */
-  #define SSD1306_DISPLAY_HW_NOF_PAGES          4u
-#endif
 
 static void SSD1306_WriteCommand(uint8_t cmd) {
   %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_CONFIG_SSD1306_I2C_ADDR, SSD1306_CMD_REG, cmd);
@@ -666,7 +630,7 @@ static uint8_t actPage = 0;
 
 static void SSD1306_SetPageStartAddr(uint8_t page) {
   actPage = page;
-  if(actPage>=SSD1306_DISPLAY_HW_NOF_PAGES) {
+  if(actPage>=%'ModuleName'%.DISPLAY_HW_NOF_PAGES) {
     return;
   }
   SSD1306_WriteCommand(0xB0 | actPage);
@@ -674,25 +638,11 @@ static void SSD1306_SetPageStartAddr(uint8_t page) {
 
 static void SSD1306_SetColStartAddr(uint8_t col){
   actCol = col;
-  if(actCol>=SSD1306_DISPLAY_HW_NOF_COLUMNS) {
+  if(actCol>=%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS) {
     return;
   }
   SSD1306_WriteCommand(0x10 | (actCol>>4));
   SSD1306_WriteCommand(actCol & 0x0F);
-}
-
-static void SSD1306_Clear(void) {
-  uint8_t col, page;
-
-  for(page=0; page<SSD1306_DISPLAY_HW_NOF_PAGES; page++) {
-    SSD1306_SetPageStartAddr(page);
-    SSD1306_SetColStartAddr(0);
-    for(col=0; col<SSD1306_DISPLAY_HW_NOF_COLUMNS ; col++) {
-      SSD1306_WriteData(0x00);
-    }
-  }
-  actPage = 0;
-  actCol = 0;
 }
 
 static void SSD1306_PrintChar(uint8_t ch) {
@@ -702,120 +652,112 @@ static void SSD1306_PrintChar(uint8_t ch) {
     SSD1306_WriteData(font[((ch-0x20)*6)+i]);
   }
 }
-
-void SSD1306_PrintString(uint8_t *ch) {
-  while(*ch != '\0'){
-    if(*ch == '\n') {
-      actPage++;
-      if(actPage >= SSD1306_DISPLAY_HW_NOF_PAGES) {
-        actPage=0;
-      }
-      SSD1306_SetPageStartAddr(actPage);
-      SSD1306_SetColStartAddr(0);
-      ch++;
-    } else {
-      SSD1306_PrintChar(*ch++);
-    }
-  }
-}
-
 %-
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
+%-UNLOCKED
+/* Internal method prototypes */
+%-INTERNAL_LOC_METHOD_BEG WriteDataWord
+static void WriteDataWord(uint16_t data);
+%-INTERNAL_LOC_METHOD_END WriteDataWord
+%-INTERNAL_LOC_METHOD_BEG WriteDataWordRepeated
+static void WriteDataWordRepeated(uint16_t data, size_t nof);
+%-INTERNAL_LOC_METHOD_END WriteDataWordRepeated
+%-INTERNAL_LOC_METHOD_BEG WriteDataBlock
+static void WriteDataBlock(uint8_t *data, size_t dataSize);
+%-INTERNAL_LOC_METHOD_END WriteDataBlock
+%-INTERNAL_LOC_METHOD_BEG WriteCommand
+static void WriteCommand(uint8_t cmd);
+%-INTERNAL_LOC_METHOD_END WriteCommand
+%-
+
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN ReadDataWord
-%ifdef ReadDataWord
+%-INTERNAL_METHOD_BEG ReadDataWord
 %define! RetVal
-%include Common\SSD1306ReadDataWord.Inc
-uint16_t %'ModuleName'%.%ReadDataWord(void)
+%include Common\GeneralInternal.inc (ReadDataWord)
+uint16_t %'ModuleName'%.ReadDataWord(void)
 {
   /* sorry, with the serial interface it is NOT possible to read from display memory */
   return 0;
 }
 
-%endif %- ReadDataWord
-%-BW_METHOD_END ReadDataWord
+%-INTERNAL_METHOD_END ReadDataWord
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteData
-%ifdef WriteData
+%-INTERNAL_METHOD_BEG WriteData
 %define! Pardata
-%include Common\SSD1306WriteData.Inc
-void %'ModuleName'%.%WriteData(uint8_t data)
+%include Common\GeneralInternal.inc (WriteData)
+void %'ModuleName'%.WriteData(uint8_t data)
 {
 }
 
-%endif %- WriteData
-%-BW_METHOD_END WriteData
+%-INTERNAL_METHOD_END WriteData
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataWordRepeated
-%ifdef WriteDataWordRepeated
+%-INTERNAL_METHOD_BEG WriteDataWordRepeated
 %define! Pardata
 %define! Parnof
-%include Common\SSD1306WriteDataWordRepeated.Inc
-void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof)
+%include Common\GeneralInternalGlobal.inc (WriteDataWordRepeated)
+static void WriteDataWordRepeated(uint16_t data, size_t nof)
 {
 }
 
-%endif %- WriteDataWordRepeated
-%-BW_METHOD_END WriteDataWordRepeated
+%-INTERNAL_METHOD_END WriteDataWordRepeated
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataBlock
-%ifdef WriteDataBlock
+%-INTERNAL_METHOD_BEG WriteDataBlock
 %define! Pardata
 %define! PardataSize
-%include Common\SSD1306WriteDataBlock.Inc
-void %'ModuleName'%.%WriteDataBlock(uint8_t *data, size_t dataSize)
+%include Common\GeneralInternalGlobal.inc (WriteDataBlock)
+static void WriteDataBlock(uint8_t *data, size_t dataSize)
 {
 }
 
-%endif %- WriteDataBlock
-%-BW_METHOD_END WriteDataBlock
+%-INTERNAL_METHOD_END WriteDataBlock
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteCommand
-%ifdef WriteCommand
+%-INTERNAL_METHOD_BEG WriteCommand
 %define! Parcmd
-%include Common\SSD1306WriteCommand.Inc
-void %'ModuleName'%.%WriteCommand(uint8_t cmd)
+%include Common\GeneralInternalGlobal.inc (WriteCommand)
+static void WriteCommand(uint8_t cmd)
 {
 }
 
-%endif %- WriteCommand
-%-BW_METHOD_END WriteCommand
+%-INTERNAL_METHOD_END WriteCommand
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN WriteDataWord
-%ifdef WriteDataWord
+%-INTERNAL_METHOD_BEG WriteDataWord
 %define! Pardata
-%include Common\SSD1306WriteDataWord.Inc
-void %'ModuleName'%.%WriteDataWord(uint16_t data)
+%include Common\GeneralInternalGlobal.inc (WriteDataWord)
+static void WriteDataWord(uint16_t data)
 {
 }
 
-%endif %- WriteDataWord
-%-BW_METHOD_END WriteDataWord
+%-INTERNAL_METHOD_END WriteDataWord
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN OpenWindow
-%ifdef OpenWindow
+%-INTERNAL_METHOD_BEG OpenWindow
 %define! Parx0
 %define! Pary0
 %define! Parx1
 %define! Pary1
-%include Common\SSD1306OpenWindow.Inc
-void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1)
+%include Common\GeneralInternal.inc (OpenWindow)
+void %'ModuleName'%.OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1)
 {
 }
 
-%endif %- OpenWindow
-%-BW_METHOD_END OpenWindow
+%-INTERNAL_METHOD_END OpenWindow
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Clear
 %ifdef Clear
 %include Common\SSD1306Clear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-  SSD1306_Clear();
+  int i;
+  uint8_t *p = &%'ModuleName'%.DisplayBuf[0][0];
+
+  for(i=0; i<sizeof(%'ModuleName'%.DisplayBuf); i++) {
+    *p = 0x00;
+    p++;
+  }
+  %'ModuleName'%.%UpdateFull();
 }
 
 %endif %- Clear
@@ -826,14 +768,14 @@ void %'ModuleName'%.%Clear(void)
 %include Common\SSD1306UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
-  uint8_t col, page;
+  int i;
+  uint8_t *p = &%'ModuleName'%.DisplayBuf[0][0];
 
-  for(page=0; page<SSD1306_DISPLAY_HW_NOF_PAGES; page++) {
-    SSD1306_SetPageStartAddr(page);
-    SSD1306_SetColStartAddr(0);
-    for(col=0; col<SSD1306_DISPLAY_HW_NOF_COLUMNS ; col++) {
-      SSD1306_WriteData(%'ModuleName'%.DisplayBuf[page][col]);
-    }
+  SSD1306_SetPageStartAddr(0);
+  SSD1306_SetColStartAddr(0);
+  for(i=0; i<sizeof(%'ModuleName'%.DisplayBuf); i++) {
+    SSD1306_WriteData(*p);
+    p++;
   }
 }
 
@@ -857,18 +799,16 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN CloseWindow
-%ifdef CloseWindow
-%include Common\SSD1306CloseWindow.Inc
+%-INTERNAL_METHOD_BEG CloseWindow
+%include Common\GeneralInternal.inc (CloseWindow)
 /*
-void %'ModuleName'%.%CloseWindow(void)
+void %'ModuleName'%.CloseWindow(void)
 {
   implemented as macro in %'ModuleName'.h
 }
 */
 
-%endif %- CloseWindow
-%-BW_METHOD_END CloseWindow
+%-INTERNAL_METHOD_END CloseWindow
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDisplayOrientation
 %ifdef GetDisplayOrientation
@@ -898,6 +838,35 @@ void %'ModuleName'%.%CloseWindow(void)
 %include Common\SSD1306SetDisplayOrientation.Inc
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
+  currentOrientation = newOrientation;
+  switch(newOrientation) {
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                 %>70/* set memory mode */
+      SSD1306_WriteCommand(0x00);                                %>70/* 00b: horizontal addressing mode mode */
+      SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);            %>70/* set segment re-map 128 to 0 */
+      SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                %>70/* set COM output scan direction 64 to 0 */
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+      SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                 %>70/* set memory mode */
+      SSD1306_WriteCommand(0x00);                                %>70/* 00b: horizontal addressing mode mode */
+      SSD1306_WriteCommand(SSD1306_SEG_REMAP);                   %>70/* set segment re-map 0 to 128 */
+      SSD1306_WriteCommand(SSD1306_COM_SCAN_INC);                %>70/* set COM output scan direction 0 to 64 */
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+      SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                 %>70/* set memory mode */
+      SSD1306_WriteCommand(0x01);                                %>70/* 01b: vertical addressing mode */
+      SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);            %>70/* set segment re-map 128 to 0 */
+      SSD1306_WriteCommand(SSD1306_COM_SCAN_INC);                %>70/* set COM output scan direction 0 to 64 */
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                 %>70/* set memory mode */
+      SSD1306_WriteCommand(0x01);                                %>70/* 01b: vertical addressing mode */
+      SSD1306_WriteCommand(SSD1306_SEG_REMAP);                   %>70/* set segment re-map 0 to 128 */
+      SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                %>70/* set COM output scan direction 64 to 0 */
+      break;
+    default:
+      break;
+  } /* switch */
 }
 
 %endif %- SetDisplayOrientation
@@ -1018,103 +987,6 @@ void %'ModuleName'%.%InitCommChannel(void)
 %endif %- InitCommChannel
 %-BW_METHOD_END InitCommChannel
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Init
-%ifdef Init
-%include Common\SSD1306Init.Inc
-void %'ModuleName'%.%Init(void)
-{
-#if %'ModuleName'_CONFIG_SSD1306_HAS_RST
-  %'ModuleName'_CONFIG_SSD1306_RESET_LOW();
-  %@Wait@'ModuleName'%.Waitms(1);                                %>70/* wait for 1 ms */
-  %'ModuleName'_CONFIG_SSD1306_RESET_HIGH();
-#endif
-  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                     %>70/* turn of display */
-  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);           %>70/* set display clock divide ratio/oscillator frequency */
-  SSD1306_WriteCommand(0x80);                                    %>70/* the suggested ratio 0x80 */
-
-  SSD1306_WriteCommand(SSD1306_SET_MULTIPLEX);                   %>70/* set multiplex ratio(1 to 64) */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  SSD1306_WriteCommand(0x3F);                                    %>70/* the suggested 1/64 duty */
-#elif %'ModuleName'_CONFIG_SSD1306_128X32
-  SSD1306_WriteCommand(0x1F);
-#else
-  #error "not supported"
-#endif
-
-  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_OFFSET);              %>70/* set display offset */
-  SSD1306_WriteCommand(0x00);                                    %>70/* no offset */
-  SSD1306_WriteCommand(SSD1306_SET_START_LINE | 0x00);           %>70/* set start line address */
-
-  SSD1306_WriteCommand(SSD1306_COLUMN_ADDR);                     %>70/* set start and end address of the columns */
-  SSD1306_WriteCommand(0);
-  SSD1306_WriteCommand(SSD1306_DISPLAY_HW_NOF_COLUMNS-1);
-
-  SSD1306_WriteCommand(SSD1306_PAGE_ADDR);                       %>70/* set start and end address of the pages */
-  SSD1306_WriteCommand(0);
-  SSD1306_WriteCommand(SSD1306_DISPLAY_HW_NOF_PAGES-1);
-
-  SSD1306_WriteCommand(SSD1306_CHARGE_PUMP);                     %>70/* set charge pump enable/disable */
-#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
-  SSD1306_WriteCommand(0x10);                                    %>70/* set to disabled */
-#else
-  SSD1306_WriteCommand(0x14);                                    %>70/* set to enabled */
-#endif
-
-  SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                     %>70/* set memory mode */
-  SSD1306_WriteCommand(0x00);
-
-  SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);                %>70/* set segment re-map 128 to 0 */
-  SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                    %>70/* set COM output scan direction 64 to 0 */
-  SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  SSD1306_WriteCommand(0x12);                                    %>70/* the suggested 1/64 duty */
-#else
-  SSD1306_WriteCommand(0x02);
-#endif
-
-  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
-#if %'ModuleName'_CONFIG_SSD1306_128X64
-  #if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
-  SSD1306_WriteCommand(0x9F);
-  #else
-  SSD1306_WriteCommand(0xCF);
-  #endif
-#else
-  SSD1306_WriteCommand(0x8F);
-#endif
-
-  SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                   %>70/* set pre-charge period */
-#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
-  SSD1306_WriteCommand(0x22);
-#else
-  SSD1306_WriteCommand(0xF1);
-#endif
-  SSD1306_WriteCommand(0xF1);
-  SSD1306_WriteCommand(SSD1306_SET_VCOM_DETECT);                 %>70/* set vcomh */
-  SSD1306_WriteCommand(0x40);
-
-  SSD1306_WriteCommand(SSD1306_DISPLAY_ALL_ON_RESUME);           %>70/* disable entire display on */
-  SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);                  %>70/* set normal display */
-  SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                      %>70/* turn on oled panel */
-
-#if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
-#endif
-#if %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
-  %'ModuleName'%.%Clear();
-#endif
-}
-
-%endif %- Init
-%-BW_METHOD_END Init
-%-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetContrast
 %ifdef SetContrast
 %define! Parcontrast
@@ -1165,6 +1037,128 @@ uint8_t %'ModuleName'%.%DisplayInvert(bool invert)
 
 %endif %- DisplayInvert
 %-BW_METHOD_END DisplayInvert
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PrintString
+%ifdef PrintString
+%define! Parstr
+%include Common\SSD1306PrintString.Inc
+void %'ModuleName'%.%PrintString(uint8_t *str)
+{
+  while(*str != '\0'){
+    if(*str == '\n') {
+      actPage++;
+      if(actPage >= %'ModuleName'%.DISPLAY_HW_NOF_PAGES) {
+        actPage=0;
+      }
+      SSD1306_SetPageStartAddr(actPage);
+      SSD1306_SetColStartAddr(0);
+      str++;
+    } else {
+      SSD1306_PrintChar(*str);
+      str++;
+    }
+  }
+}
+
+%endif %- PrintString
+%-BW_METHOD_END PrintString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\SSD1306Init.Inc
+void %'ModuleName'%.%Init(void)
+{
+#if %'ModuleName'_CONFIG_SSD1306_HAS_RST
+  %'ModuleName'_CONFIG_SSD1306_RESET_LOW();
+  %@Wait@'ModuleName'%.Waitms(1);                                %>70/* wait for 1 ms */
+  %'ModuleName'_CONFIG_SSD1306_RESET_HIGH();
+#endif
+  SSD1306_WriteCommand(SSD1306_DISPLAY_OFF);                     %>70/* turn of display */
+  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);           %>70/* set display clock divide ratio/oscillator frequency */
+  SSD1306_WriteCommand(0x80);                                    %>70/* the suggested ratio 0x80 */
+
+  SSD1306_WriteCommand(SSD1306_SET_MULTIPLEX);                   %>70/* set multiplex ratio(1 to 64) */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  SSD1306_WriteCommand(0x3F);                                    %>70/* the suggested 1/64 duty */
+#elif %'ModuleName'_CONFIG_SSD1306_128X32
+  SSD1306_WriteCommand(0x1F);
+#else
+  #error "not supported"
+#endif
+
+  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_OFFSET);              %>70/* set display offset */
+  SSD1306_WriteCommand(0x00);                                    %>70/* no offset */
+  SSD1306_WriteCommand(SSD1306_SET_START_LINE | 0x00);           %>70/* set start line address */
+
+  SSD1306_WriteCommand(SSD1306_COLUMN_ADDR);                     %>70/* set start and end address of the columns */
+  SSD1306_WriteCommand(0);
+  SSD1306_WriteCommand(%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS-1);
+
+  SSD1306_WriteCommand(SSD1306_PAGE_ADDR);                       %>70/* set start and end address of the pages */
+  SSD1306_WriteCommand(0);
+  SSD1306_WriteCommand(%'ModuleName'%.DISPLAY_HW_NOF_PAGES-1);
+
+  SSD1306_WriteCommand(SSD1306_CHARGE_PUMP);                     %>70/* set charge pump enable/disable */
+#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
+  SSD1306_WriteCommand(0x10);                                    %>70/* set to disabled */
+#else
+  SSD1306_WriteCommand(0x14);                                    %>70/* set to enabled */
+#endif
+  SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  SSD1306_WriteCommand(0x12);                                    %>70/* the suggested 1/64 duty */
+#else
+  SSD1306_WriteCommand(0x02);
+#endif
+
+  SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
+#if %'ModuleName'_CONFIG_SSD1306_128X64
+  #if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
+  SSD1306_WriteCommand(0x9F);
+  #else
+  SSD1306_WriteCommand(0xCF);
+  #endif
+#else
+  SSD1306_WriteCommand(0x8F);
+#endif
+
+  SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                   %>70/* set pre-charge period */
+#if %'ModuleName'_CONFIG_SSD1306_EXTERNAL == 1
+  SSD1306_WriteCommand(0x22);
+#else
+  SSD1306_WriteCommand(0xF1);
+#endif
+  SSD1306_WriteCommand(0xF1);
+  SSD1306_WriteCommand(SSD1306_SET_VCOM_DETECT);                 %>70/* set vcomh */
+  SSD1306_WriteCommand(0x40);
+
+  SSD1306_WriteCommand(SSD1306_DISPLAY_ALL_ON_RESUME);           %>70/* disable entire display on */
+  SSD1306_WriteCommand(SSD1306_NORMAL_DISPLAY);                  %>70/* set normal display */
+  SSD1306_WriteCommand(SSD1306_DISPLAY_ON);                      %>70/* turn on oled panel */
+
+%if defined(SetDisplayOrientation)
+#if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
+#endif
+%else
+  SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                     %>70/* set memory mode */
+  SSD1306_WriteCommand(0x00);                                    %>70/* 00b: horizontal addressing mode mode */
+  SSD1306_WriteCommand(SSD1306_SEG_REMAP | 0x01);                %>70/* set segment re-map 128 to 0 */
+  SSD1306_WriteCommand(SSD1306_COM_SCAN_DEC);                    %>70/* set COM output scan direction 64 to 0 */
+%endif
+#if %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
+  %'ModuleName'%.%Clear();
+#endif
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
