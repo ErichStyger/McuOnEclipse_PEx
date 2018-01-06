@@ -100,7 +100,7 @@
 extern "C" {
 #endif
 
-#define %'ModuleName'%.WRITE_BUFFER_SIZE %WriteBufferSize /* size of internal buffer used, set in the component properties */
+#define %'ModuleName'%.WRITE_BUFFER_SIZE   %'ModuleName'%.CONFIG_WRITE_BUFFER_SIZE /* size of internal buffer used, set in the component properties */
 
 typedef enum %'ModuleName'_EnumSendFlags_ {
   %'ModuleName'_SEND_STOP,        /* STOP is sent */
@@ -526,7 +526,7 @@ uint8_t %'ModuleName'%.%SelectSlave(uint8_t i2cAddr)
   }
 %endif
 %if defined(I2C)
-  if (%@I2C@'ModuleName'%.SelectSlave(i2cAddr)!=ERR_OK) {
+  if (%'ModuleName'%.CONFIG_SELECT_SLAVE(i2cAddr)!=ERR_OK) {
     %'ModuleName'%.%ReleaseBus();
   #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
     %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -619,9 +619,9 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
     break; /* break for(;;) */
   } /* for(;;) */
 %else
-#if defined(%@I2C@'ModuleName'%.RecvBlockCustom) && %@I2C@'ModuleName'%.RecvBlockCustom==1
+#if %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.RecvBlockCustom(data, dataSize, &nof, flagsStart, flagsAck);
+    res = %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM(data, dataSize, &nof, flagsStart, flagsAck);
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -629,7 +629,7 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
       break; /* break for(;;) */
     }
     if (flags==%'ModuleName'_SEND_STOP) {
-      res = %@I2C@'ModuleName'%.SendStop();
+      res = %'ModuleName'%.CONFIG_SEND_STOP();
       if (res!=ERR_OK) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -713,7 +713,7 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
   } /* for(;;) */
 %else
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.RecvBlock(data, dataSize, &nof);
+    res = %'ModuleName'%.CONFIG_RECV_BLOCK(data, dataSize, &nof);
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -721,7 +721,7 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
       break; /* break for(;;) */
     }
     if (flags==%'ModuleName'_SEND_STOP) {
-      res = %@I2C@'ModuleName'%.SendStop();
+      res = %'ModuleName'%.CONFIG_SEND_STOP();
       if (res!=ERR_OK) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -803,22 +803,22 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
   for(;;) { /* breaks */
 %if %SupportStopNoStart='yes'
     if (%'ModuleName'_STOP_NOSTART==flags) {
-      res = %@I2C@'ModuleName'%.SendBlockContinue(data, dataSize, &nof);
+      res = %'ModuleName'%.CONFIG_SEND_BLOCKContinue(data, dataSize, &nof);
     } else {
-      res = %@I2C@'ModuleName'%.SendBlock(data, dataSize, &nof);
+      res = %'ModuleName'%.CONFIG_SEND_BLOCK(data, dataSize, &nof);
     }
 %else
-    res = %@I2C@'ModuleName'%.SendBlock(data, dataSize, &nof);
+    res = %'ModuleName'%.CONFIG_SEND_BLOCK(data, dataSize, &nof);
 %endif
     if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
+      (void)%'ModuleName'%.CONFIG_SEND_STOP();
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
       break; /* break for(;;) */
     }
     if (flags==%'ModuleName'_SEND_STOP || (flags==%'ModuleName'_STOP_NOSTART)) {
-      res = %@I2C@'ModuleName'%.SendStop();
+      res = %'ModuleName'%.CONFIG_SEND_STOP();
       if (res!=ERR_OK) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -951,24 +951,24 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
 %else
   for(;;) { /* breaks */
     if(memAddr!=NULL) { /* only if we want to send an address */
-      res = %@I2C@'ModuleName'%.SendBlock((void*)memAddr, memAddrSize, &nof);
+      res = %'ModuleName'%.CONFIG_SEND_BLOCK((void*)memAddr, memAddrSize, &nof);
       if (res!=ERR_OK) {
-        (void)%@I2C@'ModuleName'%.SendStop();
+        (void)%'ModuleName'%.CONFIG_SEND_STOP();
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
         break; /* break for(;;) */
       }
     }
-    res = %@I2C@'ModuleName'%.RecvBlock(data, dataSize, &nof);
+    res = %'ModuleName'%.CONFIG_RECV_BLOCK(data, dataSize, &nof);
     if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
+      (void)%'ModuleName'%.CONFIG_SEND_STOP();
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-    res = %@I2C@'ModuleName'%.SendStop();
+    res = %'ModuleName'%.CONFIG_SEND_STOP();
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -1080,15 +1080,15 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
   } /* for(;;) */
 %else
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.SendBlock((void*)writeBuf, i, &nof);
+    res = %'ModuleName'%.CONFIG_SEND_BLOCK((void*)writeBuf, i, &nof);
     if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
+      (void)%'ModuleName'%.CONFIG_SEND_STOP();
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-    res = %@I2C@'ModuleName'%.SendStop();
+    res = %'ModuleName'%.CONFIG_SEND_STOP();
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -1339,15 +1339,15 @@ uint8_t %'ModuleName'%.%ScanDevice(uint8_t i2cAddr)
   } /* for(;;) */
 %else
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.RecvBlock((void*)&dummy, 1, &nof);
+    res = %'ModuleName'%.CONFIG_RECV_BLOCK((void*)&dummy, 1, &nof);
     if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
+      (void)%'ModuleName'%.CONFIG_SEND_STOP();
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-    res = %@I2C@'ModuleName'%.SendStop();
+    res = %'ModuleName'%.CONFIG_SEND_STOP();
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -1405,16 +1405,16 @@ uint8_t %'ModuleName'%.%ProbeACK(void* data, uint16_t dataSize, %'ModuleName'_En
 %else
   (void)WaitTimeUS; /* not used */
   for(;;) { /* breaks */
-    res = %@I2C@'ModuleName'%.SendBlock(data, dataSize, &nof);
+    res = %'ModuleName'%.CONFIG_SEND_BLOCK(data, dataSize, &nof);
     if (res!=ERR_OK) {
-      (void)%@I2C@'ModuleName'%.SendStop();
+      (void)%'ModuleName'%.CONFIG_SEND_STOP();
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
     if (flags==%'ModuleName'_SEND_STOP) {
-      res = %@I2C@'ModuleName'%.SendStop();
+      res = %'ModuleName'%.CONFIG_SEND_STOP();
       if (res!=ERR_OK) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
@@ -1581,6 +1581,27 @@ void %OnError(void)
   %endif
 #endif
 
+#if !defined(%'ModuleName'%.CONFIG_WRITE_BUFFER_SIZE)
+  #define %'ModuleName'%.CONFIG_WRITE_BUFFER_SIZE             (%WriteBufferSize)
+    /*!< Size of the write buffer size which defines the maximum block size which can be sent */
+#endif
+
+/* configuration of function names used for low level I2C functions */
+%if defined(I2C)
+#include "%@I2C@ModuleName.h" /* interface of low level I2C driver */
+#define %'ModuleName'%.CONFIG_RECV_BLOCK                        %@I2C@'ModuleName'%.RecvBlock
+#define %'ModuleName'%.CONFIG_SEND_BLOCK                        %@I2C@'ModuleName'%.SendBlock
+#define %'ModuleName'%.CONFIG_SEND_STOP                         %@I2C@'ModuleName'%.SendStop
+#define %'ModuleName'%.CONFIG_SELECT_SLAVE                      %@I2C@'ModuleName'%.SelectSlave
+#define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM                 %@I2C@'ModuleName'%.RecvBlockCustom
+#define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE       (defined(%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE) && (%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE==1))
+%elif defined(LDD_I2C)
+#include "%@LDD_I2C@ModuleName.h" /* interface of low level I2C driver */
+#define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE  (0)
+%else
+#include "I2C_HAL.h" /* interface of low level I2C driver */
+#define %'ModuleName'%.CONFIG_SEND_BLOCK     SendBlock
+%endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
