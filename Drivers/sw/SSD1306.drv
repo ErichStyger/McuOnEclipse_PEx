@@ -51,10 +51,6 @@
 %- List of descriptions of internal methods
 %define! Description_ReadDataWord Writes a single word to the bus
 %define! Description_WriteData Writes a data byte to the bus
-%define! Description_WriteDataWord Sends a data word to the display
-%define! Description_WriteDataWordRepeated Sends a data word to the display a number of times
-%define! Description_WriteDataBlock Sends a data buffer to the display
-%define! Description_WriteCommand Sends a command byte to the bus
 %define! Description_OpenWindow Opens a window inside the display we want to write to.
 %define! Description_CloseWindow Closes a window previously opened with OpenWindow()
 %-BW_INTERN_COMMENTS_END
@@ -625,6 +621,26 @@ static void SSD1306_WriteData(uint8_t data) {
 #endif
 }
 
+static void SSD1306_WriteDataBlock(uint8_t *data, size_t size) {
+  uint8_t memAddr = SSD1306_DATA_REG;
+  uint16_t txSize;
+
+  while(size>0) {
+    if (size>%@I2C@'ModuleName'%.WRITE_BUFFER_SIZE-1) {
+      txSize = %@I2C@'ModuleName'%.WRITE_BUFFER_SIZE-1; /* -1 because of memAddr */
+    } else {
+      txSize = size;
+    }
+    %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'_CONFIG_SSD1306_I2C_ADDR, &memAddr, sizeof(memAddr), data, txSize);
+    data += txSize;
+    size -= txSize;
+  }
+#if McuSSD1306_CONFIG_SSD1306_I2C_DELAY_US>0
+  %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US);
+#endif
+}
+
+
 static uint8_t actCol = 0;
 static uint8_t actPage = 0;
 
@@ -656,22 +672,6 @@ static void SSD1306_PrintChar(uint8_t ch) {
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
-%-UNLOCKED
-/* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG WriteDataWord
-static void WriteDataWord(uint16_t data);
-%-INTERNAL_LOC_METHOD_END WriteDataWord
-%-INTERNAL_LOC_METHOD_BEG WriteDataWordRepeated
-static void WriteDataWordRepeated(uint16_t data, size_t nof);
-%-INTERNAL_LOC_METHOD_END WriteDataWordRepeated
-%-INTERNAL_LOC_METHOD_BEG WriteDataBlock
-static void WriteDataBlock(uint8_t *data, size_t dataSize);
-%-INTERNAL_LOC_METHOD_END WriteDataBlock
-%-INTERNAL_LOC_METHOD_BEG WriteCommand
-static void WriteCommand(uint8_t cmd);
-%-INTERNAL_LOC_METHOD_END WriteCommand
-%-
-
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
@@ -694,44 +694,6 @@ void %'ModuleName'%.WriteData(uint8_t data)
 }
 
 %-INTERNAL_METHOD_END WriteData
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG WriteDataWordRepeated
-%define! Pardata
-%define! Parnof
-%include Common\GeneralInternalGlobal.inc (WriteDataWordRepeated)
-static void WriteDataWordRepeated(uint16_t data, size_t nof)
-{
-}
-
-%-INTERNAL_METHOD_END WriteDataWordRepeated
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG WriteDataBlock
-%define! Pardata
-%define! PardataSize
-%include Common\GeneralInternalGlobal.inc (WriteDataBlock)
-static void WriteDataBlock(uint8_t *data, size_t dataSize)
-{
-}
-
-%-INTERNAL_METHOD_END WriteDataBlock
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG WriteCommand
-%define! Parcmd
-%include Common\GeneralInternalGlobal.inc (WriteCommand)
-static void WriteCommand(uint8_t cmd)
-{
-}
-
-%-INTERNAL_METHOD_END WriteCommand
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG WriteDataWord
-%define! Pardata
-%include Common\GeneralInternalGlobal.inc (WriteDataWord)
-static void WriteDataWord(uint16_t data)
-{
-}
-
-%-INTERNAL_METHOD_END WriteDataWord
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG OpenWindow
 %define! Parx0
@@ -768,15 +730,9 @@ void %'ModuleName'%.%Clear(void)
 %include Common\SSD1306UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
-  int i;
-  uint8_t *p = &%'ModuleName'%.DisplayBuf[0][0];
-
   SSD1306_SetPageStartAddr(0);
   SSD1306_SetColStartAddr(0);
-  for(i=0; i<sizeof(%'ModuleName'%.DisplayBuf); i++) {
-    SSD1306_WriteData(*p);
-    p++;
-  }
+  SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0], sizeof(%'ModuleName'%.DisplayBuf));
 }
 
 %endif %- UpdateFull
