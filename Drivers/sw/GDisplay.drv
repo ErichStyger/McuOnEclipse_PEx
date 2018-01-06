@@ -831,14 +831,14 @@ void %'ModuleName'%.%Clear(void)
 
   while (p<((uint8_t*)%@Display@'ModuleName'%.DisplayBuf)+sizeof(%@Display@'ModuleName'%.DisplayBuf)) {
  #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
-    *p++ = (uint8_t)(  (%'ModuleName'%.COLOR_WHITE<<7)
-                  | (%'ModuleName'%.COLOR_WHITE<<6)
-                  | (%'ModuleName'%.COLOR_WHITE<<5)
-                  | (%'ModuleName'%.COLOR_WHITE<<4)
-                  | (%'ModuleName'%.COLOR_WHITE<<3)
-                  | (%'ModuleName'%.COLOR_WHITE<<2)
-                  | (%'ModuleName'%.COLOR_WHITE<<1)
-                  |  %'ModuleName'%.COLOR_WHITE
+    *p++ = (uint8_t)(  (%'ModuleName'%.COLOR_PIXEL_CLR<<7)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<6)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<5)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<4)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<3)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<2)
+                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<1)
+                  |  %'ModuleName'%.COLOR_PIXEL_CLR
                  );
  #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
     *((uint16_t*)p) = %'ModuleName'%.COLOR_WHITE;
