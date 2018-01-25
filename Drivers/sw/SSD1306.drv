@@ -739,9 +739,22 @@ void %'ModuleName'%.%Clear(void)
 %include Common\SSD1306UpdateFull.Inc
 void %'ModuleName'%.%UpdateFull(void)
 {
+#if %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1306 /* SSD1306 */
   SSD1306_SetPageStartAddr(0);
   SSD1306_SetColStartAddr(0);
   SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0], sizeof(%'ModuleName'%.DisplayBuf));
+#elif %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1106 /* SH1306 */
+  /* the SSH1306 has a 132x64 memory organization (compared to the 128x64 of the SSD1306) */
+  int page;
+
+  for(page=0; page<%'ModuleName'%.DISPLAY_HW_NOF_PAGES; page++) {
+    SSD1306_SetPageStartAddr(page);
+    SSD1306_SetColStartAddr(0);
+    SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0]+(page*%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS), %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS);
+  }
+#else
+  #error "unknown display type?"
+#endif
 }
 
 %endif %- UpdateFull
@@ -1235,6 +1248,15 @@ void %OnGiveLCD(void)
     /*!< I2C 7bit (unshifted) device address, usually 0x3C (0b11'1100) or 0x3D (0b11'1101) */
 #endif
 
+#ifndef %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE
+%if %DisplayDriver='SSD1306'
+  #define %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE        (1306)
+%else
+  #define %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE        (1106)
+%endif
+    /*!< Either 1306 for SSD1306 or 1106 for SH1106 */
+#endif
+
 #ifndef %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US
   #define %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US    (%I2CTransactionDelay)
     /*!< I2C transaction delay in us */
@@ -1299,7 +1321,6 @@ void %OnGiveLCD(void)
 %endif
   /*!< 1: use I2C Block transfer for better performance. 0: disabled, e.g. for slower displays */
 #endif
-
 
 #ifndef %'ModuleName'_CONFIG_USE_RAM_BUFFER
 %if defined(useRAMBuffer) & %useRAMBuffer='yes'

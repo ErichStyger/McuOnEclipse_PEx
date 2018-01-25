@@ -190,7 +190,7 @@ LI.EXP {
                 
                 SSD1306
               </div>
-              <div class="descrtext">Display driver for SSD1306 OLED displays</div>
+              <div class="descrtext">Display driver for SSD1306/SSH1106 OLED displays</div>
               <div class="info_name">Component Level: <span class="info_text"><a href="../../DOCs/BeanCategoriesInfo.html#LevelAbstraction">Low</a></span></div>
               <div class="info_name">Category: 
                 <span class="info_text">
@@ -229,6 +229,16 @@ There are 2 options:<br />
 <ul>
   <li><u>128x64</u>: 128x64 Resolution</li>
   <li><u>128x32</u>: 128x32 Resolution</li>
+</ul><br />
+
+</li>
+<li>
+<a name="DisplayDriver">
+<b>Driver</b></a> - Selects the display driver. Many displays are sold as SSD1306, but they can have a SH1106 inside which has a 132x64 bit memory map. Selecting the SSH1106 type makes sure it maps to that RAM area.<br /><br />
+There are 2 options:<br />
+<ul>
+  <li><u>SSD1306</u>: SSD1306 memory map</li>
+  <li><u>SH1106</u>: SH1106 memory map</li>
 </ul><br />
 
 </li>

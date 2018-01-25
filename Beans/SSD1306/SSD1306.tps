@@ -55,5 +55,21 @@
         <Line>portrait180</Line>
       </Defines>
     </Type>
+    <Type>
+      <Type>TEnumSpec</Type>
+      <Name>typeDisplayDriver</Name>
+      <Items lines_count="2">
+        <Line>SSD1306</Line>
+        <Line>SH1106</Line>
+      </Items>
+      <Hints lines_count="2">
+        <Line>SSD1306 memory map</Line>
+        <Line>SH1106 memory map</Line>
+      </Hints>
+      <Defines lines_count="2">
+        <Line>SSD1306</Line>
+        <Line>SH1106</Line>
+      </Defines>
+    </Type>
   </Types>
 </TypesAndGlobals>
