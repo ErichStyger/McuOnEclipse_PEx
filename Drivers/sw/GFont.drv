@@ -58,7 +58,13 @@
 %INTERFACE
 %define! Settings Common\GFontSettings.Inc
 %define! Abstract Common\GFontAbstract.Inc
+%-----------------------------------------------------------------------------------------
+%if defined(GFontSrcFolderName) & %GFontSrcFolderName <> ""
+  %FILE? %'DirRel_Code'%'GFontSrcFolderName'/%'ModuleName'.h
+%endif
+%----------------------------
 %include Common\Header.h
+
 
 #ifndef __%'ModuleName'_H
 #define __%'ModuleName'_H
@@ -301,6 +307,11 @@ PGFONT_Callbacks %'ModuleName'%.%GetFont(void);
 %IMPLEMENTATION
 %define! Settings Common\GFontSettings.Inc
 %define! Abstract Common\GFontAbstract.Inc
+%-----------------------------------------------------------------------------------------
+%if defined(GFontSrcFolderName) & %GFontSrcFolderName <> ""
+  %FILE? %'DirRel_Code'%'GFontSrcFolderName'/%'ModuleName'.c
+%endif
+%----------------------------
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
@@ -78771,7 +78782,9 @@ uint8_t %'ModuleName'%.%GetLineSpaceHeight(void)
 %CODE_END
 %-
 %-----------------------------------------------------------------------------------------
-%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+%if defined(GFontConfigFolderName) & %GFontConfigFolderName <> ""
+  %define  ConfigSrcDirFolder  %'GFontConfigFolderName'/
+%elif defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
   %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
 %else
   %define  ConfigSrcDirFolder
