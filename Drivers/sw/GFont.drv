@@ -60,7 +60,7 @@
 %define! Abstract Common\GFontAbstract.Inc
 %-----------------------------------------------------------------------------------------
 %if defined(GFontSrcFolderName) & %GFontSrcFolderName <> ""
-  %FILE? %'DirRel_Code'%'GFontSrcFolderName'/%'ModuleName'.h
+%FILE? %'DirRel_Code'%'GFontSrcFolderName'/%'ModuleName'.h
 %endif
 %----------------------------
 %include Common\Header.h
@@ -311,7 +311,7 @@ PGFONT_Callbacks %'ModuleName'%.%GetFont(void);
 %if defined(GFontSrcFolderName) & %GFontSrcFolderName <> ""
   %FILE? %'DirRel_Code'%'GFontSrcFolderName'/%'ModuleName'.c
 %endif
-%----------------------------
+%-----------------------------------------------------------------------------------------
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
