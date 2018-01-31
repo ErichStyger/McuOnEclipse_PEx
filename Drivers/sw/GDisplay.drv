@@ -723,10 +723,12 @@ void %OnGiveDisplay(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-%ifdef RTOS
-static xSemaphoreHandle %'ModuleName'%.displayMutex;
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  #include "FreeRTOS.h"
+  #include "semphr.h"
 
-%endif
+  static xSemaphoreHandle %'ModuleName'%.displayMutex;
+#endif
 %-------------------------------------
 %- Information on tested displays
 %- bit0 is LSB (Least significant bit in memory)
@@ -870,9 +872,9 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_BLACK);%>40 /* store pixel with color information */
@@ -884,9 +886,9 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #else
   %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+#endif
 }
 
 %endif %- SetPixel
@@ -909,9 +911,9 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
@@ -923,9 +925,9 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #else
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+#endif
 }
 
 %endif %- ClrPixel
@@ -1031,9 +1033,9 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up window as large as the box */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(color);              %>40 /* store pixel with color information */
@@ -1054,9 +1056,9 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %@Display@'ModuleName'%.PutPixel(x, y, color);
  #endif
 #endif
-%ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-%endif
+#endif
 }
 #ifdef __HC08__
   #pragma MESSAGE DEFAULT C4001 /* condition always FALSE */
@@ -1120,23 +1122,23 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
   x1 = (%'ModuleName'_PixelDim)(x+width-1);                      %>40 /* set window lower right x coordinate */
   y1 = (%'ModuleName'_PixelDim)(y+height-1);                     %>40 /* set window lower right y coordinate */
   pixCnt = (%'ModuleName'_PixelCount)((x1-x+1)*(y1-y+1));        %>40 /* number of pixels to write */
-  %ifdef RTOS
+  #if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+  #endif
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x1, y1);       %>40 /* set up window as large as the box */
   while (pixCnt>0) {
     %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(color);            %>40 /* store pixel with color information */
     pixCnt--;
   } /* while */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-  %ifdef RTOS
+  #if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+  #endif
 #else
   y0 = y; ye = (%'ModuleName'%.PixelDim)(y0+height-1);
-  %ifdef RTOS
+  #if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+  #endif
   for(;;) { /* breaks */
     x0 = x; xe = (%'ModuleName'%.PixelDim)(x0+width-1);
     for(;;) { /* process line, breaks */
@@ -1154,9 +1156,9 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
     }
     y0++;
   } /* for */
-  %ifdef RTOS
+  #if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+  #endif
 #endif
 }
 
@@ -1528,9 +1530,9 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
@@ -1574,9 +1576,9 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+#endif
 }
 
 %endif %- Draw65kBitmap
@@ -1598,9 +1600,9 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
@@ -1646,9 +1648,9 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp;  (void)ColorTable; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+#endif
 }
 
 %endif %- Draw256BitmapHigh
@@ -1678,9 +1680,9 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GetDisplay();
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x1, y1, x2, y2);     %>40 /* set up window as large as the box */
   if (compressed) {
@@ -1728,9 +1730,9 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-  %ifdef RTOS
+#if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.GiveDisplay();
-  %endif
+#endif
 }
 
 %endif %- Draw256BitmapLow
@@ -1830,9 +1832,9 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
 %include Common\GDisplayGetDisplay.Inc
 void %'ModuleName'%.%GetDisplay(void)
 {
-%ifdef RTOS
-  %@RTOS@'ModuleName'%.xSemaphoreTakeRecursive(%'ModuleName'%.displayMutex, portMAX_DELAY);
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  xSemaphoreTakeRecursive(%'ModuleName'%.displayMutex, portMAX_DELAY);
+#endif
 %if defined(OnGetDisplay)
   %OnGetDisplay();
 %endif
@@ -1851,9 +1853,9 @@ void %'ModuleName'%.%GiveDisplay(void)
 %if defined(OnGiveDisplay)
   %OnGiveDisplay();
 %endif
-%ifdef RTOS
-  %@RTOS@'ModuleName'%.xSemaphoreGiveRecursive(%'ModuleName'%.displayMutex);
-%endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  xSemaphoreGiveRecursive(%'ModuleName'%.displayMutex);
+#endif
 }
 
 %endif %- GiveDisplay
@@ -1868,9 +1870,9 @@ void %'ModuleName'%.%Init(void)
   %'ModuleName'%.%Clear(); /* clear display memory */
   %'ModuleName'%.%UpdateFull(); /* update display */
   %endif
-  %ifdef RTOS
-  %'ModuleName'%.displayMutex = %@RTOS@'ModuleName'%.xSemaphoreCreateRecursiveMutex();
-  %endif
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  %'ModuleName'%.displayMutex = xSemaphoreCreateRecursiveMutex();
+#endif
 }
 
 %endif %- Init
@@ -1919,9 +1921,9 @@ void %OnGiveDisplay(void)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-%if ClearScreenOnInit='yes' | defined(RTOS)
+#if %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT || %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.Init();
-%endif
+#endif
 %CODE_END
 %-
 %ENABLE
@@ -2018,6 +2020,24 @@ void %OnGiveDisplay(void)
   #define %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL  (1)
 %endif
     /*!< Number of bits per pixel */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT
+%if ClearScreenOnInit='yes'
+  #define %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT  (1)
+%else
+  #define %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT  (0)
+%endif
+    /*!< 1: clear display during Init(); 0: do not clear display. */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_MUTEX
+%if defined(RTOS)
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_MUTEX  (0)
+%endif
+    /*!< 1: use RTOS mutex for mutual access to display. 0: do not use mutex */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
