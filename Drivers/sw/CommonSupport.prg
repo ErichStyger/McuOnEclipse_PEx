@@ -13,6 +13,7 @@
 %if (%Compiler = "CodeWarriorColdFireV1") | (%Compiler = "CodeWarriorMCF") | (%Compiler = "CodeWarriorARM") | (%Compiler = "MetrowerksDSP")
   %define COMPILER_MW
 %elif %Compiler = "CodeWarriorRS08CC"
+%elif %Compiler = "CodeWarriorHCS12Z"
 %elif %Compiler = "MetrowerksHC08CC"
 %elif %Compiler = "MetrowerksHCS08CC"
 %elif %Compiler = "MetrowerksHC12CC"
