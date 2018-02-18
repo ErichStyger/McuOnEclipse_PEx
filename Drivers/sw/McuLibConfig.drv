@@ -378,6 +378,16 @@ extern "C" {
 #endif
 #endif
 
+/* Configuration macro if FreeRTOS is used */
+#ifndef %'ModuleName'%.CONFIG_SDK_USE_FREERTOS
+%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
+  #define %'ModuleName'%.CONFIG_SDK_USE_FREERTOS                 %>50 (1)
+%else
+  #define %'ModuleName'%.CONFIG_SDK_USE_FREERTOS                 %>50 (0)
+%endif
+    /*!< 1: Use FreeRTOS; 0: no FreeRTOS used */
+#endif
+
 /* special macro to identify a set of SDKs used */
 #define %'ModuleName'%.CONFIG_NXP_SDK_USED                       %>50(   (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_1_3) \
                                                                  %>50 || (%'ModuleName'%.CONFIG_SDK_VERSION_USED==%'ModuleName'%.CONFIG_SDK_KINETIS_2_0) \
