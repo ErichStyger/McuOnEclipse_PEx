@@ -919,9 +919,9 @@ void %'ModuleName'%.%DeInit(void)
 
 #ifndef %'ModuleName'%.CONFIG_USE_RTOS_WAIT
 %if defined(RTOS)
-  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (1)
+  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (1 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
 %else
-  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (0)
+  #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (0 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
 %endif
     /*!< 1: Use RTOS wait if RTOS is present; 0: use normal busy waiting */
 #endif
