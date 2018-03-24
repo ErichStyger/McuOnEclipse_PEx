@@ -2852,12 +2852,16 @@ void %'ModuleName'%.%NumFloatToStr(uint8_t *dst, size_t dstSize, float val, uint
   }
   /* get fractional part */
   fractional = (uint32_t)(val*shift);
-  if (isNeg && fractional>0 && nofFracDigits>0) {
+  /* write integral part */
+  if (integral==0 && fractional==0) { /* special check to avoid writing -0 or -0.000 */
+    %'ModuleName'%.%Num32sToStr(dst, dstSize, 0); /* just write the zero */
+  } else if (isNeg) { /* for negative numbers, write it with sign */
     %'ModuleName'%.%strcpy(dst, dstSize, (unsigned char*)"-");
     %'ModuleName'%.%strcatNum32s(dst, dstSize, (int32_t)integral);
   } else {
     %'ModuleName'%.%Num32sToStr(dst, dstSize, (int32_t)integral);
   }
+  /* write fractional part */
   if (nofFracDigits>0) {
     %'ModuleName'%.%chcat(dst, dstSize, '.');
     %'ModuleName'%.%strcatNum32uFormatted(dst, dstSize, fractional, '0', nofFracDigits);
