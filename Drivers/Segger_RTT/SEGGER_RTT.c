@@ -307,7 +307,7 @@ static void _DoInit(void) {
   p->aDown[0].RdOff         = 0u;
   p->aDown[0].WrOff         = 0u;
 #if 1 /* << EST */
-  p->aUp[0].Flags         = SEGGER_RTT_CHANNEL_0_MODE_DOWN;
+  p->aDown[0].Flags         = SEGGER_RTT_CHANNEL_0_MODE_DOWN;
 #else
   p->aDown[0].Flags         = SEGGER_RTT_MODE_DEFAULT;
 #endif
