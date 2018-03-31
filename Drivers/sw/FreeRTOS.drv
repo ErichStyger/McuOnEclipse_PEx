@@ -2226,6 +2226,8 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Version", (const unsigned char*)tskKERNEL_VERSION_NUMBER, io->stdOut);
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  RTOS ticks", (const unsigned char*)"", io->stdOut);
   %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), configTICK_RATE_HZ);
   %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
