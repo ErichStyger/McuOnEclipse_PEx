@@ -2117,6 +2117,8 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
         case eReady:     %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Ready"); break;
         case eSuspended: %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Suspended"); break;
         case eBlocked:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Blocked"); break;
+        case eDeleted:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Deleted"); break;
+        case eInvalid:   %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"Invalid"); break;
         default:         %@Utility@'ModuleName'%.strcpy(tmpBuf, sizeof(tmpBuf), (unsigned char*)"UNKNOWN!"); break;
       }
       buf[0] = '\0';
