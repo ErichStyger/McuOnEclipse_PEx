@@ -4,7 +4,7 @@
     <Name>GenericSWI2C</Name>
     <Description>Generic Software I2C</Description>
     <Author>Erich Styger, Marc Lindahl</Author>
-    <Version>01.021</Version>
+    <Version>01.023</Version>
     <Icon>GenericSWI2C</Icon>
     <TypesFiles>PE,GenericSWI2C\GenericSWI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -151,6 +151,23 @@
         <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TIntgItem>
+        <Name>Timeout Counter Value</Name>
+        <Symbol>TimeoutCntrVal</Symbol>
+        <Hint>Timeout counter which is counted down. The higher the value, the longer the timeout.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>true</EditLine>
+        <DefaultValue>65535</DefaultValue>
+        <MinValue>0</MinValue>
+        <MaxValue>65535</MaxValue>
+        <Bases>BIN DEC HEX</Bases>
+        <DefaultBase>DEC</DefaultBase>
+        <ExtraHintDisabled>false</ExtraHintDisabled>
+        <ChangeValueIntoRange>false</ChangeValueIntoRange>
+        <RuntimeProperty>false</RuntimeProperty>
+      </TIntgItem>
     </Property>
   </PropertyList>
   <MethodList>

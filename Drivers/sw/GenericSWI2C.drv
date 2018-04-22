@@ -417,7 +417,7 @@ static void Write(uint8_t Data)
     Shift = (uint8_t)(Shift >> 1);
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SCL_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -446,7 +446,7 @@ static uint8_t Read(void)
   for (I = 0x08U; I != 0U; I--) {
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SCL_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -476,7 +476,7 @@ static bool GetAck(void)
   Delay();
   SCL_SetDir((bool)INPUT);       /* CLOCK HIGH PULSE */
   Delay();
-  timeout = 65535U;
+  timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
   while((SCL_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
     timeout--;
     %'ModuleName'%.OSYIELD();
@@ -504,7 +504,7 @@ void %'ModuleName'%.%SendAck(bool Ack)
   Delay();
   SCL_SetDir((bool)INPUT);       /* HIGH CLOCK PULSE */
   Delay();
-  timeout = 65535U;
+  timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
   while((SCL_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
     timeout--;
     %'ModuleName'%.OSYIELD();
@@ -589,7 +589,7 @@ uint8_t %'ModuleName'%.%SendChar(uint8_t Chr)
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();                       /* CLOCK HIGH PULSE & BUS FREE TIME */
     /* check that we have a valid start condition: SDA needs to be high */
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -662,7 +662,7 @@ uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr)
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();                     /* CLOCK HIGH PULSE & BUS FREE TIME */
     /* check that we have a valid start condition: SDA needs to be high */
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -727,7 +727,7 @@ uint8_t %'ModuleName'%.%SendBlock(void *Ptr, uint16_t Siz, uint16_t *Snt)
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
     Delay();                     /* CLOCK HIGH PULSE + BUS FREE TIME */
     /* check that we have a valid start condition: SDA needs to be high */
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -777,7 +777,7 @@ uint8_t %'ModuleName'%.%SendBlock(void *Ptr, uint16_t Siz, uint16_t *Snt)
     ++(*Snt);
   }
   Delay();
-  timeout = 65535U;
+  timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
   while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
     timeout--;
     %'ModuleName'%.OSYIELD();
@@ -822,7 +822,7 @@ uint8_t %'ModuleName'%.%SendBlockContinue(void *Ptr, uint16_t Siz, uint16_t *Snt
     ++(*Snt);
   }
   Delay();
-  timeout = 65535U;
+  timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
   while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
     timeout--;
     %'ModuleName'%.OSYIELD();
@@ -860,7 +860,7 @@ uint8_t %'ModuleName'%.%RecvBlockCustom(void *Ptr, uint16_t Siz, uint16_t *Rcv, 
       SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
       Delay();                     /* CLOCK HIGH PULSE + BUS FREE TIME */
       /* check that we have a valid start condition: SDA needs to be high */
-      timeout = 65535U;
+      timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
       while((SDA_GetVal()==0U) && (timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
         timeout--;
         %'ModuleName'%.OSYIELD();
@@ -899,7 +899,7 @@ uint8_t %'ModuleName'%.%RecvBlockCustom(void *Ptr, uint16_t Siz, uint16_t *Rcv, 
 %if defined(OnRxChar)
     %OnRxChar();
 %endif
-    timeout = 65535U;
+    timeout = %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE;
     while((SDA_GetVal()==0U)&&(timeout!=0U)) { /* WAIT FOR CLOCK HIGH PULSE */
       timeout--;
       %'ModuleName'%.OSYIELD();
@@ -1079,13 +1079,10 @@ void %OnRxChar(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-%- #if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
-%- %if defined(CortexTools)
-%-   #include "%@CortexTools@ModuleName.h" /* include Cortex utility functions */
-%- %else
-%-   #include "KIN1.h" /* include Cortex utility functions */
-%- %endif
-%- #endif
+#ifndef %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE
+  #define %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE    (%TimeoutCntrVal)
+    /*!< Timeout counter value waiting for a SDA or CLK line change. The higher the value, the longer the timeout */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
