@@ -416,6 +416,20 @@ extern "C" {
 #define TRC_CFG_INCLUDE_OBJECT_DELETE 1
 %endif
 
+/******************************************************************************
+ * TRC_CFG_INCLUDE_QUEUE_EVENTS
+ *
+ * Macro which should be defined as either zero (0) or one (1).
+ *
+ * This must be enabled (1) for recording queue events.
+ *
+ * Default value is 1.
+ *****************************************************************************/
+%if defined(IncludeQueueEvents) & %IncludeQueueEvents='no'
+#define TRC_CFG_INCLUDE_QUEUE_EVENTS 0
+%else
+#define TRC_CFG_INCLUDE_QUEUE_EVENTS 1
+%endif
 /* << EST: end additional configuration item */
 
 #ifdef __cplusplus
