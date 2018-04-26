@@ -801,15 +801,15 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
   } /* for(;;) */
 %else
   for(;;) { /* breaks */
-%if %SupportStopNoStart='yes'
+#if %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START
     if (%'ModuleName'_STOP_NOSTART==flags) {
-      res = %'ModuleName'%.CONFIG_SEND_BLOCKContinue(data, dataSize, &nof);
+      res = %'ModuleName'%.CONFIG_SEND_BLOCK_CONTINUE(data, dataSize, &nof);
     } else {
       res = %'ModuleName'%.CONFIG_SEND_BLOCK(data, dataSize, &nof);
     }
-%else
+#else
     res = %'ModuleName'%.CONFIG_SEND_BLOCK(data, dataSize, &nof);
-%endif
+#endif
     if (res!=ERR_OK) {
       (void)%'ModuleName'%.CONFIG_SEND_STOP();
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -1586,11 +1586,23 @@ void %OnError(void)
     /*!< Size of the write buffer size which defines the maximum block size which can be sent */
 #endif
 
+#if !defined(%'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START)
+%if defined(SupportStopNoStart) & %SupportStopNoStart='yes'
+  #define %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START      (1)
+%else
+  #define %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START      (0)
+%endif
+    /*!< 1: send a STOP condition without sending a new START condition. Currently only supported for the GenericSWI2C component. 0: send a STOP for every START */
+#endif
+
 /* configuration of function names used for low level I2C functions */
 %if defined(I2C)
 #include "%@I2C@ModuleName.h" /* interface of low level I2C driver */
 #define %'ModuleName'%.CONFIG_RECV_BLOCK                        %@I2C@'ModuleName'%.RecvBlock
 #define %'ModuleName'%.CONFIG_SEND_BLOCK                        %@I2C@'ModuleName'%.SendBlock
+#if %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START
+#define %'ModuleName'%.CONFIG_SEND_BLOCK_CONTINUE               %@I2C@'ModuleName'%.SendBlockContinue
+#endif
 #define %'ModuleName'%.CONFIG_SEND_STOP                         %@I2C@'ModuleName'%.SendStop
 #define %'ModuleName'%.CONFIG_SELECT_SLAVE                      %@I2C@'ModuleName'%.SelectSlave
 #define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM                 %@I2C@'ModuleName'%.RecvBlockCustom
