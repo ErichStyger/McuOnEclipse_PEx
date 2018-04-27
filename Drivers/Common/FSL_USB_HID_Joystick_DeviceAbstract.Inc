@@ -1,1 +1,1 @@
-%;**                                                             %>12Implements the HID Keyboard USB device class.
+%;**                                                             %>12Implements the HID USB Joystick device class.
