@@ -79,6 +79,7 @@ Revision: $Rev: 9599 $
 */
 /* << EST: Additional setting to check for FreeRTOS: need to use FreeRTOS with proper BASEPRI mask to create critical sections */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
 #if %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS
   #include "portmacro.h" /* include FreeRTOS port header file for critical section handling */

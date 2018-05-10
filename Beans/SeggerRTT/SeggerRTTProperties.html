@@ -237,6 +237,10 @@ LI.EXP {
 <b>Max Blocked Interrupt Level</b></a> - Used for SEGGER_RTT_LOCK_INTERRUPT_LEVEL: On Cortex M4 the SEGGER_RTT_LOCK() macro in SEGGER_RTT_Conf.h only blocks interrupts with this interrupt number and below. If FreeRTOS is present, then configMAX_SYSCALL_INTERRUPT_PRIORITY is used.
 </li>
 <li>
+<a name="SysCallsImplemented">
+<b>Syscalls</b></a> - If enabled, the RTT will implement SysCall functions like _write() or _write_r(). Disable this if for example semihosting is used.
+</li>
+<li>
 <a name="RTTChannel0Enabled">
 <b>Channel 0</b></a> - Settings for buffer 0, typically used for Terminal<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />

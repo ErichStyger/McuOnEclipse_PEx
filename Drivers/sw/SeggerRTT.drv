@@ -757,11 +757,24 @@ void %'ModuleName'%.%Init(void)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for Segger RTT
+ *
+ * This header file is used to configure settings of the Segger RTT Module.
+ */
+
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+#ifndef %'ModuleName'%.CONFIG_PROVIDE_SYSCALLS
+%if defined(SysCallsImplemented) & %SysCallsImplemented='yes'
+  #define  %'ModuleName'%.CONFIG_PROVIDE_SYSCALLS  (1)
+%else
+  #define  %'ModuleName'%.CONFIG_PROVIDE_SYSCALLS  (0)
+%endif
+    /*!< 1: RTT library implements SysCalls; 0: no Syscalls implemented */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
