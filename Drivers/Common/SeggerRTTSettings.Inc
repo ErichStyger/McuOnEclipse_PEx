@@ -22,3 +22,7 @@
 %else %- RTTChannel0Enabled
 %endif %- RTTChannel0Enabled
 %;**%>12 SDK %>60: %get(sdk,Text)
+%;**%>12 Shell %>60: %get(Shell,Text)
+%;**%>12 Source Folders %>60: %get(FolderGroup,Text)
+%;**%>14 Source Folder %>60: %get(SeggerRTTSrcFolderName,Text)
+%;**%>14 Config Folder %>60: %get(SeggerRTTConfigFolderName,Text)
