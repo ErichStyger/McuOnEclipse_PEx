@@ -1607,9 +1607,17 @@ void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))
   #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS
     if (res==ERR_TXFULL) {
     #if %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT
+    %if defined(Wait)
       %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    %else
+      McuWait_WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    %endif
     #else
+    %if defined(Wait)
       %@Wait@'ModuleName'%.Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    %else
+      MCUWait_Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+    %endif
     #endif
     }
   #endif
