@@ -681,7 +681,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   *pxTopOfStack = portINITIAL_EXEC_RETURN;
 #endif
 #if configUSE_MPU_SUPPORT
-  pxTopOfStack -= 9;  /* R11, R10, R9, R8, R7, R6, R5 and R4 plus priviledge level */
+  pxTopOfStack -= 9;  /* R11, R10, R9, R8, R7, R6, R5 and R4 plus privilege level */
   if (xRunPrivileged == pdTRUE) {
     *pxTopOfStack = portINITIAL_CONTROL_IF_PRIVILEGED;
   } else {
