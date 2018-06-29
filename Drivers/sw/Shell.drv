@@ -1673,7 +1673,13 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#if 0 /* no component initialization in S32 Design Studio */
+%endif
   %'ModuleName'%.Init(); /* initialize shell */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE

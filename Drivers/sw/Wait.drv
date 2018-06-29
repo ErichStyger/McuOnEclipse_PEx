@@ -381,7 +381,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
     nop                %>%CTAB /* [1]  */
                        %>%CTAB /* [5] for RTS, return from subroutine */
   }
-%elif (CPU_FAMILY = "Kinetis")
+%elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
   /* NOTE: Cortex-M0 and M4 have 1 cycle for a NOP */
   /* Compiler is %Compiler */
 %if %Compiler = "GNUC"
@@ -419,7 +419,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
   /* so we already burned more than 10 cycles... */
 %else
   #warning "unsupported CPU family %CPUfamily"
-  volatile byte i = 0; /* just something to wait, NOT the requested 10 cycles */
+  volatile int i = 0; /* just something to wait, NOT the requested 10 cycles */
 %endif
   /*lint -restore */
 }
@@ -432,7 +432,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %if (%Compiler = "IARARM")
   /* Implemented in assembly file, as IAR does not support labels in HLI */
 %else
-%if (CPU_FAMILY = "Kinetis") & %Compiler = "GNUC"
+%if ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & %Compiler = "GNUC"
 #ifdef __GNUC__
 #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
   __attribute__((naked))
@@ -441,7 +441,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
 #endif
 #endif
 void %'ModuleName'%.%Wait100Cycles(void)
-%elif (CPU_FAMILY = "Kinetis") & (%Compiler = "ARM_CC") %- Keil/ARM compiler
+%elif ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & (%Compiler = "ARM_CC") %- Keil/ARM compiler
 __asm void %'ModuleName'%.%Wait100Cycles(void)
 %else
 void %'ModuleName'%.%Wait100Cycles(void)
@@ -487,7 +487,7 @@ void %'ModuleName'%.%Wait100Cycles(void)
     bne.b loop         %>%CTAB /* [2] repeat 31x=([1]+[2])*31=[93] */
                        %>%CTAB /* [5] return from subroutine */
   }
-%elif (CPU_FAMILY = "Kinetis")
+%elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
 %if %Compiler = "GNUC"
   __asm (
    /* bl to here:               [4] */
@@ -555,7 +555,7 @@ loop
   /* RTS is 8 cycles */
 %else
   #warning "unsupported CPU family %CPUfamily"
-  volatile byte i;
+  volatile int i;
   for(i=0; i<50; i++); /* just something to wait, NOT the requested 100 cycles */
 %endif
   /*lint -restore */
@@ -642,8 +642,8 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 void %'ModuleName'%.%Waitms(uint16_t ms)
 {
   /*lint -save -e522 function lacks side effect. */
-%if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08") | (CPU_FAMILY = "RS08")  | (CPU_FAMILY = "HCS12X") | (CPU_FAMILY = "HCS12")
-%if (CPU_FAMILY = "Kinetis")
+%if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "S32K") | (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08") | (CPU_FAMILY = "RS08")  | (CPU_FAMILY = "HCS12X") | (CPU_FAMILY = "HCS12")
+%if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "S32K")
   uint32_t msCycles; /* cycles for 1 ms */
 %else
   uint16_t msCycles; /* cycles for 1 ms */
@@ -671,7 +671,7 @@ void %'ModuleName'%.%Waitms(uint16_t ms)
   msCycles = %'ModuleName'%.NofCyclesMs(1, %'ModuleName'%.INSTR_CLOCK_HZ);
 %endif
   while(ms>0) {
-%if (CPU_FAMILY = "Kinetis")
+%if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "S32K")
     %'ModuleName'%.WaitLongCycles(msCycles);
 %else
     %'ModuleName'%.WaitCycles(msCycles);
@@ -853,7 +853,13 @@ void %'ModuleName'%.%DeInit(void)
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
 %CODE_BEGIN
+%if (CPU_FAMILY = "S32K")
+#if 0 /* no component initialization in S32 Design Studio */
+%endif
   %'ModuleName'%.%Init();
+%if (CPU_FAMILY = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE

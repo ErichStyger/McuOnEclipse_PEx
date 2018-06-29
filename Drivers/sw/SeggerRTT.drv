@@ -736,7 +736,13 @@ void %'ModuleName'%.%Init(void)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#if 0 /* no component initialization in S32 Design Studio */
+%endif
   %'ModuleName'%.%Init();
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE

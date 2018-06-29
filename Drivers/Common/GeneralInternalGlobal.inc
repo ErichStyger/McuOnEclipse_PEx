@@ -1,0 +1,1 @@
+/* INFO: empty Drivers\common\GeneralInternalGlobal.inc file */

@@ -131,7 +131,7 @@ extern "C" {
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
   #define %'ModuleName'%.%EnterCritical() \
     do {                                  \
-%if %CPUfamily="Kinetis" %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
+%if (%CPUfamily="Kinetis") || (%CPUfamily = "S32K") %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
       /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
       __asm (                             \
       "mrs   r0, PRIMASK     \n\t"        \
@@ -157,7 +157,7 @@ extern "C" {
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
   #define %'ModuleName'%.%ExitCritical() \
    do{                                  \
-%if %CPUfamily="Kinetis" %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
+%if (%CPUfamily="Kinetis") || (%CPUfamily = "S32K") %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
      __asm (                            \
      "ldrb r0, %%[input]    \n\t"        \
      "msr PRIMASK,r0        \n\t"       \
@@ -289,7 +289,7 @@ void %'ModuleName'%.%ExitCritical(void)
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
-%if (%UseProcessorExpertDefault='no') & (%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
+%if (defined(UseProcessorExpertDefault) && (%UseProcessorExpertDefault='no')) && ((%CPUfamily = "Kinetis")||(%CPUfamily = "S32K")) && (%Compiler = "GNUC")
   #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 1 /* 1: Custom implementation (supported for GNU and ARM!); 0: don't use custom implementation */
 %else
   #define %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION      %>60 0 /* 1: Custom implementation (supported for GNU and ARM!); 0: don't use custom implementation */
@@ -297,7 +297,7 @@ void %'ModuleName'%.%ExitCritical(void)
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_PEX_DEFAULT
-%if (defined(UseProcessorExpertDefault) &  %UseProcessorExpertDefault='yes') | !(%CPUfamily = "Kinetis") & (%Compiler = "GNUC")
+%if (defined(UseProcessorExpertDefault) &  %UseProcessorExpertDefault='yes') | !((%CPUfamily = "Kinetis")||(%CPUfamily = "S32K")) && (%Compiler = "GNUC")
   #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>60 1 /* 1: use Processor Expert default; 0: use alternative implementation */
 %else
   #define %'ModuleName'%.CONFIG_USE_PEX_DEFAULT                  %>60 0 /* 1: use Processor Expert default; 0: use alternative implementation */
