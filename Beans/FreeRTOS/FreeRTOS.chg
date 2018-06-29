@@ -19,7 +19,7 @@
   %set KinetisCPUSpecific Value Disabled
   %set KinetisSDKGroup ReadOnly yes
   %set KinetisSDKGroup Value Disabled
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") || (CPUfamily = "S32K")
   %set ColdFireV1CPUSpecific ReadOnly yes
   %set ColdFireV1CPUSpecific Value Disabled
   %set ColdFireV2CPUSpecific ReadOnly yes
@@ -38,7 +38,7 @@
   %set KinetisSDKGroup Value Disabled
 %endif
 %- only Kinetis has Low Level Drivers
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") || (CPUfamily = "S32K")
   %- %set useARMSysTickTimer ExtraText xxx
   %if defined(useARMSysTickTimer) & useARMSysTickTimer='yes'
     %set LDDTickGroup Value Disabled
@@ -128,7 +128,7 @@
   %set UseTraceFacility Value yes
 %endif
 
-%if defined(CPUfamily) & CPUfamily = "Kinetis"
+%if (CPUfamily = "Kinetis" || CPUfamily = "S32K")
   %- %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
     %- %set ARMFamilyType Value "M0+"
   %- %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'

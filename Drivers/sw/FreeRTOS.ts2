@@ -25,7 +25,8 @@
 %- Definitions of abstract RTOS functions (Do not modify this section)
 %---------------------------------------------------------------------
 %-RTOS_DEFINITIONS_START
-%if defined(IsClassicCW) & %IsClassicCW='no' %- need to protect this, as classic does not have this
+%if (defined(IsClassicCW) & %IsClassicCW='no') | (CPUfamily = "S32K")
+ %- need to protect this, as classic does not have this
 %inclSUB RTOSAdap_defineRTOSFunction(EnterCritical,hasUserEnterCriticalFun,userEnterCriticalFunName,void,(),EnterCritical)
 %inclSUB RTOSAdap_defineRTOSFunction(ExitCritical,hasUserExitCriticalFun,userExitCriticalFunName,void,(void),ExitCritical)
 

@@ -53,7 +53,7 @@
 #endif
 /* --------------------------------------------------- */
 /* macros dealing with tick counter */
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 #if configSYSTICK_USE_LOW_POWER_TIMER
   #if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED
     /*! \todo */
@@ -96,7 +96,7 @@
 #define RESET_TICK_COUNTER_VAL()    portNVIC_SYSTICK_CURRENT_VALUE_REG = 0 /*portNVIC_SYSTICK_LOAD_REG*/
 %endif
 
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 typedef unsigned long TickCounter_t; /* enough for 24 bit Systick */
 #if configSYSTICK_USE_LOW_POWER_TIMER
   #define TICK_NOF_BITS               16
@@ -359,7 +359,7 @@ static LDD_TDeviceData *RTOS_TickDevice;
 unsigned portLONG uxCriticalNesting = 0x9999UL;
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") | (CPUfamily = "56800")
 volatile unsigned portBASE_TYPE uxCriticalNesting;
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 /* Each task maintains its own interrupt status in the critical nesting variable. */
 static unsigned portBASE_TYPE uxCriticalNesting = 0xaaaaaaaa;
 %else
@@ -652,7 +652,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   *pxTopOfStack = (portSTACK_TYPE)0x00;
   return pxTopOfStack;
 }
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 #if configUSE_MPU_SUPPORT
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters, BaseType_t xRunPrivileged) {
 #else
@@ -832,7 +832,7 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
     %vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
 %else
     /* default wait/sleep code */
-  %if (CPUfamily = "Kinetis")
+  %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     __asm volatile("dsb");
     __asm volatile("wfi");
     __asm volatile("isb");
@@ -930,7 +930,7 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
     %vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
 %else
     /* default wait/sleep code */
-  %if (CPUfamily = "Kinetis")
+  %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     __asm volatile("dsb");
     __asm volatile("wfi");
     __asm volatile("isb");
@@ -1251,7 +1251,7 @@ BaseType_t xPortStartScheduler(void) {
   }
 #endif
   return xBankedStartScheduler();
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
   /* configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to 0.
   See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html */
   configASSERT( configMAX_SYSCALL_INTERRUPT_PRIORITY );
@@ -1395,11 +1395,11 @@ void vPortEnterCritical(void) {
     } while(1);
   }
   uxCriticalNesting++;
-%elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") | (CPUfamily = "Kinetis") | (CPUfamily = "56800")
+%elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") | (CPUfamily = "Kinetis") | (CPUfamily = "S32K") | (CPUfamily = "56800")
   portDISABLE_INTERRUPTS();
   portPOST_ENABLE_DISABLE_INTERRUPTS();
   uxCriticalNesting++;
-  %if (CPUfamily = "Kinetis")
+  %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     %if %Compiler="CodeWarriorARM" %- not supported by legacy Freescale ARM compiler
     %else
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
@@ -1479,7 +1479,7 @@ __interrupt void vPortYieldISR(void) {
 %endif
 %endif
 /*-----------------------------------------------------------*/
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 void vPortYieldFromISR(void) {
   /* Set a PendSV to request a context switch. */
   *(portNVIC_INT_CTRL) = portNVIC_PENDSVSET_BIT;

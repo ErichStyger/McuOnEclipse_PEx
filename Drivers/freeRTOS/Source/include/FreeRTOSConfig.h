@@ -453,7 +453,7 @@ point support. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    %>50 %ColdFireV2LibraryLowestInterruptPriority /* RTOS disables interrupts with this level and below. Interrupts above this level (higher numbers) shall *not* call RTOS routines */
 %elif (CPUfamily = "ColdFireV1") | (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    %>50 7
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 /* Cortex-M specific definitions. */
 #if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
   #define configPRIO_BITS                         %>50 4 /* 4 bits/16 priority levels on ARM Cortex M4 (Kinetis K Family) */

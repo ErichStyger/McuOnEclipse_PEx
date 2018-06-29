@@ -176,7 +176,7 @@ maintaining a separate value and then saving this value in the task stack. */
 extern unsigned portLONG uxCriticalNesting;
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
 extern volatile unsigned portBASE_TYPE uxCriticalNesting;
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %elif (CPUfamily = "56800")
 %else
   #error "undefined target %CPUfamily!"
@@ -194,7 +194,7 @@ extern void vPortClearInterruptMaskFromISR(unsigned portBASE_TYPE);
 /* Interrupts are always disabled in the ISR, thus nothing to do here to prevent further interrupts */
 #define portSET_INTERRUPT_MASK_FROM_ISR()                          0 /* no information needs to be stored */
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(uxSavedStatusRegister)   (void)uxSavedStatusRegister
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %elif (CPUfamily = "56800")
 %else
   #error "undefined target %CPUfamily!"
@@ -224,7 +224,7 @@ extern void vPortExitCritical(void);
 #define portDISABLE_INTERRUPTS()             __asm("sei")
 #define portENTER_CRITICAL()                 vPortEnterCritical()
 #define portEXIT_CRITICAL()                  vPortExitCritical()
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
   #if (configCOMPILER==configCOMPILER_ARM_KEIL)
     __asm uint32_t ulPortSetInterruptMask(void);
@@ -312,7 +312,7 @@ extern void vPortExitCritical(void);
 /* Scheduler utilities. */
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF") | (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
 #define portNOP()          __asm("nop")
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %elif (CPUfamily = "56800")
 #define portNOP()          __asm(nop)
 %endif
@@ -387,7 +387,7 @@ extern void vPortExitCritical(void);
   if (xSwitchRequired != pdFALSE) { \
     portYIELD(); \
   }
-%elif (CPUfamily = "Kinetis")
+%elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 extern void vPortYieldFromISR(void);
 #define portYIELD()                             vPortYieldFromISR()
 #define portEND_SWITCHING_ISR(xSwitchRequired) { if( xSwitchRequired != pdFALSE ) { traceISR_EXIT_TO_SCHEDULER(); portYIELD(); } else { traceISR_EXIT(); } }
