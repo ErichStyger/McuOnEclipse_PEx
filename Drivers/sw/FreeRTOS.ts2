@@ -25,12 +25,14 @@
 %- Definitions of abstract RTOS functions (Do not modify this section)
 %---------------------------------------------------------------------
 %-RTOS_DEFINITIONS_START
-%if (defined(IsClassicCW) & %IsClassicCW='no') | (CPUfamily = "S32K")
+%if defined(IsClassicCW) && %IsClassicCW='no'
+%if (CPUfamily != "S32K")
  %- need to protect this, as classic does not have this
 %inclSUB RTOSAdap_defineRTOSFunction(EnterCritical,hasUserEnterCriticalFun,userEnterCriticalFunName,void,(),EnterCritical)
 %inclSUB RTOSAdap_defineRTOSFunction(ExitCritical,hasUserExitCriticalFun,userExitCriticalFunName,void,(void),ExitCritical)
 
 %inclSUB RTOSAdap_defineRTOSFunction(Malloc,hasUserMallocFun,userMallocFunName,void *,(size_t size),pvPortMalloc)
 %inclSUB RTOSAdap_defineRTOSFunction(Dealloc,hasUserDeallocFun,userDeallocFunName,void,(void *pointer),vPortFree)
+%endif
 %endif
 %-RTOS_DEFINITIONS_END

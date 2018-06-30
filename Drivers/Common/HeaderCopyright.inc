@@ -1,1 +1,3 @@
-/* INFO: empty Drivers\common\HeaderCopyright.inc file */
+%for var from BeanUserCopyright
+%1 %'var'
+%endfor

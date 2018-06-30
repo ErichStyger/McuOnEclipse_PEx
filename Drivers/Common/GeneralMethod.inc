@@ -1,1 +1,2 @@
-INFO: empty Drivers\common\GeneralMethod.inc file
+%;**     Method      :  %1 (component %DeviceType)
+%;**
