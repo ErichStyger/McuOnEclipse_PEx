@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.553</Version>
+    <Version>01.554</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -7303,10 +7303,10 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Init</Name>
-        <Symbol>Init</Symbol>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Low level initialization routine called from startup code. This method ensures that the tick timer is  not enabled.</Hint>
+        <Hint>Module deinitialization method</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -7331,10 +7331,10 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
     </Method>
     <Method>
       <TMthdItem>
-        <Name>Deinit</Name>
-        <Symbol>Deinit</Symbol>
+        <Name>Init</Name>
+        <Symbol>Init</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Module deinitialization method</Hint>
+        <Hint>Low level initialization routine called from startup code. This method ensures that the tick timer is  not enabled.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>

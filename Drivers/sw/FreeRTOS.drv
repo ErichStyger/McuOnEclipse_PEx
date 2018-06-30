@@ -4656,9 +4656,16 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
 %-BW_METHOD_END vOnPreSleepProcessing
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
-  /* PEX_RTOS_INIT() should have been called at this time already with the most critical setup */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  /* PEX_RTOS_INIT() is a macro should already have been called either from main()
+     or Processor Expert startup code. So we don't call it here again. */
+  /* PEX_RTOS_INIT(); */ /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE

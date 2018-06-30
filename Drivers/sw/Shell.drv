@@ -1671,15 +1671,18 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %-BW_METHOD_END OnAfterIterateCmd
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
 %if (CPUfamily = "S32K")
-#if 0 /* no component initialization in S32 Design Studio */
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
 %endif
-  %'ModuleName'%.Init(); /* initialize shell */
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
 %if (CPUfamily = "S32K")
 #endif
 %endif
+%CODE_END
+%-
+%ENABLE
+%CODE_BEGIN
 %CODE_END
 %-
 %ENABLE

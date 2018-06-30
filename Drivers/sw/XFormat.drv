@@ -79,6 +79,15 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
+%-ENDUSRTYPES
+%-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
+%- No constants defined in the BeanWizard for this bean
+%-BW_BEAN_CONSTANTS_END
+%-BW_CUSTOM_USERTYPE_START
+%- Write your own types here ...
+%-  Example:
+%-    typedef int TMyInteger;
 /* GCC have printf type attribute check. */
 #ifdef __GNUC__
   /* inform the GNU compiler about printf() style functions, so the compiler can check the arguments */
@@ -90,15 +99,6 @@
 /* low level functions */
 int xsnprintf(char *buf, size_t max_len, const char *fmt, va_list args);
 int xsprintf(char *buf, const char *fmt, va_list args);
-
-%-ENDUSRTYPES
-%-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
-%- No constants defined in the BeanWizard for this bean
-%-BW_BEAN_CONSTANTS_END
-%-BW_CUSTOM_USERTYPE_START
-%- Write your own types here ...
-%-  Example:
-%-    typedef int TMyInteger;
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -154,6 +154,22 @@ int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...) %
 
 %endif %- xsnprintf
 %-BW_METHOD_END xsnprintf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\XFormatInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\XFormatDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -637,7 +653,7 @@ unsigned %'ModuleName'%.%xformat(void (*outchar)(void *,char), void *arg, const 
   count = %'ModuleName'%.xvformat(outchar,arg,fmt,list);
 
   va_end(list);
-  
+
   return count;
 }
 
@@ -1280,6 +1296,28 @@ int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...)
 
 %endif %- xsnprintf
 %-BW_METHOD_END xsnprintf
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\XFormatInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\XFormatDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1289,8 +1327,14 @@ int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -1310,18 +1354,18 @@ int %'ModuleName'%.%xsnprintf(char *buf, size_t max_len, const char *fmt, ...)
 
 #ifndef %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT
 %if defined(FloatingPointEnabled) & %FloatingPointEnabled='yes'
-  #define XCFG_FORMAT_FLOAT                %>40 1 /* 1: enable, 0: disable floating format (component property) */
+  #define XCFG_FORMAT_FLOAT                                      %>40 1 /* 1: enable, 0: disable floating format (component property) */
 %else
-  #define XCFG_FORMAT_FLOAT                %>40 0 /* 1: enable, 0: disable floating format (component property) */
+  #define XCFG_FORMAT_FLOAT                                      %>40 0 /* 1: enable, 0: disable floating format (component property) */
 %endif
 #endif
 
 
 #ifndef %'ModuleName'%.CONFIG_XCFG_FORMAT_FLOAT
 %if defined(XFormatStaticEnabled) & %XFormatStaticEnabled='yes'
-  #define XCFG_FORMAT_STATIC     %>40 static /* used for the buffer. But using 'static' makes it non-reentrant! */
+  #define XCFG_FORMAT_STATIC                                     %>40 static /* used for the buffer. But using 'static' makes it non-reentrant! */
 %else
-  #define XCFG_FORMAT_STATIC     %>40 /* static */ /* used for the buffer. WARNING: using 'static' makes it non-reentrant! */
+  #define XCFG_FORMAT_STATIC                                     %>40 /* static */ /* used for the buffer. WARNING: using 'static' makes it non-reentrant! */
 %endif
 #endif
 

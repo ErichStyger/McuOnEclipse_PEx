@@ -186,6 +186,22 @@ extern "C" {
 
 
 %-BW_DEFINITION_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\McuLibConfigInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\McuLibConfigDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -228,6 +244,28 @@ extern "C" {
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\McuLibConfigInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* nothing to implement */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\McuLibConfigDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing to implement */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -237,12 +275,15 @@ extern "C" {
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
+%CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
   /* ### %DeviceType "%DeviceName" init code ... */
-%CODE_BEGIN
-%CODE_END
-%-
-%ENABLE
-%CODE_BEGIN
+  %'ModuleName'%.%Init();
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %else %- Language (& Compiler)

@@ -710,12 +710,11 @@ void %OnClear(void)
 %-BW_METHOD_END OnClear
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
 %if (CPUfamily = "S32K")
-#if 0 /* no component initialization in S32 Design Studio */
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
 %endif
-  %'ModuleName'%.%Init();
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
 %if (CPUfamily = "S32K")
 #endif
 %endif

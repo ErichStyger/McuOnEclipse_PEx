@@ -853,11 +853,11 @@ void %'ModuleName'%.%DeInit(void)
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
 %CODE_BEGIN
-%if (CPU_FAMILY = "S32K")
-#if 0 /* no component initialization in S32 Design Studio */
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
 %endif
-  %'ModuleName'%.%Init();
-%if (CPU_FAMILY = "S32K")
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
 #endif
 %endif
 %CODE_END
