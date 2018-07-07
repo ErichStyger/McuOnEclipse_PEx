@@ -279,8 +279,7 @@ void %'ModuleName'%.%Deinit(void)
 %if (CPUfamily = "S32K")
 #ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
 %endif
-  /* ### %DeviceType "%DeviceName" init code ... */
-  %'ModuleName'%.%Init();
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
 %if (CPUfamily = "S32K")
 #endif
 %endif
