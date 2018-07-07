@@ -110,7 +110,7 @@
 %endif
 
   enum %'ModuleName'%.pinNames{
-    %'PinSymbol' = GPIO_MAKE_PIN(%'ModuleName'%.GPIO_IDX, %'ModuleName'%.CONFIG_PIN_NUMBER),
+    %'ModuleName'%.CONFIG_PIN_SYMBOL = GPIO_MAKE_PIN(%'ModuleName'%.GPIO_IDX, %'ModuleName'%.CONFIG_PIN_NUMBER),
   };
 
   extern const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[];
@@ -240,8 +240,11 @@ void %'ModuleName'%.%PutVal(bool Val);
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "fsl_gpio_driver.h" /* include SDK header file for GPIO */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  #include "pins_gpio_hw_access.h"
+  #include "pins_driver.h" /* include SDK header file for GPIO */
 #else
-  #error "This component only works with the Kinetis SDK!"
+  #error "Unsupported SDK!"
 #endif
 %-
 %-BW_CUSTOM_INCLUDE_END_M
@@ -265,7 +268,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   const gpio_output_pin_user_config_t %'ModuleName'%.OutputConfig[] = {
     {
-      .pinName = %'PinSymbol',
+      .pinName = %'ModuleName'%.CONFIG_PIN_SYMBOL,
       .config.outputLogic = %'ModuleName'%.CONFIG_INIT_PIN_VALUE,
     #if FSL_FEATURE_PORT_HAS_SLEW_RATE
       .config.slewRate = kPortSlowSlewRate,
@@ -284,7 +287,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 
   const gpio_input_pin_user_config_t %'ModuleName'%.InputConfig[] = {
     {
-      .pinName = %'PinSymbol',
+      .pinName = %'ModuleName'%.CONFIG_PIN_SYMBOL,
     #if FSL_FEATURE_PORT_HAS_PULL_ENABLE
       #if %'ModuleName'%.CONFIG_PULL_RESISTOR==0 /* 0: no pull resistor, 1: pull-up, 2: pull-down, 3: pull-up or no pull, 4: pull-down or no pull: 4: autoselect-pull */
       .config.isPullEnable = false,
@@ -313,7 +316,6 @@ void %'ModuleName'%.%PutVal(bool Val);
       .pinName = GPIO_PINS_OUT_OF_RANGE,
     }
   };
-
 #endif
 
 static bool %'ModuleName'%.isOutput = false;
@@ -332,7 +334,9 @@ void %'ModuleName'%.%ClrVal(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_ClearPinOutput(%'PinSymbol');
+  GPIO_DRV_ClearPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 0);
 #endif
 }
 
@@ -347,7 +351,9 @@ void %'ModuleName'%.%SetVal(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_SetPinOutput(%'PinSymbol');
+  GPIO_DRV_SetPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 1);
 #endif
 }
 
@@ -362,7 +368,16 @@ void %'ModuleName'%.%NegVal(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_TogglePinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_TogglePinOutput(%'PinSymbol');
+  GPIO_DRV_TogglePinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  pins_channel_type_t val;
+
+  val = PINS_GPIO_GetPinsOutput(%'ModuleName'%.CONFIG_PORT_NAME);
+  if (val&(1<<%'ModuleName'%.CONFIG_PIN_NUMBER)) {
+    PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 0);
+  } else {
+    PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 1);
+  }
 #endif
 }
 
@@ -378,7 +393,9 @@ bool %'ModuleName'%.%GetVal(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   return GPIO_ReadPinInput(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER)!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  return GPIO_DRV_ReadPinInput(%'PinSymbol')!=0;
+  return GPIO_DRV_ReadPinInput(%'ModuleName'%.CONFIG_PIN_SYMBOL)!=0;
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  return (PINS_DRV_ReadPins(%'ModuleName'%.CONFIG_PORT_NAME)&(1<<%'ModuleName'%.CONFIG_PIN_NUMBER))!=0;
 #else
   return FALSE;
 #endif
@@ -423,7 +440,13 @@ void %'ModuleName'%.%SetInput(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configInput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalInput);
+  GPIO_DRV_SetPinDir(%'ModuleName'%.CONFIG_PIN_SYMBOL, kGpioDigitalInput);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  pins_channel_type_t val;
+
+  val = PINS_GPIO_GetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME); /* bit 0: pin is input; 1: pin is output */
+  val &= ~(1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* clear bit ==> input */
+  PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
 #endif
   %'ModuleName'%.isOutput = false;
 }
@@ -439,7 +462,13 @@ void %'ModuleName'%.%SetOutput(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configOutput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_SetPinDir(%'PinSymbol', kGpioDigitalOutput);
+  GPIO_DRV_SetPinDir(%'ModuleName'%.CONFIG_PIN_SYMBOL, kGpioDigitalOutput);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  pins_channel_type_t val;
+
+  val = PINS_GPIO_GetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME); /* bit 0: pin is input; 1: pin is output */
+  val |= ~(1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* set bit ==> output */
+  PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
 #endif
   %'ModuleName'%.isOutput = true;
 }
@@ -460,7 +489,9 @@ void %'ModuleName'%.%PutVal(bool Val)
     GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   }
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  GPIO_DRV_WritePinOutput(%'PinSymbol', Val);
+  GPIO_DRV_WritePinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL, Val);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  PINS_DRV_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, Val);
 #endif
 }
 
@@ -479,6 +510,10 @@ void %'ModuleName'%.%Init(void)
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   /*! \todo Pin Muxing not implemented */
   GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
+  /* the following needs to be called in the application first:
+  PINS_DRV_Init(NUM_OF_CONFIGURED_PINS, g_pin_mux_InitConfigArr);
+  */
 #endif
 #if %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
   %'ModuleName'%.%SetInput();
@@ -510,9 +545,14 @@ void %'ModuleName'%.%Deinit(void)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -549,12 +589,17 @@ void %'ModuleName'%.%Deinit(void)
 
 #ifndef %'ModuleName'%.CONFIG_GPIO_NAME
   #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
-    /*!< name of GPIO, is pointer to GPIO_Type */
+    /*!< name of GPIO, is pointer to GPIO_Type, not used for S32K SDK */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_PIN_NUMBER
   #define %'ModuleName'%.CONFIG_PIN_NUMBER      %'PinNumber'u
     /*!< number of pin, type unsigned integer */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_PIN_SYMBOL
+  #define %'ModuleName'%.CONFIG_PIN_SYMBOL      %'PinSymbol'
+    /*!< symbolic name for pin, used for NXP SDK V1.3 */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_INIT_PIN_VALUE
@@ -598,8 +643,6 @@ void %'ModuleName'%.%Deinit(void)
 %endif
   /*!< pull resistor setting. 0: no pull resistor, 1: pull-up, 2: pull-down, 3: pull-up or no pull, 4: pull-down or no pull: 4: autoselect-pull */
 #endif
-
-
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
