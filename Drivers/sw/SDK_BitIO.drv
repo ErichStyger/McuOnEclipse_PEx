@@ -467,7 +467,7 @@ void %'ModuleName'%.%SetOutput(void)
   pins_channel_type_t val;
 
   val = PINS_GPIO_GetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME); /* bit 0: pin is input; 1: pin is output */
-  val |= ~(1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* set bit ==> output */
+  val |= (1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* set bit ==> output */
   PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
 #endif
   %'ModuleName'%.isOutput = true;
