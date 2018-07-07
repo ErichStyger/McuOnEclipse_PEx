@@ -1499,11 +1499,17 @@ void %OnError(void)
 %endif %- OnError
 %-BW_METHOD_END OnError
 %-BW_EVENT_IMPLEMENT_END
+
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
 %if %initOnStartup='yes'
-  %'ModuleName'%.%Init();
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%endif
+%if (CPUfamily = "S32K")
+#endif
 %endif
 %CODE_END
 %-
