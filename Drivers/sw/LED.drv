@@ -493,9 +493,14 @@ void %'ModuleName'%.%SetRatio16(uint16_t ratio)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  %'ModuleName'%.Init(); /* initialize LED driver */
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
