@@ -1,1 +1,1 @@
-%;**%>12
+%;**                                                             %>12 Driver for graphical fonts

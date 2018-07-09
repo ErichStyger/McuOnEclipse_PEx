@@ -93,7 +93,7 @@ extern "C" {
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %else
 #if 0
 %endif
@@ -106,7 +106,7 @@ typedef struct {                         /* Image */
   const char *name;                      /* Image name   */
 } TIMAGE;
 typedef TIMAGE* PIMAGE ;                 /* Pointer to image */
-%if (CPUfamily = "Kinetis")
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %else
 #endif
 %endif
@@ -662,6 +662,14 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GDisplayDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1866,10 +1874,10 @@ void %'ModuleName'%.%GiveDisplay(void)
 %include Common\GDisplayInit.Inc
 void %'ModuleName'%.%Init(void)
 {
-  %if ClearScreenOnInit='yes'
+#if %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT
   %'ModuleName'%.%Clear(); /* clear display memory */
   %'ModuleName'%.%UpdateFull(); /* update display */
-  %endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   %'ModuleName'%.displayMutex = xSemaphoreCreateRecursiveMutex();
 #endif
@@ -1877,6 +1885,20 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GDisplayDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  vSemaphoreDelete(%'ModuleName'%.displayMutex);
+  %'ModuleName'%.displayMutex = NULL;
+#endif
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1919,11 +1941,14 @@ void %OnGiveDisplay(void)
 %-BW_METHOD_END OnGiveDisplay
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-#if %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT || %'ModuleName'%.CONFIG_USE_MUTEX
-  %'ModuleName'%.Init();
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
 #endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -2023,7 +2048,7 @@ void %OnGiveDisplay(void)
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT
-%if ClearScreenOnInit='yes'
+%if defined(ClearScreenOnInit) & %ClearScreenOnInit='yes'
   #define %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT  (1)
 %else
   #define %'ModuleName'%.CONFIG_CLEAR_DISPLAY_IN_INIT  (0)

@@ -93,7 +93,7 @@
 
 #ifndef __BWUserType_PConstByte
 #define __BWUserType_PConstByte
-  typedef const uint8_t *PConstByte;                             %>40/* Pointer to a constant uint8_t. */
+  typedef const uint8_t *PConstByte;                             %>40/* Pointer to a constant byte. */
 #endif
 #ifndef __BWUserType_GFONT_CharInfo
 #define __BWUserType_GFONT_CharInfo
@@ -295,6 +295,22 @@ PGFONT_Callbacks %'ModuleName'%.%GetFont(void);
 
 %endif %- GetUnderlineBoxHeight
 %-BW_METHOD_END GetUnderlineBoxHeight
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GFontDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\GFontInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -78764,6 +78780,28 @@ uint8_t %'ModuleName'%.%GetLineSpaceHeight(void)
 
 %endif %- GetLineSpaceHeight
 %-BW_METHOD_END GetLineSpaceHeight
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GFontDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\GFontInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -78773,8 +78811,14 @@ uint8_t %'ModuleName'%.%GetLineSpaceHeight(void)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
