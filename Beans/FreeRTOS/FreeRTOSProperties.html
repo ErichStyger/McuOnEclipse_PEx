@@ -363,16 +363,16 @@ There are 4 options:<br />
 <b>Use Trace Facility</b></a> - Configures configUSE_TRACE_FACILITY. Set to 1 if you wish the trace visualisation functionality to be available, or 0 if the trace functionality is not going to be used. If you use the trace functionality a trace buffer must also be provided. If using Trace Hooks, this property is automatically enabled..
 </li>
 <li>
+<a name="EnableLTODebugHelper">
+<b>LinkTimeOptimizer Helper</b></a> - This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.
+</li>
+<li>
 <a name="DebugHelpersGrop">
 <b>Debug Helpers</b></a> - Several helpers to make debugging easier. For smaller footprint, turn them off.
 <ul>
   <li>
   <a name="EnableGDBDebugHelper">
   <b>Enable GDB Debug Helper</b></a> - If enabled, a debug helper for GDB is enabled to do thread stack debugging with a special vPortPendSVHandler(). This setting configures the configGDB_HELPER macro. 
-  </li>
-  <li>
-  <a name="EnableLTODebugHelper">
-  <b>Enable LinkTimeOptimizer Helper</b></a> - This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.
   </li>
   <li>
   <a name="uxTopUsedPriority">

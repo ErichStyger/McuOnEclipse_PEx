@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.555</Version>
+    <Version>01.556</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -432,6 +432,24 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
       </TBoolItem>
     </Property>
     <Property>
+      <TBoolItem>
+        <Name>LinkTimeOptimizer Helper</Name>
+        <Symbol>EnableLTODebugHelper</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
+    </Property>
+    <Property>
       <TGrupItem>
         <Name>Debug Helpers</Name>
         <Symbol>DebugHelpersGrop</Symbol>
@@ -457,24 +475,6 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>false</DefaultValue>
-              <Popup>false</Popup>
-            </TBoolItem>
-          </GrupItem>
-          <GrupItem>
-            <TBoolItem>
-              <Name>Enable LinkTimeOptimizer Helper</Name>
-              <Symbol>EnableLTODebugHelper</Symbol>
-              <TypeSpec>typeYesNo</TypeSpec>
-              <Hint>This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-              <DefaultIndex>0</DefaultIndex>
-              <TextValueIndex>false</TextValueIndex>
-              <RuntimeProperty>false</RuntimeProperty>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <DefaultValue>true</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
