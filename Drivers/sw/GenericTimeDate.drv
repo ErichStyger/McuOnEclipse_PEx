@@ -1274,7 +1274,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
         time.Hour = hour;
         time.Min = minute;
         time.Sec = second;
+#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
         time.Sec100 = 0;
+#endif
         date.Day = day;
         date.Month = month;
         date.Year = year;
@@ -1854,7 +1856,9 @@ void %'ModuleName'%.%UnixSecondsToTimeDateCustom(int32_t seconds, int8_t offset_
     time->Hour = hours;
     time->Min = minutes;
     time->Sec = (uint8_t)seconds;
+#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
     time->Sec100 = 0;
+#endif
   }
 }
 
