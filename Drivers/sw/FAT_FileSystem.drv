@@ -3389,8 +3389,16 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   }
   (void)%'ModuleName'%.%close(&fp);
   (void)%@RTC@'ModuleName'%.GetTime(&time);
-  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
-  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
+  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + startTime.Sec100*10
+#endif
+  ;
+  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + time.Sec100*10
+#endif
+  - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for writing (", io->stdOut);
   %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
@@ -3412,8 +3420,16 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   }
   (void)%'ModuleName'%.%close(&fp);
   (void)%@RTC@'ModuleName'%.GetTime(&time);
-  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
-  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
+  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + startTime.Sec100*10
+#endif
+  ;
+  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + time.Sec100*10
+#endif
+  - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for reading (", io->stdOut);
   %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
@@ -3424,8 +3440,16 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   (void)%@RTC@'ModuleName'%.GetTime(&startTime);
   (void)%'ModuleName'%.%CopyFile((const unsigned char*)"./bench.txt", (const unsigned char*)"./copy.txt", io);
   (void)%@RTC@'ModuleName'%.GetTime(&time);
-  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000 + startTime.Sec100*10;
-  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000 + time.Sec100*10 - start_mseconds;
+  start_mseconds = startTime.Hour*60*60*1000 + startTime.Min*60*1000 + startTime.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + startTime.Sec100*10
+#endif
+  ;
+  mseconds = time.Hour*60*60*1000 + time.Min*60*1000 + time.Sec*1000
+#if %@RTC@'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  + time.Sec100*10
+#endif
+  - start_mseconds;
   %@Shell@'ModuleName'%.SendNum32s(mseconds, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((const unsigned char*)" ms for copy (", io->stdOut);
   %@Shell@'ModuleName'%.SendNum32s((100*1000)/mseconds, io->stdOut);
