@@ -300,6 +300,22 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 #endif
 
 %-BW_METHOD_END GetCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\KinetisToolsDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\KinetisToolsInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -850,6 +866,28 @@ uint32_t %'ModuleName'%.%GetCycleCounter(void)
 
 %endif %- GetCycleCounter
 %-BW_METHOD_END GetCycleCounter
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\KinetisToolsDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\KinetisToolsInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* Nothing needed */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -859,8 +897,14 @@ uint32_t %'ModuleName'%.%GetCycleCounter(void)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -883,7 +927,7 @@ uint32_t %'ModuleName'%.%GetCycleCounter(void)
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
 /**
  * \file
- * \brief Configuration header file for Kinetis Tools
+ * \brief Configuration header file for Kinetis Tools (or ARM in general)
  *
  * This header file is used to configure settings of the Kinetis Tools module.
  */

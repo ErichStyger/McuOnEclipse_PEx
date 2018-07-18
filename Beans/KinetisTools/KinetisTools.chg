@@ -1,6 +1,8 @@
 %ifdef CPUfamily
-  %if CPUfamily!="Kinetis"
-    %error "This component only works for Kinetis devices!"
+  %if CPUfamily="Kinetis"
+  %elif CPUfamily="S32K"
+  %else
+    %error "This component only works for ARM (Kinetis, S32K) devices!"
   %endif
 %endif
 %ifndef Shell
