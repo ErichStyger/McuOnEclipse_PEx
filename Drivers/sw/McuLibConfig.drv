@@ -441,6 +441,29 @@ void %'ModuleName'%.%Deinit(void)
 #endif
 #endif
 
+%- ////////////////////////////////////////////////////////////
+%-
+%- ----------------------------------------------------------------------------
+%- Check existing components for OS components
+%- ----------------------------------------------------------------------------
+%- NOTE: the OSIF component in S32DS for ARM goes through the component list to find
+%-       out if FreeRTOS is used. The component has to be named FreeRTOS in order to be detected.
+%- %setVariable(osifvar,Bare-Metal)
+%-%for var from ModuleList
+%- %- var is %var
+%- %if %var = 'FreeRTOS'
+%-     %setVariable(osifvar,FreeRTOS)
+%- %endif
+%- %endfor
+
+%- %if %getVariable(osifvar) = 'Bare-Metal'
+%- %- bar metal
+%-    %- %inclSUB file_management(driver,osif,BareMetal)
+%- %endif
+%- %if %getVariable(osifvar) = 'FreeRTOS'
+%- %- freertos
+%-    %- %inclSUB file_management(driver,osif,FreeRTOS)
+%- %endif
 /* Configuration macro if FreeRTOS is used */
 #ifndef %'ModuleName'%.CONFIG_SDK_USE_FREERTOS
 %if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
