@@ -147,7 +147,8 @@ void %'ModuleName'%.%Init(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
-%if defined(CPUfamily) & CPUfamily = "Kinetis"
+%if defined(CPUfamily)
+%if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %- =============================================================================
 %- Allocation of interrupt vectors by component.
 %- =============================================================================
@@ -171,7 +172,8 @@ void %'ModuleName'%.%Init(void);
 %-
 %else
   %error "this component is only supported for GCC and Kinetis!"
-%endif %-(CPUfamily = "Kinetis")
+%endif %-(CPUfamily = "Kinetis") or "S32K"
+%endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -408,9 +410,14 @@ void %'ModuleName'%.%Init(void)
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  %'ModuleName'%.%Init();
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -460,6 +467,13 @@ void %'ModuleName'%.%Init(void)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for HardFault
+ *
+ * This header file is used to configure settings of the HardFault module.
+ */
+
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 

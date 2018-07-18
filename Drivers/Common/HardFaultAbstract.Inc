@@ -1,1 +1,1 @@
-%;**                                                             %>12 Component to simplify hard faults for ARM/Kinetis.
+%;**                                                             %>12 Component to simplify hard faults for ARM (Kinetis, S32K).
