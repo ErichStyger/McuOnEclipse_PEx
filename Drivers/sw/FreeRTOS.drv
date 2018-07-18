@@ -75,15 +75,29 @@
 %if Language='ANSIC'
 %-
 %-
+#include "FreeRTOSConfig.h"
+%if %ModuleName = "FreeRTOS" %- avoid naming conflict with RTOS configuration file */
+  %define RtosComponentConfigHeaderFileName %'ModuleName'_config.h
+  %define RtosComponentHeaderFileName       %'ModuleName'_component.h
+%else
+  %define RtosComponentConfigHeaderFileName %'ModuleName'config.h
+  %define RtosComponentHeaderFileName       %'ModuleName'.h
+%endif
+%-
+%-
 %include freeRTOS_Files.prg
 %if defined(myDummy) %- dummy reference to the RTOS adaptor, otherwise the classic Component wizard will NOT include the file below in the package!
 %include sw\RTOSAdaptor\FreeRTOS_RTOSAdaptor.prg
 %endif
 %-
-%INTERFACE
+%- NOT using INTERFACE as this can conflict if the name of the component is FreeRTOS (required for S32DS)
+%- %INTERFACE
+%FILE %'DirRel_Code'%'RtosComponentHeaderFileName'
 %define! Settings Common\FreeRTOSSettings.Inc
 %define! Abstract Common\FreeRTOSAbstract.Inc
 %include Common\Header.h
+
+%- Not using INTERFACE, otherwise it conflicts with names is component is named 'FreeRTOS' which is required for S32DS
 
 #ifndef __%'ModuleName'_H
 #define __%'ModuleName'_H
@@ -91,7 +105,7 @@
 /* MODULE %ModuleName. */
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
 #include "FreeRTOSConfig.h"
-#include "%'ModuleName'config.h" /* configuration */
+#include "%'RtosComponentConfigHeaderFileName'" /* configuration file for component */
 
 #if configUSE_SHELL
 %if defined(Shell)
@@ -1864,7 +1878,8 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
-#include "%'ModuleName'.h"
+%- #include "%'ModuleName'.h"
+#include "%'RtosComponentHeaderFileName'"
 #include "portTicks.h"                                           %>40/* interface to tick counter */
 %if defined(RuntimeCntrLDD)
 #include "%@RuntimeCntrLDD@ModuleName.h" /* Interface to LDD Counter Interrupt */
@@ -4679,7 +4694,7 @@ void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
   %define  ConfigSrcDirFolder
 %endif
 %----------------------------
-%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'RtosComponentConfigHeaderFileName'
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 

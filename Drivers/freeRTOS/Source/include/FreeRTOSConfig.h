@@ -29,7 +29,7 @@
 #define FREERTOS_CONFIG_H
 
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
-#include "%'ModuleName'config.h" /* extra configuration settings not part of the original FreeRTOS ports */
+#include "%'RtosComponentConfigHeaderFileName'" /* extra configuration settings not part of the original FreeRTOS ports */
 
 %if defined(TaskCAdditions) & %TaskCAdditions='yes'
 #define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>50 1 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
