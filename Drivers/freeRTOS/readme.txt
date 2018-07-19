@@ -9,6 +9,7 @@ The port supports the following:
 - Kinetis Design Studio V3.x (ARM Cortex-M)
 - MCUXpresso IDE V10.x (ARM Cortex-M)
 - IAR and Keil for ARM (although not intensively used)
+- S32 Design Studio for ARM (2018.R1)
 
 Altough the port supports many architures and compilers, all the port files are in 
 Source\portable\GCC\ARM_CM4F
