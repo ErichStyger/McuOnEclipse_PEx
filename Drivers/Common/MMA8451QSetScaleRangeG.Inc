@@ -6,7 +6,8 @@
 %include Common\GeneralMethod.inc (SetScaleRangeG)
 %;**     Description :
 %;**         Sets the desired full scale range G value (2, 4 or 6) using
-%;**         the XYZ_DATA_CFG register
+%;**         the XYZ_DATA_CFG register. Note that the device has to be
+%;**         disabled.
 %include Common\GeneralParameters.inc(27)
 %;**         gScale%PargScale %>27 - desired g value, has to be 2, 4 or 8
 %;**     Returns     :
