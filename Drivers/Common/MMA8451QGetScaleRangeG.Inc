@@ -3,12 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (ReadReg8)
+%include Common\GeneralMethod.inc (GetScaleRangeG)
 %;**     Description :
-%;**         Reads an 8bit device register
+%;**         Returns the selected Full Scale Range from the XYZ_Data_CFG
+%;**         Register
 %include Common\GeneralParameters.inc(27)
-%;**         addr%Paraddr %>27 - device memory map address
-%;**       * val%Parval %>27 - Pointer to value
+%;**       * gScale%PargScale %>27 - Pointer to where to store the
+%;** %>29 desired full scale g value (returns 2, 4 or
+%;** %>29 8)
 %;**     Returns     :
 %;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc

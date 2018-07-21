@@ -257,10 +257,10 @@ LI.EXP {
  - Reads an 8bit device register
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t ReadReg8(void* addr, void* *val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadReg8(uint8_t addr, uint8_t *val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:void*</i> - device memory map address</li>
-<li><i>val: Pointer to void*</i> - Pointer to value</li>
+<li><i>addr:uint8_t</i> - device memory map address</li>
+<li><i>val: Pointer to uint8_t</i> - Pointer to value</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -270,10 +270,10 @@ LI.EXP {
  - Write an 8bit device register
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t WriteReg8(void* addr, void* val)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteReg8(uint8_t addr, uint8_t val)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addr:void*</i> - device memory map address</li>
-<li><i>val:void*</i> - value to write</li>
+<li><i>addr:uint8_t</i> - device memory map address</li>
+<li><i>val:uint8_t</i> - value to write</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
@@ -316,9 +316,9 @@ LI.EXP {
  - Returns in an array the x, y and z accelerometer as 8bit values.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t GetRaw8XYZ(void* *xyz)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetRaw8XYZ(uint8_t *xyz)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>xyz: Pointer to void*</i> - Pointer to an array of three unsigned 8bit values which are used to return the accelerometer values.</li>
+<li><i>xyz: Pointer to uint8_t</i> - Pointer to an array of three unsigned 8bit values which are used to return the accelerometer values.</li>
 <li><i>Return value:uint8_t</i> - Error code, ERR_OK for no error.
 </li>
 </ul><br />
@@ -499,9 +499,33 @@ LI.EXP {
  - Returns the value of the WHO_AM_I (0x0D) register
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t WhoAmI(void* *value)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WhoAmI(uint8_t *value)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>value: Pointer to void*</i> - Pointer to value to store</li>
+<li><i>value: Pointer to uint8_t</i> - Pointer to value to store</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetScaleRangeG">
+<b>GetScaleRangeG</b></a>
+ - Returns the selected Full Scale Range from the XYZ_Data_CFG Register
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetScaleRangeG(uint8_t *gScale)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>gScale: Pointer to uint8_t</i> - Pointer to where to store the desired full scale g value (returns 2, 4 or 8)</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetScaleRangeG">
+<b>SetScaleRangeG</b></a>
+ - Sets the desired full scale range G value (2, 4 or 6) using the XYZ_DATA_CFG register
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetScaleRangeG(uint8_t gScale)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>gScale:uint8_t</i> - desired g value, has to be 2, 4 or 8</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />

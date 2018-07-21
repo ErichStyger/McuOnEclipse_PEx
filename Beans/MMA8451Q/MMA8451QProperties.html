@@ -244,6 +244,10 @@ There are 2 options:<br />
 <b>SDK</b></a> - Link to the SDK used
 </li>
 <li>
+<a name="InitDriverInStartup">
+<b>Init Driver in startup</b></a> - If set to 'yes', the driver will initialize the sensor during startup. This typically needs the I2C interface working, i.e. interrupts enabled. This is usually not the case during startup, that's why this this setting is turned off by default. Call the Init() function after the interrupts are enabled instead.
+</li>
+<li>
 <a name="UseConstantOffsets">
 <b>Constant Offsets</b></a> - If enabled, constant offsets are added to the accelerometer values.<br />
 The following items are available only if the group is enabled (the value is "Enabled"):<br />

@@ -131,27 +131,27 @@
 %ifdef GetRaw8XYZ
 uint8_t %'ModuleName'%.%GetRaw8XYZ(uint8_t *xyz);
 %define! Parxyz
-%define!  RetVal
+%define! RetVal
 %include Common\MMA8451QGetRaw8XYZ.inc
-%endif  %-GetRaw8XYZ
+%endif %- GetRaw8XYZ
 %-BW_METHOD_END GetRaw8XYZ
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
 uint8_t %'ModuleName'%.%Deinit(void);
-%define!  RetVal
+%define! RetVal
 %include Common\MMA8451QDeinit.inc
-%endif  %-Deinit
+%endif %- Deinit
 %-BW_METHOD_END Deinit
 
 %-*****************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
 uint8_t %'ModuleName'%.%Init(void);
-%define!  RetVal
+%define! RetVal
 %include Common\MMA8451QInit.inc
-%endif  %-Init
+%endif %- Init
 %-BW_METHOD_END Init
 
 %-************************************************************************************************************
@@ -404,6 +404,26 @@ uint8_t %'ModuleName'%.%SwReset(void);
 
 %endif %- SwReset
 %-BW_METHOD_END SwReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetScaleRangeG
+%ifdef GetScaleRangeG
+uint8_t %'ModuleName'%.%GetScaleRangeG(uint8_t *gScale);
+%define! PargScale
+%define! RetVal
+%include Common\MMA8451QGetScaleRangeG.Inc
+
+%endif %- GetScaleRangeG
+%-BW_METHOD_END GetScaleRangeG
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetScaleRangeG
+%ifdef SetScaleRangeG
+uint8_t %'ModuleName'%.%SetScaleRangeG(uint8_t gScale);
+%define! PargScale
+%define! RetVal
+%include Common\MMA8451QSetScaleRangeG.Inc
+
+%endif %- SetScaleRangeG
+%-BW_METHOD_END SetScaleRangeG
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -608,7 +628,7 @@ uint8_t %'ModuleName'%.%GetRaw8XYZ(uint8_t *xyz)
   return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'_I2C_ADDR, (uint8_t*)&addr, sizeof(addr), &xyz[0], 3);
 %CODE_END
 }
-%endif %-GetRaw8XYZ
+%endif %- GetRaw8XYZ
 %-BW_METHOD_END GetRaw8XYZ
 
 %-*****************************************************************************************************
@@ -622,7 +642,7 @@ uint8_t %'ModuleName'%.%Deinit(void)
   return ERR_OK; /* nothing to do */
 %CODE_END
 }
-%endif %-Deinit
+%endif %- Deinit
 %-BW_METHOD_END Deinit
 
 %-*****************************************************************************************************
@@ -641,7 +661,7 @@ uint8_t %'ModuleName'%.%Init(void)
   return %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_CTRL_REG_1, %'ModuleName'_ACTIVE_BIT_MASK); /* enable device */
 %CODE_END
 }
-%endif %-Init
+%endif %- Init
 %-BW_METHOD_END Init
 
 %-************************************************************************************************************
@@ -1092,7 +1112,7 @@ uint8_t %'ModuleName'%.%Disable(void)
   if ((val&%'ModuleName'_ACTIVE_BIT_MASK)==0) {
     return ERR_OK; /* already disabled */
   }
-  %@Wait@'ModuleName'%.Waitms(1); /* for unknown reasons, need to wait for 1 ms after reading the register */
+  %@Wait@'ModuleName'%.Waitms(1); /* for unknown reasons, need to wait for 1 ms after reading the register? */
   val &= ~%'ModuleName'_ACTIVE_BIT_MASK; /* disable device */
   return %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_CTRL_REG_1, val);
 }
@@ -1200,6 +1220,75 @@ uint8_t %'ModuleName'%.%SwReset(void)
 
 %endif %- SwReset
 %-BW_METHOD_END SwReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetScaleRangeG
+%ifdef GetScaleRangeG
+%define! PargScale
+%define! RetVal
+%include Common\MMA8451QGetScaleRangeG.Inc
+uint8_t %'ModuleName'%.%GetScaleRangeG(uint8_t *gScale)
+{
+  uint8_t val, res;
+
+  res = %@I2C@'ModuleName'%.ReadByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_XYZ_DATA_CFG, &val);
+  if (res!=ERR_OK) {
+  %if defined(OnError)
+    %OnError();
+  %endif
+    return res;
+  }
+  switch(val&0x3) { /* check FS1 and FS2 bits */
+    case 0: *gScale = 2; /* 00: 2g */
+      return ERR_OK;
+    case 1: *gScale = 4; /* 01: 4g */
+      return ERR_OK;
+    case 2: *gScale = 8; /* 10: 8g */
+      return ERR_OK;
+    default: break;
+  } /* switch */
+  *gScale = 0; /* error case */
+  return ERR_RANGE;
+}
+
+%endif %- GetScaleRangeG
+%-BW_METHOD_END GetScaleRangeG
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetScaleRangeG
+%ifdef SetScaleRangeG
+%define! PargScale
+%define! RetVal
+%include Common\MMA8451QSetScaleRangeG.Inc
+uint8_t %'ModuleName'%.%SetScaleRangeG(uint8_t gScale)
+{
+  uint8_t val, res;
+
+  res = %@I2C@'ModuleName'%.ReadByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_XYZ_DATA_CFG, &val);
+  if (res!=ERR_OK) {
+  %if defined(OnError)
+    %OnError();
+  %endif
+    return res;
+  }
+  switch(gScale) { /* set FS1 and FS0 bits */
+    case 2:
+        val &= ~0x3; /* 00: 2g */
+        break;
+    case 4:
+        val &= ~0x3; /* clear bits */
+        val |= 0x1; /* 00: 4g */
+        break;
+    case 8:
+        val &= ~0x3; /* clear bits */
+        val |= 0x2; /* 10: 8g */
+        break;
+    default:
+        return ERR_FAILED;
+  } /* switch */
+  return %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_XYZ_DATA_CFG, val);
+}
+
+%endif %- SetScaleRangeG
+%-BW_METHOD_END SetScaleRangeG
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1220,9 +1309,16 @@ void %OnError(void)
 %-BW_METHOD_END OnError
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  /* Write code here ... */
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+#if %'ModuleName'%.CONFIG_INIT_DRIVER_IN_STARTUP
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+#endif
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -1247,14 +1343,14 @@ void %OnError(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-%- #if !defined(%'ModuleName'%.CONFIG_USE_CYCLE_COUNTER)
-%- %if defined(useCycleCounter) & %useCycleCounter='yes'
-%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
-%- %else
-%-   #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
-%- %endif
-%-    /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
-%- #endif
+#if !defined(%'ModuleName'%.CONFIG_INIT_DRIVER_IN_STARTUP)
+%if defined(InitDriverInStartup) & %InitDriverInStartup='yes'
+  #define %'ModuleName'%.CONFIG_INIT_DRIVER_IN_STARTUP  (1)
+%else
+  #define %'ModuleName'%.CONFIG_INIT_DRIVER_IN_STARTUP  (0)
+%endif
+   /*!< 1: Initialize driver durin startup, 0: Do not call Init during startup */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
