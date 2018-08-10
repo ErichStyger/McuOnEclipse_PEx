@@ -565,9 +565,14 @@ void %'ModuleName'%.%Deinit(void)
 %include Common\Header.End
 %-
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-  %'ModuleName'_Init();
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %-----------------------------------------------------------------------------------------

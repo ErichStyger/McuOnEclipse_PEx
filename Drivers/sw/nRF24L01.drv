@@ -1942,9 +1942,16 @@ void %OnDeactivate(void)
 %endif %- OnDeactivate
 %-BW_METHOD_END OnDeactivate
 %-BW_EVENT_IMPLEMENT_END
-%INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%if (CPUfamily = "S32K")
+#ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
+%endif
+#if %'ModuleName'%.CONFIG_INITIALIZE_DURING_STARTUP
+  %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+#endif
+%if (CPUfamily = "S32K")
+#endif
+%endif
 %CODE_END
 %-
 %ENABLE
@@ -2015,6 +2022,15 @@ void %OnDeactivate(void)
   #define %'ModuleName'%.CONFIG_USE_MUTEX  0
 %endif
     /*!< 1: Use FreeRTOS Mutex, 0: Do not use FreeRTOS mutex */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_INITIALIZE_DURING_STARTUP
+%if defined(InitDuringStartup) & InitDuringStartup = 'yes'
+  #define %'ModuleName'%.CONFIG_INITIALIZE_DURING_STARTUP  1
+%else
+  #define %'ModuleName'%.CONFIG_INITIALIZE_DURING_STARTUP  0
+%endif
+    /*!< 1: Call Init() during startup, 0: Do not call Init() */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
