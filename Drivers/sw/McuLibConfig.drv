@@ -402,6 +402,9 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: using floating point unit, 0: otherwise */
 %endif
 
+/* macro for little and big endianess. ARM is little endian */
+#define %'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN   (%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+
 /* Identifiers used to identify the SDK */
 #define %'ModuleName'%.CONFIG_SDK_GENERIC             0
   /*!< using a generic API/SDK */
