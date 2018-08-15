@@ -464,12 +464,6 @@ void %OnError(void);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-%if (CPUfamily = "Kinetis")
-#define %'ModuleName'_CPU_IS_LITTLE_ENDIAN 1 /* Cpu is little endian */
-%else
-#define %'ModuleName'_CPU_IS_LITTLE_ENDIAN 0 /* Cpu is big endian */
-%endif
-
 %if defined(CalibrateX1g) | defined(CalibrateY1g) | defined(CalibrateZ1g)
 typedef struct {
   int16_t NxOff; /* offset for X axis */
@@ -806,7 +800,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawX(void)
   %endif
     return 0; /* failure */
   }
-#if %'ModuleName'_CPU_IS_LITTLE_ENDIAN
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
   return (uint16_t)((val.buf[0]<<8)|val.buf[1]); /* transform into LE value */
 #else
   return val.be; /* already in BE */
@@ -834,7 +828,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawY(void)
   %endif
     return 0; /* failure */
   }
-#if %'ModuleName'_CPU_IS_LITTLE_ENDIAN
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
   return (uint16_t)((val.buf[0]<<8)|val.buf[1]); /* transform into LE value */
 #else
   return val.be; /* already in BE */
@@ -862,7 +856,7 @@ uint16_t %'ModuleName'%.%MeasureGetRawZ(void)
   %endif
     return 0; /* failure */
   }
-#if %'ModuleName'_CPU_IS_LITTLE_ENDIAN
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
   return (uint16_t)((val.buf[0]<<8)|val.buf[1]); /* transform into LE value */
 #else
   return val.be; /* already in BE */
