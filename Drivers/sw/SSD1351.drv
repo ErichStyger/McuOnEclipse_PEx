@@ -231,10 +231,7 @@ void %'ModuleName'%.%UpdateFull(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateRegion
 %ifdef UpdateRegion
-/* implemented as macro
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h);
-*/
-#define %'ModuleName'%.%UpdateRegion(x,y,w,h) /* nothing to do, as this display type does not require a refresh */
 %define! Parx
 %define! Pary
 %define! Parw
@@ -883,12 +880,17 @@ void %'ModuleName'%.%UpdateFull(void)
 %define! Parw
 %define! Parh
 %include Common\SSD1351UpdateRegion.Inc
-/*
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-  implemented as macro in %'ModuleName'.h
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+  %'ModuleName'%.OpenWindow(x, y, x+w, y+w);                     %>40 /* window for region */
+  %'ModuleName'%.%WriteDataBlock((uint8_t*)%'ModuleName'%.DisplayBuf, sizeof(%'ModuleName'%.DisplayBuf));
+  %'ModuleName'%.CloseWindow();
+#else
+  /* nothing needed in direct display mode (not using RAM buffer) */
+#endif
 }
-*/
+
 
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
@@ -1133,7 +1135,7 @@ void %'ModuleName'%.%Init(void)
     /* 0xB1 */ OLED_ACC_TO_CMD_YES,     DATA_BYTE,
     /* 0xAE */ OLED_CMD_DISPLAYOFF,     CMD_BYTE,
     /* 0xB3 */ OLED_CMD_SET_OSC_FREQ_AND_CLOCKDIV, CMD_BYTE,
-               0xF1,                    DATA_BYTE,
+               0xF1,                    DATA_BYTE, /* 7:4 = Oscillator Frequency, 3:0 = CLK Div Ratio (A[3:0]+1 = 1..16) */
     /* 0xCA */ OLED_CMD_SET_MUX_RATIO,  CMD_BYTE,
                (%'ModuleName'%.HW_WIDTH-1), DATA_BYTE,
     /* 0x15 */ OLED_CMD_SET_COLUMN,     CMD_BYTE,
