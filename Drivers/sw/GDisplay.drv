@@ -233,8 +233,8 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 %endif
 %------------------------------------------
 %if %@Display@BitsPerPixel='16'
-#define %'ModuleName'%.BUF_WORD(x,y)  /* how to access a byte in the display buf[][] */ \
-  %@Display@'ModuleName'%.DisplayBuf[y][x]
+//#define %'ModuleName'%.BUF_WORD(x,y)  /* how to access a byte in the display buf[][] */ \
+//  %@Display@'ModuleName'%.DisplayBuf[y][x]
 %endif
 %------------------------------------------
 %if %@Display@BitsPerPixel='1'
@@ -834,30 +834,7 @@ static const uint16_t c332to565[256] = { /* converts a 3-3-2 RBG value into a 5-
 %include Common\GDisplayClear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-%if %@Display@WindowCapability='yes' | %@Display@DisplayMemoryWrite='yes'
   %'ModuleName'%.%DrawFilledBox(0, 0, %'ModuleName'%.GetWidth(), %'ModuleName'%.GetHeight(), %'ModuleName'%.COLOR_WHITE);
-%else %- use display buffer
-  uint8_t *p = (uint8_t*)(&%@Display@'ModuleName'%.DisplayBuf[0][0]); /* first element in display buffer */
-
-  while (p<((uint8_t*)%@Display@'ModuleName'%.DisplayBuf)+sizeof(%@Display@'ModuleName'%.DisplayBuf)) {
- #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
-    *p++ = (uint8_t)(  (%'ModuleName'%.COLOR_PIXEL_CLR<<7)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<6)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<5)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<4)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<3)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<2)
-                  | (%'ModuleName'%.COLOR_PIXEL_CLR<<1)
-                  |  %'ModuleName'%.COLOR_PIXEL_CLR
-                 );
- #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-    *((uint16_t*)p) = %'ModuleName'%.COLOR_WHITE;
-    p += 2;
- #else
-    *p++ = %'ModuleName'%.COLOR_WHITE;
- #endif
-  }
-%endif
 }
 
 %endif %- Clear
@@ -890,7 +867,7 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_BLACK;
+  %@Display@'ModuleName'%.PutPixel(x, y, %'ModuleName'%.COLOR_BLACK);
 #else
   %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
@@ -929,7 +906,8 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.ClrPixel(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_WHITE;
+  //%'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_WHITE;
+  %@Display@'ModuleName'%.PutPixel(x, y, %'ModuleName'%.COLOR_WHITE);
 #else
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
@@ -965,7 +943,8 @@ void %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.NegPixel(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.BUF_WORD(x,y) ^= %'ModuleName'%.BUF_WORD(x,y);
+  //%'ModuleName'%.BUF_WORD(x,y) ^= %'ModuleName'%.BUF_WORD(x,y);
+  %@Display@'ModuleName'%.NegPixel(x, y);
 #else
   %'ModuleName'%.BUF_BYTE(x,y) ^= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
@@ -1009,7 +988,8 @@ void %'ModuleName'%.%UpdateFull(void)
   (void)x; (void)y; /* avoid compiler warning */
   return %'ModuleName'%.COLOR_BLACK; /* NYI */
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  return %'ModuleName'%.BUF_WORD(x,y);
+//  return %'ModuleName'%.BUF_WORD(x,y);
+  return %@Display@'ModuleName'%.GetPixel(x, y);
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   return %@Display@'ModuleName'%.GetPixel(x, y);
 #else
@@ -1058,8 +1038,8 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   } else {
     %'ModuleName'%.%ClrPixel(x,y);
   }
- #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.BUF_WORD(x,y) = color;
+ //#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
+ // %'ModuleName'%.BUF_WORD(x,y) = color;
  #else /* multi-bit display */
   %@Display@'ModuleName'%.PutPixel(x, y, color);
  #endif

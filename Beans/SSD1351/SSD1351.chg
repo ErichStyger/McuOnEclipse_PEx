@@ -2,8 +2,10 @@
   %if %useRAMBuffer='yes'
     %- if using RAM buffer, we do not directly write to display memory
     %set DisplayMemoryWrite Value no
+    %set WindowCapability Value no
   %else
     %set DisplayMemoryWrite Value yes
+    %set WindowCapability Value yes
   %endif
 %endif
 
