@@ -2612,7 +2612,7 @@ uint8_t %'ModuleName'%.%MountFileSystem(FATFS *fileSystemObject, uint8_t *logica
 {
   %'ModuleName'%.FRESULT fres;
 
-  fres = %'ModuleName'%.mount(fileSystemObject, (const TCHAR*)logicalDrive, 0);
+  fres = %'ModuleName'%.mount(fileSystemObject, (const TCHAR*)logicalDrive, 1 /* 1: mount immediately; 0: delayed mount */);
   if (fres != FR_OK) {
     if (io!=NULL) {
       FatFsFResultMsg((unsigned char*)"mount failed", fres, io);
