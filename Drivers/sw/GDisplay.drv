@@ -848,10 +848,8 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_BLACK);%>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
-  %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %@Display@'ModuleName'%.PutPixel(x, y, %'ModuleName'%.COLOR_BLACK);
+  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_BLACK);
 #else
   %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
@@ -888,11 +886,8 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
-  %@Display@'ModuleName'%.ClrPixel(x, y);
-#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  //%'ModuleName'%.BUF_WORD(x,y) = %'ModuleName'%.COLOR_WHITE;
-  %@Display@'ModuleName'%.PutPixel(x, y, %'ModuleName'%.COLOR_WHITE);
-#else
+  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_WHITE);
+#else /* do memory buffer operation */
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
@@ -927,7 +922,6 @@ void %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.NegPixel(x, y);
 #elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  //%'ModuleName'%.BUF_WORD(x,y) ^= %'ModuleName'%.BUF_WORD(x,y);
   %@Display@'ModuleName'%.NegPixel(x, y);
 #else
   %'ModuleName'%.BUF_BYTE(x,y) ^= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
@@ -1022,10 +1016,8 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   } else {
     %'ModuleName'%.%ClrPixel(x,y);
   }
- //#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
- // %'ModuleName'%.BUF_WORD(x,y) = color;
  #else /* multi-bit display */
-  %@Display@'ModuleName'%.PutPixel(x, y, color);
+  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, color);
  #endif
 #endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
@@ -1976,11 +1968,9 @@ void %OnGiveDisplay(void)
 %endif
 #else
 %if defined(Display)
-  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       %@Display@'ModuleName'%.SetPixel
-  #define %'ModuleName'%.CONFIG_FCT_NAME_CLRPIXEL       %@Display@'ModuleName'%.ClrPixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL       %@Display@'ModuleName'%.PutPixel
 %else
-  #define %'ModuleName'%.CONFIG_FCT_NAME_SETPIXEL       SetPixel
-  #define %'ModuleName'%.CONFIG_FCT_NAME_CLRPIXEL       ClrPixel
+  #define %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL       PutPixel
 %endif
 #endif
 

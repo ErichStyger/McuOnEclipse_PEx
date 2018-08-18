@@ -4,7 +4,7 @@
     <Name>SSD1331</Name>
     <Description>Display driver for the Solomon Systech SSD1331 display</Description>
     <Author>Erich Styger</Author>
-    <Version>01.052</Version>
+    <Version>01.054</Version>
     <Icon>SSD1331</Icon>
     <TypesFiles>PE,SSD1331\SSD1331</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1311,23 +1311,63 @@
           <ParName>x</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>x coordinate</ParHint>
         </Parameter>
         <Parameter>
           <ParName>y</ParName>
           <ParType>PixelDim</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>y coordinate</ParHint>
         </Parameter>
         <Parameter>
           <ParName>color</ParName>
           <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
-          <ParHint/>
+          <ParHint>pixel color</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>GetPixel</Name>
+        <Symbol>GetPixel</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Returns a pixel from the display</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>PixelColor</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x coordinate</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y coordinate</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>%'ModuleName'_PixelColor #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

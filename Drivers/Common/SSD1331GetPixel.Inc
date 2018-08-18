@@ -3,14 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (PutPixel)
+%include Common\GeneralMethod.inc (GetPixel)
 %;**     Description :
-%;**         Writes a pixel
+%;**         Returns a pixel from the display
 %include Common\GeneralParameters.inc(27)
 %;**         x%Parx %>27 - x coordinate
 %;**         y%Pary %>27 - y coordinate
-%;**         color%Parcolor %>27 - pixel color
-%include Common\GeneralReturnNothing.inc
+%;**     Returns     :
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
