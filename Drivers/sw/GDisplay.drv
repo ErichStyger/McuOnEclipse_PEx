@@ -589,15 +589,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %-************************************************************************************************************
 %ifdef GetWidth
 %-BW_PUBLISH_MACRO
-%if %UseMemBuffer='yes'
-%if %Orientation='Landscape' | %Orientation='Landscape180'
-#define %'ModuleName'%.%GetWidth %@Display@'ModuleName'%.%GetLongerSide
-%elif %Orientation='Portrait' | %Orientation='Portrait180'
-#define %'ModuleName'%.%GetWidth %@Display@'ModuleName'%.%GetShorterSide
-%endif
-%else %- ask low level driver
 #define %'ModuleName'%.%GetWidth %@Display@'ModuleName'%.%GetWidth
-%endif
 %define! RetVal
 %include Common\GDisplayGetWidth.Inc
 
@@ -605,15 +597,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %-************************************************************************************************************
 %ifdef GetHeight
 %-BW_PUBLISH_MACRO
-%if %UseMemBuffer='yes'
-%if %Orientation='Landscape' | %Orientation='Landscape180'
-#define %'ModuleName'%.%GetHeight %@Display@'ModuleName'%.%GetShorterSide
-%elif %Orientation='Portrait' | %Orientation='Portrait180'
-#define %'ModuleName'%.%GetHeight %@Display@'ModuleName'%.%GetLongerSide
-%endif
-%else %- ask low level driver
 #define %'ModuleName'%.%GetHeight %@Display@'ModuleName'%.%GetHeight
-%endif
 %define! RetVal
 %include Common\GDisplayGetHeight.Inc
 

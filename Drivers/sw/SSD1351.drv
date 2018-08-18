@@ -694,7 +694,6 @@ void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof)
 {
   DATA_MODE();
   CS_LOW();
-
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
  /* swap bytes */
   data = (data<<8)|(data>>8);
@@ -722,15 +721,7 @@ void %'ModuleName'%.%WriteDataBlock(uint8_t *data, size_t dataSize)
 {
   DATA_MODE();
   CS_LOW();
-#if 1 /* write a block */
   %'ModuleName'%.SPI_WRITE_BLOCK(data, dataSize);
-#else /* for historical reasons: write one by one */
-  while(dataSize>0) {
-    %'ModuleName'%.SPI_WRITE(*data);
-    dataSize--;
-    data++;
-  }
-#endif
 #if %'ModuleName'_CONFIG_USE_SPI_API!=%'ModuleName'_CONFIG_SPI_API_SW
   /* for HW SPI, have to delay as transaction still might be going on! */
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_HWSPI_DELAY_US);
@@ -801,8 +792,10 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
   }
 #if %'ModuleName'_CONFIG_USE_RAM_BUFFER
   /* orientation is handled by the writes to the RAM buffer, use default landscape setting */
-  c0 = LCD1_HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = LCD1_HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
-  r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
+  c0 = x0+OLED_COLUMN_OFFSET;
+  c1 = x1+OLED_COLUMN_OFFSET;
+  r0 = y0+OLED_ROW_OFFSET;
+  r1 = y1+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   switch(currentOrientation) {
     default:
@@ -815,7 +808,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       r0 = %'ModuleName'%.HW_HEIGHT-1-y1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-y0+OLED_ROW_OFFSET;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT:
-      c0 = LCD1_HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = LCD1_HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
+      c0 = %'ModuleName'%.HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = %'ModuleName'%.HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
       r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT180:
@@ -824,7 +817,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       break;
   } /* switch */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
-  c0 = LCD1_HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = LCD1_HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
+  c0 = %'ModuleName'%.HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = %'ModuleName'%.HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
   r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
   c0 = y0+OLED_COLUMN_OFFSET; c1 = y1+OLED_COLUMN_OFFSET;
@@ -854,16 +847,8 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 %include Common\SSD1351Clear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-  %'ModuleName'_PixelCount i;
-
   %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
-#if 0
-  for (i=0; i<(%'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT); i++) {%>40 /* for all display pixels */
-    %'ModuleName'%.WriteDataWord(%'ModuleName'%.PIXEL_OFF);      %>40 /* clear it */
-  }
-#else
   %'ModuleName'%.WriteDataWordRepeated(%'ModuleName'%.PIXEL_OFF, %'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT);
-#endif
   %'ModuleName'%.CloseWindow();
 }
 
@@ -876,9 +861,7 @@ void %'ModuleName'%.%Clear(void)
 void %'ModuleName'%.%UpdateFull(void)
 {
 #if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
-  %'ModuleName'%.%WriteDataBlock((uint8_t*)%'ModuleName'%.DisplayBuf, sizeof(%'ModuleName'%.DisplayBuf));
-  %'ModuleName'%.CloseWindow();
+  %'ModuleName'%.UpdateRegion(0, 0, %'ModuleName'%.HW_WIDTH, %'ModuleName'%.HW_HEIGHT);%>40 /* update whole display */
 #else
   /* nothing needed in direct display mode (not using RAM buffer) */
 #endif
@@ -896,9 +879,54 @@ void %'ModuleName'%.%UpdateFull(void)
 %include Common\SSD1351UpdateRegion.Inc
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  %'ModuleName'%.OpenWindow(x, y, x+w-1, y+w-1);                 %>40 /* window for region */
-  %'ModuleName'%.%WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[x][y]), w*h*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
+#if %'ModuleName'%.CONFIG_USE_RAM_BUFFER
+  %'ModuleName'%.PixelDim xb, yb, wb, hb; /* coordinates in buffer for write operation */
+
+  #if %'ModuleName'%.CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  switch(currentOrientation) {
+    default:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+      xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
+      wb = h; hb = w;
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-1;
+      wb = h; hb = w;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      xb = x; yb = y;
+      wb = w; hb = h;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+      xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
+      wb = w; hb = h;
+      break;
+  } /* switch */
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
+  wb = h; hb = w;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-w;
+  wb = h; hb = w;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  xb = x; yb = y;
+  wb = w; hb = h;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
+  wb = w; hb = h;
+  #endif
+
+  %'ModuleName'%.OpenWindow(xb, yb, xb+wb-1, yb+hb-1);  /* window for region */
+  if (xb==0 && w==%'ModuleName'%.HW_WIDTH) { /* can write full block */
+    %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[yb][xb]), wb*hb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
+  } else {
+    /* need to write memory line by line */
+    %'ModuleName'%.PixelDim i;
+
+    for(i=yb;i<yb+hb-1;i++) {
+      %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[i][xb]), wb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
+    }
+  }
   %'ModuleName'%.CloseWindow();
 #else
   /* nothing needed in direct display mode (not using RAM buffer) */
@@ -1232,6 +1260,9 @@ void %'ModuleName'%.%Init(void)
   #endif
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
   %'ModuleName'%.WriteData(remap);                 /* remap data */
+  #if %'ModuleName'%.CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  currentOrientation = %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION;
+  #endif
   }
 #elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
 #if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
@@ -1297,7 +1328,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   switch(currentOrientation) {
     default:
     case %'ModuleName'%.ORIENTATION_PORTRAIT:
-      %'ModuleName'%.DisplayBuf[x][%'ModuleName'%.HW_HEIGHT-1-y] = color;
+      %'ModuleName'%.DisplayBuf[x][%'ModuleName'%.HW_WIDTH-1-y] = color;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT180:
       %'ModuleName'%.DisplayBuf[%'ModuleName'%.HW_HEIGHT-1-x][y] = color;

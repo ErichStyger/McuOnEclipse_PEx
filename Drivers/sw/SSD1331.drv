@@ -108,58 +108,34 @@ typedef uint32_t %'ModuleName'_PixelCount;                       %>40/* need a 3
 extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 /* Predefined colors and pixel values. The display is using words for a pixel/color. Using 16bits for color (65k: 5:red + 6:green + 5:blue */
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER  /* && is Little endian! */
-  /* if using RAM buffer, we use an array of 16bit entries. Because for ARM, the data is little endian, we need to swap the bits */
-  #define %'ModuleName'%.COLOR_RED            0b0000000011111000
-  #define %'ModuleName'%.COLOR_BRIGHT_RED     0b1110001111111000
-  #define %'ModuleName'%.COLOR_DARK_RED       0b0000000010011000
+#define %'ModuleName'%.COLOR_RED            0b1111100000000000
+#define %'ModuleName'%.COLOR_BRIGHT_RED     0b1111100011100011
+#define %'ModuleName'%.COLOR_DARK_RED       0b1001100000000000
 
-  #define %'ModuleName'%.COLOR_GREEN          0b1110000000000111
-  #define %'ModuleName'%.COLOR_DARK_GREEN     0b0110000000000011
-  #define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1111001110011111
+#define %'ModuleName'%.COLOR_GREEN          0b0000011111100000
+#define %'ModuleName'%.COLOR_DARK_GREEN     0b0000001101100000
+#define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1001111111110011
 
-  #define %'ModuleName'%.COLOR_BLUE           0b0001111100000000
-  #define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111111011110
-  #define %'ModuleName'%.COLOR_DARK_BLUE      0b0001001100000000
+#define %'ModuleName'%.COLOR_BLUE           0b0000000000011111
+#define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111011011111
+#define %'ModuleName'%.COLOR_DARK_BLUE      0b0000000000010011
 
-  #define %'ModuleName'%.COLOR_YELLOW         0b1110000011111111
-  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1100110011111111
-  #define %'ModuleName'%.COLOR_ORANGE         0b1100011011111100
+#define %'ModuleName'%.COLOR_YELLOW         0b1111111111100000
+#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1111111111001100
+#define %'ModuleName'%.COLOR_ORANGE         0b1111110011000110
 
-  #define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
-  #define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
-  #define %'ModuleName'%.COLOR_GREY           0b1110011100111000
-  #define %'ModuleName'%.COLOR_BRIGHT_GREY    0b1110111101111011
-#else
-  #define %'ModuleName'%.COLOR_RED            0b1111100000000000
-  #define %'ModuleName'%.COLOR_BRIGHT_RED     0b1111100011100011
-  #define %'ModuleName'%.COLOR_DARK_RED       0b1001100000000000
-
-  #define %'ModuleName'%.COLOR_GREEN          0b0000011111100000
-  #define %'ModuleName'%.COLOR_DARK_GREEN     0b0000001101100000
-  #define %'ModuleName'%.COLOR_BRIGHT_GREEN   0b1001111111110011
-
-  #define %'ModuleName'%.COLOR_BLUE           0b0000000000011111
-  #define %'ModuleName'%.COLOR_BRIGHT_BLUE    0b1101111011011111
-  #define %'ModuleName'%.COLOR_DARK_BLUE      0b0000000000010011
-
-  #define %'ModuleName'%.COLOR_YELLOW         0b1111111111100000
-  #define %'ModuleName'%.COLOR_BRIGHT_YELLOW  0b1111111111001100
-  #define %'ModuleName'%.COLOR_ORANGE         0b1111110011000110
-
-  #define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
-  #define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
-  #define %'ModuleName'%.COLOR_GREY           0b0011100011100111
-  #define %'ModuleName'%.COLOR_BRIGHT_GREY    0b0111101111101111
-#endif
+#define %'ModuleName'%.COLOR_WHITE          0b1111111111111111
+#define %'ModuleName'%.COLOR_BLACK          0b0000000000000000
+#define %'ModuleName'%.COLOR_GREY           0b0011100011100111
+#define %'ModuleName'%.COLOR_BRIGHT_GREY    0b0111101111101111
 
 #define %'ModuleName'%.PIXEL_ON  %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
 
 #define %'ModuleName'%.WIDTH  %'Width'u                          %>40 /* Logical display width in pixels */
 #define %'ModuleName'%.HEIGHT %'Height'u                         %>40 /* Logical display height in pixels */
-#define %'ModuleName'%.HW_WIDTH  %'ModuleName'%.WIDTH            %>40 /* Hardware display width in pixels */
-#define %'ModuleName'%.HW_HEIGHT %'ModuleName'%.HEIGHT           %>40 /* Hardware display height in pixels */
+#define %'ModuleName'%.HW_WIDTH        (96)                      %>40 /* Hardware display width in pixels */
+#define %'ModuleName'%.HW_HEIGHT       (64)                      %>40 /* Hardware display height in pixels */
 #define %'ModuleName'%.HW_LONGER_SIDE  %'ModuleName'%.WIDTH      %>40 /* Hardware display longer side in pixels */
 #define %'ModuleName'%.HW_SHORTER_SIDE %'ModuleName'%.HEIGHT     %>40 /* Hardware display shorter side in pixels */
 
@@ -238,7 +214,6 @@ typedef enum {
 #define REMAP_COM_SPLIT_ODD_EVEN_EN     (1<<5)
 
 #define REMAP_COLOR_RGB565              (1<<6) /* 01: 5 bits for red, 6 for green and 5 for blue */
-
 %-BW_CUSTOM_USERTYPE_END
 
 
@@ -294,10 +269,7 @@ void %'ModuleName'%.%UpdateFull(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateRegion
 %ifdef UpdateRegion
-/* implemented as macro
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h);
-*/
-#define %'ModuleName'%.%UpdateRegion(x,y,w,h) /* nothing to do, as this display type does not require a refresh */
 %define! Parx
 %define! Pary
 %define! Parw
@@ -510,17 +482,6 @@ uint8_t %'ModuleName'%.%Off(void);
 %endif %- Off
 %-BW_METHOD_END Off
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawPixel
-%ifdef DrawPixel
-uint8_t %'ModuleName'%.%DrawPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
-%define! Parx
-%define! Pary
-%define! Parcolor
-%define! RetVal
-%include Common\SSD1331DrawPixel.Inc
-
-%endif %- DrawPixel
-%-BW_METHOD_END DrawPixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -529,6 +490,17 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SSD1331PutPixel.Inc
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -700,6 +672,10 @@ void %'ModuleName'%.%WriteDataWordRepeated(uint16_t data, size_t nof)
 {
   DATA_MODE();
   CS_LOW();
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
+ /* swap bytes */
+  data = (data<<8)|(data>>8);
+#endif
   while(nof>0) {
     %'ModuleName'%.SPI_WRITE_BLOCK((uint8_t*)&data, sizeof(data));
     nof--;
@@ -761,7 +737,8 @@ void %'ModuleName'%.%WriteDataWord(uint16_t data)
 {
   DATA_MODE();                                                   %>40/* DC high */
   CS_LOW();                                                      %>40/* CS low */
-  %'ModuleName'%.SPI_WRITE_BLOCK((uint8_t*)&data, sizeof(data)); %>40/* write data */
+  %'ModuleName'%.SPI_WRITE(data>>8);                             %>40/* high byte */
+  %'ModuleName'%.SPI_WRITE(data);                                %>40/* low byte */
 #if %'ModuleName'_CONFIG_USE_SPI_API!=%'ModuleName'_CONFIG_SPI_API_SW
   /* for HW SPI, have to delay as transaction still might be going on! */
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_HWSPI_DELAY_US);
@@ -790,7 +767,13 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
   if ((y0 >= %'ModuleName'%.GetHeight()) || (y1 >= %'ModuleName'%.GetHeight())) {
     return;
   }
-#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+  /* orientation is handled by the writes to the RAM buffer, use default landscape setting */
+  c0 = x0;
+  c1 = x1;
+  r0 = y0;
+  r1 = y1;
+#elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   switch(currentOrientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
@@ -799,35 +782,29 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       break;
     case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
       c0 = x0; c1 = x1;
-      r0 = y0; r1 = y1;
-      break;
-
-  /* \todo */
-    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
-      c0 = x0; c1 = x1;
       r0 = %'ModuleName'%.HW_HEIGHT-1-y1; r1 = %'ModuleName'%.HW_HEIGHT-1-y0;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT:
-      c0 = LCD1_HW_WIDTH-1-y1; c1 = LCD1_HW_WIDTH-1-y0;
+      c0 = %'ModuleName'%.HW_WIDTH-1-y1; c1 = %'ModuleName'%.HW_WIDTH-1-y0;
       r0 = x0; r1 = x1;
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      c0 = y0; c1 = y1;
+      r0 = %'ModuleName'%.HW_HEIGHT-1-x1; r1 = %'ModuleName'%.HW_HEIGHT-1-x0;
       break;
   } /* switch */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
-  /* Portrait mode */
-  c0 = x0; c1 = x1;
-  r0 = y0; r1 = y1;
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-  /* Portrait mode, rotated 180° */
-  c0 = x0; c1 = x1;
-  r0 = %'ModuleName'%.HW_HEIGHT-1-y1; r1 = %'ModuleName'%.HW_HEIGHT-1-y0;
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
-  /* Landscape mode, rotated right 90° */
-  c0 = LCD1_HW_WIDTH-1-y1; c1 = LCD1_HW_WIDTH-1-y0;
+  c0 = %'ModuleName'%.HW_WIDTH-1-y1; c1 = %'ModuleName'%.HW_WIDTH-1-y0;
   r0 = x0; r1 = x1;
-#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
-  /* Landscape mode, rotated left 90° */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
   c0 = y0; c1 = y1;
   r0 = %'ModuleName'%.HW_HEIGHT-1-x1; r1 = %'ModuleName'%.HW_HEIGHT-1-x0;
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  c0 = x0; c1 = x1;
+  r0 = y0; r1 = y1;
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  c0 = x0; c1 = x1;
+  r0 = %'ModuleName'%.HW_HEIGHT-1-y1; r1 = %'ModuleName'%.HW_HEIGHT-1-y0;
 #endif
   /* Set Window */
   %'ModuleName'%.WriteCommand(%'ModuleName'%.CMD_SETCOLUMN);     %>40/* set column command */
@@ -848,16 +825,8 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 %include Common\SSD1331Clear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-  %'ModuleName'_PixelCount i;
-
   %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
-#if 0
-  for (i=0; i<(%'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT); i++) {%>40 /* for all display pixels */
-    %'ModuleName'%.WriteDataWord(%'ModuleName'%.PIXEL_OFF);      %>40 /* clear it */
-  }
-#else
   %'ModuleName'%.WriteDataWordRepeated(%'ModuleName'%.PIXEL_OFF, %'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT);
-#endif
   %'ModuleName'%.CloseWindow();
 }
 
@@ -870,9 +839,7 @@ void %'ModuleName'%.%Clear(void)
 void %'ModuleName'%.%UpdateFull(void)
 {
 #if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
-  %'ModuleName'%.%WriteDataBlock((uint8_t*)%'ModuleName'%.DisplayBuf, sizeof(%'ModuleName'%.DisplayBuf));
-  %'ModuleName'%.CloseWindow();
+  %'ModuleName'%.UpdateRegion(0, 0, %'ModuleName'%.HW_WIDTH, %'ModuleName'%.HW_HEIGHT);%>40 /* update whole display */
 #else
   /* nothing needed in direct display mode (not using RAM buffer) */
 #endif
@@ -888,12 +855,61 @@ void %'ModuleName'%.%UpdateFull(void)
 %define! Parw
 %define! Parh
 %include Common\SSD1331UpdateRegion.Inc
-/*
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-  implemented as macro in %'ModuleName'.h
+#if %'ModuleName'%.CONFIG_USE_RAM_BUFFER
+  %'ModuleName'%.PixelDim xb, yb, wb, hb; /* coordinates in buffer for write operation */
+
+  #if %'ModuleName'%.CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  switch(currentOrientation) {
+    default:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+      xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
+      wb = h; hb = w;
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-1;
+      wb = h; hb = w;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      xb = x; yb = y;
+      wb = w; hb = h;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+      xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
+      wb = w; hb = h;
+      break;
+  } /* switch */
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
+  wb = h; hb = w;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-w;
+  wb = h; hb = w;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  xb = x; yb = y;
+  wb = w; hb = h;
+  #elif %'ModuleName'%.CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
+  wb = w; hb = h;
+  #endif
+
+  %'ModuleName'%.OpenWindow(xb, yb, xb+wb-1, yb+hb-1);  /* window for region */
+  if (xb==0 && w==%'ModuleName'%.HW_WIDTH) { /* can write full block */
+    %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[yb][xb]), wb*hb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
+  } else {
+    /* need to write memory line by line */
+    %'ModuleName'%.PixelDim i;
+
+    for(i=yb;i<yb+hb-1;i++) {
+      %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[i][xb]), wb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
+    }
+  }
+  %'ModuleName'%.CloseWindow();
+#else
+  /* nothing needed in direct display mode (not using RAM buffer) */
+#endif
 }
-*/
 
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
@@ -939,7 +955,10 @@ void %'ModuleName'%.%CloseWindow(void)
 %include Common\SSD1331SetDisplayOrientation.Inc
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
-#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+  currentOrientation = newOrientation;
+  return; /* if using RAM buffer, display orientation is handled by the memory buffer itself */
+#elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   uint8_t remap;
 
   currentOrientation = newOrientation;
@@ -968,7 +987,6 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
       break;
 
 /* \todo */
-
     case %'ModuleName'%.ORIENTATION_PORTRAIT: /* remap: 0x63 */
       remap =   /*7|6:  01 */   REMAP_COLOR_RGB565  /* 10k RGB */
                 /*  5:   1 */ | REMAP_COM_SPLIT_ODD_EVEN_EN
@@ -980,11 +998,16 @@ void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newO
               ;
       break;
 
-
-
-
+/* \todo */
     case %'ModuleName'%.ORIENTATION_PORTRAIT180:
-      remap =  0;
+      remap =   /*7|6:  01 */   REMAP_COLOR_RGB565  /* 10k RGB */
+                /*  5:   1 */ | REMAP_COM_SPLIT_ODD_EVEN_EN
+                /*  4:   0 */ | /*1: REMAP_SCAN_DOWN_TO_UP */  REMAP_SCAN_UP_TO_DOWN    /* top of the display to bottom */
+                /*  3:   0 */ | REMAP_DISABLE_LEFT_RIGHT_SWAP /* 1: REMAP_ENABLE_LEFT_RIGHT_SWAP */
+                /*  2:   0 */ | REMAP_ORDER_ABC /* 1: REMAP_ORDER_CBA */
+                /*  1:   1 */ | REMAP_COLUMNS_RIGHT_TO_LEFT /* 0: REMAP_COLUMNS_LEFT_TO_RIGHT */
+                /*  0:   1 */ | /* 0: REMAP_HORIZONTAL_INCREMENT */ REMAP_VERTICAL_INCREMENT
+              ;
       break;
   } /* switch */
   %'ModuleName'%.WriteCommand(%'ModuleName'%.CMD_SETREMAP); /* Remap command */
@@ -1188,31 +1211,51 @@ void %'ModuleName'%.%Init(void)
   %'ModuleName'%.%WriteCommand(%'ModuleName'%.CMD_CONTRASTC);    // 0x83
   %'ModuleName'%.%WriteCommand(0x7D);
 
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+  {
+  uint8_t remap;
+
+  remap =   /*7|6:  01 */   REMAP_COLOR_RGB565  /* 10k RGB */
+            /*  5:   1 */ | REMAP_COM_SPLIT_ODD_EVEN_EN
+            /*  4:   0 */ | /*1: REMAP_SCAN_DOWN_TO_UP */  REMAP_SCAN_UP_TO_DOWN    /* top of the display to bottom */
+            /*  3:   0 */ | REMAP_DISABLE_LEFT_RIGHT_SWAP /* 1: REMAP_ENABLE_LEFT_RIGHT_SWAP */
+            /*  2:   0 */ | REMAP_ORDER_ABC /* 1: REMAP_ORDER_CBA */
+            /*  1:   0 */ | /*1: REMAP_COLUMNS_RIGHT_TO_LEFT */ REMAP_COLUMNS_LEFT_TO_RIGHT
+            /*  0:   0 */ | REMAP_HORIZONTAL_INCREMENT  /* 1: REMAP_VERTICAL_INCREMENT */
+              ;
+  %'ModuleName'%.WriteCommand(%'ModuleName'%.CMD_SETREMAP); /* Remap command */
+  %'ModuleName'%.WriteCommand(remap);                 /* remap data */
+  #if %'ModuleName'%.CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  currentOrientation = %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION;
+  #endif
+  }
+#elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
 #if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
 %if defined(SetDisplayOrientation)
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
 %else
-  SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);    %>40/* Portrait mode */
+  McuLib_SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
 %endif
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
 %if defined(SetDisplayOrientation)
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
 %else
-  SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180); %>40/* Portrait mode, rotated 180° */
+  McuLib_SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
 %endif
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
 %if defined(SetDisplayOrientation)
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
 %else
-  SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);   %>40/* Landscape mode, rotated right 90° */
+  McuLib_SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
 %endif
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
 %if defined(SetDisplayOrientation)
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
 %else
-  SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
+  McuLib_SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
 %endif
-#endif /* %'ModuleName'%.CONFIG_DYNAMIC_DISPLAY_ORIENTATION */
+#endif
+#endif /* %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION */
 
   %'ModuleName'%.%WriteCommand(%'ModuleName'%.CMD_DISPLAYON);  //--turn on oled panel
 
@@ -1261,36 +1304,6 @@ uint8_t %'ModuleName'%.%Off(void)
 %endif %- Off
 %-BW_METHOD_END Off
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DrawPixel
-%ifdef DrawPixel
-%define! Parx
-%define! Pary
-%define! Parcolor
-%define! RetVal
-%include Common\SSD1331DrawPixel.Inc
-uint8_t %'ModuleName'%.%DrawPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
-{
-  if (x >= %'ModuleName'%.WIDTH  || y >= %'ModuleName'%.HEIGHT) {
-    return ERR_RANGE;
-  }
-  /* set column */
-  %'ModuleName'%.%WriteCommand(%'ModuleName'%.CMD_SETCOLUMN);
-  %'ModuleName'%.%WriteCommand(x);
-  %'ModuleName'%.%WriteCommand(%'ModuleName'%.WIDTH-1);
-  /* set row */
-  %'ModuleName'%.%WriteCommand(%'ModuleName'%.CMD_SETROW);
-  %'ModuleName'%.%WriteCommand(y);
-  %'ModuleName'%.%WriteCommand(%'ModuleName'%.HEIGHT-1);
-  /* fill with color */
-  DATA_MODE();
-  CS_LOW();
-  %'ModuleName'%.SPI_WRITE(color>>8);
-  %'ModuleName'%.SPI_WRITE(color);
-  CS_HIGH();
-}
-
-%endif %- DrawPixel
-%-BW_METHOD_END DrawPixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -1302,6 +1315,50 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SSD1331PutPixel.Inc
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+{
+#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
+  color = (color<<8)|(color>>8);
+  #endif
+
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  switch(currentOrientation) {
+    default:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+      %'ModuleName'%.DisplayBuf[x][%'ModuleName'%.HW_WIDTH-1-y] = color;
+      break;
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      %'ModuleName'%.DisplayBuf[%'ModuleName'%.HW_HEIGHT-1-x][y] = color;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      %'ModuleName'%.DisplayBuf[y][x] = color;
+      break;
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+      %'ModuleName'%.DisplayBuf[%'ModuleName'%.HW_HEIGHT-1-y][%'ModuleName'%.HW_WIDTH-1-x] = color;
+      break;
+  } /* switch */
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  %'ModuleName'%.DisplayBuf[x][%'ModuleName'%.HW_HEIGHT-1-y] = color;
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  %'ModuleName'%.DisplayBuf[%'ModuleName'%.HW_HEIGHT-1-x][y] = color;
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  %'ModuleName'%.DisplayBuf[y][x] = color;
+#elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  %'ModuleName'%.DisplayBuf[%'ModuleName'%.HW_HEIGHT-1-y][%'ModuleName'%.HW_WIDTH-1-x] = color;
+#endif
+#endif /* %'ModuleName'_CONFIG_USE_RAM_BUFFER */
+}
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

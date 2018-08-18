@@ -4,7 +4,7 @@
     <Name>SSD1331</Name>
     <Description>Display driver for the Solomon Systech SSD1331 display</Description>
     <Author>Erich Styger</Author>
-    <Version>01.050</Version>
+    <Version>01.052</Version>
     <Icon>SSD1331</Icon>
     <TypesFiles>PE,SSD1331\SSD1331</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1287,10 +1287,10 @@
     </Method>
     <Method>
       <TMthdItem>
-        <Name>DrawPixel</Name>
-        <Symbol>DrawPixel</Symbol>
+        <Name>PutPixel</Name>
+        <Symbol>PutPixel</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Draws a pixel</Hint>
+        <Hint>Writes a pixel</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -1304,7 +1304,7 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>uint8_t</ReturnType>
+        <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -1327,7 +1327,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

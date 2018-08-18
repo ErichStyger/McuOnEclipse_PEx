@@ -3,15 +3,14 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (DrawPixel)
+%include Common\GeneralMethod.inc (PutPixel)
 %;**     Description :
-%;**         Draws a pixel
+%;**         Writes a pixel
 %include Common\GeneralParameters.inc(27)
 %;**         x%Parx %>27 - 
 %;**         y%Pary %>27 - 
 %;**         color%Parcolor %>27 - 
-%;**     Returns     :
-%;**         ---%RetVal %>27 - Error code
+%include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine
