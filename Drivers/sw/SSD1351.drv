@@ -654,11 +654,6 @@ static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *data, size_t dataSize)
 static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) {
   uint8_t remap;
 
-%-  #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
-%-    #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
-%-  #else
-%-    #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_CBA)
-%-  #endif
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LITTLE_ENDIAN
     #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_CBA)
   #else
@@ -668,32 +663,16 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
   switch(orientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
-    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
-      remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_HORIZONTAL_INCREMENT;
-    #else
       remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
-    #endif
       break;
     case %'ModuleName'%.ORIENTATION_LANDSCAPE180: /* ??? right lower corner, reverted? */
-    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
-      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
-    #else
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_VERTICAL_INCREMENT;
-    #endif
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT180: /* lower left corner, reverted */
-    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
-      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_HORIZONTAL_INCREMENT;
-    #else
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
-    #endif
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT:
-    #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
-      remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_VERTICAL_INCREMENT;
-    #else
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
-    #endif
       break;
   } /* switch */
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
