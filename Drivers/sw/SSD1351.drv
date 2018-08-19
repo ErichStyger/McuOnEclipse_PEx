@@ -665,7 +665,7 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
     #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
   #endif
 
-  switch(currentOrientation) {
+  switch(orientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
     #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
