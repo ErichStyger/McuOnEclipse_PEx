@@ -629,8 +629,6 @@ void %'ModuleName'%.SPI_WRITE(unsigned char data) {
   while(%'ModuleName'_CONFIG_SPI_API_FCT_NAME_CHECK_TX()!=0) {}  %>40/* wait until everything is sent */
   %@Wait@'ModuleName'%.Waitus(%'ModuleName'_CONFIG_HWSPI_DELAY_US);
 #elif %'ModuleName'_CONFIG_USE_SPI_API==%'ModuleName'_CONFIG_SPI_API_HW_LDD
-  unsigned char dummy;
-
   %'ModuleName'%.DataReceivedFlag = FALSE;
   (void)%'ModuleName'_CONFIG_SPI_API_FCT_NAME_SEND_BLOCK(%'ModuleName'_CONFIG_SPI_API_DEVICE_HANDLE, &data, sizeof(data));
   while(!%'ModuleName'%.DataReceivedFlag){}
@@ -656,7 +654,6 @@ static void %'ModuleName'%.SPI_WRITE_BLOCK(unsigned char *data, size_t dataSize)
 static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) {
   uint8_t remap;
 
-  currentOrientation = newOrientation;
 %-  #if %'ModuleName'%.HW_HEIGHT==96 /* special settings needed for Hexiwear 96x96 display */
 %-    #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
 %-  #else
@@ -701,7 +698,7 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
   } /* switch */
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
   %'ModuleName'%.WriteData(remap);                 /* remap data */
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   currentOrientation = newOrientation;
 #endif
 }
@@ -956,16 +953,16 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
       wb = w; hb = h;
       break;
   } /* switch */
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
   xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
   wb = h; hb = w;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
   xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-w;
   wb = h; hb = w;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
   xb = x; yb = y;
   wb = w; hb = h;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
   wb = w; hb = h;
   #endif
@@ -1175,62 +1172,62 @@ void %'ModuleName'%.%Init(void)
   typedef struct {
     uint8_t cmd, type;
   } init_cmd_t;
+  int i;
 
   #define CMD_BYTE   (1)
   #define DATA_BYTE  (0)
 
   static const init_cmd_t seq[] = {
-    /* 0xFD */ OLED_CMD_SET_CMD_LOCK,   CMD_BYTE,
-    /* 0x12 */ OLED_UNLOCK,             DATA_BYTE,
-    /* 0xFD */ OLED_CMD_SET_CMD_LOCK,   CMD_BYTE,
-    /* 0xB1 */ OLED_ACC_TO_CMD_YES,     DATA_BYTE,
-    /* 0xAE */ OLED_CMD_DISPLAYOFF,     CMD_BYTE,
-    /* 0xB3 */ OLED_CMD_SET_OSC_FREQ_AND_CLOCKDIV, CMD_BYTE,
-               0xF1,                    DATA_BYTE, /* 7:4 = Oscillator Frequency, 3:0 = CLK Div Ratio (A[3:0]+1 = 1..16) */
-    /* 0xCA */ OLED_CMD_SET_MUX_RATIO,  CMD_BYTE,
-               (%'ModuleName'%.HW_WIDTH-1), DATA_BYTE,
-    /* 0x15 */ OLED_CMD_SET_COLUMN,     CMD_BYTE,
-               0x00,                    DATA_BYTE,
-               (%'ModuleName'%.HW_WIDTH-1), DATA_BYTE,
-    /* 0x75 */ OLED_CMD_SET_ROW,       CMD_BYTE,
-               0x00,                   DATA_BYTE,
-               (%'ModuleName'%.HW_HEIGHT-1),DATA_BYTE,
-    /* 0xA1 */ OLED_CMD_STARTLINE,     CMD_BYTE,
+    /* 0xFD */ {OLED_CMD_SET_CMD_LOCK,   CMD_BYTE},
+    /* 0x12 */ {OLED_UNLOCK,             DATA_BYTE},
+    /* 0xFD */ {OLED_CMD_SET_CMD_LOCK,   CMD_BYTE},
+    /* 0xB1 */ {OLED_ACC_TO_CMD_YES,     DATA_BYTE},
+    /* 0xAE */ {OLED_CMD_DISPLAYOFF,     CMD_BYTE},
+    /* 0xB3 */ {OLED_CMD_SET_OSC_FREQ_AND_CLOCKDIV, CMD_BYTE},
+               {0xF1,                    DATA_BYTE}, /* 7:4 = Oscillator Frequency, 3:0 = CLK Div Ratio (A[3:0]+1 = 1..16) */
+    /* 0xCA */ {OLED_CMD_SET_MUX_RATIO,  CMD_BYTE},
+               {(%'ModuleName'%.HW_WIDTH-1), DATA_BYTE},
+    /* 0x15 */ {OLED_CMD_SET_COLUMN,     CMD_BYTE},
+               {0x00,                    DATA_BYTE},
+               {(%'ModuleName'%.HW_WIDTH-1), DATA_BYTE},
+    /* 0x75 */ {OLED_CMD_SET_ROW,       CMD_BYTE},
+               {0x00,                   DATA_BYTE},
+               {(%'ModuleName'%.HW_HEIGHT-1),DATA_BYTE},
+    /* 0xA1 */ {OLED_CMD_STARTLINE,     CMD_BYTE},
          #if %'ModuleName'%.HW_HEIGHT==96
-               0x80, DATA_BYTE,
+               {0x80, DATA_BYTE},
          #else
-               0x00,                   DATA_BYTE,
+               {0x00,                   DATA_BYTE},
          #endif
-    /* 0xA2 */ OLED_CMD_DISPLAYOFFSET, CMD_BYTE,
+    /* 0xA2 */ {OLED_CMD_DISPLAYOFFSET, CMD_BYTE},
          #if %'ModuleName'%.HW_HEIGHT==96
-               %'ModuleName'%.HW_HEIGHT, DATA_BYTE,
+               {%'ModuleName'%.HW_HEIGHT, DATA_BYTE},
          #else
-               0x00,                   DATA_BYTE,
+               {0x00,                   DATA_BYTE},
          #endif
-    /* 0xB5 */ OLED_CMD_SETGPIO,       CMD_BYTE,
-               0x00,                   DATA_BYTE, /* disable GPIO pins */
-    /* 0xAB */ OLED_CMD_FUNCTIONSELECT, CMD_BYTE,
-               0x01,                   DATA_BYTE, /* enable internal Vdd regulator (diode drop) */
-    OLED_CMD_PRECHARGE,     CMD_BYTE,
-    0x32,                   CMD_BYTE,
-    OLED_CMD_VCOMH,         CMD_BYTE,
-    0x05,                   CMD_BYTE,
-    OLED_CMD_NORMALDISPLAY, CMD_BYTE,
-    OLED_CMD_CONTRASTABC,   CMD_BYTE,
-    0x8A,                   DATA_BYTE, /* 0xC8 */
-    0x51,                   DATA_BYTE, /* 0x80 */
-    0x8A,                   DATA_BYTE, /* 0xC8 */
-    OLED_CMD_CONTRASTMASTER, CMD_BYTE,
-    0xCF,                   DATA_BYTE, /* 0x0F */
-    OLED_CMD_SETVSL,        CMD_BYTE,
-    0xA0,                   DATA_BYTE,
-    0xB5,                   DATA_BYTE,
-    0x55,                   DATA_BYTE,
-    OLED_CMD_PRECHARGE2,    CMD_BYTE,
-    0x01,                   DATA_BYTE,
-    OLED_CMD_DISPLAYON,     CMD_BYTE
-    };
-  int i;
+    /* 0xB5 */ {OLED_CMD_SETGPIO,       CMD_BYTE},
+               {0x00,                   DATA_BYTE}, /* disable GPIO pins */
+    /* 0xAB */ {OLED_CMD_FUNCTIONSELECT, CMD_BYTE},
+               {0x01,                   DATA_BYTE}, /* enable internal Vdd regulator (diode drop) */
+               {OLED_CMD_PRECHARGE,     CMD_BYTE},
+               {0x32,                   CMD_BYTE},
+               {OLED_CMD_VCOMH,         CMD_BYTE},
+               {0x05,                   CMD_BYTE},
+               {OLED_CMD_NORMALDISPLAY, CMD_BYTE},
+               {OLED_CMD_CONTRASTABC,   CMD_BYTE},
+               {0x8A,                   DATA_BYTE}, /* 0xC8 */
+               {0x51,                   DATA_BYTE}, /* 0x80 */
+               {0x8A,                   DATA_BYTE}, /* 0xC8 */
+               {OLED_CMD_CONTRASTMASTER, CMD_BYTE},
+               {0xCF,                   DATA_BYTE}, /* 0x0F */
+               {OLED_CMD_SETVSL,        CMD_BYTE},
+               {0xA0,                   DATA_BYTE},
+               {0xB5,                   DATA_BYTE},
+               {0x55,                   DATA_BYTE},
+               {OLED_CMD_PRECHARGE2,    CMD_BYTE},
+               {0x01,                   DATA_BYTE},
+               {OLED_CMD_DISPLAYON,     CMD_BYTE}
+               };
 
   POWER_OFF();
   %@Wait@'ModuleName'%.Waitms(1);
@@ -1240,7 +1237,7 @@ void %'ModuleName'%.%Init(void)
   %@Wait@'ModuleName'%.Waitms(1);
   POWER_ON();
 
-  for (int i=0;i<sizeof(seq)/sizeof(init_cmd_t);i++) {
+  for (i=0;i<sizeof(seq)/sizeof(init_cmd_t);i++) {
     if (seq[i].type==CMD_BYTE) {
       %'ModuleName'%.%WriteCommand(seq[i].cmd);
     } else {

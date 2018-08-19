@@ -885,7 +885,7 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
+#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
   %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_WHITE);
 #else /* do memory buffer operation */
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);

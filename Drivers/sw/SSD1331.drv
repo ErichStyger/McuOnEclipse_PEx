@@ -71,7 +71,7 @@
 #include <stddef.h> /* for size_t */
 
 /* Include inherited components */
-#include %'ModuleName'_CONFIG_SPI_HEADER_FILE  /* SPI driver */
+#include %'ModuleName'%.CONFIG_SPI_HEADER_FILE  /* SPI driver */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
@@ -101,11 +101,11 @@
 #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  %'Width'u         %>40/* number of columns in hardware */
 #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS     %'Height'u        %>40/* number of rows in hardware */
 
-typedef uint16_t %'ModuleName'_PixelColor;                       %>40/* type to hold color information */
-typedef uint16_t %'ModuleName'_PixelDim;                         %>40/* one word is enough to describe an x/y position */
-typedef uint32_t %'ModuleName'_PixelCount;                       %>40/* need a 32bit type to hold the number of pixels on the display. */
+typedef uint16_t %'ModuleName'%.PixelColor;                      %>40/* type to hold color information */
+typedef uint16_t %'ModuleName'%.PixelDim;                        %>40/* one word is enough to describe an x/y position */
+typedef uint32_t %'ModuleName'%.PixelCount;                      %>40/* need a 32bit type to hold the number of pixels on the display. */
 
-extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+extern %'ModuleName'%.PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 /* Predefined colors and pixel values. The display is using words for a pixel/color. Using 16bits for color (65k: 5:red + 6:green + 5:blue */
 #define %'ModuleName'%.COLOR_RED            0b1111100000000000
@@ -146,10 +146,10 @@ typedef enum {
   %'ModuleName'%.ORIENTATION_LANDSCAPE180= 3
 } %'ModuleName'%.DisplayOrientation;
 
-#define %'ModuleName'_WritePixel(data)  \
-  %'ModuleName'_WriteDataWord(data)
+#define %'ModuleName'%.WritePixel(data)  \
+  %'ModuleName'%.WriteDataWord(data)
 
-#define %'ModuleName'_ReadPixel(data)  \
+#define %'ModuleName'%.ReadPixel(data)  \
   0 /* with the serial interface it is NOT possible to read from display memory */
 
 /* Select one of these defines to set the pixel color order */
@@ -692,7 +692,7 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
   } /* switch */
   %'ModuleName'%.WriteCommand(%'ModuleName'%.CMD_SETREMAP); /* Remap command */
   %'ModuleName'%.WriteCommand(remap);                 /* remap data */
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   currentOrientation = newOrientation;
 #endif
 }
@@ -948,16 +948,16 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
       wb = w; hb = h;
       break;
   } /* switch */
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
   xb = %'ModuleName'%.HW_WIDTH-y-h; yb = x;
   wb = h; hb = w;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
   xb = y; yb = %'ModuleName'%.HW_HEIGHT-x-w;
   wb = h; hb = w;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
   xb = x; yb = y;
   wb = w; hb = h;
-  #elif 'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
+  #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   xb = %'ModuleName'%.HW_WIDTH-x-w; yb = %'ModuleName'%.HW_HEIGHT-y-h;
   wb = w; hb = h;
   #endif
