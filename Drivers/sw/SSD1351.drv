@@ -699,7 +699,7 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
   %'ModuleName'%.WriteData(remap);                 /* remap data */
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
-  currentOrientation = newOrientation;
+  currentOrientation = orientation;
 #endif
 }
 %-************************************************************************************************************
