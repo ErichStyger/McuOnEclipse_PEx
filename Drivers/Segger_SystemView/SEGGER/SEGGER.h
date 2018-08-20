@@ -1,9 +1,9 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2015 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
+*            (c) 1995 - 2018 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -31,7 +31,7 @@
 *   disclaimer in the documentation and/or other materials provided  *
 *   with the distribution.                                           *
 *                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
+* o Neither the name of SEGGER Microcontroller GmbH         *
 *   nor the names of its contributors may be used to endorse or      *
 *   promote products derived from this software without specific     *
 *   prior written permission.                                        *
@@ -52,12 +52,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.52a                                    *
+*       SystemView version: V2.52b                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
 File    : SEGGER.h
 Purpose : Global types etc & general purpose utility functions
+Revision: $Rev: 6695 $
 ---------------------------END-OF-HEADER------------------------------
 */
 
@@ -65,7 +66,7 @@ Purpose : Global types etc & general purpose utility functions
 #define SEGGER_H
 
 #include <stdarg.h>
-#include "Global.h"         // Type definitions: U8, U16, U32, I8, I16, I32
+#include "GLOBAL.h"         // Type definitions: U8, U16, U32, I8, I16, I32
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
@@ -124,6 +125,11 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #ifndef   SEGGER_USE_PARA                   // Some compiler complain about unused parameters.
   #define SEGGER_USE_PARA(Para) (void)Para  // This works for most compilers.
 #endif
+
+#define SEGGER_ADDR2PTR(Type, Addr)  (/*lint -e(923) -e(9078)*/((Type*)((PTR_ADDR)(Addr))))  // Allow cast from address to pointer.
+#define SEGGER_PTR2ADDR(p)           (/*lint -e(923) -e(9078)*/((PTR_ADDR)(p)))              // Allow cast from pointer to address.
+#define SEGGER_PTR2PTR(Type, p)      (/*lint -e(9079) -e(9087)*/((Type*)(p)))                // Allow cast from one pointer type to another.
+#define SEGGER_PTR_DISTANCE(p0, p1)  (SEGGER_PTR2ADDR(p0) - SEGGER_PTR2ADDR(p1))
 
 /*********************************************************************
 *
@@ -198,12 +204,8 @@ void SEGGER_memxor    (void* pDest, const void* pSrc, unsigned NumBytes);
 //
 // String functions.
 //
-int      SEGGER_atoi      (const char* s);
-int      SEGGER_isalnum   (int c);
-int      SEGGER_isalpha   (int c);
-unsigned SEGGER_strlen    (const char* s);
-int      SEGGER_tolower   (int c);
-int      SEGGER_strcasecmp(const char* sText1, const char* sText2);
+int      SEGGER_atoi  (const char* s);
+unsigned SEGGER_strlen(const char* s);
 
 //
 // Buffer/printf related.
