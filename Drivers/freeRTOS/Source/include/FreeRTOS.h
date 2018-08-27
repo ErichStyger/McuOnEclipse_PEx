@@ -293,6 +293,10 @@ extern "C" {
 	#define portPOINTER_SIZE_TYPE uint32_t
 #endif
 
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS /* << EST */
+  #include "SEGGER_SYSVIEW_FreeRTOS.h" /* include Segger System Viewer macro definitions */
+#endif
+
 /* Remove any unused trace macros. */
 #ifndef traceSTART
 	/* Used to perform any necessary initialisation - for example, open a file

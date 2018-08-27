@@ -384,7 +384,7 @@ There are 4 options:<br />
   </li>
   <li>
   <a name="TaskCAdditions">
-  <b>Task C Additions</b></a> - Configures configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H, configUSE_TRACE_FACILITY should be enabled too. If enabled, it includes the file  freertos_tasks_c_additions.h at the end of task.c. That extra information is for example used by the debugger to locate RTOS releated information. Make sure 'use trace facility' (configUSE:_TRACE_FACILITY) is enabled too.
+  <b>Task C Additions</b></a> - Configures configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H which is used to help the debugger to find all the symbols and RTOS information, configUSE_TRACE_FACILITY should be enabled too. If enabled, it includes the file  freertos_tasks_c_additions.h at the end of task.c. That extra information is for example used by the debugger to locate RTOS releated information. Make sure 'use trace facility' (configUSE_TRACE_FACILITY) is enabled too.
   </li>
   <li>
   <a name="RecordStackHighAddress">
