@@ -65,6 +65,8 @@
 
 /* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM32 /* only for STM32 */
+
 #include "%'ModuleName'config.h" /* configuration */
 
 %-BW_CUSTOM_INCLUDE_START_H
@@ -228,6 +230,7 @@ uint8_t %'ModuleName'%.%SetDeviceHandle(I2C_HandleTypeDef *handle);
 %-BW_METHOD_END SetDeviceHandle
 %-BW_DEFINITION_END
 /* END %ModuleName. */
+#endif /* %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM32 */ /* only for STM32 */
 
 #endif
 /* ifndef __%'ModuleName'_H */
@@ -256,6 +259,9 @@ uint8_t %'ModuleName'%.%SetDeviceHandle(I2C_HandleTypeDef *handle);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM32 /* only for STM32 */
+
 static uint8_t %'ModuleName'%.slaveAddr;             /* destination slave address, this is the shifted (8bit) address  */
 static I2C_HandleTypeDef *%'ModuleName'%.device;     /* device handle */
 
@@ -441,6 +447,7 @@ uint8_t %'ModuleName'%.%SetDeviceHandle(I2C_HandleTypeDef *handle)
 %-BW_METHOD_END SetDeviceHandle
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
+#endif /* %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM32 */ /* only for STM32 */
 
 %include Common\Header.End
 %-
