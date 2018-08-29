@@ -347,10 +347,12 @@ void %'ModuleName'%.%DeInit(void);
 %-BW_METHOD_BEGIN Wait10Cycles
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
-#ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+#ifdef __GNUC__
+  #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
   __attribute__((naked))
-#else
+  #else
   __attribute__((naked, no_instrument_function))
+  #endif
 #endif
 void %'ModuleName'%.%Wait10Cycles(void)
 {
