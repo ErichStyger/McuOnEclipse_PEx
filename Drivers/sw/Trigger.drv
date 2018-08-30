@@ -92,11 +92,6 @@
 extern "C" {
 #endif
 
-/*! Definition of triggers */
-%for i from TriggerNameList
-#define %'ModuleName'%.%i                                        %>40 %for_index_0
-%endfor
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -107,12 +102,6 @@ extern "C" {
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-#define %'ModuleName'%.TICK_PERIOD_MS \
-%if defined(RTOS)
-  (1000/%@RTOS@TickRateHz)                                       %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'.%.AddTick() is called */
-%else
-  %TickPeriodMs                                                  %>40 /* Period in milliseconds as defined in component properties, at which %'ModuleName'.%.AddTick() is called */
-%endif
 %-
 %-BW_CUSTOM_USERTYPE_END
 
@@ -425,6 +414,17 @@ bool %'ModuleName'%.%TriggerPending(uint8_t trigger)
 
 /* no configuration supported yet */
 %- #define %'ModuleName'%.CONFIG_SETTING
+/*! Definition of triggers */
+%for i from TriggerNameList
+#define %'ModuleName'%.%i                                        %>40 %for_index_0
+%endfor
+
+#define %'ModuleName'%.CONFIG_TICK_PERIOD_MS \
+%if defined(RTOS)
+  (1000/%@RTOS@TickRateHz)                                       %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'.%.AddTick() is called */
+%else
+  %TickPeriodMs                                                  %>40 /* Period in milliseconds as defined in component properties, at which %'ModuleName'.%.AddTick() is called */
+%endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
