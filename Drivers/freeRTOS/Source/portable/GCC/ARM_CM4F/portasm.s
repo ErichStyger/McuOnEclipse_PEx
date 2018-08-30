@@ -5,7 +5,7 @@
 /* file is intentionally empty as not needed for this GNU gcc FreeRTOS port */
 /*
  * FreeRTOS Kernel V10.1.0
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -34,7 +34,7 @@
 %if ((%configCOMPILER='automatic') & (%Compiler=="ARM_CC")) | (%configCOMPILER='configCOMPILER_ARM_KEIL')
 ;
 ; FreeRTOS Kernel V10.1.0
-;  Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+;  Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 ; 
 ;  Permission is hereby granted, free of charge, to any person obtaining a copy of
 ;  this software and associated documentation files (the "Software"), to deal in
@@ -157,7 +157,7 @@ _vPortStartFirstTask:
 /* IAR ARM Compiler */
 /*
  * FreeRTOS Kernel V10.1.0
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -430,7 +430,7 @@ vPortEnableVFP:
 /* legacy Freescale ARM compiler */
 /*
  * FreeRTOS Kernel V10.1.0
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in

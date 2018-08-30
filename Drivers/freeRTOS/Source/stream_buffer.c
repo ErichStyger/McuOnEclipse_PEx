@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel V10.1.0
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -391,7 +391,7 @@ StreamBuffer_t * pxStreamBuffer = xStreamBuffer;
 	{
 		/* The structure and buffer were not allocated dynamically and cannot be
 		freed - just scrub the structure so future use will assert. */
-		memset( pxStreamBuffer, 0x00, sizeof( StreamBuffer_t ) );
+		(void)memset( pxStreamBuffer, 0x00, sizeof( StreamBuffer_t ) );
 	}
 }
 /*-----------------------------------------------------------*/

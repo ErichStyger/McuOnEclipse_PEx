@@ -28,6 +28,10 @@
 #ifndef STACK_MACROS_H
 #define STACK_MACROS_H
 
+#ifndef _MSC_VER /* Visual Studio doesn't support #warning. */
+	#warning The name of this file has changed to stack_macros.h.  Please update your code accordingly.  This source file (which has the original name) will be removed in future released.
+#endif
+
 /*
  * Call the stack overflow hook function if the stack of the task being swapped
  * out is currently overflowed, or looks like it might have overflowed in the
@@ -52,7 +56,7 @@
 		/* Is the currently saved stack pointer within the stack limit? */								\
 		if( pxCurrentTCB->pxTopOfStack <= pxCurrentTCB->pxStack )										\
 		{																								\
-			configCHECK_FOR_STACK_OVERFLOW_NAME( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName ); /* << EST: use macro name */ 	\
+			vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );	\
 		}																								\
 	}
 
@@ -68,7 +72,7 @@
 		/* Is the currently saved stack pointer within the stack limit? */								\
 		if( pxCurrentTCB->pxTopOfStack >= pxCurrentTCB->pxEndOfStack )									\
 		{																								\
-      configCHECK_FOR_STACK_OVERFLOW_NAME( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );	/* << EST: use macro name */ \
+			vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );	\
 		}																								\
 	}
 
@@ -82,12 +86,12 @@
 		const uint32_t * const pulStack = ( uint32_t * ) pxCurrentTCB->pxStack;							\
 		const uint32_t ulCheckValue = ( uint32_t ) 0xa5a5a5a5;											\
 																										\
-		if( ( pulStack[ 0 ] != ulCheckValue ) ||														\
-			( pulStack[ 1 ] != ulCheckValue ) ||														\
-			( pulStack[ 2 ] != ulCheckValue ) ||														\
-			( pulStack[ 3 ] != ulCheckValue ) )															\
+		if( ( pulStack[ 0 ] != ulCheckValue ) ||												\
+			( pulStack[ 1 ] != ulCheckValue ) ||												\
+			( pulStack[ 2 ] != ulCheckValue ) ||												\
+			( pulStack[ 3 ] != ulCheckValue ) )												\
 		{																								\
-      configCHECK_FOR_STACK_OVERFLOW_NAME( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );/* << EST: use macro name */	\
+			vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );	\
 		}																								\
 	}
 
@@ -111,7 +115,7 @@
 		/* Has the extremity of the task stack ever been written over? */																\
 		if( memcmp( ( void * ) pcEndOfStack, ( void * ) ucExpectedStackBytes, sizeof( ucExpectedStackBytes ) ) != 0 )					\
 		{																																\
-		  configCHECK_FOR_STACK_OVERFLOW_NAME( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );		/* << EST: use macro name */							\
+			vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );									\
 		}																																\
 	}
 
