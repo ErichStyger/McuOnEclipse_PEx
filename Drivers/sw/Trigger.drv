@@ -69,6 +69,8 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
+#define %'ModuleName'%.TICK_PERIOD_MS  %'ModuleName'%.CONFIG_TICK_PERIOD_MS  /* trigger period in milli-seconds */
+
 /* Include inherited components */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
