@@ -636,7 +636,9 @@ DSTATUS %'ModuleName'%.disk_initialize (
       /* running at high speed (high slew rate on all the SDHC pins should be set) */
     }
   }
-  Stat &= ~STA_NOINIT;                                           %>40 /* Clear STA_NOINIT */
+  if (!Error) { /* clear flag if there were no errors */
+    Stat &= ~STA_NOINIT;                                         %>40 /* Clear STA_NOINIT */
+  }
   return Stat;
 }
 /*-----------------------------------------------------------------------*/
