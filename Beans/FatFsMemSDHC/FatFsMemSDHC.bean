@@ -4,7 +4,7 @@
     <Name>FatFsMemSDHC</Name>
     <Description>Memory Implementation for FatFS using SDHC_LDD</Description>
     <Author>Erich Styger</Author>
-    <Version>01.043</Version>
+    <Version>01.044</Version>
     <Icon>FatFsMemSDHC</Icon>
     <TypesFiles>PE,FatFsMemSDHC\FatFsMemSDHC</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -53,6 +53,24 @@
         <InhrBeanBaseName>SDHC</InhrBeanBaseName>
         <ShowInheritedMethodsEventsInPrjTree>true</ShowInheritedMethodsEventsInPrjTree>
       </TInhrItem>
+    </Property>
+    <Property>
+      <TBoolItem>
+        <Name>Disable MPU</Name>
+        <Symbol>DisableMPU</Symbol>
+        <TypeSpec>typeYesNo</TypeSpec>
+        <Hint>On some devices (for example the K64F!) the MPU has to be disabled to make SDHC work. If using USB on K64F, the MPU is disabled already in the USB initialization.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+      </TBoolItem>
     </Property>
     <Property>
       <TGrupItem>

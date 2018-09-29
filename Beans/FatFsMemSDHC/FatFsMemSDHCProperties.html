@@ -225,6 +225,10 @@ LI.EXP {
 <b>SDHC</b></a> - Interface to SHDC
 </li>
 <li>
+<a name="DisableMPU">
+<b>Disable MPU</b></a> - On some devices (for example the K64F!) the MPU has to be disabled to make SDHC work. If using USB on K64F, the MPU is disabled already in the USB initialization.
+</li>
+<li>
 <a name="SpeedModeGroup">
 <b>Speed Mode</b></a> - Defines the bus speed modes (SPI clock). For compatibility to older cards, the card needs to be initialized with bus clock less than 400 kHz, which then can be increased up to 12 MHz. Certain high speed cards support an even higher speed. The values in the group indicate indicies to the speed values as set up in the SDHC component (list of values).
 <ul>

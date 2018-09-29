@@ -104,6 +104,13 @@
 
 #include "%ProcessorModule.h"
 
+%if %DisableMPU='yes'
+#define %'ModuleName'%.CONFIG_DISABLE_MPU   (1)
+%else
+#define %'ModuleName'%.CONFIG_DISABLE_MPU   (0)
+%endif
+  /*!< For the Kinetis K64F, the MPU has to be disabled for SDHC to work! */
+
 /* interface for FatFS low level disk functions */
 #include "diskio.h"
 
@@ -464,6 +471,9 @@ uint8_t %'ModuleName'%.%Init(LDD_TUserData *UserDataPtr)
 %else
   /* no user code provided/enabled */
 %endif
+#if %'ModuleName'%.CONFIG_DISABLE_MPU
+  MPU_CESR = 0; /* K64F has memory protection unit, disable it! */
+#endif
   /* initialize device structure */
   SD.SDHCPtr = 0;
   SD.Finished = FALSE;
