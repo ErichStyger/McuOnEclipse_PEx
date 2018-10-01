@@ -146,17 +146,21 @@
 %endif %- ParseCommand
 
 %if Device="DS3232"
-#define %'ModuleName'%.DEVICE 3232 /* DS1307, DS3232 or DS1342 */
+#define %'ModuleName'%.DEVICE 3232 /* DS1307, DS3231, DS3232 or DS1342 */
+%elif Device="DS3231"
+#define %'ModuleName'%.DEVICE 3231 /* DS1307, DS3231, DS3232 or DS1342 */
 %elif Device="DS1307"
-#define %'ModuleName'%.DEVICE 1307 /* DS1307, DS3232 or DS1342 */
+#define %'ModuleName'%.DEVICE 1307 /* DS1307, DS3231, DS3232 or DS1342 */
 %elif Device="DS1342"
-#define %'ModuleName'%.DEVICE 1342 /* DS1307, DS3232 or DS1342 */
+#define %'ModuleName'%.DEVICE 1342 /* DS1307, DS3231, DS3232 or DS1342 */
 %else
 #error "Unknown device %Device ?"
 %endif
 
 /* I2C address of the device on the bus: */
-#if %'ModuleName'%.DEVICE==3232
+#if %'ModuleName'%.DEVICE==3231
+  #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
+#elif %'ModuleName'%.DEVICE==3232
   #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
 #elif %'ModuleName'%.DEVICE==1307
   #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS1307 device address */
@@ -167,7 +171,7 @@
 #endif
 
 /* device memory addresses */
-#if %'ModuleName'%.DEVICE==3232
+#if %'ModuleName'%.DEVICE==3231 || %'ModuleName'%.DEVICE==3232
   #define %'ModuleName'%.MEM_SECONDS_ADDR       0x00  /* Seconds */
   #define %'ModuleName'%.MEM_MINUTES_ADDR       0x01  /* Minutes */
   #define %'ModuleName'%.MEM_HOURS_ADDR         0x02  /* Hours */
@@ -209,6 +213,8 @@
 
 #if %'ModuleName'%.DEVICE==1342
   #define %'ModuleName'%.MEM_SIZE               (0)  /* no memory for DS1342 */
+#elif %'ModuleName'%.DEVICE==3231
+  #define %'ModuleName'%.MEM_SIZE               (0)  /* no memory for DS3231*/
 #else
   #define %'ModuleName'%.MEM_SIZE               (%'ModuleName'%.MEM_RAM_END_ADDR-%'ModuleName'%.MEM_RAM_START_ADDR+1)  /* device memory start address of non-volatile RAM, in bytes */
   #define %'ModuleName'%.MAX_ADDRESS            (%'ModuleName'%.MEM_SIZE-1)  /* maximum RAM address of device */
