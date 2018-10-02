@@ -185,8 +185,10 @@
   #define %'ModuleName'%.MEM_MSB_TEMP_ADDR      0x11  /* MSB of Temp */
   #define %'ModuleName'%.MEM_LSB_TEMP_ADDR      0x12  /* LSB of Temp */
   /* Address 0x13 is reserved */
-  #define %'ModuleName'%.MEM_RAM_START_ADDR     0x14  /* device memory start address of non-volatile RAM */
-  #define %'ModuleName'%.MEM_RAM_END_ADDR       0xFF  /* device memory end address of non-volatile RAM */
+  #if %'ModuleName'%.DEVICE==3232 /* 3231 has no RAM */
+    #define %'ModuleName'%.MEM_RAM_START_ADDR     0x14  /* device memory start address of non-volatile RAM */
+    #define %'ModuleName'%.MEM_RAM_END_ADDR       0xFF  /* device memory end address of non-volatile RAM */
+  #endif
 #elif %'ModuleName'%.DEVICE==1307
   #define %'ModuleName'%.MEM_SECONDS_ADDR       0x00  /* Seconds */
   #define %'ModuleName'%.MEM_MINUTES_ADDR       0x01  /* Minutes */
@@ -655,7 +657,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  device", buf, io->stdOut);
 
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.MEM_SIZE==0 /* no RAM on device */
   /* there is no RAM for this device */
 #else
   %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"0x");
@@ -715,7 +717,7 @@ uint8_t %'ModuleName'%.%Write(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 %include Common\RTC_MaximReadByte.Inc
 uint8_t %'ModuleName'%.%ReadByte(uint8_t addr, uint8_t *buf)
 {
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.MEM_SIZE==0 /* no RAM on device */
   (void)addr; /* unused */
   (void)buf;  /* unused */
   return ERR_FAILED; /* there is no RAM for this device */
@@ -739,7 +741,7 @@ uint8_t %'ModuleName'%.%ReadByte(uint8_t addr, uint8_t *buf)
 %include Common\RTC_MaximWriteByte.Inc
 uint8_t %'ModuleName'%.%WriteByte(uint8_t addr, uint8_t buf)
 {
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.MEM_SIZE==0 /* no RAM on device */
   (void)addr; /* unused */
   (void)buf;  /* unused */
   return ERR_FAILED; /* there is no RAM for this device */
@@ -764,7 +766,7 @@ uint8_t %'ModuleName'%.%WriteByte(uint8_t addr, uint8_t buf)
 %include Common\RTC_MaximReadBlock.Inc
 uint8_t %'ModuleName'%.%ReadBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 {
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.MEM_SIZE==0 /* no RAM on device */
   (void)addr; /* unused */
   (void)buf;  /* unused */
   (void)bufSize; /* unused */
@@ -790,7 +792,7 @@ uint8_t %'ModuleName'%.%ReadBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 %include Common\RTC_MaximWriteBlock.Inc
 uint8_t %'ModuleName'%.%WriteBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 {
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.MEM_SIZE==0 /* no RAM on device */
   (void)addr; /* unused */
   (void)buf;  /* unused */
   (void)bufSize; /* unused */
