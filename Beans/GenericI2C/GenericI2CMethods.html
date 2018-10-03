@@ -291,6 +291,23 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ReadAddressWait">
+<b>ReadAddressWait</b></a>
+ - Same as ReadAddress, but with an optional wait between the address and read. Read from the device. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, word waitMs, uint8_t *data, uint16_t dataSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>i2cAddr:uint8_t</i> - I2C Address of device</li>
+<li><i>memAddr: Pointer to uint8_t</i> - Pointer to device memory address</li>
+<li><i>memAddrSize:uint8_t</i> - number of address bytes</li>
+<li><i>waitMs:word</i> - Wait time between the address part and reading the data part. Wait time can be zero.</li>
+<li><i>data: Pointer to uint8_t</i> - Pointer to read buffer</li>
+<li><i>dataSize:uint16_t</i> - Size of read buffer</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ReadAddress">
 <b>ReadAddress</b></a>
  - Read from the device. This writes (S+i2cAddr+0), (memAddr), (Sr+i2cAddr+1), (data)...(data+P)

@@ -353,6 +353,21 @@ uint8_t %'ModuleName'%.%WriteByte(uint8_t i2cAddr, uint8_t data);
 
 %endif %- WriteByte
 %-BW_METHOD_END WriteByte
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadAddressWait
+%ifdef ReadAddressWait
+uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, word waitMs, uint8_t *data, uint16_t dataSize);
+%define! Pari2cAddr
+%define! ParmemAddr
+%define! ParmemAddrSize
+%define! Pardata
+%define! PardataSize
+%define! ParwaitMs
+%define! RetVal
+%include Common\GenericI2CReadAddressWait.Inc
+
+%endif %- ReadAddressWait
+%-BW_METHOD_END ReadAddressWait
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -835,16 +850,17 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
 %endif %- WriteBlock
 %-BW_METHOD_END WriteBlock
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN ReadAddress
-%ifdef ReadAddress
+%-BW_METHOD_BEGIN ReadAddressWait
+%ifdef ReadAddressWait
 %define! Pari2cAddr
 %define! ParmemAddr
 %define! ParmemAddrSize
 %define! Pardata
 %define! PardataSize
+%define! ParwaitMs
 %define! RetVal
-%include Common\GenericI2CReadAddress.Inc
-uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)
+%include Common\GenericI2CReadAddressWait.Inc
+uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, word waitMs, uint8_t *data, uint16_t dataSize)
 {
   uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
@@ -906,46 +922,52 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
       break; /* break for(;;) */
     }
 %endif
-    /* receive data */
-    %'ModuleName'%.deviceData.dataReceivedFlg = FALSE;
-    res = %@LDD_I2C@'ModuleName'%.MasterReceiveBlock(%'ModuleName'%.deviceData.handle, data, dataSize, LDD_I2C_SEND_STOP);
-    if (res!=ERR_OK) {
-    #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
-      break; /* break for(;;) */
+    /* optional wait time */
+    if (waitMs!=0) {
+      %@Wait@'ModuleName'%.WaitOSms(waitMs);
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
-      res = ERR_QFULL;
-    #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
-      break; /* break for(;;) */
-    }
-%endif
-    do { /* Wait until data is received */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
-      if (isTimeout) {
+    if (data!=NULL) {
+      /* receive data */
+      %'ModuleName'%.deviceData.dataReceivedFlg = FALSE;
+      res = %@LDD_I2C@'ModuleName'%.MasterReceiveBlock(%'ModuleName'%.deviceData.handle, data, dataSize, LDD_I2C_SEND_STOP);
+      if (res!=ERR_OK) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
-        break; /* break while() */
+        break; /* break for(;;) */
+      }
+%if defined(Timeout)
+      timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
+      if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+        res = ERR_QFULL;
+      #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
+        %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+      #endif
+        break; /* break for(;;) */
       }
 %endif
-    } while (!%'ModuleName'%.deviceData.dataReceivedFlg);
+      do { /* Wait until data is received */
 %if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
-    if (isTimeout) {
-      res = ERR_BUSY;
-    #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
-      break; /* break for(;;) */
-    }
+        isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+        if (isTimeout) {
+        #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
+          %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+        #endif
+          break; /* break while() */
+        }
 %endif
+      } while (!%'ModuleName'%.deviceData.dataReceivedFlg);
+%if defined(Timeout)
+      %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+      if (isTimeout) {
+        res = ERR_BUSY;
+      #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
+        %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+      #endif
+        break; /* break for(;;) */
+      }
+%endif
+    } /* if receive data */
     break; /* break for(;;) */
   } /* for(;;) */
 %else
@@ -960,21 +982,28 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
         break; /* break for(;;) */
       }
     }
-    res = %'ModuleName'%.CONFIG_RECV_BLOCK(data, dataSize, &nof);
-    if (res!=ERR_OK) {
-      (void)%'ModuleName'%.CONFIG_SEND_STOP();
-    #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
-      break; /* break for(;;) */
+    /* optional wait time */
+    if (waitMs!=0) {
+      %@Wait@'ModuleName'%.WaitOSms(waitMs);
     }
-    res = %'ModuleName'%.CONFIG_SEND_STOP();
-    if (res!=ERR_OK) {
-    #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
-      break; /* break for(;;) */
-    }
+    if (data!=NULL) {
+      /* receive data */
+      res = %'ModuleName'%.CONFIG_RECV_BLOCK(data, dataSize, &nof);
+      if (res!=ERR_OK) {
+        (void)%'ModuleName'%.CONFIG_SEND_STOP();
+      #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
+        %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+      #endif
+        break; /* break for(;;) */
+      }
+      res = %'ModuleName'%.CONFIG_SEND_STOP();
+      if (res!=ERR_OK) {
+      #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
+        %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+      #endif
+        break; /* break for(;;) */
+      }
+    } /* if receive data */
     break; /* break for(;;) */
   } /* for(;;) */
 %endif
@@ -985,6 +1014,23 @@ uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t m
     return ERR_FAILED;
   }
   return res;
+}
+
+%endif %- ReadAddressWait
+%-BW_METHOD_END ReadAddressWait
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadAddress
+%ifdef ReadAddress
+%define! Pari2cAddr
+%define! ParmemAddr
+%define! ParmemAddrSize
+%define! Pardata
+%define! PardataSize
+%define! RetVal
+%include Common\GenericI2CReadAddress.Inc
+uint8_t %'ModuleName'%.%ReadAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint8_t *data, uint16_t dataSize)
+{
+  return %'ModuleName'%.%ReadAddressWait(i2cAddr, memAddr, memAddrSize, 0, data, dataSize);
 }
 
 %endif %- ReadAddress
