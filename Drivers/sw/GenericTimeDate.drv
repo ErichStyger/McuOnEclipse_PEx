@@ -79,107 +79,6 @@
 %-   Example:
 %-     #include "header_name.h"
 
-/* if command line parser is enabled */
-%ifdef ParseCommand
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%else
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%endif %- ParseCommand
-
-/* if Init() is called durint startup */
-%if defined(InitInStartup) & %InitInStartup='yes'
-#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 1 /* 1: call Init() during startup, 0: application needs to call Init() */
-%else
-#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 1 /* 1: call Init() during startup, 0: application needs to call Init() */
-%endif
-
-/* RTC Initialization options during Init() */
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS           %>60 0  /* init software RTC from default values */
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC       %>60 1  /* init software RTC from internal RTC values */
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC       %>60 2  /* init software RTC from external RTC values */
-
-/* settings for software RTC */
-%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
-#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 1  /* set to 1 if using software RTC, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 0  /* set to 1 if using software RTC, 0 otherwise */
-%endif
-%if defined(SoftwareRTCInit)
-%if %SoftwareRTCInit="InitFromDefaults"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
-%elif %SoftwareRTCInit="InitFromInternalRTC"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC /* which method to use during Init() */
-%elif %SoftwareRTCInit="InitFromExternalRTC"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC /* which method to use during Init() */
-%endif
-%else
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
-%endif
-
-/* settings for internal hardware RTC */
-%if defined(LDDRTC)
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 1  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%elif defined(RTC)
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 1  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 0  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%endif
-
-%if defined(ExternalRTC)
-#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 1  /* set to 1 if using external HW RTC driver, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 0  /* set to 1 if using external HW RTC driver, 0 otherwise */
-%endif
-
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
-  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 0 /* Bean version have no Sec100!  */
-#else
-  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 1 /* non-Bean version have Sec100  */
-#endif
-
-/* SetTime() and SetDate() configuration */
-%if defined(SetDateTimeForSoftwareRTC) & %SetDateTimeForSoftwareRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 1 /* 1: Enable setting software RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 0 /* 1: Enable setting software RTC time/date */
-%endif
-%if defined(SetDateTimeForInternalRTC) & %SetDateTimeForInternalRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 1 /* 1: Enable setting internal RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 0 /* 1: Enable setting internal RTC time/date */
-%endif
-%if defined(SetDateTimeForExternalRTC) & %SetDateTimeForExternalRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 1 /* 1: Enable setting external RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 0 /* 1: Enable setting external RTC time/date */
-%endif
-
-/* GetTime() and GetDate() configuration */
-#define %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC         %>60 1 /* use software RTC */
-#define %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC         %>60 2 /* use internal RTC */
-#define %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC         %>60 3 /* use external RTC */
-%if defined(GetTimeDateMethod)
-%if GetTimeDateMethod="SoftwareRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
-%elif GetTimeDateMethod="InternalRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC /* specifies method to get time and date */
-%elif GetTimeDateMethod="ExternalRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC /* specifies method to get time and date */
-%endif
-%else
-  #define %'ModuleName'%.GET_TIME_DATE_METHOD                    %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
-%endif
-
-/* default time and date format strings */
-#define %'ModuleName'%.DEFAULT_TIME_FORMAT_STR  "hh:mm:ss,cc"
-#define %'ModuleName'%.DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
-
 /* user events */
 %if defined(OnDateGet)
 #define %'ModuleName'%.ON_DATE_GET_EVENT                         %>60 1 /* 1: enabled user event */
@@ -2087,8 +1986,107 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+/* if command line parser is enabled */
+%ifdef ParseCommand
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
+%else
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
+%endif %- ParseCommand
+
+/* if Init() is called durint startup */
+%if defined(InitInStartup) & %InitInStartup='yes'
+#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 1 /* 1: call Init() during startup, 0: application needs to call Init() */
+%else
+#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 0 /* 1: call Init() during startup, 0: application needs to call Init() */
+%endif
+
+/* RTC Initialization options during Init() */
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS           %>60 0  /* init software RTC from default values */
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC       %>60 1  /* init software RTC from internal RTC values */
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC       %>60 2  /* init software RTC from external RTC values */
+
+/* settings for software RTC */
+%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
+#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 1  /* set to 1 if using software RTC, 0 otherwise */
+%else
+#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 0  /* set to 1 if using software RTC, 0 otherwise */
+%endif
+%if defined(SoftwareRTCInit)
+%if %SoftwareRTCInit="InitFromDefaults"
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
+%elif %SoftwareRTCInit="InitFromInternalRTC"
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC /* which method to use during Init() */
+%elif %SoftwareRTCInit="InitFromExternalRTC"
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC /* which method to use during Init() */
+%endif
+%else
+#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
+%endif
+
+/* settings for internal hardware RTC */
+%if defined(LDDRTC)
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 1  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
+%elif defined(RTC)
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 1  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
+%else
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 0  /* set to 1 if using internal HW RTC, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
+#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
+%endif
+
+%if defined(ExternalRTC)
+#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 1  /* set to 1 if using external HW RTC driver, 0 otherwise */
+%else
+#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 0  /* set to 1 if using external HW RTC driver, 0 otherwise */
+%endif
+
+#if %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 0 /* Bean version have no Sec100!  */
+#else
+  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 1 /* non-Bean version have Sec100  */
+#endif
+
+/* SetTime() and SetDate() configuration */
+%if defined(SetDateTimeForSoftwareRTC) & %SetDateTimeForSoftwareRTC='yes'
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 1 /* 1: Enable setting software RTC time/date */
+%else
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 0 /* 1: Enable setting software RTC time/date */
+%endif
+%if defined(SetDateTimeForInternalRTC) & %SetDateTimeForInternalRTC='yes'
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 1 /* 1: Enable setting internal RTC time/date */
+%else
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 0 /* 1: Enable setting internal RTC time/date */
+%endif
+%if defined(SetDateTimeForExternalRTC) & %SetDateTimeForExternalRTC='yes'
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 1 /* 1: Enable setting external RTC time/date */
+%else
+#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 0 /* 1: Enable setting external RTC time/date */
+%endif
+
+/* GetTime() and GetDate() configuration */
+#define %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC         %>60 1 /* use software RTC */
+#define %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC         %>60 2 /* use internal RTC */
+#define %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC         %>60 3 /* use external RTC */
+%if defined(GetTimeDateMethod)
+%if GetTimeDateMethod="SoftwareRTC"
+#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
+%elif GetTimeDateMethod="InternalRTC"
+#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC /* specifies method to get time and date */
+%elif GetTimeDateMethod="ExternalRTC"
+#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC /* specifies method to get time and date */
+%endif
+%else
+  #define %'ModuleName'%.GET_TIME_DATE_METHOD                    %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
+%endif
+
+/* default time and date format strings */
+#define %'ModuleName'%.DEFAULT_TIME_FORMAT_STR  "hh:mm:ss,cc"
+#define %'ModuleName'%.DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
