@@ -1156,57 +1156,77 @@ void %'ModuleName'%.%Init(void)
   #define CMD_BYTE   (1)
   #define DATA_BYTE  (0)
 
+  /* Not all displays are the same. They differ in brightness, speed, capacitance
+     Things to consider or tune:
+     OLED_CMD_PRECHARGE
+     SSD1351_CMD_VCOMH
+     SSD1351_CMD_CONTRASTABC
+     SSD1351_CMD_CONTRASTMASTER
+     SSD1351_CMD_SETVSL
+     SSD1351_CMD_PRECHARGE2
+     Additionally, powering the Adafruit from 5V or 3.3V makes a difference!
+  */
   static const init_cmd_t seq[] = {
     /* 0xFD */ {OLED_CMD_SET_CMD_LOCK,   CMD_BYTE},
-    /* 0x12 */ {OLED_UNLOCK,             DATA_BYTE},
+               {OLED_UNLOCK,             DATA_BYTE}, /* 0x12 */
     /* 0xFD */ {OLED_CMD_SET_CMD_LOCK,   CMD_BYTE},
-    /* 0xB1 */ {OLED_ACC_TO_CMD_YES,     DATA_BYTE},
+               {OLED_ACC_TO_CMD_YES,     DATA_BYTE}, /* 0xB1 */
     /* 0xAE */ {OLED_CMD_DISPLAYOFF,     CMD_BYTE},
     /* 0xB3 */ {OLED_CMD_SET_OSC_FREQ_AND_CLOCKDIV, CMD_BYTE},
                {0xF1,                    DATA_BYTE}, /* 7:4 = Oscillator Frequency, 3:0 = CLK Div Ratio (A[3:0]+1 = 1..16) */
+               /* reset:
+                 [7:4] 1101 (oszillator frequency, frequency increases as level increases
+                 [3:0] 0001 (divide by DIVSET, 0001 means divide by 2
+                 */
     /* 0xCA */ {OLED_CMD_SET_MUX_RATIO,  CMD_BYTE},
                {(%'ModuleName'%.HW_WIDTH-1), DATA_BYTE},
     /* 0x15 */ {OLED_CMD_SET_COLUMN,     CMD_BYTE},
                {0x00,                    DATA_BYTE},
                {(%'ModuleName'%.HW_WIDTH-1), DATA_BYTE},
-    /* 0x75 */ {OLED_CMD_SET_ROW,       CMD_BYTE},
-               {0x00,                   DATA_BYTE},
+    /* 0x75 */ {OLED_CMD_SET_ROW,        CMD_BYTE},
+               {0x00,                    DATA_BYTE},
                {(%'ModuleName'%.HW_HEIGHT-1),DATA_BYTE},
-    /* 0xA1 */ {OLED_CMD_STARTLINE,     CMD_BYTE},
+    /* 0xA1 */ {OLED_CMD_STARTLINE,      CMD_BYTE},
          #if %'ModuleName'%.HW_HEIGHT==96
                {0x80, DATA_BYTE},
          #else
-               {0x00,                   DATA_BYTE},
+               {0x00,                    DATA_BYTE},
          #endif
-    /* 0xA2 */ {OLED_CMD_DISPLAYOFFSET, CMD_BYTE},
+    /* 0xA2 */ {OLED_CMD_DISPLAYOFFSET,  CMD_BYTE},
          #if %'ModuleName'%.HW_HEIGHT==96
                {%'ModuleName'%.HW_HEIGHT, DATA_BYTE},
          #else
-               {0x00,                   DATA_BYTE},
+               {0x00,                    DATA_BYTE},
          #endif
-    /* 0xB5 */ {OLED_CMD_SETGPIO,       CMD_BYTE},
-               {0x00,                   DATA_BYTE}, /* disable GPIO pins */
+    /* 0xB5 */ {OLED_CMD_SETGPIO,        CMD_BYTE},
+               {0x00,                    DATA_BYTE}, /* disable GPIO pins */
     /* 0xAB */ {OLED_CMD_FUNCTIONSELECT, CMD_BYTE},
-               {0x01,                   DATA_BYTE}, /* enable internal Vdd regulator (diode drop) */
-               {OLED_CMD_PRECHARGE,     CMD_BYTE},
-               {0x32,                   CMD_BYTE},
-               {OLED_CMD_VCOMH,         CMD_BYTE},
-               {0x05,                   CMD_BYTE},
-               {OLED_CMD_NORMALDISPLAY, CMD_BYTE},
-               {OLED_CMD_CONTRASTABC,   CMD_BYTE},
-               {0x8A,                   DATA_BYTE}, /* 0xC8 */
-               {0x51,                   DATA_BYTE}, /* 0x80 */
-               {0x8A,                   DATA_BYTE}, /* 0xC8 */
-               {OLED_CMD_CONTRASTMASTER, CMD_BYTE},
-               {0xCF,                   DATA_BYTE}, /* 0x0F */
-               {OLED_CMD_SETVSL,        CMD_BYTE},
-               {0xA0,                   DATA_BYTE},
-               {0xB5,                   DATA_BYTE},
-               {0x55,                   DATA_BYTE},
-               {OLED_CMD_PRECHARGE2,    CMD_BYTE},
-               {0x01,                   DATA_BYTE},
-               {OLED_CMD_DISPLAYON,     CMD_BYTE}
-               };
+               {0x01,                    DATA_BYTE}, /* enable internal Vdd regulator (diode drop) */
+    /* 0xB1 */ {OLED_CMD_PRECHARGE,      CMD_BYTE},
+               {0x32,                    CMD_BYTE},
+    /* 0xBE */ {OLED_CMD_VCOMH,          CMD_BYTE},
+               {0x05,                    CMD_BYTE},
+    /* 0xA6 */ {OLED_CMD_NORMALDISPLAY,  CMD_BYTE},
+    /* 0xC1 */ {OLED_CMD_CONTRASTABC,    CMD_BYTE},
+    #if 0
+               {0x8A,                    DATA_BYTE},
+               {0x51,                    DATA_BYTE},
+               {0x8A,                    DATA_BYTE},
+    #else /* Adafruit contrast settings: https://github.com/adafruit/Adafruit-SSD1351-library/blob/master/Adafruit_SSD1351.cpp */
+               {0xC8,                    DATA_BYTE},
+               {0x80,                    DATA_BYTE},
+               {0xC8,                    DATA_BYTE},
+    #endif
+    /* 0xC7 */ {OLED_CMD_CONTRASTMASTER, CMD_BYTE},
+               {0xCF,                    DATA_BYTE}, /* 0x0F */
+    /* 0xB4 */ {OLED_CMD_SETVSL,         CMD_BYTE},
+               {0xA0,                    DATA_BYTE},
+               {0xB5,                    DATA_BYTE},
+               {0x55,                    DATA_BYTE},
+    /* 0xB6 */ {OLED_CMD_PRECHARGE2,     CMD_BYTE},
+               {0x01,                    DATA_BYTE},
+    /* 0xAF */ {OLED_CMD_DISPLAYON,      CMD_BYTE}
+    };
 
   POWER_OFF();
   %@Wait@'ModuleName'%.Waitms(1);
