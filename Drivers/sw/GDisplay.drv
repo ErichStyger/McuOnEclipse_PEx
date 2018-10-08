@@ -233,8 +233,10 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 %endif
 %------------------------------------------
 %if %@Display@BitsPerPixel='16'
-//#define %'ModuleName'%.BUF_WORD(x,y)  /* how to access a byte in the display buf[][] */ \
-//  %@Display@'ModuleName'%.DisplayBuf[y][x]
+#if 0
+  #define %'ModuleName'%.BUF_WORD(x,y)  /* how to access a byte in the display buf[][] */ \
+    %@Display@'ModuleName'%.DisplayBuf[y][x]
+#endif
 %endif
 %------------------------------------------
 %if %@Display@BitsPerPixel='1'
