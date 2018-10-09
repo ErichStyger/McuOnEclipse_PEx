@@ -485,6 +485,10 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 %endif
 %-
 %endif
+
+/* custom include file: */
+%CustomFreeRTOSConfig
+
 %- --------------------------------------------------------------------
 
 #endif /* FREERTOS_CONFIG_H */
