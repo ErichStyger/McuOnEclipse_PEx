@@ -1078,7 +1078,7 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
 }
 #endif /* #if configUSE_TICKLESS_IDLE */
 /*-----------------------------------------------------------*/
-void vPortInitTickTimer(void) {
+static void vPortInitTickTimer(void) {
 #if configUSE_TICKLESS_IDLE == 1
 {
 #if TICK_NOF_BITS==32
@@ -1145,7 +1145,7 @@ void vPortInitTickTimer(void) {
 %endif
 }
 /*-----------------------------------------------------------*/
-void vPortStartTickTimer(void) {
+static void vPortStartTickTimer(void) {
 %ifdef TickCntr
 %if defined(TickCntr) & defined(@TickCntr@Reset)
   (void)%@TickCntr@'ModuleName'%.Reset();   %>40/* reset the tick counter */
