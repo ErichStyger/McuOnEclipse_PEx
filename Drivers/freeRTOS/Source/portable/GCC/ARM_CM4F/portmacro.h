@@ -104,6 +104,13 @@ typedef portSTACK_TYPE StackType_t;
 #else
   typedef uint32_t TickType_t;
   #define portMAX_DELAY      (TickType_t)0xffffffff
+
+#if (configCPU_FAMILY==configCPU_FAMILY_CF1) || (configCPU_FAMILY==configCPU_FAMILY_CF2) || configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
+  /* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
+  not need to be guarded with a critical section. */
+  #define portTICK_TYPE_IS_ATOMIC 1
+#endif /* 32bit architecture */
+
 #endif
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF") | (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
 %- not for Kinetis, as causing problems with include order :-(
