@@ -665,10 +665,10 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
       remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
       break;
-    case %'ModuleName'%.ORIENTATION_LANDSCAPE180: /* ??? right lower corner, reverted? */
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_LEFT_TO_RIGHT  | REMAP_VERTICAL_INCREMENT;
       break;
-    case %'ModuleName'%.ORIENTATION_PORTRAIT180: /* lower left corner, reverted */
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
       break;
     case %'ModuleName'%.ORIENTATION_PORTRAIT:
@@ -947,9 +947,12 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
   #endif
 
   %'ModuleName'%.OpenWindow(xb, yb, xb+wb-1, yb+hb-1);  /* window for region */
+#if 0 /* this only works for Landscape and Landscape180 */
   if (xb==0 && w==%'ModuleName'%.HW_WIDTH) { /* can write full block */
     %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[yb][xb]), wb*hb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
-  } else {
+  } else
+#endif
+  {
     /* need to write memory line by line */
     %'ModuleName'%.PixelDim i;
 
