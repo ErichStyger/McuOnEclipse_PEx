@@ -536,8 +536,7 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateRegion
 %ifdef UpdateRegion
-#define %'ModuleName'%.%UpdateRegion(x,y,w,h)   %@Display@'ModuleName'%.UpdateRegion(x,y,w,h)
-
+void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h);
 %define! Parx
 %define! Pary
 %define! Parw
@@ -1711,12 +1710,16 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
 %define! Parw
 %define! Parh
 %include Common\GDisplayUpdateRegion.Inc
-#if 0
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-  /* method is implemented as macro in the header file */
-}
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  %'ModuleName'%.GetDisplay();
 #endif
+  %@Display@'ModuleName'%.UpdateRegion(x,y,w,h);
+#if %'ModuleName'%.CONFIG_USE_MUTEX
+  %'ModuleName'%.GiveDisplay();
+#endif
+}
 
 %endif %- UpdateRegion
 %-BW_METHOD_END UpdateRegion
