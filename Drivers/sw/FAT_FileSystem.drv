@@ -79,6 +79,9 @@
 #define %'ModuleName'%.FRESULT          FRESULT
 #define %'ModuleName'%.DRESULT          DRESULT
 
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
 %ifdef SharedModules
 /* Include shared modules, which are used for whole project */
   %for var from IncludeSharedModules
@@ -2569,6 +2572,9 @@ uint8_t %'ModuleName'%.%CheckCardPresence(bool *cardMounted, uint8_t *drive, FAT
   }
   if (!(*cardMounted) && %'ModuleName'%.isDiskPresent(drive)) {
     /* card inserted */
+    #if %'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS>0
+        %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS); /* give card some time to power up */
+    #endif
     if (%'ModuleName'%.MountFileSystem(fileSystemObject, drive, io)==ERR_OK) {
       *cardMounted = TRUE;
       if (io!=NULL) {
@@ -3641,6 +3647,36 @@ void %OnCreateSyncObject(void *sobj)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for FAT_FileSystem
+ *
+ * This header file is used to configure settings of the Generic I2C module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#if !defined(%'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS)
+  %if defined(CardInsertDelayTime)
+  #define %'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS    (%CardInsertDelayTime)
+  %else
+  #define %'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS    (0)
+  %endif
+    /*!< Delay time in milliseconds after insertion of the card detected */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
+
 %else %- Language (& Compiler)
   %error^ This bean is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
