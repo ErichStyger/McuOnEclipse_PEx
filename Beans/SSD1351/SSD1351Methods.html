@@ -450,6 +450,67 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="DisplayOnOff">
+<b>DisplayOnOff</b></a>
+ - Turns the display on or off
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t DisplayOnOff(bool on)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>on:bool</i> - TRUE to turn the display on, FALSE to turn it off</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetContrastABC">
+<b>SetContrastABC</b></a>
+ - Sets the contrast ABC value (Command 0xC1)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetContrastABC(uint8_t contrastA, uint8_t contrastB, uint8_t contrastC)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>contrastA:uint8_t</i> - contrast A value</li>
+<li><i>contrastB:uint8_t</i> - contrast B value</li>
+<li><i>contrastC:uint8_t</i> - contast C value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="SetContrastMaster">
+<b>SetContrastMaster</b></a>
+ - Sets the contrast Master value (Command 0xC7)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetContrastMaster(uint8_t contrast)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>contrast:uint8_t</i> - contrast master value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="ParseCommand">
+<b>ParseCommand</b></a>
+ - Shell Command Line parser. Method is only available if Shell is enabled in the component properties.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd:byte</i> - command string</li>
+<li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
+<li><i>io:byte</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="Deinit">
+<b>Deinit</b></a>
+ - Driver de-initialization
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void Deinit(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+</ul><br />
+</li>
 <li><a name="Init">
 <b>Init</b></a>
  - Display driver initialization

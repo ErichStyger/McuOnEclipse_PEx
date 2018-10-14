@@ -293,6 +293,28 @@ There are 4 options:<br />
 <b>Initialize on Init</b></a> - If the driver shall be initialized during Init
 </li>
 <li>
+<a name="SettingsGroup">
+<b>Settings</b></a> - Settings to configure the display hardware. Use the shell to find the optimal settings.
+<ul>
+  <li>
+  <a name="ContrastA">
+  <b>Contrast A</b></a> - Contrast A value (Command 0xC1), default is 0xC8 for Adafruit SSD1351 display
+  </li>
+  <li>
+  <a name="ContrastB">
+  <b>Contrast B</b></a> - Contrast B value (Command 0xC1), default is 0x80 for Adafruit SSD1351 display
+  </li>
+  <li>
+  <a name="ContrastC">
+  <b>Contrast C</b></a> - Contrast C value (Command 0xC1), default is 0xC8 for Adafruit SSD1351 display
+  </li>
+  <li>
+  <a name="ContrastMaster">
+  <b>Contrast Master</b></a> - Contrast Master value (Command 0xC7), default is 0x0F for Adafruit SSD1351 display
+  </li>
+</ul>
+</li>
+<li>
 <a name="HardwareGroup">
 <b>HW</b></a> - Group controlling the hardware settings.
 <ul>
@@ -393,6 +415,22 @@ The following items are available only if the group is enabled (the value is "En
   <li>
   <a name="sdk">
   <b>SDK</b></a> - Link to SDK used
+  </li>
+</ul>
+</li>
+<li>
+<a name="ShellGroup">
+<b>Shell</b></a> - Optional command line shell support<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Shell">
+  <b>Shell</b></a> - Interface to shell
+  </li>
+  <li>
+  <a name="Utility">
+  <b>Utility</b></a> - Link to utility functions
   </li>
 </ul>
 </li>

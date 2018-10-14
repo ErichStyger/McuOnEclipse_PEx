@@ -4,7 +4,7 @@
     <Name>SSD1351</Name>
     <Description>Display driver for the Solomon Systech SSD1351 display (e.g. on Hexiwear)</Description>
     <Author>Erich Styger</Author>
-    <Version>01.043</Version>
+    <Version>01.054</Version>
     <Icon>SSD1351</Icon>
     <TypesFiles>PE,SSD1351\SSD1351</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -289,6 +289,88 @@
         <DefaultValue>true</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Settings</Name>
+        <Symbol>SettingsGroup</Symbol>
+        <Hint>Settings to configure the display hardware. Use the shell to find the optimal settings.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Contrast A</Name>
+              <Symbol>ContrastA</Symbol>
+              <Hint>Contrast A value (Command 0xC1), default is 0xC8 for Adafruit SSD1351 display</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>200</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>255</MaxValue>
+              <Bases>DEC HEX</Bases>
+              <DefaultBase>HEX</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Contrast B</Name>
+              <Symbol>ContrastB</Symbol>
+              <Hint>Contrast B value (Command 0xC1), default is 0x80 for Adafruit SSD1351 display</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>128</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>255</MaxValue>
+              <Bases>DEC HEX</Bases>
+              <DefaultBase>HEX</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Contrast C</Name>
+              <Symbol>ContrastC</Symbol>
+              <Hint>Contrast C value (Command 0xC1), default is 0xC8 for Adafruit SSD1351 display</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>200</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>255</MaxValue>
+              <Bases>DEC HEX</Bases>
+              <DefaultBase>HEX</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TIntgItem>
+              <Name>Contrast Master</Name>
+              <Symbol>ContrastMaster</Symbol>
+              <Hint>Contrast Master value (Command 0xC7), default is 0x0F for Adafruit SSD1351 display</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>15</DefaultValue>
+              <MinValue>0</MinValue>
+              <MaxValue>15</MaxValue>
+              <Bases>DEC HEX</Bases>
+              <DefaultBase>HEX</DefaultBase>
+              <ExtraHintDisabled>false</ExtraHintDisabled>
+              <ChangeValueIntoRange>false</ChangeValueIntoRange>
+              <RuntimeProperty>false</RuntimeProperty>
+            </TIntgItem>
+          </GrupItem>
+        </Children>
+      </TGrupItem>
     </Property>
     <Property>
       <TGrupItem>
@@ -597,6 +679,52 @@
           </GrupItem>
         </Children>
       </TGrupItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Shell</Name>
+        <Symbol>ShellGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Optional command line shell support</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>Yes</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Shell</Name>
+              <Symbol>Shell</Symbol>
+              <TypeSpec>SSD1351\Shell</TypeSpec>
+              <Hint>Interface to shell</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Utility</Name>
+              <Symbol>Utility</Symbol>
+              <TypeSpec>SSD1351\Utility</TypeSpec>
+              <Hint>Link to utility functions</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
   </PropertyList>
   <MethodList>
@@ -1369,6 +1497,196 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>%'ModuleName'_PixelColor #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DisplayOnOff</Name>
+        <Symbol>DisplayOnOff</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Turns the display on or off</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>on</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>TRUE to turn the display on, FALSE to turn it off</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(bool on)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetContrastABC</Name>
+        <Symbol>SetContrastABC</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the contrast ABC value (Command 0xC1)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>contrastA</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>contrast A value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>contrastB</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>contrast B value</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>contrastC</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>contast C value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t contrastA, uint8_t contrastB, uint8_t contrastC)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>SetContrastMaster</Name>
+        <Symbol>SetContrastMaster</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the contrast Master value (Command 0xC7)</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>contrast</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>contrast master value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t contrast)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ParseCommand</Name>
+        <Symbol>ParseCommand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Shell Command Line parser. Method is only available if Shell is enabled in the component properties.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>command string</ParHint>
+          <ParUserDeclaration>const unsigned char* cmd</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>handled</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to variable which tells if the command has been handled or not</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>io</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pointer to I/O structure</ParHint>
+          <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char* cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Deinit</Name>
+        <Symbol>Deinit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver de-initialization</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

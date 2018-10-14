@@ -29,3 +29,9 @@
     %set Height Value 128
   %endif
 %endif
+
+%ifndef Shell
+  %set ParseCommand Selection never
+%else
+  %set ParseCommand Selection enable
+%endif
