@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.564</Version>
+    <Version>01.565</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1836,7 +1836,10 @@ Scheme 4:\n
 This scheme uses a first fit algorithm and, unlike scheme 2, does combine adjacent free memory blocks into a single large block (it does include a coalescence algorithm).\n
 \n
 Scheme 5:\n
-This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().</Hint>
+This scheme allows the heap to be defined across multiple non-contigous blocks and combines (coalescences) adjacent memory blocks as they are freed. vPortDefineHeapRegions() ***must*** be called before pvPortMalloc().\n
+\n
+Scheme 6:\n
+Safe wrapper to newlib, provided by Dave Nadler. See http://www.nadler.com/embedded/newlibAndFreeRTOS.html. Requires three heap linker symbols for base, limit and size.</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>true</EditLine>
                     <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
