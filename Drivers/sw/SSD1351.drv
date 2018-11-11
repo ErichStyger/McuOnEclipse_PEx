@@ -1041,7 +1041,7 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
   #endif
 
   %'ModuleName'%.OpenWindow(xb, yb, xb+wb-1, yb+hb-1);  /* window for region */
-#if 0 /* this only works for Landscape and Landscape180 */
+#if 0 /* this only works for Landscape and Landscape180? */
   if (xb==0 && w==%'ModuleName'%.HW_WIDTH) { /* can write full block */
     %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[yb][xb]), wb*hb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
   } else
@@ -1050,7 +1050,7 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
     /* need to write memory line by line */
     %'ModuleName'%.PixelDim i;
 
-    for(i=yb;i<yb+hb-1;i++) {
+    for(i=yb;i<yb+hb;i++) {
       %'ModuleName'%.WriteDataBlock((uint8_t*)(&%'ModuleName'%.DisplayBuf[i][xb]), wb*sizeof(%'ModuleName'%.DisplayBuf[0][0]));
     }
   }
