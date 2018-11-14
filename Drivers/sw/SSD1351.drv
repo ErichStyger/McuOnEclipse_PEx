@@ -49,6 +49,7 @@
 %-
 %-BW_INTERN_COMMENTS_START
 %- List of descriptions of internal methods
+%define! Description_GiveBus Called to release the SPI bus
 %-BW_INTERN_COMMENTS_END
 %-
 %-BW_SECTIONS_INSERT
@@ -243,8 +244,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN CloseWindow
 %ifdef CloseWindow
-#define %'ModuleName'%.CloseWindow()  /* nothing to do */
-
+void %'ModuleName'%.CloseWindow(void);
 %include Common\SSD1351CloseWindow.Inc
 
 %endif %- CloseWindow
@@ -487,6 +487,20 @@ uint8_t %'ModuleName'%.%SetContrastMaster(uint8_t contrast);
 
 %endif %- SetContrastMaster
 %-BW_METHOD_END SetContrastMaster
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetBus
+%ifdef GetBus
+void %'ModuleName'%.%GetBus(void);
+%include Common\SSD1351GetBus.Inc
+
+%endif %- GetBus
+%-BW_METHOD_END GetBus
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG GiveBus
+void %'ModuleName'%.GiveBus(void);
+%include Common\GeneralInternal.inc (GiveBus)
+
+%-INTERNAL_METHOD_END GiveBus
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -511,6 +525,22 @@ void %OnGiveLCD(void);
 
 %endif %- OnGiveLCD
 %-BW_METHOD_END OnGiveLCD
+%-BW_METHOD_BEGIN OnGetBus
+%ifdef OnGetBus
+%INTERFACE OnGetBus
+void %OnGetBus(void);
+%include Common\SSD1351OnGetBus.Inc
+
+%endif %- OnGetBus
+%-BW_METHOD_END OnGetBus
+%-BW_METHOD_BEGIN OnGiveBus
+%ifdef OnGiveBus
+%INTERFACE OnGiveBus
+void %OnGiveBus(void);
+%include Common\SSD1351OnGiveBus.Inc
+
+%endif %- OnGiveBus
+%-BW_METHOD_END OnGiveBus
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\SSD1351Settings.Inc
@@ -769,8 +799,14 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
       break;
   } /* switch */
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GetBus();
+#endif
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_REMAP); /* Remap command */
   %'ModuleName'%.WriteData(remap);                 /* remap data */
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GiveBus();
+#endif
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   currentOrientation = orientation;
 #endif
@@ -952,6 +988,9 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
   c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
   r0 = %'ModuleName'%.HW_HEIGHT-1-y1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-y0+OLED_ROW_OFFSET;
 #endif
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GetBus();
+#endif
   /* Set Window */
   %'ModuleName'%.WriteCommand(OLED_CMD_SET_COLUMN);              %>40/* set column command */
   %'ModuleName'%.WriteDataWord(c0<<8|c1);                        %>40/* start and end column */
@@ -1066,12 +1105,12 @@ void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelD
 %-BW_METHOD_BEGIN CloseWindow
 %ifdef CloseWindow
 %include Common\SSD1351CloseWindow.Inc
-/*
 void %'ModuleName'%.%CloseWindow(void)
 {
-  implemented as macro in %'ModuleName'.h
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GiveBus();
+#endif
 }
-*/
 
 %endif %- CloseWindow
 %-BW_METHOD_END CloseWindow
@@ -1196,7 +1235,6 @@ void %'ModuleName'%.%GetLCD(void)
 %if defined(OnGetLCD)
   %OnGetLCD();
 %endif
-  %'ModuleName'%.%InitCommChannel();
 }
 
 %endif %- GetLCD
@@ -1541,7 +1579,13 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %include Common\SSD1351DisplayOnOff.Inc
 uint8_t %'ModuleName'%.%DisplayOnOff(bool on)
 {
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GetBus();
+#endif
   %'ModuleName'%.%WriteCommand(on?OLED_CMD_DISPLAYON:OLED_CMD_DISPLAYOFF);
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GiveBus();
+#endif
   return ERR_OK;
 }
 
@@ -1557,10 +1601,16 @@ uint8_t %'ModuleName'%.%DisplayOnOff(bool on)
 %include Common\SSD1351SetContrastABC.Inc
 uint8_t %'ModuleName'%.%SetContrastABC(uint8_t contrastA, uint8_t contrastB, uint8_t contrastC)
 {
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GetBus();
+#endif
   %'ModuleName'%.%WriteCommand(OLED_CMD_CONTRASTABC);
   %'ModuleName'%.%WriteData(contrastA);
   %'ModuleName'%.%WriteData(contrastB);
   %'ModuleName'%.%WriteData(contrastC);
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GiveBus();
+#endif
   return ERR_OK;
 }
 
@@ -1574,14 +1624,45 @@ uint8_t %'ModuleName'%.%SetContrastABC(uint8_t contrastA, uint8_t contrastB, uin
 %include Common\SSD1351SetContrastMaster.Inc
 uint8_t %'ModuleName'%.%SetContrastMaster(uint8_t contrast)
 {
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GetBus();
+#endif
   contrast &= 0xF; /* value is limited to 0-16 */
   %'ModuleName'%.%WriteCommand(OLED_CMD_CONTRASTMASTER);
   %'ModuleName'%.%WriteData(contrast);
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.GiveBus();
+#endif
   return ERR_OK;
 }
 
 %endif %- SetContrastMaster
 %-BW_METHOD_END SetContrastMaster
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetBus
+%ifdef GetBus
+%include Common\SSD1351GetBus.Inc
+void %'ModuleName'%.%GetBus(void)
+{
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGet();
+  %'ModuleName'%.%InitCommChannel();
+#endif
+}
+
+%endif %- GetBus
+%-BW_METHOD_END GetBus
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG GiveBus
+%include Common\GeneralInternal.inc (GiveBus)
+void %'ModuleName'%.GiveBus(void)
+{
+#if %'ModuleName'%.CONFIG_USE_BUS_SHARING
+  %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGive();
+#endif
+}
+
+%-INTERNAL_METHOD_END GiveBus
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -1611,6 +1692,28 @@ void %OnGiveLCD(void)
 
 %endif %- OnGiveLCD
 %-BW_METHOD_END OnGiveLCD
+%-BW_METHOD_BEGIN OnGetBus
+%ifdef OnGetBus
+%IMPLEMENTATION OnGetBus
+%include Common\SSD1351OnGetBus.Inc
+void %OnGetBus(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnGetBus
+%-BW_METHOD_END OnGetBus
+%-BW_METHOD_BEGIN OnGiveBus
+%ifdef OnGiveBus
+%IMPLEMENTATION OnGiveBus
+%include Common\SSD1351OnGiveBus.Inc
+void %OnGiveBus(void)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnGiveBus
+%-BW_METHOD_END OnGiveBus
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
@@ -1808,6 +1911,22 @@ void %OnGiveLCD(void)
 #define %'ModuleName'%.CONFIG_CONTRAST_A        0x%#b%ContrastA /* Adafruit default: 0xC8 */
 #define %'ModuleName'%.CONFIG_CONTRAST_B        0x%#b%ContrastB /* Adafruit default: 0x80 */
 #define %'ModuleName'%.CONFIG_CONTRAST_C        0x%#b%ContrastC /* Adafruit default: 0xC8 */
+
+#ifndef %'ModuleName'%.CONFIG_USE_BUS_SHARING
+%if defined(OnGetBus) | defined(OnGiveBus)
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING  (1)
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGet   %OnGetBus
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGive  %OnGiveBus
+%else
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING  (0)
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGet   OnGetBus
+  #define %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGive  OnGiveBus
+%endif
+    /*!< 1: Share SPI bus and generate OnGetLCD() and OnGiveLCD() events. 0: do not share bus */
+#endif
+/* prototypes */
+extern void %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGet(void);  /* called at the start of display critical section */
+extern void %'ModuleName'%.CONFIG_USE_BUS_SHARING_OnGive(void); /* called at the end of the display critical section */
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

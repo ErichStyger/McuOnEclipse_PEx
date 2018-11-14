@@ -588,6 +588,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %endif %- SetDisplayOrientation
 %-BW_METHOD_END SetDisplayOrientation
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN GetWidth
 %ifdef GetWidth
 %-BW_PUBLISH_MACRO
 #define %'ModuleName'%.%GetWidth %@Display@'ModuleName'%.%GetWidth
@@ -595,7 +596,9 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %include Common\GDisplayGetWidth.Inc
 
 %endif %- GetWidth
+%-BW_METHOD_END GetWidth
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN GetHeight
 %ifdef GetHeight
 %-BW_PUBLISH_MACRO
 #define %'ModuleName'%.%GetHeight %@Display@'ModuleName'%.%GetHeight
@@ -603,6 +606,7 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %include Common\GDisplayGetHeight.Inc
 
 %endif %- GetHeight
+%-BW_METHOD_END GetHeight
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetLongerSide
 %ifdef GetLongerSide
@@ -655,6 +659,8 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -842,7 +848,7 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -854,7 +860,7 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #else
   %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -879,7 +885,7 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -891,7 +897,7 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 #else /* do memory buffer operation */
   %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1000,7 +1006,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -1021,7 +1027,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, color);
  #endif
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1087,7 +1093,7 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
   x1 = (%'ModuleName'_PixelDim)(x+width-1);                      %>40 /* set window lower right x coordinate */
   y1 = (%'ModuleName'_PixelDim)(y+height-1);                     %>40 /* set window lower right y coordinate */
   pixCnt = (%'ModuleName'_PixelCount)((x1-x+1)*(y1-y+1));        %>40 /* number of pixels to write */
-  #if %'ModuleName'%.CONFIG_USE_MUTEX
+  #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
   #endif
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x1, y1);       %>40 /* set up window as large as the box */
@@ -1096,12 +1102,12 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
     pixCnt--;
   } /* while */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-  #if %'ModuleName'%.CONFIG_USE_MUTEX
+  #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
   #endif
 #else
   y0 = y; ye = (%'ModuleName'%.PixelDim)(y0+height-1);
-  #if %'ModuleName'%.CONFIG_USE_MUTEX
+  #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
   #endif
   for(;;) { /* breaks */
@@ -1121,7 +1127,7 @@ void %'ModuleName'%.%DrawFilledBox(%'ModuleName'_PixelDim x, %'ModuleName'_Pixel
     }
     y0++;
   } /* for */
-  #if %'ModuleName'%.CONFIG_USE_MUTEX
+  #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
   #endif
 #endif
@@ -1495,7 +1501,7 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -1541,7 +1547,7 @@ void %'ModuleName'%.%Draw65kBitmap(%'ModuleName'_PixelDim x1, %'ModuleName'_Pixe
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1565,7 +1571,7 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -1613,7 +1619,7 @@ void %'ModuleName'%.%Draw256BitmapHigh(%'ModuleName'_PixelDim x1, %'ModuleName'_
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp;  (void)ColorTable; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1645,7 +1651,7 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   %'ModuleName'_PixelCount pixelCount = (%'ModuleName'_PixelCount)((x2-x1+1) * (y2-y1+1));
 
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
@@ -1695,7 +1701,7 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
   /* NYI */
   (void)x1; (void)y1; (void)x2; (void)y2; (void)bmp; (void)compressed;%>40 /* avoid compiler warning */
 #endif
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1712,11 +1718,11 @@ void %'ModuleName'%.%Draw256BitmapLow(%'ModuleName'_PixelDim x1, %'ModuleName'_P
 %include Common\GDisplayUpdateRegion.Inc
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
 {
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GetDisplay();
 #endif
   %@Display@'ModuleName'%.UpdateRegion(x,y,w,h);
-#if %'ModuleName'%.CONFIG_USE_MUTEX
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
 #endif
 }
@@ -1804,9 +1810,9 @@ void %'ModuleName'%.%GetDisplay(void)
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   xSemaphoreTakeRecursive(%'ModuleName'%.displayMutex, portMAX_DELAY);
 #endif
-%if defined(OnGetDisplay)
-  %OnGetDisplay();
-%endif
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
+  %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGet();
+#endif
   %@Display@'ModuleName'%.GetLCD();
 }
 
@@ -1819,9 +1825,9 @@ void %'ModuleName'%.%GetDisplay(void)
 void %'ModuleName'%.%GiveDisplay(void)
 {
   %@Display@'ModuleName'%.GiveLCD();
-%if defined(OnGiveDisplay)
-  %OnGiveDisplay();
-%endif
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
+  %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGive();
+#endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
   xSemaphoreGiveRecursive(%'ModuleName'%.displayMutex);
 #endif
@@ -1860,6 +1866,8 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -2014,6 +2022,22 @@ void %OnGiveDisplay(void)
 %endif
     /*!< 1: clear display during Init(); 0: do not clear display. */
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
+%if defined(OnGetDisplay) | defined(OnGiveDisplay)
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING  (1)
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGet   %OnGetDisplay
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGive  %OnGiveDisplay
+%else
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING  (0)
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGet   OnGetDisplay
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGive  OnGiveDisplay
+%endif
+    /*!< 1: Share display and generate OnGetDisplay() and OnGiveDisplay() events. 0: do not share display */
+#endif
+/* prototypes */
+extern void %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGet(void);  /* called at the start of display critical section */
+extern void %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING_OnGive(void); /* called at the end of the display critical section */
 
 #ifndef %'ModuleName'%.CONFIG_USE_MUTEX
 %if defined(RTOS)
