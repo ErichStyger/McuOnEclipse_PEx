@@ -10,8 +10,8 @@
 %;**         x%Parx %>27 - value to be mapped
 %;**         in_min%Parin_min %>27 - input range minimum value
 %;**         in_max%Parin_max %>27 - input range maximum value
-%;**         out_min%Parout_min %>27 - output range maximum value
-%;**         out_max%Parout_max %>27 - 
+%;**         out_min%Parout_min %>27 - output range minimum value
+%;**         out_max%Parout_max %>27 - output range maximum value
 %;**     Returns     :
 %;**         ---%RetVal %>27 - remapped value
 %include Common\GeneralDamage.inc
