@@ -261,6 +261,26 @@ LI.EXP {
 <b>Implicit Format for printf()</b></a> - Using printf() implicit parameter formatting
 </li>
 <li>
+<a name="EventsGroup">
+<b>Events</b></a> - Here some event types can be included or not. Reduce the number of event types to reduce the traffic. Note that the application can use SEGGER_SYSVIEW_DisableEvents() to further reduce the amount of events.<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="QueueEventsEnabled">
+  <b>Queues</b></a> - If events for queues are generated
+  </li>
+  <li>
+  <a name="ISREventsEnabled">
+  <b>ISR</b></a> - If Interrrupt Services should be recorded or not.
+  </li>
+  <li>
+  <a name="StreamBufferEventsEnabled">
+  <b>StreamBuffer</b></a> - If Stream Buffer events should be recorded or not.
+  </li>
+</ul>
+</li>
+<li>
 <a name="RTTChannelGroup">
 <b>RTT Channel</b></a> - Settings for the Segger RTT channel
 <ul>
