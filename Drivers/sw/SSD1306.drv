@@ -390,6 +390,26 @@ void %'ModuleName'%.%PrintString(uint8_t *str);
 
 %endif %- PrintString
 %-BW_METHOD_END PrintString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SSD1306PutPixel.Inc
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Method
+%ifdef Method
+byte %'ModuleName'%.%Method(void);
+%define! RetVal
+%include Common\SSD1306Method.Inc
+
+%endif %- Method
+%-BW_METHOD_END Method
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1132,6 +1152,45 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SSD1306PutPixel.Inc
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+{
+  uint8_t val;
+
+#if 0 /* done at the the higher level */
+  if (x>=%'ModuleName'%.%GetWidth() || y>=%'ModuleName'%.%GetHeight()) {
+    return; /* error case */
+  }
+#endif
+  val = %'ModuleName'%.DisplayBuf[y/8][x]; /* get current value */
+  if (color!=0) {
+    val |= (1<<(y%%8)); /* set pixel */
+  } else {
+    val &= (1<<(y%%8)); /* clear pixel */
+  }
+  %'ModuleName'%.DisplayBuf[y/8][x] = val; /* store value */
+}
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Method
+%ifdef Method
+%define! RetVal
+%include Common\SSD1306Method.Inc
+byte %'ModuleName'%.%Method(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- Method
+%-BW_METHOD_END Method
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

@@ -97,15 +97,18 @@ extern "C" {
 %else
 #if 0
 %endif
-/* this type is declared in PE_Types.h for non-LDD processors, need to declare it locally otherwise */
-typedef struct {                         /* Image */
-  uint16_t width;                        /* Image width  */
-  uint16_t height;                       /* Image height */
-  const uint8_t *pixmap;                 /* Image pixel bitmap */
-  uint16_t size;                         /* Image size   */
-  const char *name;                      /* Image name   */
-} TIMAGE;
-typedef TIMAGE* PIMAGE ;                 /* Pointer to image */
+#ifndef _TIMAGE_IS_DEFINED
+  #define _TIMAGE_IS_DEFINED
+  /* this type is declared in PE_Types.h for non-LDD processors, need to declare it locally otherwise */
+  typedef struct {                         /* Image */
+    uint16_t width;                        /* Image width  */
+    uint16_t height;                       /* Image height */
+    const uint8_t *pixmap;                 /* Image pixel bitmap */
+    uint16_t size;                         /* Image size   */
+    const char *name;                      /* Image name   */
+  } TIMAGE;
+  typedef TIMAGE* PIMAGE ;                 /* Pointer to image */
+#endif /* _TIMAGE_IS_DEFINED */
 %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %else
 #endif
@@ -164,7 +167,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 
 %-BW_CUSTOM_USERTYPE_END
 %if %UseMemBuffer='yes'
-
+/* using Memory Buffer */
 %ifdef Orientation
 %if %Orientation='Landscape'
 /* Landscape */
@@ -180,6 +183,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 %if %@Display@BitsPerPixel='1' | %@Display@BitsPerPixel='8'
 #define %'ModuleName'%.BUF_BYTE(x,y)  /* how to access a byte in the display buf[][] */ \
 %if %@Display@BitsPerPixel='1'
+  /* one bit per pixel */\
   %if %Orientation='Landscape'
     %if   %@Display@BytesInRows='yes' & %@Display@BytesInXdirection='yes'
       %@Display@'ModuleName'%.DisplayBuf[y][(x)/8]
@@ -222,6 +226,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
     %endif
   %endif
 %elif %@Display@BitsPerPixel='8'
+  /* 8 bits per pixel */ \
   %if %@Display@BytesInRows='yes'
   %@Display@'ModuleName'%.DisplayBuf[y][x]
   %else
@@ -239,8 +244,8 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
 #endif
 %endif
 %------------------------------------------
-%if %@Display@BitsPerPixel='1'
-#define %'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y) /* pixel bit number inside display buffer byte (0 is LSB, 7 MSB) */ \
+#if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
+  #define %'ModuleName'%.BUF_BYTE_PIXEL_BIT_NO(x,y) /* pixel bit number inside display buffer byte (0 is LSB, 7 MSB) */ \
   %if %Orientation='Landscape'
     %if   %@Display@BytesInRows='yes' & %@Display@MSBfirst='yes'
       ((uint8_t)(7-((x)%%8)))
@@ -282,7 +287,7 @@ typedef %@Display@'ModuleName'%.DisplayOrientation %'ModuleName'%.DisplayOrienta
       //((uint8_t)(7-((x)%%8)))
     %endif
   %endif
-%endif
+#endif
 
 #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
   #define %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y)  /* pixel mask for an individual bit inside a display buffer byte */ \
@@ -660,7 +665,6 @@ void %'ModuleName'%.%Deinit(void);
 %endif %- Deinit
 %-BW_METHOD_END Deinit
 %-************************************************************************************************************
-%-************************************************************************************************************
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -825,7 +829,7 @@ static const uint16_t c332to565[256] = { /* converts a 3-3-2 RBG value into a 5-
 %include Common\GDisplayClear.Inc
 void %'ModuleName'%.%Clear(void)
 {
-  %'ModuleName'%.%DrawFilledBox(0, 0, %'ModuleName'%.GetWidth(), %'ModuleName'%.GetHeight(), %'ModuleName'%.COLOR_WHITE);
+  %'ModuleName'%.%DrawFilledBox(0, 0, %'ModuleName'%.GetWidth(), %'ModuleName'%.GetHeight(), %'ModuleName'%.COLOR_PIXEL_CLR);
 }
 
 %endif %- Clear
@@ -855,10 +859,8 @@ void %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_BLACK);%>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_BLACK);
 #else
-  %'ModuleName'%.BUF_BYTE(x,y) |= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
+  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_PIXEL_SET);
 #endif
 #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
@@ -892,10 +894,8 @@ void %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW(x, y, x, y);         %>40 /* set up a one pixel window */
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(%'ModuleName'%.COLOR_WHITE);%>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
-#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_WHITE);
-#else /* do memory buffer operation */
-  %'ModuleName'%.BUF_BYTE(x,y) &= ~%'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
+#else
+  %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, %'ModuleName'%.COLOR_PIXEL_CLR);
 #endif
 #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();
@@ -922,17 +922,7 @@ void %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
     return;
   }
 %endif
-#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
-  #warning "not using RAM buffer may mean that this is not possible at all (unless read from display)?"
-  (void)x; (void)y; /* avoid compiler warning */
-  /* NYI */
-#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
   %@Display@'ModuleName'%.NegPixel(x, y);
-#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-  %@Display@'ModuleName'%.NegPixel(x, y);
-#else
-  %'ModuleName'%.BUF_BYTE(x,y) ^= %'ModuleName'%.BUF_BYTE_PIXEL_MASK(x,y);
-#endif
 }
 
 %endif %- NegPixel
@@ -968,18 +958,7 @@ void %'ModuleName'%.%UpdateFull(void)
     return 0;
   }
 %endif
-#if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
-  #warning "not using RAM buffer may mean that this is not possible at all (unless read from display)?"
-  (void)x; (void)y; /* avoid compiler warning */
-  return %'ModuleName'%.COLOR_BLACK; /* NYI */
-#elif %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==16
-//  return %'ModuleName'%.BUF_WORD(x,y);
   return %@Display@'ModuleName'%.GetPixel(x, y);
-#elif %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
-  return %@Display@'ModuleName'%.GetPixel(x, y);
-#else
-  return (%'ModuleName'_PixelColor)%'ModuleName'%.BUF_BYTE_GET_PIXEL(x,y);
-#endif
 }
 
 %endif %- GetPixel
@@ -1014,18 +993,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   %'ModuleName'%.CONFIG_FCT_NAME_WRITEPIXEL(color);              %>40 /* store pixel with color information */
   %'ModuleName'%.CONFIG_FCT_NAME_CLOSEWINDOW();                  %>40 /* close and execute window */
 #else
- #if %'ModuleName'%.CONFIG_NOF_BITS_PER_PIXEL==1
-  if (   (color==%'ModuleName'%.COLOR_BLACK && %'ModuleName'%.COLOR_BLACK==%'ModuleName'%.COLOR_PIXEL_SET)
-      || (color==%'ModuleName'%.COLOR_WHITE && %'ModuleName'%.COLOR_WHITE==%'ModuleName'%.COLOR_PIXEL_SET)
-     )
-  {
-    %'ModuleName'%.%SetPixel(x,y);
-  } else {
-    %'ModuleName'%.%ClrPixel(x,y);
-  }
- #else /* multi-bit display */
   %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL(x, y, color);
- #endif
 #endif
 #if %'ModuleName'%.CONFIG_USE_DISPLAY_SHARING
   %'ModuleName'%.GiveDisplay();

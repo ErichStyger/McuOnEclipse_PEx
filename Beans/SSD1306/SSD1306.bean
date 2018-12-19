@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306/SSH1106 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.030</Version>
+    <Version>01.033</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -724,6 +724,52 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>PutPixel</Name>
+        <Symbol>PutPixel</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Draws a pixel into the display buffer (not on the display).</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>x</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>x position of the pixel</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>y</ParName>
+          <ParType>PixelDim</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>y position of the pixel</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>color value of the pixel</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>OpenWindow</Name>
         <Symbol>OpenWindow</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1157,6 +1203,34 @@
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>void #M#_#C#(void)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>Method</Name>
+        <Symbol>Method</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint/>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>8bit unsigned</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>byte #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

@@ -1593,9 +1593,9 @@ void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))
 {
 #if %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
   uint8_t res;
-#endif
-#if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS>0
-  int timeoutMs = %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS;
+  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS>0
+  int timeoutMs = %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS;
+  #endif
 #endif
 
 #if %'ModuleName'%.CONFIG_USE_MUTEX
@@ -1604,24 +1604,24 @@ void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))
 #if %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
   do {
     res = fct((uint8_t)ch);                                      %>40/* Send char, returns error code */
-  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS
+  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS>0
     if (res==ERR_TXFULL) {
     #if %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT
     %if defined(Wait)
-      %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+      %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS);
     %else
-      McuWait_WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+      McuWait_WaitOSms(%'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS);
     %endif
     #else
     %if defined(Wait)
-      %@Wait@'ModuleName'%.Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+      %@Wait@'ModuleName'%.Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS);
     %else
-      MCUWait_Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT);
+      MCUWait_Waitms(%'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS);
     %endif
     #endif
     }
   #endif
-  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS>0
+  #if %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS>0
     if(timeoutMs<=0) {
       break; /* timeout */
     }
