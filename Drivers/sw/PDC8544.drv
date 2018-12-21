@@ -111,7 +111,7 @@ extern uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)
 
 #ifndef __BWUserType_%'ModuleName'_PixelCount
 #define __BWUserType_%'ModuleName'_PixelCount
-  typedef uint16_t %'ModuleName'_PixelCount ;                    %>40/* A word is enough to hold the number of pixels (84x48). */
+  typedef int16_t %'ModuleName'_PixelCount ;                     %>40/* A word is enough to hold the number of pixels (84x48). */
 #endif
 #ifndef __BWUserType_%'ModuleName'_PixelDim
 #define __BWUserType_%'ModuleName'_PixelDim
@@ -406,6 +406,17 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, byte color);
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\PDC8544PutPixel.Inc
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1067,6 +1078,24 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\PDC8544PutPixel.Inc
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, byte color)
+{
+  if (color != 0) {
+    PDC1_DisplayBuf[(y)/8][x] |= (1<<((uint8_t)((y)%8)));
+  } else {
+    PDC1_DisplayBuf[(y)/8][x] &= ~(1<<((uint8_t)((y)%8)));
+  }
+}
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
