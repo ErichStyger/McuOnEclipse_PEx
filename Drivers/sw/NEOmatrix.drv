@@ -115,6 +115,38 @@
   typedef uint16_t %'ModuleName'%.PixelCount; /*!< one byte is enough to hold a counter for all pixels */
 #endif
 
+/* the values below are used in MATRIX_Init() to configure the matrix.
+ * See https://learn.adafruit.com/adafruit-neopixel-uberguide/neomatrix-library
+ *  */
+// These define the layout for a single 'unified' matrix (e.g. one made
+// from NeoPixel strips, or a single NeoPixel shield), or for the pixels
+// within each matrix of a tiled display (e.g. multiple NeoPixel shields).
+#define NEO_MATRIX_TOP         0x00 // Pixel 0 is at top of matrix
+#define NEO_MATRIX_BOTTOM      0x01 // Pixel 0 is at bottom of matrix
+#define NEO_MATRIX_LEFT        0x00 // Pixel 0 is at left of matrix
+#define NEO_MATRIX_RIGHT       0x02 // Pixel 0 is at right of matrix
+#define NEO_MATRIX_CORNER      0x03 // Bitmask for pixel 0 matrix corner
+#define NEO_MATRIX_ROWS        0x00 // Matrix is row major (horizontal): pixels are increasing in rows
+#define NEO_MATRIX_COLUMNS     0x04 // Matrix is column major (vertical): pixels are increasing in columns
+#define NEO_MATRIX_AXIS        0x04 // Bitmask for row/column layout
+#define NEO_MATRIX_PROGRESSIVE 0x00 // Same pixel order across each line (otherwise ZIGZAG)
+#define NEO_MATRIX_ZIGZAG      0x08 // Pixel order reverses between lines (otherwise Progressive)
+#define NEO_MATRIX_SEQUENCE    0x08 // Bitmask for pixel line order
+
+// These apply only to tiled displays (multiple matrices):
+#define NEO_TILE_TOP           0x00 // First tile is at top of matrix
+#define NEO_TILE_BOTTOM        0x10 // First tile is at bottom of matrix
+#define NEO_TILE_LEFT          0x00 // First tile is at left of matrix
+#define NEO_TILE_RIGHT         0x20 // First tile is at right of matrix
+#define NEO_TILE_CORNER        0x30 // Bitmask for first tile corner
+#define NEO_TILE_ROWS          0x00 // Tiles ordered in rows
+#define NEO_TILE_COLUMNS       0x40 // Tiles ordered in columns
+#define NEO_TILE_AXIS          0x40 // Bitmask for tile H/V orientation
+#define NEO_TILE_PROGRESSIVE   0x00 // Same tile order across each line
+#define NEO_TILE_ZIGZAG        0x80 // Tile order reverses between lines
+#define NEO_TILE_SEQUENCE      0x80 // Bitmask for tile line order
+
+
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 %-ENDUSRTYPES
@@ -326,6 +358,32 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\NEOmatrixDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\NEOmatrixInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN NegPixel
+%ifdef NegPixel
+uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y);
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixNegPixel.Inc
+
+%endif %- NegPixel
+%-BW_METHOD_END NegPixel
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -363,7 +421,123 @@ uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.MEM_BUF_SIZE]; /* buffer for th
 %if defined(Enable) | defined(Disable)
 static bool %'ModuleName'%.DisplayEnabled = TRUE; /* if we allow refresh of the display */
 %endif
-void Adafruit_NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8_t blue);
+
+/*
+  Adafruit_NeoMatrix_drawPixel() Method written by Adafruit, copyrigt notice below:
+
+  Written by Phil Burgess / Paint Your Dragon for Adafruit Industries.
+
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing products
+  from Adafruit!
+
+  -------------------------------------------------------------------------
+  This file is part of the Adafruit NeoMatrix library.
+
+  NeoMatrix is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of
+  the License, or (at your option) any later version.
+
+  NeoMatrix is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with NeoMatrix.  If not, see
+  <http://www.gnu.org/licenses/>.
+  -------------------------------------------------------------------------*/
+typedef struct {
+  uint8_t type;
+  uint8_t matrixWidth, matrixHeight, tilesX, tilesY;
+  uint16_t (*remapFn)(uint16_t x, uint16_t y);
+  uint32_t passThruColor;
+  bool  passThruFlag;
+} MATRIX_Matrix;
+
+static MATRIX_Matrix matrix;
+
+void Adafruit_NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8_t blue) {
+  #define swap(a, b) {uint16_t swapTmp; swapTmp=a; a=b; b=swapTmp;}
+
+  if((x < 0) || (y < 0) || (x >= %'ModuleName'%.HW_WIDTH) || (y >= %'ModuleName'%.HW_HEIGHT)) return;
+  int tileOffset = 0, pixelOffset, val;
+
+  if(matrix.remapFn) { // Custom X/Y remapping function
+    pixelOffset = (*matrix.remapFn)(x, y);
+  } else {      // Standard single matrix or tiled matrices
+    uint8_t  corner = matrix.type & NEO_MATRIX_CORNER;
+    uint16_t minor, major, majorScale;
+
+    if(matrix.tilesX) { // Tiled display, multiple matrices
+      uint16_t tile;
+
+      minor = x / matrix.matrixWidth;            // Tile # X/Y; presume row major to
+      major = y / matrix.matrixHeight,           // start (will swap later if needed)
+      x     = x - (minor * matrix.matrixWidth);  // Pixel X/Y within tile
+      y     = y - (major * matrix.matrixHeight); // (-* is less math than modulo)
+
+      // Determine corner of entry, flip axes if needed
+      if(matrix.type & NEO_TILE_RIGHT)  minor = matrix.tilesX - 1 - minor;
+      if(matrix.type & NEO_TILE_BOTTOM) major = matrix.tilesY - 1 - major;
+
+      // Determine actual major axis of tiling
+      if((matrix.type & NEO_TILE_AXIS) == NEO_TILE_ROWS) {
+        majorScale = matrix.tilesX;
+      } else {
+        swap(major, minor);
+        majorScale = matrix.tilesY;
+      }
+
+      // Determine tile number
+      if((matrix.type & NEO_TILE_SEQUENCE) == NEO_TILE_PROGRESSIVE) {
+        // All tiles in same order
+        tile = major * majorScale + minor;
+      } else {
+        // Zigzag; alternate rows change direction.  On these rows,
+        // this also flips the starting corner of the matrix for the
+        // pixel math later.
+        if(major & 1) {
+          corner ^= NEO_MATRIX_CORNER;
+          tile = (major + 1) * majorScale - 1 - minor;
+        } else {
+          tile =  major      * majorScale     + minor;
+        }
+      }
+      // Index of first pixel in tile
+      tileOffset = tile * matrix.matrixWidth * matrix.matrixHeight;
+    } // else no tiling (handle as single tile)
+    // Find pixel number within tile
+    minor = x; // Presume row major to start (will swap later if needed)
+    major = y;
+
+    // Determine corner of entry, flip axes if needed
+    if(corner & NEO_MATRIX_RIGHT)  minor = matrix.matrixWidth  - 1 - minor;
+    if(corner & NEO_MATRIX_BOTTOM) major = matrix.matrixHeight - 1 - major;
+
+    // Determine actual major axis of matrix
+    if((matrix.type & NEO_MATRIX_AXIS) == NEO_MATRIX_ROWS) {
+      majorScale = matrix.matrixWidth;
+    } else {
+      swap(major, minor);
+      majorScale = matrix.matrixHeight;
+    }
+
+    // Determine pixel number within tile/matrix
+    if((matrix.type & NEO_MATRIX_SEQUENCE) == NEO_MATRIX_PROGRESSIVE) {
+      // All lines in same order
+      pixelOffset = major * majorScale + minor;
+    } else {
+      // Zigzag; alternate rows change direction.
+      if(major & 1) pixelOffset = (major + 1) * majorScale - 1 - minor;
+      else          pixelOffset =  major      * majorScale     + minor;
+    }
+  }
+  val = tileOffset+pixelOffset; /* overall index in matrix */
+  NEO_SetPixelRGB(val/%'ModuleName'%.NOF_LED_PIXELS, val%%%'ModuleName'%.NOF_LED_PIXELS, red, green, blue);
+  //NEO_SetPixelRGB(0, tileOffset + pixelOffset, red, green, blue); /* single lane version */
+}
 
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START
@@ -556,6 +730,21 @@ uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %endif %- ClrPixel
 %-BW_METHOD_END ClrPixel
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN NegPixel
+%ifdef NegPixel
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixNegPixel.Inc
+uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
+{
+  /* \todo */
+  return ERR_OK;
+}
+
+%endif %- NegPixel
+%-BW_METHOD_END NegPixel
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN PutPixel
 %ifdef PutPixel
 %define! Parx
@@ -572,6 +761,80 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\NEOmatrixDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* noting to do */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\NEOmatrixInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* note: the x/y first pixel (0,0) is always on top left, with x to the right and y to the bottom */
+#if 0
+  /* single Adafruit 8x8 matrix. Orientation is DIN first pixel is top-left */
+  matrix.type =
+        NEO_MATRIX_TOP  // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_LEFT // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_ROWS // axis, pixels are organized in  NEO_MATRIX_ROWS or NEO_MATRIX_COLUMNS
+      + NEO_MATRIX_PROGRESSIVE // sequence, pixels either change side NEO_MATRIX_PROGRESSIVE or NEO_MATRIX_ZIGZAG
+      ;
+#elif 0
+  /* single Adafruit 8x8 matrix. Orientation is DIN first pixel is bottom-left */
+  matrix.type =
+        NEO_MATRIX_BOTTOM  // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_LEFT // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_COLUMNS // axis, pixels are organized in  NEO_MATRIX_ROWS or NEO_MATRIX_COLUMNS
+      + NEO_MATRIX_PROGRESSIVE // sequence, pixels either change side NEO_MATRIX_PROGRESSIVE or NEO_MATRIX_ZIGZAG
+      ;
+#elif 1
+  /* three Adafruit 8x8 matrix. Orientation is DIN first pixel is top-left, with x going to the right and y going to the bottom */
+  matrix.type =
+        NEO_MATRIX_TOP  // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_LEFT // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_ROWS // axis, pixels are organized in  NEO_MATRIX_ROWS or NEO_MATRIX_COLUMNS
+      + NEO_MATRIX_PROGRESSIVE // sequence, pixels either change side NEO_MATRIX_PROGRESSIVE or NEO_MATRIX_ZIGZAG
+      /* tile configuration */
+      + NEO_TILE_TOP    // corner, position of first tile: NEO_TILE_TOP or NEO_TILE_BOTTOM
+      + NEO_TILE_LEFT   // corner, position of first tile: NEO_TILE_LEFT or NEO_TILE_RIGHT
+      + NEO_TILE_ROWS   // axis, organization of tiles: NEO_TILE_ROWS or NEO_TILE_COLUMNS
+      + NEO_TILE_PROGRESSIVE // sequence, organization of tiles: NEO_TILE_PROGRESSIVE or NEO_TILE_ZIGZAG
+      ;
+#elif 0
+  /* two Adafruit 8x8 matrix. Orientation is DIN first pixel is bottom-left */
+  matrix.type =
+        NEO_MATRIX_BOTTOM  // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_LEFT // corner, first pixel: either NEO_MATRIX_TOP or NEO_MATRIX_BOTTOM
+      + NEO_MATRIX_COLUMNS // axis, pixels are organized in  NEO_MATRIX_ROWS or NEO_MATRIX_COLUMNS
+      + NEO_MATRIX_PROGRESSIVE // sequence, pixels either change side NEO_MATRIX_PROGRESSIVE or NEO_MATRIX_ZIGZAG
+      /* tile configuration */
+      + NEO_TILE_TOP    // corner, position of first tile: NEO_TILE_TOP or NEO_TILE_BOTTOM
+      + NEO_TILE_LEFT   // corner, position of first tile: NEO_TILE_LEFT or NEO_TILE_RIGHT
+      + NEO_TILE_ROWS   // axis, organization of tiles: NEO_TILE_ROWS or NEO_TILE_COLUMNS
+      + NEO_TILE_PROGRESSIVE // sequence, organization of tiles: NEO_TILE_PROGRESSIVE or NEO_TILE_ZIGZAG
+      ;
+#else
+  matrix.type = NEO_MATRIX_TOP+NEO_MATRIX_LEFT+NEO_MATRIX_ROWS+NEO_MATRIX_PROGRESSIVE
+                +NEO_TILE_TOP+NEO_TILE_LEFT+NEO_TILE_COLUMNS+NEO_TILE_ZIGZAG;
+#endif
+  matrix.matrixWidth = 8; /* size of *each* matrix */
+  matrix.matrixHeight = 8; /* size of *each* matrix */
+  matrix.tilesX = %'ModuleName'%.HW_WIDTH/8; /* number of tiles in X direction */
+  matrix.tilesY = %'ModuleName'%.HW_HEIGHT/8; /* number of tiles in Y direction */
+  matrix.remapFn = NULL; /* remapping function */
+  matrix.passThruColor = 0;
+  matrix.passThruFlag = FALSE;
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -581,10 +844,9 @@ uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %-BW_EVENT_IMPLEMENT_START
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
-  /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
+%'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_END
-%-
 %ENABLE
 %CODE_BEGIN
 %CODE_END
