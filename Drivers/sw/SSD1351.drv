@@ -956,6 +956,10 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
     return;
   }
 #if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  #if %'ModuleName'%.CONFIG_USE_RAM_BUFFER /* if using RAM buffer, don't need to rotate, as this is already done with the writes to the memory */
+    c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
+    r0 = y0+OLED_ROW_OFFSET; r1 = y1+OLED_ROW_OFFSET;
+  #else
   switch(currentOrientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
@@ -975,6 +979,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
       break;
   } /* switch */
+  #endif
 #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
   c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
   r0 = y0+OLED_ROW_OFFSET; r1 = y1+OLED_ROW_OFFSET;
