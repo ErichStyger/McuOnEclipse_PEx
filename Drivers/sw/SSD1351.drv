@@ -115,7 +115,7 @@ typedef uint16_t %'ModuleName'_PixelDim;                         %>40/* one word
 typedef uint32_t %'ModuleName'_PixelCount;                       %>40/* need a 32bit type to hold the number of pixels on the display. */
 
 #if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+extern %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 #endif
 
 /* Predefined colors and pixel values. The display is using words for a pixel/color. Using 16bits for color (65k: 5:red + 6:green + 5:blue */
@@ -568,7 +568,7 @@ void %OnGiveBus(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 #if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  %'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
+%'ModuleName'_PixelColor %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 #endif
 /*
 - RESET is low active
@@ -786,6 +786,12 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
     #define REMAP_BASE_VALUES           (REMAP_COLOR_RGB565 | REMAP_COM_SPLIT_ODD_EVEN_EN | REMAP_SCAN_UP_TO_DOWN | REMAP_ORDER_ABC)
   #endif
 
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+  currentOrientation = orientation;
+#endif
+#if 1 /* using normal landscape modus of hardware. Will do the rotation in the RAM buffer! */
+  remap =  REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_HORIZONTAL_INCREMENT;
+#else
   switch(orientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
@@ -801,6 +807,7 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
       remap = REMAP_BASE_VALUES | REMAP_COLUMNS_RIGHT_TO_LEFT  | REMAP_VERTICAL_INCREMENT;
       break;
   } /* switch */
+#endif
 #if %'ModuleName'%.CONFIG_USE_BUS_SHARING
   %'ModuleName'%.GetBus();
 #endif
@@ -808,9 +815,6 @@ static void SetDisplayOrientation(%'ModuleName'_DisplayOrientation orientation) 
   %'ModuleName'%.WriteData(remap);                 /* remap data */
 #if %'ModuleName'%.CONFIG_USE_BUS_SHARING
   %'ModuleName'%.GiveBus();
-#endif
-#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
-  currentOrientation = orientation;
 #endif
 }
 %-************************************************************************************************************
@@ -951,13 +955,7 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
   if ((y0 >= %'ModuleName'%.GetHeight()) || (y1 >= %'ModuleName'%.GetHeight())) {
     return;
   }
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  /* orientation is handled by the writes to the RAM buffer, use default landscape setting */
-  c0 = x0+OLED_COLUMN_OFFSET;
-  c1 = x1+OLED_COLUMN_OFFSET;
-  r0 = y0+OLED_ROW_OFFSET;
-  r1 = y1+OLED_ROW_OFFSET;
-#elif %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   switch(currentOrientation) {
     default:
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
@@ -977,18 +975,18 @@ void %'ModuleName'%.%OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDi
       r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
       break;
   } /* switch */
-#elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
-  c0 = %'ModuleName'%.HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = %'ModuleName'%.HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
-  r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
-#elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-  c0 = y0+OLED_COLUMN_OFFSET; c1 = y1+OLED_COLUMN_OFFSET;
-  r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
   c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
   r0 = y0+OLED_ROW_OFFSET; r1 = y1+OLED_ROW_OFFSET;
 #elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   c0 = x0+OLED_COLUMN_OFFSET; c1 = x1+OLED_COLUMN_OFFSET;
   r0 = %'ModuleName'%.HW_HEIGHT-1-y1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-y0+OLED_ROW_OFFSET;
+#elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
+  c0 = %'ModuleName'%.HW_WIDTH-1-y1+OLED_COLUMN_OFFSET; c1 = %'ModuleName'%.HW_WIDTH-1-y0+OLED_COLUMN_OFFSET;
+  r0 = x0+OLED_ROW_OFFSET; r1 = x1+OLED_ROW_OFFSET;
+#elif %'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
+  c0 = y0+OLED_COLUMN_OFFSET; c1 = y1+OLED_COLUMN_OFFSET;
+  r0 = %'ModuleName'%.HW_HEIGHT-1-x1+OLED_ROW_OFFSET; r1 = %'ModuleName'%.HW_HEIGHT-1-x0+OLED_ROW_OFFSET;
 #endif
 #if %'ModuleName'%.CONFIG_USE_BUS_SHARING
   %'ModuleName'%.GetBus();
@@ -1375,13 +1373,7 @@ void %'ModuleName'%.%Init(void)
       %'ModuleName'%.%WriteData(seq[i].cmd);
     }
   }
-#if %'ModuleName'_CONFIG_USE_RAM_BUFFER
-  /* if using RAM buffer, display orientation is handled by the memory buffer itself */
-  SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);
-#else
   SetDisplayOrientation(%'ModuleName'_CONFIG_INITIAL_DISPLAY_ORIENTATION);
-#endif
-
 #if %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
   %'ModuleName'%.%Clear();
 #endif

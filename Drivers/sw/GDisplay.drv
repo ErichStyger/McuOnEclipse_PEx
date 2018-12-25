@@ -565,19 +565,19 @@ void %'ModuleName'%.%DrawFilledCircle(%'ModuleName'_PixelDim x0, %'ModuleName'_P
 %-************************************************************************************************************
 %ifdef GetDisplayOrientation
 %-BW_PUBLISH_MACRO
-%ifdef Orientation
-%if %Orientation='Landscape'
-#define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_LANDSCAPE
-%elif %Orientation='Landscape180'
-#define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_LANDSCAPE180
-%elif %Orientation='Portrait'
-#define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_PORTRAIT
-%elif %Orientation='Portrait180'
-#define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_PORTRAIT180
-%endif
-%else
+%- %ifdef Orientation
+%- %if %Orientation='Landscape'
+%- #define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_LANDSCAPE
+%- %elif %Orientation='Landscape180'
+%- #define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_LANDSCAPE180
+%- %elif %Orientation='Portrait'
+%- #define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_PORTRAIT
+%- %elif %Orientation='Portrait180'
+%- #define %'ModuleName'%.%GetDisplayOrientation() %'ModuleName'%.ORIENTATION_PORTRAIT180
+%- %endif
+%- %else
 #define %'ModuleName'%.%GetDisplayOrientation %@Display@'ModuleName'%.%GetDisplayOrientation
-%endif
+%- %endif
 %define! RetVal
 %include Common\GDisplayGetDisplayOrientation.Inc
 
