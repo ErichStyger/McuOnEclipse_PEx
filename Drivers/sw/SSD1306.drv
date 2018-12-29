@@ -402,14 +402,13 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Method
-%ifdef Method
-byte %'ModuleName'%.%Method(void);
-%define! RetVal
-%include Common\SSD1306Method.Inc
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\SSD1306Deinit.Inc
 
-%endif %- Method
-%-BW_METHOD_END Method
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1180,17 +1179,16 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN Method
-%ifdef Method
-%define! RetVal
-%include Common\SSD1306Method.Inc
-byte %'ModuleName'%.%Method(void)
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\SSD1306Deinit.Inc
+void %'ModuleName'%.%Deinit(void)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  /* nothing to do */
 }
 
-%endif %- Method
-%-BW_METHOD_END Method
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
