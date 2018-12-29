@@ -3,13 +3,10 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (PutPixel)
+%include Common\GeneralMethod.inc (Deinit)
 %;**     Description :
-%;**         Sets a pixel with a color
-%include Common\GeneralParameters.inc(27)
-%;**         x%Parx %>27 - Pixel x coordinate
-%;**         y%Pary %>27 - Pixel y coordinate
-%;**         color%Parcolor %>27 - 
+%;**         Driver de-initialization
+%include Common\GeneralParametersNone.inc
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc
 %;** ===================================================================

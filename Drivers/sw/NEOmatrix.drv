@@ -146,26 +146,48 @@ typedef uint32_t %'ModuleName'%.PixelColor;    /* WS2812B has 24bits for a pixel
 typedef uint8_t %'ModuleName'%.PixelDim; /* one byte is enough to describe an x/y position */
 extern uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.MEM_BUF_SIZE]; /* buffer for the display */
 
+#define %'ModuleName'%.USE_NOF_COLOR  (3)
+
+#if %'ModuleName'%.USE_NOF_COLOR==4
+  #define %'ModuleName'%.MAKE_COLOR_RGB(r,g,b)     (((r)<<24)|((g)<<16)|((b)<<8))
+  #define %'ModuleName'%.MAKE_COLOR_RGBW(r,g,b,w)  (((r)<<24)|((g)<<16)|((b)<<8)|(w))
+#else /* 3 */
+  #define %'ModuleName'%.MAKE_COLOR_RGB(r,g,b)     (((r)<<16)|((g)<<8)|(b))
+  #define %'ModuleName'%.MAKE_COLOR_RGBW(r,g,b,w)  (((r)<<16)|((g)<<8)|(b))
+#endif
+
+#if %'ModuleName'%.USE_NOF_COLOR==4
+  #define %'ModuleName'%.GET_COLOR_RED(color)     (((color)>>24)&0xff)
+  #define %'ModuleName'%.GET_COLOR_GREEN(color)   (((color)>>16)&0xff)
+  #define %'ModuleName'%.GET_COLOR_BLUE(color)    (((color)>>8)&0xff)
+  #define %'ModuleName'%.GET_COLOR_WHITE(color)   ((color)&0xff)
+#else
+  #define %'ModuleName'%.GET_COLOR_RED(color)     (((color)>>16)&0xff)
+  #define %'ModuleName'%.GET_COLOR_GREEN(color)   (((color)>>8)&0xff)
+  #define %'ModuleName'%.GET_COLOR_BLUE(color)    ((color)&0xff)
+#endif
+
+
 #define %'ModuleName'%.PIXEL_ON             %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF            %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
-#define %'ModuleName'%.COLOR_PIXEL_SET      %'ModuleName'%.PIXEL_OFF /* color for a pixel set */
-#define %'ModuleName'%.COLOR_PIXEL_CLR      %'ModuleName'%.PIXEL_ON  /* color for a pixel cleared */
-#define %'ModuleName'%.COLOR_BLACK          1
-#define %'ModuleName'%.COLOR_WHITE          0
-#define %'ModuleName'%.COLOR_RED            1
-#define %'ModuleName'%.COLOR_BRIGHT_RED     1
-#define %'ModuleName'%.COLOR_DARK_RED       1
-#define %'ModuleName'%.COLOR_GREEN          1
-#define %'ModuleName'%.COLOR_BRIGHT_GREEN   1
-#define %'ModuleName'%.COLOR_DARK_GREEN     1
-#define %'ModuleName'%.COLOR_BLUE           1
-#define %'ModuleName'%.COLOR_BRIGHT_BLUE    1
-#define %'ModuleName'%.COLOR_DARK_BLUE      1
-#define %'ModuleName'%.COLOR_YELLOW         1
-#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  1
-#define %'ModuleName'%.COLOR_ORANGE         1
-#define %'ModuleName'%.COLOR_GREY           1
-#define %'ModuleName'%.COLOR_BRIGHT_GREY    1
+#define %'ModuleName'%.COLOR_PIXEL_SET      %'ModuleName'%.COLOR_WHITE /* color for a pixel set */
+#define %'ModuleName'%.COLOR_PIXEL_CLR      %'ModuleName'%.COLOR_BLACK  /* color for a pixel cleared */
+#define %'ModuleName'%.COLOR_BLACK          %'ModuleName'%.MAKE_COLOR_RGB(0,0,0)
+#define %'ModuleName'%.COLOR_WHITE          %'ModuleName'%.MAKE_COLOR_RGB(0xff,0xff,0xff)
+#define %'ModuleName'%.COLOR_RED            %'ModuleName'%.MAKE_COLOR_RGB(0xff,0,0)
+#define %'ModuleName'%.COLOR_BRIGHT_RED     %'ModuleName'%.MAKE_COLOR_RGB(0xff,0x0f,0x37)
+#define %'ModuleName'%.COLOR_DARK_RED       %'ModuleName'%.MAKE_COLOR_RGB(0x99,0x1A,0x00)
+#define %'ModuleName'%.COLOR_GREEN          %'ModuleName'%.MAKE_COLOR_RGB(0,0xff,0)
+#define %'ModuleName'%.COLOR_BRIGHT_GREEN   %'ModuleName'%.MAKE_COLOR_RGB(0x66,0xff,0)
+#define %'ModuleName'%.COLOR_DARK_GREEN     %'ModuleName'%.MAKE_COLOR_RGB(0x01,0x32,0x20)
+#define %'ModuleName'%.COLOR_BLUE           %'ModuleName'%.MAKE_COLOR_RGB(0,0,0xff)
+#define %'ModuleName'%.COLOR_BRIGHT_BLUE    %'ModuleName'%.MAKE_COLOR_RGB(0x33,0,0xff)
+#define %'ModuleName'%.COLOR_DARK_BLUE      %'ModuleName'%.MAKE_COLOR_RGB(0x17,0x1E,0x6C)
+#define %'ModuleName'%.COLOR_YELLOW         %'ModuleName'%.MAKE_COLOR_RGB(0xff,0xff,0x00)
+#define %'ModuleName'%.COLOR_BRIGHT_YELLOW  %'ModuleName'%.MAKE_COLOR_RGB(0xfd,0xfd,0x96)
+#define %'ModuleName'%.COLOR_ORANGE         %'ModuleName'%.MAKE_COLOR_RGB(0xff,0xA5,0x00)
+#define %'ModuleName'%.COLOR_GREY           %'ModuleName'%.MAKE_COLOR_RGB(0x80,0x80,0x80)
+#define %'ModuleName'%.COLOR_BRIGHT_GREY    %'ModuleName'%.MAKE_COLOR_RGB(0xd3,0xd3,0xd3)
 
 #define %'ModuleName'%.HW_WIDTH         %'ModuleName'%.CONFIG_WIDTH%>40 /* Logical display width in pixels */
 #define %'ModuleName'%.HW_HEIGHT        %'ModuleName'%.CONFIG_HEIGHT%>40 /* Logical display height in pixels */
@@ -318,11 +340,10 @@ uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutPixel
 %ifdef PutPixel
-uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
 %define! Parx
 %define! Pary
 %define! Parcolor
-%define! RetVal
 %include Common\NEOmatrixPutPixel.Inc
 
 %endif %- PutPixel
@@ -354,6 +375,17 @@ uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 
 %endif %- NegPixel
 %-BW_METHOD_END NegPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetPixel
+%ifdef GetPixel
+%'ModuleName'_PixelColor %'ModuleName'%.%GetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y);
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixGetPixel.Inc
+
+%endif %- GetPixel
+%-BW_METHOD_END GetPixel
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -391,6 +423,10 @@ uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.MEM_BUF_SIZE]; /* buffer for th
 %if defined(Enable) | defined(Disable)
 static bool %'ModuleName'%.DisplayEnabled = TRUE; /* if we allow refresh of the display */
 %endif
+
+/* prototype for function in user code: */
+uint8_t NEO_SetPixelColor(uint32_t lane, uint32_t pos, %'ModuleName'_PixelColor color);
+uint8_t NEO_GetPixelColor(uint32_t lane, uint32_t pos, %'ModuleName'_PixelColor *color);
 
 static %'ModuleName'%.DisplayOrientation %'ModuleName'%.currOrientation = %'ModuleName'%.CONFIG_DEFAULT_ORIENTATION;
 
@@ -430,7 +466,7 @@ typedef struct {
 
 static MATRIX_Matrix matrix;
 
-void NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8_t blue) {
+void NeoMatrix_GetLanePos(int16_t x, int16_t y, uint32_t *lane, uint32_t *pos) {
   #define swap(a, b) {uint16_t swapTmp; swapTmp=a; a=b; b=swapTmp;}
 
   if((x < 0) || (y < 0) || (x >= %'ModuleName'%.%GetWidth()) || (y >= %'ModuleName'%.%GetHeight())) {
@@ -453,9 +489,12 @@ void NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8
       y     = y - (major * matrix.matrixHeight); // (-* is less math than modulo)
 
       // Determine corner of entry, flip axes if needed
-      if(matrix.type & NEO_TILE_RIGHT)  minor = matrix.tilesX - 1 - minor;
-      if(matrix.type & NEO_TILE_BOTTOM) major = matrix.tilesY - 1 - major;
-
+      if(matrix.type & NEO_TILE_RIGHT)  {
+        minor = matrix.tilesX - 1 - minor;
+      }
+      if(matrix.type & NEO_TILE_BOTTOM) {
+        major = matrix.tilesY - 1 - major;
+      }
       // Determine actual major axis of tiling
       if((matrix.type & NEO_TILE_AXIS) == NEO_TILE_ROWS) {
         majorScale = matrix.tilesX;
@@ -487,9 +526,12 @@ void NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8
     major = y;
 
     // Determine corner of entry, flip axes if needed
-    if(corner & NEO_MATRIX_RIGHT)  minor = matrix.matrixWidth  - 1 - minor;
-    if(corner & NEO_MATRIX_BOTTOM) major = matrix.matrixHeight - 1 - major;
-
+    if(corner & NEO_MATRIX_RIGHT)  {
+      minor = matrix.matrixWidth  - 1 - minor;
+    }
+    if(corner & NEO_MATRIX_BOTTOM) {
+      major = matrix.matrixHeight - 1 - major;
+    }
     // Determine actual major axis of matrix
     if((matrix.type & NEO_MATRIX_AXIS) == NEO_MATRIX_ROWS) {
       majorScale = matrix.matrixWidth;
@@ -504,13 +546,17 @@ void NeoMatrix_drawPixel(int16_t x, int16_t y, uint8_t red, uint8_t green, uint8
       pixelOffset = major * majorScale + minor;
     } else {
       // Zigzag; alternate rows change direction.
-      if(major & 1) pixelOffset = (major + 1) * majorScale - 1 - minor;
-      else          pixelOffset =  major      * majorScale     + minor;
+      if(major & 1) {
+        pixelOffset = (major + 1) * majorScale - 1 - minor;
+      } else {
+        pixelOffset =  major      * majorScale     + minor;
+      }
     }
   }
   val = tileOffset+pixelOffset; /* overall index in matrix */
-  NEO_SetPixelRGB(val/%'ModuleName'%.NOF_LED_PIXELS, val%%%'ModuleName'%.NOF_LED_PIXELS, red, green, blue);
-  //NEO_SetPixelRGB(0, tileOffset + pixelOffset, red, green, blue); /* single lane version */
+
+  *lane = val/%'ModuleName'%.NOF_LED_PIXELS;
+  *pos = val%%%'ModuleName'%.NOF_LED_PIXELS;
 }
 
 %-BW_CUSTOM_VARIABLE_END
@@ -761,8 +807,10 @@ void %'ModuleName'%.%GiveLCD(void)
 %include Common\NEOmatrixSetPixel.Inc
 uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
-  NeoMatrix_drawPixel(x, y, 0xff/4, 0xff/4, 0xff/4);
-  return ERR_OK;
+  uint32_t lane, pos;
+
+  NeoMatrix_GetLanePos(x, y, &lane, &pos);
+  return NEO_SetPixelColor(lane, pos, %'ModuleName'%.COLOR_PIXEL_SET);
 }
 
 %endif %- SetPixel
@@ -776,8 +824,10 @@ uint8_t %'ModuleName'%.%SetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %include Common\NEOmatrixClrPixel.Inc
 uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
-  NeoMatrix_drawPixel(x, y, 0, 0, 0);
-  return ERR_OK;
+  uint32_t lane, pos;
+
+  NeoMatrix_GetLanePos(x, y, &lane, &pos);
+  return NEO_SetPixelColor(lane, pos, %'ModuleName'%.COLOR_PIXEL_CLR);
 }
 
 %endif %- ClrPixel
@@ -791,8 +841,17 @@ uint8_t %'ModuleName'%.%ClrPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %include Common\NEOmatrixNegPixel.Inc
 uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
 {
-  /* \todo */
-  return ERR_OK;
+  uint32_t lane, pos;
+  %'ModuleName'_PixelColor r, g, b;
+  uint8_t res;
+  uint32_t color;
+
+  NeoMatrix_GetLanePos(x, y, &lane, &pos);
+  res = NEO_GetPixelColor(lane, pos, &color);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return NEO_SetPixelColor(lane, pos, ~color);
 }
 
 %endif %- NegPixel
@@ -803,16 +862,38 @@ uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 %define! Parx
 %define! Pary
 %define! Parcolor
-%define! RetVal
 %include Common\NEOmatrixPutPixel.Inc
-uint8_t %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
 {
-  NeoMatrix_drawPixel(x, y, (color&0xff0000)>>16, (color&0xff00)>>8, color&0xff);
-  return ERR_OK;
+  uint32_t lane, pos;
+
+  NeoMatrix_GetLanePos(x, y, &lane, &pos);
+  NEO_SetPixelColor(lane, pos, color);
 }
 
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetPixel
+%ifdef GetPixel
+%define! Parx
+%define! Pary
+%define! RetVal
+%include Common\NEOmatrixGetPixel.Inc
+%'ModuleName'_PixelColor %'ModuleName'%.%GetPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y)
+{
+  uint32_t lane, pos;
+  uint32_t color;
+
+  NeoMatrix_GetLanePos(x, y, &lane, &pos);
+  if (NEO_GetPixelColor(lane, pos, &color)=ERR_OK) {
+    return 0;
+  }
+  return color;
+}
+
+%endif %- GetPixel
+%-BW_METHOD_END GetPixel
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Deinit
 %ifdef Deinit
@@ -840,6 +921,7 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

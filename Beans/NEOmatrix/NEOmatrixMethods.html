@@ -334,13 +334,11 @@ LI.EXP {
  - Sets a pixel with a color
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t PutPixel(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, <i>ComponentName_</i>PixelColor color)<br />
+<br /><i>ANSIC prototype:</i> void PutPixel(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, <i>ComponentName_</i>PixelColor color)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>x:<i>ComponentName_</i>PixelDim</i> - Pixel x coordinate</li>
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - Pixel y coordinate</li>
-<li><i>color:<i>ComponentName_</i>PixelColor</i> - color of pixel</li>
-<li><i>Return value:uint8_t</i> - Error code
-</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - no hint</li>
 </ul><br />
 </li>
 <li><a name="SetPixel">
@@ -366,6 +364,19 @@ LI.EXP {
 <li><i>x:<i>ComponentName_</i>PixelDim</i> - Pixel x coordinate</li>
 <li><i>y:<i>ComponentName_</i>PixelDim</i> - Pixel y coordinate</li>
 <li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="GetPixel">
+<b>GetPixel</b></a>
+ - returns a pixel
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> <i>ComponentName_</i>PixelColor GetPixel(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - Pixel x coordinate</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - Pixel y coordinate</li>
+<li><i>Return value:<i>ComponentName_</i>PixelColor</i> - Error code
 </li>
 </ul><br />
 </li>
