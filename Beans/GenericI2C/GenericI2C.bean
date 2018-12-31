@@ -4,7 +4,7 @@
     <Name>GenericI2C</Name>
     <Description>Generic high level I2C Driver on top of the I2C hardware driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.046</Version>
+    <Version>01.047</Version>
     <Icon>Generic2C</Icon>
     <TypesFiles>PE,GenericI2C\GenericI2C</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -597,7 +597,7 @@
         </Parameter>
         <Parameter>
           <ParName>waitMs</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Wait time between the address part and reading the data part. Wait time can be zero.</ParHint>
         </Parameter>
@@ -615,7 +615,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, word waitMs, uint8_t *data, uint16_t dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t i2cAddr, uint8_t *memAddr, uint8_t memAddrSize, uint16_t waitMs, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

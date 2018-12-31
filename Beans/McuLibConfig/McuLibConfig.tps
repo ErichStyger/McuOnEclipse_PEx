@@ -9,7 +9,7 @@
         <Line>Processor Expert</Line>
         <Line>Kinetis SDK V1.3</Line>
         <Line>Kinetis SDK V2.0</Line>
-        <Line>MCUXpresso SDK V2.0</Line>
+        <Line>MCUXpresso SDK V2.x</Line>
         <Line>S32K SDK</Line>
       </Items>
       <Hints lines_count="6">
@@ -17,7 +17,7 @@
         <Line>Using the Processor Expert API and SDK</Line>
         <Line>Using the Kinetis SDK V1.3</Line>
         <Line>Using the Kinetis SDK V2.0</Line>
-        <Line>Using the MCUXpresso SDK V2.0</Line>
+        <Line>Using the MCUXpresso SDK V2.x</Line>
         <Line>Using S32K SDK</Line>
       </Hints>
       <Defines lines_count="6">

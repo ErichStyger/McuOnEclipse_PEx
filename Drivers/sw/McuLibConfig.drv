@@ -325,6 +325,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: HCS08 CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 %elif (CPUfamily = "S32K")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
@@ -338,6 +340,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: HCS08 CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 %elif (CPUfamily = "HCS08")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
@@ -351,6 +355,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: HCS08 CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 %else
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
@@ -364,6 +370,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: HCS08 CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 %endif
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
@@ -415,7 +423,7 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_SDK_KINETIS_2_0         3
   /*!< using NXP Kinetis SDK V2.0 */
 #define %'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0      4
-  /*!< same as Kinetis SDK v2.0 */
+  /*!< using NXP MCUXpresso SDK V2.x, same as Kinetis SDK v2.0 */
 #define %'ModuleName'%.CONFIG_SDK_S32K                5
   /*!< SDK for S32K */
 

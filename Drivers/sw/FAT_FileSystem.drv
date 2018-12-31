@@ -82,22 +82,37 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+%if defined(Shell)
+  #include "%@Shell@ModuleName.h"
+%else
+  #include "McuShell.h"
+%endif
+%if defined(RTOS)
+  #include "%@RTOS@ModuleName.h"
+%else
+  #include "McuRTOS.h"
+%endif
+%if defined(Utility)
+  #include "%@Utility@ModuleName.h"
+%else
+  #include "McuUtility.h"
+%endif
+%if defined(Wait)
+  #include "%@Wait@ModuleName.h"
+%else
+  #include "McuWait.h"
+%endif
+%if defined(RTC)
+  #include "%@RTC@ModuleName.h"
+%else
+  #include "McuTimeDate.h"
+%endif
+
+
 #include "ff.h"
 #include "diskio.h"
 %-
@@ -106,7 +121,6 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
 %include sw\CommonSupport.prg
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES

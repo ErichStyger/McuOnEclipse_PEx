@@ -236,7 +236,9 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-   Example:
 %-     #include "header_name.h"
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
+  #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
   #include "fsl_port.h" /* include SDK header file for port muxing */
+  #endif
   #include "fsl_gpio.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "fsl_gpio_driver.h" /* include SDK header file for GPIO */
