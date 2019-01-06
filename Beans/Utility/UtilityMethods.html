@@ -525,6 +525,19 @@ LI.EXP {
 <li><i>nofFill:uint8_t</i> - Number of fill characters</li>
 </ul><br />
 </li>
+<li><a name="strcatNumHex">
+<b>strcatNumHex</b></a>
+ - Appends a value as hex valalue to a string buffer as hex number (without a 0x prefix), with variable number of digits
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void strcatNumHex(uint8_t *dst, size_t dstSize, uint32_t num, uint8_t nofBytes)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>dst: Pointer to uint8_t</i> - Pointer to destination string</li>
+<li><i>dstSize:uint8_t</i> - Size of the destination buffer (in bytes).</li>
+<li><i>num:uint32_t</i> - Value to convert.</li>
+<li><i>nofBytes:uint8_t</i> - Number of bytes to write</li>
+</ul><br />
+</li>
 <li><a name="strcatNum8Hex">
 <b>strcatNum8Hex</b></a>
  - Appends a 8bit unsigned value to a string buffer as hex number (without a 0x prefix).
@@ -563,7 +576,7 @@ LI.EXP {
 </li>
 <li><a name="strcatNum32Hex">
 <b>strcatNum32Hex</b></a>
- - Appends a 16bit unsigned value to a string buffer as hex number (without a 0x prefix).
+ - Appends a 32bit unsigned value to a string buffer as hex number (without a 0x prefix).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
 <br /><i>ANSIC prototype:</i> void strcatNum32Hex(uint8_t *dst, size_t dstSize, uint32_t num)<br />

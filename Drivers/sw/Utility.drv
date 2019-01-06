@@ -900,6 +900,18 @@ int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t
 
 %endif %- map64
 %-BW_METHOD_END map64
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatNumHex
+%ifdef strcatNumHex
+void %'ModuleName'%.%strcatNumHex(uint8_t *dst, size_t dstSize, uint32_t num, uint8_t nofBytes);
+%define! Pardst
+%define! PardstSize
+%define! Parnum
+%define! ParnofBytes
+%include Common\UtilitystrcatNumHex.Inc
+
+%endif %- strcatNumHex
+%-BW_METHOD_END strcatNumHex
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3091,6 +3103,29 @@ int64_t %'ModuleName'%.%map64(int64_t x, int64_t in_min, int64_t in_max, int64_t
 
 %endif %- map64
 %-BW_METHOD_END map64
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN strcatNumHex
+%ifdef strcatNumHex
+%define! Pardst
+%define! PardstSize
+%define! Parnum
+%define! ParnofBytes
+%include Common\UtilitystrcatNumHex.Inc
+void %'ModuleName'%.%strcatNumHex(uint8_t *dst, size_t dstSize, uint32_t num, uint8_t nofBytes)
+{
+  if (nofBytes==1) {
+    %'ModuleName'%.%strcatNum8Hex(dst, dstSize, (uint8_t)num);
+  } else if (nofBytes==2) {
+    %'ModuleName'%.%strcatNum16Hex(dst, dstSize, (uint16_t)num);
+  } else if (nofBytes==3) {
+    %'ModuleName'%.%strcatNum24Hex(dst, dstSize, num);
+  } else { /* nofBytes==4 */
+    %'ModuleName'%.%strcatNum32Hex(dst, dstSize, num);
+  }
+}
+
+%endif %- strcatNumHex
+%-BW_METHOD_END strcatNumHex
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
