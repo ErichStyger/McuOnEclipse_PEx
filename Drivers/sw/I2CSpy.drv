@@ -264,19 +264,6 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 
 #define MAX_NOF_BYTES_PER_LINE 32 /* maximum number of bytes per line */
 %if defined(Shell)
-
-static void strcatAddress(unsigned char *buf, size_t bufSize, uint32_t addr) {
-  if (%'ModuleName'%.deviceData.addrSize==1) {
-    %@Utility@'ModuleName'%.strcatNum8Hex(buf, bufSize, (uint8_t)addr);
-  } else if (%'ModuleName'%.deviceData.addrSize==2) {
-    %@Utility@'ModuleName'%.strcatNum16Hex(buf, bufSize, (uint16_t)addr);
-  } else if (%'ModuleName'%.deviceData.addrSize==3) {
-    %@Utility@'ModuleName'%.strcatNum24Hex(buf, bufSize, addr);
-  } else if (%'ModuleName'%.deviceData.addrSize==4) {
-    %@Utility@'ModuleName'%.strcatNum32Hex(buf, bufSize, addr);
-  }
-}
-
 static uint8_t Dump(unsigned long startAddr, unsigned long endAddr, const %@Shell@'ModuleName'%.StdIOType *io) {
   #define NOF_BYTES_PER_LINE 32 /* how many bytes are shown on a line. This defines as well the chunk size we read from memory */
   static uint8_t buf[MAX_NOF_BYTES_PER_LINE]; /* this is the chunk of data we get (per line in output) */
@@ -294,19 +281,19 @@ static uint8_t Dump(unsigned long startAddr, unsigned long endAddr, const %@Shel
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"device", (unsigned char*)"0x", io->stdOut);
   str[0]='\0';
-  strcatAddress(str, sizeof(str), %'ModuleName'%.deviceData.deviceAddr);
+  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), %'ModuleName'%.deviceData.deviceAddr);
   %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"start", (unsigned char*)"0x", io->stdOut);
   str[0]='\0';
-  strcatAddress(str, sizeof(str), startAddr);
+  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), startAddr);
   %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"end", (unsigned char*)"0x", io->stdOut);
   str[0]='\0';
-  strcatAddress(str, sizeof(str), endAddr);
+  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), endAddr);
   %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
 
@@ -330,7 +317,7 @@ static uint8_t Dump(unsigned long startAddr, unsigned long endAddr, const %@Shel
     }
     /* write address */
     %@Utility@'ModuleName'%.strcpy(str, sizeof(str), (unsigned char*)"0x");
-    strcatAddress(str, sizeof(str), addr);
+    %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), addr);
     %@Utility@'ModuleName'%.chcat(str, sizeof(str), ':');
     %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
     /* write data in hex */
