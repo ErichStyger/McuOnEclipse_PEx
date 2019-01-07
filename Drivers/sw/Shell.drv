@@ -553,13 +553,14 @@ void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch));
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PrintMemory
 %ifdef PrintMemory
-uint8_t %'ModuleName'%.%PrintMemory(uint32_t startAddr, uint32_t endAddr, uint8_t addrSize, uint8_t bytesPerLine, uint8_t (*readfp)(uint32_t, uint8_t*, size_t), %'ModuleName'_ConstStdIOType *io);
+uint8_t %'ModuleName'%.%PrintMemory(void *hndl, uint32_t startAddr, uint32_t endAddr, uint8_t addrSize, uint8_t bytesPerLine, uint8_t (*readfp)(void *, uint32_t, uint8_t*, size_t), %'ModuleName'_ConstStdIOType *io);
 %define! ParstartAddr
 %define! ParendAddr
 %define! ParaddrSize
 %define! ParbytesPerLine
 %define! Parreadfp
 %define! Pario
+%define! Parhndl
 %define! RetVal
 %include Common\ShellPrintMemory.Inc
 
@@ -1662,9 +1663,10 @@ void %'ModuleName'%.%SendCharFct(uint8_t ch, uint8_t (*fct)(uint8_t ch))
 %define! ParbytesPerLine
 %define! Parreadfp
 %define! Pario
+%define! Parhndl
 %define! RetVal
 %include Common\ShellPrintMemory.Inc
-uint8_t %'ModuleName'%.%PrintMemory(uint32_t startAddr, uint32_t endAddr, uint8_t addrSize, uint8_t bytesPerLine, uint8_t (*readfp)(uint32_t, uint8_t*, size_t), %'ModuleName'_ConstStdIOType *io)
+uint8_t %'ModuleName'%.%PrintMemory(void *hndl, uint32_t startAddr, uint32_t endAddr, uint8_t addrSize, uint8_t bytesPerLine, uint8_t (*readfp)(void *, uint32_t, uint8_t*, size_t), %'ModuleName'_ConstStdIOType *io)
 {
   #define NOF_BYTES_PER_LINE 32 /* how many bytes are shown on a line. This defines as well the chunk size we read from memory */
   #define MAX_NOF_BYTES_PER_LINE 32
@@ -1687,7 +1689,7 @@ uint8_t %'ModuleName'%.%PrintMemory(uint32_t startAddr, uint32_t endAddr, uint8_
     } else {
       bufSize = (uint8_t)(endAddr-addr+1);
     }
-    if (readfp(addr, buf, bufSize)!=ERR_OK) {
+    if (readfp(hndl, addr, buf, bufSize)!=ERR_OK) {
       %'ModuleName'%.%SendStr((unsigned char*)"\r\n*** Read failed!\r\n", io->stdErr);
       return ERR_FAILED;
     }

@@ -281,6 +281,14 @@ static uint8_t Read(uint32_t addr, const %@Shell@'ModuleName'%.StdIOType *io) {
   return ERR_OK;
 }
 
+static uint8_t ReadData(void *hndl, uint32_t addr, uint8_t *buf, size_t bufSize) {
+  (void)hndl; /* not used */
+  if (%'ModuleName'%.ReadRegData(addr, buf, bufSize)!=ERR_OK) {
+    return ERR_FAILED;
+  }
+  return ERR_OK;
+}
+
 static void ScanDevices(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t addr, oldAddr;
   uint8_t buf[3], res;
@@ -420,7 +428,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
       if (%@Utility@'ModuleName'%.strncmp((char*)p, "..", sizeof("..")-1)==0) {
         p = p+sizeof("..")-1;
         if (%@Utility@'ModuleName'%.ScanHex32uNumber(&p, &end32)==ERR_OK) {
-          (void)%@Shell@'ModuleName'%.PrintMemory(addr32, end32, %'ModuleName'%.deviceData.addrSize, %'ModuleName'%.deviceData.bytesPerLine, %'ModuleName'%.ReadRegData, io);
+          (void)%@Shell@'ModuleName'%.PrintMemory(NULL, addr32, end32, %'ModuleName'%.deviceData.addrSize, %'ModuleName'%.deviceData.bytesPerLine, ReadData, io);
         } else {
           %@Shell@'ModuleName'%.SendStr((unsigned char*)"**** wrong end address\r\n", io->stdErr);
         }
