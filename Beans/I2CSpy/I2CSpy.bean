@@ -4,7 +4,7 @@
     <Name>I2CSpy</Name>
     <Description>I2C Bus Spy</Description>
     <Author>Erich Styger</Author>
-    <Version>01.014</Version>
+    <Version>01.015</Version>
     <Icon>I2CSpy</Icon>
     <TypesFiles>PE,I2CSpy\I2CSpy</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -332,10 +332,11 @@
           <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>size of data buffer in bytes</ParHint>
+          <ParUserDeclaration>size_t dataSize</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>uint8_t #M#_#C#(uint32_t addr, uint8_t *data, uint16_t dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint32_t addr, uint8_t *data, size_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

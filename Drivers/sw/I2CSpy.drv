@@ -175,7 +175,7 @@ void %@I2C@OnReleaseBus(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadRegData
 %ifdef ReadRegData
-uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, uint16_t dataSize);
+uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, size_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -264,94 +264,6 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 
 #define MAX_NOF_BYTES_PER_LINE 32 /* maximum number of bytes per line */
 %if defined(Shell)
-static uint8_t Dump(unsigned long startAddr, unsigned long endAddr, const %@Shell@'ModuleName'%.StdIOType *io) {
-  #define NOF_BYTES_PER_LINE 32 /* how many bytes are shown on a line. This defines as well the chunk size we read from memory */
-  static uint8_t buf[MAX_NOF_BYTES_PER_LINE]; /* this is the chunk of data we get (per line in output) */
-  static uint8_t str[3*MAX_NOF_BYTES_PER_LINE+((MAX_NOF_BYTES_PER_LINE+1)/8)+1]; /* maximum string for output:
-                                              - '3*' because each byte is 2 hex digits plus a space
-                                              - '(NOF_BYTES_PER_LINE+1)/8' because we add a space between every 8 byte block
-                                              - '+1' for the final zero byte */
-  unsigned long addr;
-  uint8_t res=0, j, bufSize;
-  uint8_t ch;
-
-  if (endAddr<startAddr) {
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n*** End address must be larger or equal than start address\r\n", io->stdErr);
-    return ERR_RANGE;
-  }
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"device", (unsigned char*)"0x", io->stdOut);
-  str[0]='\0';
-  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), %'ModuleName'%.deviceData.deviceAddr);
-  %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
-
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"start", (unsigned char*)"0x", io->stdOut);
-  str[0]='\0';
-  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), startAddr);
-  %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
-
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"end", (unsigned char*)"0x", io->stdOut);
-  str[0]='\0';
-  %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), endAddr);
-  %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"\r\n");
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
-
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Addr Size", (unsigned char*)"", io->stdOut);
-  %@Shell@'ModuleName'%.SendNum8u(%'ModuleName'%.deviceData.addrSize, io->stdOut);
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-
-  for(addr=startAddr; addr<=endAddr; /* nothing */ ) {
-    if (endAddr-addr+1 >= %'ModuleName'%.deviceData.bytesPerLine) { /* read only part of buffer */
-      bufSize = %'ModuleName'%.deviceData.bytesPerLine; /* read full buffer */
-    } else {
-      bufSize = (uint8_t)(endAddr-addr+1);
-    }
-    if (%'ModuleName'%.ReadRegData(addr, buf, bufSize)!=ERR_OK) {
-      %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n*** Read failed!\r\n", io->stdErr);
-      return ERR_FAILED;
-    }
-    if (res != ERR_OK) {
-      %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n*** Failure reading memory block!\r\n", io->stdErr);
-      return ERR_FAULT;
-    }
-    /* write address */
-    %@Utility@'ModuleName'%.strcpy(str, sizeof(str), (unsigned char*)"0x");
-    %@Utility@'ModuleName'%.strcatNumHex(str, sizeof(str), addr);
-    %@Utility@'ModuleName'%.chcat(str, sizeof(str), ':');
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
-    /* write data in hex */
-    str[0] = '\0';
-    for (j=0; j<bufSize; j++) {
-      if ((j%%8)==0) {
-        %@Utility@'ModuleName'%.chcat(str, sizeof(str), ' ');
-      }
-      %@Utility@'ModuleName'%.strcatNum8Hex(str, sizeof(str), buf[j]);
-      %@Utility@'ModuleName'%.chcat(str, sizeof(str), ' ');
-    }
-    for (/*empty*/; j<%'ModuleName'%.deviceData.bytesPerLine; j++) { /* fill up line */
-      %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"-- ");
-    }
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)str, io->stdOut);
-    /* write in ASCII */
-    io->stdOut(' ');
-    for (j=0; j<bufSize; j++) {
-      ch = buf[j];
-      if (ch >= ' ' && ch <= 0x7f) {
-        io->stdOut(ch);
-      } else {
-        io->stdOut('.'); /* place holder */
-      }
-    }
-    for (/*empty*/; j<%'ModuleName'%.deviceData.bytesPerLine; j++) { /* fill up line */
-      %@Utility@'ModuleName'%.strcat(str, sizeof(str), (unsigned char*)"-- ");
-    }
-    %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-    addr += %'ModuleName'%.deviceData.bytesPerLine;
-  }
-  %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-  return ERR_OK;
-}
 
 static uint8_t Read(uint32_t addr, const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t val;
@@ -508,7 +420,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
       if (%@Utility@'ModuleName'%.strncmp((char*)p, "..", sizeof("..")-1)==0) {
         p = p+sizeof("..")-1;
         if (%@Utility@'ModuleName'%.ScanHex32uNumber(&p, &end32)==ERR_OK) {
-          (void)Dump(addr32, end32, io);
+          (void)%@Shell@'ModuleName'%.PrintMemory(addr32, end32, %'ModuleName'%.deviceData.addrSize, %'ModuleName'%.deviceData.bytesPerLine, %'ModuleName'%.ReadRegData, io);
         } else {
           %@Shell@'ModuleName'%.SendStr((unsigned char*)"**** wrong end address\r\n", io->stdErr);
         }
@@ -643,7 +555,7 @@ void %@I2C@OnReleaseBus(void)
 %define! PardataSize
 %define! RetVal
 %include Common\I2CSpyReadRegData.Inc
-uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, uint16_t dataSize)
+uint8_t %'ModuleName'%.%ReadRegData(uint32_t addr, uint8_t *data, size_t dataSize)
 {
   uint8_t addrBuf[4];
 
