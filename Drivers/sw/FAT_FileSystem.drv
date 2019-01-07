@@ -940,6 +940,14 @@ void %OnCreateSyncObject(void *sobj);
 %endfor
 #include "ff.h"
 #include "%'ModuleName'.h"
+%- -------------------------------------------------------------------------------------------
+%:maxDrive=%DriveSymbolNumItems
+%:maxDrive-=1
+%for i from [0..%maxDrive]
+#include "%@Drive%i@ModuleName.h"
+%endfor
+%- -------------------------------------------------------------------------------------------
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -967,9 +975,6 @@ static uint8_t StrToDriveNumber(uint8_t *drvStr) {
   }
   return drv;
 }
-%- -------------------------------------------------------------------------------------------
-%:maxDrive=%DriveSymbolNumItems
-%:maxDrive-=1
 /*-----------------------------------------------------------------------*/
 /* Initialize a Drive                                                    */
 DSTATUS disk_initialize (
