@@ -334,7 +334,7 @@ static bool %'ModuleName'%.isOutput = false;
 void %'ModuleName'%.%ClrVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  GPIO_PortClear(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_ClearPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
@@ -351,7 +351,7 @@ void %'ModuleName'%.%ClrVal(void)
 void %'ModuleName'%.%SetVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  GPIO_PortSet(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
@@ -368,7 +368,7 @@ void %'ModuleName'%.%SetVal(void)
 void %'ModuleName'%.%NegVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  GPIO_TogglePinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  GPIO_PortToggle(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_TogglePinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
