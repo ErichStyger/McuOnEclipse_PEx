@@ -346,7 +346,10 @@ void %'ModuleName'%.%Init(void);
 %-     #include "header_name.h"
 #include "%@Utility@ModuleName.h" /* various utility functions */
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  #include "fsl_sim.h" /* system integration module */
+  #include "fsl_common.h"
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
+    #include "fsl_sim.h" /* system integration module, used for CPU ID */
+  #endif
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_S32K
