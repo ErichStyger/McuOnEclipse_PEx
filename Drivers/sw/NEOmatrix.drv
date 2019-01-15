@@ -886,7 +886,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   uint32_t color;
 
   NeoMatrix_GetLanePos(x, y, &lane, &pos);
-  if (NEO_GetPixelColor(lane, pos, &color)=ERR_OK) {
+  if (NEO_GetPixelColor(lane, pos, &color)==ERR_OK) {
     return 0;
   }
   return color;
