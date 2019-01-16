@@ -585,6 +585,10 @@ There are 5 options:<br />
 
     </li>
     <li>
+    <a name="ResetMSP">
+    <b>Reset MSP</b></a> - If set to yes (default), the Cortex-M3/M4/M7 ports reset the MSP to value present in the vector table. That gives all the MSP stack space to the interrupts. Not that this is not done for Cortex-M0 and if vPortEndScheduler() is used
+    </li>
+    <li>
     <a name="useMPUsupport">
     <b>MPU</b></a> - Using MPU (Memory Protection Unit) support in the port.
     </li>
