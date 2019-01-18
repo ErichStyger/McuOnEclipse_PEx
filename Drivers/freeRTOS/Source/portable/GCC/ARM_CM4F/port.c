@@ -1320,7 +1320,7 @@ BaseType_t xPortStartScheduler(void) {
     if(setjmp(xJumpBuf) != 0 ) {
       /* here we will get in case of call to vTaskEndScheduler() */
       __asm volatile(
-        " movs r0, #1         \n" /* Switch back to the MSP stack. */
+        " movs r0, #0         \n" /* Reset CONTROL register and switch back to the MSP stack. */
         " msr CONTROL, r0     \n"
       );
       __asm volatile("dsb");
@@ -1352,6 +1352,8 @@ BaseType_t xPortStartScheduler(void) {
 /*-----------------------------------------------------------*/
 void vPortEndScheduler(void) {
   vPortStopTickTimer();
+  vPortInitializeHeap();
+  uxCriticalNesting = 0xaaaaaaaa;
   /* Jump back to the processor state prior to starting the
      scheduler.  This means we are not going to be using a
      task stack frame so the task can be deleted. */

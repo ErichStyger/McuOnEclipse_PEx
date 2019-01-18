@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.567</Version>
+    <Version>01.568</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -990,7 +990,7 @@ The highest interrupt priority that can be used by any interrupt service routine
                     <Name>Reset MSP</Name>
                     <Symbol>ResetMSP</Symbol>
                     <TypeSpec>typeYesNo</TypeSpec>
-                    <Hint>If set to yes (default), the Cortex-M3/M4/M7 ports reset the MSP to value present in the vector table. That gives all the MSP stack space to the interrupts. Not that this is not done for Cortex-M0 and if vPortEndScheduler() is used</Hint>
+                    <Hint>If set to yes (default), the Cortex-M3/M4/M7 ports reset the MSP to value present in the vector table. That gives all the MSP stack space to the interrupts. Note tthe MSP is not reset for Cortex-M0 and if vPortEndScheduler() is used</Hint>
                     <ItemLevel>BASIC</ItemLevel>
                     <EditLine>false</EditLine>
                     <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
