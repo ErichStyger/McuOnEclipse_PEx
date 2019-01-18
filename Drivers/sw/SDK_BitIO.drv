@@ -585,12 +585,20 @@ void %'ModuleName'%.%Deinit(void)
 #define __%'ModuleName'_CONFIG_H
 
 #ifndef %'ModuleName'%.CONFIG_PORT_NAME
-  #define %'ModuleName'%.CONFIG_PORT_NAME       %PORT_Name
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
+    #define %'ModuleName'%.CONFIG_PORT_NAME       GPIO1
+  #else /* name from properties */
+    #define %'ModuleName'%.CONFIG_PORT_NAME       %PORT_Name
+  #endif
     /*!< name of PORT, is pointer to PORT_Type */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_GPIO_NAME
-  #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
+    #define %'ModuleName'%.CONFIG_GPIO_NAME       GPIO1
+  #else /* name from properties */
+    #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
+  #endif
     /*!< name of GPIO, is pointer to GPIO_Type, not used for S32K SDK */
 #endif
 
