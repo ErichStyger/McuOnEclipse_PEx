@@ -1318,18 +1318,18 @@ BaseType_t xPortStartScheduler(void) {
 #endif
 #if INCLUDE_vTaskEndScheduler
     if(setjmp(xJumpBuf) != 0 ) {
-      /* here we will get in case of call to vTaskEndScheduler() */
+      /* here we will get in case of a call to vTaskEndScheduler() */
       __asm volatile(
         " movs r0, #0         \n" /* Reset CONTROL register and switch back to the MSP stack. */
         " msr CONTROL, r0     \n"
+        " dsb                 \n"
+        " isb                 \n"
       );
-      __asm volatile("dsb");
-      __asm volatile("isb");
       return pdFALSE;
     }
 #endif
   vPortStartFirstTask(); /* Start the first task. */
-  /* Should not get here, unless you call vTaskEndScheduler()! */
+  /* Should not get here! */
   return pdFALSE;
 %elif (CPUfamily = "56800")
   uxCriticalNesting = 0; /* initialize critical nesting count */
