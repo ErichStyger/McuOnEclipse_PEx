@@ -4,7 +4,7 @@
     <Name>LCDHTA</Name>
     <Description>Character LCD Display</Description>
     <Author>Erich Styger</Author>
-    <Version>01.022</Version>
+    <Version>01.028</Version>
     <Icon>LCDHTA</Icon>
     <TypesFiles>PE,LCDHTA\LCDHTA</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,10 +16,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>0</BW_NeedUst>
+    <BW_NeedUst>1</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2008-2014, all rights reserved.\nhttp      : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2008-2019, all rights reserved.\nhttp      : www.mcuoneclipse.com\n\nThis an open source software implementing software using Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
     <Category>CPU External Devices-Display</Category>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -630,6 +630,20 @@
               <SortStyle/>
             </TInhrLinkItem>
           </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>SDK</Name>
+              <Symbol>sdk</Symbol>
+              <TypeSpec>LCDHTA\sdk</TypeSpec>
+              <Hint>Interface to SDK and API used.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
         </Children>
       </TGrupItem>
     </Property>
@@ -715,13 +729,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ch</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>data passed to the LCD</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte ch)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t ch)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -749,13 +763,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>command passed to the LCD</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte cmd)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t cmd)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -845,7 +859,7 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>line</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Line number (starting with 1).</ParHint>
         </Parameter>
@@ -857,7 +871,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte line, char *str)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t line, char *str)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -919,19 +933,19 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>charCode</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The character code to be defined (0..7)</ParHint>
         </Parameter>
         <Parameter>
           <ParName>softChar</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to an array of 8 bytes defining the soft character\nExample of the soft character 'ü':\nconst byte SoftCharUE[8] = { // ü\n0x11, 0x00, 0x11, 0x11, 0x11, 0x13, 0x0d, 0\n//  X...X\n//  .....\n//  X...X\n//  X...X\n//  X...X\n//  X..XX\n//  .XX.X\n};</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte charCode, byte *softChar)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t charCode, uint8_t *softChar)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1015,19 +1029,19 @@
         <ParamCount>2</ParamCount>
         <Parameter>
           <ParName>line</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Line number starting with 1</ParHint>
         </Parameter>
         <Parameter>
           <ParName>column</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Column number starting with 1</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte line, byte column)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t line, uint8_t column)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1347,13 +1361,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>line</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Line number, starting with 1</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(byte line)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t line)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -1404,18 +1418,46 @@
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>display</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Has to be either 1 (top display, using E1) or 2 (bottom display, using E2)</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte display)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t display)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>DeInit</Name>
+        <Symbol>DeInit</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Driver de-initialization routine</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>0</ParamCount>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

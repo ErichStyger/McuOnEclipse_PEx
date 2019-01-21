@@ -212,9 +212,9 @@ LI.EXP {
  - Writes a command to the display
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteLCDCommand(byte cmd)<br />
+<br /><i>ANSIC prototype:</i> void WriteLCDCommand(uint8_t cmd)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd:byte</i> - command passed to the LCD</li>
+<li><i>cmd:uint8_t</i> - command passed to the LCD</li>
 </ul><br />
 </li>
 <li><a name="Write">
@@ -241,9 +241,9 @@ LI.EXP {
  - Writes a full line to the display (clears the rest of the line).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void WriteLineStr(byte line, char *str)<br />
+<br /><i>ANSIC prototype:</i> void WriteLineStr(uint8_t line, char *str)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>line:byte</i> - Line number (starting with 1).</li>
+<li><i>line:uint8_t</i> - Line number (starting with 1).</li>
 <li><i>str: Pointer to char</i> - Pointer to the string which should be shown on the display.</li>
 </ul><br />
 </li>
@@ -262,10 +262,10 @@ LI.EXP {
  - Loads a user defined (softchar) into the display CGRAM.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void LoadSoftChar(byte charCode, byte *softChar)<br />
+<br /><i>ANSIC prototype:</i> void LoadSoftChar(uint8_t charCode, uint8_t *softChar)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>charCode:byte</i> - The character code to be defined (0..7)</li>
-<li><i>softChar: Pointer to byte</i> - Pointer to an array of 8 bytes defining the soft character<br />Example of the soft character 'ü':<br />const byte SoftCharUE[8] = { // ü<br />0x11, 0x00, 0x11, 0x11, 0x11, 0x13, 0x0d, 0<br />//  X...X<br />//  .....<br />//  X...X<br />//  X...X<br />//  X...X<br />//  X..XX<br />//  .XX.X<br />};</li>
+<li><i>charCode:uint8_t</i> - The character code to be defined (0..7)</li>
+<li><i>softChar: Pointer to uint8_t</i> - Pointer to an array of 8 bytes defining the soft character<br />Example of the soft character 'ü':<br />const byte SoftCharUE[8] = { // ü<br />0x11, 0x00, 0x11, 0x11, 0x11, 0x13, 0x0d, 0<br />//  X...X<br />//  .....<br />//  X...X<br />//  X...X<br />//  X...X<br />//  X..XX<br />//  .XX.X<br />};</li>
 </ul><br />
 </li>
 <li><a name="ShiftLeft">
@@ -291,10 +291,10 @@ LI.EXP {
  - Places the cursor on a specified position on the display.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void GotoXY(byte line, byte column)<br />
+<br /><i>ANSIC prototype:</i> void GotoXY(uint8_t line, uint8_t column)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>line:byte</i> - Line number starting with 1</li>
-<li><i>column:byte</i> - Column number starting with 1</li>
+<li><i>line:uint8_t</i> - Line number starting with 1</li>
+<li><i>column:uint8_t</i> - Column number starting with 1</li>
 </ul><br />
 </li>
 <li><a name="SetEntryMode">
@@ -394,9 +394,9 @@ LI.EXP {
  - Sets the current line.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void Line(byte line)<br />
+<br /><i>ANSIC prototype:</i> void Line(uint8_t line)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>line:byte</i> - Line number, starting with 1</li>
+<li><i>line:uint8_t</i> - Line number, starting with 1</li>
 </ul><br />
 </li>
 <li><a name="Clear">
@@ -413,11 +413,20 @@ LI.EXP {
  - no hint
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte UseDisplay(byte display)<br />
+<br /><i>ANSIC prototype:</i> uint8_t UseDisplay(uint8_t display)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>display:byte</i> - Has to be either 1 (top display, using E1) or 2 (bottom display, using E2)</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>display:uint8_t</i> - Has to be either 1 (top display, using E1) or 2 (bottom display, using E2)</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
+</ul><br />
+</li>
+<li><a name="DeInit">
+<b>DeInit</b></a>
+ - Driver de-initialization routine
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void DeInit(void)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
 
