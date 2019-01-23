@@ -71,18 +71,6 @@
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -342,6 +330,7 @@ void %'ModuleName'%.%DeInit(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#include "%@Wait@ModuleName.h"
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -444,14 +433,22 @@ const uint8_t %'ModuleName'%.SoftCharOE[8] = { /* ö */
    .XXX. */
 };
 
-%if defined(RW)
+#if %'ModuleName'%.CONFIG_USE_RW_SIGNAL
 /* macros for the RW pin */
 #define ClrRW() \
+  %if defined(RW)
         %@RW@'ModuleName'%.ClrVal()                              %>40 /* RW=0: write mode */
+  %else
+        RWPin_ClrVal()                                           %>40 /* RW=0: write mode */
+  %endif
 #define SetRW() \
+  %if defined(RW)
         %@RW@'ModuleName'%.SetVal()                              %>40 /* RW=1: read mode */
+  %else
+        RWPin_SetVal()                                           %>40 /* RW=1: read mode */
+  %endif
+#endif /* %'ModuleName'%.CONFIG_USE_RW_SIGNAL */
 
-%endif
 /* macros for the RS pin */
 #define ClrRS() \
         %@RS@'ModuleName'%.ClrVal()                              %>40 /* RS=0: command mode */
@@ -536,6 +533,7 @@ const uint8_t %'ModuleName'%.SoftCharOE[8] = { /* ö */
 #define Timing_tCYCLE_ns 500 /* tCYLE: Enable Cycle time */
 
 %if ndefined(DataBus)
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_READ && %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG
 static uint8_t DataGet(void) {
   uint8_t val;
 
@@ -556,23 +554,72 @@ static uint8_t DataGet(void) {
 %endif
   return val;
 }
+#endif /* #if %'ModuleName'%.CONFIG_USE_DISPLAY_READ && %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG */
 
 static void DataPut(uint8_t val) {
-%if %DataBusWidth='4bit'
+#if %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==4
+%if defined(DB7)
   %@DB7@'ModuleName'%.PutVal((val&(1<<3))!=0);
-  %@DB6@'ModuleName'%.PutVal((val&(1<<2))!=0);
-  %@DB5@'ModuleName'%.PutVal((val&(1<<1))!=0);
-  %@DB4@'ModuleName'%.PutVal((val&(1<<0))!=0);
-%else /* 8bit */
-  %@DB7@'ModuleName'%.PutVal((val&(1<<7))!=0);
-  %@DB6@'ModuleName'%.PutVal((val&(1<<6))!=0);
-  %@DB5@'ModuleName'%.PutVal((val&(1<<5))!=0);
-  %@DB4@'ModuleName'%.PutVal((val&(1<<4))!=0);
-  %@DB3@'ModuleName'%.PutVal((val&(1<<3))!=0);
-  %@DB2@'ModuleName'%.PutVal((val&(1<<2))!=0);
-  %@DB1@'ModuleName'%.PutVal((val&(1<<1))!=0);
-  %@DB0@'ModuleName'%.PutVal((val&(1<<0))!=0);
+%else
+ DB7Pin_PutVal((val&(1<<3))!=0);
 %endif
+%if defined(DB6)
+  %@DB6@'ModuleName'%.PutVal((val&(1<<2))!=0);
+%else
+  DB6Pin_PutVal((val&(1<<2))!=0);
+%endif
+%if defined(DB5)
+  %@DB5@'ModuleName'%.PutVal((val&(1<<1))!=0);
+%else
+  DB5Pin_PutVal((val&(1<<1))!=0);
+%endif
+%if defined(DB4)
+  %@DB4@'ModuleName'%.PutVal((val&(1<<0))!=0);
+%else
+  DB4Pin_PutVal((val&(1<<0))!=0);
+%endif
+#else /* 8bit */
+%if defined(DB7)
+  %@DB7@'ModuleName'%.PutVal((val&(1<<7))!=0);
+%else
+  DB7Pin_PutVal((val&(1<<7))!=0);
+%endif
+%if defined(DB6)
+  %@DB6@'ModuleName'%.PutVal((val&(1<<6))!=0);
+%else
+  DB6Pin_PutVal((val&(1<<6))!=0);
+%endif
+%if defined(DB5)
+  %@DB5@'ModuleName'%.PutVal((val&(1<<5))!=0);
+%else
+  DB5Pin_PutVal((val&(1<<5))!=0);
+%endif
+%if defined(DB4)
+  %@DB4@'ModuleName'%.PutVal((val&(1<<4))!=0);
+%else
+  DB4Pin_PutVal((val&(1<<4))!=0);
+%endif
+%if defined(DB3)
+  %@DB3@'ModuleName'%.PutVal((val&(1<<3))!=0);
+%else
+  DB3Pin_PutVal((val&(1<<3))!=0);
+%endif
+%if defined(DB2)
+  %@DB2@'ModuleName'%.PutVal((val&(1<<2))!=0);
+%else
+  DB2Pin_PutVal((val&(1<<2))!=0);
+%endif
+%if defined(DB1)
+  %@DB1@'ModuleName'%.PutVal((val&(1<<1))!=0);
+%else
+  DB1Pin_PutVal((val&(1<<1))!=0);
+%endif
+%if defined(DB0)
+  %@DB0@'ModuleName'%.PutVal((val&(1<<0))!=0);
+%else
+  DB0Pin_PutVal((val&(1<<0))!=0);
+%endif
+#endif
 }
 
 %endif
@@ -619,7 +666,7 @@ static void EnablePulse(void)
 
 %-INTERNAL_METHOD_END EnablePulse
 %-INTERNAL_METHOD_BEG WaitForLCDReady
-%if %ReadFromDisplay='yes' & %CheckBusyFlag = 'yes'
+#if %'ModuleName'%.CONFIG_USE_DISPLAY_READ && %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG
 %include Common\GeneralInternal.inc (WaitForLCDReady)
 void %'ModuleName'%.WaitForLCDReady(void)
 {
@@ -684,12 +731,12 @@ void %'ModuleName'%.WaitForLCDReady(void)
     }
     Waitns(Timing_tCYCLE_ns-Timing_PWeh_ns);                     %>40 /* need to wait a cycle time until we can enable EN again */
   } /* for */
-  %if defined(RW)
+  #if %'ModuleName'%.CONFIG_USE_RW_SIGNAL
   ClrRW();                                                       %>40 /* RW = 0: back to write mode */
-  %endif
+  #endif
   DataAsOutput();                                                %>40 /* set data port as output */
 }
-%endif /* %CheckBusyFlag = "yes" */
+#endif /* %'ModuleName'%.CONFIG_USE_DISPLAY_READ && %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG */
 %-INTERNAL_METHOD_END WaitForLCDReady
 
 %-BW_METHOD_BEGIN WriteLCDCommand
@@ -924,6 +971,54 @@ void %'ModuleName'%.%Line(uint8_t line)
 %include Common\GeneralInternal.inc (Init)
 void %'ModuleName'%.Init(void)
 {
+  /* test */
+  /* for non-Processor Expert projects, initialize the used pins */
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  %@RS@'ModuleName'%.Init();
+  %@EN@'ModuleName'%.Init();
+  #if %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==8
+  %if defined(DB0)
+  %@DB0@'ModuleName'%.Init();
+  %else
+  DB0Pin_Init();
+  %endif
+  %if defined(DB1)
+  %@DB1@'ModuleName'%.Init();
+  %else
+  DB1Pin_Init();
+  %endif
+  %if defined(DB2)
+  %@DB2@'ModuleName'%.Init();
+  %else
+  DB2Pin_Init();
+  %endif
+  %if defined(DB3)
+  %@DB3@'ModuleName'%.Init();
+  %else
+  DB3Pin_Init();
+  %endif
+  #endif
+
+  %@DB4@'ModuleName'%.Init();
+  %@DB5@'ModuleName'%.Init();
+  %@DB6@'ModuleName'%.Init();
+  %@DB7@'ModuleName'%.Init();
+  #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
+  %if defined(E2)
+  %@E2@'ModuleName'%.Init();
+  %else
+  E2Pin_Init();
+  %endif
+  #endif
+  #if %'ModuleName'%.CONFIG_USE_RW_SIGNAL
+  %if defined(RW)
+  %@RW@'ModuleName'%.Init();
+  %else
+  RWPin_Init();
+  %endif
+  #endif
+#endif
+
   /* This function initializes the driver.
      The low level init already shall have set our data port to input/output, currently set to output,
      plus all control pins are set as outputs with low values. To be sure, we do it here again. */
@@ -931,9 +1026,9 @@ void %'ModuleName'%.Init(void)
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   ClrEN2();                                                      %>40 /* EN2 Pin low */
 #endif
-%if defined(RW)
+#if %'ModuleName'%.CONFIG_USE_RW_SIGNAL
   ClrRW();                                                       %>40 /* RW Pin low */
-%endif
+#endif
   ClrRS();                                                       %>40 /* RS Pin low: command mode */
   DataPut(0);
 
@@ -942,7 +1037,7 @@ void %'ModuleName'%.Init(void)
 
   /* send the reset sequence according to the data sheet */
   Waitms(80);                                                    %>40 /* wait for more than 15ms after Vcc rises to 4.5V, wait for more than 40ms after Vcc rises to 2.7V. In case of POR (Power On Reset) we need some additional time. */
-%if %DataBusWidth='4bit'
+#if %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==4
   DataPut(0x3);                                                  %>40 /* BF cannot be checked before this function, function set (interface is 8bits long) */
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
@@ -984,7 +1079,7 @@ void %'ModuleName'%.Init(void)
   EnablePulse();                                                 %>40 /* transfer data */
 #endif
   Waitus(100);
-%else
+#else
   DataPut(FunctionSetCmd|FunctionSet_8bit);                      %>40 /* Function set (interface is 8bit) */
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
@@ -996,7 +1091,7 @@ void %'ModuleName'%.Init(void)
 #endif
   Waitms(5);                                                     %>40 /* wait at least 4.1ms */
   /* transmit again the same data (which is already on the bus */
-%'ModuleName'%.CONFIG_USE_E2_SIGNAL
+#if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
   EnablePulse();                                                 %>40 /* transfer data */
   %'ModuleName'%.UseDisplay(2);
@@ -1013,9 +1108,9 @@ void %'ModuleName'%.Init(void)
   EnablePulse();                                                 %>40 /* transfer data */
 #else
   EnablePulse();                                                 %>40 /* transfer data */
-#endif
+#endif /* %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==4 */
   Waitus(100);
-%endif
+#endif
 
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
@@ -1058,7 +1153,7 @@ void %'ModuleName'%.Init(void)
   %'ModuleName'%.UseDisplay(2);
   %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 #endif
-%else
+%else %- NeedDisplayStatusVariable
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
 #endif
@@ -1067,7 +1162,7 @@ void %'ModuleName'%.Init(void)
   %'ModuleName'%.UseDisplay(2);
   %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
 #endif
-%endif
+%endif %- NeedDisplayStatusVariable
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
 #endif
@@ -1211,14 +1306,14 @@ void %'ModuleName'%.%SetEntryMode(bool increment, bool shiftLeft)
 %include Common\LCDHTAUseDisplay.Inc
 uint8_t %'ModuleName'%.%UseDisplay(uint8_t display)
 {
-%if defined(E2)
+#if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   if (!(display==1 || display==2)) {
     return ERR_FAILED; /* wrong argument */
   }
   %'ModuleName'%.currDisplay = display;
-%else
+#else
   (void)display; /* not used, as not using E2 (additional enable) signal */
-%endif
+#endif
   return ERR_OK;
 }
 
@@ -1252,7 +1347,7 @@ void %'ModuleName'%.%CursorShiftLeft(void)
 %include Common\LCDHTADeInit.Inc
 void %'ModuleName'%.%DeInit(void)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  /* nothing needed */
 }
 
 %endif %- DeInit
@@ -1289,8 +1384,42 @@ void %'ModuleName'%.%DeInit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+#define %'ModuleName'%.CONFIG_LCD_NOF_LINES                        (%LCD_Nof_Lines) /* 1, 2, 3 or 4 */
+
+%if %DataBusWidth='4bit'
+#define %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH                   (4) /* 4 or 8 */
+%elif %DataBusWidth='8bit'
+#define %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH                   (8) /* 4 or 8 */
+%endif
+
+#include "%@RS@ModuleName.h" /* RS signal pin header file */
+#include "%@EN@ModuleName.h" /* EN signal pin header file */
+#if %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==8 /* extra includes for 8bit data bus */
+%if defined(DB0)
+  #include "%@DB0@ModuleName.h" /* DB0 signal pin header file */
+%else
+  #include "DB0.h" /* DB0 signal pin header file */
+%endif
+%if defined(DB1)
+  #include "%@DB1@ModuleName.h" /* DB1 signal pin header file */
+%else
+  #include "DB1.h" /* DB1 signal pin header file */
+%endif
+%if defined(DB2)
+  #include "%@DB2@ModuleName.h" /* DB2 signal pin header file */
+%else
+  #include "DB2.h" /* DB2 signal pin header file */
+%endif
+%if defined(DB3)
+  #include "%@DB3@ModuleName.h" /* DB3 signal pin header file */
+%else
+  #include "DB3.h" /* DB3 signal pin header file */
+%endif
+#endif /* %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==8 */
+#include "%@DB4@ModuleName.h" /* DB4 signal pin header file */
+#include "%@DB5@ModuleName.h" /* DB5 signal pin header file */
+#include "%@DB6@ModuleName.h" /* DB6 signal pin header file */
+#include "%@DB7@ModuleName.h" /* DB7 signal pin header file */
 
 #ifndef %'ModuleName'%.CONFIG_USE_E2_SIGNAL
 %if defined(E2)
@@ -1301,17 +1430,54 @@ void %'ModuleName'%.%DeInit(void)
   /*!< 1: Use E2 signal to control upper and lower half of display. 0: do not use E2 signal */
 #endif
 
+#if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
+%if defined(E2)
+  #include "%@E2@ModuleName.h"
+%else
+  #include "E2.h"
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_DISPLAY_READ
+%if defined(ReadFromDisplay) & %ReadFromDisplay='yes'
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_READ   (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_READ   (0)
+%endif
+  /*!< 1: Read from the display. Requires R/W signal. 0: do not read from he display */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG
+%if defined(CheckBusyFlag) & %CheckBusyFlag='yes'
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG   (1 && %'ModuleName'%.CONFIG_USE_DISPLAY_READ)
+%else
+  #define %'ModuleName'%.CONFIG_USE_DISPLAY_READ_CHECK_BUSY_FLAG   (0 && %'ModuleName'%.CONFIG_USE_DISPLAY_READ)
+%endif
+  /*!< 1: Check the busy flag Requires reading from the display. 0: do not check busy flag */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_RW_SIGNAL
+%if defined(E2)
+  #define %'ModuleName'%.CONFIG_USE_RW_SIGNAL   (1 && %'ModuleName'%.CONFIG_USE_DISPLAY_READ)
+%else
+  #define %'ModuleName'%.CONFIG_USE_RW_SIGNAL   (0 && %'ModuleName'%.CONFIG_USE_DISPLAY_READ)
+%endif
+  /*!< 1: Use RW signal to read/write from the display. 0: do not use RW signal */
+#endif
+
+#if %'ModuleName'%.CONFIG_USE_RW_SIGNAL
+%if defined(RW)
+  #include "%@RW@ModuleName.h"
+%else
+  #include "RW.h"
+%endif
+#endif
+
+
 #define %'ModuleName'%.CONFIG_WAIT_DISPLAY_US                      %WaitDisplayUs /* wait time as specified in properties */
 #define %'ModuleName'%.CONFIG_WAIT_LCD_CMD_AFTER_4BIT_DATA1_US     15 /* wait time after first 4bit data */
 #define %'ModuleName'%.CONFIG_WAIT_LCD_CMD_AFTER_4BIT_DATA2_US     60 /* wait time after second 4bit data */
 
-#define %'ModuleName'%.CONFIG_LCD_NOF_LINES                        %LCD_Nof_Lines /* 1, 2, 3 or 4 */
-
-%if %DataBusWidth='4bit'
-#define %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH                   4 /* 4 or 8 */
-%elif %DataBusWidth='8bit'
-#define %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH                   8 /* 4 or 8 */
-%endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-
