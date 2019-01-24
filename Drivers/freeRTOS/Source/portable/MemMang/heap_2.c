@@ -284,9 +284,10 @@ uint8_t *pucAlignedHeap;
 /*-----------------------------------------------------------*/
 #if 1 /* << EST */
 void vPortInitializeHeap(void) {
-  pxEnd = NULL; /* force initialization of heap next time a block gets allocated */
   xStart.pxNextFreeBlock = NULL;
   xStart.xBlockSize = 0;
+  xEnd.pxNextFreeBlock = NULL;
+  xEnd.xBlockSize = 0;
   xFreeBytesRemaining = configADJUSTED_HEAP_SIZE;
   xHeapHasBeenInitialised = pdFALSE;
 }
