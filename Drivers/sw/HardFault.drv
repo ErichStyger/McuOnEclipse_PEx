@@ -303,6 +303,7 @@ void %'ModuleName'%.%HardFaultHandler(void)
 #endif
 {
   __asm volatile (
+    ".syntax unified              \n"  /* needed for the 'adds r1,#2' below */
     " movs r0,#4                  \n"  /* load bit mask into R0 */
     " mov r1, lr                  \n"  /* load link register into R1 */
     " tst r0, r1                  \n"  /* compare with bitmask */
