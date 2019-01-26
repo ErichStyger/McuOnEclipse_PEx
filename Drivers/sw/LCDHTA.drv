@@ -325,10 +325,6 @@ void %'ModuleName'%.%DeInit(void);
 %include Common\Header.C
 
 /* MODULE %ModuleName. */
-
-%for var from EventModules
-#include "%var.h"
-%endfor
 #include "%'ModuleName'.h"
 #include "%@Wait@ModuleName.h"
 %-BW_CUSTOM_INCLUDE_START_M
@@ -337,7 +333,6 @@ void %'ModuleName'%.%DeInit(void);
 %-     #include "header_name.h"
 %-
 %-BW_CUSTOM_INCLUDE_END_M
-
 %-BW_CUSTOM_VARIABLE_START
 %- Write your static variables here
 %-   Example:
@@ -389,14 +384,8 @@ void %'ModuleName'%.%DeInit(void);
 #define RightShiftCursor   0x14
 #define LeftShiftCursor    0x10
 
-%if defined(CursorOn) | defined(CursorOff) | defined(BlinkingOn) | defined(BlinkingOff) | defined(DisplayOn) | defined(CursorOff)
-  %define NeedDisplayStatusVariable
+static uint8_t DisplayOnOffControlStatus = 0;
 
-%endif
-%ifdef NeedDisplayStatusVariable
-static uint8_t DisplayOnOffControlStatus;
-
-%endif
 #define BusyFlag       0x80 /* BF Flag */
 
 /* support for custom soft characters in the display which can be used with %'ModuleName'%.LoadSoftChar() */
@@ -711,11 +700,12 @@ static void EnablePulse(void)
 #else
   SetEN();
 #endif                                                           %>40 /* set EN to 1 to create pulse */
-%if %LCDType = "1" %- Diplaytech 162c: not clear why this is not according to the 500ns spec?
+#if %'ModuleName'%.CONFIG_LCD_TYPE==1
+  /* Diplaytech 162c: not clear why this is not according to the 500ns spec? */
   Waitms(2);
-%else
+#else
   Waitns(Timing_PWeh_ns);
-%endif
+#endif
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   if (%'ModuleName'%.currDisplay==1) {
     ClrEN();                                                     %>40 /* set to 0 to finish pulse */
@@ -1205,7 +1195,6 @@ void %'ModuleName'%.Init(void)
                  );
 #endif
 
-%ifdef NeedDisplayStatusVariable
   DisplayOnOffControlStatus = DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn;%>40 /* Display on, cursor on, do not blink */
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
@@ -1215,16 +1204,6 @@ void %'ModuleName'%.Init(void)
   %'ModuleName'%.UseDisplay(2);
   %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlStatus);
 #endif
-%else %- NeedDisplayStatusVariable
-#if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
-  %'ModuleName'%.UseDisplay(1);
-#endif
-  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
-#if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
-  %'ModuleName'%.UseDisplay(2);
-  %'ModuleName'%.WriteLCDCommand(DisplayOnOffControlCmd|DisplayOnOffControl_DisplayOn);
-#endif
-%endif %- NeedDisplayStatusVariable
 #if %'ModuleName'%.CONFIG_USE_E2_SIGNAL
   %'ModuleName'%.UseDisplay(1);
 #endif
@@ -1445,6 +1424,15 @@ void %'ModuleName'%.%DeInit(void)
 
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_LCD_TYPE
+%if defined(LCDType) && %LCDType = "1"
+  #define %'ModuleName'%.CONFIG_LCD_TYPE   (1)
+%else
+  #define %'ModuleName'%.CONFIG_LCD_TYPE   (0)
+%endif
+    /*!< 1: Diplaytech 162c: use different timing than the default. 0: use default timing */
+#endif
 
 #define %'ModuleName'%.CONFIG_LCD_NOF_LINES                        (%LCD_Nof_Lines) /* 1, 2, 3 or 4 */
 
