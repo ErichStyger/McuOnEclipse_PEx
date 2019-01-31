@@ -257,7 +257,6 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-
   static const gpio_pin_config_t %'ModuleName'%.configOutput = {
     kGPIO_DigitalOutput,  /* use as output pin */
     %'ModuleName'%.CONFIG_INIT_PIN_VALUE,  /* initial value */
@@ -334,7 +333,9 @@ static bool %'ModuleName'%.isOutput = false;
 void %'ModuleName'%.%ClrVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  #if McuLib_CONFIG_SDK_VERSION < 250
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  GPIO_PortClear(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION < 250
   GPIO_ClearPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   #else
   GPIO_PortClear(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
@@ -355,7 +356,9 @@ void %'ModuleName'%.%ClrVal(void)
 void %'ModuleName'%.%SetVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  #if McuLib_CONFIG_SDK_VERSION < 250
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  GPIO_PortSet(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION < 250
   GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   #else
   GPIO_PortSet(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
@@ -376,7 +379,9 @@ void %'ModuleName'%.%SetVal(void)
 void %'ModuleName'%.%NegVal(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
-  #if McuLib_CONFIG_SDK_VERSION < 250
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  GPIO_PortToggle(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION < 250
   GPIO_TogglePinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   #else
   GPIO_PortToggle(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
@@ -404,7 +409,9 @@ void %'ModuleName'%.%NegVal(void)
 %include Common\SDK_BitIOGetVal.Inc
 bool %'ModuleName'%.%GetVal(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  return GPIO_PinRead(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER);
+#elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   return GPIO_ReadPinInput(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER)!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   return GPIO_DRV_ReadPinInput(%'ModuleName'%.CONFIG_PIN_SYMBOL)!=0;
@@ -451,7 +458,9 @@ void %'ModuleName'%.%SetDir(bool Dir)
 %include Common\SDK_BitIOSetInput.Inc
 void %'ModuleName'%.%SetInput(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configInput);
+#elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configInput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'ModuleName'%.CONFIG_PIN_SYMBOL, kGpioDigitalInput);
@@ -473,7 +482,9 @@ void %'ModuleName'%.%SetInput(void)
 %include Common\SDK_BitIOSetOutput.Inc
 void %'ModuleName'%.%SetOutput(void)
 {
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configOutput);
+#elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   GPIO_PinInit(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, &%'ModuleName'%.configOutput);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   GPIO_DRV_SetPinDir(%'ModuleName'%.CONFIG_PIN_SYMBOL, kGpioDigitalOutput);
@@ -496,7 +507,13 @@ void %'ModuleName'%.%SetOutput(void)
 %include Common\SDK_BitIOPutVal.Inc
 void %'ModuleName'%.%PutVal(bool Val)
 {
-#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  if (Val) {
+    GPIO_PortSet(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  } else {
+    GPIO_PortClear(%'ModuleName'%.CONFIG_GPIO_NAME, %'ModuleName'%.CONFIG_PORT_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
+  }
+#elif %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   if (Val) {
     GPIO_SetPinsOutput(%'ModuleName'%.CONFIG_GPIO_NAME, 1<<%'ModuleName'%.CONFIG_PIN_NUMBER);
   } else {
@@ -599,6 +616,8 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef %'ModuleName'%.CONFIG_PORT_NAME
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
     #define %'ModuleName'%.CONFIG_PORT_NAME       GPIO1
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+    #define %'ModuleName'%.CONFIG_PORT_NAME       0
   #else /* name from properties */
     #define %'ModuleName'%.CONFIG_PORT_NAME       %PORT_Name
   #endif
@@ -608,6 +627,8 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef %'ModuleName'%.CONFIG_GPIO_NAME
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
     #define %'ModuleName'%.CONFIG_GPIO_NAME       GPIO1
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+    #define %'ModuleName'%.CONFIG_GPIO_NAME       GPIO
   #else /* name from properties */
     #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
   #endif
