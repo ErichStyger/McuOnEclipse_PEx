@@ -613,6 +613,21 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_MCUXPRESSO_2_0
+  #include "pin_mux.h" /* include pin muxing header file */
+
+  #if defined(BOARD_INITPINS_%'ModuleName'_PIN)
+    #define %'ModuleName'%.CONFIG_PIN_NUMBER    BOARD_INITPINS_%'ModuleName'_PIN
+  #endif
+  #if defined(BOARD_INITPINS_%'ModuleName'_GPIO)
+    #define %'ModuleName'%.CONFIG_GPIO_NAME     BOARD_INITPINS_%'ModuleName'_GPIO
+  #endif
+  #if defined(BOARD_INITPINS_%'ModuleName'_PORT)
+    #define %'ModuleName'%.CONFIG_PORT_NAME     BOARD_INITPINS_%'ModuleName'_PORT
+  #endif
+#endif
+
+
 #ifndef %'ModuleName'%.CONFIG_PORT_NAME
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
     #define %'ModuleName'%.CONFIG_PORT_NAME       GPIO1

@@ -65,13 +65,15 @@
 
 /* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
-#include "%'ModuleName'config.h" /* configuration */
-
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
+#include "%'ModuleName'config.h" /* LED configuration */
+%if defined(LEDPin)
+#include "%@LEDPin@ModuleName.h" /* interface to pin */
+%endif
+%if defined(Shell)
+#include "%@Shell@ModuleName.h" /* interface to Shell */
+%endif
+%if defined(Utility)
+#include "%@Utility@ModuleName.h" /* interface to Utility */
 %endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -524,7 +526,18 @@ void %'ModuleName'%.%SetRatio16(uint16_t ratio)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+%if defined(LEDPin)
+#define %'ModuleName'%.CONFIG_USE_GPIO_PIN   (1)
+%elif defined(PWMpin)
+#define %'ModuleName'%.CONFIG_USE_GPIO_PIN   (0)
+%endif
+  /*!< 1: use GPIO pin; 0: use PWM pin */
+
+%if defined(AnodeOnPortSide) & %AnodeOnPortSide='yes'
+#define %'ModuleName'%.CONFIG_IS_LOW_ACTIVE   (0)
+%else
+#define %'ModuleName'%.CONFIG_IS_LOW_ACTIVE   (1)
+%endif
+  /*!< 1: LED is low active (cathode on port side), 0: LED is HIGH active (anode on port side) */
 
 #endif /* __%'ModuleName'_CONFIG_H */
