@@ -1224,7 +1224,9 @@ void %OnGiveLCD(void)
 %if (CPUfamily = "S32K")
 #ifdef CPU_INIT_MCUONECLIPSE_DRIVERS
 %endif
+#if %'ModuleName'_CONFIG_INITIALIZE_IN_INIT
   %'ModuleName'%.%Init(); /* ### %DeviceType "%DeviceName" init code ... */
+#endif
 %if (CPUfamily = "S32K")
 #endif
 %endif
@@ -1354,6 +1356,16 @@ void %OnGiveLCD(void)
     %'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
   */
 #endif
+
+#ifndef %'ModuleName'_CONFIG_INITIALIZE_IN_INIT
+%if defined(InitializeOnInit) & %InitializeOnInit='yes'
+  #define %'ModuleName'_CONFIG_INITIALIZE_IN_INIT                %>40 (1)
+%else
+  #define %'ModuleName'_CONFIG_INITIALIZE_IN_INIT                %>40 (0)
+%endif
+  /*!< 1: Initialize LCD during PE_low_level_init(); 0: Do not initialize during PE_low_level_init() */
+#endif
+
 
 #ifndef %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
 %if defined(ClearDisplayInInit) & %ClearDisplayInInit='yes'
