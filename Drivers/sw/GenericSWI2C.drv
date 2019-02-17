@@ -288,11 +288,9 @@ void %OnRxChar(void);
 
 /* MODULE %ModuleName. */
 
-%for var from EventModules
-#include "%var.h"
-%endfor
 #include "%'ModuleName'.h"
 #include "%@Wait@ModuleName.h" /* waiting routines */
+#include "%@sdk@ModuleName.h" /* SDK defines */
 #include "%@SDA@ModuleName.h" /* SDA pin */
 #include "%@SCL@ModuleName.h" /* SCL pin */
 %-BW_CUSTOM_INCLUDE_START_M
@@ -308,24 +306,13 @@ void %OnRxChar(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
-#define %'ModuleName'%.HAS_RTOS  1 /* FreeRTOS present */
-%else
-#define %'ModuleName'%.HAS_RTOS  0 /* No RTOS present */
-%endif
-%if %Yield='yes'
-#define %'ModuleName'%.YIELD     1 /* Yield is enabled in the component properties */
-%else
-#define %'ModuleName'%.YIELD     0 /* Yield is diabled in the component properties */
-%endif
-
-#if %'ModuleName'%.HAS_RTOS
+#if %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS
   /* include RTOS header files */
   #include "FreeRTOS.h" /* for yielding */
   #include "task.h"
 #endif
 
-#if %'ModuleName'%.HAS_RTOS && %'ModuleName'%.YIELD
+#if %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS && %'ModuleName'%.CONFIG_DO_YIELD
   #define %'ModuleName'%.OSYIELD() taskYIELD()
 #else
   #define %'ModuleName'%.OSYIELD() /* do nothing */
@@ -335,9 +322,6 @@ void %OnRxChar(void);
 #define INPUT       0U
 #define WRITE       0U
 #define READ        1U
-#define TRIALS      %NofTrials /* defined by component properties */
-
-#define %'ModuleName'%.DELAY_NS    %DelayNs   /* delay time in ns, as specified in the component properties */
 
 static uint8_t SlaveAddr;             /* destination slave address      */
 
@@ -391,7 +375,7 @@ static void InternalStop(void);
 static void Delay(void)
 {
   %'ModuleName'%.OSYIELD();
-  %@Wait@'ModuleName'%.Waitns(%'ModuleName'%.DELAY_NS);
+  %@Wait@'ModuleName'%.Waitns(%'ModuleName'%.CONFIG_DELAY_NS);
 }
 
 %-INTERNAL_METHOD_END Delay
@@ -583,7 +567,7 @@ uint8_t %'ModuleName'%.%SendChar(uint8_t Chr)
   bool Acknowledge;
   uint16_t timeout;
 
-  Trial = TRIALS;
+  Trial = %'ModuleName'%.CONFIG_NOF_TRIALS;
   do {
     SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP*/
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
@@ -656,7 +640,7 @@ uint8_t %'ModuleName'%.%RecvChar(uint8_t *Chr)
   bool Acknowledge;
   uint16_t timeout;
 
-  Trial = TRIALS;
+  Trial = %'ModuleName'%.CONFIG_NOF_TRIALS;
   do {
     SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP */
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
@@ -721,7 +705,7 @@ uint8_t %'ModuleName'%.%SendBlock(void *Ptr, uint16_t Siz, uint16_t *Snt)
   uint16_t timeout;
 
   *Snt = 0U;
-  Trial = TRIALS;
+  Trial = %'ModuleName'%.CONFIG_NOF_TRIALS;
   do {
     SDA_SetDir((bool)INPUT);     /* SDA HIGH  - START SETUP */
     SCL_SetDir((bool)INPUT);     /* CLOCK HIGH PULSE */
@@ -853,7 +837,7 @@ uint8_t %'ModuleName'%.%RecvBlockCustom(void *Ptr, uint16_t Siz, uint16_t *Rcv, 
   uint16_t timeout;
 
   *Rcv = 0U;
-  Trial = TRIALS;
+  Trial = %'ModuleName'%.CONFIG_NOF_TRIALS;
   if (flagsStart == %'ModuleName'%.SEND_START) {
     do {
       SDA_SetDir((bool)INPUT);     /* SDA HIGH - START SETUP */
@@ -1087,6 +1071,25 @@ void %OnRxChar(void)
 #ifndef %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE
   #define %'ModuleName'%.CONFIG_TIMEOUT_COUNTER_VALUE    (%TimeoutCntrVal)
     /*!< Timeout counter value waiting for a SDA or CLK line change. The higher the value, the longer the timeout */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DELAY_NS
+  #define %'ModuleName'%.CONFIG_DELAY_NS    (%DelayNs)
+    /*!< delay time in ns */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_NOF_TRIALS
+  #define %'ModuleName'%.CONFIG_NOF_TRIALS    (%NofTrials)
+    /*!< number of trials */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DO_YIELD
+%if defined(Yield) & %Yield='yes'
+  #define %'ModuleName'%.CONFIG_DO_YIELD    (1)
+%else
+  #define %'ModuleName'%.CONFIG_DO_YIELD    (0)
+%endif
+    /*!< 1: if RTOS present, do a yield. 0: do not yield during waiting */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
