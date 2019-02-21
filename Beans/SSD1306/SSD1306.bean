@@ -4,7 +4,7 @@
     <Name>SSD1306</Name>
     <Description>Display driver for SSD1306/SSH1106 OLED displays</Description>
     <Author>Erich Styger</Author>
-    <Version>01.035</Version>
+    <Version>01.038</Version>
     <Icon>SSD1306</Icon>
     <TypesFiles>PE,SSD1306\SSD1306</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1146,6 +1146,46 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>SetRowCol</Name>
+        <Symbol>SetRowCol</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Sets the column and row position, useful for start writing text with PrintString()</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>row</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>row (or line) number, starting with 0</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>col</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>column number, starting with 0</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(uint8_t row, uint8_t col)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>PrintString</Name>
         <Symbol>PrintString</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -1165,7 +1205,19 @@
         <InDefinition>true</InDefinition>
         <ReturnType>void</ReturnType>
         <RetHint>Error code</RetHint>
-        <ParamCount>1</ParamCount>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>line</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>line number, starting with 0</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>col</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>column number, starting with 0</ParHint>
+        </Parameter>
         <Parameter>
           <ParName>str</ParName>
           <ParType>uint8_t</ParType>
@@ -1174,7 +1226,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint8_t *str)</ANSIC>
+          <ANSIC>void #M#_#C#(uint8_t line, uint8_t col, uint8_t *str)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

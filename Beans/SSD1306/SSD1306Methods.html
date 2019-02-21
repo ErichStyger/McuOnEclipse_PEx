@@ -379,13 +379,28 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
+<li><a name="SetRowCol">
+<b>SetRowCol</b></a>
+ - Sets the column and row position, useful for start writing text with PrintString()
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetRowCol(uint8_t row, uint8_t col)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>row:uint8_t</i> - row (or line) number, starting with 0</li>
+<li><i>col:uint8_t</i> - column number, starting with 0</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="PrintString">
 <b>PrintString</b></a>
  - Simple low level method printing text to the display. Newline is supported.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void PrintString(uint8_t *str)<br />
+<br /><i>ANSIC prototype:</i> void PrintString(uint8_t line, uint8_t col, uint8_t *str)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>line:uint8_t</i> - line number, starting with 0</li>
+<li><i>col:uint8_t</i> - column number, starting with 0</li>
 <li><i>str: Pointer to uint8_t</i> - Pointer to string to be printed on display</li>
 </ul><br />
 </li>

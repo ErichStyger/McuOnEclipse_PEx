@@ -3,15 +3,15 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (PrintString)
+%include Common\GeneralMethod.inc (SetRowCol)
 %;**     Description :
-%;**         Simple low level method printing text to the display.
-%;**         Newline is supported.
+%;**         Sets the column and row position, useful for start writing
+%;**         text with PrintString()
 %include Common\GeneralParameters.inc(27)
-%;**         line%Parline %>27 - line number, starting with 0
+%;**         row%Parrow %>27 - row (or line) number, starting with 0
 %;**         col%Parcol %>27 - column number, starting with 0
-%;**       * str%Parstr %>27 - Pointer to string to be printed on display
-%include Common\GeneralReturnNothing.inc
+%;**     Returns     :
+%;**         ---%RetVal %>27 - Error code
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

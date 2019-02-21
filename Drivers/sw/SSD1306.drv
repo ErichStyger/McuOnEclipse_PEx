@@ -384,8 +384,10 @@ uint8_t %'ModuleName'%.%DisplayInvert(bool invert);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PrintString
 %ifdef PrintString
-void %'ModuleName'%.%PrintString(uint8_t *str);
+void %'ModuleName'%.%PrintString(uint8_t line, uint8_t col, uint8_t *str);
 %define! Parstr
+%define! Parline
+%define! Parcol
 %include Common\SSD1306PrintString.Inc
 
 %endif %- PrintString
@@ -409,6 +411,17 @@ void %'ModuleName'%.%Deinit(void);
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetRowCol
+%ifdef SetRowCol
+uint8_t %'ModuleName'%.%SetRowCol(uint8_t row, uint8_t col);
+%define! Parcol
+%define! Parrow
+%define! RetVal
+%include Common\SSD1306SetRowCol.Inc
+
+%endif %- SetRowCol
+%-BW_METHOD_END SetRowCol
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -668,25 +681,26 @@ static void SSD1306_WriteDataBlock(uint8_t *data, size_t size) {
 #endif
 }
 
-
 static uint8_t actCol = 0;
 static uint8_t actPage = 0;
 
-static void SSD1306_SetPageStartAddr(uint8_t page) {
+static uint8_t SSD1306_SetPageStartAddr(uint8_t page) {
   actPage = page;
   if(actPage>=%'ModuleName'%.DISPLAY_HW_NOF_PAGES) {
-    return;
+    return ERR_RANGE;
   }
   SSD1306_WriteCommand(0xB0 | actPage);
+  return ERR_OK;
 }
 
-static void SSD1306_SetColStartAddr(uint8_t col){
+static uint8_t SSD1306_SetColStartAddr(uint8_t col){
   actCol = col;
   if(actCol>=%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS) {
-    return;
+    return ERR_RANGE;
   }
   SSD1306_WriteCommand(0x10 | (actCol>>4));
   SSD1306_WriteCommand(actCol & 0x0F);
+  return ERR_OK;
 }
 
 static void SSD1306_PrintChar(uint8_t ch) {
@@ -759,16 +773,16 @@ void %'ModuleName'%.%Clear(void)
 void %'ModuleName'%.%UpdateFull(void)
 {
 #if %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1306 /* SSD1306 */
-  SSD1306_SetPageStartAddr(0);
-  SSD1306_SetColStartAddr(0);
+  (void)SSD1306_SetPageStartAddr(0);
+  (void)SSD1306_SetColStartAddr(0);
   SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0], sizeof(%'ModuleName'%.DisplayBuf));
-#elif %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1106 /* SH1306 */
+#elif %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1106 /* SH1106 */
   /* the SSH1306 has a 132x64 memory organization (compared to the 128x64 of the SSD1306) */
   int page;
 
   for(page=0; page<%'ModuleName'%.DISPLAY_HW_NOF_PAGES; page++) {
-    SSD1306_SetPageStartAddr(page);
-    SSD1306_SetColStartAddr(0);
+    (void)SSD1306_SetPageStartAddr(page);
+    (void)SSD1306_SetColStartAddr(0);
     SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0]+(page*%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS), %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS);
   }
 #else
@@ -1034,13 +1048,37 @@ uint8_t %'ModuleName'%.%DisplayInvert(bool invert)
 
 %endif %- DisplayInvert
 %-BW_METHOD_END DisplayInvert
+%-BW_METHOD_BEGIN SetRowCol
+%ifdef SetRowCol
+%define! Parcol
+%define! Parrow
+%define! RetVal
+%include Common\SSD1306SetRowCol.Inc
+uint8_t %'ModuleName'%.%SetRowCol(uint8_t row, uint8_t col)
+{
+  uint8_t res;
+
+  res = SSD1306_SetPageStartAddr(row);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return SSD1306_SetColStartAddr(col);
+}
+
+%endif %- SetRowCol
+%-BW_METHOD_END SetRowCol
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PrintString
 %ifdef PrintString
 %define! Parstr
+%define! Parline
+%define! Parcol
 %include Common\SSD1306PrintString.Inc
-void %'ModuleName'%.%PrintString(uint8_t *str)
+void %'ModuleName'%.%PrintString(uint8_t line, uint8_t col, uint8_t *str)
 {
+  if (%'ModuleName'%.%SetRowCol(line ,col)!=ERR_OK) {
+    return; /* error! */
+  }
   while(*str != '\0'){
     if(*str == '\n') {
       actPage++;
@@ -1189,6 +1227,7 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
