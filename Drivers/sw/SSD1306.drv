@@ -92,14 +92,16 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-#if %'ModuleName'_CONFIG_SSD1306_128X64
+#if %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE==12864
   #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  128u            %>40/* number of columns in hardware */
   #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS      64u            %>40/* number of rows in hardware */
   #define %'ModuleName'%.DISPLAY_HW_NOF_PAGES      8u            %>40/* number of pages in hardware */
-#elif %'ModuleName'_CONFIG_SSD1306_128X32
+#elif %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE==12832
   #define %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS  128u            %>40/* number of columns in hardware */
   #define %'ModuleName'%.DISPLAY_HW_NOF_ROWS      32u            %>40/* number of rows in hardware */
   #define %'ModuleName'%.DISPLAY_HW_NOF_PAGES      4u            %>40/* number of pages in hardware */
+#else
+  #error "unknown display type, must be 128x64 or 128x32"
 #endif
 
 typedef bool %'ModuleName'_PixelColor;                           %>40/* type to hold color information */
@@ -133,12 +135,8 @@ extern uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)
 #define %'ModuleName'%.PIXEL_ON  %'ModuleName'%.COLOR_WHITE /* value of a pixel if it is 'on' */
 #define %'ModuleName'%.PIXEL_OFF %'ModuleName'%.COLOR_BLACK /* value of a pixel if it is 'off' */
 
-#define %'ModuleName'%.WIDTH  %'Width'u                          %>40 /* Logical display width in pixels */
-#define %'ModuleName'%.HEIGHT %'Height'u                         %>40 /* Logical display height in pixels */
-#define %'ModuleName'%.HW_WIDTH  %'ModuleName'%.WIDTH            %>40 /* Hardware display width in pixels */
-#define %'ModuleName'%.HW_HEIGHT %'ModuleName'%.HEIGHT           %>40 /* Hardware display height in pixels */
-#define %'ModuleName'%.HW_LONGER_SIDE  %'ModuleName'%.WIDTH      %>40 /* Hardware display longer side in pixels */
-#define %'ModuleName'%.HW_SHORTER_SIDE %'ModuleName'%.HEIGHT     %>40 /* Hardware display shorter side in pixels */
+#define %'ModuleName'%.HW_LONGER_SIDE  %'ModuleName'%.DISPLAY_HW_NOF_COLUMNS%>80 /* Hardware display longer side in pixels */
+#define %'ModuleName'%.HW_SHORTER_SIDE %'ModuleName'%.DISPLAY_HW_NOF_ROWS%>80 /* Hardware display shorter side in pixels */
 
 typedef enum {
   %'ModuleName'%.ORIENTATION_PORTRAIT    = 0,
@@ -698,8 +696,8 @@ static uint8_t SSD1306_SetColStartAddr(uint8_t col){
   if(actCol>=%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS) {
     return ERR_RANGE;
   }
-  SSD1306_WriteCommand(0x10 | (actCol>>4));
-  SSD1306_WriteCommand(actCol & 0x0F);
+  SSD1306_WriteCommand(0x10 | ((actCol+%'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET)>>4));
+  SSD1306_WriteCommand((actCol+%'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET) & 0x0F);
   return ERR_OK;
 }
 
@@ -1103,6 +1101,7 @@ void %'ModuleName'%.%PrintString(uint8_t line, uint8_t col, uint8_t *str)
 %include Common\SSD1306Init.Inc
 void %'ModuleName'%.%Init(void)
 {
+  /* see as well https://github.com/hallard/ArduiPi_OLED/blob/master/ArduiPi_OLED.cpp */
 #if %'ModuleName'_CONFIG_INIT_DELAY_MS>0
   %@Wait@'ModuleName'%.Waitms(%'ModuleName'_CONFIG_INIT_DELAY_MS);%>70/* give hardware time to power up*/
 #endif
@@ -1136,12 +1135,12 @@ void %'ModuleName'%.%Init(void)
 #else
   SSD1306_WriteCommand(0x14);                                    %>70/* set to enabled */
 #endif
-#if %'ModuleName'_CONFIG_SSD1306_128X32
+#if %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE==12832
   SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
   SSD1306_WriteCommand(0x02);
   SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
   SSD1306_WriteCommand(0x8F);
-#else
+#elif %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE==12864
   SSD1306_WriteCommand(SSD1306_SET_COM_PINS);                    %>70/* set COM pins hardware configuration */
   SSD1306_WriteCommand(0x12);
   SSD1306_WriteCommand(SSD1306_SET_CONTRAST);                    %>70/* set contrast control register */
@@ -1150,6 +1149,8 @@ void %'ModuleName'%.%Init(void)
   #else
   SSD1306_WriteCommand(0xCF);
   #endif
+#else
+  #error "unknown display type"
 #endif
 
   SSD1306_WriteCommand(SSD1306_SET_PRECHARGE);                   %>70/* set pre-charge period */
@@ -1309,18 +1310,15 @@ void %OnGiveLCD(void)
     /*!< Header file to be included for the SPI driver */
 #endif
 
-/* Which display is used */
+/* Which display is used: only one of the two options below can be enabled: */
 %if %displayType='128x64'
-#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (1)
-#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (0)
+#define %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE                   %>40 (12864)
 %elif %displayType='128x32'
-#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (0)
-#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (1)
+#define %'ModuleName'_CONFIG_SSD1306_SIZE_TYPE                   %>40 (12832)
 %else
-#define %'ModuleName'_CONFIG_SSD1306_128X64                      %>40 (0)
-#define %'ModuleName'_CONFIG_SSD1306_128X32                      %>40 (0)
 #error "unsupported display size (%displayType)"
 %endif
+  /*!< /* either 12864 (128x64) or 12832 (128x32) */
 
 #ifndef %'ModuleName'_CONFIG_SSD1306_HAS_RST
 %if defined(RES)
@@ -1346,7 +1344,7 @@ void %OnGiveLCD(void)
 #endif
 #ifndef %'ModuleName'_CONFIG_SSD1306_I2C_ADDR
   #define %'ModuleName'_CONFIG_SSD1306_I2C_ADDR        (%I2CDeviceAddress)
-    /*!< I2C 7bit (unshifted) device address, usually 0x3C (0b11'1100) or 0x3D (0b11'1101) */
+    /*!< I2C 7bit (unshifted) device address, usually 0x3C (60) (0b11'1100) or 0x3D (61) (0b11'1101) */
 #endif
 
 #ifndef %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE
@@ -1357,6 +1355,16 @@ void %OnGiveLCD(void)
 %endif
     /*!< Either 1306 for SSD1306 or 1106 for SH1106 */
 #endif
+
+#ifndef %'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET
+%if defined(StartColumnOffset)
+  #define %'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET  (%StartColumnOffset)
+%else
+  #define %'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET  (0)
+%endif
+    /*!< Some SH1106 displays need a start colum of 2 instead of the default 0 */
+#endif
+
 
 #ifndef %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US
   #define %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US    (%I2CTransactionDelay)
