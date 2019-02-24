@@ -238,7 +238,7 @@ void %'ModuleName'%.%Init(void);
 %-BW_METHOD_BEGIN DisableEvents
 %ifdef DisableEvents
 #define %'ModuleName'%.%DisableEvents(DisableMask) \
-  SEGGER_SYSVIEW_EnableEvents(DisableMask)
+  SEGGER_SYSVIEW_DisableEvents(DisableMask)
 
 %define! ParDisableMask
 %include Common\SeggerSystemViewDisableEvents.Inc
@@ -598,6 +598,14 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS  (0)
 %endif
   /*!< 1: events for Stream Buffer are generated. 0: no Stream Buffer events are generated */
+
+%if defined(vTaskStepTickEventsEnabled) && %vTaskStepTickEventsEnabled='yes'
+#define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (1)
+%else
+#define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (0)
+%endif
+  /*!< 1: events for Stream Buffer are generated. 0: no Stream Buffer events are generated */
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
