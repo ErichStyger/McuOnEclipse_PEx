@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.570</Version>
+    <Version>01.574</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -1241,38 +1241,30 @@ Tasks that share the same priority will time slice. Assuming none of the tasks g
             </TIntgItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
+            <TStrgItem>
               <Name>Minimal Stack Size</Name>
               <Symbol>MinimalStackSize</Symbol>
               <Hint>The size of the stack used by the idle task (configMINIMAL_STACK_SIZE flag). Generally this should not be reduced from the value set in the FreeRTOSConfig.h file provided with the demo application for the port you are using. Note that the size is in stack units (portSTACK_TYPE), which is 4 bytes for a 32bit core like ColdFire and ARM/Kinetis and 1 byte for HCS08. Keep in mind that there is the IDLE task too which needs stack plus the task descriptor block.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>200</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>true</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
+            <TStrgItem>
               <Name>Maximum Priorities</Name>
               <Symbol>MaxPriority</Symbol>
               <Hint>Each task is assigned a priority from 0 to ( configMAX_PRIORITIES - 1 ). configMAX_PRIORITIES is defined within FreeRTOSConfig.h and can be set on an application by application basis. The higher the value given to configMAX_PRIORITIES the more RAM the FreeRTOS kernel will consume. </Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
               <DefaultValue>6</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>true</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
           <GrupItem>
             <TIntgItem>
@@ -1676,28 +1668,11 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
         <Children>
-          <GrupItem>
-            <TIntgItem>
-              <Name>Priority</Name>
-              <Symbol>TimerTaskPriority</Symbol>
-              <Hint>Priority of the software timer task (configTIMER_TASK_PRIORITY)</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>true</EditLine>
-              <DefaultValue>2</DefaultValue>
-              <MinValue>0</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
-          </GrupItem>
           <GrupItem>
             <TIntgItem>
               <Name>Queue Length</Name>
@@ -1716,21 +1691,30 @@ configQUEUE_REGISTRY_SIZE defines the maximum number of queues and semaphores th
             </TIntgItem>
           </GrupItem>
           <GrupItem>
-            <TIntgItem>
+            <TStrgItem>
+              <Name>Priority</Name>
+              <Symbol>TimerTaskPriority</Symbol>
+              <Hint>Priority of the software timer task (configTIMER_TASK_PRIORITY)</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue>(configMAX_PRIORITIES-1)</DefaultValue>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
+          </GrupItem>
+          <GrupItem>
+            <TStrgItem>
               <Name>Stack Depth</Name>
               <Symbol>TimerTaskStackDepth</Symbol>
               <Hint>configures the value of configTIMER_TASK_STACK_DEPTH which defines the stack size for the timer task. The units are 'stack units', so 32bits for an ARM.</Hint>
               <ItemLevel>BASIC</ItemLevel>
               <EditLine>true</EditLine>
-              <DefaultValue>150</DefaultValue>
-              <MinValue>1</MinValue>
-              <MaxValue>-1</MaxValue>
-              <Bases>DEC</Bases>
-              <DefaultBase>DEC</DefaultBase>
-              <ExtraHintDisabled>false</ExtraHintDisabled>
-              <ChangeValueIntoRange>false</ChangeValueIntoRange>
-              <RuntimeProperty>false</RuntimeProperty>
-            </TIntgItem>
+              <DefaultValue>(configMINIMAL_STACK_SIZE)</DefaultValue>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
           <GrupItem>
             <TBoolItem>
