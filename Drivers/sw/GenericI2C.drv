@@ -479,7 +479,7 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 %endif
 %endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
-static xSemaphoreHandle %'ModuleName'%.busSem = NULL; /* Semaphore to protect I2C bus access */
+static SemaphoreHandle_t %'ModuleName'%.busSem = NULL; /* Semaphore to protect I2C bus access */
 #endif
 %-BW_CUSTOM_VARIABLE_END
 %-BW_INTERN_METHOD_DECL_START

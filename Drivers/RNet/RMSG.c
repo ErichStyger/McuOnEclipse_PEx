@@ -17,7 +17,7 @@
 #define RMSG_QUEUE_TX_NOF_ITEMS   (RNET_CONFIG_MSG_QUEUE_NOF_TX_ITEMS) /* number of items in the queue */
 #define RMSG_QUEUE_PUT_WAIT       (RNET_CONFIG_MSG_QUEUE_PUT_BLOCK_TIME_MS) /* blocking time for putting messages into queue */
 
-static xQueueHandle RMSG_MsgRxQueue, RMSG_MsgTxQueue; /* queue for messages,  format is: kind(8bit) dataSize(8bit) data */
+static QueueHandle_t RMSG_MsgRxQueue, RMSG_MsgTxQueue; /* queue for messages,  format is: kind(8bit) dataSize(8bit) data */
 
 unsigned int RMSG_RxQueueNofItems(void) {
   return (unsigned int)%@RTOS@'ModuleName'%.uxQueueMessagesWaiting(RMSG_MsgRxQueue);
@@ -44,7 +44,7 @@ uint8_t RMSG_FlushTxQueue(void) {
 uint8_t RMSG_QueuePut(uint8_t *buf, size_t bufSize, uint8_t payloadSize, bool fromISR, bool isTx, bool toBack, RPHY_FlagsType flags) {
   /* data format is: dataSize(8bit) data */
   uint8_t res = ERR_OK;
-  xQueueHandle queue;
+  QueueHandle_t queue;
   BaseType_t qRes;
 
   if (payloadSize>RPHY_PAYLOAD_SIZE) {

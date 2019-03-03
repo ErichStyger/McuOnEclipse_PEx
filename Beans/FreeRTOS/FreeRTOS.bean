@@ -4,7 +4,7 @@
     <Name>FreeRTOS</Name>
     <Description>FreeRTOS McuOnEclipse Port with FreeRTOS+Trace</Description>
     <Author>Erich Styger</Author>
-    <Version>01.568</Version>
+    <Version>01.570</Version>
     <Icon>FreeRTOS</Icon>
     <TypesFiles>PE,FreeRTOS\FreeRTOS</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -21,7 +21,7 @@
     <BW_NeedUst>23</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * FreeRTOS (c) Copyright 2003-2018 Richard Barry/Amazon, http: www.FreeRTOS.org\n * See separate FreeRTOS licensing terms.\n *\n * FreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2018\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
+    <Copyright> * FreeRTOS (c) Copyright 2003-2019 Richard Barry/Amazon, http: www.FreeRTOS.org\n * See separate FreeRTOS licensing terms.\n *\n * FreeRTOS Processor Expert Component: (c) Copyright Erich Styger, 2013-2018\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>FRTOS</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -432,24 +432,6 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
       </TBoolItem>
     </Property>
     <Property>
-      <TBoolItem>
-        <Name>LinkTimeOptimizer Helper</Name>
-        <Symbol>EnableLTODebugHelper</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>0</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
       <TGrupItem>
         <Name>Debug Helpers</Name>
         <Symbol>DebugHelpersGrop</Symbol>
@@ -475,6 +457,42 @@ This is defined to be the most efficient, natural, type for the architecture. Fo
               <CanDelete>false</CanDelete>
               <IconPopup>false</IconPopup>
               <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>Backward Compatibility</Name>
+              <Symbol>enabledBackwardCompatibility</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>Configures configENABLE_BACKWARD_COMPATIBILITY. If turned on, older Kernel names are used. The older names might produce issues with the debug kernel awareness, so it is recommended to have this setting set to 'no'</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>1</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>false</DefaultValue>
+              <Popup>false</Popup>
+            </TBoolItem>
+          </GrupItem>
+          <GrupItem>
+            <TBoolItem>
+              <Name>LinkTimeOptimizer Helper</Name>
+              <Symbol>EnableLTODebugHelper</Symbol>
+              <TypeSpec>typeYesNo</TypeSpec>
+              <Hint>This setting configures the configLTO_HELPER macro. With -LTO (GNU Link Time Optimizer), certain symbols might be optimized which affect kernel aware debugging. This setting disables optimization so debugging is still possible.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+              <DefaultIndex>0</DefaultIndex>
+              <TextValueIndex>false</TextValueIndex>
+              <RuntimeProperty>false</RuntimeProperty>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <DefaultValue>true</DefaultValue>
               <Popup>false</Popup>
             </TBoolItem>
           </GrupItem>
@@ -7592,13 +7610,13 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>expectedIdleTicks</ParName>
-          <ParType>portTickType</ParType>
+          <ParType>TickType_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>expected idle time, in ticks</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(portTickType expectedIdleTicks)</ANSIC>
+          <ANSIC>void #C#(TickType_t expectedIdleTicks)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>
@@ -7637,13 +7655,13 @@ If the receiving RTOS task was already Blocked waiting for a notification when o
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>expectedIdleTicks</ParName>
-          <ParType>portTickType</ParType>
+          <ParType>TickType_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>expected idle time, in ticks</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #C#(portTickType expectedIdleTicks)</ANSIC>
+          <ANSIC>void #C#(TickType_t expectedIdleTicks)</ANSIC>
         </Declarations>
         <Children>
           <GrupItem>

@@ -264,9 +264,9 @@ LI.EXP {
  - Used in tickless idle mode only, but required in this mode. Hook for the application to enter low power mode.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vOnPreSleepProcessing(portTickType expectedIdleTicks)<br />
+<br /><i>ANSIC prototype:</i> void vOnPreSleepProcessing(TickType_t expectedIdleTicks)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>expectedIdleTicks:portTickType</i> - expected idle time, in ticks</li>
+<li><i>expectedIdleTicks:TickType_t</i> - expected idle time, in ticks</li>
 </ul><br />
 </li>
 <li>
@@ -276,9 +276,9 @@ LI.EXP {
  - Event called after the CPU woke up after low power mode. This event is optional.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> void vOnPostSleepProcessing(portTickType expectedIdleTicks)<br />
+<br /><i>ANSIC prototype:</i> void vOnPostSleepProcessing(TickType_t expectedIdleTicks)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>expectedIdleTicks:portTickType</i> - expected idle time, in ticks</li>
+<li><i>expectedIdleTicks:TickType_t</i> - expected idle time, in ticks</li>
 </ul><br />
 </li>
 </ul>

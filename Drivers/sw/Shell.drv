@@ -640,7 +640,7 @@ uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SI
   #pragma MESSAGE DISABLE C3303 /* implicit concatenation of strings */
 #endif
 #if %'ModuleName'%.CONFIG_USE_MUTEX
-  static xSemaphoreHandle ShellSem = NULL; /* Semaphore to protect shell SCI access */
+  static SemaphoreHandle_t ShellSem = NULL; /* Semaphore to protect shell SCI access */
 #endif
 
 #if %'ModuleName'%.DEFAULT_SERIAL

@@ -48,7 +48,7 @@ uint8_t RSTDIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@She
  * \param queueType Type of queue
  * \return Queue handle
  */
-xQueueHandle RSTDIO_GetQueueForType(RSTDIO_QueueType queueType);
+QueueHandle_t RSTDIO_GetQueueForType(RSTDIO_QueueType queueType);
 
 /*!
  * \brief Returns the number of elements in the queue

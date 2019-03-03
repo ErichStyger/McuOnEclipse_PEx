@@ -32,9 +32,14 @@
 #include "%'RtosComponentConfigHeaderFileName'" /* extra configuration settings not part of the original FreeRTOS ports */
 
 %if defined(TaskCAdditions) & %TaskCAdditions='yes'
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>50 1 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>60 1 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
 %else
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>50 0 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H            %>60 0 /* 1: include additional header file at the end of task.c to help with debugging in GDB in combination with configUSE_TRACE_FACILITY; 0: no extra file included. */
+%endif
+%if defined(enabledBackwardCompatibility) & %enabledBackwardCompatibility='yes'
+#define configENABLE_BACKWARD_COMPATIBILITY                   %>60 1 /* 1: enable backward compatibility mode, using old names in kernel. 0: use new kernel structure names (recommended) */
+%else
+#define configENABLE_BACKWARD_COMPATIBILITY                   %>60 0 /* 1: enable backward compatibility mode, using old names in kernel. 0: use new kernel structure names (recommended) */
 %endif
 /*-----------------------------------------------------------
  * Application specific definitions.

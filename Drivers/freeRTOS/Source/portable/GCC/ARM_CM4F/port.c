@@ -496,7 +496,7 @@ extern tskTCB *volatile pxCurrentTCB;
 %endif %- (CPUfamily = "56800")
 %- -------------------------------------------------------------------------------------
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
   unsigned portLONG ulOriginalA5;
 
   __asm{ MOVE.L A5, ulOriginalA5 };
@@ -522,7 +522,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   return pxTopOfStack;
 }
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08")
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
   /* Set as task caller the prvTaskExitError function. */
   *pxTopOfStack = (uint8_t)portTASK_RETURN_ADDRESS;
   pxTopOfStack--;
@@ -579,7 +579,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   return pxTopOfStack;
 }
 %elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
   /*Place a few bytes of known values on the bottom of the stack.
     This can be uncommented to provide useful stack markers when debugging.
     *pxTopOfStack = (portSTACK_TYPE)0x11;
@@ -656,7 +656,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
 #if configUSE_MPU_SUPPORT
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters, BaseType_t xRunPrivileged) {
 #else
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
 #endif
   /* Simulate the stack frame as it would be created by a context switch interrupt. */
   pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts, and to ensure alignment. */
@@ -693,7 +693,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   return pxTopOfStack;
 }
 %elif (CPUfamily = "56800")
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
   #define portINITIAL_SR	0x00UL
   unsigned short usCode;
   portBASE_TYPE i;
@@ -772,7 +772,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxC
   return pxTopOfStack;
 }
 %else
-StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters) {
+StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
   %warning "unsupported target %CPUfamily!"
   #error "unsupported target %CPUfamily!"
   return 0;

@@ -1822,6 +1822,13 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %-BW_METHOD_BEGIN vApplicationStackOverflowHook
 %ifdef vApplicationStackOverflowHook
 %INTERFACE vApplicationStackOverflowHook
+%-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+#ifndef __BWUserType_Tsize_t
+#define __BWUserType_Tsize_t
+  typedef size_t Tsize_t;                                        %>40/* Alias to size_t standard type */
+#endif
+%-ENDUSRTYPES
+
 void %vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName);
 %define! ParpxTask
 %define! ParpcTaskName
@@ -1856,7 +1863,7 @@ void %vApplicationMallocFailedHook(void);
 %-BW_METHOD_BEGIN vOnPostSleepProcessing
 %ifdef vOnPostSleepProcessing
 %INTERFACE vOnPostSleepProcessing
-void %vOnPostSleepProcessing(portTickType expectedIdleTicks);
+void %vOnPostSleepProcessing(TickType_t expectedIdleTicks);
 %define! ParexpectedIdleTicks
 %include Common\FreeRTOSvOnPostSleepProcessing.Inc
 
@@ -1865,7 +1872,7 @@ void %vOnPostSleepProcessing(portTickType expectedIdleTicks);
 %-BW_METHOD_BEGIN vOnPreSleepProcessing
 %ifdef vOnPreSleepProcessing
 %INTERFACE vOnPreSleepProcessing
-void %vOnPreSleepProcessing(portTickType expectedIdleTicks);
+void %vOnPreSleepProcessing(TickType_t expectedIdleTicks);
 %define! ParexpectedIdleTicks
 %include Common\FreeRTOSvOnPreSleepProcessing.Inc
 
@@ -4620,7 +4627,7 @@ void %vApplicationMallocFailedHook(void)
 %IMPLEMENTATION vOnPostSleepProcessing
 %define! ParexpectedIdleTicks
 %include Common\FreeRTOSvOnPostSleepProcessing.Inc
-void %vOnPostSleepProcessing(portTickType expectedIdleTicks)
+void %vOnPostSleepProcessing(TickType_t expectedIdleTicks)
 {
   (void)expectedIdleTicks; /* not used (yet?) */
   /* Write your code here ... */
@@ -4633,7 +4640,7 @@ void %vOnPostSleepProcessing(portTickType expectedIdleTicks)
 %IMPLEMENTATION vOnPreSleepProcessing
 %define! ParexpectedIdleTicks
 %include Common\FreeRTOSvOnPreSleepProcessing.Inc
-void %vOnPreSleepProcessing(portTickType expectedIdleTicks)
+void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 {
   (void)expectedIdleTicks; /* not used */
 %if (CPUfamily = "Kinetis")
