@@ -1144,7 +1144,7 @@ bool %'ModuleName'%.%ReceiveDataBlock(uint8_t *data, uint16_t nofBytes)
   %if defined(RTOS)
       if (%@Timeout@'ModuleName'%.Value(timeout)!=(%'ModuleName'%.TIMEOUT_READ_BLOCK_MS/%@Timeout@'ModuleName'%.TICK_PERIOD_MS)) {
         /* polled already for a tick period: use RTOS wait in order to balance CPU cycles */
-        %@RTOS@'ModuleName'%.vTaskDelay(portTICK_RATE_MS);
+        %@RTOS@'ModuleName'%.vTaskDelay(portTICK_PERIOD_MS);
       }
   %endif
       if (%@Timeout@'ModuleName'%.CounterExpired(timeout)) {
