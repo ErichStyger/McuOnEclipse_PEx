@@ -87,31 +87,35 @@
 %-   Example:
 %-     #include "header_name.h"
 %if defined(Shell)
-  #include "%@Shell@ModuleName.h"
+#include "%@Shell@ModuleName.h"
 %else
-  #include "McuShell.h"
-%endif
-%if defined(RTOS)
-  #include "%@RTOS@ModuleName.h"
-%else
-  #include "McuRTOS.h"
+#include "McuShell.h"
 %endif
 %if defined(Utility)
-  #include "%@Utility@ModuleName.h"
+#include "%@Utility@ModuleName.h"
 %else
-  #include "McuUtility.h"
+#include "McuUtility.h"
 %endif
 %if defined(Wait)
-  #include "%@Wait@ModuleName.h"
+#include "%@Wait@ModuleName.h"
 %else
-  #include "McuWait.h"
+#include "McuWait.h"
 %endif
 %if defined(RTC)
-  #include "%@RTC@ModuleName.h"
+#include "%@RTC@ModuleName.h"
 %else
-  #include "McuTimeDate.h"
+#include "McuTimeDate.h"
 %endif
 
+%if defined(Reentrant) & %Reentrant='yes'
+%if defined(RTOSenabled) & %RTOSenabled='yes'
+%if defined(RTOS)
+#include "%@RTOS@ModuleName.h"
+%else
+#include "McuRTOS.h"
+%endif
+%endif
+%endif
 
 #include "ff.h"
 #include "diskio.h"
