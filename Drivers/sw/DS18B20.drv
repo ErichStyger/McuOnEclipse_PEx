@@ -529,15 +529,16 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     }
   } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' set res ", sizeof("%'ModuleName' set res ")-1) == 0) {
     DS18B20_ResolutionBits resolution;
+    uint8_t resol;
 
     *handled = TRUE;
     p = cmd + sizeof("%'ModuleName' set res ")-1;
     if (   %@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &sensorNr)==ERR_OK
-        && %@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &resolution)==ERR_OK
-        && resolution>=9 && resolution<=12
+        && %@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &resol)==ERR_OK
+        && resol>=9 && resol<=12
         )
     {
-      switch((int)resolution) {
+      switch(resol) {
         case 9:  resolution = DS18B20_RESOLUTION_BITS_9; break;
         case 10: resolution = DS18B20_RESOLUTION_BITS_10; break;
         case 11: resolution = DS18B20_RESOLUTION_BITS_11; break;
