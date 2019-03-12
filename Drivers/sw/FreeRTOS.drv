@@ -1887,6 +1887,8 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks);
 /* MODULE %ModuleName. */
 %- #include "%'ModuleName'.h"
 #include "%'RtosComponentHeaderFileName'"
+#if %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS
+
 #include "portTicks.h"                                           %>40/* interface to tick counter */
 %if defined(RuntimeCntrLDD)
 #include "%@RuntimeCntrLDD@ModuleName.h" /* Interface to LDD Counter Interrupt */
@@ -4532,6 +4534,7 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
 %endif %- AppGetRuntimeCounterValueFromISR
 %-BW_METHOD_END AppGetRuntimeCounterValueFromISR
 %-BW_IMPLEMENT_END
+#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS */
 /* END %ModuleName. */
 
 %include Common\Header.End

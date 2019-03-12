@@ -313,22 +313,38 @@ void %'ModuleName'%.%Deinit(void)
    Otherwise CPU Family is set automatically by Processor Expert: detected: %CPUfamily (supported: "Kinetis", "S32K", "HCS08")
 */
 %if (CPUfamily = "Kinetis")
-#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
-  /*!< 1: ARM Cortex-M family, 0 otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
-  /*!< 1: NXP Kinetis CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_S32K            (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
-  /*!< 1: NXP S32K CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
-  /*!< 1: NXP LPC CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
-  /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
-  /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0)
-  /*!< 1: HCS08 CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
-  /*!< 1: RISC-V CPU family, 0: otherwise */
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+  #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
+    /*!< 1: ARM Cortex-M family, 0 otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_KINETIS
+  #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+    /*!< 1: NXP Kinetis CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_S32K
+  #define %'ModuleName'%.CONFIG_CPU_IS_S32K            (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+    /*!< 1: NXP S32K CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_LPC
+  #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+   /*!< 1: NXP LPC CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_STM32
+  #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+    /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_IMXRT
+  #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+    /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_HCS08
+  #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0)
+    /*!< 1: HCS08 CPU family, 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V
+  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
+    /*!< 1: RISC-V CPU family, 0: otherwise */
+#endif
 %elif (CPUfamily = "S32K")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */

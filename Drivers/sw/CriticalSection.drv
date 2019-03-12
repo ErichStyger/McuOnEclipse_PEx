@@ -115,7 +115,11 @@ extern "C" {
 #elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
   #define %'ModuleName'%.%CriticalVariable() /* nothing needed */
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
-  #define %'ModuleName'%.%CriticalVariable() uint8_t cpuSR; /* variable to store current status */
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+    #define %'ModuleName'%.%CriticalVariable() /* nothing needed */
+  #else
+    #define %'ModuleName'%.%CriticalVariable() uint8_t cpuSR; /* variable to store current status */
+  #endif
 #endif
 %include Common\CriticalSectionCriticalVariable.Inc
 
@@ -129,8 +133,14 @@ extern "C" {
 #elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
   #define %'ModuleName'%.%EnterCritical()   taskENTER_CRITICAL_FROM_ISR() /* FreeRTOS critical section inside interrupt */
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
-  #define %'ModuleName'%.%EnterCritical() \
-    do {                                  \
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+    #define %'ModuleName'%.%EnterCritical() \
+      do {                                  \
+      __asm volatile( "csrc mstatus, 8" ); /* Disable interrupts \todo */ \
+      } while(0)
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+    #define %'ModuleName'%.%EnterCritical() \
+      do {                                  \
 %if (%CPUfamily="Kinetis") || (%CPUfamily = "S32K") %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
       /*lint -save  -esym(529,cpuSR) Symbol 'cpuSR' not subsequently referenced. */\
       __asm (                             \
@@ -141,7 +151,8 @@ extern "C" {
       __asm ("" ::: "memory");            \
       /*lint -restore Symbol 'cpuSR' not subsequently referenced. */\
 %endif
-    } while(0)
+      } while(0)
+    #endif
 #endif
 %include Common\CriticalSectionEnterCritical.Inc
 
@@ -155,15 +166,23 @@ extern "C" {
 #elif %'ModuleName'%.CONFIG_USE_RTOS_CRITICAL_SECTION
   #define %'ModuleName'%.%ExitCritical()   taskEXIT_CRITICAL_FROM_ISR(0) /* FreeRTOS critical section inside interrupt */
 #elif %'ModuleName'%.CONFIG_USE_CUSTOM_CRITICAL_SECTION
-  #define %'ModuleName'%.%ExitCritical() \
-   do{                                  \
+
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+    #define %'ModuleName'%.%ExitCritical() \
+      do {                                  \
+        __asm volatile( "csrs mstatus, 8" ); /* Enable interrupts \todo */ \
+      } while(0)
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+    #define %'ModuleName'%.%ExitCritical() \
+     do{                                  \
 %if (%CPUfamily="Kinetis") || (%CPUfamily = "S32K") %- do not generate code for HCS08/12, as they will report warning about concatenated strings */
      __asm (                            \
      "ldrb r0, %%[input]    \n\t"        \
      "msr PRIMASK,r0        \n\t"       \
      ::[input] "m" (cpuSR) : "r0");     \
 %endif
-   } while(0)
+     } while(0)
+  #endif
 #endif
 %include Common\CriticalSectionExitCritical.Inc
 

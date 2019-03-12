@@ -344,6 +344,9 @@ void %'ModuleName'%.%Init(void);
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+
 #include "%@Utility@ModuleName.h" /* various utility functions */
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #include "fsl_common.h"
@@ -896,6 +899,8 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
+
+#endif /* %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
 /* END %ModuleName. */
 
 %include Common\Header.End

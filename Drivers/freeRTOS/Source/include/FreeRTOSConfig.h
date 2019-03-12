@@ -491,6 +491,12 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 %-
 %endif
 
+/* RISC-V only: If the target chip includes a Core Local Interrupter (CLINT) then set configCLINT_BASE_ADDRESS to the CLINT base address.
+  Otherwise set configCLINT_BASE_ADDRESS to 0.
+ */
+#define configCLINT_BASE_ADDRESS   0x0
+
+
 /* custom include file: */
 %CustomFreeRTOSConfig
 

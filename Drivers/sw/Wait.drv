@@ -348,11 +348,18 @@ void %'ModuleName'%.%DeInit(void);
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
 #ifdef __GNUC__
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* naked is ignored for RISC-V gcc */
   #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
-  __attribute__((naked))
   #else
-  __attribute__((naked, no_instrument_function))
+    __attribute__((no_instrument_function))
   #endif
+#else
+  #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+    __attribute__((naked))
+  #else
+    __attribute__((naked, no_instrument_function))
+  #endif
+#endif
 #endif
 void %'ModuleName'%.%Wait10Cycles(void)
 {
@@ -384,6 +391,8 @@ void %'ModuleName'%.%Wait10Cycles(void)
                        %>%CTAB /* [5] for RTS, return from subroutine */
   }
 %elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
+
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
   /* NOTE: Cortex-M0 and M4 have 1 cycle for a NOP */
   /* Compiler is %Compiler */
 %if %Compiler = "GNUC"
@@ -415,6 +424,14 @@ void %'ModuleName'%.%Wait10Cycles(void)
     bx lr              %>%CTAB /* [3] */
   }
 %endif
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+  /* \todo */
+  __asm (
+   "nop   \n\t" /* [1] */
+   "nop   \n\t" /* [1] */
+   "nop   \n\t" /* [1] */
+  );
+#endif
 %elif (CPU_FAMILY = "56800")
   /* JSR to here is 4-5 cycles */
   /* RTS is 8 cycles */
@@ -436,11 +453,18 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %else
 %if ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & %Compiler = "GNUC"
 #ifdef __GNUC__
-#ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
-  __attribute__((naked))
-#else
-  __attribute__((naked, no_instrument_function))
-#endif
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* naked is ignored for RISC-V gcc */
+    #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+    #else
+      __attribute__((no_instrument_function))
+    #endif
+  #else
+    #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
+      __attribute__((naked))
+    #else
+      __attribute__((naked, no_instrument_function))
+    #endif
+  #endif
 #endif
 void %'ModuleName'%.%Wait100Cycles(void)
 %elif ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & (%Compiler = "ARM_CC") %- Keil/ARM compiler
@@ -490,6 +514,7 @@ void %'ModuleName'%.%Wait100Cycles(void)
                        %>%CTAB /* [5] return from subroutine */
   }
 %elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
 %if %Compiler = "GNUC"
   __asm (
    /* bl to here:               [4] */
@@ -546,6 +571,14 @@ loop
     bx lr       /* [3] */
   }
 %endif
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+  /* \todo */
+  __asm (
+   "nop   \n\t" /* [1] */
+   "nop   \n\t" /* [1] */
+   "nop   \n\t" /* [1] */
+  );
+#endif
 %elif (CPU_FAMILY = "56800")
   /* JSR to here is 4-5 cycles */
   __asm {

@@ -147,6 +147,8 @@ void %'ModuleName'%.%Init(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
 %if defined(CPUfamily)
 %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %- =============================================================================
@@ -419,6 +421,8 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
+
+#endif /* %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
 /* END %ModuleName. */
 
 %include Common\Header.End
