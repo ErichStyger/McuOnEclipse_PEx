@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         Writes a string to the given line position.
 %include Common\GeneralParameters.inc(27)
-%;**         line%Parline %>27 - The line number, starting with 1.
+%;**         line%Parline %>27 - The line number, starting with 0.
 %;**       * str%Parstr %>27 - Pointer to zero byte terminated string
 %include Common\GeneralReturnNothing.inc
 %include Common\GeneralDamage.inc

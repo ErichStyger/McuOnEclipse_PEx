@@ -850,10 +850,10 @@ void %'ModuleName'%.%WriteLineStr(uint8_t line, uint8_t *str)
 {
   uint8_t i;
 
-  if (line==0 || line>%'ModuleName'%.MAX_LINES_FOR_DISPLAY) {
+  if (line>=%'ModuleName'%.MAX_LINES_FOR_DISPLAY) {
     return; /* invalid line number */
   }
-  %'ModuleName'%.%SetPos(0, (%'ModuleName'_PixelDim)(line-1));
+  %'ModuleName'%.%SetPos(0, (%'ModuleName'_PixelDim)(line));
   for(i=0; i<%'ModuleName'%.MAX_CHARS_PER_LINE && *str != '\0'; i++) {%>40/* only write as much characters as there is space on the line */
     %'ModuleName'%.%WriteChar(*(str++));                         %>40/* write character */
   }
