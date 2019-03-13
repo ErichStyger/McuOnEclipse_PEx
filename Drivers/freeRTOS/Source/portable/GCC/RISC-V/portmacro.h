@@ -33,6 +33,11 @@
 extern "C" {
 #endif
 
+#include "FreeRTOSConfig.h" /* << EST */
+#include "projdefs.h" /* for pdFALSE, pdTRUE */ /* << EST */
+
+void vPortStopTickTimer(void); /* << EST */
+
 /*-----------------------------------------------------------
  * Port specific definitions.
  *
@@ -89,6 +94,7 @@ extern void vTaskExitCritical( void );
 #define portENABLE_INTERRUPTS()		__asm volatile( "csrs mstatus, 8" )
 #define portENTER_CRITICAL()	vTaskEnterCritical()
 #define portEXIT_CRITICAL()		vTaskExitCritical()
+#define portDISABLE_ALL_INTERRUPTS()    portDISABLE_INTERRUPTS() /* << EST */
 
 /*-----------------------------------------------------------*/
 

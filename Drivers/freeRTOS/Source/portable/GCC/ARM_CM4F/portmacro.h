@@ -175,14 +175,14 @@ typedef struct MPU_SETTINGS
 #define portTICK_PERIOD_MS      ((TickType_t)1000/configTICK_RATE_HZ)
 /*-----------------------------------------------------------*/
 /* Critical section management. */
-unsigned portLONG ulPortSetIPL(unsigned portLONG);
+unsigned long ulPortSetIPL(unsigned portLONG);
 
 /* If set to 1, then this port uses the critical nesting count from the TCB rather than
 maintaining a separate value and then saving this value in the task stack. */
 #define portCRITICAL_NESTING_IN_TCB    0
 
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
-extern unsigned portLONG uxCriticalNesting;
+extern unsigned long uxCriticalNesting;
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
 extern volatile unsigned portBASE_TYPE uxCriticalNesting;
 %elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")

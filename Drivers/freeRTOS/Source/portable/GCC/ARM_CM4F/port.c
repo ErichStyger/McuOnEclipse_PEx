@@ -356,7 +356,7 @@ static LDD_TDeviceData *RTOS_TickDevice;
 /* Used to keep track of the number of nested calls to taskENTER_CRITICAL().
    This will be set to 0 prior to the first task being started. */
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
-unsigned portLONG uxCriticalNesting = 0x9999UL;
+unsigned long uxCriticalNesting = 0x9999UL;
 %elif (CPUfamily = "HCS08") | (CPUfamily = "HC08") | (CPUfamily = "HCS12") | (CPUfamily = "HCS12X") | (CPUfamily = "56800")
 volatile unsigned portBASE_TYPE uxCriticalNesting;
 %elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
@@ -497,7 +497,7 @@ extern tskTCB *volatile pxCurrentTCB;
 %- -------------------------------------------------------------------------------------
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
 StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
-  unsigned portLONG ulOriginalA5;
+  unsigned long ulOriginalA5;
 
   __asm{ MOVE.L A5, ulOriginalA5 };
   *pxTopOfStack = (portSTACK_TYPE)0xDEADBEEF;
@@ -1438,7 +1438,7 @@ void vPortExitCritical(void) {
 %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
 /*-----------------------------------------------------------*/
 void vPortYieldHandler(void) {
-  unsigned portLONG ulSavedInterruptMask;
+  unsigned long ulSavedInterruptMask;
 
   ulSavedInterruptMask = portSET_INTERRUPT_MASK_FROM_ISR();
   {
@@ -1502,24 +1502,24 @@ void vPortYield(void) {
 %ifdef TickCntr
 #include "portTicks.h"
 /* return the tick raw counter value. It is assumed that the counter register has been reset at the last tick time */
-portLONG uxGetTickCounterValue(void) {
+uint32_t uxGetTickCounterValue(void) {
   %@TickCntr@'ModuleName'%.TTimerValue val;
 
   (void)%@TickCntr@'ModuleName'%.GetCounterValue(&val);
-  return (portLONG)val;
+  return (long)val;
 }
 /*-----------------------------------------------------------*/
 %endif
 %ifdef TickTimerLDD
 /* return the tick raw counter value. It is assumed that the counter register has been reset at the last tick time */
-portLONG uxGetTickCounterValue(void) {
-  return (portLONG)%@TickTimerLDD@'ModuleName'%.GetCounterValue(RTOS_TickDevice);
+uint32_t uxGetTickCounterValue(void) {
+  return (long)%@TickTimerLDD@'ModuleName'%.GetCounterValue(RTOS_TickDevice);
 }
 /*-----------------------------------------------------------*/
 %elif defined(useARMSysTickTimer) & useARMSysTickTimer='yes'
 /* return the tick raw counter value. It is assumed that the counter register has been reset at the last tick time */
-portLONG uxGetTickCounterValue(void) {
-  portLONG val;
+    uint32_t uxGetTickCounterValue(void) {
+  long val;
   
   GET_TICK_CURRENT_VAL(&val);
   return val;
