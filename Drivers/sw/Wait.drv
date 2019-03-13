@@ -426,7 +426,8 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %endif
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
   /* \todo */
-  __asm (
+  __asm ( /* assuming [4] for overhead */
+   "nop   \n\t" /* [1] */
    "nop   \n\t" /* [1] */
    "nop   \n\t" /* [1] */
    "nop   \n\t" /* [1] */
@@ -573,10 +574,11 @@ loop
 %endif
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
   /* \todo */
-  __asm (
-   "nop   \n\t" /* [1] */
-   "nop   \n\t" /* [1] */
-   "nop   \n\t" /* [1] */
+  __asm ( /* assuming [10] for overhead */
+    "  li a5,20        \n\t"
+    "Loop:             \n\t"
+    "  addi a5,a5,-1   \n\t"
+    "  bgtz a5, Loop   \n\t"
   );
 #endif
 %elif (CPU_FAMILY = "56800")
