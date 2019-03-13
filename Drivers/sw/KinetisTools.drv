@@ -102,7 +102,7 @@
 %-    typedef int TMyInteger;
 %-
 
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
   /* DWT (Data Watchpoint and Trace) registers, only exists on ARM Cortex with a DWT unit */
   #define %'ModuleName'_DWT_CONTROL             (*((volatile uint32_t*)0xE0001000))
     /*!< DWT Control register */
@@ -241,7 +241,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-BW_METHOD_END SetLR
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN InitCycleCounter
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
 %ifdef InitCycleCounter
 #define %'ModuleName'%.%InitCycleCounter() \
   %'ModuleName'_DEMCR |= %'ModuleName'_TRCENA_BIT
@@ -254,7 +254,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ResetCycleCounter
 %ifdef ResetCycleCounter
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
 #define %'ModuleName'%.%ResetCycleCounter() \
   %'ModuleName'_DWT_CYCCNT = 0
   /*!< Reset cycle counter */
@@ -265,7 +265,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-BW_METHOD_END ResetCycleCounter
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN EnableCycleCounter
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
 %ifdef EnableCycleCounter
 #define %'ModuleName'%.%EnableCycleCounter() \
   %'ModuleName'_DWT_CONTROL |= %'ModuleName'_DWT_CYCCNTENA_BIT
@@ -278,7 +278,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DisableCycleCounter
 %ifdef DisableCycleCounter
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
 #define %'ModuleName'%.%DisableCycleCounter() \
   %'ModuleName'_DWT_CONTROL &= ~%'ModuleName'_DWT_CYCCNTENA_BIT
   /*!< Disable cycle counter */
@@ -290,7 +290,7 @@ void %'ModuleName'%.%SetLR(uint32_t setval);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetCycleCounter
 %ifdef GetCycleCounter
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3 /* only for Cortex-M3 or higher */
+#if %@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3 /* only for Cortex-M3 or higher */
 #define %'ModuleName'%.%GetCycleCounter() \
   %'ModuleName'_DWT_CYCCNT
   /*!< Read cycle counter register */

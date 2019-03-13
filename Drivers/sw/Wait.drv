@@ -951,9 +951,9 @@ void %'ModuleName'%.%DeInit(void)
 
 #ifndef %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
 %if defined(useCycleCounter) & %useCycleCounter='yes'
-  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %else
-  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %endif
     /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
 #endif
