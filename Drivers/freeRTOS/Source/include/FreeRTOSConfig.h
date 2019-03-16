@@ -459,28 +459,33 @@ point support. */
 %elif (CPUfamily = "ColdFireV1") | (CPUfamily = "HCS08") | (CPUfamily = "HC08")
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    %>50 7
 %elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
-/* Cortex-M specific definitions. */
-#if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
-  #define configPRIO_BITS                         %>50 4 /* 4 bits/16 priority levels on ARM Cortex M4 (Kinetis K Family) */
-#else
-  #define configPRIO_BITS                         %>50 2 /* 2 bits/4 priority levels on ARM Cortex M0+ (Kinetis L Family) */
+#if configCPU_FAMILY_IS_ARM(configCPU_FAMILY)
+  /* Cortex-M specific definitions. */
+  #if configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)
+    #define configPRIO_BITS                         %>50 4 /* 4 bits/16 priority levels on ARM Cortex M4 (Kinetis K Family) */
+  #else
+    #define configPRIO_BITS                         %>50 2 /* 2 bits/4 priority levels on ARM Cortex M0+ (Kinetis L Family) */
+  #endif
+
+  /* The lowest interrupt priority that can be used in a call to a "set priority" function. */
+  #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY   %>50 %KinetisLibraryLowestInterruptPriority
+
+  /* The highest interrupt priority that can be used by any interrupt service
+     routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
+     INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
+     PRIORITY THAN THIS! (higher priorities are lower numeric values on an ARM Cortex-M). */
+  #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY  %>50 %KinetisLibraryMaxInterruptPriority
+
+  /* Interrupt priorities used by the kernel port layer itself.  These are generic
+     to all Cortex-M ports, and do not rely on any particular library functions. */
+  #define configKERNEL_INTERRUPT_PRIORITY              %>50 (configLIBRARY_LOWEST_INTERRUPT_PRIORITY<<(8-configPRIO_BITS))
+
+  /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
+  See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
+  #define configMAX_SYSCALL_INTERRUPT_PRIORITY         %>50 (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY<<(8-configPRIO_BITS))
+#elif %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+  #define configKERNEL_INTERRUPT_PRIORITY              %>50 (7)
 #endif
-
-/* The lowest interrupt priority that can be used in a call to a "set priority" function. */
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY   %>50 %KinetisLibraryLowestInterruptPriority
-
-/* The highest interrupt priority that can be used by any interrupt service
-   routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
-   INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
-   PRIORITY THAN THIS! (higher priorities are lower numeric values on an ARM Cortex-M). */
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY  %>50 %KinetisLibraryMaxInterruptPriority
-
-/* Interrupt priorities used by the kernel port layer itself.  These are generic
-   to all Cortex-M ports, and do not rely on any particular library functions. */
-#define configKERNEL_INTERRUPT_PRIORITY              %>50 (configLIBRARY_LOWEST_INTERRUPT_PRIORITY<<(8-configPRIO_BITS))
-/* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
-See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY         %>50 (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY<<(8-configPRIO_BITS))
 
 /* Normal assert() semantics without relying on the provision of an assert.h header file. */
 %if %configASSERTdefined='yes'
@@ -488,6 +493,9 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 %else
 /* #define configASSERT(x) if((x)==0) { taskDISABLE_INTERRUPTS(); for( ;; ); } */
 %endif
+#if 0 /* version for RISC-V with a debug break: */
+#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); __asm volatile( "ebreak" ); for( ;; ); }
+#endif
 %-
 %endif
 

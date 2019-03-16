@@ -4556,6 +4556,11 @@ void %vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
   (void)pxTask;
   (void)pcTaskName;
   taskDISABLE_INTERRUPTS();
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+    __asm volatile("bkpt #0");
+#elif %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+    __asm volatile( "ebreak" );
+#endif
   /* Write your code here ... */
   for(;;) {}
 }
@@ -4620,6 +4625,11 @@ void %vApplicationMallocFailedHook(void)
      configTOTAL_HEAP_SIZE configuration constant in FreeRTOSConfig.h. */
   taskDISABLE_INTERRUPTS();
   /* Write your code here ... */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+    __asm volatile("bkpt #0");
+#elif %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+    __asm volatile( "ebreak" );
+#endif
   for(;;) {}
 }
 
@@ -4763,6 +4773,8 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 #define configCPU_FAMILY_ARM_M4F                                 %>50 8   /* ARM Cortex-M4F (with floating point unit) */
 #define configCPU_FAMILY_ARM_M7                                  %>50 9   /* ARM Cortex-M7 */
 #define configCPU_FAMILY_ARM_M7F                                 %>50 10  /* ARM Cortex-M7F (with floating point unit) */
+#define configCPU_FAMILY_RISC_V                                  %>50 11  /* RISC-V */
+
 /* Macros to identify set of core families */
 #define configCPU_FAMILY_IS_ARM_M0(fam)                          %>50 ((fam)==configCPU_FAMILY_ARM_M0P)
 #define configCPU_FAMILY_IS_ARM_M4(fam)                          %>50 (((fam)==configCPU_FAMILY_ARM_M4)  || ((fam)==configCPU_FAMILY_ARM_M4F))
@@ -4786,7 +4798,9 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
   #else
     #error "unsupported configuaration!"
   #endif
-#else
+#elif %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V
+  #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_RISC_V
+#else /* default CPU family */
 %if (CPUfamily = "HCS08") | (CPUfamily = "HC08")
   #define configCPU_FAMILY                                       %>50 configCPU_FAMILY_S08
 %elif (CPUfamily = "HCS12") | (CPUfamily = "HCS12X")
@@ -4816,6 +4830,7 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
   #error "Unknown CPU family %CPUfamily?"
 %endif
 #endif
+
 /* MPU support: portUSING_MPU_WRAPPERS is defined (or not) in portmacro.h and turns on MPU support. Currently only supported for ARM Cortex-M4/M3 ports */
 #ifndef configUSE_MPU_SUPPORT
 %if defined(useMPUsupport) & %useMPUsupport='yes'

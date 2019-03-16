@@ -33,11 +33,10 @@
 extern "C" {
 #endif
 
-#include "FreeRTOSConfig.h" /* << EST */
-#include "projdefs.h" /* for pdFALSE, pdTRUE */ /* << EST */
+#include "FreeRTOSConfig.h"
+#include "projdefs.h" /* for pdFALSE, pdTRUE */
 
 void vPortStopTickTimer(void); /* << EST */
-
 /*-----------------------------------------------------------
  * Port specific definitions.
  *

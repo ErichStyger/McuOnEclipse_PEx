@@ -74,7 +74,11 @@ void vPortSetupTimerInterrupt( void ) __attribute__(( weak ));
 /* Used to program the machine timer compare register. */
 uint64_t ullNextTime = 0ULL;
 const uint64_t *pullNextTime = &ullNextTime;
+#if 0 /* << EST */
 const uint32_t ulTimerIncrementsForOneTick = ( uint32_t ) ( configCPU_CLOCK_HZ / configTICK_RATE_HZ ); /* Assumes increment won't go over 32-bits. */
+#else
+static uint32_t ulTimerIncrementsForOneTick;
+#endif
 volatile uint64_t * const pullMachineTimerCompareRegister = ( volatile uint64_t * const ) ( configCLINT_BASE_ADDRESS + 0x4000 );
 
 /* Set configCHECK_FOR_STACK_OVERFLOW to 3 to add ISR stack checking to task
@@ -133,7 +137,9 @@ task stack, not the ISR stack). */
 BaseType_t xPortStartScheduler( void )
 {
 extern void xPortStartFirstTask( void );
-
+#if 1 /* << EST */
+  ulTimerIncrementsForOneTick = ( uint32_t ) ( configCPU_CLOCK_HZ / configTICK_RATE_HZ ); /* Assumes increment won't go over 32-bits. */
+#endif
 	#if( configASSERT_DEFINED == 1 )
 	{
 		volatile uint32_t mtvec = 0;
@@ -183,7 +189,62 @@ void vPortEndScheduler( void )
 	for( ;; );
 }
 
+/* << EST Begin .... */
+/*-----------------------------------------------------------*/
+//static void vPortStartTickTimer(void) {
+  //ENABLE_TICK_COUNTER();
+//}
+/*-----------------------------------------------------------*/
+void vPortStopTickTimer(void) {
+  //DISABLE_TICK_COUNTER();
+}
+/*-----------------------------------------------------------*/
+#include "fsl_clock.h"
 
+/* At the time of writing, interrupt nesting is not supported, so do not use
+the default SystemIrqHandler() implementation as that enables interrupts.  A
+version that does not enable interrupts is provided below.  THIS INTERRUPT
+HANDLER IS SPECIFIC TO THE VEGA BOARD WHICH DOES NOT INCLUDE A CLINT! */
+void SystemIrqHandler(uint32_t mcause) {
+  uint32_t ulInterruptNumber;
+  typedef void ( * irq_handler_t )( void );
+  extern const irq_handler_t isrTable[];
+
+  ulInterruptNumber = mcause & 0x1FUL;
+
+  /* Clear pending flag in EVENT unit .*/
+  EVENT_UNIT->INTPTPENDCLEAR = ( 1U << ulInterruptNumber );
+
+  /* Read back to make sure write finished. */
+  (void)(EVENT_UNIT->INTPTPENDCLEAR);
+
+  /* Now call the real irq handler for ulInterruptNumber */
+  isrTable[ ulInterruptNumber ]();
+}
+/*-----------------------------------------------------------*/
+void vPortSetupTimerInterrupt( void ) {
+  //extern void SystemSetupSystick(uint32_t tickRateHz, uint32_t intPriority );
+
+  /* No CLINT so use the LPIT (Low Power Interrupt Timer) to generate the tick interrupt. */
+  CLOCK_SetIpSrc(kCLOCK_Lpit0, kCLOCK_IpSrcFircAsync);
+  SystemSetupSystick(configTICK_RATE_HZ, configKERNEL_INTERRUPT_PRIORITY-1);
+}
+
+/*-----------------------------------------------------------*/
+void LPIT0_IRQHandler(void) {
+  //BaseType_t xTaskIncrementTick( void );
+  //void vTaskSwitchContext( void );
+  #warning "requires critical section if interrpt nesting is used."
+
+  /* vPortSetupTimerInterrupt() uses LPIT0 to generate the tick interrupt. */
+  if(xTaskIncrementTick() != 0) {
+    vTaskSwitchContext();
+  }
+  LPIT0->MSR = 1U; /* Clear LPIT0 interrupt flag. */
+}
+/*-----------------------------------------------------------*/
+
+/* << EST End */
 
 
 
