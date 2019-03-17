@@ -41,7 +41,9 @@
     #include "SIM_PDD.h"   /* PDD interface to system integration module */
   #endif
 #endif
+
 #include "%KinetisSDK.h" /* include SDK and API used */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
 /* --------------------------------------------------- */
 /* Let the user override the pre-loading of the initial LR with the address of
    prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -2379,3 +2381,5 @@ __asm uint32_t vPortGetIPSR(void) {
 
 
 #endif /* ARM M4(F) core */ 
+
+#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */

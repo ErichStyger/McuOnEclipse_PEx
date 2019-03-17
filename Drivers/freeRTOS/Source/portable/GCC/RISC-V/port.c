@@ -34,6 +34,9 @@
 #include "task.h"
 #include "portmacro.h"
 
+#include "%KinetisSDK.h" /* include SDK and API used */ /* << EST */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* << EST */
+
 #ifndef configCLINT_BASE_ADDRESS
 	#warning configCLINT_BASE_ADDRESS must be defined in FreeRTOSConfig.h.  If the target chip includes a Core Local Interrupter (CLINT) then set configCLINT_BASE_ADDRESS to the CLINT base address.  Otherwise set configCLINT_BASE_ADDRESS to 0.
 #endif
@@ -243,6 +246,7 @@ void LPIT0_IRQHandler(void) {
   LPIT0->MSR = 1U; /* Clear LPIT0 interrupt flag. */
 }
 /*-----------------------------------------------------------*/
+#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_RISC_V */
 
 /* << EST End */
 

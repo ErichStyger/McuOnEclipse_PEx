@@ -345,6 +345,12 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
     /*!< 1: RISC-V CPU family, 0: otherwise */
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY
+  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY          (1 && %'ModuleName'%.CONFIG_CPU_IS_RISC_V)
+    /*!< 1: VEGA Board: RISC-V RV32M1 RI5CY, 0: other core */
+#endif
+
 %elif (CPUfamily = "S32K")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
