@@ -245,6 +245,8 @@ void %'ModuleName'%.%PutVal(bool Val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   #include "pins_gpio_hw_access.h"
   #include "pins_driver.h" /* include SDK header file for GPIO */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  #include "nrf_gpio.h"
 #else
   #error "Unsupported SDK!"
 #endif
@@ -344,6 +346,8 @@ void %'ModuleName'%.%ClrVal(void)
   GPIO_DRV_ClearPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 0);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  nrf_gpio_pin_clear(%'ModuleName'%.CONFIG_PIN_NUMBER);
 #endif
 }
 
@@ -367,6 +371,8 @@ void %'ModuleName'%.%SetVal(void)
   GPIO_DRV_SetPinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 1);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  nrf_gpio_pin_set(%'ModuleName'%.CONFIG_PIN_NUMBER);
 #endif
 }
 
@@ -397,6 +403,8 @@ void %'ModuleName'%.%NegVal(void)
   } else {
     PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 1);
   }
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  nrf_gpio_pin_toggle(%'ModuleName'%.CONFIG_PIN_NUMBER);
 #endif
 }
 
@@ -421,6 +429,8 @@ bool %'ModuleName'%.%GetVal(void)
   return GPIO_DRV_ReadPinInput(%'ModuleName'%.CONFIG_PIN_SYMBOL)!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   return (PINS_DRV_ReadPins(%'ModuleName'%.CONFIG_PORT_NAME)&(1<<%'ModuleName'%.CONFIG_PIN_NUMBER))!=0;
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  return nrf_gpio_pin_read(%'ModuleName'%.CONFIG_PIN_NUMBER)!=0;
 #else
   return FALSE;
 #endif
@@ -474,6 +484,8 @@ void %'ModuleName'%.%SetInput(void)
   val = PINS_GPIO_GetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME); /* bit 0: pin is input; 1: pin is output */
   val &= ~(1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* clear bit ==> input */
   PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  nrf_gpio_cfg_input(%'ModuleName'%.CONFIG_PIN_NUMBER, NRF_GPIO_PIN_NOPULL);
 #endif
   %'ModuleName'%.isOutput = false;
 }
@@ -498,6 +510,8 @@ void %'ModuleName'%.%SetOutput(void)
   val = PINS_GPIO_GetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME); /* bit 0: pin is input; 1: pin is output */
   val |= (1<<%'ModuleName'%.CONFIG_PIN_NUMBER); /* set bit ==> output */
   PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  nrf_gpio_cfg_output(%'ModuleName'%.CONFIG_PIN_NUMBER);
 #endif
   %'ModuleName'%.isOutput = true;
 }
@@ -535,6 +549,8 @@ void %'ModuleName'%.%PutVal(bool Val)
   GPIO_DRV_WritePinOutput(%'ModuleName'%.CONFIG_PIN_SYMBOL, Val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   PINS_DRV_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, Val);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  /*! \todo */
 #endif
 }
 
@@ -557,6 +573,8 @@ void %'ModuleName'%.%Init(void)
   /* the following needs to be called in the application first:
   PINS_DRV_Init(NUM_OF_CONFIGURED_PINS, g_pin_mux_InitConfigArr);
   */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
+  /* nothing needed */
 #endif
 #if %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
   %'ModuleName'%.%SetInput();
@@ -638,7 +656,6 @@ void %'ModuleName'%.%Deinit(void)
     #define %'ModuleName'%.CONFIG_PORT_NAME     BOARD_INITPINS_%'ModuleName'_PORT
   #endif
 #endif
-
 
 #ifndef %'ModuleName'%.CONFIG_PORT_NAME
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT

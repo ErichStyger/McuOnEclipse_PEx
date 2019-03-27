@@ -337,12 +337,16 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 #endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF
+  #define %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF      (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+    /*!< 1: Nordic nRF, 0: otherwise */
+#endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_HCS08
-  #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0)
+  #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: HCS08 CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V
-  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
+  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: RISC-V CPU family, 0: otherwise */
 #endif
 
@@ -398,9 +402,11 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0)
+#define %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF      (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  /*!< 1: Nordic nRF, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: HCS08 CPU family, 0: otherwise */
-#define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
+#define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: RISC-V CPU family, 0: otherwise */
 %endif
 
@@ -456,6 +462,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< using NXP MCUXpresso SDK V2.x, same as Kinetis SDK v2.0 */
 #define %'ModuleName'%.CONFIG_SDK_S32K                5
   /*!< SDK for S32K */
+#define %'ModuleName'%.CONFIG_SDK_NORDIC_NRF5         6
+  /*!< Nordic nRF5 SDK */
 
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_MAJOR
 %if defined(SdkVersionMajor)
