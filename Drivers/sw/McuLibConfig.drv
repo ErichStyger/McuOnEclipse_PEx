@@ -349,7 +349,6 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: RISC-V CPU family, 0: otherwise */
 #endif
-
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY
   #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY          (1 && %'ModuleName'%.CONFIG_CPU_IS_RISC_V)
     /*!< 1: VEGA Board: RISC-V RV32M1 RI5CY, 0: other core */
@@ -412,13 +411,17 @@ void %'ModuleName'%.%Deinit(void)
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
-#define %'ModuleName'%.CONFIG_CORTEX_M      (0)
-  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#ifndef %'ModuleName'%.CONFIG_CORTEX_M
+  #define %'ModuleName'%.CONFIG_CORTEX_M      (0)
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#endif
 #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
   /*!< 1: using floating point unit, 0: otherwise */
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
-#define %'ModuleName'%.CONFIG_CORTEX_M      (4)
-  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#ifndef %'ModuleName'%.CONFIG_CORTEX_M
+  #define %'ModuleName'%.CONFIG_CORTEX_M      (4)
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#endif
 %if %CPUDB_prph_has_feature(CPU,FPU) = 'yes'
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
   /*!< 1: floating point unit present, 0: otherwise */
@@ -431,15 +434,19 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: using floating point unit, 0: otherwise */
 %endif
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
-#define %'ModuleName'%.CONFIG_CORTEX_M      (7)
-  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#ifndef %'ModuleName'%.CONFIG_CORTEX_M
+  #define %'ModuleName'%.CONFIG_CORTEX_M      (7)
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#endif
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
   /*!< 1: floating point unit present, 0: otherwise */
 #define %'ModuleName'%.CONFIG_FPU_USED      (1 || (defined(__FPU_USED) && (__FPU_USED)==1))
   /*!< 1: using floating point unit, 0: otherwise */
 %else %- default
-#define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
-  /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#ifndef %'ModuleName'%.CONFIG_CORTEX_M
+  #define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+#endif
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
   /*!< 1: floating point unit present, 0: otherwise */
 #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
