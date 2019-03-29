@@ -672,6 +672,9 @@ void %'ModuleName'%.%App_Callback(uint8_t controller_ID, uint8_t event_type, voi
   } else if (event_type == USB_APP_ERROR) { /* detach? */
     start_app = FALSE;
     start_transactions = FALSE;
+  } else if (event_type == USB_APP_BUS_SUSPEND) { /* disconnected cable? */
+    start_app = FALSE;
+    start_transactions = FALSE;
   }
 }
 
