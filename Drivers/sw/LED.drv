@@ -69,6 +69,9 @@
 %if defined(LEDPin)
 #include "%@LEDPin@ModuleName.h" /* interface to pin */
 %endif
+%if defined(PWMpin)
+#include "%@PWMpin@ModuleName.h" /* interface to PWM pin */
+%endif
 %if defined(Shell)
 #include "%@Shell@ModuleName.h" /* interface to Shell */
 %endif
