@@ -86,11 +86,13 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#if %'ModuleName'%.CONFIG_SHELL_ENABLED
 %if defined(Shell)
-#include "%@Shell@ModuleName.h"
+  #include "%@Shell@ModuleName.h"
 %else
-#include "McuShell.h"
+  #include "McuShell.h"
 %endif
+#endif
 %if defined(Utility)
 #include "%@Utility@ModuleName.h"
 %else
@@ -146,11 +148,7 @@
 %- Write your own types here ...
 %-  Example:
 %-    typedef int TMyInteger;
-%ifdef ParseCommand
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%else
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
-%endif %- ParseCommand
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED  %'ModuleName'%.CONFIG_SHELL_ENABLED  /* set to 1 if method ParseCommand() is present, 0 otherwise */
 
 %if defined(UseRTOSDynamicMemory) & %UseRTOSDynamicMemory='yes'
 #define %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY  (1 && configSUPPORT_DYNAMIC_ALLOCATION)  /* 1: use RTOS dynamic memory allocation, 0: use static memory */
@@ -3696,6 +3694,16 @@ void %OnCreateSyncObject(void *sobj)
   %endif
     /*!< Delay time in milliseconds after insertion of the card detected */
 #endif
+
+#if !defined(%'ModuleName'%.CONFIG_SHELL_ENABLED)
+  %if defined(Shell) & defined(ParseCommand)
+  #define %'ModuleName'%.CONFIG_SHELL_ENABLED    (1)
+  %else
+  #define %'ModuleName'%.CONFIG_SHELL_ENABLED    (0)
+  %endif
+    /*!< 1: Shell support is enabled; 0: no shell support enabled */
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
