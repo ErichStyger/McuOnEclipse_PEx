@@ -586,21 +586,42 @@ static uint8_t DataGet(void) {
 #elif %'ModuleName'%.CONFIG_LCD_DATA_BUS_WIDTH==8 /* 8bit */
   %if defined(DB7)
   val =  (%@DB7@'ModuleName'%.GetVal()<<7)
-        |(%@DB6@'ModuleName'%.GetVal()<<6)
-        |(%@DB5@'ModuleName'%.GetVal()<<5)
-        |(%@DB4@'ModuleName'%.GetVal()<<4)
-        |(%@DB3@'ModuleName'%.GetVal()<<3)
-        |(%@DB2@'ModuleName'%.GetVal()<<2)
-        |(%@DB1@'ModuleName'%.GetVal()<<1)
-        |(%@DB0@'ModuleName'%.GetVal()<<0);
   %else
   val =  (DB71_GetVal()<<7)
+  %endif
+  %if defined(DB6)
+        |(%@DB6@'ModuleName'%.GetVal()<<6)
+  %else
         |(DB61_GetVal()<<6)
+  %endif
+  %if defined(DB5)
+        |(%@DB5@'ModuleName'%.GetVal()<<5)
+  %else
         |(DB51_GetVal()<<5)
+  %endif
+  %if defined(DB4)
+        |(%@DB4@'ModuleName'%.GetVal()<<4)
+  %else
         |(DB41_GetVal()<<4)
+  %endif
+  %if defined(DEB3)
+        |(%@DB3@'ModuleName'%.GetVal()<<3)
+  %else
         |(DB31_GetVal()<<3)
+  %endif
+  %if defined(DB2)
+        |(%@DB2@'ModuleName'%.GetVal()<<2)
+  %else
         |(DB21_GetVal()<<2)
+  %endif
+  %if defined(DB1)
+        |(%@DB1@'ModuleName'%.GetVal()<<1)
+  %else
         |(DB11_GetVal()<<1)
+  %endif
+  %if defined(DB0)
+        |(%@DB0@'ModuleName'%.GetVal()<<0);
+  %else
         |(DB01_GetVal()<<0);
   %endif
 #endif
