@@ -30,6 +30,8 @@
  *----------------------------------------------------------*/
 /* Scheduler includes. */
 #include "FreeRTOS.h"
+#if %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS
+
 #include "portmacro.h" /* for configCPU_FAMILY */
 #include "task.h"
 #include "portTicks.h" /* for CPU_CORE_CLK_HZ used in configSYSTICK_CLOCK_HZ */
@@ -2383,3 +2385,5 @@ __asm uint32_t vPortGetIPSR(void) {
 #endif /* ARM M4(F) core */ 
 
 #endif /* %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
+
+#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS */
