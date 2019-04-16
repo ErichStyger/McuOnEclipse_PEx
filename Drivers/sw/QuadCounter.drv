@@ -484,9 +484,9 @@ uint8_t %'ModuleName'%.%GetVal(void)
 {
 #if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
   if (%'ModuleName'%.swappedPins) {
-    return %'ModuleName'%.GET_C1_C2_PINS();
-  } else {
     return %'ModuleName'%.GET_C1_C2_PINS_SWAPPED();
+  } else {
+    return %'ModuleName'%.GET_C1_C2_PINS();
   }
 #else
   return %'ModuleName'%.GET_C1_C2_PINS();
