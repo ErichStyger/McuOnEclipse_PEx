@@ -51,7 +51,7 @@
   %include FSL_USB_Stack\Device\source\driver\s08\usb_dci.c
   %FILE? %'DirRel_Code'usb_dciapi.h
   %include FSL_USB_Stack\Device\source\driver\s08\usb_dciapi.h
-%elif (CPUDevice="Kinetis K20D50") | (CPUDevice="Kinetis K20D72") | (CPUDevice="Kinetis K21D50") | (CPUDevice="Kinetis K21F120") | (CPUDevice="Kinetis K22F120") | (CPUDevice="Kinetis K22FN120") | (CPUDevice="Kinetis K24FN120") | (CPUDevice="Kinetis K40") | (CPUDevice="Kinetis K53") | (CPUDevice="Kinetis K60") | (CPUDevice="Kinetis K64F")  | (CPUDevice="Kinetis K70") | (CPUDevice="Kinetis L2K") | (CPUDevice="Kinetis KL24Z48") | (CPUDevice="Kinetis KL26Z48") | (CPUDevice="Kinetis KL46Z48" | (CPUDevice="Kinetis K22DX50")
+%elif (CPUDevice="Kinetis K20D50") | (CPUDevice="Kinetis K20D72") | (CPUDevice="Kinetis K21D50") | (CPUDevice="Kinetis K21F120") | (CPUDevice="Kinetis K22F120") | (CPUDevice="Kinetis K22FN120") | (CPUDevice="Kinetis K24FN120") | (CPUDevice="Kinetis K40") | (CPUDevice="Kinetis K53") | (CPUDevice="Kinetis K60") | (CPUDevice="Kinetis K64F")  | (CPUDevice="Kinetis K70") | (CPUDevice="Kinetis L2K") | (CPUDevice="Kinetis KL24Z48") | (CPUDevice="Kinetis KL26Z48") | (CPUDevice="Kinetis KL46Z48") | (CPUDevice="Kinetis K22DX50")
 %- \Device\source\driver\kinetis -------------------------------------------
   %FILE? %'DirRel_Code'usb_bdt_kinetis.h
   %include FSL_USB_Stack\Device\source\driver\kinetis\usb_bdt_kinetis.h
