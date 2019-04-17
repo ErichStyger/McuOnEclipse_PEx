@@ -1210,7 +1210,7 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
   if (color!=0) {
     val |= (1<<(y%%8)); /* set pixel */
   } else {
-    val &= (1<<(y%%8)); /* clear pixel */
+    val &= ~(1<<(y%%8)); /* clear pixel */
   }
   %'ModuleName'%.DisplayBuf[y/8][x] = val; /* store value */
 }
