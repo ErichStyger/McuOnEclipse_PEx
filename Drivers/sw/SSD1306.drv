@@ -420,6 +420,15 @@ uint8_t %'ModuleName'%.%SetRowCol(uint8_t row, uint8_t col);
 
 %endif %- SetRowCol
 %-BW_METHOD_END SetRowCol
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearLine
+%ifdef ClearLine
+void %'ModuleName'%.%ClearLine(uint8_t line);
+%define! Parline
+%include Common\SSD1306ClearLine.Inc
+
+%endif %- ClearLine
+%-BW_METHOD_END ClearLine
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1074,7 +1083,7 @@ uint8_t %'ModuleName'%.%SetRowCol(uint8_t row, uint8_t col)
 %include Common\SSD1306PrintString.Inc
 void %'ModuleName'%.%PrintString(uint8_t line, uint8_t col, uint8_t *str)
 {
-  if (%'ModuleName'%.%SetRowCol(line ,col)!=ERR_OK) {
+  if (%'ModuleName'%.%SetRowCol(line, col)!=ERR_OK) {
     return; /* error! */
   }
   while(*str != '\0'){
@@ -1095,6 +1104,25 @@ void %'ModuleName'%.%PrintString(uint8_t line, uint8_t col, uint8_t *str)
 
 %endif %- PrintString
 %-BW_METHOD_END PrintString
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearLine
+%ifdef ClearLine
+%define! Parline
+%include Common\SSD1306ClearLine.Inc
+void %'ModuleName'%.%ClearLine(uint8_t line)
+{
+  uint8_t i;
+
+  if (%'ModuleName'%.%SetRowCol(line, 0)!=ERR_OK) {
+    return; /* error! */
+  }
+  for(i=0; i<%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS; i++) {
+    SSD1306_WriteData(0); /* clear column */
+  }
+}
+
+%endif %- ClearLine
+%-BW_METHOD_END ClearLine
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Init
 %ifdef Init
@@ -1228,7 +1256,6 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
-%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
