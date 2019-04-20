@@ -6,7 +6,7 @@
 %include Common\GeneralMethod.inc (WarnfTarget)
 %;**     Description :
 %;**         Prints a warning string using printf() to the host which is
-%;**         processed on the target
+%;**         processed first on the target
 %include Common\GeneralParameters.inc(27)
 %;**       * s%Pars %>27 - Pointer to string
 %include Common\GeneralReturnNothing.inc

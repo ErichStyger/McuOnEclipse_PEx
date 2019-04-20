@@ -6,7 +6,7 @@
 %include Common\GeneralMethod.inc (PrintfTarget)
 %;**     Description :
 %;**         Prints a string using printf() to the host which is
-%;**         processed target
+%;**         processed first on the target
 %include Common\GeneralParameters.inc(27)
 %;**       * s%Pars %>27 - Pointer to string
 %include Common\GeneralReturnNothing.inc
