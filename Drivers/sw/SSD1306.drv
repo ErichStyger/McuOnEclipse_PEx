@@ -206,10 +206,7 @@ void %'ModuleName'%.%UpdateFull(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateRegion
 %ifdef UpdateRegion
-/* implemented as macro
 void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h);
-*/
-#define %'ModuleName'%.%UpdateRegion(x,y,w,h) /* nothing to do, as this display type does not require a refresh */
 %define! Parx
 %define! Pary
 %define! Parw
@@ -774,6 +771,30 @@ void %'ModuleName'%.%Clear(void)
 %endif %- Clear
 %-BW_METHOD_END Clear
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN UpdateRegion
+%ifdef UpdateRegion
+%define! Parx
+%define! Pary
+%define! Parw
+%define! Parh
+%include Common\SSD1306UpdateRegion.Inc
+void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
+{
+  int page, pageBeg, pageEnd, colStart;
+
+  pageBeg = y/8;
+  pageEnd = (y+h-1)/8;
+  colStart = x;
+  for(page = pageBeg; page<=pageEnd; page++) {
+    (void)SSD1306_SetPageStartAddr(page);
+    (void)SSD1306_SetColStartAddr(colStart);
+    SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0]+(page*%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS+colStart), w);
+  }
+}
+
+%endif %- UpdateRegion
+%-BW_METHOD_END UpdateRegion
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
 %include Common\SSD1306UpdateFull.Inc
@@ -799,23 +820,6 @@ void %'ModuleName'%.%UpdateFull(void)
 
 %endif %- UpdateFull
 %-BW_METHOD_END UpdateFull
-%-************************************************************************************************************
-%-BW_METHOD_BEGIN UpdateRegion
-%ifdef UpdateRegion
-%define! Parx
-%define! Pary
-%define! Parw
-%define! Parh
-%include Common\SSD1306UpdateRegion.Inc
-/*
-void %'ModuleName'%.%UpdateRegion(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelDim w, %'ModuleName'_PixelDim h)
-{
-  implemented as macro in %'ModuleName'.h
-}
-*/
-
-%endif %- UpdateRegion
-%-BW_METHOD_END UpdateRegion
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG CloseWindow
 %include Common\GeneralInternal.inc (CloseWindow)
