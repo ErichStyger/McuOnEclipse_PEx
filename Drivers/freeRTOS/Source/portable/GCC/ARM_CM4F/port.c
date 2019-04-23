@@ -46,6 +46,34 @@
 
 #include "%KinetisSDK.h" /* include SDK and API used */
 #if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
+
+#if( configENABLE_TRUSTZONE == 1 )
+  /* Secure components includes. */
+  #include "secure_context.h"
+  #include "secure_init.h"
+#endif /* configENABLE_TRUSTZONE */
+
+#undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+
+/**
+ * The FreeRTOS Cortex M33 port can be configured to run on the Secure Side only
+ * i.e. the processor boots as secure and never jumps to the non-secure side.
+ * The Trust Zone support in the port must be disabled in order to run FreeRTOS
+ * on the secure side. The following are the valid configuration seetings:
+ *
+ * 1. Run FreeRTOS on the Secure Side:
+ *    configRUN_FREERTOS_SECURE_ONLY = 1 and configENABLE_TRUSTZONE = 0
+ *
+ * 2. Run FreeRTOS on the Non-Secure Side with Secure Side function call support:
+ *    configRUN_FREERTOS_SECURE_ONLY = 0 and configENABLE_TRUSTZONE = 1
+ *
+ * 3. Run FreeRTOS on the Non-Secure Side only i.e. no Secure Side function call support:
+ *    configRUN_FREERTOS_SECURE_ONLY = 0 and configENABLE_TRUSTZONE = 0
+ */
+#if( ( configRUN_FREERTOS_SECURE_ONLY == 1 ) && ( configENABLE_TRUSTZONE == 1 ) )
+  #error TrustZone needs to be disabled in order to run FreeRTOS on the Secure Side.
+#endif
+
 /* --------------------------------------------------- */
 /* Let the user override the pre-loading of the initial LR with the address of
    prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -201,7 +229,7 @@ typedef %@TickCntr@'ModuleName'%.TTimerValue TickCounter_t; /* for holding count
 #if configUSE_TICKLESS_IDLE == 1
   static TickCounter_t ulStoppedTimerCompensation = 0; /* number of timer ticks to compensate */
 %if defined(StoppedTimerCompensation)
-  #define configSTOPPED_TIMER_COMPENSATION    %'StoppedTimerCompensation'UL  /* number of CPU cycles to compensate, as defined in properties. ulStoppedTimerCompensation will contain the number of timer ticks. */
+  #define configSTOPPED_TIMER_COMPENSATION    %'StoppedTimerCompensation'UL  /* number of CPU cycles to compensate. ulStoppedTimerCompensation will contain the number of timer ticks. */
 %else
   #define configSTOPPED_TIMER_COMPENSATION    45UL  /* number of CPU cycles to compensate. ulStoppedTimerCompensation will contain the number of timer ticks. */
 %endif
@@ -267,7 +295,7 @@ have bit-0 clear, as it is loaded into the PC on exit from an ISR. */
 #define     __IO    volatile             /*!< Defines 'read / write' permissions              */
 /** \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
  */
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
 typedef struct
 {
   __IO uint32_t ISER[8];                 /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register           */
@@ -318,7 +346,7 @@ typedef struct
  */
 static void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority) {
   IRQn -= 16; /* PEx starts numbers with zero, while system interrupts would be negative */
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   NVIC->IP[(uint32_t)(IRQn)] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff);   /* set Priority for device specific Interrupts  */
 #else /* M0+ */
   NVIC->IP[_IP_IDX(IRQn)] = (NVIC->IP[_IP_IDX(IRQn)] & ~(0xFF << _BIT_SHIFT(IRQn))) |
@@ -332,7 +360,7 @@ static void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority) {
  */
 static void NVIC_EnableIRQ(IRQn_Type IRQn) {
   IRQn -= 16; /* PEx starts numbers with zero, while system interrupts would be negative */
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   NVIC->ISER[(uint32_t)((int32_t)IRQn) >> 5] = (uint32_t)(1 << ((uint32_t)((int32_t)IRQn) & (uint32_t)0x1F)); /* enable interrupt */
 #else /* M0+ */
   NVIC->ISER[0] = (1 << ((uint32_t)(IRQn) & 0x1F)); /* enable interrupt */
@@ -389,7 +417,7 @@ void prvTaskExitError(void) {
   }
 }
 /*-----------------------------------------------------------*/
-#if (configCOMPILER==configCOMPILER_ARM_KEIL) && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if (configCOMPILER==configCOMPILER_ARM_KEIL) && (configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY)) /* ARM M4(F)/M7/M33 core */
 __asm uint32_t ulPortSetInterruptMask(void) {
   PRESERVE8
 
@@ -400,7 +428,7 @@ __asm uint32_t ulPortSetInterruptMask(void) {
 }
 #endif /* (configCOMPILER==configCOMPILER_ARM_KEIL) */
 /*-----------------------------------------------------------*/
-#if (configCOMPILER==configCOMPILER_ARM_KEIL) && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if (configCOMPILER==configCOMPILER_ARM_KEIL) && (configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */)
 __asm void vPortClearInterruptMask(uint32_t ulNewMask) {
   PRESERVE8
 
@@ -814,12 +842,16 @@ static portBASE_TYPE xBankedStartScheduler(void) {
 #if configUSE_TICKLESS_IDLE == 1
 %if defined(vOnPreSleepProcessing)
 void %vOnPreSleepProcessing(TickType_t expectedIdleTicks); /* prototype */
-
+%else
+void McuRTOS_vOnPreSleepProcessing(TickType_t expectedIdleTicks); /* prototype */
 %endif
+
 %if defined(vOnPostSleepProcessing)
 void %vOnPostSleepProcessing(TickType_t expectedIdleTicks); /* prototype */
-
+%else
+void McuRTOS_vOnPostSleepProcessing(TickType_t expectedIdleTicks); /* prototype */
 %endif
+
 #if (configCOMPILER==configCOMPILER_ARM_GCC) || (configCOMPILER==configCOMPILER_ARM_KEIL)
 __attribute__((weak))
 #endif
@@ -835,6 +867,9 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
 %if defined(vOnPreSleepProcessing)
     %vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
 %else
+    McuRTOS_vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
+%endif
+#if 0 /* default example code */
     /* default wait/sleep code */
   %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     __asm volatile("dsb");
@@ -846,7 +881,7 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
   %else
     #error "unsupported CPU family! vOnPreSleepProcessing() event and go into sleep mode there!"
   %endif    
-%endif
+#endif
     return;
   }
 #endif
@@ -933,6 +968,9 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
 %if defined(vOnPreSleepProcessing)
     %vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
 %else
+    McuRTOS_vOnPreSleepProcessing(xExpectedIdleTime); /* go into low power mode. Re-enable interrupts as needed! */
+%endif
+#if 0 /* example/default code */
     /* default wait/sleep code */
   %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     __asm volatile("dsb");
@@ -944,12 +982,14 @@ void vPortSuppressTicksAndSleep(TickType_t xExpectedIdleTime) {
   %else
     #error "unsupported CPU family! vOnPreSleepProcessing() event and go into sleep mode there!"
   %endif    
-%endif
+#endif
     /* ----------------------------------------------------------------------------
      * Here the CPU *HAS TO BE* low power mode, waiting to wake up by an interrupt 
      * ----------------------------------------------------------------------------*/
 %if defined(vOnPostSleepProcessing)
     %vOnPostSleepProcessing(xExpectedIdleTime); /* process post-low power actions */
+%else
+    McuRTOS_vOnPostSleepProcessing(xExpectedIdleTime); /* process post-low power actions */
 %endif
     /* Stop tick counter. Again, the time the tick counter is stopped for is
      * accounted for as best it can be, but using the tickless mode will
@@ -1200,7 +1240,7 @@ void vPortEnableVFP(void) {
  * FreeRTOS API functions are not called from interrupts that have been assigned
  * a priority above configMAX_SYSCALL_INTERRUPT_PRIORITY.
  */
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) && (configASSERT_DEFINED == 1)
+#if (configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */) && (configASSERT_DEFINED == 1)
   /* Constants required to check the validity of an interrupt priority. */
   #define portFIRST_USER_INTERRUPT_NUMBER   ( 16 )
   #define portNVIC_IP_REGISTERS_OFFSET_16   ( 0xE000E3F0 )
@@ -1250,7 +1290,7 @@ BaseType_t xPortStartScheduler(void) {
   See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html */
   configASSERT( configMAX_SYSCALL_INTERRUPT_PRIORITY );
 
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* ARM M4(F)/M7 core */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   #if( configASSERT_DEFINED == 1 )
   {
     volatile uint32_t ulOriginalPriority;
@@ -1404,7 +1444,7 @@ void vPortEnterCritical(void) {
   %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
     %if %Compiler="CodeWarriorARM" %- not supported by legacy Freescale ARM compiler
     %else
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   /* This is not the interrupt safe version of the enter critical function so
   assert() if it is being called from an interrupt context.  Only API
   functions that end in "FromISR" can be used in an interrupt.  Only assert if
@@ -1596,7 +1636,7 @@ void vPortTickHandler(void) {
 #endif
 %endif
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='no'
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   #if __OPTIMIZE_SIZE__ || __OPTIMIZE__
     /*
               RTOSTICKLDD1_Interrupt:
@@ -1718,7 +1758,7 @@ PE_ISR(RTOSTICKLDD1_Interrupt)
   }
   portENABLE_INTERRUPTS(); /* re-enable interrupts */
 %if defined(useARMSysTickTimer) && useARMSysTickTimer='no'
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   #if __OPTIMIZE_SIZE__ || __OPTIMIZE__
   __asm volatile (
     " pop {r0,lr}  \n" /* start exit sequence from interrupt: sp and lr where pushed */
@@ -1759,7 +1799,7 @@ void vPortStartFirstTask(void) {
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
 __asm void vPortStartFirstTask(void) {
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   /* Use the NVIC offset register to locate the stack. */
 #if configRESET_MSP && !INCLUDE_vTaskEndScheduler
   ldr r0, =0xE000ED08
@@ -1834,7 +1874,7 @@ void vPortStartFirstTask(void) {
     for(;;);
   }
 #endif
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   __asm volatile (
 #if configRESET_MSP && !INCLUDE_vTaskEndScheduler
 #if configLTO_HELPER /* with -flto, we cannot load the constant directly, otherwise we get "Error: offset out of range" with "lto-wrapper failed" */
@@ -1885,7 +1925,7 @@ void vPortStartFirstTask(void) {
 #endif
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4/M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
 #if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void SVC_Handler(void) {
 #else
@@ -1932,7 +1972,7 @@ __attribute__ ((naked)) void SVC_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortSVCHandler(void) {
 #endif
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)  /* Cortex M4 or M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
 __asm volatile (
     " ldr r3, pxCurrentTCBConst2 \n" /* Restore the context. */
     " ldr r1, [r3]               \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
@@ -1963,7 +2003,7 @@ __asm volatile (
 #endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */
 /*-----------------------------------------------------------*/
 #if (configCOMPILER==configCOMPILER_ARM_KEIL)
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4 or M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
 #if !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __asm void PendSV_Handler(void) {
 #else
@@ -2068,7 +2108,7 @@ __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {
 #endif
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4 or M7*/
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   __asm volatile (
     " mrs r0, psp                \n"
     " ldr  r3, pxCurrentTCBConst \n" /* Get the location of the current TCB. */
@@ -2197,7 +2237,7 @@ __attribute__ ((naked)) void PendSV_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortPendSVHandler(void) {
 #endif
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* Cortex M4 or M7 */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   __asm volatile (
 #if configGDB_HELPER
     " ldr r1, _dbgPendSVHookState    \n" /* Check hook installed */
@@ -2307,7 +2347,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
 
 #endif /* (configCOMPILER==configCOMPILER_ARM_GCC) */
 /*-----------------------------------------------------------*/
-#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) /* ARM M4(F) or M7 core */
+#if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
 
 #if configCOMPILER==configCOMPILER_ARM_KEIL
 __asm uint32_t vPortGetIPSR(void) {

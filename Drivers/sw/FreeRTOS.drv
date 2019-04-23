@@ -1823,10 +1823,12 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 %ifdef vApplicationStackOverflowHook
 %INTERFACE vApplicationStackOverflowHook
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 #ifndef __BWUserType_Tsize_t
 #define __BWUserType_Tsize_t
   typedef size_t Tsize_t;                                        %>40/* Alias to size_t standard type */
 #endif
+
 %-ENDUSRTYPES
 
 void %vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName);

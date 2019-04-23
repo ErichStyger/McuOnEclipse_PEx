@@ -504,6 +504,20 @@ point support. */
  */
 #define configCLINT_BASE_ADDRESS   0x0
 
+/*---------------------------------------------------------------------------------------*/
+/* MPU and TrustZone settings */
+#ifndef configENABLE_FPU
+  #define configENABLE_FPU        (%@KinetisSDK@'ModuleName'%.CONFIG_FPU_USED) /* use macro from McuLibconfig.h */
+#endif /* configENABLE_FPU */
+
+#ifndef configENABLE_MPU
+  #define configENABLE_MPU        (configUSE_MPU_SUPPORT) /* use macro from McuRTOSconfig.h */
+#endif /* configENABLE_MPU */
+
+#ifndef configENABLE_TRUSTZONE
+  #define configENABLE_TRUSTZONE  (0)
+#endif /* configENABLE_TRUSTZONE */
+/*---------------------------------------------------------------------------------------*/
 
 /* custom include file: */
 %CustomFreeRTOSConfig
