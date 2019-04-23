@@ -176,13 +176,13 @@
   %set ParseCommand Selection always
 %endif
 
-%if defined(TicklessIdleModeEnabled) & %TicklessIdleModeEnabled='yes'
+%- %if defined(TicklessIdleModeEnabled) & %TicklessIdleModeEnabled='yes'
   %set vOnPreSleepProcessing Selection always
   %set vOnPostSleepProcessing Selection enable
-%else
-  %set vOnPreSleepProcessing Selection never
-  %set vOnPostSleepProcessing Selection never
-%endif
+%- %else
+%-  %set vOnPreSleepProcessing Selection never
+%-  %set vOnPostSleepProcessing Selection never
+%- %endif
 
 %if defined(useQueueSets) & %useQueueSets='yes'
   %set xQueueCreateSet Selection always
