@@ -314,43 +314,47 @@ void %'ModuleName'%.%Deinit(void)
 */
 %if (CPUfamily = "Kinetis")
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
-  #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
+  #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M             (1 || defined(__CORTEX_M))
     /*!< 1: ARM Cortex-M family, 0 otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_KINETIS
-  #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS                  (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: NXP Kinetis CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_S32K
-  #define %'ModuleName'%.CONFIG_CPU_IS_S32K            (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_S32K                     (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: NXP S32K CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_LPC
-  #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_LPC                      (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
    /*!< 1: NXP LPC CPU family, 0: otherwise */
 #endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_LPC55xx
+  #define %'ModuleName'%.CONFIG_CPU_IS_LP55Cxx                  (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M && %'ModuleName'%.CONFIG_CPU_IS_LPC)
+   /*!< 1: NXP LPC55xx CPU family, 0: otherwise */
+#endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_STM32
-  #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_STM32                    (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_IMXRT
-  #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT                    (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: NXP i.Mx RT CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF
-  #define %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF      (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF               (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: Nordic nRF, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_HCS08
-  #define %'ModuleName'%.CONFIG_CPU_IS_HCS08           (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_HCS08                    (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: HCS08 CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V
-  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V                   (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: RISC-V CPU family, 0: otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY
-  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY          (1 && %'ModuleName'%.CONFIG_CPU_IS_RISC_V)
+  #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY      (1 && %'ModuleName'%.CONFIG_CPU_IS_RISC_V)
     /*!< 1: VEGA Board: RISC-V RV32M1 RI5CY, 0: other core */
 #endif
 
@@ -363,6 +367,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: NXP S32K CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP LPC CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_LPC55xx         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M  && %'ModuleName'%.CONFIG_CPU_IS_LPC)
+  /*!< 1: NXP LPC55xx CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
@@ -380,6 +386,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: NXP S32K CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP LPC CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_LPC55xx         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M  && %'ModuleName'%.CONFIG_CPU_IS_LPC)
+  /*!< 1: NXP LPC55xx CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
@@ -397,6 +405,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: NXP S32K CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_LPC             (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP LPC CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_LPC55xx         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M  && %'ModuleName'%.CONFIG_CPU_IS_LPC)
+  /*!< 1: NXP LPC55xx CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_STM32           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_IMXRT           (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
@@ -413,14 +423,14 @@ void %'ModuleName'%.%Deinit(void)
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M
   #define %'ModuleName'%.CONFIG_CORTEX_M      (0)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33, -1 otherwise */
 #endif
 #define %'ModuleName'%.CONFIG_FPU_USED      (0 || (defined(__FPU_USED) && (__FPU_USED)==1))
   /*!< 1: using floating point unit, 0: otherwise */
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M4) = 'yes'
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M
   #define %'ModuleName'%.CONFIG_CORTEX_M      (4)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33, -1 otherwise */
 #endif
 %if %CPUDB_prph_has_feature(CPU,FPU) = 'yes'
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
@@ -436,7 +446,7 @@ void %'ModuleName'%.%Deinit(void)
 %elif %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M7) = 'yes'
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M
   #define %'ModuleName'%.CONFIG_CORTEX_M      (7)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33, -1 otherwise */
 #endif
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
   /*!< 1: floating point unit present, 0: otherwise */
@@ -445,7 +455,7 @@ void %'ModuleName'%.%Deinit(void)
 %else %- default
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M
   #define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, -1 otherwise */
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33 -1 otherwise */
 #endif
 #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0 || (defined(__FPU_PRESENT) && (__FPU_PRESENT)==1))
   /*!< 1: floating point unit present, 0: otherwise */
