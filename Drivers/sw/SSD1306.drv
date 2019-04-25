@@ -227,7 +227,7 @@ void %'ModuleName'%.OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %-INTERNAL_METHOD_END OpenWindow
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG CloseWindow
-#define %'ModuleName'%.CloseWindow()  /* nothing to do */
+void %'ModuleName'%.CloseWindow(void);
 
 %include Common\GeneralInternal.inc (CloseWindow)
 
@@ -737,6 +737,7 @@ uint16_t %'ModuleName'%.ReadDataWord(void)
 %include Common\GeneralInternal.inc (WriteData)
 void %'ModuleName'%.WriteData(uint8_t data)
 {
+  SSD1306_WriteData(data);
 }
 
 %-INTERNAL_METHOD_END WriteData
@@ -749,9 +750,19 @@ void %'ModuleName'%.WriteData(uint8_t data)
 %include Common\GeneralInternal.inc (OpenWindow)
 void %'ModuleName'%.OpenWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim y0, %'ModuleName'_PixelDim x1, %'ModuleName'_PixelDim y1)
 {
+  /* no windowing capabilities */
 }
 
 %-INTERNAL_METHOD_END OpenWindow
+%-************************************************************************************************************
+%-INTERNAL_METHOD_BEG CloseWindow
+%include Common\GeneralInternal.inc (CloseWindow)
+void %'ModuleName'%.CloseWindow(void)
+{
+  /* no windowing capabilities */
+}
+
+%-INTERNAL_METHOD_END CloseWindow
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Clear
 %ifdef Clear
@@ -820,17 +831,6 @@ void %'ModuleName'%.%UpdateFull(void)
 
 %endif %- UpdateFull
 %-BW_METHOD_END UpdateFull
-%-************************************************************************************************************
-%-INTERNAL_METHOD_BEG CloseWindow
-%include Common\GeneralInternal.inc (CloseWindow)
-/*
-void %'ModuleName'%.CloseWindow(void)
-{
-  implemented as macro in %'ModuleName'.h
-}
-*/
-
-%-INTERNAL_METHOD_END CloseWindow
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetDisplayOrientation
 %ifdef GetDisplayOrientation
