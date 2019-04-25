@@ -665,6 +665,17 @@ void %'ModuleName'%.%Deinit(void);
 %endif %- Deinit
 %-BW_METHOD_END Deinit
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawMonoBitmapMask
+%ifdef DrawMonoBitmapMask
+void %'ModuleName'%.%DrawMonoBitmapMask(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, PIMAGE image, %'ModuleName'_PixelColor pixelColor);
+%define! Parx
+%define! Pary
+%define! Parimage
+%define! ParpixelColor
+%include Common\GDisplayDrawMonoBitmapMask.Inc
+
+%endif %- DrawMonoBitmapMask
+%-BW_METHOD_END DrawMonoBitmapMask
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1181,6 +1192,61 @@ void %'ModuleName'%.%DrawMonoBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_Pixe
 
 %endif %- DrawMonoBitmap
 %-BW_METHOD_END DrawMonoBitmap
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN DrawMonoBitmapMask
+%ifdef DrawMonoBitmapMask
+%define! Parx
+%define! Pary
+%define! Parimage
+%define! ParpixelColor
+%include Common\GDisplayDrawMonoBitmapMask.Inc
+void %'ModuleName'%.%DrawMonoBitmapMask(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, PIMAGE image, %'ModuleName'_PixelColor pixelColor)
+{
+  %'ModuleName'%.PixelDim x0, y0, xe, ye;
+  %'ModuleName'%.PixelColor pixel;
+  uint8_t i;
+  const uint8_t *data;
+
+%ifdef OnError
+  if (   image->width==0 || image->height==0
+      || x+image->width>%'ModuleName'%.GetWidth() || y+image->height>%'ModuleName'%.GetHeight()
+      )
+  { /* values out of range */
+    %OnError(); /* call error handler */
+    return;
+  }
+%endif
+  data = image->pixmap;
+  y0 = y;
+  ye = (%'ModuleName'%.PixelDim)(y+image->height-1);
+  xe = (%'ModuleName'%.PixelDim)(x+image->width-1);
+  for(;;) {
+    i=7;
+    x0 = x;
+    for(;;) {
+      pixel = (%'ModuleName'%.PixelColor)(((*data)&(1<<i))>>i); /* extract pixel out of bitstream */
+      if (pixel) { /* only draw if pixel is set, everything else is transparent */
+        %'ModuleName'%.%PutPixel(x0, y0, pixelColor);
+      }
+      if (i==0 && x0!=xe) { /* next byte inside the row */
+        data++;
+        i = 7;
+      } else {
+        i--;
+      }
+      if (x0==xe) { /* reached end of line, next row */
+        data++; /* next data byte */
+        break;
+      }
+      x0++;
+    } /* for */
+    if (y0==ye) break; /* reached end */
+    y0++;
+  } /* for */
+}
+
+%endif %- DrawMonoBitmapMask
+%-BW_METHOD_END DrawMonoBitmapMask
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawColorBitmap
 %ifdef DrawColorBitmap
@@ -1834,7 +1900,6 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
-%-************************************************************************************************************
 %-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */

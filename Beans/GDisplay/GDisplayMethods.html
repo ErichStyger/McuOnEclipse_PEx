@@ -401,6 +401,19 @@ LI.EXP {
 <li><i>backgroundColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for background (pixel not set)</li>
 </ul><br />
 </li>
+<li><a name="DrawMonoBitmapMask">
+<b>DrawMonoBitmapMask</b></a>
+ - Draws a B/W bitmap, but only the pixels which are set
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void DrawMonoBitmapMask(<i>ComponentName_</i>PixelDim x, <i>ComponentName_</i>PixelDim y, PIMAGE image, <i>ComponentName_</i>PixelColor pixelColor)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>x:<i>ComponentName_</i>PixelDim</i> - x position of left upper corner</li>
+<li><i>y:<i>ComponentName_</i>PixelDim</i> - y position of left upper corner</li>
+<li><i>image:uint8_t</i> - Pointer to image structure and information.</li>
+<li><i>pixelColor:<i>ComponentName_</i>PixelColor</i> - Color to be used for pixels (pixel set)</li>
+</ul><br />
+</li>
 <li><a name="DrawColorBitmap">
 <b>DrawColorBitmap</b></a>
  - Draws a color bitmap. Pixel data is in 3-3-2 RGB format.
