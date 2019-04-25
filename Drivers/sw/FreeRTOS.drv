@@ -4787,7 +4787,7 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 #define configCPU_FAMILY_IS_ARM_M7(fam)                          %>50 (((fam)==configCPU_FAMILY_ARM_M7)  || ((fam)==configCPU_FAMILY_ARM_M7F))
 #define configCPU_FAMILY_IS_ARM_M4_M7(fam)                       %>50 (configCPU_FAMILY_IS_ARM_M4(fam)   || configCPU_FAMILY_IS_ARM_M7(fam))
 #define configCPU_FAMILY_IS_ARM_M33(fam)                         %>50 (((fam)==configCPU_FAMILY_ARM_M33) || ((fam)==configCPU_FAMILY_ARM_M33F))
-#define configCPU_FAMILY_IS_ARM_FPU(fam)                         %>50 (((fam)==configCPU_FAMILY_ARM_M4F) || ((fam)==configCPU_FAMILY_ARM_M7F))
+#define configCPU_FAMILY_IS_ARM_FPU(fam)                         %>50 (((fam)==configCPU_FAMILY_ARM_M4F) || ((fam)==configCPU_FAMILY_ARM_M7F) || (fam)==configCPU_FAMILY_ARM_M33F))
 #define configCPU_FAMILY_IS_ARM(fam)                             %>50 (configCPU_FAMILY_IS_ARM_M0(fam) || configCPU_FAMILY_IS_ARM_M4(fam) || configCPU_FAMILY_IS_ARM_M7(fam) || configCPU_FAMILY_IS_ARM_M33(fam))
 
 #if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
