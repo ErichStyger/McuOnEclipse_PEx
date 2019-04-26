@@ -578,34 +578,41 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#ifndef %'ModuleName'%.CONFIG_GENERATE_QUEUE_EVENTS
 %if defined(QueueEventsEnabled) && %QueueEventsEnabled='yes'
-#define %'ModuleName'%.CONFIG_GENERATE_QUEUE_EVENTS  (1)
+  #define %'ModuleName'%.CONFIG_GENERATE_QUEUE_EVENTS  (1)
 %else
-#define %'ModuleName'%.CONFIG_GENERATE_QUEUE_EVENTS  (0)
+  #define %'ModuleName'%.CONFIG_GENERATE_QUEUE_EVENTS  (0)
 %endif
-  /*!< 1: events for queues are generated. 0: no queue events are generated */
+    /*!< 1: events for queues are generated. 0: no queue events are generated */
+#endif
 
+#ifndef %'ModuleName'%.CONFIG_GENERATE_ISR_EVENTS
 %if defined(ISREventsEnabled) && %ISREventsEnabled='yes'
-#define %'ModuleName'%.CONFIG_GENERATE_ISR_EVENTS  (1)
+  #define %'ModuleName'%.CONFIG_GENERATE_ISR_EVENTS  (1)
 %else
-#define %'ModuleName'%.CONFIG_GENERATE_ISR_EVENTS  (0)
+  #define %'ModuleName'%.CONFIG_GENERATE_ISR_EVENTS  (0)
 %endif
-  /*!< 1: events for ISR are generated. 0: no ISR events are generated */
+    /*!< 1: events for ISR are generated. 0: no ISR events are generated */
+#endif
 
+#ifndef %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS
 %if defined(StreamBufferEventsEnabled) && %StreamBufferEventsEnabled='yes'
-#define %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS  (1)
+  #define %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS  (1)
 %else
-#define %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS  (0)
+  #define %'ModuleName'%.CONFIG_GENERATE_STREAMBUFFER_EVENTS  (0)
 %endif
-  /*!< 1: events for Stream Buffer are generated. 0: no Stream Buffer events are generated */
+    /*!< 1: events for Stream Buffer are generated. 0: no Stream Buffer events are generated */
+#endif
 
+#ifndef %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS
 %if defined(vTaskStepTickEventsEnabled) && %vTaskStepTickEventsEnabled='yes'
-#define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (1)
+  #define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (1)
 %else
-#define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (0)
+  #define %'ModuleName'%.CONFIG_GENERATE_STEPTICK_EVENTS  (0)
 %endif
-  /*!< 1: events for Stream Buffer are generated. 0: no Stream Buffer events are generated */
-
+    /*!< 1: events for tickets steps are generated. 0: no ticket step events are generated */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
