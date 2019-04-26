@@ -103,6 +103,7 @@
 %- \Device\app\cdc\cw10\kinetis_k22 -------------------------------------------
   %FILE? %'DirRel_Code'derivative.h
   %include FSL_USB_Stack\Device\app\cdc\cw10\kinetis_k22\derivative.h
+%elif (CPUDevice="Kinetis K22DX50")
 %- \Device\app\cdc\cw10\kinetis_k22dx50 -------------------------------------------
   %FILE? %'DirRel_Code'derivative.h
   %include FSL_USB_Stack\Device\app\cdc\cw10\kinetis_k22dx50\derivative.h
