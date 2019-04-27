@@ -300,6 +300,10 @@ void %'ModuleName'%.usb_int_dis(void)
   NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
 %elif (CPUDevice="Kinetis K22FN120")
   NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
+%elif (CPUDevice="Kinetis K22DX50")
+  NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
+%elif (CPUDevice="Kinetis K24FN120") %- vector 69, IRQ 53
+  NVICISER1 = (1<<21);    /* Disable interrupts from USB module (Interrupt Clear-Enable Register) */
 %else
   /* functionality not needed for %CPUDevice */
 %endif
@@ -374,6 +378,9 @@ void %'ModuleName'%.usb_int_en(void)
 %elif (CPUDevice="Kinetis K22FN120")
   NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
   NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
+%elif (CPUDevice="Kinetis K22DX50")
+  NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
+  NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
 %elif (CPUDevice="Kinetis K24FN120") %- vector 69, IRQ 53
   NVICICPR1 = (1<<21);    /* Clear any pending interrupts on USB (Interrupt Clear-Pending Register) */
   NVICISER1 = (1<<21);    /* Enable interrupts from USB module (Interrupt Set-Enable Register) */
@@ -445,7 +452,7 @@ uint8_t %'ModuleName'%.%Init(void)
 %if (CPUDevice="Kinetis K64F")
   MPU_CESR = 0; /* K64F has memory protection unit, disable it! */
 %elif (CPUDevice="Kinetis K22FN120")
-  #if 0 /* not needed with KDS V2.0.0? */
+  #if 0 /* not needed with KDS V2.0.0? But needed for K64F */
     MPU_CESR = 0; /* K22FN (Kinetis K2) has memory protection unit, disable it! */
   #endif
 %endif
