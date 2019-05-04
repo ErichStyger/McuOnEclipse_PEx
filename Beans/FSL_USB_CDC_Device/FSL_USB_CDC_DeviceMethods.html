@@ -306,7 +306,7 @@ LI.EXP {
  - Method to send a data block to the USB interface. Method is non-blocking: if data cannot be sent, it will be lost. If OnError() event is enabled, the error event will be called in case of error.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> uint8_t SendBlock(uint8_t *data, uint16_t dataSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SendBlock(uint8_t *data, size_t dataSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>data: Pointer to uint8_t</i> - Pointer to data to send.</li>
 <li><i>dataSize:uint16_t</i> - Size of data in bytes</li>

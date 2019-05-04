@@ -110,10 +110,12 @@
 %if defined(CDCDevice)
 
 /* Interfaces/wrappers to the CDC device class, needed for Shell if using default serial/connection to USB (CDC): */
-#define %'ModuleName'_SendString      %@CDCDevice@'ModuleName'%.SendString
-#define %'ModuleName'_RecvChar        %@CDCDevice@'ModuleName'%.GetChar
-#define %'ModuleName'_SendChar        %@CDCDevice@'ModuleName'%.SendChar
-#define %'ModuleName'_GetCharsInRxBuf %@CDCDevice@'ModuleName'%.GetCharsInRxBuf
+#define %'ModuleName'%.SendString        %@CDCDevice@'ModuleName'%.SendString
+#define %'ModuleName'%.RecvChar          %@CDCDevice@'ModuleName'%.GetChar
+#define %'ModuleName'%.SendChar          %@CDCDevice@'ModuleName'%.SendChar
+#define %'ModuleName'%.GetCharsInRxBuf   %@CDCDevice@'ModuleName'%.GetCharsInRxBuf
+#define %'ModuleName'%.DATA_BUFF_SIZE    %@CDCDevice@'ModuleName'%.DATA_BUFF_SIZE /* data buffer size as specified in the properties */
+
 %endif
 %-
 %-BW_CUSTOM_INCLUDE_END_H
@@ -139,16 +141,6 @@
 %-  Example:
 %-    typedef int TMyInteger;
 %-
-/*
-   DATA_BUFF_SIZE should be greater than or equal to the endpoint buffer size,
-   otherwise there will be data loss. For MC9S08JS16, maximum DATA_BUFF_SIZE
-   supported is 16 Bytes
-*/
-%if CPUDevice="MC9S08JS16"
-#define %'ModuleName'%.DATA_BUFF_SIZE    16
-%else
-#define %'ModuleName'%.DATA_BUFF_SIZE    %DataBufSize /* data buffer size as specified in the properties */
-%endif
 
 #define %'ModuleName'%.USB_ERR_SEND            1  /* Error while sending */
 #define %'ModuleName'%.USB_ERR_BUSOFF          2  /* Bus not ready */

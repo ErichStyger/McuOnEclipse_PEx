@@ -109,7 +109,7 @@
 %if CPUDevice="MC9S08JS16"
 #define %'ModuleName'%.DATA_BUFF_SIZE    16
 %else
-#define %'ModuleName'%.DATA_BUFF_SIZE    64
+#define %'ModuleName'%.DATA_BUFF_SIZE    %'ModuleName'%.CONFIG_DATA_BUF_SIZE
 %endif
 
 #define %'ModuleName'%.USB_ERR_SEND            1  /* Error while sending */
@@ -286,7 +286,7 @@ void %'ModuleName'%.RunUsbEngine(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SendBlock
 %ifdef SendBlock
-uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, uint16_t dataSize);
+uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, size_t dataSize);
 %define! Pardata
 %define! PardataSize
 %define! RetVal
@@ -296,7 +296,7 @@ uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, uint16_t dataSize);
 %-BW_METHOD_END SendBlock
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG SendDataBlock
-uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize);
+uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, size_t dataSize);
 %define! Pardata
 %define! PardataSize
 %define! RetVal
@@ -572,7 +572,7 @@ uint8_t %'ModuleName'%.%SendChar(%'ModuleName'_TComData Chr)
 %define! PardataSize
 %define! RetVal
 %include Common\FSL_USB_CDC_DeviceSendBlock.Inc
-uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, uint16_t dataSize)
+uint8_t %'ModuleName'%.%SendBlock(uint8_t *data, size_t dataSize)
 {
   uint8_t res = ERR_OK;
 
@@ -726,7 +726,7 @@ void %'ModuleName'%.RunUsbEngine(void)
 %define! PardataSize
 %define! RetVal
 %include Common\GeneralInternal.inc (SendDataBlock)
-uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, uint16_t dataSize)
+uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, size_t dataSize)
 {
 #if %'ModuleName'%.CONFIG_USE_TIMEOUT && %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS>0
 %if defined(Timeout)
@@ -1064,7 +1064,6 @@ void %OnError(uint8_t error)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-
 #ifndef %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
   #define %'ModuleName'%.CONFIG_USE_TIMEOUT           1
@@ -1084,6 +1083,16 @@ void %OnError(uint8_t error)
     /*!< App Task timeout in milliseconds, 0 to disable timout */
 %endif
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_DATA_BUF_SIZE
+%if defined(DataBufSize)
+  #define %'ModuleName'%.CONFIG_DATA_BUF_SIZE           (%DataBufSize)
+%else
+  #define %'ModuleName'%.CONFIG_DATA_BUF_SIZE           (64)
+%endif
+    /*!< Value used for %'ModuleName'%.DATA_BUF_SIZE, must be a multiple of endpoint size. The greater the value, the better the performance */
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
