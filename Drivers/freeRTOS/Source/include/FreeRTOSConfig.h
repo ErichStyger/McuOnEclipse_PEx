@@ -158,29 +158,33 @@
 #define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
 /*----------------------------------------------------------*/
 /* Heap Memory */
+#ifndef configUSE_HEAP_SCHEME
 %if defined(MemoryScheme)
 %if MemoryScheme = "Scheme1"
-#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme2"
-#define configUSE_HEAP_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 2 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme3"
-#define configUSE_HEAP_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 3 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme4"
-#define configUSE_HEAP_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 4 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme5"
-#define configUSE_HEAP_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 5 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %elif MemoryScheme = "Scheme6"
-#define configUSE_HEAP_SCHEME                 %>50 6 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 6 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %endif
 %else
-#define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
+  #define configUSE_HEAP_SCHEME                 %>50 1 /* either 1 (only alloc), 2 (alloc/free), 3 (malloc), 4 (coalesc blocks), 5 (multiple blocks), 6 (newlib) */
 %endif
+#endif /* configUSE_HEAP_SCHEME */
 #define configFRTOS_MEMORY_SCHEME                                %>50 configUSE_HEAP_SCHEME /* for backwards compatible only with legacy name */
+#ifndef configTOTAL_HEAP_SIZE
 %if defined(TotalHeapSize)
-#define configTOTAL_HEAP_SIZE                                    %>50 (%TotalHeapSize) /* size of heap in bytes */
+  #define configTOTAL_HEAP_SIZE                                    %>50 (%TotalHeapSize) /* size of heap in bytes */
 %else
-#define configTOTAL_HEAP_SIZE                                    %>50 (4096) /* size of heap in bytes */
+  #define configTOTAL_HEAP_SIZE                                    %>50 (4096) /* size of heap in bytes */
 %endif
+#endif /* configTOTAL_HEAP_SIZE */
 %if defined(HeapSectionName)
 #define configUSE_HEAP_SECTION_NAME                              %>50 1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
 %else
@@ -507,11 +511,11 @@ point support. */
 /*---------------------------------------------------------------------------------------*/
 /* MPU and TrustZone settings */
 #ifndef configENABLE_FPU
-  #define configENABLE_FPU        (%@KinetisSDK@'ModuleName'%.CONFIG_FPU_USED) /* use macro from McuLibconfig.h */
+  #define configENABLE_FPU        (0)
 #endif /* configENABLE_FPU */
 
 #ifndef configENABLE_MPU
-  #define configENABLE_MPU        (configUSE_MPU_SUPPORT) /* use macro from McuRTOSconfig.h */
+  #define configENABLE_MPU        (0)
 #endif /* configENABLE_MPU */
 
 #ifndef configENABLE_TRUSTZONE

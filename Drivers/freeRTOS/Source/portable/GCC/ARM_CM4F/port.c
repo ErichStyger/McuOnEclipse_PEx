@@ -374,7 +374,7 @@ static void NVIC_EnableIRQ(IRQn_Type IRQn) {
 #define portINITIAL_CONTROL_IF_UNPRIVILEGED    (0x03)
 #define portINITIAL_CONTROL_IF_PRIVILEGED      (0x02)
 
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
   /* Constants required to manipulate the VFP. */
   #define portFPCCR                ((volatile unsigned long *)0xe000ef34) /* Floating point context control register. */
   #define portASPEN_AND_LSPEN_BITS (0x3UL<<30UL)
@@ -685,7 +685,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t 
   return pxTopOfStack;
 }
 %elif (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
-#if configUSE_MPU_SUPPORT
+#if configENABLE_MPU
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters, BaseType_t xRunPrivileged) {
 #else
 StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters) {
@@ -694,7 +694,7 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t 
   pxTopOfStack--; /* Offset added to account for the way the MCU uses the stack on entry/exit of interrupts, and to ensure alignment. */
   *pxTopOfStack = portINITIAL_XPSR;   /* xPSR */
   pxTopOfStack--;
-#if configUSE_MPU_SUPPORT
+#if configENABLE_MPU
   *pxTopOfStack = ((StackType_t)pxCode)&portSTART_ADDRESS_MASK;  /* PC */
 #else
   *pxTopOfStack = ((StackType_t)pxCode);  /* PC */
@@ -706,13 +706,13 @@ StackType_t *pxPortInitialiseStack(portSTACK_TYPE *pxTopOfStack, TaskFunction_t 
   pxTopOfStack -= 5;  /* R12, R3, R2 and R1. */
   *pxTopOfStack = (portSTACK_TYPE)pvParameters; /* R0 */
 
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
+#if configENABLE_FPU /* has floating point unit */
   /* A save method is being used that requires each task to maintain its
      own exec return value. */
   pxTopOfStack--;
   *pxTopOfStack = portINITIAL_EXEC_RETURN;
 #endif
-#if configUSE_MPU_SUPPORT
+#if configENABLE_MPU
   pxTopOfStack -= 9;  /* R11, R10, R9, R8, R7, R6, R5 and R4 plus privilege level */
   if (xRunPrivileged == pdTRUE) {
     *pxTopOfStack = portINITIAL_CONTROL_IF_PRIVILEGED;
@@ -1216,7 +1216,7 @@ void vPortStopTickTimer(void) {
 %endif
 }
 /*-----------------------------------------------------------*/
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
+#if configENABLE_FPU /* has floating point unit */
 void vPortEnableVFP(void) {
 #if 1 /* configLTO_HELPER: using implementation in C which is portable */
   #define CPACR_REG_MEM   ((volatile int*)0xE000ED88)  /* location of the CPACR register */
@@ -1356,7 +1356,7 @@ BaseType_t xPortStartScheduler(void) {
   uxCriticalNesting = 0; /* Initialize the critical nesting count ready for the first task. */
   vPortInitTickTimer(); /* initialize tick timer */
   vPortStartTickTimer(); /* start tick timer */
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
+#if configENABLE_FPU /* has floating point unit */
   vPortEnableVFP(); /* Ensure the VFP is enabled - it should be anyway */
   *(portFPCCR) |= portASPEN_AND_LSPEN_BITS; /* Lazy register save always */
 #endif
@@ -1939,7 +1939,7 @@ __asm void vPortSVCHandler(void) {
   ldr r1, [r3]
   ldr r0, [r1]
   /* Pop the core registers. */
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
   ldmia r0!, {r4-r11, r14} /* \todo: r14, check http://sourceforge.net/p/freertos/discussion/382005/thread/a9406af1/?limit=25#3bc7 */
 #else
   ldmia r0!, {r4-r11}
@@ -1947,7 +1947,7 @@ __asm void vPortSVCHandler(void) {
   msr psp, r0
   mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
   msr basepri, r0
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
 #else
   orr r14, r14, #13
 #endif
@@ -1978,7 +1978,7 @@ __asm volatile (
     " ldr r1, [r3]               \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
     " ldr r0, [r1]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
     /* pop the core registers */
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
     " ldmia r0!, {r4-r11, r14}   \n"
 #else
     " ldmia r0!, {r4-r11}        \n"
@@ -1986,7 +1986,7 @@ __asm volatile (
     " msr psp, r0                \n"
     " mov r0, #0                 \n"
     " msr basepri, r0            \n"
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
 #else
     " orr r14, r14, #13          \n"
 #endif
@@ -2016,7 +2016,7 @@ __asm void vPortPendSVHandler(void) {
   mrs r0, psp
   ldr  r3, =pxCurrentTCB     /* Get the location of the current TCB. */
   ldr  r2, [r3]
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
   tst r14, #0x10             /* Is the task using the FPU context?  If so, push high vfp registers. */
   it eq
   vstmdbeq r0!, {s16-s31}
@@ -2035,7 +2035,7 @@ __asm void vPortPendSVHandler(void) {
   ldmia sp!, {r3, r14}
   ldr r1, [r3]               /* The first item in pxCurrentTCB is the task top of stack. */
   ldr r0, [r1]
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
   ldmia r0!, {r4-r11, r14}   /* Pop the core registers */
   tst r14, #0x10             /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
   it eq
@@ -2113,7 +2113,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " mrs r0, psp                \n"
     " ldr  r3, pxCurrentTCBConst \n" /* Get the location of the current TCB. */
     " ldr  r2, [r3]              \n"
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
     " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, push high vfp registers. */
     " it eq                      \n"
     " vstmdbeq r0!, {s16-s31}    \n"
@@ -2132,7 +2132,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " ldmia sp!, {r3, r14}       \n"
     " ldr r1, [r3]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
     " ldr r0, [r1]               \n"
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
     " ldmia r0!, {r4-r11, r14}   \n" /* Pop the core registers */
     " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
     " it eq                      \n"
@@ -2252,7 +2252,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
     " mrs r0, psp                \n"
     " ldr  r3, pxCurrentTCBConstG \n" /* Get the location of the current TCB. */
     " ldr  r2, [r3]              \n"
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
     " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, push high vfp registers. */
     " it eq                      \n"
     " vstmdbeq r0!, {s16-s31}    \n"
@@ -2275,7 +2275,7 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
 #endif /* configGDB_HELPER */
     " ldr r1, [r3]               \n" /* The first item in pxCurrentTCB is the task top of stack. */
     " ldr r0, [r1]               \n"
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY)
+#if configENABLE_FPU
     " ldmia r0!, {r4-r11, r14}   \n" /* Pop the core registers */
     " tst r14, #0x10             \n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
     " it eq                      \n"

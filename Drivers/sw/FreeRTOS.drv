@@ -4844,14 +4844,23 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 %endif
 #endif
 
-/* MPU support: portUSING_MPU_WRAPPERS is defined (or not) in portmacro.h and turns on MPU support. Currently only supported for ARM Cortex-M4/M3 ports */
-#ifndef configUSE_MPU_SUPPORT
+#ifndef configENABLE_MPU
 %if defined(useMPUsupport) & %useMPUsupport='yes'
-  #define configUSE_MPU_SUPPORT                                  %>50 (1 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+  #define configENABLE_MPU                                       %>50 (1 && (configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)||configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY)))
 %else
-  #define configUSE_MPU_SUPPORT                                  %>50 (0 && configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY))
+  #define configENABLE_MPU                                       %>50 (0 && (configCPU_FAMILY_IS_ARM_M4(configCPU_FAMILY)||configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY)))
 %endif
   /*!< 1: enable MPU support; 0: MPU support is disabled */
+#endif
+
+#ifndef configENABLE_FPU
+  #define configENABLE_FPU                                       %>50 (1 && %@KinetisSDK@'ModuleName'%.CONFIG_FPU_PRESENT)
+    /*!< 1: enable FPU support; 0: FPU support is disabled */
+#endif
+
+#ifndef configENABLE_TRUSTZONE
+  #define configENABLE_TRUSTZONE                                 %>50 (0 && configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY))
+    /*!< 1: enable ARM TrustZone support; 0: TrustZone support is disabled */
 #endif
 
 /*-----------------------------------------------------------

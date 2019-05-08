@@ -150,7 +150,7 @@ typedef portSTACK_TYPE StackType_t;
     #define portPRIVILEGE_BIT                   ( 0x0UL )
 #endif /* configENABLE_MPU */
 
-#if configUSE_MPU_SUPPORT
+#if configENABLE_MPU
 /*-----------------------------------------------------------*/
 /* MPU specific constants. */
 
@@ -184,9 +184,9 @@ typedef struct MPU_SETTINGS
 {
 	xMPU_REGION_REGISTERS xRegion[ portTOTAL_NUM_REGIONS ];
 } xMPU_SETTINGS;
-#endif /* configUSE_MPU_SUPPORT */
+#endif /* configENABLE_MPU */
 
-#if configUSE_MPU_SUPPORT /* check values for LPC55xx! */
+#if configENABLE_MPU /* check values for LPC55xx! */
 /* Devices Region. */
 #define portDEVICE_REGION_START_ADDRESS                     ( 0x50000000 )
 #define portDEVICE_REGION_END_ADDRESS                       ( 0x5FFFFFFF )
@@ -253,7 +253,7 @@ typedef struct MPU_SETTINGS
 #define portSVC_RAISE_PRIVILEGE                             3
 /*-----------------------------------------------------------*/
 
-#endif /* configUSE_MPU_SUPPORT */
+#endif /* configENABLE_MPU */
 
 /*-----------------------------------------------------------*/
 /* Hardware specifics. */
@@ -851,7 +851,7 @@ void vPortStartFirstTask(void);
 void vPortYieldHandler(void);
   /* handler for the SWI interrupt */
 
-#if configCPU_FAMILY_IS_ARM_FPU(configCPU_FAMILY) /* has floating point unit */
+#if configENABLE_FPU /* has floating point unit */
   void vPortEnableVFP(void);
     /* enables floating point support in the CPU */
 #endif
@@ -875,7 +875,7 @@ void vPortYieldHandler(void);
     #define portFORCE_INLINE inline __attribute__(( always_inline))
   #endif
 
-  #if configUSE_MPU_SUPPORT
+  #if configENABLE_MPU
 	  /* Set the privilege level to user mode if xRunningPrivileged is false. */
 	  portFORCE_INLINE static void vPortResetPrivilege( BaseType_t xRunningPrivileged )
 	  {
