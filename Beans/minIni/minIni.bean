@@ -4,7 +4,7 @@
     <Name>minIni</Name>
     <Description>minIni is a programmer’s library to read and write 'ini' files in embedded systems.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.041</Version>
+    <Version>01.049</Version>
     <Icon>CPU_CHIP</Icon>
     <TypesFiles>PE,minIni\minIni</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -16,10 +16,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>no</BW_NeedTps>
-    <BW_NeedUst>3</BW_NeedUst>
+    <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright 2008-2012, CompuPhase;\nhttp      : www.compuphase.com\nProcessor Expert port: Erich Styger, 2014-2017, http://www.mcuoneclipse.com\nLicense: See miniIni_LICENSE.txt and minIni_NOTICE.txt</Copyright>
+    <Copyright>(c) Copyright 2008-2012, CompuPhase;\nhttp      : www.compuphase.com\nProcessor Expert port: Erich Styger, 2014-2019, http://www.mcuoneclipse.com\nLicense: See miniIni_LICENSE.txt and minIni_NOTICE.txt</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>MINI</Shortcut>
@@ -51,11 +51,25 @@
       </TStrgItem>
     </Property>
     <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>minIni\sdk</TypeSpec>
+        <Hint>Link to SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
       <TBoolItem>
         <Name>Portable strnicmp()</Name>
         <Symbol>portableStrnicmp</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If set to yes, it enables PORTABLE_STRNICMP in minIni.h. With this, the minIni.c implements the strnicmp() function .</Hint>
+        <Hint>If set to yes, it enables PORTABLE_STRNICMP in the configuration header file. With this, the minIni.c implements the strnicmp() function .</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -73,7 +87,7 @@
         <Name>Use Real</Name>
         <Symbol>useReal</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If set to yes, defines INI_REAL in minIni.h. If enabled, then the function ini_getf() is available to read floating point values.</Hint>
+        <Hint>If set to yes, defines INI_REAL in the configuration header file. If enabled, then the function ini_getf() is available to read floating point values.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -91,7 +105,7 @@
         <Name>Read Only</Name>
         <Symbol>isReadOnly</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If set to yes, defines INI_READONLY in minIni.h. Then access to the ini file is read only.</Hint>
+        <Hint>If set to yes, defines INI_READONLY in the configuration header file. Then access to the ini file is read only.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -109,7 +123,7 @@
         <Name>No Debug</Name>
         <Symbol>isNoDebug</Symbol>
         <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If set to yes, then it defines NDEBUG in minIni.h, so assert() calls are not performed.</Hint>
+        <Hint>If set to yes, then it defines NDEBUG in the configuration header file, so assert() calls are not performed.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
@@ -141,30 +155,20 @@
       </TBoolItem>
     </Property>
     <Property>
-      <TGrupItem>
+      <TBoolGrupItem>
         <Name>FatFS</Name>
-        <Symbol>FatFSGroup</Symbol>
+        <Symbol>FatFSenabled</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
         <Hint>FatFS configuration items</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
-        <Description/>
+        <Description>Enabled</Description>
         <Expanded>Yes</Expanded>
+        <DefaultValue>true</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
         <Children>
-          <GrupItem>
-            <TInhrLinkItem>
-              <Name>FatFS</Name>
-              <Symbol>FatFS</Symbol>
-              <TypeSpec>minIni\FatFS</TypeSpec>
-              <Hint>Link to FatFS (FAT File System) component.</Hint>
-              <ItemLevel>BASIC</ItemLevel>
-              <EditLine>false</EditLine>
-              <DefaultValue/>
-              <CanDelete>false</CanDelete>
-              <IconPopup>false</IconPopup>
-              <SortStyle/>
-            </TInhrLinkItem>
-          </GrupItem>
           <GrupItem>
             <TIntgItem>
               <Name>Buffer Size</Name>
@@ -181,6 +185,60 @@
               <ChangeValueIntoRange>false</ChangeValueIntoRange>
               <RuntimeProperty>false</RuntimeProperty>
             </TIntgItem>
+          </GrupItem>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>FatFS</Name>
+              <Symbol>FatFS</Symbol>
+              <TypeSpec>minIni\FatFS</TypeSpec>
+              <Hint>Link to FatFS (FAT File System) component.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
+    </Property>
+    <Property>
+      <TGrupItem>
+        <Name>Source Folders</Name>
+        <Symbol>FolderGroup</Symbol>
+        <Hint>Configures the source folder names</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description/>
+        <Expanded>Yes</Expanded>
+        <Children>
+          <GrupItem>
+            <TStrgItem>
+              <Name>Source Folder</Name>
+              <Symbol>MinIniSrcFolderName</Symbol>
+              <Hint>Folder name where to store the source files. Setting can be empty.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
+          </GrupItem>
+          <GrupItem>
+            <TStrgItem>
+              <Name>Config Folder</Name>
+              <Symbol>MinIniConfigFolderName</Symbol>
+              <Hint>Folder name where to store the configuration source files. Setting can be empty.</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>true</EditLine>
+              <DefaultValue/>
+              <StrDefine>nothing</StrDefine>
+              <MinLength>0</MinLength>
+              <MaxLength>-1</MaxLength>
+            </TStrgItem>
           </GrupItem>
         </Children>
       </TGrupItem>
@@ -273,7 +331,7 @@ A false boolean is found if one of the following is matched:\n
         <ParamCount>6</ParamCount>
         <Parameter>
           <ParName>Section</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>The name of the section to search for</ParHint>
           <ParUserDeclaration>const mTCHAR *Section</ParUserDeclaration>
@@ -294,7 +352,7 @@ A false boolean is found if one of the following is matched:\n
         </Parameter>
         <Parameter>
           <ParName>Buffer</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>A pointer to the buffer to copy into</ParHint>
           <ParUserDeclaration>nTCHAR *Buffer</ParUserDeclaration>
@@ -342,7 +400,7 @@ A false boolean is found if one of the following is matched:\n
         <ParamCount>4</ParamCount>
         <Parameter>
           <ParName>Section</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>The name of the section to write the string in</ParHint>
           <ParUserDeclaration>const mTCHAR *Section</ParUserDeclaration>
@@ -733,21 +791,21 @@ A false boolean is found if one of the following is matched:\n
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>Callback</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>a pointer to a function that will be called for every setting in the INI file.</ParHint>
           <ParUserDeclaration>INI_CALLBACK Callback</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>UserData</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>arbitrary data, which the function passes on the the Callback function</ParHint>
           <ParUserDeclaration>const void *UserData</ParUserDeclaration>
         </Parameter>
         <Parameter>
           <ParName>Filename</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>the name and full path of the .ini file to read from</ParHint>
           <ParUserDeclaration>const TCHAR *Filename</ParUserDeclaration>

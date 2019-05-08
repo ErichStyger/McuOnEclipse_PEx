@@ -20,6 +20,7 @@
  *  Version: $Id: minIni.c 45 2012-05-14 11:53:09Z thiadmer.riemersma $
  */
 
+
 #if (defined _UNICODE || defined __UNICODE__ || defined UNICODE) && !defined MININI_ANSI
 # if !defined UNICODE   /* for Windows */
 #   define UNICODE
@@ -32,7 +33,9 @@
 #define MININI_IMPLEMENTATION
 #include "minIni.h"
 #if defined NDEBUG
-  #define assert(e)
+  #ifndef assert
+    #define assert(e)
+  #endif
 #else
   #include <assert.h>
 #endif

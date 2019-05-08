@@ -10,7 +10,7 @@
 %-  /* END %ModuleName. */
 %-  /* MODULE %ModuleName. */
 %-  %-INTERNAL_METHOD_BEG
-%-  %-INTERNAL_METHOD_END 
+%-  %-INTERNAL_METHOD_END
 %-  %-INHERITED_EVENT_BEGIN
 %-  %-INHERITED_EVENT_END
 %-  %-BW_METHOD_BEGIN
@@ -67,19 +67,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
-/* Include inherited beans */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -90,8 +80,6 @@
 %-
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
-
-#include "%ProcessorModule.h"
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
@@ -487,6 +475,68 @@ int %'ModuleName'%.%ini_browse(INI_CALLBACK Callback, const void *UserData, cons
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%----------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for MinINI
+ *
+ * This header file is used to configure settings of the MinINI module.
+ */
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#define %'ModuleName'%.CONFIG_FS_TYPE_GENERIC  (0) /* Generic File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS   (1) /* FatFS File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS  (2) /* TinyFS File System */
+
+#ifndef %'ModuleName'%.CONFIG_FS
+%if defined(FatFS) & %FatFS='yes'
+  #define %'ModuleName'%.CONFIG_FS      (CONFIG_FS_TYPE_FAT_FS)
+%else
+  #define %'ModuleName'%.CONFIG_FS      (CONFIG_FS_TYPE_GENERIC)
+%endif
+    /*!< File System integration used, one of %'ModuleName'%.CONFIG_FS_TYPE_GENERIC, %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS, %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS */
+#endif
+
+%if defined(portableStrnicmp) & %portableStrnicmp='yes'
+#define PORTABLE_STRNICMP
+%else
+//#define PORTABLE_STRNICMP
+%endif
+
+%if defined(useReal) & %useReal='yes'
+#define INI_REAL double
+%else
+//#define INI_REAL double
+%endif
+
+%if defined(isReadOnly) & %isReadOnly='yes'
+#define INI_READONLY
+%else
+//#define INI_READONLY
+%endif
+
+%if defined(isNoDebug) & %isNoDebug='yes'
+#define NDEBUG
+%else
+//#define NDEBUG
+%endif
+
+%if defined(useGlobalBuffer) & %useGlobalBuffer='yes'
+#define INI_USE_GLOBAL_BUFFER   1 /* 0: use stack for buffer; 1: use global memory for buffer */
+%else
+#define INI_USE_GLOBAL_BUFFER   0 /* 0: use stack for buffer; 1: use global memory for buffer */
+%endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

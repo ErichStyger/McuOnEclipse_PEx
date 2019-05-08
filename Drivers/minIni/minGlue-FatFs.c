@@ -9,7 +9,9 @@
  *  its own terms.)
  */
 
+#include "%'ModuleName'config.h" /* MinIni config file */
 
+#if %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS
 #include "ff.h"                   /* include tff.h for Tiny-FatFs */
 #include "minGlue-FatFs.h"
 #include <stddef.h>
@@ -22,3 +24,4 @@ int ini_rename(TCHAR *source, const TCHAR *dest)
   drive = (drive == NULL) ? (char*)dest : drive + 1;
   return (f_rename(source, drive) == FR_OK);
 }
+#endif /* %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS */

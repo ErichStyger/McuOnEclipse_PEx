@@ -225,36 +225,56 @@ LI.EXP {
 <b>minIni Version</b></a> - Identifies the minIni version
 </li>
 <li>
+<a name="sdk">
+<b>SDK</b></a> - Link to SDK used
+</li>
+<li>
 <a name="portableStrnicmp">
-<b>Portable strnicmp()</b></a> - If set to yes, it enables PORTABLE_STRNICMP in minIni.h. With this, the minIni.c implements the strnicmp() function .
+<b>Portable strnicmp()</b></a> - If set to yes, it enables PORTABLE_STRNICMP in the configuration header file. With this, the minIni.c implements the strnicmp() function .
 </li>
 <li>
 <a name="useReal">
-<b>Use Real</b></a> - If set to yes, defines INI_REAL in minIni.h. If enabled, then the function ini_getf() is available to read floating point values.
+<b>Use Real</b></a> - If set to yes, defines INI_REAL in the configuration header file. If enabled, then the function ini_getf() is available to read floating point values.
 </li>
 <li>
 <a name="isReadOnly">
-<b>Read Only</b></a> - If set to yes, defines INI_READONLY in minIni.h. Then access to the ini file is read only.
+<b>Read Only</b></a> - If set to yes, defines INI_READONLY in the configuration header file. Then access to the ini file is read only.
 </li>
 <li>
 <a name="isNoDebug">
-<b>No Debug</b></a> - If set to yes, then it defines NDEBUG in minIni.h, so assert() calls are not performed.
+<b>No Debug</b></a> - If set to yes, then it defines NDEBUG in the configuration header file, so assert() calls are not performed.
 </li>
 <li>
 <a name="useGlobalBuffer">
 <b>Global Buffer</b></a> - If set to 'yes', the module will use a global buffer instead a local buffer on the stack. This reduces stack usage for  large buffer sizes, but makes things non-reentrant.
 </li>
 <li>
-<a name="FatFSGroup">
-<b>FatFS</b></a> - FatFS configuration items
+<a name="FatFSenabled">
+<b>FatFS</b></a> - FatFS configuration items<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
 <ul>
+  <li>
+  <a name="FatFsIniBufferSize">
+  <b>Buffer Size</b></a> - Configures the macro INI_BUFFERSIZE which configures the maximum line length adn maxium path length.
+  </li>
   <li>
   <a name="FatFS">
   <b>FatFS</b></a> - Link to FatFS (FAT File System) component.
   </li>
+</ul>
+</li>
+<li>
+<a name="FolderGroup">
+<b>Source Folders</b></a> - Configures the source folder names
+<ul>
   <li>
-  <a name="FatFsIniBufferSize">
-  <b>Buffer Size</b></a> - Configures the macro INI_BUFFERSIZE which configures the maximum line length adn maxium path length.
+  <a name="MinIniSrcFolderName">
+  <b>Source Folder</b></a> - Folder name where to store the source files. Setting can be empty.
+  </li>
+  <li>
+  <a name="MinIniConfigFolderName">
+  <b>Config Folder</b></a> - Folder name where to store the configuration source files. Setting can be empty.
   </li>
 </ul>
 </li>
