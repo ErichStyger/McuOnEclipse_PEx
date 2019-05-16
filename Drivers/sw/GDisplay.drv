@@ -741,7 +741,7 @@ void %OnGiveDisplay(void);
   #include "FreeRTOS.h"
   #include "semphr.h"
 
-  static xSemaphoreHandle %'ModuleName'%.displayMutex;
+  static SemaphoreHandle_t %'ModuleName'%.displayMutex;
 #endif
 %-------------------------------------
 %- Information on tested displays

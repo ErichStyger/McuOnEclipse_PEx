@@ -4,7 +4,7 @@
     <Name>PDC8544</Name>
     <Description>Display driver for the Philips PDC8544 display driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.009</Version>
+    <Version>01.010</Version>
     <Icon>PDC8544</Icon>
     <TypesFiles>PE,PDC8544\PDC8544</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -874,13 +874,13 @@
         </Parameter>
         <Parameter>
           <ParName>color</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pixel color value</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, byte color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

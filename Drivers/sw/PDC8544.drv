@@ -326,8 +326,7 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetWidth
 %ifdef GetWidth
-#define %'ModuleName'%.%GetWidth() \
-  %'ModuleName'%.HW_WIDTH
+%'ModuleName'_PixelDim %'ModuleName'%.%GetWidth(void);
 
 %define! RetVal
 %include Common\PDC8544GetWidth.Inc
@@ -337,8 +336,7 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetHeight
 %ifdef GetHeight
-#define %'ModuleName'%.%GetHeight() \
-  %'ModuleName'%.HW_HEIGHT
+%'ModuleName'_PixelDim %'ModuleName'%.%GetHeight(void);
 
 %define! RetVal
 %include Common\PDC8544GetHeight.Inc
@@ -409,7 +407,7 @@ void %'ModuleName'%.%Deinit(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutPixel
 %ifdef PutPixel
-void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, byte color);
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color);
 %define! Parx
 %define! Pary
 %define! Parcolor
@@ -458,7 +456,7 @@ void %OnBlockReceived(LDD_TUserData *UserDataPtr);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-
+static %'ModuleName'%.DisplayOrientation orientation = %'ModuleName'%.ORIENTATION_LANDSCAPE;
 uint8_t %'ModuleName'%.DisplayBuf[((%'ModuleName'%.DISPLAY_HW_NOF_ROWS-1)/8)+1][%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS]; /* buffer for the display */
 
 %if defined(RESLDD)
@@ -795,6 +793,7 @@ void %'ModuleName'%.%Init(void)
   %'ModuleName'%.%SetContrast(%Contrast);
 %endif
   %'ModuleName'%.%SetPos(0,0);                                   %>40 /* Cursor Home */
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40 /* default orientation */
 }
 
 %endif %- Init
@@ -950,7 +949,7 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %include Common\PDC8544GetDisplayOrientation.Inc
 %'ModuleName'_DisplayOrientation %'ModuleName'%.%GetDisplayOrientation(void)
 {
-  return %'ModuleName'%.ORIENTATION_LANDSCAPE;                   %>40/* Landscape mode */
+  return orientation;
 }
 
 %endif %- GetDisplayOrientation
@@ -960,12 +959,23 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %ifdef GetWidth
 %define! RetVal
 %include Common\PDC8544GetWidth.Inc
-/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetWidth(void)
 {
-  *** Method is implemented as macro in %'ModuleName'.h
+  switch(orientation) {
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      return %'ModuleName'%.HW_LONGER_SIDE;
+      break;
+
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      return %'ModuleName'%.HW_SHORTER_SIDE;
+      break;
+
+    default:
+        return 0; /* error? */
+  } /* switch */
 }
-*/
 
 %endif %- GetWidth
 %-BW_METHOD_END GetWidth
@@ -974,12 +984,23 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %ifdef GetHeight
 %define! RetVal
 %include Common\PDC8544GetHeight.Inc
-/*
 %'ModuleName'_PixelDim %'ModuleName'%.%GetHeight(void)
 {
-  *** Method is implemented as macro in %'ModuleName'.h
+  switch(orientation) {
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      return %'ModuleName'%.HW_SHORTER_SIDE;
+      break;
+
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      return %'ModuleName'%.HW_LONGER_SIDE;
+      break;
+
+    default:
+        return 0; /* error? */
+  } /* switch */
 }
-*/
 
 %endif %- GetHeight
 %-BW_METHOD_END GetHeight
@@ -1018,7 +1039,7 @@ void %'ModuleName'%.%SetWindow(%'ModuleName'_PixelDim x0, %'ModuleName'_PixelDim
 %include Common\PDC8544SetDisplayOrientation.Inc
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
-  (void)newOrientation; /* setting the display orientation is not implemented yet */
+  orientation = newOrientation;
 }
 
 %endif %- SetDisplayOrientation
@@ -1085,12 +1106,40 @@ void %'ModuleName'%.%Deinit(void)
 %define! Pary
 %define! Parcolor
 %include Common\PDC8544PutPixel.Inc
-void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, byte color)
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color)
 {
+  %'ModuleName'_PixelDim nx, ny;
+
+  /* do transformation */
+  switch(orientation) {
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE:
+      nx = x;
+      ny = y;
+      break;
+
+    case %'ModuleName'%.ORIENTATION_LANDSCAPE180:
+      nx = %'ModuleName'%.HW_WIDTH-1-x;
+      ny = %'ModuleName'%.HW_HEIGHT-1-y;
+      break;
+
+    case %'ModuleName'%.ORIENTATION_PORTRAIT:
+      nx = %'ModuleName'%.HW_WIDTH-1-y;
+      ny = x;
+      break;
+
+    case %'ModuleName'%.ORIENTATION_PORTRAIT180:
+      nx = y;
+      ny = %'ModuleName'%.HW_HEIGHT-1-x;
+      break;
+
+    default:
+      break;
+  } /* switch */
+  /* draw or clear pixel */
   if (color != 0) {
-    PDC1_DisplayBuf[(y)/8][x] |= (1<<((uint8_t)((y)%8)));
+    %'ModuleName'%.DisplayBuf[ny/8][nx] |= (1<<((uint8_t)(ny%%8)));
   } else {
-    PDC1_DisplayBuf[(y)/8][x] &= ~(1<<((uint8_t)((y)%8)));
+    %'ModuleName'%.DisplayBuf[ny/8][nx] &= ~(1<<((uint8_t)(ny%%8)));
   }
 }
 
