@@ -74,6 +74,7 @@
   #error TrustZone needs to be disabled in order to run FreeRTOS on the Secure Side.
 #endif
 
+#endif /*  %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
 /* --------------------------------------------------- */
 /* Let the user override the pre-loading of the initial LR with the address of
    prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -185,9 +186,9 @@ typedef %@TickCntr@'ModuleName'%.TTimerValue TickCounter_t; /* for holding count
 #endif
 
 %if defined(useARMSysTickTimer) & useARMSysTickTimer='yes'
-  #if 1
+  #if 1 /* using ARM SysTick Timer */
 %else
-  #if 0
+  #if 0 /* using ARM SysTick Timer */
 %endif
     #if configSYSTICK_USE_LOW_POWER_TIMER
       /* using Low Power Timer */
@@ -1550,7 +1551,7 @@ uint32_t uxGetTickCounterValue(void) {
   %@TickCntr@'ModuleName'%.TTimerValue val;
 
   (void)%@TickCntr@'ModuleName'%.GetCounterValue(&val);
-  return (long)val;
+  return (uint32_t)val;
 }
 /*-----------------------------------------------------------*/
 %endif
@@ -2421,9 +2422,6 @@ __asm uint32_t vPortGetIPSR(void) {
 
 #endif /* configASSERT_DEFINED */
 
-
 #endif /* ARM M4(F) core */ 
-
-#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
 
 #endif /* %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS */

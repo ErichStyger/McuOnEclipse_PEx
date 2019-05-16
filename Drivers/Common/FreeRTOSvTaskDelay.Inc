@@ -7,7 +7,7 @@
 %;**     Description :
 %;**         Delay a task for a given number of ticks. The actual time
 %;**         that the task remains blocked depends on the tick rate. The
-%;**         constant portTICK_RATE_MS can be used to calculate real time
+%;**         macro pdMS_TO_TICKS() can be used to calculate real time
 %;**         from the tick rate - with the resolution of one tick period.
 %;**         vTaskDelay() specifies a time at which the task wishes to
 %;**         unblock relative to the time at which vTaskDelay() is called.
