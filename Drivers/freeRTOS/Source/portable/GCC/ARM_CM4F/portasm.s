@@ -4,7 +4,7 @@
 %if ((%configCOMPILER='automatic') & (%Compiler == "GNUC")) | (%configCOMPILER='configCOMPILER_ARM_GCC')
 /* file is intentionally empty as not needed for this GNU gcc FreeRTOS port */
 /*
- * FreeRTOS Kernel V10.2.0
+ * FreeRTOS Kernel V10.2.1
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -33,7 +33,7 @@
 %---------------------------------------------------------------------------------------
 %if ((%configCOMPILER='automatic') & (%Compiler=="ARM_CC")) | (%configCOMPILER='configCOMPILER_ARM_KEIL')
 ;
-; FreeRTOS Kernel V10.2.0
+; FreeRTOS Kernel V10.2.1
 ;  Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 ; 
 ;  Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -156,7 +156,7 @@ _vPortStartFirstTask:
 %if ((%configCOMPILER='automatic') & (%Compiler="IARARM")) | (%configCOMPILER='configCOMPILER_ARM_IAR')
 /* IAR ARM Compiler */
 /*
- * FreeRTOS Kernel V10.2.0
+ * FreeRTOS Kernel V10.2.1
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -429,7 +429,7 @@ vPortEnableVFP:
 %if ((%configCOMPILER='automatic') & (%Compiler="CodeWarriorARM")) | (%configCOMPILER='configCOMPILER_ARM_FSL')
 /* legacy Freescale ARM compiler */
 /*
- * FreeRTOS Kernel V10.2.0
+ * FreeRTOS Kernel V10.2.1
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
