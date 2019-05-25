@@ -1,7 +1,7 @@
 /**
  * \file
  * \brief This is the interface to the Nordic Semiconductor nRF24L01+
- * \author (c) 2013-2014 Erich Styger, http://mcuoneclipse.com/
+ * \author (c) 2013-2019 Erich Styger, http://mcuoneclipse.com/
  * \note MIT License (http://opensource.org/licenses/mit-license.html), see 'RNet_License.txt'
  *
  * This module deals with the low level interface of the transceiver.
@@ -30,6 +30,12 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
  * \return Error code, ERR_OK if everything is fine.
  */
 uint8_t RADIO_SetChannel(uint8_t channel);
+
+/*!
+ * \brief Determine if the radio transceiver is in a good shape. Radio transceiver could be affected by voltage drop.
+ * \return ERR_OK
+ */
+uint8_t RADIO_IsSane(void);
 
 /*! 
  * \brief Radio power-on initialization.

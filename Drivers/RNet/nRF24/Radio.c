@@ -1,7 +1,7 @@
 /**
  * \file
  * \brief This is the implementation of the Nordic Semiconductor nRF24L01+ low level driver.
- * \author (c) 2013-2014 Erich Styger, http://mcuoneclipse.com/
+ * \author (c) 2013-2019 Erich Styger, http://mcuoneclipse.com/
  * \note MIT License (http://opensource.org/licenses/mit-license.html), see 'RNet_License.txt'
  *
  * This module deals with the low level functions of the transceiver.
@@ -397,6 +397,20 @@ static void RADIO_HandleStateMachine(void) {
 uint8_t RADIO_SetChannel(uint8_t channel) {
   RADIO_CurrChannel = channel;
   return %@nRF24L01p@'ModuleName'%.SetChannel(channel);
+}
+
+uint8_t RADIO_IsSane(void) {
+  uint8_t res;
+  uint8_t ch;
+
+  res = %@nRF24L01p@'ModuleName'%.GetChannel(&ch); /* get channel set in transceiver */
+  if (res!=ERR_OK) {
+    return ERR_FAILED;
+  }
+  if (ch!=RADIO_CurrChannel) { /* HW has not the correct register set? */
+    return ERR_FAILED;
+  }
+  return ERR_OK; /* transceiver seems to be ok */
 }
 
 /*! 

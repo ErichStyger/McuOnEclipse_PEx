@@ -390,6 +390,10 @@ uint8_t RADIO_ParseCommand(const unsigned char *cmd, bool *handled, const %@Shel
 }
 %endif
 
+uint8_t RADIO_IsSane(void) {
+  return ERR_OK;
+}
+
 uint8_t RADIO_PowerUp(void){
   /* nothing special to do */
   return ERR_OK;
