@@ -52,16 +52,20 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
+#ifndef configGENERATE_RUN_TIME_STATS_USE_TICKS
 %if defined(RuntimeCounterUseTickCounter) & %RuntimeCounterUseTickCounter='yes'
-#define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 1 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
+  #define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 1 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
 %else
-#define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 0 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
+  #define configGENERATE_RUN_TIME_STATS_USE_TICKS                  %>50 0 /* 1: Use the RTOS tick counter as runtime counter. 0: use extra timer */
 %endif
+#endif
+#ifndef configGENERATE_RUN_TIME_STATS
 %if %CollectRuntimeStatisticsGroup='yes'
-#define configGENERATE_RUN_TIME_STATS                            %>50 1 /* 1: generate runtime statistics; 0: no runtime statistics */
+  #define configGENERATE_RUN_TIME_STATS                            %>50 1 /* 1: generate runtime statistics; 0: no runtime statistics */
 %else
-#define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
+  #define configGENERATE_RUN_TIME_STATS                            %>50 0 /* 1: generate runtime statistics; 0: no runtime statistics */
 %endif
+#endif
 #if configGENERATE_RUN_TIME_STATS
   #if configGENERATE_RUN_TIME_STATS_USE_TICKS
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
@@ -107,7 +111,9 @@
 #define configUSE_MALLOC_FAILED_HOOK                             %>50 0 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
 #define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 vApplicationMallocFailedHook
 %endif
-#define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */
+#ifndef configTICK_RATE_HZ
+  #define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */
+#endif
 %if defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes'
 #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
 #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1000 /* 1 kHz LPO timer. Set to 1 if not used */
@@ -155,7 +161,9 @@
 %else
 #define configSYSTICK_CLOCK_HZ                                   %>50 configBUS_CLOCK_HZ /* frequency of system tick counter */
 %endif
-#define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
+#ifndef configMINIMAL_STACK_SIZE
+  #define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
+#endif
 /*----------------------------------------------------------*/
 /* Heap Memory */
 #ifndef configUSE_HEAP_SCHEME
@@ -215,11 +223,13 @@
 #define configUSE_NEWLIB_REENTRANT                               %>50 (configUSE_HEAP_SCHEME==6) /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
 /*----------------------------------------------------------*/
 #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
+#ifndef configUSE_TRACE_FACILITY
 %if %UseTraceFacility='yes'
-#define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
+  #define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
 %else
-#define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
+  #define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
 %endif
+#endif
 #define configUSE_STATS_FORMATTING_FUNCTIONS                     %>50 (configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS)
 %if %Use16bitTicks='yes'
 #define configUSE_16_BIT_TICKS                                   %>50 1 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
@@ -279,27 +289,45 @@
 #define configUSE_APPLICATION_TASK_TAG                           %>50 0
 %endif
 /* Tickless Idle Mode ----------------------------------------------------------*/
+#ifndef configUSE_TICKLESS_IDLE
 %if %TicklessIdleModeEnabled='yes'
-#define configUSE_TICKLESS_IDLE                                  %>50 1 /* set to 1 for tickless idle mode, 0 otherwise */
-#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP                    %>50 %ExpectedIdleTimeBeforeSleep /* number of ticks must be larger than this to enter tickless idle mode */
+  #define configUSE_TICKLESS_IDLE                                  %>50 1 /* set to 1 for tickless idle mode, 0 otherwise */
 %else
-#define configUSE_TICKLESS_IDLE                                  %>50 0 /* set to 1 for tickless idle mode, 0 otherwise */
-#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP                    %>50 2 /* number of ticks must be larger than this to enter tickless idle mode */
+  #define configUSE_TICKLESS_IDLE                                  %>50 0 /* set to 1 for tickless idle mode, 0 otherwise */
 %endif
+#endif
+#ifndef configEXPECTED_IDLE_TIME_BEFORE_SLEEP
+%if %TicklessIdleModeEnabled='yes'
+  #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP                    %>50 %ExpectedIdleTimeBeforeSleep /* number of ticks must be larger than this to enter tickless idle mode */
+%else
+  #define configEXPECTED_IDLE_TIME_BEFORE_SLEEP                    %>50 2 /* number of ticks must be larger than this to enter tickless idle mode */
+%endif
+#endif
+#ifndef configUSE_TICKLESS_IDLE_DECISION_HOOK
 %if (%TicklessIdleModeEnabled='yes') & (%TicklessIdleDecisionHookEnabled='yes')
-#define configUSE_TICKLESS_IDLE_DECISION_HOOK                    %>50 1 /* set to 1 to enable application hook, zero otherwise */
-#define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME               %>50 %xEnterTicklessIdleFctName /* function name of decision hook */
+  #define configUSE_TICKLESS_IDLE_DECISION_HOOK                    %>50 1 /* set to 1 to enable application hook, zero otherwise */
 %else
-#define configUSE_TICKLESS_IDLE_DECISION_HOOK                    %>50 0 /* set to 1 to enable application hook, zero otherwise */
-#define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME               %>50 xEnterTicklessIdle /* function name of decision hook */
+  #define configUSE_TICKLESS_IDLE_DECISION_HOOK                    %>50 0 /* set to 1 to enable application hook, zero otherwise */
 %endif
+#endif
+#ifndef configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME
+%if (%TicklessIdleModeEnabled='yes') & (%TicklessIdleDecisionHookEnabled='yes')
+  #define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME               %>50 %xEnterTicklessIdleFctName /* function name of decision hook */
+%else
+  #define configUSE_TICKLESS_IDLE_DECISION_HOOK_NAME               %>50 xEnterTicklessIdle /* function name of decision hook */
+%endif
+#endif
+#ifndef configNUM_THREAD_LOCAL_STORAGE_POINTERS
 %if defined(NumThreadLocalStoragePointers)
-#define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 %NumThreadLocalStoragePointers /* number of tread local storage pointers, 0 to disable functionality */
+  #define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 %NumThreadLocalStoragePointers /* number of tread local storage pointers, 0 to disable functionality */
 %else
-#define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 0 /* number of tread local storage pointers, 0 to disable functionality */
+  #define configNUM_THREAD_LOCAL_STORAGE_POINTERS                  %>50 0 /* number of tread local storage pointers, 0 to disable functionality */
 %endif
+#endif
 
-#define configMAX_PRIORITIES                                     %>50 %MaxPriority /* task priorities can be from 0 up to this value-1 */
+#ifndef configMAX_PRIORITIES
+  #define configMAX_PRIORITIES                                     %>50 %MaxPriority /* task priorities can be from 0 up to this value-1 */
+#endif
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities /* co-routine priorities can be from 0 up to this value-1 */
 
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
