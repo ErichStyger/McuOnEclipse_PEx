@@ -136,9 +136,9 @@ extern "C" {
 
 /* die temperature (needs to add an offset as not factory trimmed) */
 #define %'ModuleName'%.DIE_TEMP  0x51 /* die temperature register, signed 8bit in C */
-#define %'ModuleName'_DIE_TEMP_OFFSET %DieTempOffset /* offset to temperature reading as value on device is not calibrated */
+#define %'ModuleName'_DIE_TEMP_OFFSET   %'ModuleName'%.CONFIG_TEMP_OFFSET /* offset to temperature reading as value on device is not calibrated */
 
-#define %'ModuleName'_I2C_ADDR   (%I2CSlaveAddress) /* I2C slave device address as set in the properties */
+#define %'ModuleName'_I2C_ADDR          %'ModuleName'%.CONFIG_I2C_DEVICE_ADDRESS /* I2C slave device address as set in the properties */
 
 
 %-BW_CUSTOM_USERTYPE_END
@@ -1479,6 +1479,23 @@ void %OnError(void)
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#if !defined(%'ModuleName'%.CONFIG_I2C_DEVICE_ADDRESS)
+  #define %'ModuleName'%.CONFIG_I2C_DEVICE_ADDRESS  (%I2CSlaveAddress)
+    /*!< I2C 7bit device address */
+    /*       SDA0  SDA1
+       0x1E  low   low
+       0x1D  high  low
+       0x1C  low   high
+       0x1F  high  high
+    */
+#endif
+
+#if !defined(%'ModuleName'%.CONFIG_TEMP_OFFSET)
+  #define %'ModuleName'%.CONFIG_TEMP_OFFSET  (%DieTempOffset)
+    /*!< die temperature offset for real temperature calculation */
+#endif
+
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
 %ifdef ParseCommand
