@@ -585,8 +585,6 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout=FALSE;
 %endif
-%else
-  uint16_t nof;
 %endif
 
 %if defined(LDD_I2C)
@@ -636,6 +634,8 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
 %else
 #if %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE
   for(;;) { /* breaks */
+    uint16_t nof;
+
     res = %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM(data, dataSize, &nof, flagsStart, flagsAck);
     if (res!=ERR_OK) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -1649,16 +1649,41 @@ void %OnError(void)
 
 /* configuration of function names used for low level I2C functions */
 %if defined(I2C)
-#include "%@I2C@ModuleName.h" /* interface of low level I2C driver */
-#define %'ModuleName'%.CONFIG_RECV_BLOCK                        %@I2C@'ModuleName'%.RecvBlock
-#define %'ModuleName'%.CONFIG_SEND_BLOCK                        %@I2C@'ModuleName'%.SendBlock
-#if %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START
-#define %'ModuleName'%.CONFIG_SEND_BLOCK_CONTINUE               %@I2C@'ModuleName'%.SendBlockContinue
+#ifndef %'ModuleName'%.CONFIG_INTERFACE_HEADER_FILE
+  #define %'ModuleName'%.CONFIG_INTERFACE_HEADER_FILE "%@I2C@ModuleName.h"
 #endif
-#define %'ModuleName'%.CONFIG_SEND_STOP                         %@I2C@'ModuleName'%.SendStop
-#define %'ModuleName'%.CONFIG_SELECT_SLAVE                      %@I2C@'ModuleName'%.SelectSlave
-#define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM                 %@I2C@'ModuleName'%.RecvBlockCustom
-#define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE       (defined(%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE) && (%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE==1))
+#include %'ModuleName'%.CONFIG_INTERFACE_HEADER_FILE /* interface of low level I2C driver */
+
+#ifndef %'ModuleName'%.CONFIG_RECV_BLOCK
+  #define %'ModuleName'%.CONFIG_RECV_BLOCK                        %@I2C@'ModuleName'%.RecvBlock
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_SEND_BLOCK
+  #define %'ModuleName'%.CONFIG_SEND_BLOCK                        %@I2C@'ModuleName'%.SendBlock
+#endif
+
+#if %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START
+  #ifndef %'ModuleName'%.CONFIG_SEND_BLOCK_CONTINUE
+    #define %'ModuleName'%.CONFIG_SEND_BLOCK_CONTINUE             %@I2C@'ModuleName'%.SendBlockContinue
+  #endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_SEND_STOP
+  #define %'ModuleName'%.CONFIG_SEND_STOP                         %@I2C@'ModuleName'%.SendStop
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_SELECT_SLAVE
+  #define %'ModuleName'%.CONFIG_SELECT_SLAVE                      %@I2C@'ModuleName'%.SelectSlave
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM
+  #define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM                 %@I2C@'ModuleName'%.RecvBlockCustom
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE
+  #define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE       (defined(%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE) && (%@I2C@'ModuleName'%.RECVBLOCKCUSTOM_AVAILABLE))
+#endif
+
 %elif defined(LDD_I2C)
 #include "%@LDD_I2C@ModuleName.h" /* interface of low level I2C driver */
 #define %'ModuleName'%.CONFIG_RECV_BLOCK_CUSTOM_AVAILABLE  (0)

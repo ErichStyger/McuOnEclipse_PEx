@@ -383,6 +383,15 @@ void %OnError(uint8_t error);
 
 %endif %- OnError
 %-BW_METHOD_END OnError
+%-BW_METHOD_BEGIN OnLineStateChanged
+%ifdef OnLineStateChanged
+%INTERFACE OnLineStateChanged
+void %OnLineStateChanged(uint8_t value);
+%define! Parvalue
+%include Common\FSL_USB_CDC_DeviceOnLineStateChanged.Inc
+
+%endif %- OnLineStateChanged
+%-BW_METHOD_END OnLineStateChanged
 %-BW_EVENT_DEFINITION_END
 %IMPLEMENTATION
 %define! Settings Common\FSL_USB_CDC_DeviceSettings.Inc
@@ -1044,6 +1053,18 @@ void %OnError(uint8_t error)
 
 %endif %- OnError
 %-BW_METHOD_END OnError
+%-BW_METHOD_BEGIN OnLineStateChanged
+%ifdef OnLineStateChanged
+%IMPLEMENTATION OnLineStateChanged
+%define! Parvalue
+%include Common\FSL_USB_CDC_DeviceOnLineStateChanged.Inc
+void %OnLineStateChanged(uint8_t value)
+{
+  /* Write your code here ... */
+}
+
+%endif %- OnLineStateChanged
+%-BW_METHOD_END OnLineStateChanged
 %-BW_EVENT_IMPLEMENT_END
 %INITIALIZATION
 %CODE_BEGIN
