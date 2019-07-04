@@ -675,7 +675,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
 %'ModuleName'_ConstCharPtr %'ModuleName'%.%GetKinetisFamilyString(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
-#if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0
+  #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0
   #ifdef SIM_SDID /* normal Kinetis define this */
     int32_t val;
 
@@ -700,8 +700,8 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     #error "Unknown architecture!"
     return (%'ModuleName'_ConstCharPtr)"ERROR";
   #endif
-#elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
-  #ifdef SIM_SDID /* normal Kinetis define this */
+  #elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
+    #ifdef SIM_SDID /* normal Kinetis define this */
     int32_t val;
 
     val = (SIM_SDID>>4)&0x3; /* bits 6..4 */
@@ -710,7 +710,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     } else {
       return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
     }
-  #elif defined(SIM_SDID_FAMID)
+    #elif defined(SIM_SDID_FAMID)
     int32_t val;
 
     val = ((SIM->SDID)>>4)&0x3; /* bits 6..4 */
@@ -719,18 +719,30 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     } else {
       return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
     }
-  #else
+    #else
     #error "Unknown architecture!"
     return (%'ModuleName'_ConstCharPtr)"ERROR";
-  #endif
-#elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==7
+    #endif
+  #elif %@sdk@'ModuleName'%.CONFIG_CORTEX_M==7
   return (%'ModuleName'_ConstCharPtr)"Cortex-M7";
-#else
+  #else
   #error "Unknown architecture!"
   return (%'ModuleName'_ConstCharPtr)"ERROR";
-#endif
+  #endif
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF
+  return (%'ModuleName'_ConstCharPtr)"Nordic nRF";
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_STM
+  return (%'ModuleName'_ConstCharPtr)"STM32";
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_IMXRT
+  return (%'ModuleName'_ConstCharPtr)"NXP i.MX RT";
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_S32K
+  return (%'ModuleName'_ConstCharPtr)"NXP S32K";
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC55xx";
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC";
 #else
-  return (%'ModuleName'_ConstCharPtr)"NOT KINETIS";
+  return (%'ModuleName'_ConstCharPtr)"UNKNOWN";
 #endif
 }
 
