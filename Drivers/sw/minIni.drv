@@ -497,10 +497,10 @@ int %'ModuleName'%.%ini_browse(INI_CALLBACK Callback, const void *UserData, cons
 #define %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS  (2) /* TinyFS File System */
 
 #ifndef %'ModuleName'%.CONFIG_FS
-%if defined(FatFS) & %FatFS='yes'
-  #define %'ModuleName'%.CONFIG_FS      (CONFIG_FS_TYPE_FAT_FS)
+%if defined(FatFSenabled) & %FatFSenabled='yes'
+  #define %'ModuleName'%.CONFIG_FS      (%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS)
 %else
-  #define %'ModuleName'%.CONFIG_FS      (CONFIG_FS_TYPE_GENERIC)
+  #define %'ModuleName'%.CONFIG_FS      (%'ModuleName'%.CONFIG_FS_TYPE_GENERIC)
 %endif
     /*!< File System integration used, one of %'ModuleName'%.CONFIG_FS_TYPE_GENERIC, %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS, %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS */
 #endif
