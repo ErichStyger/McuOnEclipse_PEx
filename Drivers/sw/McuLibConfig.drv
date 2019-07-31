@@ -500,7 +500,7 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33 -1 otherwise */
 #endif
 %-
-#if (0 && !defined(%'ModuleName'%.CONFIG_FPU_PRESENT)) || (defined(__FPU_PRESENT) && (__FPU_PRESENT==1)) /* __FPU_PRESENT can be defined in CMSIS-Core */
+#if (0 && !defined(%'ModuleName'%.CONFIG_FPU_PRESENT) && %'ModuleName'%.CONFIG_CORTEX_M!=0) || (defined(__FPU_PRESENT) && (__FPU_PRESENT==1)) /* __FPU_PRESENT can be defined in CMSIS-Core */
   #define %'ModuleName'%.CONFIG_FPU_PRESENT   (1)
 #else
   #define %'ModuleName'%.CONFIG_FPU_PRESENT   (0)
