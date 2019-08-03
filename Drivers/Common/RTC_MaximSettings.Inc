@@ -3,6 +3,7 @@
 %;**%>12 Device %>60: %get(Device,Text)
 %;**%>12 I2C %>60: %get(I2C,Text)
 %;**%>12 Utility %>60: %get(Utility,Text)
+%;**%>12 SDK %>60: %get(sdk,Text)
 %;**%>12 Shell %>60: %get(ShellEnabledGroup,Text)
 %if %get(ShellEnabledGroup, Bool) = 'yes'
 %;**%>14 Shell %>60: %get(Shell,Text)

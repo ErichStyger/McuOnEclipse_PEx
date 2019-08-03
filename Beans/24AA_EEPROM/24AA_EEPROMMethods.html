@@ -211,11 +211,11 @@ LI.EXP {
  - Reads a single byte from the given memory address
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadByte(<i>ComponentName_</i>Address addr, byte *data)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadByte(<i>ComponentName_</i>Address addr, uint8_t *data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>addr:<i>ComponentName_</i>Address</i> - The address where to read from memory.</li>
-<li><i>data: Pointer to byte</i> - Pointer to a location where to store the data</li>
-<li><i>Return value:byte</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
+<li><i>data: Pointer to uint8_t</i> - Pointer to a location where to store the data</li>
+<li><i>Return value:uint8_t</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
 </li>
 </ul><br />
 </li>
@@ -224,11 +224,11 @@ LI.EXP {
  - Writes a single byte to specified address
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteByte(<i>ComponentName_</i>Address addr, byte data)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteByte(<i>ComponentName_</i>Address addr, uint8_t data)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>addr:<i>ComponentName_</i>Address</i> - The address inside the EEPROM</li>
-<li><i>data:byte</i> - The data value to write</li>
-<li><i>Return value:byte</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
+<li><i>data:uint8_t</i> - The data value to write</li>
+<li><i>Return value:uint8_t</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
 </li>
 </ul><br />
 </li>
@@ -237,12 +237,12 @@ LI.EXP {
  - Read a block of memory.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ReadBlock(<i>ComponentName_</i>Address addr, byte *data, word dataSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ReadBlock(<i>ComponentName_</i>Address addr, uint8_t *data, uint16_t dataSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>addr:<i>ComponentName_</i>Address</i> - Address where to read the memory</li>
-<li><i>data: Pointer to byte</i> - Pointer to a buffer where to store the data</li>
-<li><i>dataSize:word</i> - Size of buffer the data pointer is pointing to</li>
-<li><i>Return value:byte</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
+<li><i>data: Pointer to uint8_t</i> - Pointer to a buffer where to store the data</li>
+<li><i>dataSize:uint16_t</i> - Size of buffer the data pointer is pointing to</li>
+<li><i>Return value:uint8_t</i> - Error code, possible values<br />ERR_OK - OK<br />otherwise it can return an error code of the underlying communication protocol.
 </li>
 </ul><br />
 </li>
@@ -251,12 +251,12 @@ LI.EXP {
  - Writes a block of data to the EEPROM
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte WriteBlock(<i>ComponentName_</i>Address addr, byte *data, word dataSize)<br />
+<br /><i>ANSIC prototype:</i> uint8_t WriteBlock(<i>ComponentName_</i>Address addr, uint8_t *data, uint16_t dataSize)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 <li><i>addr:<i>ComponentName_</i>Address</i> - Address of memory</li>
-<li><i>data: Pointer to byte</i> - Pointer to the data</li>
-<li><i>dataSize:word</i> - Size of data</li>
-<li><i>Return value:byte</i> - Error code, possible values<br />ERR_OK - OK<br />ERR_OVERFLOW - data block passed has either size of zero or exceeds internal buffer size<br />otherwise it can return an error code of the underlying communication protocol.
+<li><i>data: Pointer to uint8_t</i> - Pointer to the data</li>
+<li><i>dataSize:uint16_t</i> - Size of data</li>
+<li><i>Return value:uint8_t</i> - Error code, possible values<br />ERR_OK - OK<br />ERR_OVERFLOW - data block passed has either size of zero or exceeds internal buffer size<br />otherwise it can return an error code of the underlying communication protocol.
 </li>
 </ul><br />
 </li>
@@ -283,10 +283,10 @@ LI.EXP {
  - Configures the I2C address to be used for the memory. With this multiple devices attached to the bus can be addressed.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte SelectDevice(byte addrI2C)<br />
+<br /><i>ANSIC prototype:</i> uint8_t SelectDevice(uint8_t addrI2C)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>addrI2C:byte</i> - I2C Address of the memory device, formed by the address pins.</li>
-<li><i>Return value:byte</i> - Error code, possible codes:<br />ERR_OK - OK<br />ERR_VALUE - address exceeds address pins of device type used
+<li><i>addrI2C:uint8_t</i> - I2C Address of the memory device, formed by the address pins.</li>
+<li><i>Return value:uint8_t</i> - Error code, possible codes:<br />ERR_OK - OK<br />ERR_VALUE - address exceeds address pins of device type used
 </li>
 </ul><br />
 </li>
@@ -295,9 +295,9 @@ LI.EXP {
  - Returns the currently used I2C address (e.g. set with SelectDevice()).
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte GetSelectedDevice(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t GetSelectedDevice(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - I2C device address
+<li><i>Return value:uint8_t</i> - I2C device address
 </li>
 </ul><br />
 </li>
@@ -306,9 +306,9 @@ LI.EXP {
  - Test routine to test the driver. Note that this routine writes to the EEPROM!
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte Test(void)<br />
+<br /><i>ANSIC prototype:</i> uint8_t Test(void)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>Return value:byte</i> - Error code, possible values<br />ERR_OK - OK<br />ERR_FAULT - Test failed
+<li><i>Return value:uint8_t</i> - Error code, possible values<br />ERR_OK - OK<br />ERR_FAULT - Test failed
 </li>
 </ul><br />
 </li>
@@ -317,12 +317,12 @@ LI.EXP {
  - Shell Command Line parser. This method is enabled/disabled depending on if you have the Shell enabled/disabled in the properties.
 <ul>
 <!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
-<br /><i>ANSIC prototype:</i> byte ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
+<br /><i>ANSIC prototype:</i> uint8_t ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)<br />
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
-<li><i>cmd: Pointer to byte</i> - Pointer to command string</li>
+<li><i>cmd: Pointer to uint8_t</i> - Pointer to command string</li>
 <li><i>handled: Pointer to bool</i> - Pointer to variable which tells if the command has been handled or not</li>
-<li><i>io: Pointer to byte</i> - Pointer to I/O structure</li>
-<li><i>Return value:byte</i> - Error code
+<li><i>io: Pointer to uint8_t</i> - Pointer to I/O structure</li>
+<li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
 </li>

@@ -4,7 +4,7 @@
     <Name>24AA_EEPROM</Name>
     <Description>Microchip 24AA Serial EEPROM</Description>
     <Author>Erich Styger</Author>
-    <Version>01.032</Version>
+    <Version>01.038</Version>
     <Icon>24AA_EEPROM</Icon>
     <TypesFiles>PE,24AA_EEPROM\24AA_EEPROM</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>1</BW_NeedUst>
+    <BW_NeedUst>3</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>License   :  Open Source (LGPL)\nCopyright : (c) Copyright Erich Styger, 2013, all rights reserved.\n\nThis an open source software implementation with Processor Expert.\nThis is a free software and is opened for education,  research  and commercial developments under license policy of following terms:\n* This is a free software and there is NO WARRANTY.\n* No restriction on use. You can use, modify and redistribute it for personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.\n* Redistributions of source code must retain the above copyright notice.</Copyright>
+    <Copyright> * Copyright (c) 2013-2019, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>EE24</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -37,8 +37,22 @@
       </TCompNameItem>
     </Property>
     <Property>
+      <TInhrLinkItem>
+        <Name>SDK</Name>
+        <Symbol>sdk</Symbol>
+        <TypeSpec>24AA_EEPROM\sdk</TypeSpec>
+        <Hint>API and SDK used.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
       <TEnumItem>
-        <Name>Device</Name>
+        <Name>Device Type</Name>
         <Symbol>Device</Symbol>
         <TypeSpec>type24AAdevice</TypeSpec>
         <Hint>Specifies the device type used.</Hint>
@@ -54,7 +68,7 @@
     </Property>
     <Property>
       <TIntgItem>
-        <Name>Initial Device Address</Name>
+        <Name>Initial I2C Device Address Bits</Name>
         <Symbol>DeviceAddress</Symbol>
         <Hint>The address must correspond to the logic levels on the corresponding address pins of the device which form the I2C device address. You can change the address at runtime using SetAddress().</Hint>
         <ItemLevel>BASIC</ItemLevel>
@@ -230,7 +244,7 @@ Typical values:\n
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -296,7 +310,7 @@ Typical values:\n
         <BoldName>true</BoldName>
         <EditLine>false</EditLine>
         <Description>Disabled</Description>
-        <Expanded>No</Expanded>
+        <Expanded>Yes</Expanded>
         <DefaultValue>false</DefaultValue>
         <DefineSymbol>YES_NO</DefineSymbol>
         <IfDisabled>setNOTHING</IfDisabled>
@@ -353,7 +367,7 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\notherwise it can return an error code of the underlying communication protocol.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -364,13 +378,13 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to a location where to store the data</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Address addr, byte *data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Address addr, uint8_t *data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -393,7 +407,7 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\notherwise it can return an error code of the underlying communication protocol.</RetHint>
         <ParamCount>2</ParamCount>
         <Parameter>
@@ -404,13 +418,13 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The data value to write</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Address addr, byte data)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Address addr, uint8_t data)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -433,7 +447,7 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\notherwise it can return an error code of the underlying communication protocol.</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -444,19 +458,19 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to a buffer where to store the data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of buffer the data pointer is pointing to</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Address addr, byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -479,7 +493,7 @@ Typical values:\n
         <PublicMethod>false</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\nERR_OVERFLOW - data block passed has either size of zero or exceeds internal buffer size\notherwise it can return an error code of the underlying communication protocol.</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -490,19 +504,19 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of data</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Address addr, byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -525,7 +539,7 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\nERR_OVERFLOW - data block passed has either size of zero or exceeds internal buffer size\notherwise it can return an error code of the underlying communication protocol.</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
@@ -536,19 +550,19 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>data</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to the data</ParHint>
         </Parameter>
         <Parameter>
           <ParName>dataSize</ParName>
-          <ParType>16bit unsigned</ParType>
+          <ParType>uint16_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Size of data</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(%'ModuleName'_Address addr, byte *data, word dataSize)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -627,18 +641,18 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible codes:\nERR_OK - OK\nERR_VALUE - address exceeds address pins of device type used</RetHint>
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>addrI2C</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>I2C Address of the memory device, formed by the address pins.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(byte addrI2C)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(uint8_t addrI2C)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -661,12 +675,12 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>I2C device address</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -689,12 +703,12 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code, possible values\nERR_OK - OK\nERR_FAULT - Test failed</RetHint>
         <ParamCount>0</ParamCount>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(void)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(void)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -717,12 +731,12 @@ Typical values:\n
         <PublicMethod>true</PublicMethod>
         <IsAssembler>false</IsAssembler>
         <InDefinition>true</InDefinition>
-        <ReturnType>8bit unsigned</ReturnType>
+        <ReturnType>uint8_t</ReturnType>
         <RetHint>Error code</RetHint>
         <ParamCount>3</ParamCount>
         <Parameter>
           <ParName>cmd</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to command string</ParHint>
           <ParUserDeclaration>const unsigned char *cmd</ParUserDeclaration>
@@ -735,14 +749,14 @@ Typical values:\n
         </Parameter>
         <Parameter>
           <ParName>io</ParName>
-          <ParType>8bit unsigned</ParType>
+          <ParType>uint8_t</ParType>
           <ParPassing>Address</ParPassing>
           <ParHint>Pointer to I/O structure</ParHint>
           <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>byte #M#_#C#(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

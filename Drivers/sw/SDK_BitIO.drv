@@ -237,7 +237,7 @@ void %'ModuleName'%.%PutVal(bool Val);
 %-     #include "header_name.h"
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
-    #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==33 /* e.g. LPC55xx */
+    #if (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==33) ||  (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0)/* e.g. LPC55xx or LPC845 */
       #include "fsl_iocon.h" /* include SDK header file for I/O connection muxing */
     #else /* normal Kinetis or LPC */
       #include "fsl_port.h" /* include SDK header file for port muxing */
@@ -568,7 +568,7 @@ void %'ModuleName'%.%Init(void)
 {
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
-      #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==33 /* e.g. LPC55xx */
+      #if (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==33) ||  (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0)/* e.g. LPC55xx or LPC845 */
         #define IOCON_PIO_DIGITAL_EN 0x0100u  /*!<@brief Enables digital function */
         #define IOCON_PIO_FUNC0 0x00u         /*!<@brief Selects pin function 0 */
         #define IOCON_PIO_INV_DI 0x00u        /*!<@brief Input function is not inverted */
@@ -588,7 +588,11 @@ void %'ModuleName'%.%Init(void)
                                       IOCON_PIO_DIGITAL_EN |
                                       /* Open drain is disabled */
                                       IOCON_PIO_OPENDRAIN_DI);
-        IOCON_PinMuxSet(IOCON, %'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, port_pin_config);
+        #if (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0)
+          IOCON_PinMuxSet(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, port_pin_config);
+        #else
+          IOCON_PinMuxSet(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, port_pin_config);
+        #endif
       #else
         PORT_SetPinMux(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, kPORT_MuxAsGpio); /* mux as GPIO */
       #endif

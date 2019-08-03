@@ -64,13 +64,9 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
-%endif
 /* Include inherited beans */
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
@@ -87,10 +83,7 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 #ifndef __BWUserType_%'ModuleName'_TTIME
 #define __BWUserType_%'ModuleName'_TTIME
   typedef struct {                                               %>40/* Time in binary format */
@@ -145,33 +138,8 @@
 #define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
 %endif %- ParseCommand
 
-%if Device="DS3232"
-#define %'ModuleName'%.DEVICE 3232 /* DS1307, DS3231, DS3232 or DS1342 */
-%elif Device="DS3231"
-#define %'ModuleName'%.DEVICE 3231 /* DS1307, DS3231, DS3232 or DS1342 */
-%elif Device="DS1307"
-#define %'ModuleName'%.DEVICE 1307 /* DS1307, DS3231, DS3232 or DS1342 */
-%elif Device="DS1342"
-#define %'ModuleName'%.DEVICE 1342 /* DS1307, DS3231, DS3232 or DS1342 */
-%else
-#error "Unknown device %Device ?"
-%endif
-
-/* I2C address of the device on the bus: */
-#if %'ModuleName'%.DEVICE==3231
-  #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
-#elif %'ModuleName'%.DEVICE==3232
-  #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
-#elif %'ModuleName'%.DEVICE==1307
-  #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS1307 device address */
-#elif %'ModuleName'%.DEVICE==1342
-  #define %'ModuleName'%.DEVICE_ADDRESS 0x68  /* I2C DS1342 device address */
-#else
-  #error "Unknown device"
-#endif
-
 /* device memory addresses */
-#if %'ModuleName'%.DEVICE==3231 || %'ModuleName'%.DEVICE==3232
+#if %'ModuleName'%.CONFIG_DEVICE==3231 || %'ModuleName'%.CONFIG_DEVICE==3232
   #define %'ModuleName'%.MEM_SECONDS_ADDR       0x00  /* Seconds */
   #define %'ModuleName'%.MEM_MINUTES_ADDR       0x01  /* Minutes */
   #define %'ModuleName'%.MEM_HOURS_ADDR         0x02  /* Hours */
@@ -185,11 +153,11 @@
   #define %'ModuleName'%.MEM_MSB_TEMP_ADDR      0x11  /* MSB of Temp */
   #define %'ModuleName'%.MEM_LSB_TEMP_ADDR      0x12  /* LSB of Temp */
   /* Address 0x13 is reserved */
-  #if %'ModuleName'%.DEVICE==3232 /* 3231 has no RAM */
+  #if %'ModuleName'%.CONFIG_DEVICE==3232 /* 3231 has no RAM */
     #define %'ModuleName'%.MEM_RAM_START_ADDR     0x14  /* device memory start address of non-volatile RAM */
     #define %'ModuleName'%.MEM_RAM_END_ADDR       0xFF  /* device memory end address of non-volatile RAM */
   #endif
-#elif %'ModuleName'%.DEVICE==1307
+#elif %'ModuleName'%.CONFIG_DEVICE==1307
   #define %'ModuleName'%.MEM_SECONDS_ADDR       0x00  /* Seconds */
   #define %'ModuleName'%.MEM_MINUTES_ADDR       0x01  /* Minutes */
   #define %'ModuleName'%.MEM_HOURS_ADDR         0x02  /* Hours */
@@ -200,7 +168,7 @@
   #define %'ModuleName'%.MEM_CTRL_ADDR          0x07  /* Control */
   #define %'ModuleName'%.MEM_RAM_START_ADDR     0x08  /* device memory start address of non-volatile RAM */
   #define %'ModuleName'%.MEM_RAM_END_ADDR       0x3F  /* device memory end address of non-volatile RAM */
-#elif %'ModuleName'%.DEVICE==1342
+#elif %'ModuleName'%.CONFIG_DEVICE==1342
   #define %'ModuleName'%.MEM_SECONDS_ADDR       0x00  /* Seconds */
   #define %'ModuleName'%.MEM_MINUTES_ADDR       0x01  /* Minutes */
   #define %'ModuleName'%.MEM_HOURS_ADDR         0x02  /* Hours */
@@ -213,9 +181,9 @@
   #error "unknown device?"
 #endif
 
-#if %'ModuleName'%.DEVICE==1342
+#if %'ModuleName'%.CONFIG_DEVICE==1342
   #define %'ModuleName'%.MEM_SIZE               (0)  /* no memory for DS1342 */
-#elif %'ModuleName'%.DEVICE==3231
+#elif %'ModuleName'%.CONFIG_DEVICE==3231
   #define %'ModuleName'%.MEM_SIZE               (0)  /* no memory for DS3231*/
 #else
   #define %'ModuleName'%.MEM_SIZE               (%'ModuleName'%.MEM_RAM_END_ADDR-%'ModuleName'%.MEM_RAM_START_ADDR+1)  /* device memory start address of non-volatile RAM, in bytes */
@@ -651,9 +619,9 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  time", buf, io->stdOut);
 
-  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"%Device");
+  %@Utility@'ModuleName'%.Num8uToStr(buf, sizeof(buf), (uint8_t)McuExtRTC_CONFIG_DEVICE);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)", Addr 0x");
-  %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), %'ModuleName'%.DEVICE_ADDRESS);
+  %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), %'ModuleName'%.CONFIG_DEVICE_ADDRESS);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  device", buf, io->stdOut);
 
@@ -688,7 +656,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
 %include Common\RTC_MaximRead.Inc
 uint8_t %'ModuleName'%.%Read(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 {
-  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, buf, bufSize);
+  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, buf, bufSize);
 }
 
 %endif %- Read
@@ -703,7 +671,7 @@ uint8_t %'ModuleName'%.%Read(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 %include Common\RTC_MaximWrite.Inc
 uint8_t %'ModuleName'%.%Write(uint8_t addr, uint8_t *buf, uint8_t bufSize)
 {
-  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, buf, bufSize);
+  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, buf, bufSize);
 }
 
 %endif %- Write
@@ -726,7 +694,7 @@ uint8_t %'ModuleName'%.%ReadByte(uint8_t addr, uint8_t *buf)
     return ERR_RANGE; /* memory address out of range */
   }
   addr += %'ModuleName'%.MEM_RAM_START_ADDR;
-  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, buf, 1);
+  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, buf, 1);
 #endif
 }
 
@@ -750,7 +718,7 @@ uint8_t %'ModuleName'%.%WriteByte(uint8_t addr, uint8_t buf)
     return ERR_RANGE; /* memory address out of range */
   }
   addr += %'ModuleName'%.MEM_RAM_START_ADDR;
-  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, &buf, 1);
+  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, &buf, 1);
 #endif
 }
 
@@ -776,7 +744,7 @@ uint8_t %'ModuleName'%.%ReadBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)
     return ERR_RANGE; /* memory address out of range */
   }
   addr += %'ModuleName'%.MEM_RAM_START_ADDR;
-  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, buf, bufSize);
+  return %@I2C@'ModuleName'%.ReadAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, buf, bufSize);
 #endif
 }
 
@@ -802,7 +770,7 @@ uint8_t %'ModuleName'%.%WriteBlock(uint8_t addr, uint8_t *buf, uint8_t bufSize)
     return ERR_RANGE; /* memory address out of range */
   }
   addr += %'ModuleName'%.MEM_RAM_START_ADDR;
-  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.DEVICE_ADDRESS, &addr, 1, buf, bufSize);
+  return %@I2C@'ModuleName'%.WriteAddress(%'ModuleName'%.CONFIG_DEVICE_ADDRESS, &addr, 1, buf, bufSize);
 #endif
 }
 
@@ -1181,6 +1149,55 @@ void %OnDateSet(uint8_t day, uint8_t month, uint16_t year)
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%-----------------------------------------------------------------------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for I2CSpy
+ *
+ * This header file is used to configure settings the External I2C RTC module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+#ifndef %'ModuleName'%.CONFIG_DEVICE
+%if Device="DS3232"
+  #define %'ModuleName'%.CONFIG_DEVICE 3232 /* DS1307, DS3231, DS3232 or DS1342 */
+%elif Device="DS3231"
+  #define %'ModuleName'%.CONFIG_DEVICE 3231 /* DS1307, DS3231, DS3232 or DS1342 */
+%elif Device="DS1307"
+  #define %'ModuleName'%.CONFIG_DEVICE 1307 /* DS1307, DS3231, DS3232 or DS1342 */
+%elif Device="DS1342"
+  #define %'ModuleName'%.CONFIG_DEVICE 1342 /* DS1307, DS3231, DS3232 or DS1342 */
+%else
+  #error "Unknown device %Device ?"
+%endif
+#endif
+
+/* I2C address of the device on the bus: */
+#ifndef %'ModuleName'%.CONFIG_DEVICE_ADDRESS
+  #if %'ModuleName'%.CONFIG_DEVICE==3231
+    #define %'ModuleName'%.CONFIG_DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
+  #elif %'ModuleName'%.CONFIG_DEVICE==3232
+    #define %'ModuleName'%.CONFIG_DEVICE_ADDRESS 0x68  /* I2C DS3232 device address */
+  #elif %'ModuleName'%.CONFIG_DEVICE==1307
+    #define %'ModuleName'%.CONFIG_DEVICE_ADDRESS 0x68  /* I2C DS1307 device address */
+  #elif %'ModuleName'%.CONFIG_DEVICE==1342
+    #define %'ModuleName'%.CONFIG_DEVICE_ADDRESS 0x68  /* I2C DS1342 device address */
+  #else
+    #error "Unknown device"
+  #endif
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
   %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)

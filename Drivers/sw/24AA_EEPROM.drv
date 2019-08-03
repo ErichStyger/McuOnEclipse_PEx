@@ -65,19 +65,15 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
 
-%ifdef SharedModules
-/* Include shared modules, which are used for whole project */
-  %for var from IncludeSharedModules
-#include "%'var'.h"
-  %endfor
+%if defined(Shell)
+#include "%@Shell@ModuleName.h"
+%else
+#include "McuShell.h"
 %endif
-/* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -88,80 +84,44 @@
 %-BW_METHOD_MACROS_START
 %-BW_METHOD_MACROS_END
 
-#include "%ProcessorModule.h"
-
-/* supported device ID's */
-#define %'ModuleName'%.DEVICE_ID_8       8 /* 24AA08, 24LC08 */
-#define %'ModuleName'%.DEVICE_ID_16     16 /* 24AA16, 24LC16 */
-#define %'ModuleName'%.DEVICE_ID_32     32 /* 24AA32, 24LC32 */
-#define %'ModuleName'%.DEVICE_ID_256   256 /* 24AA256, 24LC256, 24FC256 */
-#define %'ModuleName'%.DEVICE_ID_512   512 /* 24AA512, 24LC512, 24FC256 */
-#define %'ModuleName'%.DEVICE_ID_1025 1025 /* 24AA1025, 24LC1025, 24FC1025 */
-/* actual device */
-%if %Device = '8'
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_8
-%elif %Device = '16'
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_16
-%elif %Device = '32'
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_32
-%elif %Device = '256'
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_256
-%elif (%Device = '512')
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_512
-%elif (%Device = '1025')
-#define %'ModuleName'%.DEVICE_ID      %'ModuleName'%.DEVICE_ID_1025
-%else
-#error "unknown Device ID %Device?"
-%endif
-
-#define %'ModuleName'%.BLOCK_BUF_SIZE %BlockBufSize              %>40 /* buffer used for block read/write. Max is 128. Keep it small to reduce stack consumption. */
-
-#if %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8
+#if %'ModuleName'%.CONFIG_DEVICE_ID==8
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 0                     %>40 /* A2|A1|A0 are not used */
   #define %'ModuleName'%.MAX_ADDRESS       0x03FF                %>40 /* 8 kBit is 1KByte */
-  #define %'ModuleName'%.ADDRT             word                  %>40 /* a word/16bit is enough to hold the address */
+  #define %'ModuleName'%.ADDRT             uint16_t              %>40 /* a word/16bit is enough to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         16                    %>40 /* maximum page size (for page/block operation) */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==16
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 0                     %>40 /* A2|A1|A0 are not used */
   #define %'ModuleName'%.MAX_ADDRESS       0x07FF                %>40 /* 16 kBit is 2KByte */
-  #define %'ModuleName'%.ADDRT             word                  %>40 /* a word/16bit is enough to hold the address */
+  #define %'ModuleName'%.ADDRT             uint16_t              %>40 /* a word/16bit is enough to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         16                    %>40 /* maximum page size (for page/block operation) */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_32
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==32
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 7                     %>40 /* A2|A1|A0 form the I2C device address => address cannot be more than 7 (8 devices) */
   #define %'ModuleName'%.MAX_ADDRESS       0x0FFF                %>40 /* 32 kBit are 4KByte */
-  #define %'ModuleName'%.ADDRT             word                  %>40 /* a word/16bit is enough to hold the address */
+  #define %'ModuleName'%.ADDRT             uint16_t              %>40 /* a word/16bit is enough to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         8                     %>40 /* maximum page size (for page/block operation) */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_256
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==256
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 7                     %>40 /* A2|A1|A0 form the I2C device address => address cannot be more than 7 (8 devices) */
   #define %'ModuleName'%.MAX_ADDRESS       0x7FFF                %>40 /* 256 kBit are 32KByte */
-  #define %'ModuleName'%.ADDRT             word                  %>40 /* a word/16bit is enough to hold the address */
+  #define %'ModuleName'%.ADDRT             uint16_t              %>40 /* a word/16bit is enough to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         64                    %>40 /* maximum page size (for page/block operation) */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_512
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==512
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 7                     %>40 /* A2|A1|A0 form the I2C device address => address cannot be more than 7 (8 devices) */
   #define %'ModuleName'%.MAX_ADDRESS       0xFFFF                %>40 /* 512 kBit are 64KByte */
-  #define %'ModuleName'%.ADDRT             word                  %>40 /* a word/16bit is enough to hold the address */
+  #define %'ModuleName'%.ADDRT             uint16_t              %>40 /* a word/16bit is enough to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         128                   %>40 /* maximum page size (for page/block operation) */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_1025
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==1025
   #define %'ModuleName'%.MAX_I2C_ADDR_MASK 3                     %>40 /* A1|A0 form the I2C device address => address cannot be more than 3 (4 devices) */
   #define %'ModuleName'%.MAX_ADDRESS       0x1FFFF               %>40 /* 1024 kBit are 128KByte */
-  #define %'ModuleName'%.ADDRT             dword                 %>40 /* a longword/32bit is needed to hold the address */
+  #define %'ModuleName'%.ADDRT             uint32_t              %>40 /* a longword/32bit is needed to hold the address */
   #define %'ModuleName'%.PAGE_SIZE         128                   %>40 /* maximum page size (for page/block operation) */
 #else
   #error "unknown device?"
 #endif
-
-%if %DoAcknowledgePolling = 'yes'
-#define %'ModuleName'%.DO_ACKNOWLEDGE_POLLING    1               %>40 /* Perform acknowledge polling in the driver */
-#define %'ModuleName'%.PAGE_WRITE_TIME_MS        %PageWriteTimeMs%>40 /* Page Write Time as per data sheet */
-#define %'ModuleName'%.ACK_POLLING_TIME_US       %AckPollingTimeUs%>40 /* Acknowledge polling time in the I2C driver*/
-%else
-#define %'ModuleName'%.DO_ACKNOWLEDGE_POLLING    0               %>40 /* No acknowledge polling in the driver */
-%endif
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
 #ifndef __BWUserType_%'ModuleName'_Address
 #define __BWUserType_%'ModuleName'_Address
-  typedef  %'ModuleName'%.ADDRT %'ModuleName'%.Address;          %>40/* A type large enought to hold the address, depending on the EEPROM used. */
+  typedef  %'ModuleName'%.ADDRT %'ModuleName'%.Address;          %>40/* A type large enough to hold the address, depending on the EEPROM used. */
 #endif
 
 %-ENDUSRTYPES
@@ -184,7 +144,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteByte
 %ifdef WriteByte
-byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data);
+uint8_t %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, uint8_t data);
 %define! Paraddr
 %define! Pardata
 %define! RetVal
@@ -195,7 +155,7 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadByte
 %ifdef ReadByte
-byte %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, byte *data);
+uint8_t %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, uint8_t *data);
 %define! Paraddr
 %define! Pardata
 %define! RetVal
@@ -206,7 +166,7 @@ byte %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, byte *data);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadBlock
 %ifdef ReadBlock
-byte %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -218,7 +178,7 @@ byte %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, byte *data, word data
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN WriteBlock
 %ifdef WriteBlock
-byte %'ModuleName'%.%WriteBlock(%'ModuleName'_Address addr, byte *data, word dataSize);
+uint8_t %'ModuleName'%.%WriteBlock(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -230,7 +190,7 @@ byte %'ModuleName'%.%WriteBlock(%'ModuleName'_Address addr, byte *data, word dat
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Test
 %ifdef Test
-byte %'ModuleName'%.%Test(void);
+uint8_t %'ModuleName'%.%Test(void);
 %define! RetVal
 %include Common\24AA_EEPROMTest.Inc
 
@@ -255,7 +215,7 @@ void %'ModuleName'%.%WriteUnprotect(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SelectDevice
 %ifdef SelectDevice
-byte %'ModuleName'%.%SelectDevice(byte addrI2C);
+uint8_t %'ModuleName'%.%SelectDevice(uint8_t addrI2C);
 %define! ParaddrI2C
 %define! RetVal
 %include Common\24AA_EEPROMSelectDevice.Inc
@@ -265,7 +225,7 @@ byte %'ModuleName'%.%SelectDevice(byte addrI2C);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
 %define! Parhandled
 %define! Pario
@@ -277,7 +237,7 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetSelectedDevice
 %ifdef GetSelectedDevice
-byte %'ModuleName'%.%GetSelectedDevice(void);
+uint8_t %'ModuleName'%.%GetSelectedDevice(void);
 %define! RetVal
 %include Common\24AA_EEPROMGetSelectedDevice.Inc
 
@@ -285,7 +245,7 @@ byte %'ModuleName'%.%GetSelectedDevice(void);
 %-BW_METHOD_END GetSelectedDevice
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG WriteBlockPage
-byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word dataSize);
+uint8_t %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize);
 %define! Paraddr
 %define! Pardata
 %define! PardataSize
@@ -313,17 +273,52 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#if %'ModuleName'%.CONFIG_HAS_WP_PIN
+%if defined(WP)
+  #include "%@WP@ModuleName.h"
+%else
+  #include "WPpin1.h"
+%endif
+#endif
+%if defined(Wait)
+#include "%@Wait@ModuleName.h"
+%else
+#include "McuWait.h"
+%endif
+%if defined(Shell)
+#include "%@Shell@ModuleName.h"
+%else
+#include "McuShell.h"
+%endif
+%if defined(Utility)
+#include "%@Utility@ModuleName.h"
+%else
+#include "McuUtility.h"
+%endif
+%if defined(I2C)
+#include "%@I2C@ModuleName.h"
+%else
+#include "McuGenericI2C.h"
+%endif
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+%if defined(Timeout)
+  #include "%@Timeout@ModuleName.h"
+%else
+  #include "McuTimeout.h"
+%endif
+#endif
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
 %-
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
-#define %'ModuleName'%.TIMEOUT_BYTE_MS        %timeoutByteMs  /* number of milli seconds as specified in properties for byte write */
-#define %'ModuleName'%.TIMEOUT_BYTE_TICKS     (%'ModuleName'%.TIMEOUT_BYTE_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
-#define %'ModuleName'%.TIMEOUT_BLOCK_MS       %timeoutBlockMs  /* number of milli seconds as specified in properties for block write */
-#define %'ModuleName'%.TIMEOUT_BLOCK_TICKS    (%'ModuleName'%.TIMEOUT_BLOCK_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
+  #define %'ModuleName'%.TIMEOUT_BYTE_TICKS     (%'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
+  #define %'ModuleName'%.TIMEOUT_BLOCK_TICKS    (%'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
 %endif
+#endif
 %-BW_CUSTOM_INCLUDE_END_M
 
 %-BW_CUSTOM_VARIABLE_START
@@ -333,14 +328,14 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
 %-     int %'ModuleName'%.counter2;
 %-
 %ifdef SelectDevice
-static byte %'ModuleName'%.I2CAddress = (%DeviceAddress&%'ModuleName'%.MAX_I2C_ADDR_MASK);%>40 /* current I2C address used */
+static uint8_t %'ModuleName'%.I2CAddress = (%'ModuleName'%.CONFIG_DEVICE_I2C_ADDRESS_BITS&%'ModuleName'%.MAX_I2C_ADDR_MASK);%>40 /* current I2C address used */
 %else
-#define %'ModuleName'%.I2CAddress (%DeviceAddress&%'ModuleName'%.MAX_I2C_ADDR_MASK)%>40 /* address defined by the A2|A1|A0 pins */
+#define %'ModuleName'%.I2CAddress (%'ModuleName'%.CONFIG_DEVICE_I2C_ADDRESS_BITS&%'ModuleName'%.MAX_I2C_ADDR_MASK)%>40 /* address defined by the A2|A1|A0 pins */
 %endif %- SelectDevice
 
 /* macros for the control byte: */
 #define %'ModuleName'%.CTRL_NBL       (0x0A<<3)                  %>40 /* control byte high nibble. Typically this is 1010 (shifted by one to the right) */
-#if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+#if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
   #define %'ModuleName'%.CTRL_ADDR      0                        %>40 /* no additional address bits */
   /* define control byte as 1010|Bx|B1|B0 */
   #define %'ModuleName'%.BANK_0         (0<<2)                   %>40 /* B0 bit (0) inside the CTRL_BYTE: 1010|B0|A1|A0 */
@@ -353,12 +348,12 @@ static byte %'ModuleName'%.I2CAddress = (%DeviceAddress&%'ModuleName'%.MAX_I2C_A
         (%'ModuleName'%.CTRL_BYTE|%'ModuleName'%.BANK_1) \
       : (%'ModuleName'%.CTRL_BYTE|%'ModuleName'%.BANK_0) )       %>40 /* 7bit address of device used to select device */
   #endif
-#elif (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_32) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_256) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_512)
+#elif (%'ModuleName'%.CONFIG_DEVICE_ID==32) || (%'ModuleName'%.CONFIG_DEVICE_ID==256) || (%'ModuleName'%.CONFIG_DEVICE_ID==512)
   #define %'ModuleName'%.CTRL_ADDR      %'ModuleName'%.I2CAddress%>40 /* address inside control byte */
   /* define control byte as 1010|A2|A1|A0 */
   #define %'ModuleName'%.CTRL_BYTE         (%'ModuleName'%.CTRL_NBL|%'ModuleName'%.CTRL_ADDR)%>40 /* 1010|A2|A1|A0 */
   #define %'ModuleName'%.DEVICE_ADDR(addr) %'ModuleName'%.CTRL_BYTE%>40 /* 7bit address of device used to select device */
-#elif %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_1025
+#elif %'ModuleName'%.CONFIG_DEVICE_ID==1025
   #define %'ModuleName'%.CTRL_ADDR      %'ModuleName'%.I2CAddress%>40 /* address inside control byte */
   /* define control byte as 1010|Bx|A1|A0 */
   #define %'ModuleName'%.BANK_0         (0<<2)                   %>40 /* B0 bit (0) inside the CTRL_BYTE: 1010|B0|A1|A0 */
@@ -381,7 +376,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" (for memory @0x00)\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  I2C Addr", buf, io->stdOut);
 
-  %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), (uint16_t)%'ModuleName'%.DEVICE_ID);
+  %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), (uint16_t)%'ModuleName'%.CONFIG_DEVICE_ID);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Type", buf, io->stdOut);
 
@@ -409,22 +404,24 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %define! Pardata
 %define! RetVal
 %include Common\24AA_EEPROMWriteByte.Inc
-byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
+uint8_t %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, uint8_t data)
 {
   uint8_t res, block[3];
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.DO_ACKNOWLEDGE_POLLING && %'ModuleName'%.TIMEOUT_BYTE_TICKS>0
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout;
 #endif
 %endif
+#endif
 
   res = %@I2C@'ModuleName'%.SelectSlave(%'ModuleName'%.DEVICE_ADDR(addr));
   if (res != ERR_OK) {
     (void)%@I2C@'ModuleName'%.UnselectSlave();
     return res;
   }
-  #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+  #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
     block[0] = (uint8_t)(addr&0xff);                             %>40 /* low byte of address */
     block[1] = data; /* switch to read mode */
     res = %@I2C@'ModuleName'%.WriteBlock(block, 2, %@I2C@'ModuleName'%.SEND_STOP);%>40 /* send address and data */
@@ -441,6 +438,7 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
 #if %'ModuleName'%.DO_ACKNOWLEDGE_POLLING
   /* do acknowledge polling */
   block[0] = 0xff; /* dummy value */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BYTE_TICKS>0
     timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_BYTE_TICKS); /* set up timeout counter */
@@ -450,7 +448,9 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
     }
 #endif
 %endif
+#endif
   do {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BYTE_TICKS>0
     isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
@@ -459,9 +459,11 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
     }
 #endif
 %endif
-    %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.PAGE_WRITE_TIME_MS);
-    res = %@I2C@'ModuleName'%.ProbeACK(block, 1, %@I2C@'ModuleName'%.SEND_STOP, %'ModuleName'%.ACK_POLLING_TIME_US);%>40 /* send address and data */
+#endif
+    %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_PAGE_WRITE_TIME_MS);
+    res = %@I2C@'ModuleName'%.ProbeACK(block, 1, %@I2C@'ModuleName'%.SEND_STOP, %'ModuleName'%.CONFIG_ACK_POLLING_TIME_US);%>40 /* send address and data */
   } while(res!=ERR_OK); /* wait until we get an ACK */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BYTE_TICKS>0
     %@Timeout@'ModuleName'%.LeaveCounter(timeout);
@@ -470,7 +472,8 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
     }
 #endif
 %endif
-#endif /* %'ModuleName'%.DO_ACKNOWLEDGE_POLLING */
+#endif
+#endif /* %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING */
   if (res != ERR_OK) {
     (void)%@I2C@'ModuleName'%.UnselectSlave();
     return res;
@@ -487,12 +490,12 @@ byte %'ModuleName'%.%WriteByte(%'ModuleName'_Address addr, byte data)
 %define! Pardata
 %define! RetVal
 %include Common\24AA_EEPROMReadByte.Inc
-byte %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, byte *data)
+uint8_t %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, uint8_t *data)
 {
   uint8_t res;
-  #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+  #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
     uint8_t addr8;
-    addr8 = (uint8_t)(addr&0xff); // low address byte
+    addr8 = (uint8_t)(addr&0xff); /* low address byte */
   #else
     uint8_t addr16[2];                                           %>40 /* big endian address on I2C bus needs to be 16bit */
 
@@ -505,7 +508,7 @@ byte %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, byte *data)
     (void)%@I2C@'ModuleName'%.UnselectSlave();
     return res;
   }
-  #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+  #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
     res = %@I2C@'ModuleName'%.WriteBlock(&addr8, 1, %@I2C@'ModuleName'%.DO_NOT_SEND_STOP);%>40 /* send 8bit address */
   #else /* use 16bit address */
     res = %@I2C@'ModuleName'%.WriteBlock(addr16, 2, %@I2C@'ModuleName'%.DO_NOT_SEND_STOP);%>40 /* send 16bit address */
@@ -532,10 +535,10 @@ byte %'ModuleName'%.%ReadByte(%'ModuleName'_Address addr, byte *data)
 %define! PardataSize
 %define! RetVal
 %include Common\24AA_EEPROMReadBlock.Inc
-byte %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)
 {
   uint8_t res;
-  #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+  #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
     uint8_t addr8;
     addr8 = (uint8_t)(addr&0xff);
   #else
@@ -549,7 +552,7 @@ byte %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, byte *data, word data
     (void)%@I2C@'ModuleName'%.UnselectSlave();
     return res;
   }
-  #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+  #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
     res = %@I2C@'ModuleName'%.WriteBlock(&addr8, 1, %@I2C@'ModuleName'%.DO_NOT_SEND_STOP);%>40 /* send 8bit address */
   #else
     res = %@I2C@'ModuleName'%.WriteBlock(addr16, 2, %@I2C@'ModuleName'%.DO_NOT_SEND_STOP);%>40 /* send 16bit address */
@@ -578,19 +581,21 @@ byte %'ModuleName'%.%ReadBlock(%'ModuleName'_Address addr, byte *data, word data
 #ifdef __HIWARE__
 #pragma MESSAGE DISABLE C1855 /* recursive function call */
 #endif
-byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word dataSize)
+uint8_t %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)
 {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.DO_ACKNOWLEDGE_POLLING && %'ModuleName'%.TIMEOUT_BLOCK_TICKS>0
   %@Timeout@'ModuleName'%.CounterHandle timeout;
   bool isTimeout;
 #endif
 %endif
-  uint8_t res, i, *p, block[%'ModuleName'%.BLOCK_BUF_SIZE+2];    %>40 /* additional 2 bytes for the address */
+#endif
+  uint8_t res, i, *p, block[%'ModuleName'%.CONFIG_BLOCK_BUF_SIZE+2];%>40 /* additional 2 bytes for the address */
   uint16_t eepromPage = (uint16_t)(addr/%'ModuleName'%.PAGE_SIZE);
   uint8_t offset = (uint8_t)(addr%%%'ModuleName'%.PAGE_SIZE);
 
-  if (dataSize==0 || dataSize>%'ModuleName'%.BLOCK_BUF_SIZE) {
+  if (dataSize==0 || dataSize>%'ModuleName'%.CONFIG_BLOCK_BUF_SIZE) {
     return ERR_OVERFLOW;                                         %>40 /* you may increase the buffer size in the properties? */
   }
   if (dataSize>%'ModuleName'%.PAGE_SIZE) {
@@ -628,7 +633,7 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
       (void)%@I2C@'ModuleName'%.UnselectSlave();
       return res;
     }
-    #if (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8) || (%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)
+    #if (%'ModuleName'%.CONFIG_DEVICE_ID==8) || (%'ModuleName'%.CONFIG_DEVICE_ID==16)
       /* 8 bit address byte, high byte of address have been place in SelectSlave(addr) */
       block[0] = (uint8_t)(addr&0xff);                           %>40 /* low byte of address */
       p = &block[1]; i = (uint8_t)dataSize;
@@ -644,13 +649,14 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
       i--;
     }
     res = %@I2C@'ModuleName'%.WriteBlock(block,
-        dataSize+((%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_8)||(%'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_16)? 1:2), %@I2C@'ModuleName'%.SEND_STOP);%>40 /* send address and data */
+        dataSize+((%'ModuleName'%.CONFIG_DEVICE_ID==8)||(%'ModuleName'%.CONFIG_DEVICE_ID==16)? 1:2), %@I2C@'ModuleName'%.SEND_STOP);%>40 /* send address and data */
     if (res != ERR_OK) {
       (void)%@I2C@'ModuleName'%.UnselectSlave();
       return res;
     }
 #if %'ModuleName'%.DO_ACKNOWLEDGE_POLLING
     /* do acknowledge polling */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BLOCK_TICKS>0
     timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_BLOCK_TICKS); /* set up timeout counter */
@@ -660,10 +666,12 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
     }
 #endif
 %endif
+#endif
     block[0] = 0xff; /* dummy value */
     do {
-      %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.PAGE_WRITE_TIME_MS);
-      res = %@I2C@'ModuleName'%.ProbeACK(block, 1, %@I2C@'ModuleName'%.SEND_STOP, %'ModuleName'%.ACK_POLLING_TIME_US);%>40 /* send address and data */
+      %@Wait@'ModuleName'%.WaitOSms(%'ModuleName'%.CONFIG_PAGE_WRITE_TIME_MS);
+      res = %@I2C@'ModuleName'%.ProbeACK(block, 1, %@I2C@'ModuleName'%.SEND_STOP, %'ModuleName'%.CONFIG_ACK_POLLING_TIME_US);%>40 /* send address and data */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BLOCK_TICKS>0
       isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
@@ -673,7 +681,9 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
       }
 #endif
 %endif
+#endif
     } while(res!=ERR_OK); /* wait until we get an ACK */
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
 #if %'ModuleName'%.TIMEOUT_BLOCK_TICKS>0
     %@Timeout@'ModuleName'%.LeaveCounter(timeout);
@@ -682,11 +692,12 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
     }
 #endif
 %endif
+#endif
     if (res != ERR_OK) {
       (void)%@I2C@'ModuleName'%.UnselectSlave();
       return res;
     }
-#endif /* %'ModuleName'%.DO_ACKNOWLEDGE_POLLING */
+#endif /* %'ModuleName'%.CONFIg_DO_ACKNOWLEDGE_POLLING */
     return %@I2C@'ModuleName'%.UnselectSlave();
   } else { /* crossing page boundaries: make two page writes */
     res = %'ModuleName'%.WriteBlock(addr, data, (uint16_t)(%'ModuleName'%.PAGE_SIZE-offset));%>40 /* first page write */
@@ -715,21 +726,21 @@ byte %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, byte *data, word 
 %define! PardataSize
 %define! RetVal
 %include Common\24AA_EEPROMWriteBlock.Inc
-byte %'ModuleName'%.%WriteBlock(%'ModuleName'_Address addr, byte *data, word dataSize)
+uint8_t %'ModuleName'%.%WriteBlock(%'ModuleName'_Address addr, uint8_t *data, uint16_t dataSize)
 {
   int32_t size;
 
-  if (dataSize<=%'ModuleName'%.BLOCK_BUF_SIZE) { /* fits into internal buffer */
+  if (dataSize<=%'ModuleName'%.CONFIG_BLOCK_BUF_SIZE) { /* fits into internal buffer */
     return %'ModuleName'%.WriteBlockPage(addr, data, dataSize);
   }
   size = dataSize;
-  while(size>=%'ModuleName'%.BLOCK_BUF_SIZE) { /* write in chunks %'ModuleName'%.BLOCK_BUF_SIZE */
-    if (%'ModuleName'%.WriteBlock(addr, data, %'ModuleName'%.BLOCK_BUF_SIZE)!=ERR_OK) {
+  while(size>=%'ModuleName'%.CONFIG_BLOCK_BUF_SIZE) { /* write in chunks %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE */
+    if (%'ModuleName'%.WriteBlock(addr, data, %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE)!=ERR_OK) {
       return ERR_FAILED;
     }
-    addr += %'ModuleName'%.BLOCK_BUF_SIZE;
-    data += %'ModuleName'%.BLOCK_BUF_SIZE;
-    size -= %'ModuleName'%.BLOCK_BUF_SIZE;
+    addr += %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE;
+    data += %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE;
+    size -= %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE;
   }
   if (size>0) { /* write remainder which is < EE241_BLOCK_BUF_SIZE  */
     if (%'ModuleName'%.WriteBlockPage(addr, data, size)!=ERR_OK) {
@@ -753,7 +764,7 @@ static void Err(void) {
   errCnt++;
 }
 
-byte %'ModuleName'%.%Test(void)
+uint8_t %'ModuleName'%.%Test(void)
 {
   uint8_t res, val, data[16];
 
@@ -868,7 +879,7 @@ byte %'ModuleName'%.%Test(void)
     return res;
   }
   if (strcmp((char*)"Hello World!", (char*)data) != 0) return ERR_FAULT;
-#if %'ModuleName'%.DEVICE_ID==%'ModuleName'%.DEVICE_ID_1025
+#if %'ModuleName'%.CONFIG_DEVICE_ID==1025
   /* testing writing to second bank */
   res = %'ModuleName'%.WriteBlock(0x10005, (uint8_t*)"Hello bank 1!", sizeof("Hello bank 1!"));
   if (res != ERR_OK) {
@@ -896,11 +907,13 @@ byte %'ModuleName'%.%Test(void)
 %include Common\24AA_EEPROMWriteProtect.Inc
 void %'ModuleName'%.%WriteProtect(void)
 {
+#if %'ModuleName'%.CONFIG_HAS_WP_PIN
 %ifdef WP
   %@WP@'ModuleName'%.SetVal();                                   %>40 /* Tie pin to Vcc/High level to protect the memory */
 %else
-  #warning "There is no WP (Write Protect) pin defined?"
+  WPpin1_SetVal();                                               %>40 /* Tie pin to Vcc/High level to protect the memory */
 %endif
+#endif
 }
 
 %endif %- WriteProtect
@@ -911,11 +924,13 @@ void %'ModuleName'%.%WriteProtect(void)
 %include Common\24AA_EEPROMWriteUnprotect.Inc
 void %'ModuleName'%.%WriteUnprotect(void)
 {
+#if %'ModuleName'%.CONFIG_HAS_WP_PIN
 %ifdef WP
   %@WP@'ModuleName'%.ClrVal();                                   %>40 /* Tie pin to Vss/Low level to allow writing to the memory */
 %else
-  #warning "There is no WP (write protect) pin defined?"
+  WPpin1_ClrVal();                                               %>40 /* Tie pin to Vss/Low level to allow writing to the memory */
 %endif
+#endif
 }
 
 %endif %- WriteUnprotect
@@ -926,7 +941,7 @@ void %'ModuleName'%.%WriteUnprotect(void)
 %define! ParaddrI2C
 %define! RetVal
 %include Common\24AA_EEPROMSelectDevice.Inc
-byte %'ModuleName'%.%SelectDevice(byte addrI2C)
+uint8_t %'ModuleName'%.%SelectDevice(uint8_t addrI2C)
 {
   if (addrI2C>%'ModuleName'%.MAX_I2C_ADDR_MASK) {
     return ERR_VALUE;                                            %>40 /* Device address too large for device address pins available. */
@@ -942,7 +957,7 @@ byte %'ModuleName'%.%SelectDevice(byte addrI2C)
 %ifdef GetSelectedDevice
 %define! RetVal
 %include Common\24AA_EEPROMGetSelectedDevice.Inc
-byte %'ModuleName'%.%GetSelectedDevice(void)
+uint8_t %'ModuleName'%.%GetSelectedDevice(void)
 {
  return %'ModuleName'%.I2CAddress;
 }
@@ -957,7 +972,7 @@ byte %'ModuleName'%.%GetSelectedDevice(void)
 %define! Pario
 %define! RetVal
 %include Common\24AA_EEPROMParseCommand.Inc
-byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
+uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   const unsigned char *p;
   uint16_t addr16;
@@ -1022,8 +1037,111 @@ byte %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const
 %CODE_BEGIN
 %CODE_END
 %-
+%-----------------------------------------------------------------------------------------
+%if defined(sdk) & %@sdk@ConfigFilesFolderName <> ""
+  %define  ConfigSrcDirFolder %%@sdk@ConfigFilesFolderName/
+%else
+  %define  ConfigSrcDirFolder
+%endif
+%-----------------------------------------------------------------------------------------
+%FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+/**
+ * \file
+ * \brief Configuration header file for I2CSpy
+ *
+ * This header file is used to configure settings the External I2C EEPROM module.
+ */
+
+#ifndef __%'ModuleName'_CONFIG_H
+#define __%'ModuleName'_CONFIG_H
+
+/* actual device */
+#ifndef %'ModuleName'%.CONFIG_DEVICE_ID
+  #define %'ModuleName'%.CONFIG_DEVICE_ID      %Device
+    /*!< Supported Device IDs: 8 (24AA08, 24LC08), 16 (24AA16, 24LC16), 32 (24AA32, 24LC32), 256 (24AA256, 24LC256, 24FC256), 512 (24AA512, 24LC512, 24FC256) or 1025 (24AA1025, 24LC1025, 24FC1025) */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_HAS_WP_PIN
+%ifdef WP
+  #define %'ModuleName'%.CONFIG_HAS_WP_PIN      (1)
+%else
+  #define %'ModuleName'%.CONFIG_HAS_WP_PIN      (0)
+%endif
+    /*!<< 1: Write Protect Pin available. 0: no Write Protect pin */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEVICE_I2C_ADDRESS_BITS
+%if defined(DeviceAddress)
+  #define %'ModuleName'%.CONFIG_DEVICE_I2C_ADDRESS_BITS   (%DeviceAddress)
+%else
+  #define %'ModuleName'%.CONFIG_DEVICE_I2C_ADDRESS_BITS   (0)
+%endif
+    /* Address bits for I2C address, usually formed by the A0, A1 and A3 pins. Admissible range: 0..7 */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE
+  #define %'ModuleName'%.CONFIG_BLOCK_BUF_SIZE   (%BlockBufSize)
+    /*!< buffer used for block read/write. Max is 128. Keep it small to reduce stack consumption. */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING
+%if defined(DoAcknowledgePolling) & %DoAcknowledgePolling = 'yes'
+  #define %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING    (1)
+%else
+  #define %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING    (0)
+%endif
+    /*!< 1: Perform acknowledge polling in the driver. 0: no acknowledge polling */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_PAGE_WRITE_TIME_MS
+%if defined(PageWriteTimeMs)
+  #define %'ModuleName'%.CONFIG_PAGE_WRITE_TIME_MS        (%PageWriteTimeMs)
+%else
+  #define %'ModuleName'%.CONFIG_PAGE_WRITE_TIME_MS        (5)
+%endif
+    /*!< Page Write Time as per data sheet, used with %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_ACK_POLLING_TIME_US
+%if defined(AckPollingTimeUs)
+  #define %'ModuleName'%.CONFIG_ACK_POLLING_TIME_US       (%AckPollingTimeUs)
+%else
+  #define %'ModuleName'%.CONFIG_ACK_POLLING_TIME_US       (100)
+%endif
+    /*!< Acknowledge polling time in the I2C driver, used with %'ModuleName'%.CONFIG_DO_ACKNOWLEDGE_POLLING  */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_USE_TIMEOUT
+%if defined(Timeout)
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT               (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT               (0)
+%endif
+    /*!< 1: use timeout, 0: do not use timeout */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS
+%if defined(timeoutByteMs)
+  #define %'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS           (%timeoutByteMs)
+%else
+  #define %'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS           (10)
+%endif
+    /*!< number of milli seconds for timeout using byte write */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS
+%if defined(timeoutBlockMs)
+  #define %'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS          (%timeoutBlockMs)
+%else
+  #define %'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS          (60)
+%endif
+    /*!< number of milliseconds for timeout using for block write */
+#endif
+
+#endif /* __%'ModuleName'_CONFIG_H */
+%-----------------------------------------------------------------------------------------
 %else %- Language (& Compiler)
-  %error^ This bean is not implemented in selected language & compiler !
+  %error^ This component is not implemented in selected language & compiler !
 %endif %- Language (& Compiler)
 %DEBUG
 %ALL_SYMBOLS
