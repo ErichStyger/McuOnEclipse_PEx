@@ -78,6 +78,25 @@
 %- Write your own includes here ...
 %-   Example:
 %-     #include "header_name.h"
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN
+  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 (0) /* Bean version have no Sec100!  */
+#else
+  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 (1) /* non-Bean version have Sec100  */
+#endif
+/* internal configuration for the API used: */
+%if defined(LDDRTC)
+#define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD            %>60 (1)  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
+%else
+#define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD            %>60 (0)  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
+%endif
+%if defined(RTC)
+#define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN           %>60 (1)  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
+%else
+#define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN           %>60 (0)  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
+%endif
+
+
+#define %'ModuleName'%.PARSE_COMMAND_ENABLED    %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 
 /* user events */
 %if defined(OnDateGet)
@@ -562,6 +581,14 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 %endfor
 #include "%'ModuleName'.h"
 #include <stdlib.h> /* for NULL */
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
+%if defined(ExternalRTC)
+  #include "%@ExternalRTC@'ModuleName'.h"
+%else
+  #include "McuExtRTC.h"
+%endif
+#endif
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -579,7 +606,7 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 #endif
 #define %'ModuleName'%.TICKS_PER_S  (1000/%'ModuleName'%.TICK_TIME_MS)%>40/* number of timer ticks per second */
 
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   /* counters used by software RTC */
   static uint8_t CntDay;                                         %>40/* Day counter */
   static uint8_t CntMonth;                                       %>40/* Month counter */
@@ -615,7 +642,6 @@ static uint8_t AddTimeToBuf(uint8_t *buf, uint16_t bufSize, TIMEREC *ttime) {
 #endif
   return ERR_OK;
 }
-
 
 static uint8_t AddDate(uint8_t *buf, uint16_t bufSize, uint8_t (*GetTimeDateFn)(TIMEREC*, DATEREC*)) {
   DATEREC tdate;
@@ -715,7 +741,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   uint8_t buf[24];
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"\r\n", io->stdOut);
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  SW RTC", (const unsigned char*)"", io->stdOut);
   buf[0] = '\0';
   if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetSWTimeDate)!=ERR_OK) {
@@ -732,7 +758,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   }
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
 #endif
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  HW RTC", (const unsigned char*)"", io->stdOut);
   buf[0] = '\0';
   if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetInternalRTCTimeDate)!=ERR_OK) {
@@ -749,7 +775,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   }
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
 #endif
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Ext. RTC", (const unsigned char*)"", io->stdOut);
   buf[0] = '\0';
   if (AddDate(buf, sizeof(buf), %'ModuleName'%.%GetExternalRTCTimeDate)!=ERR_OK) {
@@ -782,7 +808,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
 %include Common\GenericTimeDateAddTick.Inc
 void %'ModuleName'%.%AddTick(void)
 {
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   const uint8_t *ptr;                                            %>40/* Pointer to ULY/LY table */
   %@CriticalSection@'ModuleName'%.CriticalVariable()
 
@@ -825,7 +851,7 @@ void %'ModuleName'%.%AddTick(void)
 %include Common\GenericTimeDateAddTicks.Inc
 void %'ModuleName'%.%AddTicks(uint16_t nofTicks)
 {
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   while(nofTicks>0) {
     %'ModuleName'%.%AddTick();
     nofTicks--;
@@ -846,7 +872,7 @@ void %'ModuleName'%.%AddTicks(uint16_t nofTicks)
 %include Common\GenericTimeDateSetSWTimeDate.Inc
 uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   uint8_t res;
   uint32_t nofTicks;
   bool failed = FALSE;
@@ -890,7 +916,7 @@ uint8_t %'ModuleName'%.%SetSWTimeDate(TIMEREC *time, DATEREC *date)
 %include Common\GenericTimeDateGetSWTimeDate.Inc
 uint8_t %'ModuleName'%.%GetSWTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   uint8_t res;
   uint32_t ticks;
   bool failed = FALSE;
@@ -950,19 +976,19 @@ uint8_t %'ModuleName'%.%SetTime(uint8_t Hour, uint8_t Min, uint8_t Sec, uint8_t 
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
   time.Sec100 = Sec100;
 #endif
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
   res = %'ModuleName'%.%SetSWTimeDate(&time, NULL);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
   res = %'ModuleName'%.%SetInternalRTCTimeDate(&time, NULL);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
   res = %'ModuleName'%.%SetExternalRTCTimeDate(&time, NULL);
   if (res!=ERR_OK) {
     failed = TRUE;
@@ -992,11 +1018,11 @@ uint8_t %'ModuleName'%.%GetTime(TIMEREC *time)
 {
   uint8_t res;
 
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
   res = %'ModuleName'%.%GetSWTimeDate(time, NULL);
-#elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
   res = %'ModuleName'%.%GetInternalRTCTimeDate(time, NULL);
-#elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
   res = %'ModuleName'%.%GetExternalRTCTimeDate(time, NULL);
 #else
   #error "invalid configuration!"
@@ -1040,19 +1066,19 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day)
   date.Year = Year;
   date.Month = Month;
   date.Day = Day;
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
   res = %'ModuleName'%.%SetSWTimeDate(NULL, &date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
   res = %'ModuleName'%.%SetInternalRTCTimeDate(NULL, &date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
   res = %'ModuleName'%.%SetExternalRTCTimeDate(NULL, &date);
   if (res!=ERR_OK) {
     failed = TRUE;
@@ -1079,17 +1105,17 @@ uint8_t %'ModuleName'%.%GetDate(DATEREC *date)
 {
   uint8_t res;
 
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
   res = %'ModuleName'%.%GetSWTimeDate(NULL, date);
-#elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
   res = %'ModuleName'%.%GetInternalRTCTimeDate(NULL, date);
-#elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
   res = %'ModuleName'%.%GetExternalRTCTimeDate(NULL, date);
 #else
   #error "invalid configuration!"
   res = ERR_FAILED;
 #endif
-#if %'ModuleName'%.ON_DATE_GET_EVENT && %'ModuleName'%.USE_SOFTWARE_RTC
+#if %'ModuleName'%.ON_DATE_GET_EVENT && %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   %'ModuleName'%.ON_DATE_GET_EVENT_NAME(&CntDay, &CntMonth, &CntYear); /* call user event */
 #endif
   return res;
@@ -1105,11 +1131,11 @@ uint8_t %'ModuleName'%.%GetDate(DATEREC *date)
 uint8_t %'ModuleName'%.%Init(void)
 {
   /* initialize software RTC time and date */
-#if %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
+#if %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
   return %'ModuleName'%.%SetSWTimeDate((TIMEREC*)&%'ModuleName'%.DefaultTime, (DATEREC*)&%'ModuleName'%.DefaultDate);
-#elif %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
   return %'ModuleName'%.%SyncWithInternalRTC();
-#elif %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC
   return %'ModuleName'%.%SyncWithExternalRTC();
 #else
   return ERR_FAILED; /* wrong or no init specified? */
@@ -1270,7 +1296,7 @@ uint8_t %'ModuleName'%.%TimeToTicks(TIMEREC *time, uint32_t *ticks)
 %include Common\GenericTimeDateSetInternalRTCTimeDate.Inc
 uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD
   LDD_RTC_TTime timeDate;
 
   /* get current time/date */
@@ -1295,7 +1321,7 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 %else
   return RTC1_SetTime(RTC1_DeviceData, &timeDate); /* get information from HW RTC */
 %endif
-#elif %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#elif %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN
   uint8_t res;
 
   if (time!=NULL) {
@@ -1337,7 +1363,7 @@ uint8_t %'ModuleName'%.%SetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 %include Common\GenericTimeDateGetInternalRTCTimeDate.Inc
 uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD
   LDD_RTC_TTime timeDate;
 
 %if defined(LDDRTC)
@@ -1359,7 +1385,7 @@ uint8_t %'ModuleName'%.%GetInternalRTCTimeDate(TIMEREC *time, DATEREC *date)
     date->Day = timeDate.Day;
   }
   return ERR_OK;
-#elif %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#elif %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN
   TIMEREC t;
   DATEREC d;
   uint8_t res;
@@ -1461,7 +1487,7 @@ uint8_t %'ModuleName'%.%SyncSWtimeToInternalRTCsec(void)
 %include Common\GenericTimeDateSyncWithInternalRTC.Inc
 uint8_t %'ModuleName'%.%SyncWithInternalRTC(void)
 {
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_LDD || %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC_BEAN
   TIMEREC time;
   DATEREC date;
   uint8_t res;
@@ -1503,7 +1529,7 @@ uint8_t %'ModuleName'%.%SyncWithInternalRTC(void)
 %include Common\GenericTimeDateSyncWithExternalRTC.Inc
 uint8_t %'ModuleName'%.%SyncWithExternalRTC(void)
 {
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
   TIMEREC time;
   DATEREC date;
   uint8_t res;
@@ -1538,14 +1564,14 @@ uint8_t %'ModuleName'%.%SyncWithExternalRTC(void)
 %include Common\GenericTimeDateSetExternalRTCTimeDate.Inc
 uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
   uint8_t res;
 
   if (time!=NULL) {
 %if defined(ExternalRTC)
     res = %@ExternalRTC@'ModuleName'%.SetTime(time->Hour, time->Min, time->Sec,
 %else
-    res = RTC2_SetTime(time->Hour, time->Min, time->Sec,
+    res = McuExtRTC_SetTime(time->Hour, time->Min, time->Sec,
 %endif
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
         time->Sec100
@@ -1561,7 +1587,7 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 %if defined(ExternalRTC)
     res = %@ExternalRTC@'ModuleName'%.SetDate(date->Year, date->Month, date->Day);
 %else
-    res = RTC2_SetDate(date->Year, date->Month, date->Day);
+    res = McuExtRTC_SetDate(date->Year, date->Month, date->Day);
 %endif
     if (res!=ERR_OK) {
       return res;
@@ -1586,14 +1612,14 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 %include Common\GenericTimeDateGetExternalRTCTimeDate.Inc
 uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 {
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
   uint8_t res;
 
   if (time!=NULL) {
 %if defined(ExternalRTC)
     res = %@ExternalRTC@'ModuleName'%.GetTime(time);
 %else
-    res = RTC2_GetTime(time);
+    res = McuExtRTC_GetTime(time);
 %endif
     if (res!=ERR_OK) {
       return res;
@@ -1603,7 +1629,7 @@ uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
 %if defined(ExternalRTC)
     res = %@ExternalRTC@'ModuleName'%.GetDate(date);
 %else
-    res = RTC2_GetDate(date);
+    res = McuExtRTC_GetDate(date);
 %endif
     if (res!=ERR_OK) {
       return res;
@@ -1631,19 +1657,19 @@ uint8_t %'ModuleName'%.%SetTimeDate(TIMEREC *time, DATEREC *date)
   uint8_t res = ERR_OK;
   bool failed = FALSE;
 
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
   res = %'ModuleName'%.SetSWTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
   res = %'ModuleName'%.SetInternalRTCTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
   }
 #endif
-#if %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
+#if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
   res = %'ModuleName'%.SetExternalRTCTimeDate(time, date);
   if (res!=ERR_OK) {
     failed = TRUE;
@@ -1668,11 +1694,11 @@ uint8_t %'ModuleName'%.%GetTimeDate(TIMEREC *time, DATEREC *date)
 {
   uint8_t res;
 
-#if %'ModuleName'%.USE_SOFTWARE_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
+#if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
   res = %'ModuleName'%.%GetSWTimeDate(time, date);
-#elif %'ModuleName'%.USE_INTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC
   res = %'ModuleName'%.%GetInternalRTCTimeDate(time, date);
-#elif %'ModuleName'%.USE_EXTERNAL_HW_RTC && %'ModuleName'%.USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
+#elif %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC && %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD==%'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC
   res = %'ModuleName'%.%GetExternalRTCTimeDate(time, date);
 #else
   #error "invalid configuration!"
@@ -1960,7 +1986,7 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 %INITIALIZATION
   /* ### %DeviceType "%DeviceName" init code ... */
 %CODE_BEGIN
-#if %'ModuleName'%.INIT_IN_STARTUP
+#if %'ModuleName'%.CONFIG_INIT_IN_PE_LOWLEVEL_INIT
   (void)%'ModuleName'%.%Init();
 #endif
 %CODE_END
@@ -1986,107 +2012,124 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* if command line parser is enabled */
+#ifndef %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 %ifdef ParseCommand
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  1  /* set to 1 if method ParseCommand() is present, 0 otherwise */
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED            %>60 (1)
 %else
-#define %'ModuleName'%.PARSE_COMMAND_ENABLED  0 /* set to 1 if method ParseCommand() is present, 0 otherwise */
+  #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED            %>60 (0)
 %endif %- ParseCommand
+    /*!< set to 1 if method ParseCommand() is present, 0 otherwise */
+#endif
 
-/* if Init() is called durint startup */
+#ifndef %'ModuleName'%.CONFIG_INIT_IN_PE_LOWLEVEL_INIT
 %if defined(InitInStartup) & %InitInStartup='yes'
-#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 1 /* 1: call Init() during startup, 0: application needs to call Init() */
+  #define %'ModuleName'%.CONFIG_INIT_IN_PE_LOWLEVEL_INIT         %>60 (1)
 %else
-#define %'ModuleName'%.INIT_IN_STARTUP                           %>60 0 /* 1: call Init() during startup, 0: application needs to call Init() */
+  #define %'ModuleName'%.CONFIG_INIT_IN_PE_LOWLEVEL_INIT         %>60 (0)
 %endif
+    /*!< 1: call Init() during Processor Expert LowLevelInit(), 0: application needs to call Init() */
+#endif
+
+/* ******************** settings for software RTC ********************************** */
+#ifndef %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
+%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
+  #define %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC                 %>60 (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC                 %>60 (0)  /* set to 1 if using software RTC, 0 otherwise */
+%endif
+    /*!< set to 1 if using software RTC, 0 otherwise */
+#endif
 
 /* RTC Initialization options during Init() */
 #define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS           %>60 0  /* init software RTC from default values */
 #define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC       %>60 1  /* init software RTC from internal RTC values */
 #define %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC       %>60 2  /* init software RTC from external RTC values */
 
-/* settings for software RTC */
-%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
-#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 1  /* set to 1 if using software RTC, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_SOFTWARE_RTC                          %>60 0  /* set to 1 if using software RTC, 0 otherwise */
-%endif
+#ifndef %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD
 %if defined(SoftwareRTCInit)
 %if %SoftwareRTCInit="InitFromDefaults"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
 %elif %SoftwareRTCInit="InitFromInternalRTC"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC /* which method to use during Init() */
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
 %elif %SoftwareRTCInit="InitFromExternalRTC"
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC /* which method to use during Init() */
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC
 %endif
 %else
-#define %'ModuleName'%.INIT_SOFTWARE_RTC_METHOD                  %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS /* which method to use during Init() */
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
 %endif
-
-/* settings for internal hardware RTC */
-%if defined(LDDRTC)
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 1  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%elif defined(RTC)
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 1  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 1  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC                       %>60 0  /* set to 1 if using internal HW RTC, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN                  %>60 0  /* set to 1 if using HW RTC using normal bean driver, 0 otherwise */
-#define %'ModuleName'%.USE_INTERNAL_HW_RTC_LDD                   %>60 0  /* set to 1 if using HW RTC using LDD driver, 0 otherwise */
-%endif
-
-%if defined(ExternalRTC)
-#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 1  /* set to 1 if using external HW RTC driver, 0 otherwise */
-%else
-#define %'ModuleName'%.USE_EXTERNAL_HW_RTC                       %>60 0  /* set to 1 if using external HW RTC driver, 0 otherwise */
-%endif
-
-#if %'ModuleName'%.USE_INTERNAL_HW_RTC_BEAN
-  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 0 /* Bean version have no Sec100!  */
-#else
-  #define %'ModuleName'%.HAS_SEC100_IN_TIMEREC                   %>60 1 /* non-Bean version have Sec100  */
+    /*!< which method to use during Init() */
 #endif
 
-/* SetTime() and SetDate() configuration */
-%if defined(SetDateTimeForSoftwareRTC) & %SetDateTimeForSoftwareRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 1 /* 1: Enable setting software RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC    %>60 0 /* 1: Enable setting software RTC time/date */
-%endif
-%if defined(SetDateTimeForInternalRTC) & %SetDateTimeForInternalRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 1 /* 1: Enable setting internal RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_INTERNAL_RTC    %>60 0 /* 1: Enable setting internal RTC time/date */
-%endif
-%if defined(SetDateTimeForExternalRTC) & %SetDateTimeForExternalRTC='yes'
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 1 /* 1: Enable setting external RTC time/date */
-%else
-#define %'ModuleName'%.SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC    %>60 0 /* 1: Enable setting external RTC time/date */
-%endif
+/* ****************** settings for internal hardware RTC *************************** */
 
-/* GetTime() and GetDate() configuration */
+#ifndef %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC
+%if defined(LDDRTC) | defined(RTC)
+  #define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC              %>60 (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_INTERNAL_HW_RTC              %>60 (0)
+%endif
+    /*!< set to 1 if using internal HW RTC, 0 otherwise */
+#endif
+
+/* ****************** settings for external hardware RTC *************************** */
+#ifndef %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC              %>60 (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC              %>60 (0)
+%endif
+    /*!< set to 1 if using external HW RTC driver, 0 otherwise */
+#endif
+
+/* ********************************************************************************* */
+/* SetTime() and SetDate() configuration */
+#ifndef %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC
+%if defined(SetDateTimeForSoftwareRTC) & %SetDateTimeForSoftwareRTC='yes'
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC%>70 (1)
+%else
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_SOFTWARE_RTC%>70 (0)
+%endif
+    /*!< 1: SetTime() and SetDate() write to software RTC. 0: do not use software RTC in SetTime() and SetDate() */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC
+%if defined(SetDateTimeForInternalRTC) & %SetDateTimeForInternalRTC='yes'
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC%>70 (1)
+%else
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_INTERNAL_RTC%>70 (0)
+%endif
+    /*!< 1: SetTime() and SetDate() write to internal RTC. 0: do not use internal RTC in SetTime() and SetDate() */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC
+%if defined(SetDateTimeForExternalRTC) & %SetDateTimeForExternalRTC='yes'
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC%>70 (1)
+%else
+  #define %'ModuleName'%.CONFIG_SET_TIME_DATE_METHOD_USES_EXTERNAL_RTC%>70 (0)
+%endif
+    /*!< 1: SetTime() and SetDate() write to external RTC. 0: do not use external RTC in SetTime() and SetDate() */
+#endif
+
+/* ********************************************************************************* */
+/* GetTime() and GetDate() configuration options: */
 #define %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC         %>60 1 /* use software RTC */
 #define %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC         %>60 2 /* use internal RTC */
 #define %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC         %>60 3 /* use external RTC */
+
+#ifndef %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD
 %if defined(GetTimeDateMethod)
 %if GetTimeDateMethod="SoftwareRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
+  #define %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD         %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
 %elif GetTimeDateMethod="InternalRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC /* specifies method to get time and date */
+  #define %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD         %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_INTERNAL_RTC /* specifies method to get time and date */
 %elif GetTimeDateMethod="ExternalRTC"
-#define %'ModuleName'%.USE_GET_TIME_DATE_METHOD                  %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC /* specifies method to get time and date */
+  #define %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD         %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_EXTERNAL_RTC /* specifies method to get time and date */
 %endif
 %else
-  #define %'ModuleName'%.GET_TIME_DATE_METHOD                    %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC /* specifies method to get time and date */
+  #define %'ModuleName'%.CONFIG_USE_GET_TIME_DATE_METHOD         %>60 %'ModuleName'%.GET_TIME_DATE_METHOD_SOFTWARE_RTC
 %endif
-
-/* default time and date format strings */
-#define %'ModuleName'%.DEFAULT_TIME_FORMAT_STR  "hh:mm:ss,cc"
-#define %'ModuleName'%.DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
-
+    /*!< specifies method to get time and date */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
