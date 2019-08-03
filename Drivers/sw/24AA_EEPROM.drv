@@ -121,7 +121,7 @@
 
 #ifndef __BWUserType_%'ModuleName'_Address
 #define __BWUserType_%'ModuleName'_Address
-  typedef  %'ModuleName'%.ADDRT %'ModuleName'%.Address;          %>40/* A type large enough to hold the address, depending on the EEPROM used. */
+  typedef  %'ModuleName'%.ADDRT %'ModuleName'%.Address;          %>40/* A type large enought to hold the address, depending on the EEPROM used. */
 #endif
 
 %-ENDUSRTYPES
@@ -253,6 +253,22 @@ uint8_t %'ModuleName'%.WriteBlockPage(%'ModuleName'_Address addr, uint8_t *data,
 %include Common\GeneralInternal.inc (WriteBlockPage)
 
 %-INTERNAL_METHOD_END WriteBlockPage
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\24AA_EEPROMDeinit.Inc
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+void %'ModuleName'%.%Init(void);
+%include Common\24AA_EEPROMInit.Inc
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1019,6 +1035,28 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\24AA_EEPROMDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Deinit
+%-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN Init
+%ifdef Init
+%include Common\24AA_EEPROMInit.Inc
+void %'ModuleName'%.%Init(void)
+{
+  /* nothing needed */
+}
+
+%endif %- Init
+%-BW_METHOD_END Init
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
