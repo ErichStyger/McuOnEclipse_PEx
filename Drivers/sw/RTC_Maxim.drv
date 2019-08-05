@@ -620,7 +620,7 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  time", buf, io->stdOut);
 
   %@Utility@'ModuleName'%.Num16uToStr(buf, sizeof(buf), McuExtRTC_CONFIG_DEVICE);
-  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)", Addr 0x");
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)", I2C Addr 0x");
   %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), %'ModuleName'%.CONFIG_DEVICE_ADDRESS);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  device", buf, io->stdOut);
