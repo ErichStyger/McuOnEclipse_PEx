@@ -674,7 +674,7 @@ static uint8_t DateCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
       /* update software real time clock */
       res = %'ModuleName'%.%SetDate(year, month, day);
       if (res != ERR_OK) {
-        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting time\r\n", io->stdErr);
+        %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failure setting date\r\n", io->stdErr);
         res = ERR_FAILED;
       }
     } else {
@@ -2048,14 +2048,14 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 #ifndef %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD
 %if defined(SoftwareRTCInit)
 %if %SoftwareRTCInit="InitFromDefaults"
-  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD         %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
 %elif %SoftwareRTCInit="InitFromInternalRTC"
-  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD         %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
 %elif %SoftwareRTCInit="InitFromExternalRTC"
-  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD         %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_EXTERNAL_RTC
 %endif
 %else
-  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD                %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
+  #define %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD         %>60 %'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
 %endif
     /*!< which method to use during Init() */
 #endif
