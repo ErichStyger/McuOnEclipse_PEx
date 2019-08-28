@@ -1806,106 +1806,122 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 
 #ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED
 %if defined(BlockingSend) & %BlockingSend='yes'
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED  (1)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED            %>60(1)
 %else
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED  (0)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_ENABLED            %>60(0)
 %endif
     /*!< 1: Sending is blocking (with an optional timeout); 0: Do not block on sending */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS
 %if defined(ShellBlockingSendTimeoutMs)
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS  (%ShellBlockingSendTimeoutMs)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS         %>60(%ShellBlockingSendTimeoutMs)
 %else
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS  (0)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_MS         %>60(0)
 %endif
     /*!< Total blocking time (timeout) in milliseconds, uses 0 for blocking without a timeout */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS
 %if defined(WaitTimeMs)
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS  (%WaitTimeMs)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS    %>60(%WaitTimeMs)
 %else
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS  (0)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_TIMEOUT_WAIT_MS    %>60(0)
 %endif
     /*!< waiting time during blocking, use 0 (zero) for polling */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT
 %if defined(BlockingSend) & %BlockingSend='yes'
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT  (1)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT          %>60(1)
 %else
-  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT  (0)
+  #define %'ModuleName'%.CONFIG_BLOCKING_SEND_RTOS_WAIT          %>60(0)
 %endif
     /*!< 1: Use WaitmsOS() instead of Waitms(); 0: Use Waitms() instead of WaitOSms() */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_MUTEX
 %if defined(ConsoleSempahore) & %ConsoleSempahore='yes'
-  #define %'ModuleName'%.CONFIG_USE_MUTEX  (1)
+  #define %'ModuleName'%.CONFIG_USE_MUTEX                        %>60(1)
 %else
-  #define %'ModuleName'%.CONFIG_USE_MUTEX  (0)
+  #define %'ModuleName'%.CONFIG_USE_MUTEX                        %>60(0)
 %endif
     /*!< 1: use RTOS mutex; 0: do not use RTOS mutex */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE
 %if defined(ShellDefaultBufferSize)
-  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  (%ShellDefaultBufferSize)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE        %>60(%ShellDefaultBufferSize)
 %else
-  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  (0)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE        %>60(0)
 %endif
     /*!< default buffer size for shell command parsing */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL
 %if defined(Serial)
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL  (1)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL                   %>60(1)
 %else
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL  (0)
+  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL                   %>60(0)
 %endif
     /*!< 1: the shell implements its own StdIO which is returned by GetStdio(); 0: The shell does not implement its own standard I/O */
 #endif
 
 #if %'ModuleName'%.CONFIG_DEFAULT_SERIAL
-%if defined(Serial)
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME   %@Serial@'ModuleName'%.RecvChar
-%else
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME   RecvChar
-%endif
-    /*!< Function name to read a character and returning ERR_OK if it was successful */
+  #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE
+  %if defined(Serial)
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE         %>60"%@Serial@'ModuleName'.h"
+  %else
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE         %>60"McuSerial.h"
+  %endif
+      /*!< Include for the functions below */
+  #endif
 
-%if defined(Serial)
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   %@Serial@'ModuleName'%.SendChar
-%else
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   SendChar
-%endif
-    /*!< Function name to send a character and returning ERR_OK if it was successful */
+  #include %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE
 
-%if defined(Serial)
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME   %@Serial@'ModuleName'%.GetCharsInRxBuf
-%else
-  #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME   GetCharsInRxBuf
-%endif
+  #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME
+  %if defined(Serial)
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME%>60%@Serial@'ModuleName'%.RecvChar
+  %else
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME%>60McuSerial_RecvChar
+  %endif
+      /*!< Function name to read a character and returning ERR_OK if it was successful */
+  #endif
+
+  #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME
+  %if defined(Serial)
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   %>60%@Serial@'ModuleName'%.SendChar
+  %else
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_SEND_FCT_NAME   %>60McuSerial_SendChar
+  %endif
+      /*!< Function name to send a character and returning ERR_OK if it was successful */
+  #endif
+
+  #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME
+  %if defined(Serial)
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME%>60%@Serial@'ModuleName'%.GetCharsInRxBuf
+  %else
+    #define %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RXAVAIL_FCT_NAME%>60McuSerial_GetCharsInRxBuf
+  %endif
     /*!< Function name to check if there is anything available to receive and returns TRUE, otherwise FALSE */
+  #endif
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_PROMPT_STRING
 %if defined(Prompt)
-  #define %'ModuleName'%.CONFIG_PROMPT_STRING    %Prompt
+  #define %'ModuleName'%.CONFIG_PROMPT_STRING                    %>60%Prompt
 %else
-  #define %'ModuleName'%.CONFIG_PROMPT_STRING    "CMD>"
+  #define %'ModuleName'%.CONFIG_PROMPT_STRING                    %>60"CMD>"
 %endif
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_PROJECT_NAME_STRING
 %if defined(ProjectNameStr)
-  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING    "%ProjectNameStr"
+  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING              %>60"%ProjectNameStr"
 %else
-  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING    "My Project"
+  #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING              %>60"My Project"
 %endif
 #endif
-
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
