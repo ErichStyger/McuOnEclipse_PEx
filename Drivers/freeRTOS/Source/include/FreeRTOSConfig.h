@@ -193,16 +193,18 @@
   #define configTOTAL_HEAP_SIZE                                    %>50 (4096) /* size of heap in bytes */
 %endif
 #endif /* configTOTAL_HEAP_SIZE */
+#ifndef configUSE_HEAP_SECTION_NAME
 %if defined(HeapSectionName)
-#define configUSE_HEAP_SECTION_NAME                              %>50 1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
+  #define configUSE_HEAP_SECTION_NAME                              %>50 1 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
 %else
-#define configUSE_HEAP_SECTION_NAME                              %>50 0 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
+  #define configUSE_HEAP_SECTION_NAME                              %>50 0 /* set to 1 if a custom section name (configHEAP_SECTION_NAME_STRING) shall be used, 0 otherwise */
 %endif
-#if configUSE_HEAP_SECTION_NAME
+#endif
+#ifndef configUSE_HEAP_SECTION_NAME
 %if defined(HeapSectionName)
-#define configHEAP_SECTION_NAME_STRING   %>50 "%HeapSectionName" /* heap section name (use e.g. ".m_data_20000000" for gcc and "m_data_20000000" for IAR). Check your linker file for the name used. */
+  #define configHEAP_SECTION_NAME_STRING   %>50 "%HeapSectionName" /* heap section name (use e.g. ".m_data_20000000" for gcc and "m_data_20000000" for IAR). Check your linker file for the name used. */
 %else
-#define configHEAP_SECTION_NAME_STRING  %>50 ".m_data_20000000" /* heap section name (use e.g. ".m_data_20000000" for gcc and "m_data_20000000" for IAR). Check your linker file for the name used. */
+  #define configHEAP_SECTION_NAME_STRING  %>50 ".m_data_20000000" /* heap section name (use e.g. ".m_data_20000000" for KDS/gcc, ".bss.$SRAM_LOWER.FreeRTOS" for MCUXpresso or "m_data_20000000" for IAR). Check your linker file for the name used. */
 %endif
 #endif
 %if defined(ApplicationAllocatedHeap) & %ApplicationAllocatedHeap='yes'
@@ -210,19 +212,25 @@
 %else
 #define configAPPLICATION_ALLOCATED_HEAP                         %>50 0 /* set to one if application is defining heap ucHeap[] variable, 0 otherwise */
 %endif
+#ifndef configSUPPORT_DYNAMIC_ALLOCATION
 %if defined(DynamicAllocation) & %DynamicAllocation='yes'
-#define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 1 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
+  #define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 1 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
 %else
-#define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 0 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
+  #define configSUPPORT_DYNAMIC_ALLOCATION                         %>50 0 /* 1: make dynamic allocation functions for RTOS available. 0: only static functions are allowed */
 %endif
+#endif
+#ifndef configSUPPORT_STATIC_ALLOCATION
 %if defined(StaticAllocation) & %StaticAllocation='yes'
-#define configSUPPORT_STATIC_ALLOCATION                          %>50 1 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
+  #define configSUPPORT_STATIC_ALLOCATION                          %>50 1 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
 %else
-#define configSUPPORT_STATIC_ALLOCATION                          %>50 0 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
+  #define configSUPPORT_STATIC_ALLOCATION                          %>50 0 /* 1: make static allocation functions for RTOS available. 0: only dynamic functions are allowed */
 %endif
+#endif
 #define configUSE_NEWLIB_REENTRANT                               %>50 (configUSE_HEAP_SCHEME==6) /* 1: a newlib reent structure will be allocated for each task; 0: no such reentr structure used */
 /*----------------------------------------------------------*/
-#define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
+#ifndef configMAX_TASK_NAME_LEN
+  #define configMAX_TASK_NAME_LEN                                  %>50 %TaskNameLength /* task name length in bytes */
+#endif
 #ifndef configUSE_TRACE_FACILITY
 %if %UseTraceFacility='yes'
   #define configUSE_TRACE_FACILITY                                 %>50 1 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
@@ -230,64 +238,91 @@
   #define configUSE_TRACE_FACILITY                                 %>50 0 /* 1: include additional structure members and functions to assist with execution visualization and tracing, 0: no runtime stats/trace */
 %endif
 #endif
-#define configUSE_STATS_FORMATTING_FUNCTIONS                     %>50 (configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS)
+#ifndef configUSE_STATS_FORMATTING_FUNCTIONS
+  #define configUSE_STATS_FORMATTING_FUNCTIONS                     %>50 (configUSE_TRACE_FACILITY || configGENERATE_RUN_TIME_STATS)
+#endif
 %if %Use16bitTicks='yes'
 #define configUSE_16_BIT_TICKS                                   %>50 1 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
 %else
 #define configUSE_16_BIT_TICKS                                   %>50 0 /* 1: use 16bit tick counter type, 0: use 32bit tick counter type */
 %endif
+#ifndef configIDLE_SHOULD_YIELD
 %if %IdleShouldYield='yes'
-#define configIDLE_SHOULD_YIELD                                  %>50 1 /* 1: the IDEL task will yield as soon as possible. 0: The IDLE task waits until preemption. */
+  #define configIDLE_SHOULD_YIELD                                  %>50 1 /* 1: the IDEL task will yield as soon as possible. 0: The IDLE task waits until preemption. */
 %else
-#define configIDLE_SHOULD_YIELD                                  %>50 0
+  #define configIDLE_SHOULD_YIELD                                  %>50 0
 %endif
+#endif
+#ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
 %if defined(configUseOptimizedTaskSelection) & %configUseOptimizedTaskSelection='yes'
-#define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (1 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
+  #define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (1 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
 %else
-#define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (0 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
+  #define configUSE_PORT_OPTIMISED_TASK_SELECTION                  %>50 (0 && configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY)) /* 1: the scheduler uses an optimized task selection as defined by the port (if available). 0: normal task selection is used */
 %endif
+#endif
+#ifndef configUSE_CO_ROUTINES
 %if %UseCoroutines='yes'
-#define configUSE_CO_ROUTINES                                    %>50 1
+  #define configUSE_CO_ROUTINES                                    %>50 1
 %else
-#define configUSE_CO_ROUTINES                                    %>50 0
+  #define configUSE_CO_ROUTINES                                    %>50 0
 %endif
+#endif
+#ifndef configUSE_MUTEXES
 %if %UseMutexes='yes'
-#define configUSE_MUTEXES                                        %>50 1
+  #define configUSE_MUTEXES                                        %>50 1
 %else
-#define configUSE_MUTEXES                                        %>50 0
+  #define configUSE_MUTEXES                                        %>50 0
 %endif
+#endif
 %-
+#ifndef configCHECK_FOR_STACK_OVERFLOW
 %ifdef vApplicationStackOverflowHook
-#define configCHECK_FOR_STACK_OVERFLOW                           %>50 %StackOverflowCheckingMethodNumber /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */
-#define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 %vApplicationStackOverflowHook
+  #define configCHECK_FOR_STACK_OVERFLOW                           %>50 %StackOverflowCheckingMethodNumber /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */
 %else
-#define configCHECK_FOR_STACK_OVERFLOW                           %>50 0 /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */  
-#define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 vApplicationStackOverflowHook
+  #define configCHECK_FOR_STACK_OVERFLOW                           %>50 0 /* 0 is disabling stack overflow. Set it to 1 for Method1 or 2 for Method2 */
 %endif
+#endif
+#ifndef configCHECK_FOR_STACK_OVERFLOW_NAME
+%ifdef vApplicationStackOverflowHook
+  #define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 %vApplicationStackOverflowHook
+%else
+  #define configCHECK_FOR_STACK_OVERFLOW_NAME                      %>50 vApplicationStackOverflowHook
+%endif
+#endif
 %-
+#ifndef configUSE_RECURSIVE_MUTEXES
 %if %UseRecursiveMutexes='yes'
-#define configUSE_RECURSIVE_MUTEXES                              %>50 1
+  #define configUSE_RECURSIVE_MUTEXES                              %>50 1
 %else
-#define configUSE_RECURSIVE_MUTEXES                              %>50 0
+  #define configUSE_RECURSIVE_MUTEXES                              %>50 0
 %endif
+#endif
 %-
-#define configQUEUE_REGISTRY_SIZE                                %>50 %QueueRegistrySize
+#ifndef configQUEUE_REGISTRY_SIZE
+  #define configQUEUE_REGISTRY_SIZE                                %>50 %QueueRegistrySize
+#endif
 %-
+#ifndef configUSE_QUEUE_SETS
 %if %useQueueSets='yes'
-#define configUSE_QUEUE_SETS                                     %>50 1
+  #define configUSE_QUEUE_SETS                                     %>50 1
 %else
-#define configUSE_QUEUE_SETS                                     %>50 0
+  #define configUSE_QUEUE_SETS                                     %>50 0
 %endif
+#endif
+#ifndef configUSE_COUNTING_SEMAPHORES
 %if defined(xSemaphoreCreateCounting)
-#define configUSE_COUNTING_SEMAPHORES                            %>50 1
+  #define configUSE_COUNTING_SEMAPHORES                            %>50 1
 %else
-#define configUSE_COUNTING_SEMAPHORES                            %>50 0
+  #define configUSE_COUNTING_SEMAPHORES                            %>50 0
 %endif
+#endif
+#ifndef configUSE_APPLICATION_TASK_TAG
 %if %UseApplicationTaskTags='yes'
-#define configUSE_APPLICATION_TASK_TAG                           %>50 1
+  #define configUSE_APPLICATION_TASK_TAG                           %>50 1
 %else
-#define configUSE_APPLICATION_TASK_TAG                           %>50 0
+  #define configUSE_APPLICATION_TASK_TAG                           %>50 0
 %endif
+#endif
 /* Tickless Idle Mode ----------------------------------------------------------*/
 #ifndef configUSE_TICKLESS_IDLE
 %if %TicklessIdleModeEnabled='yes'
@@ -330,39 +365,71 @@
 #endif
 #define configMAX_CO_ROUTINE_PRIORITIES                          %>50 %MaxCoroutinePriorities /* co-routine priorities can be from 0 up to this value-1 */
 
+/* the following needs to be defined (present) or not (not present)! */
 %if defined(TaskExitErrorHandler) & %TaskExitErrorHandler='no'
 #define configTASK_RETURN_ADDRESS                                %>50 0 /* return address of task is zero */
 %else
 /* #define portTASK_RETURN_ADDRESS   0                           %>50 0 */ /* ability to overwrite task return address for port.c */
 %endif
 
+#ifndef configRECORD_STACK_HIGH_ADDRESS
 %if defined(RecordStackHighAddress) & %RecordStackHighAddress='yes'
-#define configRECORD_STACK_HIGH_ADDRESS                         %>50 1  /* 1: record stack high address for the debugger, 0: do not record stack high address */
+  #define configRECORD_STACK_HIGH_ADDRESS                         %>50 1  /* 1: record stack high address for the debugger, 0: do not record stack high address */
 %else
-#define configRECORD_STACK_HIGH_ADDRESS                         %>50 0  /* 1: record stack high address for the debugger, 0: do not record stack high address */
+  #define configRECORD_STACK_HIGH_ADDRESS                         %>50 0  /* 1: record stack high address for the debugger, 0: do not record stack high address */
 %endif
+#endif
 
 /* Software timer definitions. */
+#ifndef configUSE_TIMERS
 %if %TimersEnabled='yes'
-#define configUSE_TIMERS                                         %>50 1 /* 1: enable software timers; 0: software timers disabled */
-#define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority /* e.g. (configMAX_PRIORITIES-1U) */
-#define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* size of queue for the timer task */
-#define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth /* e.g. (configMINIMAL_STACK_SIZE) */
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 1 /* 1: function is included; 0: do not include function */
-#define INCLUDE_xTimerPendFunctionCall                           %>50 1 /* 1: function is included; 0: do not include function */
+  #define configUSE_TIMERS                                         %>50 1 /* 1: enable software timers; 0: software timers disabled */
 %else
-#define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable software timers */
-#define configTIMER_TASK_PRIORITY                                %>50 (configMAX_PRIORITIES-1U)
-#define configTIMER_QUEUE_LENGTH                                 %>50 10U /* size of queue for the timer task */
-#define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
-#define INCLUDE_xEventGroupSetBitFromISR                         %>50 0 /* 1: function is included; 0: do not include function */
-#define INCLUDE_xTimerPendFunctionCall                           %>50 0 /* 1: function is included; 0: do not include function */
+  #define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable software timers */
 %endif
+#endif
+#ifndef configTIMER_TASK_PRIORITY
+%if %TimersEnabled='yes'
+  #define configTIMER_TASK_PRIORITY                                %>50 %TimerTaskPriority /* e.g. (configMAX_PRIORITIES-1U) */
+%else
+  #define configUSE_TIMERS                                         %>50 0 /* set to 1 to enable software timers */
+%endif
+#endif
+#ifndef configTIMER_QUEUE_LENGTH
+%if %TimersEnabled='yes'
+  #define configTIMER_QUEUE_LENGTH                                 %>50 %TimerTaskQueueLength /* size of queue for the timer task */
+%else
+  #define configTIMER_QUEUE_LENGTH                                 %>50 10U /* size of queue for the timer task */
+%endif
+#endif
+#ifndef configTIMER_TASK_STACK_DEPTH
+%if %TimersEnabled='yes'
+  #define configTIMER_TASK_STACK_DEPTH                             %>50 %TimerTaskStackDepth /* e.g. (configMINIMAL_STACK_SIZE) */
+%else
+  #define configTIMER_TASK_STACK_DEPTH                             %>50 (configMINIMAL_STACK_SIZE)
+%endif
+#endif
+#ifndef INCLUDE_xEventGroupSetBitFromISR
+%if %TimersEnabled='yes'
+  #define INCLUDE_xEventGroupSetBitFromISR                         %>50 1 /* 1: function is included; 0: do not include function */
+%else
+  #define INCLUDE_xEventGroupSetBitFromISR                         %>50 0 /* 1: function is included; 0: do not include function */
+%endif
+#endif
+#ifndef INCLUDE_xTimerPendFunctionCall
+%if %TimersEnabled='yes'
+  #define INCLUDE_xTimerPendFunctionCall                           %>50 1 /* 1: function is included; 0: do not include function */
+%else
+  #define INCLUDE_xTimerPendFunctionCall                           %>50 0 /* 1: function is included; 0: do not include function */
+%endif
+#endif
+#ifndef configUSE_DAEMON_TASK_STARTUP_HOOK
 %if defined(UseDaemonTaskStartupHook) & %UseDaemonTaskStartupHook='yes'
-#define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 1 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
+  #define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 1 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
 %else
-#define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 0 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
+  #define configUSE_DAEMON_TASK_STARTUP_HOOK                       %>50 0 /* 1: use application specific vApplicationDaemonTaskStartupHook(), 0: do not use hook */
 %endif
+#endif
 
 /* Set configUSE_TASK_FPU_SUPPORT to 0 to omit floating point support even
 if floating point hardware is otherwise supported by the FreeRTOS port in use.
