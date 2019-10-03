@@ -438,7 +438,10 @@ void %AppHandleEvent(uint8_t event)
 #define %'ModuleName'%.%i                                        %>40 %for_index_0
 %endfor
 
-#define %'ModuleName'%.CONFIG_NOF_EVENTS    %EventNameListLines  %>40 /*!< Number of events supported */
+#ifndef %'ModuleName'%.CONFIG_NOF_EVENTS
+  #define %'ModuleName'%.CONFIG_NOF_EVENTS    %EventNameListLines%>40
+    /*!< Number of events supported */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
