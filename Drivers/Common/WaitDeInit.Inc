@@ -3,7 +3,7 @@
 %{
 %endif CommentLine
 %;** ===================================================================
-%include Common\GeneralMethod.inc (DeInit)
+%include Common\GeneralMethod.inc (Deinit)
 %;**     Description :
 %;**         Driver de-initialization routine
 %include Common\GeneralParametersNone.inc

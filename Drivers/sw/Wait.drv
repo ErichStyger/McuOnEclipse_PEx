@@ -289,13 +289,13 @@ void %'ModuleName'%.%Init(void);
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DeInit
-%ifdef DeInit
-void %'ModuleName'%.%DeInit(void);
-%include Common\WaitDeInit.Inc
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\WaitDeinit.Inc
 
-%endif %- DeInit
-%-BW_METHOD_END DeInit
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -865,10 +865,10 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DeInit
-%ifdef DeInit
-%include Common\WaitDeInit.Inc
-void %'ModuleName'%.%DeInit(void)
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\WaitDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
 {
 #if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
   /* disable hardware cycle counter */
@@ -880,8 +880,8 @@ void %'ModuleName'%.%DeInit(void)
 #endif
 }
 
-%endif %- DeInit
-%-BW_METHOD_END DeInit
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
