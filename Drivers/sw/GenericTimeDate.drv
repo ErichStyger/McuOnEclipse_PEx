@@ -2131,5 +2131,13 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
     /*!< specifies method to get time and date */
 #endif
 
+/* default time and date format strings */
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_TIME_FORMAT_STR
+  #define %'ModuleName'%.CONFIG_DEFAULT_TIME_FORMAT_STR  "hh:mm:ss,cc"
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_DATE_FORMAT_STR
+  #define %'ModuleName'%.CONFIG_DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
+#endif
+
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
