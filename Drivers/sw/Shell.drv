@@ -134,11 +134,11 @@
 #define %'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE  %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE  /* default buffer size for shell command parsing */
 
 /* Include inherited components */
-%ifdef InhrSymbolList
-  %for var from InhrSymbolList
-#include "%@%var@ModuleName.h"
-  %endfor
-%endif
+%- %ifdef InhrSymbolList
+%-   %for var from InhrSymbolList
+%- #include "%@%var@ModuleName.h"
+%-  %endfor
+%- %endif
 
 /* other includes needed */
 #include <stddef.h> /* for size_t */
@@ -609,6 +609,31 @@ void %OnAfterIterateCmd(const uint8_t *cmd);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+%if defined(Wait)
+  #include "%@Wait@ModuleName.h"
+%else
+  #include "McuWait.h"
+%endif
+%if defined(Utility)
+  #include "%@Utility@ModuleName.h"
+%else
+  #include "McuUtility.h"
+%endif
+%if defined(XFormat)
+  #include "%@XFormat@ModuleName.h"
+%else
+  #include "McuXFormat.h"
+%endif
+%if defined(CriticalSection)
+  #include "%@CriticalSection@ModuleName.h"
+%else
+  #include "McuCriticalSection.h"
+%endif
+
+#if %'ModuleName'%.DEFAULT_SERIAL
+  #include %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE
+#endif
+
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -1876,8 +1901,6 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
   %endif
       /*!< Include for the functions below */
   #endif
-
-  #include %'ModuleName'%.CONFIG_DEFAULT_SERIAL_INCLUDE
 
   #ifndef %'ModuleName'%.CONFIG_DEFAULT_SERIAL_RECEIVE_FCT_NAME
   %if defined(Serial)
