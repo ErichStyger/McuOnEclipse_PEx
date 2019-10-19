@@ -609,25 +609,23 @@ void %OnAfterIterateCmd(const uint8_t *cmd);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
-%if defined(Wait)
-  #include "%@Wait@ModuleName.h"
+%if defined(XFormat)
+#include "%@XFormat@ModuleName.h"
 %else
-  #include "McuWait.h"
+#include "McuXFormat.h"
 %endif
 %if defined(Utility)
-  #include "%@Utility@ModuleName.h"
+#include "%@Utility@ModuleName.h"
 %else
-  #include "McuUtility.h"
-%endif
-%if defined(XFormat)
-  #include "%@XFormat@ModuleName.h"
-%else
-  #include "McuXFormat.h"
+#include "McuUtility.h"
 %endif
 %if defined(CriticalSection)
-  #include "%@CriticalSection@ModuleName.h"
+#include "%@CriticalSection@ModuleName.h"
 %else
-  #include "McuCriticalSection.h"
+#include "McuCriticalSection.h"
+%endif
+%if defined(Wait)
+  #include "%@Wait@ModuleName.h"
 %endif
 
 #if %'ModuleName'%.DEFAULT_SERIAL
