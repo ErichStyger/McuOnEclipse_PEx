@@ -1903,9 +1903,9 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks);
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 %if defined(Utility)
-  #include "%@Utility@ModuleName.h"
+#include "%@Utility@ModuleName.h"
 %else
-  #include "McuUtility.h"
+#include "McuUtility.h"
 %endif
 %-BW_CUSTOM_VARIABLE_START
 %- Write your static variables here
@@ -2296,11 +2296,13 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
  * \return Error code, kStatus_OSA_Success if everything is ok.
  */
 osa_status_t OSA_Init(void) {
+#if configUSE_PERCEPIO_TRACE_HOOKS
 %if defined(FRTrace)
   %@FRTrace@'ModuleName'%.Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %else
   McuPercepio_Startup(); /* Startup Percepio Trace. Need to do this before calling any RTOS functions. */
 %endif
+#endif
   return kStatus_OSA_Success;
 }
 
