@@ -366,6 +366,9 @@ void %'ModuleName'%.%Deinit(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+%if defined(Wait)
+#include "%@Wait@ModuleName.h"
+%endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
