@@ -169,17 +169,6 @@
 #define %'ModuleName'%.NO_SILENT_PREFIX_CHAR ' '                 %>40/* used for no silent prefix char */
 #define %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED (%'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR)
 
-/* multi command support */
-%if %MultiCommandEnabled='yes'
-#define %'ModuleName'%.MULTI_CMD_ENABLED   1 /* 1: enabled, 0: disabled */
-#define %'ModuleName'%.MULTI_CMD_SIZE      %MaxSubCommandStringSize /* max size of each command */
-#define %'ModuleName'%.MULTI_CMD_CHAR      '%MultiCmdSeparationChar' /* separation character */
-%else
-#define %'ModuleName'%.MULTI_CMD_ENABLED   0 /* 1: enabled, 0: disabled */
-#define %'ModuleName'%.MULTI_CMD_SIZE      0 /* max size of each command */
-#define %'ModuleName'%.MULTI_CMD_CHAR      ';' /* separation character */
-%endif
-
 /* settings for local echo */
 %if %EchoEnabled='yes'
 #define %'ModuleName'%.ECHO_ENABLED  1                           %>40/* 1: enabled, 0: disabled */
@@ -1164,8 +1153,8 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
 #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
   bool silent = FALSE;
 #endif
-#if %'ModuleName'%.MULTI_CMD_ENABLED
-  uint8_t buf[%'ModuleName'%.MULTI_CMD_SIZE];
+#if %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED
+  uint8_t buf[%'ModuleName'%.CONFIG_MULTI_CMD_SIZE];
   uint8_t i;
   bool parseBuffer, finished;
 #endif
@@ -1176,7 +1165,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
   if (*cmd=='\0') { /* empty command */
     return ERR_OK;
   }
-#if %'ModuleName'%.MULTI_CMD_ENABLED
+#if %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED
   parseBuffer = FALSE;
   finished = FALSE;
   i = 0;
@@ -1194,7 +1183,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
       cmd++;
     }
   #endif
-    if (buf[i-1] == %'ModuleName'%.MULTI_CMD_CHAR) { /* found separator */
+    if (buf[i-1] == %'ModuleName'%.CONFIG_MULTI_CMD_CHAR) { /* found separator */
       buf[i-1] = '\0';
       parseBuffer = TRUE;
     } else if (buf[i-1]=='\0') {
@@ -1943,6 +1932,31 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
   #define %'ModuleName'%.CONFIG_PROJECT_NAME_STRING              %>60"My Project"
 %endif
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED
+%if %MultiCommandEnabled='yes'
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED                %>60(1) /* 1: enabled, 0: disabled */
+%else
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED                %>60(0) /* 1: enabled, 0: disabled */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_MULTI_CMD_SIZE
+%if defined(MaxSubCommandStringSize)
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_SIZE                   %>60(%MaxSubCommandStringSize) /* max size of each command */
+%else
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_SIZE                   %>60(32) /* max size of each command */
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_MULTI_CMD_CHAR
+%if defined(MultiCmdSeparationChar)
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_CHAR                   %>60'%MultiCmdSeparationChar' /* separation character */
+%else
+  #define %'ModuleName'%.CONFIG_MULTI_CMD_CHAR                   %>60';' /* separation character */
+%endif
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
