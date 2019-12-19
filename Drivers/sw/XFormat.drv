@@ -917,6 +917,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
              */
           case  'P':
             param.flags |=  FLAG_UPPER;
+            // fall through
             /* no break */
             /*lint -fallthrough */
 
@@ -966,9 +967,8 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
           case  'X':
             /* no break */
             param.flags |= FLAG_UPPER;
-
+            // fall through
             /* no break */
-
             /* lint -fallthrough */
 
             /*
@@ -1007,6 +1007,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
              */
           case  'S':
             param.flags |= FLAG_UPPER;
+            // fall through
             /* no break */
             /*lint -fallthrough */
 
@@ -1025,6 +1026,7 @@ unsigned %'ModuleName'%.%xvformat(void (*outchar)(void *,char), void *arg, const
              */
           case  'C':
             param.flags |= FLAG_UPPER;
+            // fall through
             /* no break */
             /* lint -fallthrough */
 
