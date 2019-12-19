@@ -357,6 +357,13 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V_RV32M1_RI5CY      (1 && %'ModuleName'%.CONFIG_CPU_IS_RISC_V)
     /*!< 1: VEGA Board: RISC-V RV32M1 RI5CY, 0: other core */
 #endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #ifndef __XTENSA__
+    #define __XTENSA__ 0
+  #endif
+  #define %'ModuleName'%.CONFIG_CPU_IS_ESP32                    (__XTENSA__)
+    /*!< 1: ESP32 CPU family, 0: otherwise. The ESP32 compiler defines __XTENSA__ with a value of 1 */
+#endif
 
 %elif (CPUfamily = "S32K")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
@@ -377,6 +384,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: HCS08 CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
   /*!< 1: RISC-V CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_ESP32           (0)
+    /*!< 1: ESP32 CPU family, 0: otherwise. */
 %elif (CPUfamily = "HCS08")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
@@ -396,6 +405,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: HCS08 CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0)
   /*!< 1: RISC-V CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_ESP32           (0)
+    /*!< 1: ESP32 CPU family, 0: otherwise. */
 %else
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
@@ -417,6 +428,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: HCS08 CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_RISC_V          (0 && !%'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: RISC-V CPU family, 0: otherwise */
+#define %'ModuleName'%.CONFIG_CPU_IS_ESP32           (0)
+    /*!< 1: ESP32 CPU family, 0: otherwise. */
 %endif
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
@@ -568,7 +581,10 @@ void %'ModuleName'%.%Deinit(void)
 
 /* specify the SDK and API used */
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_USED
-#if %'ModuleName'%.CONFIG_CPU_IS_STM32
+#if %'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_GENERIC
+    /*!< identify the version of SDK/API used. For ESP32 we are using a generic SDK (actually the IDF one) */
+#elif %'ModuleName'%.CONFIG_CPU_IS_STM32
   #define %'ModuleName'%.CONFIG_SDK_VERSION_USED  %'ModuleName'%.CONFIG_SDK_GENERIC
     /*!< identify the version of SDK/API used. For STM32 we are using a generic SDK (actually the CubeMX one) */
 #else
