@@ -83,7 +83,9 @@ Revision: $Rev: 3734 $
 #endif
 
 // The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        %SysViewAppName /* application name, configured in properties */
+#ifndef SYSVIEW_APP_NAME
+  #define SYSVIEW_APP_NAME        %SysViewAppName /* application name, configured in properties */
+#endif
 
 // The operating system, if any
 #if SYSVIEW_USING_FREERTOS
