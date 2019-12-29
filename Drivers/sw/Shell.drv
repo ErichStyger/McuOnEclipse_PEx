@@ -555,6 +555,33 @@ uint8_t %'ModuleName'%.%PrintMemory(void *hndl, uint32_t startAddr, uint32_t end
 
 %endif %- PrintMemory
 %-BW_METHOD_END PrintMemory
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadAndParseWithCommandTableExt
+%ifdef ReadAndParseWithCommandTableExt
+uint8_t %'ModuleName'%.%ReadAndParseWithCommandTableExt(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback, bool silent);
+%define! ParcmdBuf
+%define! ParcmdBufSize
+%define! Pario
+%define! ParparseCallback
+%define! Parsilent
+%define! RetVal
+%include Common\ShellReadAndParseWithCommandTableExt.Inc
+
+%endif %- ReadAndParseWithCommandTableExt
+%-BW_METHOD_END ReadAndParseWithCommandTableExt
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseWithCommandTableExt
+%ifdef ParseWithCommandTableExt
+uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback, bool silent);
+%define! Parcmd
+%define! Pario
+%define! ParparseCallback
+%define! Parsilent
+%define! RetVal
+%include Common\ShellParseWithCommandTableExt.Inc
+
+%endif %- ParseWithCommandTableExt
+%-BW_METHOD_END ParseWithCommandTableExt
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1139,19 +1166,20 @@ uint8_t %'ModuleName'%.%IterateTable(const uint8_t *cmd, bool *handled, %'Module
 %endif %- IterateTable
 %-BW_METHOD_END IterateTable
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN ParseWithCommandTable
-%ifdef ParseWithCommandTable
+%-BW_METHOD_BEGIN ParseWithCommandTableExt
+%ifdef ParseWithCommandTableExt
 %define! Parcmd
 %define! Pario
 %define! ParparseCallback
+%define! Parsilent
 %define! RetVal
-%include Common\ShellParseWithCommandTable.Inc
-uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)
+%include Common\ShellParseWithCommandTableExt.Inc
+uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback, bool silent)
 {
   uint8_t res = ERR_OK;
   bool handled;
 #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-  bool silent = FALSE;
+  bool silentPrefix = FALSE;
 #endif
 #if %'ModuleName'%.CONFIG_MULTI_CMD_ENABLED
   uint8_t buf[%'ModuleName'%.CONFIG_MULTI_CMD_SIZE];
@@ -1178,7 +1206,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
     cmd++; i++;
   #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
     if (i==1 && buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR) { /* first character is silent character */
-      silent |= (bool)(buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR);
+      silentPrefix |= (bool)(buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR);
       buf[0] = *cmd; /* skip silent character */
       cmd++;
     }
@@ -1206,8 +1234,8 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
   } /* for */
 #else
   #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-  silent = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
-  if (silent) {
+  silentPrefix = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
+  if (silentPrefix) {
     cmd++; /* skip silent character */
   }
   #endif
@@ -1219,13 +1247,30 @@ uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_
   }
 #endif
 #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-  if (!silent) {
+  if (!silentPrefix && !silent) {
     %'ModuleName'%.PrintPrompt(io);
   }
 #else
-  %'ModuleName'%.PrintPrompt(io);
+  if (!silent) {
+    %'ModuleName'%.PrintPrompt(io);
+  }
 #endif
   return res;
+}
+
+%endif %- ParseWithCommandTableExt
+%-BW_METHOD_END ParseWithCommandTableExt
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ParseWithCommandTable
+%ifdef ParseWithCommandTable
+%define! Parcmd
+%define! Pario
+%define! ParparseCallback
+%define! RetVal
+%include Common\ShellParseWithCommandTable.Inc
+uint8_t %'ModuleName'%.%ParseWithCommandTable(const uint8_t *cmd, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)
+{
+  return %'ModuleName'%.%ParseWithCommandTableExt(cmd, io, parseCallback, FALSE);
 }
 
 %endif %- ParseWithCommandTable
@@ -1257,15 +1302,16 @@ uint8_t %'ModuleName'%.%SetStdio(%'ModuleName'_ConstStdIOTypePtr stdio)
 %endif %- GetStdio
 %-BW_METHOD_END GetStdio
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN ReadAndParseWithCommandTable
-%ifdef ReadAndParseWithCommandTable
+%-BW_METHOD_BEGIN ReadAndParseWithCommandTableExt
+%ifdef ReadAndParseWithCommandTableExt
 %define! ParcmdBuf
 %define! ParcmdBufSize
 %define! Pario
 %define! ParparseCallback
+%define! Parsilent
 %define! RetVal
-%include Common\ShellReadAndParseWithCommandTable.Inc
-uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)
+%include Common\ShellReadAndParseWithCommandTableExt.Inc
+uint8_t %'ModuleName'%.%ReadAndParseWithCommandTableExt(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback, bool silent)
 {
   /* IMPORTANT NOTE: this function *appends* to the buffer, so the buffer needs to be initialized first! */
   uint8_t res = ERR_OK;
@@ -1283,18 +1329,34 @@ uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmd
       cmdBuf[0] = '\0';
     }
     if (len>=cmdBufSize-1) {                                     %>40/* buffer overflow? Parse what we have, will be likely return an error */
-      (void)%'ModuleName'%.%ParseWithCommandTable(cmdBuf, io, parseCallback);
+      (void)%'ModuleName'%.%ParseWithCommandTableExt(cmdBuf, io, parseCallback, silent);
       cmdBuf[0] = '\0'; /* start again */
       res = ERR_OVERFLOW;
     } else if (cmdBuf[len-1]=='\n' || cmdBuf[len-1]=='\r') {     %>40/* line end: parse command */
       cmdBuf[len-1] = '\0';                                      %>40/* remove line end character for parser */
-      res = %'ModuleName'%.%ParseWithCommandTable(cmdBuf, io, parseCallback);
+      res = %'ModuleName'%.%ParseWithCommandTableExt(cmdBuf, io, parseCallback, silent);
       cmdBuf[0] = '\0';                                          %>40/* start again */
     } else {
       /* continue to append to buffer */
     }
   }
   return res;
+}
+
+%endif %- ReadAndParseWithCommandTableExt
+%-BW_METHOD_END ReadAndParseWithCommandTableExt
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadAndParseWithCommandTable
+%ifdef ReadAndParseWithCommandTable
+%define! ParcmdBuf
+%define! ParcmdBufSize
+%define! Pario
+%define! ParparseCallback
+%define! RetVal
+%include Common\ShellReadAndParseWithCommandTable.Inc
+uint8_t %'ModuleName'%.%ReadAndParseWithCommandTable(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io, %'ModuleName'_ConstParseCommandCallback *parseCallback)
+{
+  return %'ModuleName'%.%ReadAndParseWithCommandTableExt(cmdBuf, cmdBufSize, io, parseCallback, FALSE);
 }
 
 %endif %- ReadAndParseWithCommandTable

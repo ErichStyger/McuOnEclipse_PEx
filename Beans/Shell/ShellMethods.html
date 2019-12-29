@@ -479,6 +479,22 @@ LI.EXP {
 <!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
 </ul><br />
 </li>
+<li><a name="ReadAndParseWithCommandTableExt">
+<b>ReadAndParseWithCommandTableExt</b></a>
+ - Reads characters from the default input channel and appends it to the buffer. Once a new line has been detected, the line will be parsed using the handlers in the table.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadAndParseWithCommandTableExt(uint8_t *cmdBuf, size_t cmdBufSize, <i>ComponentName_</i>ConstStdIOType *io, <i>ComponentName_</i>ConstParseCommandCallback *parseCallback, bool silent)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmdBuf: Pointer to uint8_t</i> - Pointer to buffer provided by the caller where to store the command to read in. Characters will be appended, so make sure string buffer is initialized with a zero byte at the beginning.</li>
+<li><i>cmdBufSize:uint8_t</i> - Size of buffer</li>
+<li><i>io: Pointer to <a href="ShellUser Types.html#ConstStdIOType"><i>ComponentName_</i>ConstStdIOType</a></i> - Pointer to I/O channels to be used</li>
+<li><i>parseCallback: Pointer to <a href="ShellUser Types.html#ConstParseCommandCallback"><i>ComponentName_</i>ConstParseCommandCallback</a></i> - Pointer to callback table provided by the user application to parse commands. The table has a NULL sentinel.</li>
+<li><i>silent:bool</i> - If handling shall be silent, i.e. no command prompt printed</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="ReadAndParseWithCommandTable">
 <b>ReadAndParseWithCommandTable</b></a>
  - Reads characters from the default input channel and appends it to the buffer. Once a new line has been detected, the line will be parsed using the handlers in the table.
@@ -490,6 +506,21 @@ LI.EXP {
 <li><i>cmdBufSize:uint8_t</i> - Size of buffer</li>
 <li><i>io: Pointer to <a href="ShellUser Types.html#ConstStdIOType"><i>ComponentName_</i>ConstStdIOType</a></i> - Pointer to I/O channels to be used</li>
 <li><i>parseCallback: Pointer to <a href="ShellUser Types.html#ConstParseCommandCallback"><i>ComponentName_</i>ConstParseCommandCallback</a></i> - Pointer to callback table provided by the user application to parse commands. The table has a NULL sentinel.</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="ParseWithCommandTableExt">
+<b>ParseWithCommandTableExt</b></a>
+ - Parses a shell command. It handles first the internal commands and will call the provided callback.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ParseWithCommandTableExt(const uint8_t *cmd, <i>ComponentName_</i>ConstStdIOType *io, <i>ComponentName_</i>ConstParseCommandCallback *parseCallback, bool silent)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmd: Pointer to uint8_t</i> - Pointer to command string</li>
+<li><i>io: Pointer to <a href="ShellUser Types.html#ConstStdIOType"><i>ComponentName_</i>ConstStdIOType</a></i> - Pointer to I/O callbacks</li>
+<li><i>parseCallback: Pointer to <a href="ShellUser Types.html#ConstParseCommandCallback"><i>ComponentName_</i>ConstParseCommandCallback</a></i> - Pointer to callback which will be called to parse commands in the user application, or NULL if not used.</li>
+<li><i>silent:bool</i> - If handling shall be silent, i.e. no command prompt printed</li>
 <li><i>Return value:uint8_t</i> - Error code
 </li>
 </ul><br />
