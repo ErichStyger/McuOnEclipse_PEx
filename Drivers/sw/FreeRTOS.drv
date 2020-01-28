@@ -4508,9 +4508,10 @@ void %'ModuleName'%.%AppConfigureTimerForRuntimeStats(void)
 #if configGENERATE_RUN_TIME_STATS_USE_TICKS
   /* nothing needed, the RTOS will initialize the tick counter */
 #else
+  extern uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
   %'ModuleName'%.RunTimeCounter = 0;
 %if defined(RuntimeCntr)
-  (void)%@RuntimeCntr@'ModuleName'%.Enable();}
+  (void)%@RuntimeCntr@'ModuleName'%.Enable();
 %elif defined(RuntimeCntrLDD)
   %'ModuleName'%.RunTimeCounterHandle = %@RuntimeCntrLDD@'ModuleName'%.Init(NULL);
   (void)%@RuntimeCntrLDD@'ModuleName'%.Enable(%'ModuleName'%.RunTimeCounterHandle);
@@ -4532,6 +4533,7 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void)
   #if configGENERATE_RUN_TIME_STATS_USE_TICKS
   return xTaskGetTickCountFromISR(); /* using RTOS tick counter */
   #else /* using timer counter */
+  extern uint32_t %'ModuleName'%.RunTimeCounter; /* runtime counter, used for configGENERATE_RUNTIME_STATS */
   return %'ModuleName'%.RunTimeCounter;
   #endif
 #else
