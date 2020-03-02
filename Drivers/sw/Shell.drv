@@ -1200,6 +1200,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
   for(;;) { /* breaks */
     if (i>sizeof(buf)-2) {
       res = ERR_FAILED;
+      %'ModuleName'%.PrintCommandFailed(buf, io);
       break; /* buffer overflow */
     }
     buf[i] = *cmd;
