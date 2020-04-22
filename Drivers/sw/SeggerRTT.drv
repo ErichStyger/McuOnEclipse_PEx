@@ -366,9 +366,13 @@ void %'ModuleName'%.%Deinit(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#if %'ModuleName'%.CONFIG_BLOCKING_SEND
 %if defined(Wait)
-#include "%@Wait@ModuleName.h"
+  #include "%@Wait@ModuleName.h"
+%else
+  #include "McuWait.h"
 %endif
+#endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:

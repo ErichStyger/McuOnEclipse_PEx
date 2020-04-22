@@ -81,35 +81,67 @@
 #endif
 %-
 %if UsePreemption = 'yes'
-#define configUSE_PREEMPTION                                     %>50 1 /* 1: pre-emptive mode; 0: cooperative mode */
+#ifndef configUSE_PREEMPTION
+  #define configUSE_PREEMPTION                                     %>50 1 /* 1: pre-emptive mode; 0: cooperative mode */
+#endif
 %else
-#define configUSE_PREEMPTION                                     %>50 0 /* 1: pre-emptive mode; 0: cooperative mode */
+#ifndef configUSE_PREEMPTION
+  #define configUSE_PREEMPTION                                     %>50 0 /* 1: pre-emptive mode; 0: cooperative mode */
+#endif
 %endif
 %if UseTimeSlicing = 'yes'
-#define configUSE_TIME_SLICING                                   %>50 1 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
+#ifndef configUSE_TIME_SLICING
+  #define configUSE_TIME_SLICING                                   %>50 1 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
+#endif
 %else
-#define configUSE_TIME_SLICING                                   %>50 0 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
+#ifndef configUSE_TIME_SLICING
+  #define configUSE_TIME_SLICING                                   %>50 0 /* 1: use time slicing; 0: don't time slice at tick interrupt time */
+#endif
 %endif
 %ifdef vApplicationIdleHook
-#define configUSE_IDLE_HOOK                                      %>50 1 /* 1: use Idle hook; 0: no Idle hook */
-#define configUSE_IDLE_HOOK_NAME                                 %>50 %vApplicationIdleHook
+#ifndef configUSE_IDLE_HOOK
+  #define configUSE_IDLE_HOOK                                      %>50 1 /* 1: use Idle hook; 0: no Idle hook */
+#endif
+#ifndef configUSE_IDLE_HOOK_NAME
+  #define configUSE_IDLE_HOOK_NAME                                 %>50 %vApplicationIdleHook
+#endif
 %else
-#define configUSE_IDLE_HOOK                                      %>50 0 /* 1: use Idle hook; 0: no Idle hook */
-#define configUSE_IDLE_HOOK_NAME                                 %>50 vApplicationIdleHook
+#ifndef configUSE_IDLE_HOOK
+  #define configUSE_IDLE_HOOK                                      %>50 0 /* 1: use Idle hook; 0: no Idle hook */
+#endif
+#ifndef configUSE_IDLE_HOOK_NAME
+  #define configUSE_IDLE_HOOK_NAME                                 %>50 vApplicationIdleHook
+#endif
 %endif
 %ifdef vApplicationTickHook
-#define configUSE_TICK_HOOK                                      %>50 1 /* 1: use Tick hook; 0: no Tick hook */
-#define configUSE_TICK_HOOK_NAME                                 %>50 %vApplicationTickHook
+#ifndef configUSE_TICK_HOOK
+  #define configUSE_TICK_HOOK                                      %>50 1 /* 1: use Tick hook; 0: no Tick hook */
+#endif
+#ifndef configUSE_TICK_HOOK_NAME
+  #define configUSE_TICK_HOOK_NAME                                 %>50 %vApplicationTickHook
+#endif
 %else
-#define configUSE_TICK_HOOK                                      %>50 0 /* 1: use Tick hook; 0: no Tick hook */
-#define configUSE_TICK_HOOK_NAME                                 %>50 vApplicationTickHook
+#ifndef configUSE_TICK_HOOK
+  #define configUSE_TICK_HOOK                                      %>50 0 /* 1: use Tick hook; 0: no Tick hook */
+#endif
+#ifndef configUSE_TICK_HOOK_NAME
+  #define configUSE_TICK_HOOK_NAME                                 %>50 vApplicationTickHook
+#endif
 %endif
 %ifdef vApplicationMallocFailedHook
-#define configUSE_MALLOC_FAILED_HOOK                             %>50 1 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
-#define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 %vApplicationMallocFailedHook
+#ifndef configUSE_MALLOC_FAILED_HOOK
+  #define configUSE_MALLOC_FAILED_HOOK                             %>50 1 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
+#endif
+#ifndef configUSE_MALLOC_FAILED_HOOK_NAME
+  #define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 %vApplicationMallocFailedHook
+#endif
 %else
-#define configUSE_MALLOC_FAILED_HOOK                             %>50 0 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
-#define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 vApplicationMallocFailedHook
+#ifndef configUSE_MALLOC_FAILED_HOOK
+  #define configUSE_MALLOC_FAILED_HOOK                             %>50 0 /* 1: use MallocFailed hook; 0: no MallocFailed hook */
+#endif
+#ifndef configUSE_MALLOC_FAILED_HOOK_NAME
+  #define configUSE_MALLOC_FAILED_HOOK_NAME                        %>50 vApplicationMallocFailedHook
+#endif
 %endif
 #ifndef configTICK_RATE_HZ
   #define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */

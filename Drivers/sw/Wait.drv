@@ -394,8 +394,8 @@ void %'ModuleName'%.%Wait10Cycles(void)
 
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
   /* NOTE: Cortex-M0 and M4 have 1 cycle for a NOP */
-  /* Compiler is %Compiler */
-%if %Compiler = "GNUC"
+%-  /* Compiler is %Compiler */
+#if %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_GNU
   __asm (
    /* bl Wait10Cycles() to here: [4] */
    "nop   \n\t" /* [1] */
@@ -403,27 +403,27 @@ void %'ModuleName'%.%Wait10Cycles(void)
    "nop   \n\t" /* [1] */
    "bx lr \n\t" /* [3] */
   );
-%elif (%Compiler = "IARARM")
+#elif %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR
   /* bl Wai10Cycles() to here: [4] */
   __asm("nop");   /* [1] */
   __asm("nop");   /* [1] */
   __asm("nop");   /* [1] */
   __asm("bx lr"); /* [3] */
-%elif (%Compiler = "ARM_CC") %- Keil/ARM compiler
+#elif %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_KEIL
   __asm {
     nop                %>%CTAB /* [1] */
     nop                %>%CTAB /* [1] */
     nop                %>%CTAB /* [1] */
     /*bx lr*/          %>%CTAB /* [3] */
   }
-%else
+#else
   __asm {
     nop                %>%CTAB /* [1] */
     nop                %>%CTAB /* [1] */
     nop                %>%CTAB /* [1] */
     bx lr              %>%CTAB /* [3] */
   }
-%endif
+#endif
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
   /* \todo */
   __asm ( /* assuming [4] for overhead */
@@ -449,9 +449,9 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %-BW_METHOD_BEGIN Wait100Cycles
 %ifdef Wait100Cycles
 %include Common\WaitWait100Cycles.Inc
-%if (%Compiler = "IARARM")
+#if %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR
   /* Implemented in assembly file, as IAR does not support labels in HLI */
-%else
+#else
 %if ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & %Compiler = "GNUC"
 #ifdef __GNUC__
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* naked is ignored for RISC-V gcc */
@@ -516,7 +516,7 @@ void %'ModuleName'%.%Wait100Cycles(void)
   }
 %elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
-%if %Compiler = "GNUC"
+#if %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_GNU
   __asm (
    /* bl to here:               [4] */
    "push {r0}   \n\t"        /* [2] */
@@ -539,9 +539,9 @@ void %'ModuleName'%.%Wait100Cycles(void)
    "pop {r0}    \n\t"        /* [2] */
    "bx lr       \n\t"        /* [3] */
   );
-%elif (%Compiler = "IARARM")
+#elif %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR
   /* need to implement in assembly, as IAR does not support labels in HLI */
-%elif (%Compiler = "ARM_CC") %- Keil/ARM compiler
+#elif %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_KEIL
    /* bl to here:    [4] */
     movs r0, #0   /* [1] */
 loop
@@ -555,7 +555,7 @@ loop
     bls loop      /* [3] taken, [1] not taken */
     nop           /* [1] */
     bx lr         /* [3] */
-%else
+#else
   __asm {
    /* bl Wai10Cycles() to here: [4] */
     movs r0, #0 /* [1] */
@@ -571,7 +571,7 @@ loop
     nop         /* [1] */
     bx lr       /* [3] */
   }
-%endif
+#endif
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
   /* \todo */
   __asm ( /* assuming [10] for overhead */
@@ -597,7 +597,7 @@ loop
 %endif
   /*lint -restore */
 }
-%endif  %-(%Compiler = "IARARM")
+#endif  /* %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR */
 
 %endif %- Wait100Cycles
 %-BW_METHOD_END Wait100Cycles
@@ -907,6 +907,11 @@ void %'ModuleName'%.%Deinit(void)
 %-
 %if (%Compiler = "IARARM")
 %- need to implement the handler in assembly, as IAR does not support inline assembly with labels?
+/* NOTE: because the IAR compiler cannot handle inline assembly with labels,
+ * this assembly file has to be included for IAR projects.
+ * If this file is provided with .s.txt extension:
+ * Remove the .txt extension and build it with the IAR project.
+ */
 %FILE %'DirRel_Code'%'ModuleName'%.%Wait100Cycles.s
   /* use code segment, and we are generating ARM thumb code: */
   RSEG    CODE:CODE(2)
