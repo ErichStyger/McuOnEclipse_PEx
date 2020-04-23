@@ -426,6 +426,16 @@ void %'ModuleName'%.%ClearLine(uint8_t line);
 
 %endif %- ClearLine
 %-BW_METHOD_END ClearLine
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetDisplayClockDiv
+%ifdef SetDisplayClockDiv
+uint8_t %'ModuleName'%.%SetDisplayClockDiv(uint8_t clockDiv);
+%define! ParclockDiv
+%define! RetVal
+%include Common\SSD1306SetDisplayClockDiv.Inc
+
+%endif %- SetDisplayClockDiv
+%-BW_METHOD_END SetDisplayClockDiv
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1059,6 +1069,22 @@ uint8_t %'ModuleName'%.%DisplayInvert(bool invert)
 
 %endif %- DisplayInvert
 %-BW_METHOD_END DisplayInvert
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SetDisplayClockDiv
+%ifdef SetDisplayClockDiv
+%define! ParclockDiv
+%define! RetVal
+%include Common\SSD1306SetDisplayClockDiv.Inc
+uint8_t %'ModuleName'%.%SetDisplayClockDiv(uint8_t clockDiv)
+{
+  SSD1306_WriteCommand(SSD1306_SET_DISPLAY_CLOCK_DIV);
+  SSD1306_WriteCommand(clockDiv);
+  return ERR_OK;
+}
+
+%endif %- SetDisplayClockDiv
+%-BW_METHOD_END SetDisplayClockDiv
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN SetRowCol
 %ifdef SetRowCol
 %define! Parcol

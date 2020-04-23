@@ -337,6 +337,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="SetDisplayClockDiv">
+<b>SetDisplayClockDiv</b></a>
+ - Sets the display clock divider (default 0x80). This can be used to affect display refresh rate or to reduce audible noise.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t SetDisplayClockDiv(uint8_t clockDiv)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>clockDiv:uint8_t</i> - Clock Divider (default 0x80).</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="DisplayOn">
 <b>DisplayOn</b></a>
  - Turns the display on or off (sleep)
