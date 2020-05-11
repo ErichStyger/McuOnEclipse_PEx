@@ -355,6 +355,9 @@
   #define configUSE_APPLICATION_TASK_TAG                           %>50 0
 %endif
 #endif
+#ifndef configUSE_TASK_NOTIFICATIONS
+  #define configUSE_TASK_NOTIFICATIONS                             %>50 1
+#endif
 /* Tickless Idle Mode ----------------------------------------------------------*/
 #ifndef configUSE_TICKLESS_IDLE
 %if %TicklessIdleModeEnabled='yes'
@@ -619,13 +622,15 @@ point support. */
 #endif
 
 /* Normal assert() semantics without relying on the provision of an assert.h header file. */
+#ifndef configASSERT
 %if %configASSERTdefined='yes'
-#define configASSERT(x) if((x)==0) { taskDISABLE_INTERRUPTS(); for( ;; ); }
+  #define configASSERT(x) if((x)==0) { taskDISABLE_INTERRUPTS(); for( ;; ); }
 %else
-/* #define configASSERT(x) if((x)==0) { taskDISABLE_INTERRUPTS(); for( ;; ); } */
+  /* #define configASSERT(x) if((x)==0) { taskDISABLE_INTERRUPTS(); for( ;; ); } */
 %endif
-#if 0 /* version for RISC-V with a debug break: */
-#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); __asm volatile( "ebreak" ); for( ;; ); }
+  #if 0 /* version for RISC-V with a debug break: */
+    #define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); __asm volatile( "ebreak" ); for( ;; ); }
+  #endif
 #endif
 %-
 %endif
