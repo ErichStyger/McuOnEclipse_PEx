@@ -912,6 +912,30 @@ void %'ModuleName'%.%strcatNumHex(uint8_t *dst, size_t dstSize, uint32_t num, ui
 
 %endif %- strcatNumHex
 %-BW_METHOD_END strcatNumHex
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanRGB
+%ifdef ScanRGB
+uint8_t %'ModuleName'%.%ScanRGB(const unsigned char **str, uint8_t *r, uint8_t *g, uint8_t *b);
+%define! Parstr
+%define! Parr
+%define! Parg
+%define! Parb
+%define! RetVal
+%include Common\UtilityScanRGB.Inc
+
+%endif %- ScanRGB
+%-BW_METHOD_END ScanRGB
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanRGB32
+%ifdef ScanRGB32
+uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb);
+%define! Parstr
+%define! Parrgb
+%define! RetVal
+%include Common\UtilityScanRGB32.Inc
+
+%endif %- ScanRGB32
+%-BW_METHOD_END ScanRGB32
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3126,6 +3150,72 @@ void %'ModuleName'%.%strcatNumHex(uint8_t *dst, size_t dstSize, uint32_t num, ui
 
 %endif %- strcatNumHex
 %-BW_METHOD_END strcatNumHex
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanRGB
+%ifdef ScanRGB
+%define! Parstr
+%define! Parr
+%define! Parg
+%define! Parb
+%define! RetVal
+%include Common\UtilityScanRGB.Inc
+uint8_t %'ModuleName'%.%ScanRGB(const unsigned char **str, uint8_t *r, uint8_t *g, uint8_t *b)
+{
+  const unsigned char *p;
+  int32_t val32;
+  int32_t rv, gv, bv;
+
+  p = *str;
+  while(*p==' ') {
+    p++; /* skip leading spaces */
+  }
+  if (   *p=='0' && *(p+1)=='x' /* hexadecimal, read single number */
+      && %'ModuleName'%.%xatoi(&p, &val32)==ERR_OK
+      && val32 <= 0xffffff
+     )
+  {
+    *r = (val32>>16)&0xff;
+    *g = (val32>>8)&0xff;
+    *b = val32&0xff;
+    return ERR_OK;
+  } else { /* not starting with 0x (hex): read three values */
+    if (   %'ModuleName'%.%xatoi(&p, &rv)==ERR_OK && rv>=0 && rv<=0xff
+        && %'ModuleName'%.%xatoi(&p, &gv)==ERR_OK && gv>=0 && gv<=0xff
+        && %'ModuleName'%.%xatoi(&p, &bv)==ERR_OK && bv>=0 && bv<=0xff
+       )
+    {
+      *r = rv;
+      *g = gv;
+      *b = bv;
+      return ERR_OK;
+    }
+  }
+  return ERR_FAILED;
+}
+
+%endif %- ScanRGB
+%-BW_METHOD_END ScanRGB
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanRGB32
+%ifdef ScanRGB32
+%define! Parstr
+%define! Parrgb
+%define! RetVal
+%include Common\UtilityScanRGB32.Inc
+uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb)
+{
+  uint8_t res, r, g, b;
+
+  res = %'ModuleName'%.%ScanRGB(str, &r, &g, &b);
+  if (res==ERR_OK) {
+    *rgb = (r<<16)|(g<<8)|b;
+    return ERR_OK;
+  }
+  return ERR_FAILED;
+}
+
+%endif %- ScanRGB32
+%-BW_METHOD_END ScanRGB32
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

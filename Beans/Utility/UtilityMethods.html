@@ -873,6 +873,34 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ScanRGB">
+<b>ScanRGB</b></a>
+ - Scans a RGB value and stores it in r, g and b. String can be a single hex number (0x120506) or three decimal values (18 5 6)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ScanRGB(const unsigned char **str, uint8_t *r, uint8_t *g, uint8_t *b)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>str:uint8_t</i> - String to scan</li>
+<li><i>r: Pointer to uint8_t</i> - Pointer to red value</li>
+<li><i>g: Pointer to uint8_t</i> - Pointer to green value</li>
+<li><i>b: Pointer to uint8_t</i> - Pointer to blue value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
+<li><a name="ScanRGB32">
+<b>ScanRGB32</b></a>
+ - Scans a RGB value and stores it in a single 32bit value. String can be a single hex number (0x120506) or three decimal values (18 5 6)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ScanRGB32(const unsigned char **str, uint32_t *rgb)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>str:uint8_t</i> - String to scan</li>
+<li><i>rgb: Pointer to uint32_t</i> - Pointer to red value</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="strcmp">
 <b>strcmp</b></a>
  - Wrapper to the standard strcmp() routine
