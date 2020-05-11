@@ -582,6 +582,18 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
 
 %endif %- ParseWithCommandTableExt
 %-BW_METHOD_END ParseWithCommandTableExt
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadCommandLine
+%ifdef ReadCommandLine
+uint8_t %'ModuleName'%.%ReadCommandLine(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io);
+%define! ParcmdBuf
+%define! ParcmdBufSize
+%define! Pario
+%define! RetVal
+%include Common\ShellReadCommandLine.Inc
+
+%endif %- ReadCommandLine
+%-BW_METHOD_END ReadCommandLine
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1347,6 +1359,45 @@ uint8_t %'ModuleName'%.%ReadAndParseWithCommandTableExt(uint8_t *cmdBuf, size_t 
 %endif %- ReadAndParseWithCommandTableExt
 %-BW_METHOD_END ReadAndParseWithCommandTableExt
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN ReadCommandLine
+%ifdef ReadCommandLine
+%define! ParcmdBuf
+%define! ParcmdBufSize
+%define! Pario
+%define! RetVal
+%include Common\ShellReadCommandLine.Inc
+uint8_t %'ModuleName'%.%ReadCommandLine(uint8_t *cmdBuf, size_t cmdBufSize, %'ModuleName'_ConstStdIOType *io)
+{
+  /* IMPORTANT NOTE: this function *appends* to the buffer, so the buffer needs to be initialized first! */
+  size_t len;
+
+  if (io==NULL) { /* no I/O handler? */
+    return ERR_FAILED;
+  }
+  len = %@Utility@'ModuleName'%.strlen((const char*)cmdBuf);
+  if (%'ModuleName'%.%ReadLine(cmdBuf, cmdBuf+len, cmdBufSize-len, io)) {
+    len = %@Utility@'ModuleName'%.strlen((const char*)cmdBuf); /* length of buffer string */
+    if (len==0) { /* error case */
+      return ERR_FAILED;
+    } else if (len==1 && (cmdBuf[0]=='\n' || cmdBuf[0]=='\r')) { /* eat preceding newline characters */
+      cmdBuf[0] = '\0';
+    }
+    if (len>=cmdBufSize-1) {           /* buffer overflow? Parse what we have, will be likely return an error */
+      cmdBuf[0] = '\0'; /* start again */
+      return ERR_OVERFLOW;
+    } else if (cmdBuf[len-1]=='\n' || cmdBuf[len-1]=='\r') { /* line end: parse command */
+      cmdBuf[len-1] = '\0';            /* remove line end character for parser */
+      return ERR_OK;
+    } else {
+      /* continue to append to buffer */
+    }
+  }
+  return ERR_BUSY;
+}
+
+%endif %- ReadCommandLine
+%-BW_METHOD_END ReadCommandLine
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN ReadAndParseWithCommandTable
 %ifdef ReadAndParseWithCommandTable
 %define! ParcmdBuf
@@ -1811,6 +1862,7 @@ uint8_t %'ModuleName'%.%PrintMemory(void *hndl, uint32_t startAddr, uint32_t end
 
 %endif %- PrintMemory
 %-BW_METHOD_END PrintMemory
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

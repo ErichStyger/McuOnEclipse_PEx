@@ -495,6 +495,20 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ReadCommandLine">
+<b>ReadCommandLine</b></a>
+ - Similar to ReadAndParseWithCommandTableExt, but does not call the parser. Reads characters from the default input channel and appends it to the buffer. Once a new line has been detected, it  removes it and returns ERR_OK
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t ReadCommandLine(uint8_t *cmdBuf, size_t cmdBufSize, <i>ComponentName_</i>ConstStdIOType *io)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>cmdBuf: Pointer to uint8_t</i> - Pointer to buffer provided by the caller where to store the command to read in. Characters will be appended, so make sure string buffer is initialized with a zero byte at the beginning.</li>
+<li><i>cmdBufSize:uint8_t</i> - Size of buffer</li>
+<li><i>io: Pointer to <a href="ShellUser Types.html#ConstStdIOType"><i>ComponentName_</i>ConstStdIOType</a></i> - Pointer to I/O channels to be used</li>
+<li><i>Return value:uint8_t</i> - Error code, ERR_OK if a complete line has been detected
+</li>
+</ul><br />
+</li>
 <li><a name="ReadAndParseWithCommandTable">
 <b>ReadAndParseWithCommandTable</b></a>
  - Reads characters from the default input channel and appends it to the buffer. Once a new line has been detected, the line will be parsed using the handlers in the table.
