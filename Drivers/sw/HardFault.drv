@@ -326,8 +326,8 @@ void %'ModuleName'%.%HardFaultHandler(void)
     " b %'ModuleName'%.HandlerC   \n"  /* if no, dump the register values and halt the system */
   "_SemihostReturn:               \n"  /* returning from semihosting fault */
     " adds r1,#2                  \n"  /* r1 points to the semihosting BKPT instruction. Adjust the PC to skip it (2 bytes) */
-    " str r1,[r0,#24]             \n"  /* store back the ajusted PC value to the interrupt stack frame */
-    " movs r1,#32                 \n"  /* need to pass back a return value to emulate a sucessful semihosting operation. 32 is an arbitrary value */
+    " str r1,[r0,#24]             \n"  /* store back the adjusted PC value to the interrupt stack frame */
+    " movs r1,#32                 \n"  /* need to pass back a return value to emulate a successful semihosting operation. 32 is an arbitrary value */
     " str r1,[r0,#0]              \n"  /* store the return value on the stack frame */
     " bx lr                       \n"  /* return from the exception handler back to the application */
 #else
