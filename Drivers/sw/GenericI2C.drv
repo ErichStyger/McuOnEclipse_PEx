@@ -443,9 +443,13 @@ void %OnError(void);
 %if defined(LDD_I2C)
 #include "%@LDD_I2C@ModuleName.h"
 %endif
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
-#include "%@Timeout@ModuleName.h"
+  #include "%@Timeout@ModuleName.h"
+%else
+  #include "McuTimeout.h"
 %endif
+#endif
 
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
@@ -472,12 +476,26 @@ typedef struct {
 
 static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
-#define %'ModuleName'%.TIMEOUT_US  ((uint32_t)%TimeoutUs)  /* number of microseconds as specified in properties */
-#define %'ModuleName'%.TIMEOUT_NOF_TICKS(factor) ((%'ModuleName'%.TIMEOUT_US*(factor))/1000/%@Timeout@'ModuleName'%.TICK_PERIOD_MS)
-#define %'ModuleName'%.TIMEOUT_TICKS(factor) (%'ModuleName'%.TIMEOUT_NOF_TICKS(factor)>0?%'ModuleName'%.TIMEOUT_NOF_TICKS(factor):1)  /* at least one tick */
+  #define TIMEOUT_COUNTER_HANDLE                        %@Timeout@'ModuleName'%.CounterHandle
+  #define TIMEOUT_GET_COUNTER                           %@Timeout@'ModuleName'%.GetCounter
+  #define TIMEOUT_LEAVE_COUNTER                         %@Timeout@'ModuleName'%.LeaveCounter
+  #define TIMEOUT_COUNTER_EXPIRED                       %@Timeout@'ModuleName'%.CounterExpired
+  #define TIMEOUT_OUT_OF_HANDLE                         %@Timeout@'ModuleName'%.OUT_OF_HANDLE
+  #define %'ModuleName'%.TIMEOUT_NOF_TICKS(factor)      ((%'ModuleName'%.CONFIG_TIMEOUT_US*(factor))/1000/%@Timeout@'ModuleName'%.TICK_PERIOD_MS)
+%else
+  #define TIMEOUT_COUNTER_HANDLE                        McuTimeout_CounterHandle
+  #define TIMEOUT_GET_COUNTER                           McuTimeout_GetCounter
+  #define TIMEOUT_LEAVE_COUNTER                         McuTimeout_LeaveCounter
+  #define TIMEOUT_COUNTER_EXPIRED                       McuTimeout_CounterExpired
+  #define TIMEOUT_OUT_OF_HANDLE                         McuTimeout_OUT_OF_HANDLE
+  #define %'ModuleName'%.TIMEOUT_NOF_TICKS(factor)      ((%'ModuleName'%.CONFIG_TIMEOUT_US*(factor))/1000/McuTimeout_TICK_PERIOD_MS)
 %endif
+  #define %'ModuleName'%.TIMEOUT_TICKS(factor)          (%'ModuleName'%.TIMEOUT_NOF_TICKS(factor)>0?%'ModuleName'%.TIMEOUT_NOF_TICKS(factor):1)  /* at least one tick */
+#endif
 %endif
+
 #if %'ModuleName'%.CONFIG_USE_MUTEX
 static SemaphoreHandle_t %'ModuleName'%.busSem = NULL; /* Semaphore to protect I2C bus access */
 #endif
@@ -581,10 +599,10 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
 {
   uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
 %endif
 
 %if defined(LDD_I2C)
@@ -598,29 +616,29 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
     #endif
       break; /* break for(;;) */
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is received */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
         break; /* break while() */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataReceivedFlg);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
     if (isTimeout) {
       res = ERR_BUSY;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -628,7 +646,7 @@ uint8_t %'ModuleName'%.%ReadBlockGeneric(void* data, uint16_t dataSize, %'Module
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     break; /* break for(;;) */
   } /* for(;;) */
 %else
@@ -675,10 +693,10 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
 {
   uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
 %else
   uint16_t nof;
 %endif
@@ -693,29 +711,29 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
     #endif
       break; /* break for(;;) */
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is received */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
-    #endif
+      #endif
         break; /* break while() */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataReceivedFlg);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
     if (isTimeout) {
       res = ERR_BUSY;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -723,7 +741,7 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
       #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     break; /* break for(;;) */
   } /* for(;;) */
 %else
@@ -765,10 +783,10 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
 %if defined(I2C)
   uint16_t nof;
 %endif
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
   uint8_t res = ERR_OK;
 
 %if defined(LDD_I2C)
@@ -781,29 +799,29 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
     #endif
       break; /* break for(;;) */
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is sent */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
         break; /* break while loop */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataTransmittedFlg);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
     if (isTimeout) {
       res = ERR_BUSY;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -811,7 +829,7 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
       #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     break; /* break for(;;) */
   } /* for(;;) */
 %else
@@ -864,10 +882,10 @@ uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8
 {
   uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
 %else
   uint16_t nof;
 %endif
@@ -891,29 +909,30 @@ uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8
         break; /* break for(;;) */
       }
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(memAddrSize)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(memAddrSize)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is sent */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
+        res = ERR_FAILED;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
         break; /* break while() */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataTransmittedFlg);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
     if (isTimeout) {
       res = ERR_BUSY;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -921,7 +940,7 @@ uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8
       #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     /* optional wait time */
     if (waitMs!=0) {
       %@Wait@'ModuleName'%.WaitOSms(waitMs);
@@ -936,29 +955,30 @@ uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8
       #endif
         break; /* break for(;;) */
       }
-%if defined(Timeout)
-      timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
-      if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(dataSize)); /* set up timeout counter */
+      if (timeout==TIMEOUT_OUT_OF_HANDLE) {
         res = ERR_QFULL;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
         break; /* break for(;;) */
       }
-%endif
+#endif
       do { /* Wait until data is received */
-%if defined(Timeout)
-        isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+        isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
         if (isTimeout) {
+          res = ERR_FAILED;
         #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
           %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
         #endif
           break; /* break while() */
         }
-%endif
+#endif
       } while (!%'ModuleName'%.deviceData.dataReceivedFlg);
-%if defined(Timeout)
-      %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      TIMEOUT_LEAVE_COUNTER(timeout);
       if (isTimeout) {
         res = ERR_BUSY;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -966,7 +986,7 @@ uint8_t %'ModuleName'%.%ReadAddressWait(uint8_t i2cAddr, uint8_t *memAddr, uint8
       #endif
         break; /* break for(;;) */
       }
-%endif
+#endif
     } /* if receive data */
     break; /* break for(;;) */
   } /* for(;;) */
@@ -1053,10 +1073,10 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
 %if defined(I2C)
   uint16_t nof;
 %endif
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
   uint8_t res = ERR_OK;
 
   if (%'ModuleName'%.%SelectSlave(i2cAddr)!=ERR_OK) {
@@ -1086,34 +1106,36 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
     /* send device address, memory address and data */
     %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
     if (%@LDD_I2C@'ModuleName'%.MasterSendBlock(%'ModuleName'%.deviceData.handle, writeBuf, i, LDD_I2C_SEND_STOP)!=ERR_OK) {
+      res = ERR_FAILED;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(i)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(i)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is sent */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
+        res = ERR_FAILED;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
-      %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
+        %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
         break; /* break while loop */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataTransmittedFlg);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
     if (isTimeout) {
       res = ERR_BUSY;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -1121,7 +1143,7 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     break; /* break for(;;) */
   } /* for(;;) */
 %else
@@ -1325,10 +1347,10 @@ uint8_t %'ModuleName'%.%ScanDevice(uint8_t i2cAddr)
 {
   uint8_t res = ERR_OK;
 %if defined(LDD_I2C)
-%if defined(Timeout)
-  %@Timeout@'ModuleName'%.CounterHandle timeout;
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
-%endif
+#endif
   LDD_I2C_TErrorMask errMask;
 %else
   uint16_t nof;
@@ -1349,32 +1371,33 @@ uint8_t %'ModuleName'%.%ScanDevice(uint8_t i2cAddr)
     #endif
       break; /* break for(;;) */
     }
-%if defined(Timeout)
-    timeout = %@Timeout@'ModuleName'%.GetCounter(%'ModuleName'%.TIMEOUT_TICKS(1)); /* set up timeout counter */
-    if (timeout==%@Timeout@'ModuleName'%.OUT_OF_HANDLE) {
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    timeout = TIMEOUT_GET_COUNTER(%'ModuleName'%.TIMEOUT_TICKS(1)); /* set up timeout counter */
+    if (timeout==TIMEOUT_OUT_OF_HANDLE) {
       res = ERR_QFULL;
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
       %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
     #endif
       break; /* break for(;;) */
     }
-%endif
+#endif
     do { /* Wait until data is sent */
-%if defined(Timeout)
-      isTimeout = %@Timeout@'ModuleName'%.CounterExpired(timeout);
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+      isTimeout = TIMEOUT_COUNTER_EXPIRED(timeout);
       if (isTimeout) {
+        res = ERR_FAILED;
       #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
         %'ModuleName'%.CONFIG_ON_ERROR_EVENT();
       #endif
         break; /* break while() */
       }
-%endif
+#endif
     } while (!%'ModuleName'%.deviceData.dataTransmittedFlg);
     errMask = 0;
     (void)%@LDD_I2C@'ModuleName'%.GetError(%'ModuleName'%.deviceData.handle, &errMask);
-%if defined(Timeout)
-    %@Timeout@'ModuleName'%.LeaveCounter(timeout);
-%endif
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+    TIMEOUT_LEAVE_COUNTER(timeout);
+#endif
     if (errMask&LDD_I2C_MASTER_NACK) { /* master did not receive ACK from slave */
       res = ERR_NOTAVAIL; /* device did not respond with ACK */
     #if %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT
@@ -1631,6 +1654,24 @@ void %OnError(void)
   #define %'ModuleName'%.CONFIG_USE_MUTEX             (0)
     /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
   %endif
+#endif
+
+#if !defined(%'ModuleName'%.CONFIG_USE_TIMEOUT)
+  %if defined(Timeout)
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT             (1)
+    /*!< 1: Use a timeout in case problems; 0: do not use a timeout */
+  %else
+  #define %'ModuleName'%.CONFIG_USE_TIMEOUT             (0)
+    /*!< 1: Use a timeout in case problems; 0: do not use a timeout */
+  %endif
+#endif
+
+#if !defined(%'ModuleName'%.CONFIG_TIMEOUT_US)
+%if defined(TimeoutUs) & defined(%TimeoutUs)
+  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)%TimeoutUs)  /* number of microseconds as specified in properties used for timeout */
+%else
+  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)500)  /* number of microseconds as specified in properties used for timeout */
+%endif
 #endif
 
 #if !defined(%'ModuleName'%.CONFIG_WRITE_BUFFER_SIZE)
