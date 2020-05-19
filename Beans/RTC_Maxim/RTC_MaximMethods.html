@@ -333,6 +333,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="GetTemperature">
+<b>GetTemperature</b></a>
+ - Returns the temperature from the device internal temperature sensor. Only available on DS3231 and DS3232.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t GetTemperature(float *temperature)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>temperature: Pointer to float</i> - Pointer to store the temperature</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="Read">
 <b>Read</b></a>
  - Read from the device

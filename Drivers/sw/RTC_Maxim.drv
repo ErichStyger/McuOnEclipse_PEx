@@ -84,6 +84,7 @@
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 #ifndef __BWUserType_%'ModuleName'_TTIME
 #define __BWUserType_%'ModuleName'_TTIME
   typedef struct {                                               %>40/* Time in binary format */
@@ -413,6 +414,16 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day);
 
 %endif %- SetDate
 %-BW_METHOD_END SetDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetTemperature
+%ifdef GetTemperature
+uint8_t %'ModuleName'%.%GetTemperature(float *temperature);
+%define! Partemperature
+%define! RetVal
+%include Common\RTC_MaximGetTemperature.Inc
+
+%endif %- GetTemperature
+%-BW_METHOD_END GetTemperature
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -635,7 +646,18 @@ static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  RAM", buf, io->stdOut);
 #endif
+#if %'ModuleName'%.CONFIG_DEVICE==3231 || %'ModuleName'%.CONFIG_DEVICE==3232
+   float temperature;
 
+  if (%'ModuleName'%.GetTemperature(&temperature)==ERR_OK) {
+    buf[0] = '\0';
+    %@Utility@'ModuleName'%.strcatNumFloat(buf, sizeof(buf), temperature, 2);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" degree C\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n");
+  }
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Temperature", buf, io->stdOut);
+#endif
   return ERR_OK;
 }
 
@@ -1103,6 +1125,38 @@ uint8_t %'ModuleName'%.%SetDate(uint16_t Year, uint8_t Month, uint8_t Day)
 
 %endif %- SetDate
 %-BW_METHOD_END SetDate
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetTemperature
+%ifdef GetTemperature
+%define! Partemperature
+%define! RetVal
+%include Common\RTC_MaximGetTemperature.Inc
+uint8_t %'ModuleName'%.%GetTemperature(float *temperature)
+{
+#if %'ModuleName'%.CONFIG_DEVICE==3231 || %'ModuleName'%.CONFIG_DEVICE==3232
+  int8_t high;
+  uint8_t low, res;
+
+  res = %'ModuleName'%.%Read(%'ModuleName'%.MEM_MSB_TEMP_ADDR, (uint8_t*)&high, 1);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  res = %'ModuleName'%.%Read(%'ModuleName'%.MEM_LSB_TEMP_ADDR, &low, 1);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  /* high values is two's complement of integer part of temperature, the upper two bits of LSB are the number of 0.25 degrees.
+     For example 0b00011000 0b01xxxxxx gives 24.25 degree. */
+  *temperature = (float)high + (((low&0xC0)>>6)*0.25f);
+  return ERR_OK;
+#else /* not supported */
+  *temperature = 0.0f;
+  return ERR_OK;
+#endif
+}
+
+%endif %- GetTemperature
+%-BW_METHOD_END GetTemperature
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
