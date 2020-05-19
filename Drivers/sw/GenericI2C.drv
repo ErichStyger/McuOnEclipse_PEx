@@ -1641,7 +1641,7 @@ void %OnError(void)
   %else
   #define %'ModuleName'%.CONFIG_USE_ON_ERROR_EVENT    (0)
     /*!< 1: generate user events for errors; 0: no error events */
-  #define %'ModuleName'%.CONFIG_ON_ERROR_EVENT   McuGenericI2C_OnRequestBus
+  #define %'ModuleName'%.CONFIG_ON_ERROR_EVENT   McuGenericI2C_OnError
   void %'ModuleName'%.CONFIG_ON_ERROR_EVENT(void); /* prototype */
   %endif
 #endif
