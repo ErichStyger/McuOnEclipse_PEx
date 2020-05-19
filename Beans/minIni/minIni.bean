@@ -4,7 +4,7 @@
     <Name>minIni</Name>
     <Description>minIni is a programmer’s library to read and write 'ini' files in embedded systems.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.049</Version>
+    <Version>01.054</Version>
     <Icon>CPU_CHIP</Icon>
     <TypesFiles>PE,minIni\minIni</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>4</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright>(c) Copyright 2008-2012, CompuPhase;\nhttp      : www.compuphase.com\nProcessor Expert port: Erich Styger, 2014-2019, http://www.mcuoneclipse.com\nLicense: See miniIni_LICENSE.txt and minIni_NOTICE.txt</Copyright>
+    <Copyright>(c) Copyright 2008-2012, CompuPhase;\nhttp      : www.compuphase.com\nProcessor Expert port: Erich Styger, 2014-2019, http://www.mcuoneclipse.com\nLicense: See miniIni_LICENSE.txt and minIni_NOTICE.txt\nAdaptions for Processor Expert: (c) Copyright 2012-2020, Erich Styger</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <Shortcut>MINI</Shortcut>
@@ -56,6 +56,20 @@
         <Symbol>sdk</Symbol>
         <TypeSpec>minIni\sdk</TypeSpec>
         <Hint>Link to SDK used</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <DefaultValue/>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <SortStyle/>
+      </TInhrLinkItem>
+    </Property>
+    <Property>
+      <TInhrLinkItem>
+        <Name>Utility</Name>
+        <Symbol>Utility</Symbol>
+        <TypeSpec>minIni\Utility</TypeSpec>
+        <Hint>Interface to utility string frunctions</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <EditLine>false</EditLine>
         <DefaultValue/>
@@ -153,6 +167,38 @@
         <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
+    </Property>
+    <Property>
+      <TBoolGrupItem>
+        <Name>Shell</Name>
+        <Symbol>ShellEnabledGroup</Symbol>
+        <TypeSpec>typeEnaDis</TypeSpec>
+        <Hint>Optional interface to the shell</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <BoldName>true</BoldName>
+        <EditLine>false</EditLine>
+        <Description>Disabled</Description>
+        <Expanded>No</Expanded>
+        <DefaultValue>false</DefaultValue>
+        <DefineSymbol>YES_NO</DefineSymbol>
+        <IfDisabled>setNOTHING</IfDisabled>
+        <Children>
+          <GrupItem>
+            <TInhrLinkItem>
+              <Name>Shell</Name>
+              <Symbol>Shell</Symbol>
+              <TypeSpec>minIni\Shell</TypeSpec>
+              <Hint>Optional interface to the shell</Hint>
+              <ItemLevel>BASIC</ItemLevel>
+              <EditLine>false</EditLine>
+              <DefaultValue/>
+              <CanDelete>false</CanDelete>
+              <IconPopup>false</IconPopup>
+              <SortStyle/>
+            </TInhrLinkItem>
+          </GrupItem>
+        </Children>
+      </TBoolGrupItem>
     </Property>
     <Property>
       <TBoolGrupItem>
@@ -813,6 +859,54 @@ A false boolean is found if one of the following is matched:\n
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>int #M#_#C#(INI_CALLBACK Callback, const void *UserData, const TCHAR *Filename)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ParseCommand</Name>
+        <Symbol>ParseCommand</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Shell Command Line parser</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>uint8_t</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>cmd</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to command line</ParHint>
+          <ParUserDeclaration>const unsigned char *cmd</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>handled</ParName>
+          <ParType>Boolean</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to variable which tells if the command has been handled or not</ParHint>
+        </Parameter>
+        <Parameter>
+          <ParName>io</ParName>
+          <ParType>uint8_t</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>Pointer to I/O structure</ParHint>
+          <ParUserDeclaration>const %@Shell@'ModuleName'%.StdIOType *io</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>uint8_t #M#_#C#(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

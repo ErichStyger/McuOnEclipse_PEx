@@ -229,6 +229,10 @@ LI.EXP {
 <b>SDK</b></a> - Link to SDK used
 </li>
 <li>
+<a name="Utility">
+<b>Utility</b></a> - Interface to utility string frunctions
+</li>
+<li>
 <a name="portableStrnicmp">
 <b>Portable strnicmp()</b></a> - If set to yes, it enables PORTABLE_STRNICMP in the configuration header file. With this, the minIni.c implements the strnicmp() function .
 </li>
@@ -247,6 +251,18 @@ LI.EXP {
 <li>
 <a name="useGlobalBuffer">
 <b>Global Buffer</b></a> - If set to 'yes', the module will use a global buffer instead a local buffer on the stack. This reduces stack usage for  large buffer sizes, but makes things non-reentrant.
+</li>
+<li>
+<a name="ShellEnabledGroup">
+<b>Shell</b></a> - Optional interface to the shell<br />
+The following items are available only if the group is enabled (the value is "Enabled"):<br />
+
+<ul>
+  <li>
+  <a name="Shell">
+  <b>Shell</b></a> - Optional interface to the shell
+  </li>
+</ul>
 </li>
 <li>
 <a name="FatFSenabled">

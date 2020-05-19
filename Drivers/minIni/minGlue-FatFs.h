@@ -12,7 +12,7 @@
 #ifndef _MINGLUE_FATFS_H__
 #define _MINGLUE_FATFS_H__
 
-#include "%'ModuleName'config.h" /* MinIni config file */
+#include "%'ModuleName'config.h" /* MinIni config file TEST */
 
 #if %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS
 
