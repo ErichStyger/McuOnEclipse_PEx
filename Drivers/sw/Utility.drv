@@ -936,6 +936,15 @@ uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb);
 
 %endif %- ScanRGB32
 %-BW_METHOD_END ScanRGB32
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SkipSpaces
+%ifdef SkipSpaces
+void %'ModuleName'%.%SkipSpaces(const unsigned char **str);
+%define! Parstr
+%include Common\UtilitySkipSpaces.Inc
+
+%endif %- SkipSpaces
+%-BW_METHOD_END SkipSpaces
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3216,6 +3225,20 @@ uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb)
 
 %endif %- ScanRGB32
 %-BW_METHOD_END ScanRGB32
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN SkipSpaces
+%ifdef SkipSpaces
+%define! Parstr
+%include Common\UtilitySkipSpaces.Inc
+void %'ModuleName'%.%SkipSpaces(const unsigned char **str)
+{
+  while(**str == ' ') {
+    (*str)++; /* skip space */
+  }
+}
+
+%endif %- SkipSpaces
+%-BW_METHOD_END SkipSpaces
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
