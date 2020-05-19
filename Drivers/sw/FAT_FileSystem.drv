@@ -65,22 +65,40 @@
 #define __%'ModuleName'_H
 
 /* MODULE %ModuleName. */
+
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%'ModuleName'config.h" /* configuration */
+
 /* Wrappers to FatFS types and constants */
 #define %'ModuleName'%.FATFS            FATFS
 #define %'ModuleName'%.DIR              DIR
 #define %'ModuleName'%.FIL              FIL
 #define %'ModuleName'%.FILINFO          FILINFO
-#define %'ModuleName'%.FS_READONLY      _FS_READONLY
-#define %'ModuleName'%.USE_LFN          _USE_LFN
-#define %'ModuleName'%.MAX_LFN          _MAX_LFN
-#define %'ModuleName'%.FS_REENTRANT     _FS_REENTRANT
-#define %'ModuleName'%.MAX_SS           _MAX_SS
-#define %'ModuleName'%.FS_RPATH         _FS_RPATH
 #define %'ModuleName'%.FRESULT          FRESULT
 #define %'ModuleName'%.DRESULT          DRESULT
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  #define %'ModuleName'%.USE_LFN          _USE_LFN
+  #define %'ModuleName'%.MAX_LFN          _MAX_LFN
+  #define %'ModuleName'%.MAX_SS           _MAX_SS
+  #define %'ModuleName'%.FS_RPATH         _FS_RPATH
+  #define %'ModuleName'%.FS_READONLY      _FS_READONLY
+  #define %'ModuleName'%.FS_REENTRANT     _FS_REENTRANT
+  #define %'ModuleName'%.SYNC_t           _SYNC_t
+  #define %'ModuleName'%.FS_TIMEOUT       _FS_TIMEOUT
+#else /* use newer defines in NXP SDK and FatFS */
+  #define %'ModuleName'%.USE_LFN          FF_USE_LFN
+  #define %'ModuleName'%.MAX_LFN          FF_MAX_LFN
+  #define %'ModuleName'%.MAX_SS           FF_MAX_SS
+  #define %'ModuleName'%.FS_RPATH         FF_FS_RPATH
+  #define %'ModuleName'%.FS_READONLY      FF_FS_READONLY
+  #define %'ModuleName'%.FS_REENTRANT     FF_FS_REENTRANT
+  #define %'ModuleName'%.SYNC_t           FF_SYNC_t
+  #define %'ModuleName'%.FS_TIMEOUT       FF_FS_TIMEOUT
+#endif
 
-#include "%@sdk@ModuleName.h" /* SDK and API used */
-#include "%'ModuleName'config.h" /* configuration */
+/* prototypes for application callbacks */
+extern bool %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(uint8_t drive);
+extern bool %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(uint8_t drive);
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -942,13 +960,15 @@ void %OnCreateSyncObject(void *sobj);
 %endfor
 #include "ff.h"
 #include "%'ModuleName'.h"
+
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %- -------------------------------------------------------------------------------------------
 %:maxDrive=%DriveSymbolNumItems
 %:maxDrive-=1
 %for i from [0..%maxDrive]
 #include "%@Drive%i@ModuleName.h"
 %endfor
-%- -------------------------------------------------------------------------------------------
+#endif
 
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
@@ -978,6 +998,7 @@ static uint8_t StrToDriveNumber(uint8_t *drvStr) {
   return drv;
 }
 /*-----------------------------------------------------------------------*/
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 /* Initialize a Drive                                                    */
 DSTATUS disk_initialize (
         uint8_t drv                                              %>40 /* Physical drive number (0..) */
@@ -993,7 +1014,9 @@ DSTATUS disk_initialize (
   } /* switch */
   return (DSTATUS)RES_PARERR;
 }
+#endif
 /*-----------------------------------------------------------------------*/
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 /* Return Disk Status                                                    */
 DSTATUS disk_status (
         uint8_t drv                                              %>40 /* Physical drive number (0..) */
@@ -1009,7 +1032,9 @@ DSTATUS disk_status (
   } /* switch */
   return (DSTATUS)RES_PARERR;
 }
+#endif
 /*-----------------------------------------------------------------------*/
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 /* Read Sector(s)                                                        */
 DRESULT disk_read (
         uint8_t drv,                                             %>40 /* Physical drive number (0..) */
@@ -1028,7 +1053,9 @@ DRESULT disk_read (
   } /* switch */
   return RES_PARERR;
 }
+#endif
 /*-----------------------------------------------------------------------*/
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 /* Write Sector(s)                                                       */
 #if _READONLY == 0
 DRESULT disk_write (
@@ -1049,7 +1076,9 @@ DRESULT disk_write (
   return RES_PARERR;
 }
 #endif /* _READONLY == 0 */
+#endif
 /*-----------------------------------------------------------------------*/
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 DRESULT disk_ioctl (
         uint8_t drv,                                             %>40 /* Physical drive number (0..) */
         uint8_t ctrl,                                            %>40 /* Control code */
@@ -1066,9 +1095,10 @@ DRESULT disk_ioctl (
   } /* switch */
   return RES_PARERR;
 }
+#endif
 /*-----------------------------------------------------------------------*/
 %if defined(Shell)
-#define %'ModuleName'_8_3_SIZE       sizeof("12345678.txt") /* length of a 8.3 file name (13 including the zero byte) */
+#define %'ModuleName'_8_3_SIZE       sizeof("0:/12345678.txt") /* length of a 8.3 file name (13 including the zero byte) including the optional drive letter */
 
 #if %'ModuleName'%.USE_LFN == 0                                  %>40 /* No LFN */
 #define %'ModuleName'%.DEF_NAMEBUF(name)                         %>40 uint8_t name[%'ModuleName'%.8_3_SIZE]
@@ -1165,7 +1195,7 @@ static void PrintInASCII(uint8_t *buf, size_t bufSize, size_t LineLen, uint8_t n
 
 /*!
  * \brief Writes a directory listing of the given path
- * \param[in] dirPathPtr Pointer to a directory path string. Pass "\\" for the root directory
+ * \param[in] dirPathPtr Pointer to a directory path string. Pass e.g. "0:/" for the root directory
  * \param[in] io Callback to write directory output
  * \return Error code, otherwise ERR_OK
  */
@@ -1301,7 +1331,7 @@ static uint8_t DirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Cons
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
   if (*(cmd+sizeof("dir")-1)== ' ') { /* space after "dir": read name */
-    if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("dir"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+    if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("dir"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
           %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
        )
     {
@@ -1321,11 +1351,11 @@ static uint8_t DirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Cons
       /* ok, have now directory name */
     }
 #else
-    %@Utility@'ModuleName'%.strcpy(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName), (unsigned char*)"\\"); /* use root */
+    %@Utility@'ModuleName'%.strcpy(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName), (unsigned char*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING); /* use root */
 #endif
   }
   if (res == ERR_OK) {
-    res = %'ModuleName'%.%PrintDirectory(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%PrintDirectory((const uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   }
   %'ModuleName'%.FREE_NAMEBUF(fileName);
   return res;
@@ -1348,14 +1378,14 @@ static uint8_t CopyCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Con
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
   %'ModuleName'%.INIT_NAMEBUF(fileName2);
-  if (   (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("copy"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (   (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("copy"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
           %'ModuleName'%.SIZE_NAMEBUF(fileName), &lenRead, NULL, NULL)==ERR_OK)
       && *(cmd+sizeof("copy")+lenRead)==' '
-      && (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("copy")+lenRead+1, %'ModuleName'%.PTR_NAMEBUF(fileName2),
+      && (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("copy")+lenRead+1, (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName2),
           %'ModuleName'%.SIZE_NAMEBUF(fileName2), NULL, NULL, NULL)==ERR_OK)
      )
   {
-    res = %'ModuleName'%.%CopyFile(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.PTR_NAMEBUF(fileName2), io);
+    res = %'ModuleName'%.%CopyFile((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.PTR_NAMEBUF(fileName2), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"copy srcFileName dstFileName", io);
     res = ERR_FAILED;
@@ -1378,11 +1408,11 @@ static uint8_t DeleteCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
   %'ModuleName'%.DEF_NAMEBUF(fileName);
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("delete"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("delete"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-    res = %'ModuleName'%.%DeleteFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%DeleteFile((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"delete fileName", io);
     res = ERR_FAILED;
@@ -1404,11 +1434,11 @@ static uint8_t MkdirCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Co
   %'ModuleName'%.DEF_NAMEBUF(fileName);
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("mkdir"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("mkdir"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-    res = %'ModuleName'%.%MakeDirectory(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%MakeDirectory((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"mkdir directoryName", io);
     res = ERR_FAILED;
@@ -1428,11 +1458,11 @@ static uint8_t RenameCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
   %'ModuleName'%.INIT_NAMEBUF(fileName2);
-  if (   (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("rename"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (   (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("rename"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
           %'ModuleName'%.SIZE_NAMEBUF(fileName), &lenRead, NULL, NULL)==ERR_OK)
       && *(cmd+sizeof("rename")+lenRead)==' '
       && (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("rename")+lenRead+1,
-          %'ModuleName'%.PTR_NAMEBUF(fileName2),
+          (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName2),
           %'ModuleName'%.SIZE_NAMEBUF(fileName2), NULL, NULL, NULL)==ERR_OK)
      )
   {
@@ -1474,11 +1504,11 @@ static uint8_t PrintCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Co
   %'ModuleName'%.DEF_NAMEBUF(fileName);
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("print"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("print"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-    res = %'ModuleName'%.%PrintFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%PrintFile((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"print fileName", io);
     res = ERR_FAILED;
@@ -1495,11 +1525,11 @@ static uint8_t PrintHexCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%
   %'ModuleName'%.DEF_NAMEBUF(fileName);
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("printhex"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("printhex"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-    res = %'ModuleName'%.%PrintHexFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%PrintHexFile((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"printhex fileName", io);
     res = ERR_FAILED;
@@ -1507,7 +1537,6 @@ static uint8_t PrintHexCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%
   %'ModuleName'%.FREE_NAMEBUF(fileName);
   return res;
 }
-
 %endif %-defined(PrintHexFile)
 %if defined(ChangeDirectory)
 
@@ -1519,11 +1548,11 @@ static uint8_t CdCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Const
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
   if (*(cmd+sizeof("cd")-1)== ' ') { /* space after "cd": read name */
-    if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("cd"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+    if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("cd"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
           %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
        )
     {
-      res = %'ModuleName'%.%ChangeDirectory(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+      res = %'ModuleName'%.%ChangeDirectory((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
     } else {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"reading directory name failed!\r\n", io->stdErr);
       res = ERR_FAILED;
@@ -1537,11 +1566,11 @@ static uint8_t CdCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.Const
       FatFsFResultMsg((unsigned char*)"getcwd failed", fres, io);
       res = ERR_FAILED;
     } else {
-      %@Shell@'ModuleName'%.SendStr(%'ModuleName'%.PTR_NAMEBUF(fileName), io->stdOut);
+      %@Shell@'ModuleName'%.SendStr((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io->stdOut);
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
     }
 #else
-    %@Utility@'ModuleName'%.strcpy(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName), (unsigned char*)"\\"); /* use root */
+    %@Utility@'ModuleName'%.strcpy(%'ModuleName'%.PTR_NAMEBUF(fileName), %'ModuleName'%.SIZE_NAMEBUF(fileName), (unsigned char*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING); /* use root */
 #endif
   }
   %'ModuleName'%.FREE_NAMEBUF(fileName);
@@ -1563,11 +1592,11 @@ static uint8_t CreateCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
   %'ModuleName'%.DEF_NAMEBUF(fileName);
 
   %'ModuleName'%.INIT_NAMEBUF(fileName);
-  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("create"), %'ModuleName'%.PTR_NAMEBUF(fileName),
+  if (%@Utility@'ModuleName'%.ReadEscapedName(cmd+sizeof("create"), (uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName),
         %'ModuleName'%.SIZE_NAMEBUF(fileName), NULL, NULL, NULL)==ERR_OK
      )
   {
-    res = %'ModuleName'%.%CreateFile(%'ModuleName'%.PTR_NAMEBUF(fileName), io);
+    res = %'ModuleName'%.%CreateFile((uint8_t*)%'ModuleName'%.PTR_NAMEBUF(fileName), io);
   } else {
     CmdUsageError(cmd, (unsigned char*)"create fileName", io);
     res = ERR_FAILED;
@@ -1578,11 +1607,12 @@ static uint8_t CreateCmd(const unsigned char *cmd, const %@Shell@'ModuleName'%.C
 
 %endif %-defined(CreateFile)
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"FatFs status\r\n", io->stdOut);
 %for i from [0..%maxDrive]
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  present", %'ModuleName'%.isDiskPresent((uint8_t*)"%i")?(unsigned char*)"drive%i: yes\r\n":(unsigned char*)"drive%i: no\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  protected", %'ModuleName'%.isWriteProtected((uint8_t*)"%i")?(unsigned char*)"drive%i: yes\r\n":(unsigned char*)"drive%i: no\r\n", io->stdOut);
 %endfor
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  default drv", (unsigned char*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING "\r\n", io->stdOut);
   return ERR_OK;
 }
 
@@ -1659,7 +1689,7 @@ void ff_memfree (void* ptr) {  /* Free memory block */
 #endif
 #endif
 
-#if _FS_REENTRANT
+#if %'ModuleName'%.FS_REENTRANT
 /*!
 * \brief Create a Synchronization Object
 * This function is called in f_mount function to create a new
@@ -1671,7 +1701,7 @@ void ff_memfree (void* ptr) {  /* Free memory block */
 */
 %if defined(UserSyncFunctions) & %UserSyncFunctions='yes'
 #if 0
-int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj)
+int ff_cre_syncobj(uint8_t vol, %'ModuleName'%.SYNC_t *sobj)
 {
   /* You have decided in the component properties to implement your own user sync functions,
      with you own _SYNC_t type (e.g. HANDLE).
@@ -1684,7 +1714,7 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj)
   static StaticSemaphore_t xMutexBuffer[_VOLUMES];
 #endif
 
-int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
+int ff_cre_syncobj(uint8_t vol, %'ModuleName'%.SYNC_t *sobj) {
   (void)vol; /* argument not used */
 %if defined(RTOS)
 #if configSUPPORT_STATIC_ALLOCATION
@@ -1696,13 +1726,13 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
   %OnCreateSyncObject(*sobj);
   %endif
   if (*sobj!=NULL) {
-    vQueueAddToRegistry(*sobj, "%'ModuleName'%.Sem");
+    vQueueAddToRegistry(*sobj, "%'ModuleName'%.Mutex");
   }
   return (*sobj != NULL) ? TRUE : FALSE;
 %- *sobj = OSMutexCreate(0, &err);                         /* uC/OS-II */
 %- ret = (err == OS_NO_ERR) ? TRUE : FALSE;
 %else
-  /* _FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
+  /* %'ModuleName'%.FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
      That means that you cannot have parallel access to the file system object.
      If you have parallel access to the memory bus, you need to handle this from the memory component.
    */
@@ -1722,7 +1752,7 @@ int ff_cre_syncobj(uint8_t vol, _SYNC_t *sobj) {
 */
 %if defined(UserSyncFunctions) & %UserSyncFunctions='yes'
 #if 0
-int ff_del_syncobj(_SYNC_t sobj) {
+int ff_del_syncobj(%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
      with you own _SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
@@ -1730,7 +1760,7 @@ int ff_del_syncobj(_SYNC_t sobj) {
 }
 #endif
 %else
-int ff_del_syncobj(_SYNC_t sobj) {
+int ff_del_syncobj(%'ModuleName'%.SYNC_t sobj) {
 %if defined(RTOS)
   vQueueUnregisterQueue(sobj);
   %@RTOS@'ModuleName'%.vSemaphoreDelete(sobj); /* FreeRTOS: free up memory for semaphore */
@@ -1738,7 +1768,7 @@ int ff_del_syncobj(_SYNC_t sobj) {
 %-      OSMutexDel(sobj, OS_DEL_ALWAYS, &err);          /* uC/OS-II */
 %-      ret = (err == OS_NO_ERR) ? TRUE : FALSE;
 %else
-  /* _FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
+  /* %'ModuleName'%.FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
      That means that you cannot have parallel access to the file system object.
      If you have parallel access to the memory bus, you need to handle this from the memory component.
    */
@@ -1757,7 +1787,7 @@ int ff_del_syncobj(_SYNC_t sobj) {
 */
 %if defined(UserSyncFunctions) & %UserSyncFunctions='yes'
 #if 0
-int ff_req_grant (_SYNC_t sobj) {
+int ff_req_grant (%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
      with you own _SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
@@ -1765,9 +1795,9 @@ int ff_req_grant (_SYNC_t sobj) {
 }
 #endif
 %else
-int ff_req_grant (_SYNC_t sobj) {
+int ff_req_grant (%'ModuleName'%.SYNC_t sobj) {
 %if defined(RTOS)
-  if (%@RTOS@'ModuleName'%.xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE) {
+  if (%@RTOS@'ModuleName'%.xSemaphoreTake(sobj, %'ModuleName'%.FS_TIMEOUT) == pdTRUE) {
     return TRUE; /* success */
   } else {  /* failed to get the sync object? */
     return FALSE; /* failure */
@@ -1775,7 +1805,7 @@ int ff_req_grant (_SYNC_t sobj) {
 %-      OSMutexPend(sobj, _FS_TIMEOUT, &err));                  /* uC/OS-II */
 %-      return (err == OS_NO_ERR) ? TRUE : FALSE;
 %else
-  /* _FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
+  /* %'ModuleName'%.FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
      That means that you cannot have parallel access to the file system object.
      If you have parallel access to the memory bus, you need to handle this from the memory component.
    */
@@ -1792,7 +1822,7 @@ int ff_req_grant (_SYNC_t sobj) {
 */
 %if defined(UserSyncFunctions) & %UserSyncFunctions='yes'
 #if 0
-void ff_rel_grant (_SYNC_t sobj) {
+void ff_rel_grant (%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
      with you own _SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
@@ -1800,12 +1830,12 @@ void ff_rel_grant (_SYNC_t sobj) {
 }
 #endif
 %else
-void ff_rel_grant (_SYNC_t sobj) {
+void ff_rel_grant (%'ModuleName'%.SYNC_t sobj) {
 %if defined(RTOS)
   (void)%@RTOS@'ModuleName'%.xSemaphoreGive(sobj); /* FreeRTOS */
 %-      OSMutexPost(sobj);              /* uC/OS-II */
 %else
-  /* _FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
+  /* %'ModuleName'%.FS_REENTRANT enabled, no RTOS enabled, and you don't want to provide your own sync method.
      That means that you cannot have parallel access to the file system object.
      If you have parallel access to the memory bus, you need to handle this from the memory component.
    */
@@ -1813,7 +1843,7 @@ void ff_rel_grant (_SYNC_t sobj) {
 %endif
 }
 %endif
-#endif /* _FS_REENTRANT */
+#endif /* %'ModuleName'%.FS_REENTRANT */
 
 %-BW_METHOD_BEGIN open
 %ifdef open
@@ -2240,6 +2270,7 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
   uint8_t drv;
 
   drv = StrToDriveNumber(drvStr);
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2249,6 +2280,9 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
       break;
   } /* switch */
   return TRUE;
+#else
+  return %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(drv);
+#endif
 %endif
 }
 
@@ -2265,6 +2299,7 @@ bool %'ModuleName'%.%isDiskPresent(uint8_t *drvStr)
   uint8_t drv;
 
   drv = StrToDriveNumber(drvStr);
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2274,6 +2309,9 @@ bool %'ModuleName'%.%isDiskPresent(uint8_t *drvStr)
       break;
   } /* switch */
   return FALSE;
+#else
+  return %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(drv);
+#endif
 }
 
 %endif %- isDiskPresent
@@ -2412,12 +2450,13 @@ dword %'ModuleName'%.%f_size(FIL *fil)
 uint8_t %'ModuleName'%.%Init(void)
 {
   uint8_t res = ERR_OK;
-
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %for i from [0..%maxDrive]
   if (%@Drive%i@'ModuleName'%.Init(NULL)!=ERR_OK) {
     res = ERR_FAILED;
   }
 %endfor
+#endif
   return res;
 }
 
@@ -2431,12 +2470,13 @@ uint8_t %'ModuleName'%.%Init(void)
 uint8_t %'ModuleName'%.%Deinit(void)
 {
   uint8_t res = ERR_OK;
-
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 %for i from [0..%maxDrive]
   if (%@Drive%i@'ModuleName'%.Deinit(NULL)!=ERR_OK) {
     res = ERR_FAILED;
   }
 %endfor
+#endif
   return res;
 }
 
@@ -2564,7 +2604,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %ifdef PrintDiskInfo
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' diskinfo")==0) {
     *handled = TRUE;
-    return %'ModuleName'%.%PrintDiskInfo(NULL, io);
+    return %'ModuleName'%.%PrintDiskInfo((unsigned char*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING, io);
 %endif %- PrintDiskInfo
 %ifdef Benchmark
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' benchmark")==0) {
@@ -2589,7 +2629,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 uint8_t %'ModuleName'%.%CheckCardPresence(bool *cardMounted, uint8_t *drive, FATFS *fileSystemObject, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   if (drive==NULL) { /* backward compatibility with drive numbers before (which could be zero or NULL) */
-    drive = (unsigned char*)"";
+    drive = (unsigned char*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING;
   }
   if (!(*cardMounted) && %'ModuleName'%.isDiskPresent(drive)) {
     /* card inserted */
@@ -2731,7 +2771,7 @@ uint8_t %'ModuleName'%.%CopyFile(const uint8_t*srcFileName, const uint8_t *dstFi
   UINT br, bw;          /* file read/write counters */
   uint8_t res =  ERR_OK;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -2810,7 +2850,7 @@ uint8_t %'ModuleName'%.%DeleteFile(const uint8_t *fileName, const %@Shell@'Modul
 {
   %'ModuleName'%.FRESULT fres;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -2836,7 +2876,7 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
   %'ModuleName'%.FRESULT fres;
   FIL fp;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -2987,7 +3027,7 @@ uint8_t %'ModuleName'%.%MakeDirectory(const uint8_t *dirName, const %@Shell@'Mod
 {
   %'ModuleName'%.FRESULT fres;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -3047,7 +3087,7 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
 {
   %'ModuleName'%.FRESULT fres;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -3070,14 +3110,23 @@ uint8_t %'ModuleName'%.%RenameFile(const uint8_t *srcFileName, const uint8_t *ds
 %define! RetVal
 %include Common\FAT_FileSystemPrintSector.Inc
 #if %'ModuleName'%.USE_RTOS_DYNAMIC_MEMORY
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   %for i from [0..%maxDrive]
   #define SECTOR_BUF_SIZE%i   %@Drive%i@'ModuleName'%.BLOCK_SIZE
   %endfor
 #else
+  #define SECTOR_BUF_SIZE0   512
+#endif
+#else
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   %for i from [0..%maxDrive]
   static uint8_t print_buf%i[%@Drive%i@'ModuleName'%.BLOCK_SIZE];
   #define SECTOR_BUF_SIZE%i   sizeof(print_buf%i)
   %endfor
+#else
+  static uint8_t print_buf0[512];
+  #define SECTOR_BUF_SIZE0   sizeof(print_buf0)
+#endif
 #endif
 uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Shell@'ModuleName'%.StdIOType *io)
 {
@@ -3166,7 +3215,7 @@ uint8_t %'ModuleName'%.%PrintSector(uint8_t drive, uint32_t sectorNo, const %@Sh
  * \param[in] io IO handler for output
  * \return Error code, ERR_OK for success.
  */
-uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'%.StdIOType *io)
+uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drvStr, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   /* see for details:
    * http://www.retroleum.co.uk/electronics-articles/basic-mmc-card-access/
@@ -3177,21 +3226,23 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
   int8_t val8;
   uint8_t buff[64];
   uint8_t driverVersion; /* 0: SPI, 1: SDHC_LDD */
+  uint8_t driveNr;
 
-  if (!%'ModuleName'%.isDiskPresent(drive)) {
+  driveNr = StrToDriveNumber(drvStr);
+  if (!%'ModuleName'%.isDiskPresent(drvStr)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk not present!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  if ((disk_initialize(StrToDriveNumber(drive))&STA_NOINIT)!=0) {
+  if ((disk_initialize(StrToDriveNumber(drvStr))&STA_NOINIT)!=0) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  if (disk_ioctl(0, MMC_GET_DRIVER_VERSION, &driverVersion)!=RES_OK) {
+  if (disk_ioctl(driveNr, MMC_GET_DRIVER_VERSION, &driverVersion)!=RES_OK) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"failed identification of driver version\r\n", io->stdErr);
     return ERR_FAILED;
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Card type", (unsigned char*)"", io->stdOut);
-  if (disk_ioctl(0, MMC_GET_TYPE, &val8)==RES_OK) {
+  if (disk_ioctl(driveNr, MMC_GET_TYPE, &val8)==RES_OK) {
     if (val8&CT_SD1) {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"SD1 ", io->stdOut);
     }
@@ -3216,7 +3267,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
   }
   if (driverVersion==0) { /* only SPI cards implement this */
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"SDC version", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, MMC_GET_SDC_VERSION, &val8)==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_SDC_VERSION, &val8)==RES_OK) {
       if (val8==1) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"SDC ver 1.XX or MMC\r\n", io->stdOut);
       } else if (val8==2) {
@@ -3229,7 +3280,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
     }
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Sector count", (unsigned char*)"", io->stdOut);
-  if (disk_ioctl(0, GET_SECTOR_COUNT, &val32)==RES_OK) {
+  if (disk_ioctl(driveNr, GET_SECTOR_COUNT, &val32)==RES_OK) {
     %@Utility@'ModuleName'%.Num32sToStr(buf, sizeof(buf), val32);
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
@@ -3237,7 +3288,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Sector size", (unsigned char*)"", io->stdOut);
-  if (disk_ioctl(0, GET_SECTOR_SIZE, &val16)==RES_OK) {
+  if (disk_ioctl(driveNr, GET_SECTOR_SIZE, &val16)==RES_OK) {
     %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), val16);
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
@@ -3245,7 +3296,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
   }
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"READ_BL_LEN", (unsigned char*)"", io->stdOut);
-  if (disk_ioctl(0, MMC_GET_READ_BL_LEN, &val16)==RES_OK) {
+  if (disk_ioctl(driveNr, MMC_GET_READ_BL_LEN, &val16)==RES_OK) {
     %@Utility@'ModuleName'%.Num16sToStr(buf, sizeof(buf), val16);
     %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
@@ -3254,7 +3305,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
   }
   if (driverVersion==0) { /* only SPI cards implement this */
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Block size", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, GET_BLOCK_SIZE, &val32)==RES_OK) {
+    if (disk_ioctl(driveNr, GET_BLOCK_SIZE, &val32)==RES_OK) {
       %@Utility@'ModuleName'%.Num32sToStr(buf, sizeof(buf), val32);
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
@@ -3262,7 +3313,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
     }
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"CSD", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, MMC_GET_CSD, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_CSD, &buff[0])==RES_OK) {
       for(val8=0; val8<16; val8++) {
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), (uint8_t)buff[val8]);
@@ -3274,7 +3325,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
     }
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"CID", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, MMC_GET_CID, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_CID, &buff[0])==RES_OK) {
       for(val8=0; val8<16; val8++) {
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), (uint8_t)buff[val8]);
@@ -3294,7 +3345,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
     }
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"OCR", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, MMC_GET_OCR, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_OCR, &buff[0])==RES_OK) {
       for(val8=0; val8<4; val8++) {
         buf[0] = '\0';
         %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), (uint8_t)buff[val8]);
@@ -3306,7 +3357,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"ERROR\r\n", io->stdOut);
     }
     %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"SD Status", (unsigned char*)"", io->stdOut);
-    if (disk_ioctl(0, MMC_GET_SDSTAT, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_SDSTAT, &buff[0])==RES_OK) {
       for(val8=0; val8<64; val8++) {
         buf[0] = '\0';
         if (val8!=0 && (val8%%16)==0) { /* new line to make things readable */
@@ -3324,19 +3375,19 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
   if (driverVersion==1) { /* only LLD_SDHD cards implement this */
     buff[1] = sizeof(buf)-2; /* size of buffer */
     buff[0] = MMC_GET_LLD_CMD_HIGH_CAPACITY; /* cmd */
-    if (disk_ioctl(0, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
       %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"High capacity", (unsigned char*)(buff[2]!=0?"yes\r\n":"no\r\n"), io->stdOut);
     }
     buff[0] = MMC_GET_LLD_CMD_HIGH_SPEED; /* cmd */
-    if (disk_ioctl(0, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
       %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"High speed", (unsigned char*)(buff[2]!=0?"yes\r\n":"no\r\n"), io->stdOut);
     }
     buff[0] = MMC_GET_LLD_CMD_LOW_VOLTAGE; /* cmd */
-    if (disk_ioctl(0, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
       %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Low voltage", (unsigned char*)(buff[2]!=0?"yes\r\n":"no\r\n"), io->stdOut);
     }
     buff[0] = MMC_GET_LLD_CMD_DATA_WIDTHS; /* cmd */
-    if (disk_ioctl(0, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
       %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Data widths", (unsigned char*)"", io->stdOut);
       if (buff[2]&0x1) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"1 ", io->stdOut);
@@ -3350,7 +3401,7 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drive, const %@Shell@'ModuleName'
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
     }
     buff[0] = MMC_GET_LLD_CMD_OPERATIONS; /* cmd */
-    if (disk_ioctl(0, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
+    if (disk_ioctl(driveNr, MMC_GET_LLD_INFO, &buff[0])==RES_OK) {
       %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"Operations", (unsigned char*)"", io->stdOut);
       if (buff[2]&0x1) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"BlockRead ", io->stdOut);
@@ -3391,7 +3442,7 @@ uint8_t %'ModuleName'%.%Benchmark(const %@Shell@'ModuleName'%.StdIOType *io)
   TIMEREC time, startTime;
   int32_t start_mseconds, mseconds;
 
-  if (%'ModuleName'%.isWriteProtected((uint8_t*)"")) {
+  if (%'ModuleName'%.isWriteProtected((uint8_t*)%'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk is write protected!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -3686,7 +3737,7 @@ void %OnCreateSyncObject(void *sobj)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-#if !defined(%'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS)
+#ifndef %'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS
   %if defined(CardInsertDelayTime)
   #define %'ModuleName'%.CONFIG_CARD_INSERT_DELAY_TIME_MS    (%CardInsertDelayTime)
   %else
@@ -3695,7 +3746,7 @@ void %OnCreateSyncObject(void *sobj)
     /*!< Delay time in milliseconds after insertion of the card detected */
 #endif
 
-#if !defined(%'ModuleName'%.CONFIG_SHELL_ENABLED)
+#ifndef %'ModuleName'%.CONFIG_SHELL_ENABLED
   %if defined(Shell) & defined(ParseCommand)
   #define %'ModuleName'%.CONFIG_SHELL_ENABLED    (1)
   %else
@@ -3704,6 +3755,20 @@ void %OnCreateSyncObject(void *sobj)
     /*!< 1: Shell support is enabled; 0: no shell support enabled */
 #endif
 
+#ifndef %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK
+  #define %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK    %'ModuleName'%.IsDiskPresent
+    /*!< 1: callback name to be used to decide if a device is present or not */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK
+  #define %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK    %'ModuleName'%.IsWriteProtected
+    /*!< 1: callback name to be used to decide if a device is present or not */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING
+  #define %'ModuleName'%.CONFIG_DEFAULT_DRIVE_STRING    "0:/"
+    /*!< default drive used for commands. The first letter defines the drive */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
