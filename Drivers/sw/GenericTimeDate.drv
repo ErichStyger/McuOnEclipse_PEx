@@ -151,31 +151,20 @@
 
 /* default time/date values */
 static const TIMEREC %'ModuleName'%.DefaultTime = {
-  %InitialTimeHour, /* hour */
-  %InitialTimeMin,  /* minute */
-  %InitialTimeSec,  /* second */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR, /* hour */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN,  /* minute */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC,  /* second */
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
   0 /* h-second */
 #endif
 };
 static const DATEREC %'ModuleName'%.DefaultDate = {
-  %InitialDateYear, /* year */
-  %InitialDateMonth,  /* month */
-  %InitialDateDay /* day */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR, /* year */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH,  /* month */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY /* day */
 };
 
-#define %'ModuleName'%.TICK_TIME_MS \
-%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
-%if defined(RTOS)
-  (1000/%@RTOS@TickRateHz)                                       %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'%.AddTick() is called */
-%elif defined(TickTimeMs)
-  %TickTimeMs                                                    %>40 /* Period in milliseconds as defined in component properties, at which %'ModuleName'.%.AddTick() is called */
-%else
-  10                                                             %>40 /* Period in milliseconds, at which %'ModuleName'.%.AddTick() is called */
-%endif
-%else
-  10                                                             %>40 /* Period in milliseconds, at which %'ModuleName'.%.AddTick() is called */
-%endif
+#define %'ModuleName'%.TICK_TIME_MS  %'ModuleName'%.CONFIG_TICK_TIME_MS /* period of AddTick() */
 
 %-
 %-BW_CUSTOM_INCLUDE_END_H
@@ -2137,6 +2126,43 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 #endif
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_DATE_FORMAT_STR
   #define %'ModuleName'%.CONFIG_DEFAULT_DATE_FORMAT_STR  "dd.mm.yyyy"
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_TICK_TIME_MS
+  #define %'ModuleName'%.CONFIG_TICK_TIME_MS \
+%if defined(SoftwareRTCEnabled) & %SoftwareRTCEnabled='yes'
+%if defined(RTOS)
+    (1000/%@RTOS@TickRateHz)                                     %>40 /* Period in milliseconds as defined in RTOS component properties, at which %'ModuleName'%.AddTick() is called */
+%elif defined(TickTimeMs)
+    %TickTimeMs                                                  %>40 /* Period in milliseconds as defined in component properties, at which %'ModuleName'.%.AddTick() is called */
+%else
+    10                                                           %>40 /* Period in milliseconds, at which %'ModuleName'.%.AddTick() is called */
+%endif
+%else
+    10                                                           %>40 /* Period in milliseconds, at which %'ModuleName'.%.AddTick() is called */
+%endif
+#endif
+
+/* date/time defaults: */
+
+/* default time/date values */
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR        %>40 %InitialTimeHour
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN         %>40 %InitialTimeMin
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC         %>40 %InitialTimeSec
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR        %>40 %InitialDateYear
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH       %>40 %InitialDateMonth
+#endif
+#ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY
+  #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY         %>40 %InitialDateDay
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
