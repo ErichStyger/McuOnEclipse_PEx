@@ -544,9 +544,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, %@Shell@'ModuleName'%.CMD_STATUS)==0) || (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' status")==0)) {
     *handled = TRUE;
     return PrintStatus(io);
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "ini read ", sizeof("ini read ")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' read ", sizeof("%'ModuleName' read ")-1)==0) {
     *handled = TRUE;
-    p = cmd + sizeof("ini read ")-1;
+    p = cmd + sizeof("%'ModuleName' read ")-1;
     if (%@Utility@'ModuleName'%.ReadEscapedName(p, fileName, sizeof(fileName), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
@@ -572,9 +572,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     %@Shell@'ModuleName'%.SendStr(value, io->stdOut);
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
     return ERR_OK;
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "ini write ", sizeof("ini write ")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' write ", sizeof("%'ModuleName' write ")-1)==0) {
     *handled = TRUE;
-    p = cmd + sizeof("ini write ")-1;
+    p = cmd + sizeof("%'ModuleName' write ")-1;
     if (%@Utility@'ModuleName'%.ReadEscapedName(p, fileName, sizeof(fileName), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
@@ -601,9 +601,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
       return ERR_FAILED;
     }
     return ERR_OK;
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "ini delkey ", sizeof("ini delkey ")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' delkey ", sizeof("%'ModuleName' delkey ")-1)==0) {
     *handled = TRUE;
-    p = cmd + sizeof("ini delkey ")-1;
+    p = cmd + sizeof("%'ModuleName' delkey ")-1;
     if (%@Utility@'ModuleName'%.ReadEscapedName(p, fileName, sizeof(fileName), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
@@ -625,9 +625,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
       return ERR_FAILED;
     }
     return ERR_OK;
-  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "ini delsec ", sizeof("ini delsec ")-1)==0) {
+  } else if (%@Utility@'ModuleName'%.strncmp((char*)cmd, "%'ModuleName' delsec ", sizeof("%'ModuleName' delsec ")-1)==0) {
     *handled = TRUE;
-    p = cmd + sizeof("ini delsec ")-1;
+    p = cmd + sizeof("%'ModuleName' delsec ")-1;
     if (%@Utility@'ModuleName'%.ReadEscapedName(p, fileName, sizeof(fileName), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
