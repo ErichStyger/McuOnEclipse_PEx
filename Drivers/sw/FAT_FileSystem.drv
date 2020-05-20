@@ -1667,8 +1667,8 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %-************************************************************************************************************
 
 /* Unicode support functions */
-#if _USE_LFN  /* Unicode - OEM code conversion */
-#if _USE_LFN == 3   /* Memory functions */
+#if %'ModuleName'%.USE_LFN  /* Unicode - OEM code conversion */
+#if %'ModuleName'%.USE_LFN == 3   /* Memory functions */
 void *ff_memalloc(UINT size) { /* Allocate memory block */
 %if defined(RTOS)
   /* FreeRTOS */
@@ -1704,7 +1704,7 @@ void ff_memfree (void* ptr) {  /* Free memory block */
 int ff_cre_syncobj(uint8_t vol, %'ModuleName'%.SYNC_t *sobj)
 {
   /* You have decided in the component properties to implement your own user sync functions,
-     with you own _SYNC_t type (e.g. HANDLE).
+     with you own %'ModuleName'%.SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
   */
 }
@@ -1754,7 +1754,7 @@ int ff_cre_syncobj(uint8_t vol, %'ModuleName'%.SYNC_t *sobj) {
 #if 0
 int ff_del_syncobj(%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
-     with you own _SYNC_t type (e.g. HANDLE).
+     with you own %'ModuleName'%.SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
   */
 }
@@ -1789,7 +1789,7 @@ int ff_del_syncobj(%'ModuleName'%.SYNC_t sobj) {
 #if 0
 int ff_req_grant (%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
-     with you own _SYNC_t type (e.g. HANDLE).
+     with you own %'ModuleName'%.SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
   */
 }
@@ -1824,7 +1824,7 @@ int ff_req_grant (%'ModuleName'%.SYNC_t sobj) {
 #if 0
 void ff_rel_grant (%'ModuleName'%.SYNC_t sobj) {
   /* You have decided in the component properties to implement your own user sync functions,
-     with you own _SYNC_t type (e.g. HANDLE).
+     with you own %'ModuleName'%.SYNC_t type (e.g. HANDLE).
      You need to implement your own version of this function in your application.
   */
 }
@@ -2489,7 +2489,7 @@ uint8_t %'ModuleName'%.%Deinit(void)
 #if 0 /* usage of DateTime component disabled in properties */
 %endif
 
-#if !_FS_READONLY
+#if !%'ModuleName'%.FS_READONLY
 %define! RetVal
 %include Common\FAT_FileSystemget_fattime.Inc
 uint32_t %'ModuleName'%.%get_fattime(void)
@@ -2527,7 +2527,7 @@ uint32_t %'ModuleName'%.%get_fattime(void)
 uint32_t get_fattime(void) {
   return %'ModuleName'%.get_fattime();
 }
-#endif /*!_FS_READONLY*/
+#endif /* !%'ModuleName'%.FS_READONLY */
 
 %if defined(UseTimeDate) & %UseTimeDate='no'
 #endif /* usage of DateTime component disabled in properties */
@@ -2641,6 +2641,11 @@ uint8_t %'ModuleName'%.%CheckCardPresence(bool *cardMounted, uint8_t *drive, FAT
       if (io!=NULL) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"File System mounted\r\n", io->stdOut);
       }
+  #if (%'ModuleName'%.FS_RPATH >= 1U)
+      if (f_chdrive((char const *)drive)!=FR_OK) { /* change default drive */
+        return ERR_FAILED;
+      }
+  #endif
     } else {
       return ERR_FAILED;
     }
