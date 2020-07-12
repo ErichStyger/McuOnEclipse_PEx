@@ -413,6 +413,10 @@ void %'ModuleName'%.%Deinit(void)
   /*!< 1: RISC-V CPU family, 0: otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_ESP32           (0)
     /*!< 1: ESP32 CPU family, 0: otherwise. */
+#define __FPU_PRESENT                                (0)
+    /*!< 0: no FPU for HCS08 */
+#define __FPU_USED                                   (0)
+    /*!< 0: no FPU for HCS08 */
 %else
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
   /*!< 1: ARM Cortex-M family, 0 otherwise */
