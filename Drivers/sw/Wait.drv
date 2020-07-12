@@ -622,15 +622,13 @@ void %'ModuleName'%.%WaitCycles(uint16_t cycles)
     /* wait */
   }
 #else
-  int32_t counter = cycles;
-
-  while(counter > 100) {
+  while(cycles >= 100u) {
     %'ModuleName'%.%Wait100Cycles();
-    counter -= 100;
+    cycles -= 100u;
   }
-  while(counter > 10) {
+  while(cycles >= 10u) {
     %'ModuleName'%.%Wait10Cycles();
-    counter -= 10;
+    cycles -= 10u;
   }
 #endif
   /*lint -restore */
@@ -960,9 +958,9 @@ void %'ModuleName'%.%Deinit(void)
 
 #ifndef %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
 %if defined(useCycleCounter) & %useCycleCounter='yes'
-  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (1 && (%@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %else
-  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
+  #define %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER  (0 && (%@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %endif
     /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
 #endif
