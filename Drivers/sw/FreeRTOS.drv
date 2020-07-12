@@ -4912,29 +4912,41 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 #endif
 
 #ifndef configLINKER_HEAP_BASE_SYMBOL
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #define configLINKER_HEAP_BASE_SYMBOL                          %>50 _pvHeapStart
+#else
 %if defined(LinkerHeapBaseSymbolName)
   #define configLINKER_HEAP_BASE_SYMBOL                          %>50 %LinkerHeapBaseSymbolName
 %else
   #define configLINKER_HEAP_BASE_SYMBOL                          %>50 __HeapBase
 %endif
+#endif
     /*!< Linker symbol used to denote the base address of the heap, used for heap memory scheme 6 (newlib). (KDS: __HeapBase, MCUXpresso: _pvHeapStart)  */
 #endif
 
 #ifndef configLINKER_HEAP_LIMIT_SYMBOL
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #define configLINKER_HEAP_LIMIT_SYMBOL                         %>50 _pvHeapLimit
+#else
 %if defined(LinkerHeapLimitSymbolName)
   #define configLINKER_HEAP_LIMIT_SYMBOL                         %>50 %LinkerHeapLimitSymbolName
 %else
   #define configLINKER_HEAP_LIMIT_SYMBOL                         %>50 __HeapLimit
 %endif
+#endif
     /*!< Linker symbol used to denote the limit address of the heap, used for heap memory scheme 6 (newlib). (KDS: __HeapLimit, MCUXpresso: _pvHeapLimit)  */
 #endif
 
 #ifndef configLINKER_HEAP_SIZE_SYMBOL
+#if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #define configLINKER_HEAP_SIZE_SYMBOL                          %>50 _HeapSize
+#else
 %if defined(LinkerHeapSizeSymbolName)
   #define configLINKER_HEAP_SIZE_SYMBOL                          %>50 %LinkerHeapSizeSymbolName
 %else
   #define configLINKER_HEAP_SIZE_SYMBOL                          %>50 __heap_size
 %endif
+#endif
     /*!< Linker symbol used to denote the size of the heap, used for heap memory scheme 6 (newlib). (KDS: __heap_size, MCUXpresso: _HeapSize) */
 #endif
 
