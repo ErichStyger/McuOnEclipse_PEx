@@ -1151,7 +1151,7 @@ uint8_t %'ModuleName'%.%GetTemperature(float *temperature)
   return ERR_OK;
 #else /* not supported */
   *temperature = 0.0f;
-  return ERR_OK;
+  return ERR_FAILED;
 #endif
 }
 
