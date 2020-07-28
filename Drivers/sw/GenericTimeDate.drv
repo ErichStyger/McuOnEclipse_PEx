@@ -149,21 +149,6 @@
   } DATEREC;
 #endif
 
-/* default time/date values */
-static const TIMEREC %'ModuleName'%.DefaultTime = {
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR, /* hour */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN,  /* minute */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC,  /* second */
-#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  0 /* h-second */
-#endif
-};
-static const DATEREC %'ModuleName'%.DefaultDate = {
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR, /* year */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH,  /* month */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY /* day */
-};
-
 #define %'ModuleName'%.TICK_TIME_MS  %'ModuleName'%.CONFIG_TICK_TIME_MS /* period of AddTick() */
 
 %-
@@ -590,6 +575,21 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
+/* default time/date values */
+static const TIMEREC %'ModuleName'%.DefaultTime = {
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR, /* hour */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN,  /* minute */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC,  /* second */
+#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+  0 /* h-second */
+#endif
+};
+static const DATEREC %'ModuleName'%.DefaultDate = {
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR, /* year */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH,  /* month */
+  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY /* day */
+};
+
 #if %'ModuleName'%.TICK_TIME_MS==0
   #error "Tick period cannot be zero!"
 #endif
