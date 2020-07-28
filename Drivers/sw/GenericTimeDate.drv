@@ -562,7 +562,6 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
   #include "McuExtRTC.h"
 %endif
 #endif
-
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -575,20 +574,6 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-/* default time/date values */
-static const TIMEREC %'ModuleName'%.DefaultTime = {
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR, /* hour */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN,  /* minute */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC,  /* second */
-#if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
-  0 /* h-second */
-#endif
-};
-static const DATEREC %'ModuleName'%.DefaultDate = {
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR, /* year */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH,  /* month */
-  %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY /* day */
-};
 
 #if %'ModuleName'%.TICK_TIME_MS==0
   #error "Tick period cannot be zero!"
@@ -613,7 +598,7 @@ static uint8_t AddDateToBuf(uint8_t *buf, uint16_t bufSize, DATEREC *tdate) {
   %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
   %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, tdate->Month, '0', 2);
   %@Utility@'ModuleName'%.chcat(buf, bufSize, '.');
-  %@Utility@'ModuleName'%.strcatNum16u(buf, bufSize, (uint16_t)tdate->Year);
+  %@Utility@'ModuleName'%.strcatNum16uFormatted(buf, bufSize, (uint16_t)tdate->Year, '0', 2);
   return ERR_OK;
 }
 
@@ -1121,6 +1106,20 @@ uint8_t %'ModuleName'%.%Init(void)
 {
   /* initialize software RTC time and date */
 #if %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_DEFAULTS
+/* default time/date values */
+  TIMEREC %'ModuleName'%.DefaultTime = {
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_HOUR, /* hour */
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_MIN,  /* minute */
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_TIME_SEC,  /* second */
+  #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
+    0 /* h-second */
+  #endif
+  };
+  DATEREC %'ModuleName'%.DefaultDate = {
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_YEAR, /* year */
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_MONTH,  /* month */
+    %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY /* day */
+  };
   return %'ModuleName'%.%SetSWTimeDate((TIMEREC*)&%'ModuleName'%.DefaultTime, (DATEREC*)&%'ModuleName'%.DefaultDate);
 #elif %'ModuleName'%.CONFIG_INIT_SOFTWARE_RTC_METHOD==%'ModuleName'%.INIT_SOFTWARE_RTC_FROM_INTERNAL_RTC
   return %'ModuleName'%.%SyncWithInternalRTC();
