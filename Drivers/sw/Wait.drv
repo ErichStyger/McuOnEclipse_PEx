@@ -509,9 +509,9 @@ void %'ModuleName'%.%Wait100Cycles(void)
   __asm {
                        %>%CTAB /* [3] JSR to here on the caller side */
     move.l #31,d1      %>%CTAB /* [1] number of iterations */
-  loop:
+  loopWait100Cycles:
     subq.l #1,d1       %>%CTAB /* [1] decrement d1 */
-    bne.b loop         %>%CTAB /* [2] repeat 31x=([1]+[2])*31=[93] */
+    bne.b loopWait100Cycles         %>%CTAB /* [2] repeat 31x=([1]+[2])*31=[93] */
                        %>%CTAB /* [5] return from subroutine */
   }
 %elif (CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")
@@ -521,14 +521,14 @@ void %'ModuleName'%.%Wait100Cycles(void)
    /* bl to here:               [4] */
    "push {r0}   \n\t"        /* [2] */
    "movs r0, #0 \n\t"        /* [1] */
-   "loop:       \n\t"
+   "loopWait100Cycles:       \n\t"
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "add r0,#1   \n\t"        /* [1] */
    "cmp r0,#9   \n\t"        /* [1] */
-   "bls loop    \n\t"        /* [3] taken, [1] not taken */
+   "bls loopWait100Cycles    \n\t"        /* [3] taken, [1] not taken */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
    "nop         \n\t"        /* [1] */
@@ -576,9 +576,9 @@ loop
   /* \todo */
   __asm ( /* assuming [10] for overhead */
     "  li a5,20        \n\t"
-    "Loop:             \n\t"
+    "LoopWait100Cycles:             \n\t"
     "  addi a5,a5,-1   \n\t"
-    "  bgtz a5, Loop   \n\t"
+    "  bgtz a5, LoopWait100Cycles   \n\t"
   );
 #endif
 %elif (CPU_FAMILY = "56800")
@@ -922,7 +922,7 @@ void %'ModuleName'%.%Deinit(void)
 %'ModuleName'%.%Wait100Cycles:
   /* bl to here:  [4] */
   movs r0,#0   /* [1] load loop counter */
-  loop:        /* 9*[10] */
+  loopWait100Cycles:        /* 9*[10] */
   nop          /* [1] */
   nop          /* [1] */
   nop          /* [1] */
@@ -930,7 +930,7 @@ void %'ModuleName'%.%Deinit(void)
   nop          /* [1] */
   adds r0,#1   /* [1] increment loop counter */
   cmp r0,#9    /* [1] 9*10 cycles */
-  bls loop     /* [3] for taken, [1] for not taken */
+  bls loopWait100Cycles     /* [3] for taken, [1] for not taken */
   nop          /* additional nop to fill up to 100 cycles */
   bx lr        /* return to caller */
 /*-----------------------------------------------------------*/
