@@ -2100,14 +2100,14 @@ __asm void vPortPendSVHandler(void) {
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 #if configGDB_HELPER
 /* prototypes to avoid compiler warnings */
-__attribute__ ((naked)) void vPortPendSVHandler_native(void);
-__attribute__ ((naked)) void PendSV_Handler_jumper(void);
+__attribute__ ((naked, used)) void vPortPendSVHandler_native(void);
+__attribute__ ((naked, used)) void PendSV_Handler_jumper(void);
 
-__attribute__ ((naked)) void vPortPendSVHandler_native(void) {
+__attribute__ ((naked, used)) void vPortPendSVHandler_native(void) {
 #elif !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
-__attribute__ ((naked)) void PendSV_Handler(void) {
+__attribute__ ((naked, used)) void PendSV_Handler(void) {
 #else
-__attribute__ ((naked)) void vPortPendSVHandler(void) {
+__attribute__ ((naked, used)) void vPortPendSVHandler(void) {
 #endif
 #if configCPU_FAMILY_IS_ARM_M4_M7(configCPU_FAMILY) || configCPU_FAMILY_IS_ARM_M33(configCPU_FAMILY) /* ARM M4(F)/M7/M33 core */
   __asm volatile (
@@ -2222,14 +2222,26 @@ __attribute__ ((naked)) void vPortPendSVHandler(void) {
  * 1 - hook installation performed,
  * 2 - following hooked switches
  */
+#ifdef __GNUC__
+__attribute__((used))  /* needed for -flto and highest optimizations */
+#endif
 int volatile dbgPendSVHookState = 0;
 /* Requested target task handle variable */
+#ifdef __GNUC__
+__attribute__((used))  /* needed for -flto and highest optimizations */
+#endif
 void *volatile dbgPendingTaskHandle;
 
+#ifdef __GNUC__
+__attribute__((used))  /* needed for -flto and highest optimizations */
+#endif
 const int volatile dbgFreeRTOSConfig_suspend_value = INCLUDE_vTaskSuspend;
+#ifdef __GNUC__
+__attribute__((used))  /* needed for -flto and highest optimizations */
+#endif
 const int volatile dbgFreeRTOSConfig_delete_value = INCLUDE_vTaskDelete;
 
-__attribute__ ((naked)) void PendSV_Handler_jumper(void) {
+__attribute__ ((naked, used)) void PendSV_Handler_jumper(void) {
   __asm volatile("b vPortPendSVHandler_native \n");
 }
 
