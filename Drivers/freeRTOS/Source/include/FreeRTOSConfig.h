@@ -147,11 +147,19 @@
   #define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */
 #endif
 %if defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes'
-#define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
-#define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1000 /* 1 kHz LPO timer. Set to 1 if not used */
+#ifndef configSYSTICK_USE_LOW_POWER_TIMER
+  #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
+#endif
+#ifndef configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ
+  #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1000 /* Frequency of low power timer. Set to 1 if not used */
+#endif
 %else
-#define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 0 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
-#define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1 /* 1 kHz LPO timer. Set to 1 if not used */
+#ifndef configSYSTICK_USE_LOW_POWER_TIMER
+  #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 0 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
+#endif
+#ifndef configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ
+  #define configSYSTICK_LOW_POWER_TIMER_CLOCK_HZ                   %>50 1 /* Frequency of low power timer. Set to 1 if not used */
+#endif
 %endif
 #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED || %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_GENERIC || %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
 /* The CMSIS variable SystemCoreClock contains the current clock speed */
