@@ -720,7 +720,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     } else {
       return (%'ModuleName'_ConstCharPtr)"M4 Family ID out of bounds!";
     }
-    #elif defined(SIM_SDID_FAMID)
+    #elif defined(SIM_SDID_FAMID) || defined(SIM_SDID_FAMILYID)
     int32_t val;
 
     val = ((SIM->SDID)>>4)&0x3; /* bits 6..4 */
