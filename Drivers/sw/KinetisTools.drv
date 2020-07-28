@@ -409,14 +409,14 @@ static const unsigned char *KinetisM0FamilyStrings[] =
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 {
-#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS || %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
   uint8_t buf[1+(16*5)+1+1]; /* "{0xAA,...0xBB}" */
   uint8_t res;
   %'ModuleName'%.UID uid;
 #endif
 
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
-#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS || %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
   res = %'ModuleName'%.%UIDGet(&uid);
   if (res==ERR_OK) {
     res = %'ModuleName'%.%UIDtoString(&uid, buf, sizeof(buf));
@@ -697,7 +697,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
     }
   #elif defined(SIM_SRSID_FAMID) /* MKE02Z4 defines this, hopefully all other KE too... */
     return (%'ModuleName'_ConstCharPtr)"KE0x Family"; /* 0000 only KE0x supported */
-  #elif defined(SIM_SDID_FAMID)
+  #elif defined(SIM_SDID_FAMID) || defined(SIM_SDID_FAMILYID)
     int32_t val;
 
     val = ((SIM->SDID)>>28)&0xF; /* bits 31..28 */
