@@ -352,6 +352,8 @@ void %'ModuleName'%.%Init(void);
   #include "fsl_common.h"
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
     #include "fsl_sim.h" /* system integration module, used for CPU ID */
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC  /* LPC845 */
+    #include "fsl_iap.h" /* if missing, add this module from the MCUXpresso SDK */
   #endif
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
@@ -566,6 +568,14 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uid->id[15] = SIM_UUIDL&0xff;
     #endif
   #endif /* %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED */
+  return ERR_OK;
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC /* LPC845 */
+  uint8_t res;
+
+  res = IAP_ReadUniqueID((uint32_t*)&uid->id[0]);
+  if (res != kStatus_IAP_Success) {
+    return ERR_FAILED;
+  }
   return ERR_OK;
 #else
   (void)uid; /* not used */
