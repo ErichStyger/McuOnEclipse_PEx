@@ -1895,7 +1895,9 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks);
 %if defined(RuntimeCntrLDD)
 #include "%@RuntimeCntrLDD@ModuleName.h" /* Interface to LDD Counter Interrupt */
 %endif
-
+#if configSYSTICK_USE_LOW_POWER_TIMER && %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  #include "fsl_clock.h"
+#endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -3337,7 +3339,11 @@ void %'ModuleName'%.%Init(void)
 #if configSYSTICK_USE_LOW_POWER_TIMER
   /* enable clocking for low power timer, otherwise vPortStopTickTimer() will crash.
     Additionally, Percepio trace needs access to the timer early on. */
+  #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
+  CLOCK_EnableClock(kCLOCK_Lptmr0);
+  #else /* Processor Expert */
   SIM_PDD_SetClockGate(SIM_BASE_PTR, SIM_PDD_CLOCK_GATE_LPTMR0, PDD_ENABLE);
+  #endif
 #endif
   vPortStopTickTimer(); /* tick timer shall not run until the RTOS scheduler is started */
 #if configUSE_PERCEPIO_TRACE_HOOKS
