@@ -137,14 +137,6 @@ extern bool %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(uint8_t drive);
 %endif
 %endif
 
-#include "%@sdk@ModuleName.h" /* SDK and API used */
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
-  #undef %@sdk@'ModuleName'%.CONFIG_USE_FAT_FS
-  #define %@sdk@'ModuleName'%.CONFIG_USE_FAT_FS (1) /* always enabled */
-#endif
-
-#if %@sdk@'ModuleName'%.CONFIG_USE_FAT_FS
-
 #include "ff.h"
 #include "diskio.h"
 %-
