@@ -274,6 +274,21 @@ LI.EXP {
 <li><i>font: Pointer to <i>ComponentName_</i>Font</i> - Pointer to font information</li>
 </ul><br />
 </li>
+<li><a name="WriteStringWidth">
+<b>WriteStringWidth</b></a>
+ - Function to write a string or character at the startpoint. Set the startpoint with the function setCursor. If the string reaches the given width, the text gets wrapped to a new line.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> void WriteStringWidth(uint8_t *str, <i>ComponentName_</i>PixelColor color, <i>ComponentName_</i>PixelDim *xCursor, <i>ComponentName_</i>PixelDim *yCursor, <i>ComponentName_</i>Font *font, <i>ComponentName_</i>PixelDim width)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>str: Pointer to uint8_t</i> - Pointer to the character string</li>
+<li><i>color:<i>ComponentName_</i>PixelColor</i> - Foreground color to be used (for the character pixels)</li>
+<li><i>xCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to x position of first character (upper left corner). On return this will contain the next y position.</li>
+<li><i>yCursor: Pointer to <i>ComponentName_</i>PixelDim</i> - Pointer to y position of character (upper left corner). On return this will contain the next y position.</li>
+<li><i>font: Pointer to <i>ComponentName_</i>Font</i> - Pointer to font information</li>
+<li><i>width:<i>ComponentName_</i>PixelDim</i> - Maximum of width of the text box. If text reaches the end of the box, the text gets wrapped to a new line.</li>
+</ul><br />
+</li>
 <li><a name="WriteChar">
 <b>WriteChar</b></a>
  - Function to write a character at the start point. Set the start point with the function setCursor.

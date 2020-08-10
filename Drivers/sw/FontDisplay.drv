@@ -189,6 +189,20 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteStringWidth
+%ifdef WriteStringWidth
+void %'ModuleName'%.%WriteStringWidth(uint8_t *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font, %'ModuleName'_PixelDim width);
+%define! Parstr
+%define! Parcolor
+%define! ParxCursor
+%define! ParyCursor
+%define! Parfont
+%define! Parwidth
+%include Common\FontDisplayWriteStringWidth.Inc
+
+%endif %- WriteStringWidth
+%-BW_METHOD_END WriteStringWidth
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -335,6 +349,40 @@ void %'ModuleName'%.%WriteString(uint8_t *str, %'ModuleName'_PixelColor color, %
 %endif %- WriteString
 %-BW_METHOD_END WriteString
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN WriteStringWidth
+%ifdef WriteStringWidth
+%define! Parstr
+%define! Parcolor
+%define! ParxCursor
+%define! ParyCursor
+%define! Parfont
+%define! Parwidth
+%include Common\FontDisplayWriteStringWidth.Inc
+void %'ModuleName'%.%WriteStringWidth(uint8_t *str, %'ModuleName'_PixelColor color, %'ModuleName'_PixelDim *xCursor, %'ModuleName'_PixelDim *yCursor, %'ModuleName'_Font *font, %'ModuleName'_PixelDim width)
+{
+  %'ModuleName'_PixelDim x = *xCursor;
+
+  while(*str!='\0') {
+    if (*str=='\r') {
+      *xCursor = x;
+    } else if (*str=='\n') {
+      *xCursor = x;
+      *yCursor += font->boundingBoxHeight;
+    } else {
+      if ((%'ModuleName'_PixelDim)((*xCursor - x) +  ((PGFONT_CharInfo)(font->GetFontChar((uint8_t)*str)))->dwidth) >= width)
+      {  /* check if we would reach the end of the box: wrap to a new line */
+        *xCursor = x;
+        *yCursor += font->boundingBoxHeight;
+      }
+      %'ModuleName'%.%WriteChar(*str, color, xCursor, yCursor, font);
+    }
+    str++;
+  }
+}
+
+%endif %- WriteStringWidth
+%-BW_METHOD_END WriteStringWidth
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN GetCharWidth
 %ifdef GetCharWidth
 %define! ParcharWidth
@@ -477,6 +525,7 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
