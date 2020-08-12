@@ -248,6 +248,7 @@
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ParseCommand
 %ifdef ParseCommand
+%if defined(Shell)
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io);
 %define! Parcmd
@@ -257,6 +258,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %include Common\minIniParseCommand.Inc
 
 #endif
+%endif %- defined(Shell)
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
 %-BW_DEFINITION_END
@@ -294,6 +296,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
+%if defined(Shell)
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
@@ -329,6 +332,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  FS", buf, io->stdOut);
   return ERR_OK;
 }
+%endif
 #endif
 %-
 %-BW_CUSTOM_VARIABLE_END
@@ -526,6 +530,7 @@ int %'ModuleName'%.%ini_browse(INI_CALLBACK Callback, const void *UserData, cons
 %define! Pario
 %define! RetVal
 %include Common\minIniParseCommand.Inc
+%if defined(Shell)
 uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, const %@Shell@'ModuleName'%.StdIOType *io)
 {
   const unsigned char *p;
@@ -647,7 +652,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   }
   return ERR_OK;
 }
-
+%endif %- defined(Shell)
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
 %-BW_IMPLEMENT_END
@@ -678,6 +683,8 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 /**
  * \file
  * \brief Configuration header file for MinINI
+ * Copyright (c) 2020, Erich Styger
+ * SPDX-License-Identifier: BSD-3-Clause
  *
  * This header file is used to configure settings of the MinINI module.
  */
@@ -730,7 +737,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %endif
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
-%ifdef ParseCommand
+%if defined(ParseCommand) & defined(Shell)
   #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  (1)
 %else
   #define %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED  (0)
