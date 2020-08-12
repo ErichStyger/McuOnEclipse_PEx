@@ -85,6 +85,7 @@
   #define %'ModuleName'%.FS_REENTRANT     _FS_REENTRANT
   #define %'ModuleName'%.SYNC_t           _SYNC_t
   #define %'ModuleName'%.FS_TIMEOUT       _FS_TIMEOUT
+  #define %'ModuleName'%.VOLUMES          _VOLUMES
 #else /* use newer defines in NXP SDK and FatFS */
   #define %'ModuleName'%.USE_LFN          FF_USE_LFN
   #define %'ModuleName'%.MAX_LFN          FF_MAX_LFN
@@ -94,6 +95,7 @@
   #define %'ModuleName'%.FS_REENTRANT     FF_FS_REENTRANT
   #define %'ModuleName'%.SYNC_t           FF_SYNC_t
   #define %'ModuleName'%.FS_TIMEOUT       FF_FS_TIMEOUT
+  #define %'ModuleName'%.VOLUMES          FF_VOLUMES
 #endif
 
 /* prototypes for application callbacks */
@@ -2641,7 +2643,7 @@ uint8_t %'ModuleName'%.%CheckCardPresence(bool *cardMounted, uint8_t *drive, FAT
       if (io!=NULL) {
         %@Shell@'ModuleName'%.SendStr((unsigned char*)"File System mounted\r\n", io->stdOut);
       }
-  #if (%'ModuleName'%.FS_RPATH >= 1U)
+  #if (%'ModuleName'%.FS_RPATH >= 1U && %'ModuleName'%.VOLUMES >= 2)
       if (f_chdrive((char const *)drive)!=FR_OK) { /* change default drive */
         return ERR_FAILED;
       }
