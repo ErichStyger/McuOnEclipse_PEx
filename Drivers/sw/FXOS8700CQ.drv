@@ -1469,6 +1469,8 @@ void %OnError(void)
 /**
  * \file
  * \brief Configuration header file for FXOS8700CQ accelerometer
+ * Copyright (c) 2020, Erich Styger
+ * SPDX-License-Identifier: BSD-3-Clause
  *
  * This header file is used to configure settings of the FXOS8700CQ module.
  */
@@ -1495,7 +1497,6 @@ extern "C" {
   #define %'ModuleName'%.CONFIG_TEMP_OFFSET  (%DieTempOffset)
     /*!< die temperature offset for real temperature calculation */
 #endif
-
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
 %ifdef ParseCommand

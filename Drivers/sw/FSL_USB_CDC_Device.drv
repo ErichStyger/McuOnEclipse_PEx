@@ -1082,6 +1082,16 @@ void %OnLineStateChanged(uint8_t value)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
+
+/**
+ * \file
+ * \brief Configuration header file for FSL_USB_CDC_Device
+ * Copyright (c) 2020, Erich Styger
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ * This header file is used to configure settings of the USB CDC Device I/O module.
+ */
+
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
@@ -1098,10 +1108,10 @@ void %OnLineStateChanged(uint8_t value)
 #ifndef %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS
 %if defined(AppTaskTimeout)
   #define %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS   %AppTaskTimeout
-    /*!< App Task timeout in milliseconds, 0 to disable timout */
+    /*!< App Task timeout in milliseconds, 0 to disable timeout */
 %else
   #define %'ModuleName'%.CONFIG_APP_TASK_TIMEOUT_MS   0
-    /*!< App Task timeout in milliseconds, 0 to disable timout */
+    /*!< App Task timeout in milliseconds, 0 to disable timeout */
 %endif
 #endif
 
