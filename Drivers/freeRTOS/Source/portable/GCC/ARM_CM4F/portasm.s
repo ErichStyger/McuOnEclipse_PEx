@@ -4,8 +4,8 @@
 %if ((%configCOMPILER='automatic') & (%Compiler == "GNUC")) | (%configCOMPILER='configCOMPILER_ARM_GCC')
 /* file is intentionally empty as not needed for this GNU gcc FreeRTOS port */
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.4.1
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,17 +24,17 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * http://www.FreeRTOS.org
- * http://aws.amazon.com/freertos
+ * https://www.FreeRTOS.org
+ * https://github.com/FreeRTOS
  *
- * 1 tab == 4 spaces!
  */
+
 %endif %- ARM gcc compiler
 %---------------------------------------------------------------------------------------
 %if ((%configCOMPILER='automatic') & (%Compiler=="ARM_CC")) | (%configCOMPILER='configCOMPILER_ARM_KEIL')
 ;
-; FreeRTOS Kernel V10.2.1
-;  Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+; FreeRTOS Kernel V10.4.1
+;  Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 ; 
 ;  Permission is hereby granted, free of charge, to any person obtaining a copy of
 ;  this software and associated documentation files (the "Software"), to deal in
@@ -53,8 +53,8 @@
 ;  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 ;  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ; 
-;  http://www.FreeRTOS.org
-;  http://aws.amazon.com/freertos
+;  https://www.FreeRTOS.org
+;  https://github.com/FreeRTOS
 ; 
 ;  1 tab == 4 spaces!
 ;
@@ -429,8 +429,8 @@ vPortEnableVFP:
 %if ((%configCOMPILER='automatic') & (%Compiler="CodeWarriorARM")) | (%configCOMPILER='configCOMPILER_ARM_FSL')
 /* legacy Freescale ARM compiler */
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.4.1
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -449,12 +449,11 @@ vPortEnableVFP:
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * http://www.FreeRTOS.org
- * http://aws.amazon.com/freertos
+ * https://www.FreeRTOS.org
+ * https://github.com/FreeRTOS
  *
- * 1 tab == 4 spaces!
  */
-#include "FreeRTOSConfig.h"
+ #include "FreeRTOSConfig.h"
 
 #define VECTOR_TABLE_OFFSET_REG     0xE000ED08 /* Vector Table Offset Register (VTOR) */
 #if (configCPU_FAMILY==configCPU_FAMILY_ARM_M4F) || (configCPU_FAMILY==configCPU_FAMILY_ARM_M7F) /* floating point unit */
