@@ -259,7 +259,7 @@ void *pvReturn = NULL;
 	{
 		if( pvReturn == NULL )
 		{
-		  /* EST: Using configuration macro name for hook */
+		  /* << EST: Using configuration macro name for hook */
 			extern void configUSE_MALLOC_FAILED_HOOK_NAME( void );
 		  configUSE_MALLOC_FAILED_HOOK_NAME();
 		}

@@ -76,6 +76,9 @@
 %FILE %'DirRel_Code'%'RTOSSrcDirFolder'FreeRTOS_license.txt
 %include freeRTOS\License\license.txt
 
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'atomic.h
+%include freeRTOS\Source\include\atomic.h
+
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'list.h
 %include freeRTOS\Source\include\list.h
 
