@@ -7,7 +7,7 @@ The port supports the following:
 - CodeWarrior for MCU 10.x (S08, ColdFire, DSC, ARM)
 - GNU ARM Embedded (GCC) (ARM Cortex-M)
 - Kinetis Design Studio V3.x (ARM Cortex-M)
-- MCUXpresso IDE V10.x (ARM Cortex-M)
+- MCUXpresso IDE V10.x and V11.x (ARM Cortex-M)
 - IAR and Keil for ARM (although not intensively used)
 - S32 Design Studio for ARM (2018.R1)
 
