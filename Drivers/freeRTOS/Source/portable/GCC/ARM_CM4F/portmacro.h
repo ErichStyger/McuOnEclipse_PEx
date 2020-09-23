@@ -46,6 +46,12 @@ void vPortStopTickTimer(void);
  * These settings should not be altered.
  *-----------------------------------------------------------
  */
+#ifdef __GNUC__ /* << EST: 'used' attribute need for LTO (Link Time Optimization) */
+  #define portDONT_DISCARD      __attribute__( ( used ) )
+#else
+  #define portDONT_DISCARD      /* nothing */
+#endif
+
 #ifndef configENABLE_FPU
     #error configENABLE_FPU must be defined in FreeRTOSConfig.h.  Set configENABLE_FPU to 1 to enable the FPU or 0 to disable the FPU.
 #endif /* configENABLE_FPU */
