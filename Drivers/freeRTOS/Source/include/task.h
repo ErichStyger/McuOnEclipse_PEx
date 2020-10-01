@@ -1597,9 +1597,13 @@ configSTACK_DEPTH_TYPE uxTaskGetStackHighWaterMark2( TaskHandle_t xTask ) PRIVIL
       * @param xTask the task that just exceeded its stack boundaries.
       * @param pcTaskName A character string containing the name of the offending task.
       */
+#if 1 /* << EST */
+     void configCHECK_FOR_STACK_OVERFLOW_NAME( TaskHandle_t xTask, char *pcTaskName );
+#else
      void vApplicationStackOverflowHook( TaskHandle_t xTask,
                                                char * pcTaskName ); 
- 
+#endif
+
 #endif 
  
 #if  (  configUSE_TICK_HOOK > 0 )
@@ -1609,7 +1613,11 @@ configSTACK_DEPTH_TYPE uxTaskGetStackHighWaterMark2( TaskHandle_t xTask ) PRIVIL
      * 
      * This hook function is called in the system tick handler after any OS work is completed.
      */
-    void vApplicationTickHook( void ); /*lint !e526 Symbol not defined as it is an application callback. */
+#if 1 /* << EST */
+     void configUSE_TICK_HOOK_NAME(void); /*lint !e526 Symbol not defined as it is an application callback. */
+#else
+     void vApplicationTickHook( void ); /*lint !e526 Symbol not defined as it is an application callback. */
+#endif
 
 #endif
 

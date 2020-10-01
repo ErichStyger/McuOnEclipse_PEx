@@ -2193,7 +2193,7 @@ void vTaskEndScheduler( void )
   uxCurrentNumberOfTasks  = ( UBaseType_t ) 0U;
   xTickCount         = ( TickType_t ) configINITIAL_TICK_COUNT;
   uxTopReadyPriority    = tskIDLE_PRIORITY;
-  uxPendedTicks       = ( UBaseType_t ) 0U;
+  xPendedTicks       = ( UBaseType_t ) 0U;
   xYieldPending      = pdFALSE;
   xNumOfOverflows      = ( BaseType_t ) 0;
   uxTaskNumber           = ( UBaseType_t ) 0U;
@@ -2944,7 +2944,6 @@ BaseType_t xTaskIncrementTick( void )
                 {
 #if 1
 	      /* << EST: using configuration name macro */
-	      extern void configUSE_TICK_HOOK_NAME(void);
 	      configUSE_TICK_HOOK_NAME();
 #else
 				vApplicationTickHook();
@@ -2980,7 +2979,6 @@ BaseType_t xTaskIncrementTick( void )
             {
 #if 1
 	      /* << EST: using configuration name macro */
-	      extern void configUSE_TICK_HOOK_NAME(void);
 	      configUSE_TICK_HOOK_NAME();
 #else
 				vApplicationTickHook();
