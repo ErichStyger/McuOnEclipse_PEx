@@ -67,12 +67,21 @@
 #endif
 #if configGENERATE_RUN_TIME_STATS
   #if configGENERATE_RUN_TIME_STATS_USE_TICKS
-    #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
-    #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
+    #ifndef portCONFIGURE_TIMER_FOR_RUN_TIME_STATS
+      #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 /* nothing */ /* default: use Tick counter as runtime counter */
+   #endif
+   #ifndef portGET_RUN_TIME_COUNTER_VALUE
+     #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 xTaskGetTickCountFromISR() /* default: use Tick counter as runtime counter */
+    #endif
   #else /* use dedicated timer */
-    extern uint32_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
-    #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
-    #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
+    #ifndef portCONFIGURE_TIMER_FOR_RUN_TIME_STATS
+      extern void %'ModuleName'%.AppConfigureTimerForRuntimeStats(void);
+      #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                 %>55 %'ModuleName'%.AppConfigureTimerForRuntimeStats()
+    #endif
+    #ifndef portGET_RUN_TIME_COUNTER_VALUE
+      extern uint32_t %'ModuleName'%.AppGetRuntimeCounterValueFromISR(void);
+      #define portGET_RUN_TIME_COUNTER_VALUE()                         %>55 %'ModuleName'%.AppGetRuntimeCounterValueFromISR()
+    #endif
   #endif
 #else /* no runtime stats, use empty macros */
   #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                   %>55 /* nothing */
