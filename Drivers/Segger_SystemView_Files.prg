@@ -21,11 +21,11 @@
   %define  ConfigFolder 
 %endif
 %-
+%FILE %'DirRel_Code'%'SystemViewSrcFolder'License_SystemView.txt
+%include Segger_SystemView\License_SystemView.txt
+
 %FILE %'DirRel_Code'%'ConfigFolder'SEGGER_SYSVIEW_Conf.h
 %include Segger_SystemView\Config\SEGGER_SYSVIEW_Conf.h
-
-%FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Config.c
-%include Segger_SystemView\Config\SEGGER_SYSVIEW_Config.c
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW.c
 %include Segger_SystemView\SEGGER\SEGGER_SYSVIEW.c
@@ -45,6 +45,9 @@
 
 %FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_FreeRTOS.h
 %include Segger_SystemView\Sample\FreeRTOSV10\SEGGER_SYSVIEW_FreeRTOS.h
+
+%FILE %'DirRel_Code'%'SystemViewSrcFolder'SEGGER_SYSVIEW_Config_FreeRTOS.c
+%include Segger_SystemView\Sample\FreeRTOSV10\Config\Cortex-M\SEGGER_SYSVIEW_Config_FreeRTOS.c
 %endif
 
 %undef SystemViewSrcFolder
