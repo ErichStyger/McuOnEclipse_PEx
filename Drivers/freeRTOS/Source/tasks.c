@@ -1202,7 +1202,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
         traceTASK_CREATE( pxNewTCB );
 
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS /* << EST */
-        prvReaddTaskToReadyList( pxNewTCB );
+        prvReAddTaskToReadyList( pxNewTCB );
 #else
         prvAddTaskToReadyList( pxNewTCB );
 #endif
@@ -4223,7 +4223,7 @@ static void prvResetNextTaskUnblockTime( void )
 #if 0 /* << EST: change for Segger SystemView */
                     prvAddTaskToReadyList( pxMutexHolderTCB );
 #else
-                    prvReaddTaskToReadyList( pxMutexHolderTCB );
+                    prvReAddTaskToReadyList( pxMutexHolderTCB );
 #endif
                 }
                 else
