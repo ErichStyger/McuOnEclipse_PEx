@@ -241,7 +241,7 @@
 #define prvReAddTaskToReadyList( pxTCB )																\
 	traceREADDED_TASK_TO_READY_STATE( pxTCB );														\
 	taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );												\
-	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xStateListItem ) ) \
+	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xStateListItem ) ); \
   tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )
 #endif /* configUSE_SEGGER_SYSTEM_VIEWER_HOOKS */ /* << EST */
 
