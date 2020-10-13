@@ -243,33 +243,33 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
   static volatile unsigned long _BFAR;
   static volatile unsigned long _MMAR;
 %endif
-  stacked_r0 = ((unsigned long)hardfault_args[0]);               %>60 // http://www.asciiworld.com/-Smiley,20-.html
-  stacked_r1 = ((unsigned long)hardfault_args[1]);               %>60 //                         oooo$$$$$$$$$$$$oooo
-  stacked_r2 = ((unsigned long)hardfault_args[2]);               %>60 //                      oo$$$$$$$$$$$$$$$$$$$$$$$$o
-  stacked_r3 = ((unsigned long)hardfault_args[3]);               %>60 //                    oo$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$o         o$   $$ o$
-  stacked_r12 = ((unsigned long)hardfault_args[4]);              %>60 //    o $ oo        o$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$o       $$ $$ $$o$
-  stacked_lr = ((unsigned long)hardfault_args[5]);               %>60 // oo $ $ "$      o$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$o       $$$o$$o$
-  stacked_pc = ((unsigned long)hardfault_args[6]);               %>60 // "$$$$$$o$     o$$$$$$$$$      $$$$$$$$$$$      $$$$$$$$$$o    $$$$$$$$
-  stacked_psr = ((unsigned long)hardfault_args[7]);              %>60 //   $$$$$$$    $$$$$$$$$$$      $$$$$$$$$$$      $$$$$$$$$$$$$$$$$$$$$$$
-                                                                 %>60 //   $$$$$$$$$$$$$$$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$$$$$$  """$$$
-  /* Configurable Fault Status Register */                       %>60 //    "$$$""""$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     "$$$
-  /* Consists of MMSR, BFSR and UFSR */                          %>60 //     $$$   o$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     "$$$o
-  _CFSR = (*((volatile unsigned long *)(0xE000ED28)));           %>60 //    o$$"   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$       $$$o
-                                                                 %>60 //    $$$    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" "$$$$$$ooooo$$$$o
-  /* Hard Fault Status Register */                               %>60 //   o$$$oooo$$$$$  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   o$$$$$$$$$$$$$$$$$
-  _HFSR = (*((volatile unsigned long *)(0xE000ED2C)));           %>60 //   $$$$$$$$"$$$$   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     $$$$""""""""
-                                                                 %>60 //  """"       $$$$    "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"      o$$$
-  /* Debug Fault Status Register */                              %>60 //             "$$$o     """$$$$$$$$$$$$$$$$$$"$$"         $$$
-  _DFSR = (*((volatile unsigned long *)(0xE000ED30)));           %>60 //               $$$o          "$$""$$$$$$""""           o$$$
-                                                                 %>60 //                $$$$o                                o$$$"
-  /* Auxiliary Fault Status Register */                          %>60 //                 "$$$$o      o$$$$$$o"$$$$o        o$$$$
-  _AFSR = (*((volatile unsigned long *)(0xE000ED3C)));           %>60 //                   "$$$$$oo     ""$$$$o$$$$$o   o$$$$""
-                                                                 %>60 //                      ""$$$$$oooo  "$$$o$$$$$$$$$"""
-                                                                 %>60 //                         ""$$$$$$$oo $$$$$$$$$$
-  /* Read the Fault Address Registers. */                        %>60 //                                 """"$$$$$$$$$$$
-  /* These may not contain valid values. */                      %>60 //                                     $$$$$$$$$$$$
-  /* Check BFARVALID/MMARVALID to see */                         %>60 //                                      $$$$$$$$$$"
-  /* if they are valid values */                                 %>60 //                                       "$$$""
+  stacked_r0 = ((unsigned long)hardfault_args[0]);               %>60 /* http://www.asciiworld.com/-Smiley,20-.html                                   */
+  stacked_r1 = ((unsigned long)hardfault_args[1]);               %>60 /*                         oooo$$$$$$$$$$$$oooo                                 */
+  stacked_r2 = ((unsigned long)hardfault_args[2]);               %>60 /*                      oo$$$$$$$$$$$$$$$$$$$$$$$$o                             */
+  stacked_r3 = ((unsigned long)hardfault_args[3]);               %>60 /*                    oo$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$o         o$   $$ o$      */
+  stacked_r12 = ((unsigned long)hardfault_args[4]);              %>60 /*    o $ oo        o$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$o       $$ $$ $$o$     */
+  stacked_lr = ((unsigned long)hardfault_args[5]);               %>60 /* oo $ $ "$      o$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$o       $$$o$$o$      */
+  stacked_pc = ((unsigned long)hardfault_args[6]);               %>60 /* "$$$$$$o$     o$$$$$$$$$      $$$$$$$$$$$      $$$$$$$$$$o    $$$$$$$$       */
+  stacked_psr = ((unsigned long)hardfault_args[7]);              %>60 /*   $$$$$$$    $$$$$$$$$$$      $$$$$$$$$$$      $$$$$$$$$$$$$$$$$$$$$$$       */
+                                                                 %>60 /*   $$$$$$$$$$$$$$$$$$$$$$$    $$$$$$$$$$$$$    $$$$$$$$$$$$$$  """$$$         */
+  /* Configurable Fault Status Register */                       %>60 /*    "$$$""""$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     "$$$        */
+  /* Consists of MMSR, BFSR and UFSR */                          %>60 /*     $$$   o$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     "$$$o      */
+  _CFSR = (*((volatile unsigned long *)(0xE000ED28)));           %>60 /*    o$$"   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$       $$$o     */
+                                                                 %>60 /*    $$$    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" "$$$$$$ooooo$$$$o   */
+  /* Hard Fault Status Register */                               %>60 /*   o$$$oooo$$$$$  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$   o$$$$$$$$$$$$$$$$$  */
+  _HFSR = (*((volatile unsigned long *)(0xE000ED2C)));           %>60 /*   $$$$$$$$"$$$$   $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     $$$$""""""""        */
+                                                                 %>60 /*  """"       $$$$    "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"      o$$$                 */
+  /* Debug Fault Status Register */                              %>60 /*             "$$$o     """$$$$$$$$$$$$$$$$$$"$$"         $$$                  */
+  _DFSR = (*((volatile unsigned long *)(0xE000ED30)));           %>60 /*               $$$o          "$$""$$$$$$""""           o$$$                   */
+                                                                 %>60 /*                $$$$o                                o$$$"                    */
+  /* Auxiliary Fault Status Register */                          %>60 /*                 "$$$$o      o$$$$$$o"$$$$o        o$$$$                      */
+  _AFSR = (*((volatile unsigned long *)(0xE000ED3C)));           %>60 /*                   "$$$$$oo     ""$$$$o$$$$$o   o$$$$""                       */
+                                                                 %>60 /*                      ""$$$$$oooo  "$$$o$$$$$$$$$"""                          */
+                                                                 %>60 /*                         ""$$$$$$$oo $$$$$$$$$$                               */
+  /* Read the Fault Address Registers. */                        %>60 /*                                 """"$$$$$$$$$$$                              */
+  /* These may not contain valid values. */                      %>60 /*                                     $$$$$$$$$$$$                             */
+  /* Check BFARVALID/MMARVALID to see */                         %>60 /*                                      $$$$$$$$$$"                             */
+  /* if they are valid values */                                 %>60 /*                                       "$$$""                                 */
   /* MemManage Fault Address Register */
   _MMAR = (*((volatile unsigned long *)(0xE000ED34)));
   /* Bus Fault Address Register */
