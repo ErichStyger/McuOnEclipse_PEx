@@ -70,8 +70,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
 %-   Example:
@@ -83,7 +81,6 @@ extern "C" {
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -112,6 +109,10 @@ extern "C" {
 %if (CPUfamily = "Kinetis") | (CPUfamily = "S32K")
 %else
 #endif
+%endif
+
+%if defined(Display)
+#include "%@Display@'ModuleName'.h"
 %endif
 
 #define %'ModuleName'%.RGB565(R,G,B)     ((%'ModuleName'_PixelColor)((((R)&0x1f)<<11)+(((G)&0x3f)<<5)+((B)&0x1f)))%>40/* convert RGB into 565 color format */
