@@ -747,7 +747,7 @@ uint8_t %'ModuleName'%.SendDataBlock(uint8_t *data, size_t dataSize)
   uint8_t res = ERR_OK;
 
   transactionOngoing = TRUE;
-  if (USB_Class_CDC_Interface_DIC_Send_Data(CONTROLLER_ID, data, dataSize)!=USB_OK) {
+  if (USB_Class_CDC_Interface_DIC_Send_Data(CONTROLLER_ID, data, (USB_PACKET_SIZE)dataSize)!=USB_OK) {
     transactionOngoing = FALSE;
 %if defined(OnError)
     %OnError(%'ModuleName'%.USB_ERR_SEND);

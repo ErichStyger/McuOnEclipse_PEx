@@ -3122,7 +3122,7 @@ BaseType_t xTaskIncrementTick( void )
 #endif /* configUSE_APPLICATION_TASK_TAG */
 /*-----------------------------------------------------------*/
 
-#if defined(__GNUC__) && McuLib_CONFIG_SDK_USE_FREERTOS && configLTO_HELPER /* << EST: 'used' attribute need for LTO (Link Time Optimization) */
+#if defined(__GNUC__) && %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS && configLTO_HELPER /* << EST: 'used' attribute need for LTO (Link Time Optimization) */
 __attribute__((used)) /* using C++ compiler, vTaskSwitchContext() might be removed even with -O0? */
 #endif
 void vTaskSwitchContext( void )
