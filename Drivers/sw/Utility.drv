@@ -3194,9 +3194,9 @@ uint8_t %'ModuleName'%.%ScanRGB(const unsigned char **str, uint8_t *r, uint8_t *
         && %'ModuleName'%.%xatoi(&p, &bv)==ERR_OK && bv>=0 && bv<=0xff
        )
     {
-      *r = rv;
-      *g = gv;
-      *b = bv;
+      *r = (uint8_t)rv;
+      *g = (uint8_t)gv;
+      *b = (uint8_t)bv;
       *str = p;
       return ERR_OK;
     }
@@ -3219,7 +3219,7 @@ uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb)
 
   res = %'ModuleName'%.%ScanRGB(str, &r, &g, &b);
   if (res==ERR_OK) {
-    *rgb = (r<<16)|(g<<8)|b;
+    *rgb = ((uint32_t)r<<16)|((uint32_t)g<<8)|b;
     return ERR_OK;
   }
   return ERR_FAILED;
