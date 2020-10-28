@@ -691,6 +691,7 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_COMPILER_IAR            (1)
 #define %'ModuleName'%.CONFIG_COMPILER_KEIL           (2)
 #define %'ModuleName'%.CONFIG_COMPILER_HIWARE         (3)
+#define %'ModuleName'%.CONFIG_COMPILER_METROWERKS     (4)
 
 #ifndef %'ModuleName'%.CONFIG_COMPILER
   #if defined(__GNUC__)
@@ -704,6 +705,9 @@ void %'ModuleName'%.%Deinit(void)
   #elif defined(__CC_ARM)
     %- (%Compiler = "ARM_CC") %- Keil/ARM compiler
     #define %'ModuleName'%.CONFIG_COMPILER                    %'ModuleName'%.CONFIG_COMPILER_KEIL
+  #elif defined(__MWERKS__)
+    %- %if (CPUfamily = "ColdFireV1") | (CPUfamily = "MCF")
+    #define %'ModuleName'%.CONFIG_COMPILER                    %'ModuleName'%.CONFIG_COMPILER_METROWERKS
   #else
     #warning "a compiler needs to be defined!"
   #endif
