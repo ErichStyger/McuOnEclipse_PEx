@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Trace Recorder Library for Tracealyzer v3.3.0
+ * Trace Recorder Library for Tracealyzer v4.4.1
  * Percepio AB, www.percepio.com
  *
  * trcStreamingConfig.h
@@ -39,7 +39,7 @@
  *
  * Tabs are used for indent in this file (1 tab = 4 spaces)
  *
- * Copyright Percepio AB, 2017.
+ * Copyright Percepio AB, 2018.
  * www.percepio.com
  ******************************************************************************/
 
@@ -63,11 +63,7 @@ extern "C" {
  * trace display will be affected. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-%if defined(SymbolTableSlots)
-#define TRC_CFG_SYMBOL_TABLE_SLOTS %SymbolTableSlots
-%else
 #define TRC_CFG_SYMBOL_TABLE_SLOTS 40
-%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_SYMBOL_MAX_LENGTH
@@ -82,11 +78,7 @@ extern "C" {
  * which will affect the trace display. In that case, there will be warnings
  * (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-%if defined(SymbolMaxLength)
-#define TRC_CFG_SYMBOL_MAX_LENGTH %SymbolMaxLength
-%else
 #define TRC_CFG_SYMBOL_MAX_LENGTH 25
-%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_OBJECT_DATA_SLOTS
@@ -95,51 +87,7 @@ extern "C" {
  * be stored at the same time. Must be sufficient for all tasks, otherwise there
  * will be warnings (as User Events) from TzCtrl task, that monitors this.
  ******************************************************************************/
-%if defined(ObjectDataSlots)
-#define TRC_CFG_OBJECT_DATA_SLOTS %ObjectDataSlots
-%else
 #define TRC_CFG_OBJECT_DATA_SLOTS 40
-%endif
-
-/*******************************************************************************
- * Configuration Macro: TRC_CFG_CTRL_TASK_STACK_SIZE
- *
- * The stack size of the TzCtrl task, that receive commands.
- * We are aiming to remove this extra task in future versions.
- ******************************************************************************/
-%if defined(CtrlTaskStackSize)
-#define TRC_CFG_CTRL_TASK_STACK_SIZE %CtrlTaskStackSize
-%else
-#define TRC_CFG_CTRL_TASK_STACK_SIZE (configMINIMAL_STACK_SIZE * 2)
-%endif
-
-/*******************************************************************************
- * Configuration Macro: TRC_CFG_CTRL_TASK_PRIORITY
- *
- * The priority of the TzCtrl task, that receive commands from Tracealyzer.
- * Most stream ports also rely on the TzCtrl task to transmit the data from the
- * internal buffer to the stream interface (all except for the J-Link port).
- * For such ports, make sure the TzCtrl priority is high enough to ensure
- * reliable periodic execution and transfer of the data.
- ******************************************************************************/
-%if defined(CtrlTaskPrioStr)
-#define TRC_CFG_CTRL_TASK_PRIORITY %CtrlTaskPrioStr
-%else
-#define TRC_CFG_CTRL_TASK_PRIORITY 1
-%endif
-
-/*******************************************************************************
- * Configuration Macro: TRC_CFG_CTRL_TASK_DELAY
- *
- * The delay between every loop of the TzCtrl task. A high delay will reduce the
- * CPU load, but may cause missed events if the TzCtrl task is performing the 
- * trace transfer.
- ******************************************************************************/
-%if defined(CtrlTaskDelay)
-#define TRC_CFG_CTRL_TASK_DELAY %CtrlTaskDelay
-%else
-#define TRC_CFG_CTRL_TASK_DELAY ((10 * configTICK_RATE_HZ) / 1000)
-%endif
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT
@@ -147,20 +95,22 @@ extern "C" {
  * Specifies the number of pages used by the paged event buffer.
  * This may need to be increased if there are a lot of missed events.
  *
- * Note: not used by the J-Link RTT stream port (see SEGGER_RTT_Conf.h instead)
+ * Note: not used by the J-Link RTT stream port (see trcStreamingPort.h instead)
  ******************************************************************************/
-#define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT 2
+#define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_COUNT 10
 
 /*******************************************************************************
  * Configuration Macro: TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE
  *
  * Specifies the size of each page in the paged event buffer. This can be tuned 
  * to match any internal low-level buffers used by the streaming interface, like
- * the Ethernet MTU (Maximum Transmission Unit).
+ * the Ethernet MTU (Maximum Transmission Unit). However, since the currently
+ * active page can't be transfered, having more but smaller pages is more
+ * efficient with respect memory usage, than having a few large pages.  
  *
- * Note: not used by the J-Link RTT stream port (see SEGGER_RTT_Conf.h instead)
+ * Note: not used by the J-Link RTT stream port (see trcStreamingPort.h instead)
  ******************************************************************************/
-#define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE 2500
+#define TRC_CFG_PAGED_EVENT_BUFFER_PAGE_SIZE 500
 
 /*******************************************************************************
  * TRC_CFG_ISR_TAILCHAINING_THRESHOLD

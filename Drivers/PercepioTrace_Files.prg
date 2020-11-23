@@ -73,6 +73,8 @@
 %FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcRecorder.h
 %include PercepioTrace\TraceRecorder\include\trcRecorder.h
 
+%FILE %'DirRel_Code'%'TraceRecorderIncludeFolder'trcExtensions.h
+%include PercepioTrace\TraceRecorder\include\trcExtensions.h
 %- ---------------------------------------
 %- TraceRecorder/streamports/Jlink_RTT/include
 %- ---------------------------------------
