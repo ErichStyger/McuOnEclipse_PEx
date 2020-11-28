@@ -319,16 +319,6 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M             (1 || defined(__CORTEX_M))
     /*!< 1: ARM Cortex-M family, 0 otherwise */
 #endif
-#ifndef %'ModuleName'%.CONFIG_CPU_IS_KINETIS
-  #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS                  (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_LPC) \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_LPC55xx) \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_IMXRT) \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_STM32) \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF) \
-                                                            && !defined(%'ModuleName'%.CONFIG_CPU_IS_S32K))
-    /*!< 1: NXP Kinetis CPU family, 0: otherwise */
-#endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_S32K
   #define %'ModuleName'%.CONFIG_CPU_IS_S32K                     (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: NXP S32K CPU family, 0: otherwise */
@@ -372,6 +362,18 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_ESP32                    (__XTENSA__)
     /*!< 1: ESP32 CPU family, 0: otherwise. The ESP32 compiler defines __XTENSA__ with a value of 1 */
 #endif
+
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_KINETIS
+  #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS                 (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_LPC) \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_LPC55xx) \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_IMXRT) \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_STM32) \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_NORDIC_NRF) \
+                                                            && !(%'ModuleName'%.CONFIG_CPU_IS_S32K))
+    /*!< 1: NXP Kinetis CPU family, 0: otherwise */
+#endif
+
 
 %elif (CPUfamily = "S32K")
 #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
@@ -712,7 +714,6 @@ void %'ModuleName'%.%Deinit(void)
     #warning "a compiler needs to be defined!"
   #endif
 #endif
-
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
