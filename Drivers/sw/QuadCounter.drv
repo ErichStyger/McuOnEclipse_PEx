@@ -281,7 +281,7 @@ void %OnError(void);
    The value in the table (0,1,-1) indicates the steps taken since previous sample. */
 #define QUAD_ERROR  3 /*!< Value to indicate an error in impulse detection. Has to be different from 0,1,-1 */
 
-%if %ErrorCorrection = 'yes'
+#if %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION
 static uint8_t %'ModuleName'%.prevlast_quadrature_value; /*! Value of C1&C2 before last_quadrature_value. */
 
 static const signed char %'ModuleName'%.Quad_Table[4][4][4] =
@@ -391,7 +391,7 @@ static const signed char %'ModuleName'%.Quad_Table[4][4][4] =
       }
     }
   };
-%else
+#else
 static const signed char %'ModuleName'%.Quad_Table[4][4] =
   {               /* prev   new    */
     {             /* c1 c2  c1 c2  */
@@ -419,14 +419,15 @@ static const signed char %'ModuleName'%.Quad_Table[4][4] =
      0            /* 1  1   1  1   no change or missed a step? */
      }
   };
-%endif %- ErrorCorrection
+#endif /* %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION */
+
 static uint8_t %'ModuleName'%.last_quadrature_value; /*! Value of C1&C2 during last round. */
 %endif %- %SamplingMethod = 'yes'
 
 static %'ModuleName'_QuadCntrType %'ModuleName'%.currPos = 0; /*!< Current position */
-%ifdef NofErrors
-static uint16_t %'ModuleName'%.nofErrors = 0;
-%endif %- NofErrors
+#if %'ModuleName'%.CONFIG_COUNT_ERRORS
+  static uint16_t %'ModuleName'%.nofErrors = 0;
+#endif
 
 %endif
 %-BW_CUSTOM_VARIABLE_END
@@ -505,17 +506,17 @@ void %'ModuleName'%.%Sample(void)
   uint8_t c12; /* value of the two sensor input */
 
   c12 = %'ModuleName'%.GetVal();
-%if %ErrorCorrection = 'yes'
+#if %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION
   new_step = %'ModuleName'%.Quad_Table[%'ModuleName'%.prevlast_quadrature_value][%'ModuleName'%.last_quadrature_value][c12];
   %'ModuleName'%.prevlast_quadrature_value = %'ModuleName'%.last_quadrature_value;
-%else
+#else
   new_step = %'ModuleName'%.Quad_Table[%'ModuleName'%.last_quadrature_value][c12];
-%endif %- ErrorCorrection
+#endif
   %'ModuleName'%.last_quadrature_value = c12;
   if (new_step == QUAD_ERROR) {
-%ifdef NofErrors
+#if %'ModuleName'%.CONFIG_COUNT_ERRORS
     %'ModuleName'%.nofErrors++;
-%endif %- NofErrors
+#endif
 %ifdef OnError
     %OnError(); /* call error handler */
 %endif
@@ -533,7 +534,11 @@ void %'ModuleName'%.%Sample(void)
 %include Common\QuadCounterNofErrors.Inc
 uint16_t %'ModuleName'%.%NofErrors(void)
 {
+#if %'ModuleName'%.CONFIG_COUNT_ERRORS
   return %'ModuleName'%.nofErrors;
+#else
+  return 0;
+#endif
 }
 
 %endif %- NofErrors
@@ -559,12 +564,14 @@ void %'ModuleName'%.%Init(void)
 %if %SamplingMethod='yes'
   %'ModuleName'%.last_quadrature_value = %'ModuleName'%.GET_C1_C2_PINS();
 %endif
-%if %SamplingMethod='yes' & %ErrorCorrection = 'yes'
+%if %SamplingMethod='yes'
+#if %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION
   %'ModuleName'%.prevlast_quadrature_value = %'ModuleName'%.last_quadrature_value;
+#endif
 %endif
-%ifdef NofErrors
+#if %'ModuleName'%.CONFIG_COUNT_ERRORS
   %'ModuleName'%.nofErrors = 0;
-%endif %- NofErrors
+#endif
 #if %'ModuleName'%.SWAP_PINS_AT_RUNTIME
   %'ModuleName'%.swappedPins = FALSE;
 #endif
@@ -626,17 +633,17 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     } else {
       %@Shell@'ModuleName'%.SendStr((const unsigned char*)"0\r\n", io->stdOut);
     }
-%ifdef NofErrors
+  #if %'ModuleName'%.CONFIG_COUNT_ERRORS
     %@Shell@'ModuleName'%.SendStatusStr((const unsigned char*)"  errors", (const unsigned char*)"", io->stdOut);
     %@Shell@'ModuleName'%.SendNum16u(%'ModuleName'%.nofErrors, io->stdOut);
     %@Shell@'ModuleName'%.SendStr((const unsigned char*)"\r\n", io->stdOut);
-%endif %- NofErrors
+  #endif
     *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((const char*)cmd, "%'ModuleName' reset")==0) {
     %'ModuleName'%.SetPos(0);
-  %ifdef NofErrors
+  #if %'ModuleName'%.CONFIG_COUNT_ERRORS
     %'ModuleName'%.nofErrors = 0;
-  %endif
+  #endif
     *handled = TRUE;
   }
   return res;
@@ -713,7 +720,22 @@ void %OnError(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-/* no configuration supported yet */
-%- #define %'ModuleName'%.CONFIG_SETTING
+#ifndef %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION
+%if defined(ErrorCorrection) & %ErrorCorrection='yes'
+  #define %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_ERROR_CORRECTION  (0)
+%endif
+    /*!< 1: Use error correction, 0: not using error correction */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_COUNT_ERRORS
+%if defined(NofErrors)
+  #define %'ModuleName'%.CONFIG_COUNT_ERRORS  (1)
+%else
+  #define %'ModuleName'%.CONFIG_COUNT_ERRORS  (0)
+%endif
+    /*!< 1: count errors, 0: do not count errors */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
