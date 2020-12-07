@@ -486,120 +486,159 @@
 if floating point hardware is otherwise supported by the FreeRTOS port in use.
 This constant is not supported by all FreeRTOS ports that include floating
 point support. */
-#define configUSE_TASK_FPU_SUPPORT                               %>50 1
-
+#ifndef configUSE_TASK_FPU_SUPPORT
+  #define configUSE_TASK_FPU_SUPPORT                               %>50 1
+#endif
 /* Set the following definitions to 1 to include the API function, or zero
    to exclude the API function. */
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskEndScheduler
 %ifdef vTaskEndScheduler
-#define INCLUDE_vTaskEndScheduler                                %>50 1
+  #define INCLUDE_vTaskEndScheduler                                %>50 1
 %else
-#define INCLUDE_vTaskEndScheduler                                %>50 0
+  #define INCLUDE_vTaskEndScheduler                                %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskPrioritySet
 %ifdef vTaskPrioritySet
-#define INCLUDE_vTaskPrioritySet                                 %>50 1
+  #define INCLUDE_vTaskPrioritySet                                 %>50 1
 %else
-#define INCLUDE_vTaskPrioritySet                                 %>50 0
+  #define INCLUDE_vTaskPrioritySet                                 %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_uxTaskPriorityGet
 %ifdef uxTaskPriorityGet
-#define INCLUDE_uxTaskPriorityGet                                %>50 1
+  #define INCLUDE_uxTaskPriorityGet                                %>50 1
 %else
-#define INCLUDE_uxTaskPriorityGet                                %>50 0
+  #define INCLUDE_uxTaskPriorityGet                                %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskDelete
 %ifdef vTaskDelete
-#define INCLUDE_vTaskDelete                                      %>50 1
+  #define INCLUDE_vTaskDelete                                      %>50 1
 %else
-#define INCLUDE_vTaskDelete                                      %>50 0
+  #define INCLUDE_vTaskDelete                                      %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskCleanUpResources
 %if CleanupResources='yes'
-#define INCLUDE_vTaskCleanUpResources                            %>50 1
+  #define INCLUDE_vTaskCleanUpResources                            %>50 1
 %else
-#define INCLUDE_vTaskCleanUpResources                            %>50 0
+  #define INCLUDE_vTaskCleanUpResources                            %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskSuspend
 %ifdef vTaskSuspend
-#define INCLUDE_vTaskSuspend                                     %>50 1
+  #define INCLUDE_vTaskSuspend                                     %>50 1
 %else
-#define INCLUDE_vTaskSuspend                                     %>50 0
+  #define INCLUDE_vTaskSuspend                                     %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskDelayUntil
 %ifdef vTaskDelayUntil
-#define INCLUDE_vTaskDelayUntil                                  %>50 1
+  #define INCLUDE_vTaskDelayUntil                                  %>50 1
 %else
-#define INCLUDE_vTaskDelayUntil                                  %>50 0
+  #define INCLUDE_vTaskDelayUntil                                  %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_vTaskDelay
 %ifdef vTaskDelay
-#define INCLUDE_vTaskDelay                                       %>50 1
+  #define INCLUDE_vTaskDelay                                       %>50 1
 %else
-#define INCLUDE_vTaskDelay                                       %>50 0
+  #define INCLUDE_vTaskDelay                                       %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_uxTaskGetStackHighWaterMark
 %ifdef uxTaskGetStackHighWaterMark
-#define INCLUDE_uxTaskGetStackHighWaterMark                      %>50 1
+  #define INCLUDE_uxTaskGetStackHighWaterMark                      %>50 1
 %else
-#define INCLUDE_uxTaskGetStackHighWaterMark                      %>50 0
+  #define INCLUDE_uxTaskGetStackHighWaterMark                      %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskGetSchedulerState
 %ifdef xTaskGetSchedulerState
-#define INCLUDE_xTaskGetSchedulerState                           %>50 1
+  #define INCLUDE_xTaskGetSchedulerState                           %>50 1
 %else
-#define INCLUDE_xTaskGetSchedulerState                           %>50 0
+  #define INCLUDE_xTaskGetSchedulerState                           %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xQueueGetMutexHolder
 %if defined(xSemaphoreGetMutexHolder)
-#define INCLUDE_xQueueGetMutexHolder                             %>50 1
+  #define INCLUDE_xQueueGetMutexHolder                             %>50 1
 %else
-#define INCLUDE_xQueueGetMutexHolder                             %>50 0
+  #define INCLUDE_xQueueGetMutexHolder                             %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskGetHandle
 %if defined(xTaskGetHandle)
-#define INCLUDE_xTaskGetHandle                                   %>50 1
+  #define INCLUDE_xTaskGetHandle                                   %>50 1
 %else
-#define INCLUDE_xTaskGetHandle                                   %>50 0
+  #define INCLUDE_xTaskGetHandle                                   %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskAbortDelay
 %if defined(xTaskAbortDelay)
-#define INCLUDE_xTaskAbortDelay                                  %>50 1
+  #define INCLUDE_xTaskAbortDelay                                  %>50 1
 %else
-#define INCLUDE_xTaskAbortDelay                                  %>50 0
+  #define INCLUDE_xTaskAbortDelay                                  %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskGetCurrentTaskHandle
 %if defined(xTaskGetCurrentTaskHandle)
-#define INCLUDE_xTaskGetCurrentTaskHandle                        %>50 1
+  #define INCLUDE_xTaskGetCurrentTaskHandle                        %>50 1
 %else
-#define INCLUDE_xTaskGetCurrentTaskHandle                        %>50 0
+  #define INCLUDE_xTaskGetCurrentTaskHandle                        %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskGetIdleTaskHandle
 %if defined(xTaskGetIdleTaskHandle)
-#define INCLUDE_xTaskGetIdleTaskHandle                           %>50 1
+  #define INCLUDE_xTaskGetIdleTaskHandle                           %>50 1
 %else
-#define INCLUDE_xTaskGetIdleTaskHandle                           %>50 0
+  #define INCLUDE_xTaskGetIdleTaskHandle                           %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_xTaskResumeFromISR
 %if defined(xTaskResumeFromISR)
-#define INCLUDE_xTaskResumeFromISR                               %>50 1
+  #define INCLUDE_xTaskResumeFromISR                               %>50 1
 %else
-#define INCLUDE_xTaskResumeFromISR                               %>50 0
+  #define INCLUDE_xTaskResumeFromISR                               %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_eTaskGetState
 %if defined(eTaskGetState)
-#define INCLUDE_eTaskGetState                                    %>50 1
+  #define INCLUDE_eTaskGetState                                    %>50 1
 %else
-#define INCLUDE_eTaskGetState                                    %>50 0
+  #define INCLUDE_eTaskGetState                                    %>50 0
 %endif
+#endif
 %- --------------------------------------------------------------------
+#ifndef INCLUDE_pcTaskGetTaskName
 %if defined(pcTaskGetTaskName)
-#define INCLUDE_pcTaskGetTaskName                                %>50 1
+  #define INCLUDE_pcTaskGetTaskName                                %>50 1
 %else
-#define INCLUDE_pcTaskGetTaskName                                %>50 0
+  #define INCLUDE_pcTaskGetTaskName                                %>50 0
 %endif
+#endif
 /* -------------------------------------------------------------------- */
-#define INCLUDE_pxTaskGetStackStart                              %>50 (1 && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS)
+#ifndef INCLUDE_pxTaskGetStackStart
+  #define INCLUDE_pxTaskGetStackStart                              %>50 (1 && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS)
+#endif
 /* -------------------------------------------------------------------- */
 %if (CPUfamily = "ColdFireV1")
 /* It is not advisable to change these values on a ColdFire V1 core. */
