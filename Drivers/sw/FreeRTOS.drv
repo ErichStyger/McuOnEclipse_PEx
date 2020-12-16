@@ -104,7 +104,11 @@
 
 /* MODULE %ModuleName. */
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
-#include "FreeRTOSConfig.h"
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #include "freertos/FreeRTOSConfig.h"
+#else
+  #include "FreeRTOSConfig.h"
+#endif
 #include "%'RtosComponentConfigHeaderFileName'" /* configuration file for component */
 
 #if configUSE_SHELL
@@ -125,11 +129,19 @@
 %-BW_METHOD_MACROS_END
 
 /* other includes needed */
-#include "FreeRTOS.h"
-#include "task.h"                                                %>40/* task API */
-#include "semphr.h"                                              %>40/* semaphore API */
-#include "event_groups.h"                                        %>40/* event group API */
-#include "timers.h"                                              %>40/* timer module API */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #include "freertos/FreeRTOS.h"
+  #include "freertos/task.h"                                     %>40/* task API */
+  #include "freertos/semphr.h"                                   %>40/* semaphore API */
+  #include "freertos/event_groups.h"                             %>40/* event group API */
+  #include "freertos/timers.h"                                   %>40/* timer module API */
+#else
+  #include "FreeRTOS.h"
+  #include "task.h"                                              %>40/* task API */
+  #include "semphr.h"                                            %>40/* semaphore API */
+  #include "event_groups.h"                                      %>40/* event group API */
+  #include "timers.h"                                            %>40/* timer module API */
+#endif
 #include <stddef.h>                                              %>40/* for size_t type */
 
 #if configUSE_PERCEPIO_TRACE_HOOKS
@@ -1990,16 +2002,20 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
 %if defined(Shell)
 #if configUSE_SHELL
 static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
+#if tskKERNEL_VERSION_MAJOR>=10
   #define SHELL_MAX_NOF_TASKS %ShellMaxNofTasks /* maximum number of tasks, as specified in the properties */
   UBaseType_t nofTasks, i;
   TaskHandle_t taskHandles[SHELL_MAX_NOF_TASKS];
+  StackType_t *stackBeg, *stackEnd, *topOfStack;
+  uint8_t staticallyAllocated;
+  uint8_t tmpBuf[32];
+  uint16_t stackSize;
+#endif
 #if configUSE_TRACE_FACILITY
   TaskStatus_t taskStatus;
 #endif
-  StackType_t *stackBeg, *stackEnd, *topOfStack;
-  uint8_t staticallyAllocated;
-  uint8_t buf[32], tmpBuf[32], res;
-  uint16_t stackSize;
+  uint8_t buf[32];
+  uint8_t res;
 #if configGENERATE_RUN_TIME_STATS
   uint32_t ulTotalTime, ulStatsAsPercentage;
 #endif
@@ -2094,6 +2110,9 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
   ulTotalTime /= 100UL; /* For percentage calculations. */
 #endif
 
+#if tskKERNEL_VERSION_MAJOR<10 /* otherwise xGetTaskHandles(), vTaskGetStackInfo(), pcTaskGetName() not available */
+  %@Shell@'ModuleName'%.SendStr((unsigned char*)"FreeRTOS version must be at least 10.0.0\r\n", io->stdOut);
+#else
   nofTasks = uxTaskGetNumberOfTasks();
   if (nofTasks>SHELL_MAX_NOF_TASKS) {
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (const unsigned char*)"WARNING: more tasks than Shell maximum number of tasks.\r\n");
@@ -2249,8 +2268,9 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Shell@'ModuleName'%.SendStr(buf, io->stdOut);
 #endif
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
-    } /* for */
-  } /* if */
+    } /* if */
+  } /* for */
+#endif /* tskKERNEL_VERSION_MAJOR */
   return res;
 }
 #endif
@@ -2259,7 +2279,7 @@ static uint8_t PrintTaskList(const %@Shell@'ModuleName'%.StdIOType *io) {
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"FreeRTOS status information\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  Version", (const unsigned char*)tskKERNEL_VERSION_NUMBER, io->stdOut);
   %@Shell@'ModuleName'%.SendStr((unsigned char*)"\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  RTOS ticks", (const unsigned char*)"", io->stdOut);

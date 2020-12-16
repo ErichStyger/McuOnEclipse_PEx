@@ -693,7 +693,7 @@ void %OnAfterIterateCmd(const uint8_t *cmd);
 #include "McuCriticalSection.h"
 %endif
 %if defined(Wait)
-  #include "%@Wait@ModuleName.h"
+#include "%@Wait@ModuleName.h"
 %endif
 
 #if %'ModuleName'%.DEFAULT_SERIAL
@@ -1149,7 +1149,7 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
 %include Common\ShellPrintStatus.Inc
 uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 {
-  %'ModuleName'%.%SendStatusStr((const unsigned char*)"%'ModuleName'", (const unsigned char*)"\r\n", io->stdOut);
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"%'ModuleName'", (const unsigned char*)"Commandline shell status\r\n", io->stdOut);
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  Build", (const unsigned char*)__DATE__, io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)" ", io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)__TIME__, io->stdOut);
