@@ -1854,7 +1854,7 @@ void vPortStartFirstTask(void) {
 #if configUSE_TOP_USED_PRIORITY || configLTO_HELPER
   /* only needed for openOCD or Segger FreeRTOS thread awareness. It needs the symbol uxTopUsedPriority present after linking */
   {
-    extern volatile const int uxTopUsedPriority;
+    extern const int uxTopUsedPriority;
     __attribute__((__unused__)) volatile uint8_t dummy_value_for_openocd;
     dummy_value_for_openocd = uxTopUsedPriority;
   }
