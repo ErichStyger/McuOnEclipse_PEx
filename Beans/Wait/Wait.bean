@@ -4,7 +4,7 @@
     <Name>Wait</Name>
     <Description>Wait</Description>
     <Author>Erich Styger</Author>
-    <Version>01.089</Version>
+    <Version>01.091</Version>
     <Icon>wait</Icon>
     <TypesFiles>PE,Wait\Wait</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -19,7 +19,7 @@
     <BW_NeedUst>2</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * Copyright (c) 2013-2020, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
+    <Copyright> * Copyright (c) 2013-2021, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Category>SW-User Components</Category>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>High</BeanLevel>
@@ -344,7 +344,7 @@
         <Name>WaitCycles</Name>
         <Symbol>WaitCycles</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
-        <Hint>Wait for a specified number of CPU cycles (16bit data type).</Hint>
+        <Hint>Wait for a specified number of CPU cycles.</Hint>
         <ItemLevel>BASIC</ItemLevel>
         <ReadOnly>true</ReadOnly>
         <EditLine>false</EditLine>
@@ -364,13 +364,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>cycles</ParName>
-          <ParType>uint16_t</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>The number of cycles to wait.</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint16_t cycles)</ANSIC>
+          <ANSIC>void #M#_#C#(uint32_t cycles)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -434,13 +434,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ms</ParName>
-          <ParType>uint16_t</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>How many milliseconds the function has to wait</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint16_t ms)</ANSIC>
+          <ANSIC>void #M#_#C#(uint32_t ms)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -469,13 +469,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>us</ParName>
-          <ParType>uint16_t</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>How many microseconds the function has to wait</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint16_t us)</ANSIC>
+          <ANSIC>void #M#_#C#(uint32_t us)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
@@ -504,13 +504,13 @@
         <ParamCount>1</ParamCount>
         <Parameter>
           <ParName>ns</ParName>
-          <ParType>uint16_t</ParType>
+          <ParType>uint32_t</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>How many ns the function has to wait</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(uint16_t ns)</ANSIC>
+          <ANSIC>void #M#_#C#(uint32_t ns)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>
