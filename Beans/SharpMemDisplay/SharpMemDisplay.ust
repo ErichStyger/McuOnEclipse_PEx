@@ -5,9 +5,9 @@
     <UsrType>TRetypeType</UsrType>
     <Name>PixelCount</Name>
     <Hint>A word is enough to hold the number of pixels (84x48).</Hint>
-    <Generate>yes</Generate>
+    <Generate>no</Generate>
     <Unique>yes</Unique>
-    <GenerateHelp>yes</GenerateHelp>
+    <GenerateHelp>no</GenerateHelp>
     <PreparedHint>  typedef int16_t %'ModuleName'_PixelCount ;/* A word is enough to hold the number of pixels (84x48). */\n
 </PreparedHint>
     <Type>16bit signed</Type>
@@ -16,9 +16,9 @@
     <UsrType>TRetypeType</UsrType>
     <Name>PixelDim</Name>
     <Hint>One byte is enough to describe an x/y position.</Hint>
-    <Generate>yes</Generate>
+    <Generate>no</Generate>
     <Unique>yes</Unique>
-    <GenerateHelp>yes</GenerateHelp>
+    <GenerateHelp>no</GenerateHelp>
     <PreparedHint>  typedef uint8_t %'ModuleName'_PixelDim ;/* One byte is enough to describe an x/y position. */\n
 </PreparedHint>
     <Type>uint8_t</Type>
@@ -26,11 +26,11 @@
   <Type>
     <UsrType>TUserType</UsrType>
     <Name>DisplayOrientation</Name>
-    <Hint/>
+    <Hint>Describes the display orientation</Hint>
     <Generate>no</Generate>
     <Unique>yes</Unique>
     <GenerateHelp>no</GenerateHelp>
-    <PreparedHint>\n
+    <PreparedHint> /* Describes the display orientation */\n
 </PreparedHint>
     <Type/>
     <HWTestType/>
@@ -46,5 +46,16 @@
 </PreparedHint>
     <Type/>
     <HWTestType/>
+  </Type>
+  <Type>
+    <UsrType>TRetypeType</UsrType>
+    <Name>PixelColor</Name>
+    <Hint>Type to hold color information</Hint>
+    <Generate>no</Generate>
+    <Unique>yes</Unique>
+    <GenerateHelp>no</GenerateHelp>
+    <PreparedHint>  typedef byte %'ModuleName'_PixelColor ;/* Type to hold color information */\n
+</PreparedHint>
+    <Type>8bit unsigned</Type>
   </Type>
 </UserTypes>

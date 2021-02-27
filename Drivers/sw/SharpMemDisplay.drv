@@ -108,15 +108,6 @@
 extern uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][((%'ModuleName'%.DISPLAY_HW_NOF_COLUMNS-1)/8)+1]; /* buffer for the display */
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
 
-#ifndef __BWUserType_%'ModuleName'_PixelCount
-#define __BWUserType_%'ModuleName'_PixelCount
-  typedef int16_t %'ModuleName'_PixelCount ;                     %>40/* A word is enough to hold the number of pixels (84x48). */
-#endif
-#ifndef __BWUserType_%'ModuleName'_PixelDim
-#define __BWUserType_%'ModuleName'_PixelDim
-  typedef uint8_t %'ModuleName'_PixelDim ;                       %>40/* One byte is enough to describe an x/y position. */
-#endif
-
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -127,6 +118,8 @@ extern uint8_t %'ModuleName'%.DisplayBuf[%'ModuleName'%.DISPLAY_HW_NOF_ROWS][((%
 %-    typedef int TMyInteger;
 %-
 typedef bool %'ModuleName'%.PixelColor;                          %>40/* one bit is enough to describe the color as we have a monochrome display */
+typedef uint8_t %'ModuleName'_PixelDim;                          %>40/* one byte is enough to describe the x/y position */
+typedef uint16_t %'ModuleName'_PixelCount;                       %>40/* needed type to hold the number of pixels on the display. */
 
 #define %'ModuleName'%.PIXEL_BLACK  0 /* 0 is a black pixel */
 #define %'ModuleName'%.PIXEL_WHITE  1 /* 1 is a white pixel */
@@ -334,6 +327,17 @@ void %'ModuleName'%.%ToggleVCOM(void);
 
 %endif %- ToggleVCOM
 %-BW_METHOD_END ToggleVCOM
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SharpMemDisplayPutPixel.Inc
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -719,6 +723,33 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN PutPixel
+%ifdef PutPixel
+%define! Parx
+%define! Pary
+%define! Parcolor
+%include Common\SharpMemDisplayPutPixel.Inc
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
+{
+  uint8_t val;
+
+#if 0 /* done at the the higher level */
+  if (x>=%'ModuleName'%.%GetWidth() || y>=%'ModuleName'%.%GetHeight()) {
+    return; /* error case */
+  }
+#endif
+  val = %'ModuleName'%.DisplayBuf[y/8][x]; /* get current value */
+  if (color!=0) {
+    val |= (1<<(y%%8)); /* set pixel */
+  } else {
+    val &= ~(1<<(y%%8)); /* clear pixel */
+  }
+  %'ModuleName'%.DisplayBuf[y/8][x] = val; /* store value */
+}
+
+%endif %- PutPixel
+%-BW_METHOD_END PutPixel
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
