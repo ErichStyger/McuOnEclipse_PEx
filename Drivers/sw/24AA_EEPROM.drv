@@ -339,6 +339,9 @@ void %'ModuleName'%.%Init(void);
 %if defined(Timeout)
   #define %'ModuleName'%.TIMEOUT_BYTE_TICKS     (%'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
   #define %'ModuleName'%.TIMEOUT_BLOCK_TICKS    (%'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS/(%@Timeout@'ModuleName'%.TICK_PERIOD_MS))
+%else
+  #define %'ModuleName'%.TIMEOUT_BYTE_TICKS     (%'ModuleName'%.CONFIG_TIMEOUT_BYTE_MS/(McuTimeout_TICK_PERIOD_MS))
+  #define %'ModuleName'%.TIMEOUT_BLOCK_TICKS    (%'ModuleName'%.CONFIG_TIMEOUT_BLOCK_MS/(McuTimeout_TICK_PERIOD_MS))
 %endif
 #endif
 %-BW_CUSTOM_INCLUDE_END_M
