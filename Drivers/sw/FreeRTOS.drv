@@ -135,12 +135,14 @@
   #include "freertos/semphr.h"                                   %>40/* semaphore API */
   #include "freertos/event_groups.h"                             %>40/* event group API */
   #include "freertos/timers.h"                                   %>40/* timer module API */
+  #include "freertos/stream_buffer.h"                            %>40/* stream buffer module API */
 #else
   #include "FreeRTOS.h"
   #include "task.h"                                              %>40/* task API */
   #include "semphr.h"                                            %>40/* semaphore API */
   #include "event_groups.h"                                      %>40/* event group API */
   #include "timers.h"                                            %>40/* timer module API */
+  #include "stream_buffer.h"                                     %>40/* stream buffer module API */
 #endif
 #include <stddef.h>                                              %>40/* for size_t type */
 
