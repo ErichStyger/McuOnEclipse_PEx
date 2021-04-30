@@ -569,12 +569,26 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
     #endif
   #endif /* %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED */
   return ERR_OK;
-#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC /* LPC845 */
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && !%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC845 */
   uint8_t res;
 
   res = IAP_ReadUniqueID((uint32_t*)&uid->id[0]);
   if (res != kStatus_IAP_Success) {
     return ERR_FAILED;
+  }
+  return ERR_OK;
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC55xx */
+  int i;
+  uint8_t *p;
+
+  /* init */
+  for(i=0;i<sizeof(McuArmTools_UID);i++) {
+    uid->id[i] = 0;
+  }
+  p = (uint8_t*)&FLASH_NMPA->UUID_ARRAY[0];
+  for(i=0;i<sizeof(McuArmTools_UID) && i<sizeof(FLASH_NMPA->UUID_ARRAY);i++) {
+    uid->id[i] = *p;
+    p++;
   }
   return ERR_OK;
 #else
