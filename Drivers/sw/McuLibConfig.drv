@@ -446,6 +446,16 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 1: ESP32 CPU family, 0: otherwise. */
 %endif
 
+/* define to identify the CPU variant better */
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT               (0)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC845                (1)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC55S69              (2)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC55S16              (3)
+
+#ifndef %'ModuleName'%.CONFIG_CPU_VARIANT
+  #define %'ModuleName'%.CONFIG_CPU_VARIANT  %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
+#endif
+
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
 %if %CPUDB_prph_has_feature(CPU,ARM_CORTEX_M0P) = 'yes'
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M

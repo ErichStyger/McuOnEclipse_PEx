@@ -352,6 +352,9 @@ void %'ModuleName'%.%Init(void);
   #include "fsl_common.h"
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
     #include "fsl_sim.h" /* system integration module, used for CPU ID */
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC55x */
+    #include "fsl_iap.h" /* if missing, add this module from the MCUXpresso SDK */
+    #include "fsl_iap_ffr.h"
   #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC  /* LPC845 */
     #include "fsl_iap.h" /* if missing, add this module from the MCUXpresso SDK */
   #endif
@@ -578,6 +581,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   }
   return ERR_OK;
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC55xx */
+#if 1 /* works for LPC55S16, but not for LPC55S69 */
   int i;
   uint8_t *p;
 
@@ -591,6 +595,31 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
     p++;
   }
   return ERR_OK;
+#else
+  int i;
+  status_t status;
+  flash_config_t flashConfig;
+
+  /*\ todo does not work yet? */
+
+  /* init */
+  for(i=0;i<sizeof(McuArmTools_UID);i++) {
+    uid->id[i] = 0;
+  }
+
+  status = FFR_Init(&flashConfig);
+  if (status!=kStatus_Success) {
+    return ERR_FAILED;
+  }
+
+  assert(sizeof(uid->id)*8>=128); /* must be at least 128 bits */
+  status = FFR_GetUUID(&flashConfig, &uid->id[0]);
+  if (status!=kStatus_Success) {
+    return ERR_FAILED;
+  }
+
+  return ERR_OK;
+#endif
 #else
   (void)uid; /* not used */
   return ERR_FAILED;
