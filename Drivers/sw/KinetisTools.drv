@@ -572,7 +572,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
     #endif
   #endif /* %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED */
   return ERR_OK;
-#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && !%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC845 */
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC845
   uint8_t res;
 
   res = IAP_ReadUniqueID((uint32_t*)&uid->id[0]);
@@ -580,8 +580,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
     return ERR_FAILED;
   }
   return ERR_OK;
-#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx /* LPC55xx */
-#if 1 /* works for LPC55S16, but not for LPC55S69 */
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16
   int i;
   uint8_t *p;
 
@@ -595,17 +594,16 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
     p++;
   }
   return ERR_OK;
-#else
+#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69
   int i;
-  status_t status;
-  flash_config_t flashConfig;
-
-  /*\ todo does not work yet? */
 
   /* init */
   for(i=0;i<sizeof(McuArmTools_UID);i++) {
     uid->id[i] = 0;
   }
+#if 0 /* should work for LPC55x59, but fails? */
+  status_t status;
+  flash_config_t flashConfig;
 
   status = FFR_Init(&flashConfig);
   if (status!=kStatus_Success) {
@@ -617,9 +615,8 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   if (status!=kStatus_Success) {
     return ERR_FAILED;
   }
-
-  return ERR_OK;
 #endif
+  return ERR_FAILED; /* not implemented yet */
 #else
   (void)uid; /* not used */
   return ERR_FAILED;
@@ -790,10 +787,18 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   return (%'ModuleName'_ConstCharPtr)"NXP i.MX RT";
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_S32K
   return (%'ModuleName'_ConstCharPtr)"NXP S32K";
-#elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx
-  return (%'ModuleName'_ConstCharPtr)"NXP LPC55xx";
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC845
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC845";
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC55S16";
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S59
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC55S69";
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC55xx
+  return (%'ModuleName'_ConstCharPtr)"NXP LPC55xx";
+  #else
   return (%'ModuleName'_ConstCharPtr)"NXP LPC";
+  #endif
 #else
   return (%'ModuleName'_ConstCharPtr)"UNKNOWN";
 #endif

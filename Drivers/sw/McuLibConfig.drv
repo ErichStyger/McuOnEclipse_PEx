@@ -448,12 +448,17 @@ void %'ModuleName'%.%Deinit(void)
 
 /* define to identify the CPU variant better */
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT               (0)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC845                (1)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC55S69              (2)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_LPC55S16              (3)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_K22FN             (1)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC845            (2)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16          (3)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69          (4)
 
 #ifndef %'ModuleName'%.CONFIG_CPU_VARIANT
   #define %'ModuleName'%.CONFIG_CPU_VARIANT  %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
+#endif
+
+#if %'ModuleName'%.CONFIG_CPU_IS_LPC && %'ModuleName'%.CONFIG_CPU_VARIANT==%'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
+  #error "Please specify the LPC CPU variant used"
 #endif
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */

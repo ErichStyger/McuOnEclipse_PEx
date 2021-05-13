@@ -99,8 +99,8 @@
 #endif
 
 /* prototypes for application callbacks */
-extern bool %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(uint8_t drive);
-extern bool %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(uint8_t drive);
+extern bool %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(uint8_t *drvStr);
+extern bool %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(uint8_t *drvStr);
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -916,6 +916,16 @@ uint8_t %'ModuleName'%.%CreateFile(const uint8_t *fileName, const %@Shell@'Modul
 
 %endif %- f_readdir
 %-BW_METHOD_END f_readdir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StrToDriveNumber
+%ifdef StrToDriveNumber
+uint8_t %'ModuleName'%.%StrToDriveNumber(uint8_t *drvStr);
+%define! PardrvStr
+%define! RetVal
+%include Common\FAT_FileSystemStrToDriveNumber.Inc
+
+%endif %- StrToDriveNumber
+%-BW_METHOD_END StrToDriveNumber
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -984,21 +994,6 @@ void %OnCreateSyncObject(void *sobj);
 %-   Example:
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
-/*-----------------------------------------------------------------------*/
-static uint8_t StrToDriveNumber(uint8_t *drvStr) {
-  uint8_t drv = 0;
-  const unsigned char *p;
-
-  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
-    drv = 0;
-  } else {
-    p = drvStr;
-    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
-      drv = 0; /* error, use default number */
-    }
-  }
-  return drv;
-}
 /*-----------------------------------------------------------------------*/
 #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 /* Initialize a Drive                                                    */
@@ -2269,10 +2264,10 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
 %if WriteEnabled='no'
   return %'ModuleName'%.FS_READONLY;
 %else
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   uint8_t drv;
 
-  drv = StrToDriveNumber(drvStr);
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  drv = %'ModuleName'%.%StrToDriveNumber(drvStr);
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2283,7 +2278,7 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
   } /* switch */
   return TRUE;
 #else
-  return %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(drv);
+  return %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK(drvStr);
 #endif
 %endif
 }
@@ -2298,10 +2293,10 @@ bool %'ModuleName'%.%isWriteProtected(uint8_t *drvStr)
 %include Common\FAT_FileSystemisDiskPresent.Inc
 bool %'ModuleName'%.%isDiskPresent(uint8_t *drvStr)
 {
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
   uint8_t drv;
 
-  drv = StrToDriveNumber(drvStr);
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+  drv = %'ModuleName'%.%StrToDriveNumber(drvStr);
   switch(drv) {
     %for i from [0..%maxDrive]
     case %i:
@@ -2312,7 +2307,7 @@ bool %'ModuleName'%.%isDiskPresent(uint8_t *drvStr)
   } /* switch */
   return FALSE;
 #else
-  return %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(drv);
+  return %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK(drvStr);
 #endif
 }
 
@@ -3235,12 +3230,12 @@ uint8_t %'ModuleName'%.%PrintDiskInfo(uint8_t *drvStr, const %@Shell@'ModuleName
   uint8_t driverVersion; /* 0: SPI, 1: SDHC_LDD */
   uint8_t driveNr;
 
-  driveNr = StrToDriveNumber(drvStr);
+  driveNr = %'ModuleName'%.%StrToDriveNumber(drvStr);
   if (!%'ModuleName'%.isDiskPresent(drvStr)) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk not present!\r\n", io->stdErr);
     return ERR_FAILED;
   }
-  if ((disk_initialize(StrToDriveNumber(drvStr))&STA_NOINIT)!=0) {
+  if ((disk_initialize(%'ModuleName'%.%StrToDriveNumber(drvStr))&STA_NOINIT)!=0) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"disk initialize failed!\r\n", io->stdErr);
     return ERR_FAILED;
   }
@@ -3675,6 +3670,30 @@ FRESULT %'ModuleName'%.%f_readdir(DIR *dj, FILINFO *fno)
 
 %endif %- f_readdir
 %-BW_METHOD_END f_readdir
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN StrToDriveNumber
+%ifdef StrToDriveNumber
+%define! PardrvStr
+%define! RetVal
+%include Common\FAT_FileSystemStrToDriveNumber.Inc
+uint8_t %'ModuleName'%.%StrToDriveNumber(uint8_t *drvStr)
+{
+  uint8_t drv = 0;
+  const unsigned char *p;
+
+  if (drvStr==NULL || *drvStr=='\0') { /* default, "" */
+    drv = 0;
+  } else {
+    p = drvStr;
+    if (%@Utility@'ModuleName'%.ScanDecimal8uNumber(&p, &drv)!=ERR_OK) { /* "0", "1", ... */
+      drv = 0; /* error, use default number */
+    }
+  }
+  return drv;
+}
+
+%endif %- StrToDriveNumber
+%-BW_METHOD_END StrToDriveNumber
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
@@ -3765,12 +3784,12 @@ void %OnCreateSyncObject(void *sobj)
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK
-  #define %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK    %'ModuleName'%.IsDiskPresent
+  #define %'ModuleName'%.CONFIG_IS_DISK_PRESENT_CALLBACK    %'ModuleName'%.CardPinDiskPresent
     /*!< 1: callback name to be used to decide if a device is present or not */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK
-  #define %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK    %'ModuleName'%.IsWriteProtected
+  #define %'ModuleName'%.CONFIG_IS_WRITE_PROTECTED_CALLBACK    %'ModuleName'%.CardPinWriteProtected
     /*!< 1: callback name to be used to decide if a device is present or not */
 #endif
 

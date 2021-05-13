@@ -777,6 +777,18 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="StrToDriveNumber">
+<b>StrToDriveNumber</b></a>
+ - Transforms a drive string (&quot;0:/&quot;) into a drive number (0)
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> uint8_t StrToDriveNumber(uint8_t *drvStr)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>drvStr: Pointer to uint8_t</i> - Pointer to drive string, e.g. &quot;0:/&quot;</li>
+<li><i>Return value:uint8_t</i> - Error code
+</li>
+</ul><br />
+</li>
 <li><a name="CheckCardPresence">
 <b>CheckCardPresence</b></a>
  - This method checks if card has been inserted or removed and mounts or unmounts the file system.
