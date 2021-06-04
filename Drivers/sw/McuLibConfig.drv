@@ -670,16 +670,6 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 1: Use FreeRTOS; 0: no FreeRTOS used */
 #endif
 
-/* Configuration macro if FreeRTOS is used */
-#ifndef %'ModuleName'%.CONFIG_SDK_USE_FREERTOS
-%if defined(OperatingSystemId) & OperatingSystemId = 'FreeRTOS'
-  #define %'ModuleName'%.CONFIG_SDK_USE_FREERTOS                 %>50 (1)
-%else
-  #define %'ModuleName'%.CONFIG_SDK_USE_FREERTOS                 %>50 (0)
-%endif
-    /*!< 1: Use FreeRTOS; 0: no FreeRTOS used */
-#endif
-
 /* FatFS */
 #ifndef %'ModuleName'%.CONFIG_SDK_USE_FAT_FS
   #define %'ModuleName'%.CONFIG_SDK_USE_FAT_FS                   %>50 (0)
