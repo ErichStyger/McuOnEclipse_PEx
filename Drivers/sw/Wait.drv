@@ -353,7 +353,7 @@ void %'ModuleName'%.%Deinit(void);
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
 #ifdef __GNUC__
-#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* naked is ignored for RISC-V gcc */
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V || %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32 /* naked is ignored for RISC-V or ESP32 gcc */
   #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
   #else
     __attribute__((no_instrument_function))
@@ -459,7 +459,7 @@ void %'ModuleName'%.%Wait10Cycles(void)
 #else
 %if ((CPU_FAMILY = "Kinetis") || (CPU_FAMILY = "S32K")) & %Compiler = "GNUC"
 #ifdef __GNUC__
-  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V /* naked is ignored for RISC-V gcc */
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V || %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32 /* naked is ignored for RISC-V or ESP32 gcc */
     #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
     #else
       __attribute__((no_instrument_function))
