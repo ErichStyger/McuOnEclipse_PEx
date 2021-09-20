@@ -141,7 +141,7 @@ extern "C" {
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
     #define %'ModuleName'%.%EnterCritical() \
       do {                                  \
-      __asm volatile( "csrc mstatus, 8" ); /* Disable interrupts \todo */ \
+      __asm volatile( "csrc mstatus, 8" ); /* Disable interrupts */ \
       } while(0)
   #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
     #define %'ModuleName'%.%EnterCritical() \
@@ -175,7 +175,7 @@ extern "C" {
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V
     #define %'ModuleName'%.%ExitCritical() \
       do {                                  \
-        __asm volatile( "csrs mstatus, 8" ); /* Enable interrupts \todo */ \
+        __asm volatile( "csrs mstatus, 8" ); /* Enable interrupts */ \
       } while(0)
   #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
     #define %'ModuleName'%.%ExitCritical() \

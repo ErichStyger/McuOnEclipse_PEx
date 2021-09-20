@@ -554,7 +554,7 @@ void %'ModuleName'%.%PutVal(bool Val)
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   PINS_DRV_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, Val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
-  /*! \todo */
+  /* NYI */
 #endif
 }
 
@@ -598,7 +598,7 @@ void %'ModuleName'%.%Init(void)
       #endif
   #endif
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_KINETIS_1_3
-  /*! \todo Pin Muxing not implemented */
+  /*! Pin Muxing not implemented */
   GPIO_DRV_Init(%'ModuleName'%.InputConfig, %'ModuleName'%.OutputConfig);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_S32K
   /* the following needs to be called in the application first:

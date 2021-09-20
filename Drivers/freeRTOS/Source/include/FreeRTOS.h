@@ -58,7 +58,7 @@
 
 /* << EST */
 #if configSYSTICK_USE_LOW_POWER_TIMER && %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@KinetisSDK@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
-  #include "SIM_PDD.h"  /*! \todo this is a PEx header */
+  #include "SIM_PDD.h"  /*! this is a PEx header */
 #endif
 /* >> EST */
 /* Basic FreeRTOS definitions. */
