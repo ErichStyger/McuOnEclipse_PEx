@@ -1084,6 +1084,11 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
       } else {
 #if %'ModuleName'%.ECHO_ENABLED
         if (%'ModuleName'_EchoEnabled) {
+  #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
+          if (c=='\r') { /* idf.py monitor uses '\r' for '\n'? */
+            c = '\n';
+          }
+  #endif
           io->stdOut(c);                                         %>40/* echo character */
         }
 #endif
@@ -1093,7 +1098,11 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         if ((c=='\r') || (c=='\n')) {
 #if %'ModuleName'%.ECHO_ENABLED
           if (%'ModuleName'_EchoEnabled) {
+            #if McuLib_CONFIG_CPU_IS_ESP32
+            %'ModuleName'%.%SendStr((unsigned char*)" \n", io->stdOut); /* for ESP32 idf.py monitor it uses '\r' at the end, plus we need a space */
+            #else
             %'ModuleName'%.%SendStr((unsigned char*)"\n", io->stdOut);
+            #endif
           }
 #endif
 #if %'ModuleName'%.CONFIG_HISTORY_ENABLED
@@ -1523,8 +1532,7 @@ static void SendSeparatedStrings(const uint8_t *strA, const uint8_t *strB, uint8
 %include Common\ShellSendHelpStr.Inc
 void %'ModuleName'%.%SendHelpStr(const uint8_t *strCmd, const uint8_t *strHelp, %'ModuleName'_StdIO_OutErr_FctType io)
 {
-  #define HELP_SEMICOLON_POS  %HelpSemicolonPos /* position of the ';' after the command string */
-  SendSeparatedStrings(strCmd, strHelp, ';', HELP_SEMICOLON_POS, io);
+  SendSeparatedStrings(strCmd, strHelp, ';', %'ModuleName'%.CONFIG_HELP_SEMICOLON_POS, io);
 }
 
 %endif %- SendHelpStr
@@ -1538,8 +1546,7 @@ void %'ModuleName'%.%SendHelpStr(const uint8_t *strCmd, const uint8_t *strHelp, 
 %include Common\ShellSendStatusStr.Inc
 void %'ModuleName'%.%SendStatusStr(const uint8_t *strItem, const uint8_t *strStatus, %'ModuleName'_StdIO_OutErr_FctType io)
 {
-  #define STATUS_COLON_POS  %StatusColonPos /* position of the ':' after the item string */
-  SendSeparatedStrings(strItem, strStatus, ':', STATUS_COLON_POS, io);
+  SendSeparatedStrings(strItem, strStatus, ':', %'ModuleName'%.CONFIG_STATUS_COLON_POS, io);
 }
 
 %endif %- SendStatusStr
@@ -2160,6 +2167,24 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
   #define %'ModuleName'%.CONFIG_ECHO_ENABLED                     %>60(0)
 %endif
     /*!< 1: shell implements local echo; 0: no echo functionality */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_STATUS_COLON_POS
+%if defined(StatusColonPos)
+  #define %'ModuleName'%.CONFIG_STATUS_COLON_POS                 %>60(%StatusColonPos)
+%else
+  #define %'ModuleName'%.CONFIG_STATUS_COLON_POS                 %>60(13)
+%endif
+   /*!< position of the ':' after the item string for the 'status' command */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_HELP_SEMICOLON_POS
+%if defined(HelpSemicolonPos)
+  #define %'ModuleName'%.CONFIG_HELP_SEMICOLON_POS               %>60(%HelpSemicolonPos)
+%else
+  #define %'ModuleName'%.CONFIG_HELP_SEMICOLON_POS               %>60(26)
+%endif
+ /*! position of the ';' after the command string for the 'help' command */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
