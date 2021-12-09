@@ -98,6 +98,9 @@
     %'ModuleName'_StdIO_OutErr_FctType stdOut;                   %>40/* standard output */
     %'ModuleName'_StdIO_OutErr_FctType stdErr;                   %>40/* standard error */
     %'ModuleName'_StdIO_KeyPressed_FctType keyPressed;           %>40/* key pressed callback */
+  #if %'ModuleName'%.CONFIG_ECHO_ENABLED
+    bool echoEnabled;                                            %>40/* true if I/O shall echo characters */
+  #endif
   } %'ModuleName'_StdIOType;
 #endif
 #ifndef __BWUserType_%'ModuleName'_ConstStdIOType
@@ -195,13 +198,6 @@
 %endif
 #define %'ModuleName'%.NO_SILENT_PREFIX_CHAR ' '                 %>40/* used for no silent prefix char */
 #define %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED (%'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR)
-
-/* settings for local echo */
-#if %'ModuleName'%.CONFIG_ECHO_ENABLED
-  #define %'ModuleName'%.ECHO_ENABLED  1                         %>40/* 1: enabled, 0: disabled */
-#else
-  #define %'ModuleName'%.ECHO_ENABLED  0                         %>40/* 1: enabled, 0: disabled */
-#endif
 
 #define %'ModuleName'%.DEFAULT_SERIAL  %'ModuleName'%.CONFIG_DEFAULT_SERIAL /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
 
@@ -704,7 +700,7 @@ uint8_t %'ModuleName'%.DefaultShellBuffer[%'ModuleName'%.DEFAULT_SHELL_BUFFER_SI
   static uint8_t %'ModuleName'_history[%'ModuleName'%.CONFIG_HISTORY_NOF_ITEMS][%'ModuleName'%.CONFIG_HISTORY_ITEM_LENGTH];%>40/* History buffers */
   static uint8_t %'ModuleName'_history_index = 0;                %>40/* Selected command */
 #endif
-#if %'ModuleName'%.ECHO_ENABLED
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
   static bool %'ModuleName'_EchoEnabled = TRUE;
 #endif
 
@@ -905,12 +901,12 @@ uint8_t %'ModuleName'%.%ParseCommand(const uint8_t *cmd, bool *handled, %'Module
 %else %- only help
     %'ModuleName'%.%SendHelpStr((unsigned char*)"  help", (const unsigned char*)"Prints help\r\n", io->stdOut);
 %endif
-#if %'ModuleName'%.ECHO_ENABLED
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
     %'ModuleName'%.%SendHelpStr((unsigned char*)"  echo (on|off)", (const unsigned char*)"Turn echo on or off\r\n", io->stdOut);
 #endif
     *handled = TRUE;
     return ERR_OK;
-#if %'ModuleName'%.ECHO_ENABLED
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
   } else if ((%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' echo on")==0)) {
     *handled = TRUE;
     %'ModuleName'%.EchoEnabled = TRUE;
@@ -1021,8 +1017,8 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
       }
       if (c=='\b' || c=='\177') {                                %>40/* check for backspace */
         if (buf > bufStart) {                                    %>40/* Avoid buffer underflow */
-#if %'ModuleName'%.ECHO_ENABLED
-           if (%'ModuleName'_EchoEnabled) {
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
+           if (%'ModuleName'_EchoEnabled && io->echoEnabled) {
              io->stdOut('\b');                                   %>40/* delete character on terminal */
              io->stdOut(' ');
              io->stdOut('\b');
@@ -1074,16 +1070,16 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         bufSize = bufSize + buf - bufStart - %@Utility@'ModuleName'%.strlen((const char*)bufStart);%>40/* update the buffer */
         buf = bufStart + %@Utility@'ModuleName'%.strlen((const char*)bufStart);
 #endif
-#if %'ModuleName'%.ECHO_ENABLED
-        if (%'ModuleName'_EchoEnabled) {
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
+        if (%'ModuleName'_EchoEnabled && io->echoEnabled) {
           %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
           %'ModuleName'%.%PrintPrompt(io);
           %'ModuleName'%.%SendStr(bufStart, io->stdOut);
         }
 #endif
       } else {
-#if %'ModuleName'%.ECHO_ENABLED
-        if (%'ModuleName'_EchoEnabled) {
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
+        if (%'ModuleName'_EchoEnabled && io->echoEnabled) {
   #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
           if (c=='\r') { /* idf.py monitor uses '\r' for '\n'? */
             c = '\n';
@@ -1096,8 +1092,8 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
         buf++;
         bufSize--;
         if ((c=='\r') || (c=='\n')) {
-#if %'ModuleName'%.ECHO_ENABLED
-          if (%'ModuleName'_EchoEnabled) {
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
+          if (%'ModuleName'_EchoEnabled && io->echoEnabled) {
             #if McuLib_CONFIG_CPU_IS_ESP32
             %'ModuleName'%.%SendStr((unsigned char*)" \n", io->stdOut); /* for ESP32 idf.py monitor it uses '\r' at the end, plus we need a space */
             #else
@@ -1150,7 +1146,7 @@ uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
   %'ModuleName'%.%SendStr((unsigned char*)" ", io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)__TIME__, io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)"\r\n", io->stdOut);
-#if %'ModuleName'%.ECHO_ENABLED
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  echo", %'ModuleName'_EchoEnabled?(const unsigned char*)"On\r\n":(const unsigned char*)"Off\r\n", io->stdOut);
 #endif
   return ERR_OK;
@@ -1663,7 +1659,7 @@ void %'ModuleName'%.%Init(void)
     }
   }
 #endif
-#if %'ModuleName'%.ECHO_ENABLED
+#if %'ModuleName'%.CONFIG_ECHO_ENABLED
   %'ModuleName'_EchoEnabled = TRUE;
 #endif
 }
@@ -2166,7 +2162,8 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %else
   #define %'ModuleName'%.CONFIG_ECHO_ENABLED                     %>60(0)
 %endif
-    /*!< 1: shell implements local echo; 0: no echo functionality */
+    /*!< 1: shell implements local echo; 0: no echo functionality
+     Note that echo needs to be enabled in each I/O too (io->echoEnabled) */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_STATUS_COLON_POS

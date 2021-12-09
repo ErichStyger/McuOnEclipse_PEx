@@ -418,7 +418,7 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
   %'ModuleName'%.UID uid;
 #endif
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Hardware status\r\n", io->stdOut);
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS || %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
   res = %'ModuleName'%.%UIDGet(&uid);
   if (res==ERR_OK) {
