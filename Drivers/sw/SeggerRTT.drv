@@ -388,10 +388,13 @@ void %'ModuleName'%.%Deinit(void);
 %-
 /* default standard I/O struct */
 %@Shell@'ModuleName'%.ConstStdIOType %'ModuleName'%.stdio = {
-    (%@Shell@'ModuleName'%.StdIO_In_FctType)%'ModuleName'%.StdIOReadChar, /* stdin */
-    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stdout */
-    (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar, /* stderr */
-    %'ModuleName'%.StdIOKeyPressed /* if input is not empty */
+    .stdIn = (%@Shell@'ModuleName'%.StdIO_In_FctType)%'ModuleName'%.StdIOReadChar,
+    .stdOut = (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar,
+    .stdErr = (%@Shell@'ModuleName'%.StdIO_OutErr_FctType)%'ModuleName'%.StdIOSendChar,
+    .keyPressed = %'ModuleName'%.StdIOKeyPressed, /* if input is not empty */
+  #if %@Shell@'ModuleName'%.CONFIG_ECHO_ENABLED
+    .echoEnabled = false,
+  #endif
   };
 uint8_t %'ModuleName'%.DefaultShellBuffer[%@Shell@'ModuleName'%.DEFAULT_SHELL_BUFFER_SIZE]; /* default buffer which can be used by the application */
 

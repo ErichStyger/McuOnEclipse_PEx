@@ -191,13 +191,8 @@
 #define %'ModuleName'%.ANSI_COLOR_BRIGHT_WHITE         "\033[4;47m"
 
 /* settings for silent prefix char */
-%if %SilentModePrefixChar='' %- empty property
-#define %'ModuleName'%.SILENT_PREFIX_CHAR    ' '                 %>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
-%else
-#define %'ModuleName'%.SILENT_PREFIX_CHAR    '%SilentModePrefixChar'%>40/* with this char as first character in the cmd, printing is silent. Use a space to disable it */
-%endif
 #define %'ModuleName'%.NO_SILENT_PREFIX_CHAR ' '                 %>40/* used for no silent prefix char */
-#define %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED (%'ModuleName'%.SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR)
+#define %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED (%'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR != %'ModuleName'%.NO_SILENT_PREFIX_CHAR)
 
 #define %'ModuleName'%.DEFAULT_SERIAL  %'ModuleName'%.CONFIG_DEFAULT_SERIAL /* If set to 1, then the shell implements its own StdIO which is returned by %'ModuleName'%.%GetStdio(); */
 
@@ -1141,6 +1136,8 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
 %include Common\ShellPrintStatus.Inc
 uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 {
+  unsigned char buf[16];
+
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"%'ModuleName'", (const unsigned char*)"Commandline shell status\r\n", io->stdOut);
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  Build", (const unsigned char*)__DATE__, io->stdOut);
   %'ModuleName'%.%SendStr((unsigned char*)" ", io->stdOut);
@@ -1149,6 +1146,24 @@ uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 #if %'ModuleName'%.CONFIG_ECHO_ENABLED
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  echo", %'ModuleName'_EchoEnabled?(const unsigned char*)"On\r\n":(const unsigned char*)"Off\r\n", io->stdOut);
 #endif
+
+  buf[0] = '\0';
+  if (%'ModuleName'%.SILENT_PREFIX_CHAR!=%'ModuleName'%.NO_SILENT_PREFIX_CHAR
+    %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.SILENT_PREFIX_CHAR);
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
+  } else {
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"none\r\n");
+  }
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  silent", buf, io->stdOut);
+#if McuShell_CONFIG_MULTI_CMD_ENABLED
+  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"yes, '");
+  %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.CONFIG_MULTI_CMD_CHAR);
+  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"'\r\n");
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", buf, io->stdOut);
+#else
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", (unsigned char*)"no\r\n", io->stdOut);
+#endif
+
   return ERR_OK;
 }
 
@@ -1229,6 +1244,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
   uint8_t buf[%'ModuleName'%.CONFIG_MULTI_CMD_SIZE];
   uint8_t i;
   bool parseBuffer, finished;
+  bool insideDoubleQuotes = false; /* with multi-commands: allow the McuShell_CONFIG_MULTI_CMD_CHAR inside double quoted strings */
 #endif
 
   if (io==NULL) { /* no I/O handler? */
@@ -1248,15 +1264,22 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
       break; /* buffer overflow */
     }
     buf[i] = *cmd;
+    if (buf[i]=='"') {
+      if (insideDoubleQuotes) { /* already had a double quote? */
+        insideDoubleQuotes = false; /* note: we do not support nested double quotes */
+      } else {
+        insideDoubleQuotes = true; /* mark that we are inside double quotes */
+      }
+    }
     cmd++; i++;
   #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-    if (i==1 && buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR) { /* first character is silent character */
-      silentPrefix |= (bool)(buf[0]==%'ModuleName'%.SILENT_PREFIX_CHAR);
+    if (i==1 && buf[0]==%'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR) { /* first character is silent character */
+      silentPrefix |= (bool)(buf[0]==%'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR);
       buf[0] = *cmd; /* skip silent character */
       cmd++;
     }
   #endif
-    if (buf[i-1] == %'ModuleName'%.CONFIG_MULTI_CMD_CHAR) { /* found separator */
+    if (!insideDoubleQuotes && buf[i-1] == %'ModuleName'%.CONFIG_MULTI_CMD_CHAR) { /* found separator, but not inside double quoted string */
       buf[i-1] = '\0';
       parseBuffer = TRUE;
     } else if (buf[i-1]=='\0') {
@@ -1279,7 +1302,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
   } /* for */
 #else
   #if %'ModuleName'%.SILENT_PREFIX_CHAR_ENABLED
-  silentPrefix = (bool)(*cmd==%'ModuleName'%.SILENT_PREFIX_CHAR);
+  silentPrefix = (bool)(*cmd==%'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR);
   if (silentPrefix) {
     cmd++; /* skip silent character */
   }
@@ -2181,8 +2204,16 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
 %else
   #define %'ModuleName'%.CONFIG_HELP_SEMICOLON_POS               %>60(26)
 %endif
- /*! position of the ';' after the command string for the 'help' command */
+ /*!< position of the ';' after the command string for the 'help' command */
 #endif
+
+%if %SilentModePrefixChar='' %- empty property
+#define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR    ' '
+%else
+#define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR    '%SilentModePrefixChar'
+%endif
+  /*!< With this char as first character in the cmd, printing is silent. Use a space to disable it */
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------

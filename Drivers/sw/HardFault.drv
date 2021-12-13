@@ -500,14 +500,16 @@ void %'ModuleName'%.%Init(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+
 %if (%CPUfamily = "Kinetis")
 %if defined(ARMFamilyType) & %ARMFamilyType="M0+"
-#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (defined(__CORTEX_M) && __CORTEX_M>=3))
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (%@sdk@'ModuleName'%.CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %else
-#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (1 || (defined(__CORTEX_M) && __CORTEX_M>=3))
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (1 || (%@sdk@'ModuleName'%.CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M>=3))
 %endif
 %else
-#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (defined(__CORTEX_M) && __CORTEX_M >= 3))
+#define %'ModuleName'%.CONFIG_SETTING_HAS_ACTLR   (0 || (%@sdk@'ModuleName'%.CPU_IS_ARM_CORTEX_M && %@sdk@'ModuleName'%.CONFIG_CORTEX_M >= 3))
 %endif
   /*!< 1: Cortex-M3, M4 have Auxiliary Control Register, ACTLR register */
 

@@ -831,7 +831,7 @@ void %'ModuleName'%.%UpdateFull(void)
   SSD1306_WriteDataBlock(&%'ModuleName'%.DisplayBuf[0][0], sizeof(%'ModuleName'%.DisplayBuf));
 #elif %'ModuleName'_CONFIG_SSD1306_DRIVER_TYPE==1106 /* SH1106 */
   /* the SSH1306 has a 132x64 memory organization (compared to the 128x64 of the SSD1306) */
-  int page;
+  unsigned int page;
 
   for(page=0; page<%'ModuleName'%.DISPLAY_HW_NOF_PAGES; page++) {
     (void)SSD1306_SetPageStartAddr(page);
@@ -857,11 +857,11 @@ void %'ModuleName'%.%UpdateFull(void)
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
   return %'ModuleName'%.ORIENTATION_PORTRAIT;                    %>40/* Portrait mode */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-  return %'ModuleName'%.ORIENTATION_PORTRAIT180;                 %>40/* Portrait mode, rotated 180° */
+  return %'ModuleName'%.ORIENTATION_PORTRAIT180;                 %>40/* Portrait mode, rotated 180 degree */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
-  return %'ModuleName'%.ORIENTATION_LANDSCAPE;                   %>40/* Landscape mode, rotated right 90° */
+  return %'ModuleName'%.ORIENTATION_LANDSCAPE;                   %>40/* Landscape mode, rotated right 90 degree */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
-  return %'ModuleName'%.ORIENTATION_LANDSCAPE180;                %>40/* Landscape mode, rotated left 90° */
+  return %'ModuleName'%.ORIENTATION_LANDSCAPE180;                %>40/* Landscape mode, rotated left 90 degree */
 #endif
 }
 
@@ -1233,11 +1233,11 @@ void %'ModuleName'%.%Init(void)
 #if %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT
   %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT);%>40/* Portrait mode */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_PORTRAIT180
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180° */
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_PORTRAIT180);%>40/* Portrait mode, rotated 180 degree */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90° */
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE);%>40/* Landscape mode, rotated right 90 degree */
 #elif %'ModuleName'_CONFIG_FIXED_DISPLAY_ORIENTATION==%'ModuleName'%.CONFIG_ORIENTATION_LANDSCAPE180
-  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90° */
+  %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'%.ORIENTATION_LANDSCAPE180);%>40/* Landscape mode, rotated left 90 degree */
 #endif
 %else
   SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                     %>70/* set memory mode */

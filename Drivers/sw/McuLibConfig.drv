@@ -318,9 +318,15 @@ void %'ModuleName'%.%Deinit(void)
 /* identification of CPU/core used. __CORTEX_M is defined in CMSIS-Core.
    Otherwise CPU Family is set automatically by Processor Expert: detected: %CPUfamily (supported: "Kinetis", "S32K", "HCS08")
 */
+#if defined(__CORTEX_M)
+  #define %'ModuleName'%.CPU_IS_ARM_CORTEX_M  (1)
+#else
+  #define %'ModuleName'%.CPU_IS_ARM_CORTEX_M  (0)
+#endif
+
 %if (CPUfamily = "Kinetis")
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
-  #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M             (1 || defined(__CORTEX_M))
+  #define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M             (1 || %'ModuleName'%.CPU_IS_ARM_CORTEX_M)
     /*!< 1: ARM Cortex-M family, 0 otherwise */
 #endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_S32K
@@ -380,7 +386,7 @@ void %'ModuleName'%.%Deinit(void)
 
 
 %elif (CPUfamily = "S32K")
-#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || defined(__CORTEX_M))
+#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (1 || %'ModuleName'%.CPU_IS_ARM_CORTEX_M)
   /*!< 1: ARM Cortex-M family, 0 otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP Kinetis CPU family, 0: otherwise */
@@ -401,7 +407,7 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_CPU_IS_ESP32           (0)
     /*!< 1: ESP32 CPU family, 0: otherwise. */
 %elif (CPUfamily = "HCS08")
-#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
+#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || %'ModuleName'%.CPU_IS_ARM_CORTEX_M)
   /*!< 1: ARM Cortex-M family, 0 otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP Kinetis CPU family, 0: otherwise */
@@ -426,7 +432,7 @@ void %'ModuleName'%.%Deinit(void)
 #define __FPU_USED                                   (0)
     /*!< 0: no FPU for HCS08 */
 %else
-#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || defined(__CORTEX_M))
+#define %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M    (0 || %'ModuleName'%.CPU_IS_ARM_CORTEX_M)
   /*!< 1: ARM Cortex-M family, 0 otherwise */
 #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS         (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
   /*!< 1: NXP Kinetis CPU family, 0: otherwise */
