@@ -1148,17 +1148,17 @@ uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 #endif
 
   buf[0] = '\0';
-  if (%'ModuleName'%.SILENT_PREFIX_CHAR!=%'ModuleName'%.NO_SILENT_PREFIX_CHAR
-    %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.SILENT_PREFIX_CHAR);
+  if (%'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR!=%'ModuleName'%.NO_SILENT_PREFIX_CHAR) {
+    %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR);
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   } else {
     %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"none\r\n");
   }
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  silent", buf, io->stdOut);
 #if McuShell_CONFIG_MULTI_CMD_ENABLED
-  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"yes, '");
+  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"yes: '");
   %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.CONFIG_MULTI_CMD_CHAR);
-  %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"'\r\n");
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"'\r\n");
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", buf, io->stdOut);
 #else
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", (unsigned char*)"no\r\n", io->stdOut);
