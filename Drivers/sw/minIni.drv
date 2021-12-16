@@ -590,7 +590,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     }
     p += lenRead;
     %@Utility@'ModuleName'%.SkipSpaces(&p);
-    if (%@Utility@'ModuleName'%.ReadEscapedName(p, key, sizeof(key), NULL, &lenRead, NULL)!=ERR_OK || lenRead==0) {
+    if (%@Utility@'ModuleName'%.ReadEscapedName(p, key, sizeof(key), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
     p += lenRead;
