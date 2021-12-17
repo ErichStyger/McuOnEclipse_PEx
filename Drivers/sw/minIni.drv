@@ -316,7 +316,7 @@ void %'ModuleName'%.%Init(void);
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
   uint8_t buf[16];
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"ini", (unsigned char*)"MinINI status\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"MinINI status\r\n", io->stdOut);
   %@Utility@'ModuleName'%.Num32uToStr(buf, sizeof(buf), INI_BUFFERSIZE);
   %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" bytes\r\n");
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  buffer", buf, io->stdOut);
@@ -342,6 +342,8 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
       %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"TinyFS\r\n"); break;
     case %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS:
       %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"FatFS\r\n"); break;
+    case %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS:
+      %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"FLASH\r\n"); break;
     default:
       %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"ERROR\r\n"); break;
     }
@@ -578,7 +580,7 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     }
     p += lenRead;
     %@Utility@'ModuleName'%.SkipSpaces(&p);
-    if (%@Utility@'ModuleName'%.ReadEscapedName(p, key, sizeof(key), NULL, &lenRead, NULL)!=ERR_OK || lenRead==0) {
+    if (%@Utility@'ModuleName'%.ReadEscapedName(p, key, sizeof(key), &lenRead, NULL, NULL)!=ERR_OK || lenRead==0) {
       return ERR_FAILED;
     }
     p += lenRead;
@@ -721,7 +723,7 @@ void %'ModuleName'%.%Init(void)
 /**
  * \file
  * \brief Configuration header file for MinINI
- * Copyright (c) 2020, Erich Styger
+ * Copyright (c) 2020-2021, Erich Styger
  * SPDX-License-Identifier: BSD-3-Clause
  *
  * This header file is used to configure settings of the MinINI module.
@@ -732,6 +734,7 @@ void %'ModuleName'%.%Init(void)
 #define %'ModuleName'%.CONFIG_FS_TYPE_GENERIC  (0) /* Generic File System */
 #define %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS   (1) /* FatFS File System */
 #define %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS  (2) /* TinyFS File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS (3) /* Flash Page System */
 
 #ifndef %'ModuleName'%.CONFIG_FS
 %if defined(FatFSenabled) & %FatFSenabled='yes'
@@ -754,11 +757,14 @@ void %'ModuleName'%.%Init(void)
 //#define INI_REAL double
 %endif
 
+#ifndef %'ModuleName'%.CONFIG_READ_ONLY
 %if defined(isReadOnly) & %isReadOnly='yes'
-#define INI_READONLY
+  #define %'ModuleName'%.CONFIG_READ_ONLY                        %>60(1)
 %else
-//#define INI_READONLY
+  #define %'ModuleName'%.CONFIG_READ_ONLY                        %>60(0)
 %endif
+#endif
+    /*!< if ini file handling is read-only */
 
 #ifndef NDEBUG
 %if defined(isNoDebug) & %isNoDebug='yes'
@@ -773,6 +779,25 @@ void %'ModuleName'%.%Init(void)
 %else
 #define INI_USE_GLOBAL_BUFFER   0 /* 0: use stack for buffer; 1: use global memory for buffer */
 %endif
+
+#if %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS
+  /* flash settings */
+  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START      ((0+512*1024)-McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE)
+      /*!< last block in FLASH, start address of data in flash */
+  #endif
+
+  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_BLOCK_SIZE
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_BLOCK_SIZE      0x800
+      /*!< must match FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflash0SectorSize, &pflashSectorSize) */
+  #endif
+
+  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_MAX_DATA_SIZE
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_MAX_DATA_SIZE      (128)
+      /*!< size for the data, less than McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE to save memory */
+  #endif
+#endif /* %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS */
+
 
 #if !defined(%'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED)
 %if defined(ParseCommand) & defined(Shell)

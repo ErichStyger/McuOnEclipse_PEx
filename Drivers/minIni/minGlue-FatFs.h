@@ -57,6 +57,9 @@ int ini_rename(TCHAR *source, const TCHAR *dest);
   #define ini_atof(string)              (INI_REAL)strtod((string),NULL)
 #endif /* defined INI_REAL */
 
+int ini_deinit(void);
+int ini_init(void);
+
 #endif /* %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS */
 
 #endif /* _MINGLUE-FATFS_H__ */

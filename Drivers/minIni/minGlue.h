@@ -36,4 +36,8 @@
 
 #elif %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS
   #include "minGlue-FatFs.h"
+#elif %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS
+  #include "minGlue-Flash.h"
+#else
+  #error "define the type of system"
 #endif
