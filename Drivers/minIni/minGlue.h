@@ -34,6 +34,9 @@
 
   typedef char TCHAR;
 
+  int ini_init(void);
+  int ini_deinit(void);
+
 #elif %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FAT_FS
   #include "minGlue-FatFs.h"
 #elif %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS
