@@ -4,7 +4,7 @@
     <Name>minIni</Name>
     <Description>minIni is a programmer’s library to read and write 'ini' files in embedded systems.</Description>
     <Author>Erich Styger</Author>
-    <Version>01.056</Version>
+    <Version>01.058</Version>
     <Icon>CPU_CHIP</Icon>
     <TypesFiles>PE,minIni\minIni</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -147,24 +147,6 @@
         <CanDelete>false</CanDelete>
         <IconPopup>false</IconPopup>
         <DefaultValue>true</DefaultValue>
-        <Popup>false</Popup>
-      </TBoolItem>
-    </Property>
-    <Property>
-      <TBoolItem>
-        <Name>Global Buffer</Name>
-        <Symbol>useGlobalBuffer</Symbol>
-        <TypeSpec>typeYesNo</TypeSpec>
-        <Hint>If set to 'yes', the module will use a global buffer instead a local buffer on the stack. This reduces stack usage for  large buffer sizes, but makes things non-reentrant.</Hint>
-        <ItemLevel>BASIC</ItemLevel>
-        <EditLine>false</EditLine>
-        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
-        <DefaultIndex>1</DefaultIndex>
-        <TextValueIndex>false</TextValueIndex>
-        <RuntimeProperty>false</RuntimeProperty>
-        <CanDelete>false</CanDelete>
-        <IconPopup>false</IconPopup>
-        <DefaultValue>false</DefaultValue>
         <Popup>false</Popup>
       </TBoolItem>
     </Property>
@@ -700,6 +682,48 @@ A false boolean is found if one of the following is matched:\n
     </Method>
     <Method>
       <TMthdItem>
+        <Name>ini_hassection</Name>
+        <Symbol>ini_hassection</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Used to find out if section exists. Returns 1 if the section has been found, 0 otherwise.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>The number of characters copied into the supplied buffer</RetHint>
+        <ParamCount>2</ParamCount>
+        <Parameter>
+          <ParName>Section</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The name of the section</ParHint>
+          <ParUserDeclaration>const mTCHAR *Section</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Filename</ParName>
+          <ParType>char</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The name and full path of the .ini file to read from</ParHint>
+          <ParUserDeclaration>const mTCHAR *Filename</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(const mTCHAR *Section, const mTCHAR *Filename)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>ini_getsection</Name>
         <Symbol>ini_getsection</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -749,6 +773,55 @@ A false boolean is found if one of the following is matched:\n
         <Scope>PRIVATE</Scope>
         <Declarations>
           <ANSIC>int #M#_#C#(int idx, mTCHAR *Buffer, int BufferSize, const mTCHAR *Filename)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
+        <Name>ini_haskey</Name>
+        <Symbol>ini_haskey</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Used to find if a key exists. Returns 1 if key has been found, 0 otherwise.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>int</ReturnType>
+        <RetHint>1 if successful, otherwise 0</RetHint>
+        <ParamCount>3</ParamCount>
+        <Parameter>
+          <ParName>Section</ParName>
+          <ParType>8bit unsigned</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The name of the section</ParHint>
+          <ParUserDeclaration>const mTCHAR *Section</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Key</ParName>
+          <ParType>char</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The name of the entry to find</ParHint>
+          <ParUserDeclaration>const mTCHAR *Key</ParUserDeclaration>
+        </Parameter>
+        <Parameter>
+          <ParName>Filename</ParName>
+          <ParType>char</ParType>
+          <ParPassing>Address</ParPassing>
+          <ParHint>The name and full path of the .ini file</ParHint>
+          <ParUserDeclaration>const mTCHAR *Filename</ParUserDeclaration>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>int #M#_#C#(const mTCHAR *Section, const mTCHAR *Key, const mTCHAR *Filename)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

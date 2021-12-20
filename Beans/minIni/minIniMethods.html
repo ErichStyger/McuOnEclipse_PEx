@@ -313,6 +313,19 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ini_hassection">
+<b>ini_hassection</b></a>
+ - Used to find out if section exists. Returns 1 if the section has been found, 0 otherwise.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ini_hassection(const mTCHAR *Section, const mTCHAR *Filename)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Section: Pointer to byte</i> - The name of the section</li>
+<li><i>Filename: Pointer to char</i> - The name and full path of the .ini file to read from</li>
+<li><i>Return value:int</i> - The number of characters copied into the supplied buffer
+</li>
+</ul><br />
+</li>
 <li><a name="ini_getsection">
 <b>ini_getsection</b></a>
  - Return the key inside a section
@@ -325,6 +338,20 @@ LI.EXP {
 <li><i>BufferSize:int</i> - The maximum number of characters to copy</li>
 <li><i>Filename: Pointer to char</i> - The name and full path of the .ini file to read from</li>
 <li><i>Return value:int</i> - The number of characters copied into the supplied buffer
+</li>
+</ul><br />
+</li>
+<li><a name="ini_haskey">
+<b>ini_haskey</b></a>
+ - Used to find if a key exists. Returns 1 if key has been found, 0 otherwise.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ini_haskey(const mTCHAR *Section, const mTCHAR *Key, const mTCHAR *Filename)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>Section: Pointer to byte</i> - The name of the section</li>
+<li><i>Key: Pointer to char</i> - The name of the entry to find</li>
+<li><i>Filename: Pointer to char</i> - The name and full path of the .ini file</li>
+<li><i>Return value:int</i> - 1 if successful, otherwise 0
 </li>
 </ul><br />
 </li>
