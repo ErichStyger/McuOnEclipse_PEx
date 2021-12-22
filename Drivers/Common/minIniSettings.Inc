@@ -6,7 +6,6 @@
 %;**%>12 Use Real %>60: %get(useReal,Text)
 %;**%>12 Read Only %>60: %get(isReadOnly,Text)
 %;**%>12 No Debug %>60: %get(isNoDebug,Text)
-%;**%>12 Global Buffer %>60: %get(useGlobalBuffer,Text)
 %;**%>12 FatFS %>60: %get(FatFSenabled,Text)
 %if %get(FatFSenabled, Bool) = 'yes'
 %;**%>14 Buffer Size %>60: %get(FatFsIniBufferSize,Text)

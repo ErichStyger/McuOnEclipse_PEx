@@ -683,7 +683,7 @@ int ini_puts(const TCHAR *Section, const TCHAR *Key, const TCHAR *Value, const T
   INI_FILETYPE rfp;
   INI_FILETYPE wfp;
   INI_FILEPOS mark;
-  INI_FILEPOS head, tail;
+  INI_FILEPOS head;
   TCHAR *sp, *ep;
   TCHAR LocalBuffer[INI_BUFFERSIZE];
   int len, match, flag, cachelen;
@@ -719,7 +719,8 @@ int ini_puts(const TCHAR *Section, const TCHAR *Key, const TCHAR *Value, const T
        * glue file permits file read/write access, we can modify in place.
        */
       #if defined ini_openrewrite || defined INI_OPENREWRITE
-        /* we already have the start of the (raw) line, get the end too */
+        INI_FILEPOS tail;
+       /* we already have the start of the (raw) line, get the end too */
         ini_tell(&rfp, &tail);
         /* create new buffer (without writing it to file) */
         writekey(LocalBuffer, Key, Value, NULL);
@@ -910,7 +911,7 @@ static void long2str(long value, TCHAR *str)
 
   /* generate digits in reverse order */
   do {
-    int n = (int)(value % 10);          /* get next lowest digit */
+    int n = (int)(value %% 10);          /* get next lowest digit */
     str[i++] = (TCHAR)(ABS(n) + '0');   /* handle case of negative digit */
   } while (value /= 10);                /* delete the lowest digit */
   if (sign < 0)
