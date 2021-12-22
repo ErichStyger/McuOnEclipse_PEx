@@ -1244,7 +1244,7 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
   uint8_t buf[%'ModuleName'%.CONFIG_MULTI_CMD_SIZE];
   uint8_t i;
   bool parseBuffer, finished;
-  bool insideDoubleQuotes = false; /* with multi-commands: allow the McuShell_CONFIG_MULTI_CMD_CHAR inside double quoted strings */
+  bool insideDoubleQuotes = FALSE; /* with multi-commands: allow the McuShell_CONFIG_MULTI_CMD_CHAR inside double quoted strings */
 #endif
 
   if (io==NULL) { /* no I/O handler? */
@@ -1266,9 +1266,9 @@ uint8_t %'ModuleName'%.%ParseWithCommandTableExt(const uint8_t *cmd, %'ModuleNam
     buf[i] = *cmd;
     if (buf[i]=='"') {
       if (insideDoubleQuotes) { /* already had a double quote? */
-        insideDoubleQuotes = false; /* note: we do not support nested double quotes */
+        insideDoubleQuotes = FALSE; /* note: we do not support nested double quotes */
       } else {
-        insideDoubleQuotes = true; /* mark that we are inside double quotes */
+        insideDoubleQuotes = TRUE; /* mark that we are inside double quotes */
       }
     }
     cmd++; i++;
