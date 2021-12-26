@@ -1105,42 +1105,49 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
     return PrintStatus(io);
 %if defined(CalibrateX1g)
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' calibrate x")==0) {
-    %'ModuleName'%.CalibrateX1g();
     *handled = TRUE;
+    %'ModuleName'%.CalibrateX1g();
+    return ERR_OK;
 %endif
 %if defined(CalibrateY1g)
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' calibrate y")==0) {
-    %'ModuleName'%.CalibrateY1g();
     *handled = TRUE;
+    %'ModuleName'%.CalibrateY1g();
+    return ERR_OK;
 %endif
 %if defined(CalibrateZ1g)
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' calibrate z")==0) {
-    %'ModuleName'%.CalibrateZ1g();
     *handled = TRUE;
+    %'ModuleName'%.CalibrateZ1g();
+    return ERR_OK;
 %endif
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' enable")==0) {
-    %'ModuleName'%.Enable();
     *handled = TRUE;
+    return %'ModuleName'%.Enable();
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' disable")==0) {
-    %'ModuleName'%.Disable();
     *handled = TRUE;
+    return %'ModuleName'%.Disable();
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' mag enable")==0) {
-    %'ModuleName'%.MagEnable();
     *handled = TRUE;
+    return %'ModuleName'%.MagEnable();
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' mag disable")==0) {
-    %'ModuleName'%.MagDisable();
     *handled = TRUE;
+    return %'ModuleName'%.MagDisable();
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' swreset")==0) {
     *handled = TRUE;
     if (%'ModuleName'%.SwReset()!=ERR_OK) {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"SW reset failed!\r\n", io->stdErr);
       return ERR_FAILED;
+    } else {
+      return ERR_OK;
     }
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' magreset")==0) {
     *handled = TRUE;
     if (%'ModuleName'%.MagneticSensorReset()!=ERR_OK) {
       %@Shell@'ModuleName'%.SendStr((unsigned char*)"Magnetometer sensor reset failed!\r\n", io->stdErr);
       return ERR_FAILED;
+    } else {
+      return ERR_OK;
     }
   }
   return ERR_OK;
