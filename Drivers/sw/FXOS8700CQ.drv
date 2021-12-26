@@ -480,6 +480,15 @@ uint8_t %'ModuleName'%.%MagEnable(void);
 
 %endif %- MagEnable
 %-BW_METHOD_END MagEnable
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MagDisable
+%ifdef MagDisable
+uint8_t %'ModuleName'%.%MagDisable(void);
+%define! RetVal
+%include Common\FXOS8700CQMagDisable.Inc
+
+%endif %- MagDisable
+%-BW_METHOD_END MagDisable
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1115,6 +1124,12 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' disable")==0) {
     %'ModuleName'%.Disable();
     *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' mag enable")==0) {
+    %'ModuleName'%.MagEnable();
+    *handled = TRUE;
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' mag disable")==0) {
+    %'ModuleName'%.MagDisable();
+    *handled = TRUE;
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, (char*)"%'ModuleName' swreset")==0) {
     *handled = TRUE;
     if (%'ModuleName'%.SwReset()!=ERR_OK) {
@@ -1200,6 +1215,18 @@ uint8_t %'ModuleName'%.%MagEnable(void)
 
 %endif %- MagEnable
 %-BW_METHOD_END MagEnable
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MagDisable
+%ifdef MagDisable
+%define! RetVal
+%include Common\FXOS8700CQMagDisable.Inc
+uint8_t %'ModuleName'%.%MagDisable(void)
+{
+  return ERR_OK; /* not doing anything */
+}
+
+%endif %- MagDisable
+%-BW_METHOD_END MagDisable
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Enable
 %ifdef Enable
