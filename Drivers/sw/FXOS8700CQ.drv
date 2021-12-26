@@ -471,6 +471,15 @@ uint8_t %'ModuleName'%.%SwReset(void);
 
 %endif %- SwReset
 %-BW_METHOD_END SwReset
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MagEnable
+%ifdef MagEnable
+uint8_t %'ModuleName'%.%MagEnable(void);
+%define! RetVal
+%include Common\FXOS8700CQMagEnable.Inc
+
+%endif %- MagEnable
+%-BW_METHOD_END MagEnable
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -553,14 +562,14 @@ static tAccelCal sCalValues; /* calibration values in RAM */
 
 %if defined(Shell)
 static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
-  unsigned char buf[24];
+  unsigned char buf[42];
   int8_t temperature;
   uint16_t val;
   uint8_t val8;
   bool isEnabled;
   int16_t val16s;
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (unsigned char*)"FXOS8700 sensor status\r\n", io->stdOut);
 
   %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"0x");
   %@Utility@'ModuleName'%.strcatNum8Hex(buf, sizeof(buf), (uint8_t)%'ModuleName'_I2C_ADDR);
@@ -637,9 +646,9 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io) {
 
   if (%'ModuleName'%.%GetTemperature(&temperature)==ERR_OK) {
     %@Utility@'ModuleName'%.Num8sToStr(buf, sizeof(buf), temperature);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"°C (offset ");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" degree C (offset ");
     %@Utility@'ModuleName'%.strcatNum8s(buf, sizeof(buf), %'ModuleName'_DIE_TEMP_OFFSET);
-    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"°C)\r\n");
+    %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" degree C)\r\n");
   } else {
     %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"FAILED\r\n");
   }
@@ -677,7 +686,8 @@ static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io) {
 %endif
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  swreset", (unsigned char*)"Performs a device software reset\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  magreset", (unsigned char*)"Performs a magenetometer sensor reset\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  enable|disable", (unsigned char*)"Enables or disables the sensor\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  enable|disable", (unsigned char*)"Enables or disables the accelerometer sensor\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  mag enable|disable", (unsigned char*)"Enables or disables the magnet sensor\r\n", io->stdOut);
   return ERR_OK;
 }
 
@@ -1150,6 +1160,46 @@ uint8_t %'ModuleName'%.%SetFastMode(bool on)
 
 %endif %- SetFastMode
 %-BW_METHOD_END SetFastMode
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN MagEnable
+%ifdef MagEnable
+%define! RetVal
+%include Common\FXOS8700CQMagEnable.Inc
+uint8_t %'ModuleName'%.%MagEnable(void)
+{
+  uint8_t val, res;
+
+  // write 0001 1111 = 0x1F to magnetometer control register 1
+  // [7]: m_acal=0: auto calibration disabled
+  // [6]: m_rst=0: no one-shot magnetic reset
+  // [5]: m_ost=0: no one-shot magnetic measurement
+  // [4-2]: m_os=111=7: 8x oversampling (for 200Hz) to reduce magnetometer noise
+  // [1-0]: m_hms=11=3: select hybrid mode with accel and magnetometer active
+  val = 0x1F;
+  res = %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_M_CTRL_REG_1, val);
+  if (res!=ERR_OK) {
+    return res;
+  }
+
+  // write 0010 0000 = 0x20 to magnetometer control register 2
+  // [7]: reserved
+  // [6]: reserved
+  // [5]: hyb_autoinc_mode=1 to map the magnetometer registers to follow the
+  // accelerometer registers
+  // [4]: m_maxmin_dis=0 to retain default min/max latching even though not used
+  // [3]: m_maxmin_dis_ths=0
+  // [2]: m_maxmin_rst=0
+  // [1-0]: m_rst_cnt=00 to enable magnetic reset each cycle
+  val = 0x20;
+  res = %@I2C@'ModuleName'%.WriteByteAddress8(%'ModuleName'_I2C_ADDR, %'ModuleName'_M_CTRL_REG_2, val);
+  if (res!=ERR_OK) {
+    return res;
+  }
+  return ERR_OK;
+}
+
+%endif %- MagEnable
+%-BW_METHOD_END MagEnable
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN Enable
 %ifdef Enable
