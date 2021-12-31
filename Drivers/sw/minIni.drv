@@ -850,20 +850,26 @@ int %'ModuleName'%.%ini_haskey(const mTCHAR *Section, const mTCHAR *Key, const m
 #endif
 
 #if %'ModuleName'%.CONFIG_FS==%'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS
-  /* flash settings */
-  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START
-    #define %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START      ((0+512*1024)-McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE)
-      /*!< last block in FLASH, start address of data in flash */
+  /* flash memory settings */
+  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_NOF_BLOCKS
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_NOF_BLOCKS      (1)
+      /*!< number of flash blocks */
   #endif
 
   #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_BLOCK_SIZE
-    #define %'ModuleName'%.CONFIG_FLASH_NVM_BLOCK_SIZE      0x800
-      /*!< must match FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflash0SectorSize, &pflashSectorSize) */
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_BLOCK_SIZE      (0x800)
+      /*!< must match FLASH_GetProperty(&s_flashDriver, kFLASH_PropertyPflash0SectorSize, &pflashSectorSize).
+      For LPC55Sxx it is 0x200, for LPC845 it is 0x400, for K22FN it is 0x800 */
+  #endif
+
+  #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START
+    #define %'ModuleName'%.CONFIG_FLASH_NVM_ADDR_START      ((0+512*1024)-(%'ModuleName'%.CONFIG_FLASH_NVM_NOF_BLOCKS*McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE))
+      /*!< last block in FLASH, start address of data in flash */
   #endif
 
   #ifndef %'ModuleName'%.CONFIG_FLASH_NVM_MAX_DATA_SIZE
     #define %'ModuleName'%.CONFIG_FLASH_NVM_MAX_DATA_SIZE      (128)
-      /*!< size for the data, less than McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE to save memory */
+      /*!< size for the data, less than McuMinINI_CONFIG_FLASH_NVM_BLOCK_SIZE to save memory. For LPC55Sxx it must be multiple of 0x200! */
   #endif
 #endif /* %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS */
 

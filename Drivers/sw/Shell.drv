@@ -2207,13 +2207,14 @@ void %OnAfterIterateCmd(const uint8_t *cmd)
  /*!< position of the ';' after the command string for the 'help' command */
 #endif
 
+#ifndef %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR
 %if %SilentModePrefixChar='' %- empty property
-#define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR    ' '
+  #define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR               %>60' '
 %else
-#define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR    '%SilentModePrefixChar'
+  #define %'ModuleName'%.CONFIG_SILENT_PREFIX_CHAR               %>60'%SilentModePrefixChar'
 %endif
-  /*!< With this char as first character in the cmd, printing is silent. Use a space to disable it */
-
+    /*!< With this char as first character in the cmd, printing is silent. Use a space to disable it */
+#endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
