@@ -569,25 +569,25 @@ void %'ModuleName'%.%Init(void)
 #if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_2_0_USED
   #if %'ModuleName'%.CONFIG_DO_PIN_MUXING
       #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
-        #define IOCON_PIO_DIGITAL_EN 0x0100u  /*!<@brief Enables digital function */
-        #define IOCON_PIO_FUNC0 0x00u         /*!<@brief Selects pin function 0 */
-        #define IOCON_PIO_INV_DI 0x00u        /*!<@brief Input function is not inverted */
-        #define IOCON_PIO_MODE_PULLUP 0x20u   /*!<@brief Selects pull-up function */
-        #define IOCON_PIO_OPENDRAIN_DI 0x00u  /*!<@brief Open drain is disabled */
-        #define IOCON_PIO_SLEW_STANDARD 0x00u /*!<@brief Standard mode, output slew rate control is enabled */
+        #define _IOCON_PIO_DIGITAL_EN 0x0100u  /*!<@brief Enables digital function */
+        #define _IOCON_PIO_FUNC0 0x00u         /*!<@brief Selects pin function 0 */
+        #define _IOCON_PIO_INV_DI 0x00u        /*!<@brief Input function is not inverted */
+        #define _IOCON_PIO_MODE_PULLUP 0x10u   /*!<@brief Selects pull-up function */
+        #define _IOCON_PIO_OPENDRAIN_DI 0x00u  /*!<@brief Open drain is disabled */
+        #define _IOCON_PIO_SLEW_STANDARD 0x00u /*!<@brief Standard mode, output slew rate control is enabled */
 
         const uint32_t port_pin_config = (/* Pin is configured as PI<portname>_<pinnumber> */
-                                      IOCON_PIO_FUNC0 |
+                                      _IOCON_PIO_FUNC0 |
                                       /* Selects pull-up function */
-                                      IOCON_PIO_MODE_PULLUP |
+                                      _IOCON_PIO_MODE_PULLUP |
                                       /* Standard mode, output slew rate control is enabled */
-                                      IOCON_PIO_SLEW_STANDARD |
+                                      _IOCON_PIO_SLEW_STANDARD |
                                       /* Input function is not inverted */
-                                      IOCON_PIO_INV_DI |
+                                      _IOCON_PIO_INV_DI |
                                       /* Enables digital function */
-                                      IOCON_PIO_DIGITAL_EN |
+                                      _IOCON_PIO_DIGITAL_EN |
                                       /* Open drain is disabled */
-                                      IOCON_PIO_OPENDRAIN_DI);
+                                      _IOCON_PIO_OPENDRAIN_DI);
         #if (%@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC && %@sdk@'ModuleName'%.CONFIG_CORTEX_M==0)
           IOCON_PinMuxSet(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, port_pin_config);
         #else
