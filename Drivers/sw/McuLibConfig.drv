@@ -457,11 +457,13 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_K02FN             (1)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_K22FN             (2)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_K22FX             (3)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC804            (4)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC845            (5)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC54608          (6)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16          (7)
-#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69          (8)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_KE02              (4)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC804            (5)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC845            (6)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC54608          (7)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16          (8)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69          (9)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_IMXRT1064         (10)
 
 #ifndef %'ModuleName'%.CONFIG_CPU_VARIANT
   #define %'ModuleName'%.CONFIG_CPU_VARIANT  %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
@@ -469,6 +471,10 @@ void %'ModuleName'%.%Deinit(void)
 
 #if %'ModuleName'%.CONFIG_CPU_IS_LPC && %'ModuleName'%.CONFIG_CPU_VARIANT==%'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
   #error "Please specify the LPC CPU variant used"
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_IS_KINETIS_KE
+  #define %'ModuleName'%.CONFIG_IS_KINETIS_KE                   (%'ModuleName'%.CONFIG_CPU_VARIANT==%'ModuleName'%.CONFIG_CPU_VARIANT_NXP_KE02)
 #endif
 
 /* identification of Cortex-M core. __FPU_USED can be defined in CMSIS-Core */
