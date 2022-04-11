@@ -614,7 +614,7 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
 static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   uint8_t buf[32];
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"Hardware external time and date\r\n", io->stdOut);
   buf[0] = '\0';
   if (AddHWRTCDate(buf, sizeof(buf))!=ERR_OK) {
     %@Shell@'ModuleName'%.SendStr((unsigned char*)"*** Failed to get RTC date!\r\n", io->stdErr);

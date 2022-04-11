@@ -714,7 +714,7 @@ static uint8_t TimeCmd(const unsigned char *cmd, %@Shell@'ModuleName'%.ConstStdI
 static uint8_t PrintStatus(%@Shell@'ModuleName'%.ConstStdIOType *io) {
   uint8_t buf[24];
 
-  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"%'ModuleName'", (const unsigned char*)"Date and time information\r\n", io->stdOut);
 #if %'ModuleName'%.CONFIG_USE_SOFTWARE_RTC
   %@Shell@'ModuleName'%.SendStatusStr((unsigned char*)"  SW RTC", (const unsigned char*)"", io->stdOut);
   buf[0] = '\0';
