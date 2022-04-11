@@ -707,6 +707,8 @@ void %'ModuleName'%.%Deinit(void)
     #define %'ModuleName'%.CONFIG_GPIO_NAME       GPIO1
   #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_LPC
     #define %'ModuleName'%.CONFIG_GPIO_NAME       GPIO
+  #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS && %@sdk@'ModuleName'%.CONFIG_IS_KINETIS_KE
+    #define %'ModuleName'%.CONFIG_GPIO_NAME       0
   #else /* name from properties */
     #define %'ModuleName'%.CONFIG_GPIO_NAME       %PortName
   #endif
