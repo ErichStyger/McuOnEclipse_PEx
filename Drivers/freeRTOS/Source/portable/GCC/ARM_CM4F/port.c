@@ -1971,7 +1971,7 @@ __asm void vPortSVCHandler(void) {
 #if (configCOMPILER==configCOMPILER_ARM_GCC)
 #if %@KinetisSDK@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@KinetisSDK@'ModuleName'%.CONFIG_SDK_RPI_PICO
 __attribute__((naked)) void isr_svcall(void) {
-#eliif !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
+#elif !%@KinetisSDK@'ModuleName'%.CONFIG_PEX_SDK_USED /* the SDK expects different interrupt handler names */
 __attribute__ ((naked)) void SVC_Handler(void) {
 #else
 __attribute__ ((naked)) void vPortSVCHandler(void) {
