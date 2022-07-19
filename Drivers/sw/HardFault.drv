@@ -298,7 +298,9 @@ void %'ModuleName'%.HandlerC(uint32_t *hardfault_args)
 %if %Compiler = "GNUC"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 __attribute__((naked))
-#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+void isr_hardfault(void)
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED != %@sdk@'ModuleName'%.CONFIG_SDK_PROCESSOR_EXPERT
 void HardFault_Handler(void)
 #else
 void %'ModuleName'%.%HardFaultHandler(void)
