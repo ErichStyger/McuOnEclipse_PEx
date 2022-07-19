@@ -362,6 +362,8 @@ void %'ModuleName'%.%Init(void);
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_S32K
   #include "%ProcessorModule.h" /* include CPU related interfaces and defines */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  /* noting special needed, will do everything with local information */
 #elif %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M
   /* include device specific header file for CMSIS inside "%'ModuleName'config.h" */
 #endif
@@ -489,6 +491,13 @@ void %'ModuleName'%.%SoftwareReset(void)
   SCB_AIRCR = SCB_AIRCR_VECTKEY(0x5FA) | SCB_AIRCR_SYSRESETREQ_MASK;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_S32K
   S32_SCB->AIRCR = S32_SCB_AIRCR_VECTKEY(0x5FA) | S32_SCB_AIRCR_SYSRESETREQ_MASK;
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  #define SCB_AIRCR                          (*((uint32_t*)(0xe0000000+0xed0c)))
+  #define SCB_AIRCR_VECTKEY_Pos              16U                                            /*!< SCB AIRCR: VECTKEY Position */
+  #define SCB_AIRCR_SYSRESETREQ_Pos           2U                                            /*!< SCB AIRCR: SYSRESETREQ Position */
+  #define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)             /*!< SCB AIRCR: SYSRESETREQ Mask */
+
+  SCB_AIRCR = (0x5FA<<SCB_AIRCR_VECTKEY_Pos)|SCB_AIRCR_SYSRESETREQ_Msk;
 #else
   SCB->AIRCR = (0x5FA<<SCB_AIRCR_VECTKEY_Pos)|SCB_AIRCR_SYSRESETREQ_Msk;
 #endif
@@ -843,6 +852,8 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   #else
   return (%'ModuleName'_ConstCharPtr)"NXP LPC";
   #endif
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  return (McuArmTools_ConstCharPtr)"Raspberry Pi Pico";
 #else
   return (%'ModuleName'_ConstCharPtr)"UNKNOWN";
 #endif
