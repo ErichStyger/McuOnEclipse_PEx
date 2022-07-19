@@ -945,6 +945,31 @@ void %'ModuleName'%.%SkipSpaces(const unsigned char **str);
 
 %endif %- SkipSpaces
 %-BW_METHOD_END SkipSpaces
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanWRGB32
+%ifdef ScanWRGB32
+uint8_t %'ModuleName'%.%ScanWRGB32(const unsigned char **str, uint32_t *rgbw);
+%define! Parstr
+%define! Parrgbw
+%define! RetVal
+%include Common\UtilityScanWRGB32.Inc
+
+%endif %- ScanWRGB32
+%-BW_METHOD_END ScanWRGB32
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanWRGB
+%ifdef ScanWRGB
+uint8_t %'ModuleName'%.%ScanWRGB(const unsigned char **str, uint8_t *w, uint8_t *r, uint8_t *g, uint8_t *b);
+%define! Parstr
+%define! Parr
+%define! Parg
+%define! Parb
+%define! Parw
+%define! RetVal
+%include Common\UtilityScanWRGB.Inc
+
+%endif %- ScanWRGB
+%-BW_METHOD_END ScanWRGB
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -3207,6 +3232,56 @@ uint8_t %'ModuleName'%.%ScanRGB(const unsigned char **str, uint8_t *r, uint8_t *
 %endif %- ScanRGB
 %-BW_METHOD_END ScanRGB
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanWRGB
+%ifdef ScanWRGB
+%define! Parstr
+%define! Parr
+%define! Parg
+%define! Parb
+%define! Parw
+%define! RetVal
+%include Common\UtilityScanWRGB.Inc
+uint8_t %'ModuleName'%.%ScanWRGB(const unsigned char **str, uint8_t *w, uint8_t *r, uint8_t *g, uint8_t *b)
+{
+  const unsigned char *p;
+  int32_t val32;
+  int32_t rv, gv, bv, wv;
+
+  p = *str;
+  while(*p==' ') {
+    p++; /* skip leading spaces */
+  }
+  if (   *p=='0' && *(p+1)=='x' /* hexadecimal, read single number */
+      && %'ModuleName'%.%xatoi(&p, &val32)==ERR_OK
+     )
+  {
+    *w = (uint8_t)((val32>>24)&0xff);
+    *r = (uint8_t)((val32>>16)&0xff);
+    *g = (uint8_t)((val32>>8)&0xff);
+    *b = (uint8_t)(val32&0xff);
+    *str = p;
+    return ERR_OK;
+  } else { /* not starting with 0x (hex): read three values */
+    if (   %'ModuleName'%.%xatoi(&p, &rv)==ERR_OK && rv>=0 && rv<=0xff
+        && %'ModuleName'%.%xatoi(&p, &gv)==ERR_OK && gv>=0 && gv<=0xff
+        && %'ModuleName'%.%xatoi(&p, &bv)==ERR_OK && bv>=0 && bv<=0xff
+        && %'ModuleName'%.%xatoi(&p, &wv)==ERR_OK && wv>=0 && wv<=0xff
+       )
+    {
+      *w = (uint8_t)wv;
+      *r = (uint8_t)rv;
+      *g = (uint8_t)gv;
+      *b = (uint8_t)bv;
+      *str = p;
+      return ERR_OK;
+    }
+  }
+  return ERR_FAILED;
+}
+
+%endif %- ScanWRGB
+%-BW_METHOD_END ScanWRGB
+%-************************************************************************************************************
 %-BW_METHOD_BEGIN ScanRGB32
 %ifdef ScanRGB32
 %define! Parstr
@@ -3227,6 +3302,27 @@ uint8_t %'ModuleName'%.%ScanRGB32(const unsigned char **str, uint32_t *rgb)
 
 %endif %- ScanRGB32
 %-BW_METHOD_END ScanRGB32
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ScanWRGB32
+%ifdef ScanWRGB32
+%define! Parstr
+%define! Parrgbw
+%define! RetVal
+%include Common\UtilityScanWRGB32.Inc
+uint8_t %'ModuleName'%.%ScanWRGB32(const unsigned char **str, uint32_t *rgbw)
+{
+  uint8_t res, r, g, b, w;
+
+  res = %'ModuleName'%.%ScanWRGB(str, &w, &r, &g, &b);
+  if (res==ERR_OK) {
+    *rgbw = ((uint32_t)w<<24)|((uint32_t)r<<16)|((uint32_t)g<<8)|b;
+    return ERR_OK;
+  }
+  return ERR_FAILED;
+}
+
+%endif %- ScanWRGB32
+%-BW_METHOD_END ScanWRGB32
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN SkipSpaces
 %ifdef SkipSpaces
