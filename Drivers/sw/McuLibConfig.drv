@@ -368,6 +368,9 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_ESP32                    (__XTENSA__)
     /*!< 1: ESP32 CPU family, 0: otherwise. The ESP32 compiler defines __XTENSA__ with a value of 1 */
 #endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_RPxxxx
+  #define %'ModuleName'%.CONFIG_CPU_IS_RPxxxx                  (0)  /* Raspberry Pi RP, e.g. RP2040 */
+#endif
 
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_KINETIS
   #define %'ModuleName'%.CONFIG_CPU_IS_KINETIS                 (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M \
@@ -464,6 +467,7 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S16          (8)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69          (9)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_IMXRT1064         (10)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_RP2040                (11)
 
 #ifndef %'ModuleName'%.CONFIG_CPU_VARIANT
   #define %'ModuleName'%.CONFIG_CPU_VARIANT  %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
@@ -591,6 +595,8 @@ void %'ModuleName'%.%Deinit(void)
   /*!< SDK for S32K */
 #define %'ModuleName'%.CONFIG_SDK_NORDIC_NRF5         (6)
   /*!< Nordic nRF5 SDK */
+#define %'ModuleName'%.CONFIG_SDK_RPI_PICO            (7)
+  /*!< Raspberry Pi Pico SDK */
 
 #ifndef %'ModuleName'%.CONFIG_SDK_VERSION_MAJOR
 %if defined(SdkVersionMajor)
