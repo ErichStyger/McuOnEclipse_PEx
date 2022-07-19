@@ -797,10 +797,11 @@ int %'ModuleName'%.%ini_haskey(const mTCHAR *Section, const mTCHAR *Key, const m
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-#define %'ModuleName'%.CONFIG_FS_TYPE_GENERIC  (0) /* Generic File System */
-#define %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS   (1) /* FatFS File System */
-#define %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS  (2) /* TinyFS File System */
-#define %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS (3) /* Flash Page System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_GENERIC    (0) /* Generic File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_FAT_FS     (1) /* FatFS File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_TINY_FS    (2) /* TinyFS File System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_FLASH_FS   (3) /* Flash Page System */
+#define %'ModuleName'%.CONFIG_FS_TYPE_LITTLE_FS  (4) /* LittleFS File System */
 
 #ifndef %'ModuleName'%.CONFIG_FS
 %if defined(FatFSenabled) & %FatFSenabled='yes'

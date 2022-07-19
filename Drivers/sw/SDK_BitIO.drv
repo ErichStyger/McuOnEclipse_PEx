@@ -251,6 +251,8 @@ void %'ModuleName'%.%PutVal(bool Val);
   #include "pins_driver.h" /* include SDK header file for GPIO */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   #include "nrf_gpio.h"
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  #include "McuGPIO.h"
 #else
   #error "Unsupported SDK!"
 #endif
@@ -323,6 +325,8 @@ void %'ModuleName'%.%PutVal(bool Val);
       .pinName = GPIO_PINS_OUT_OF_RANGE,
     }
   };
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  static McuGPIO_Handle_t pin;
 #endif
 
 static bool %'ModuleName'%.isOutput = false;
@@ -352,6 +356,8 @@ void %'ModuleName'%.%ClrVal(void)
   PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 0);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   nrf_gpio_pin_clear(%'ModuleName'%.CONFIG_PIN_NUMBER);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_SetLow(pin);
 #endif
 }
 
@@ -377,6 +383,8 @@ void %'ModuleName'%.%SetVal(void)
   PINS_GPIO_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, 1);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   nrf_gpio_pin_set(%'ModuleName'%.CONFIG_PIN_NUMBER);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_SetHigh(pin);
 #endif
 }
 
@@ -409,6 +417,8 @@ void %'ModuleName'%.%NegVal(void)
   }
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   nrf_gpio_pin_toggle(%'ModuleName'%.CONFIG_PIN_NUMBER);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_Toggle(pin);
 #endif
 }
 
@@ -435,6 +445,8 @@ bool %'ModuleName'%.%GetVal(void)
   return (PINS_DRV_ReadPins(%'ModuleName'%.CONFIG_PORT_NAME)&(1<<%'ModuleName'%.CONFIG_PIN_NUMBER))!=0;
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   return nrf_gpio_pin_read(%'ModuleName'%.CONFIG_PIN_NUMBER)!=0;
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  return McuGPIO_GetValue(pin);
 #else
   return FALSE;
 #endif
@@ -490,6 +502,8 @@ void %'ModuleName'%.%SetInput(void)
   PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   nrf_gpio_cfg_input(%'ModuleName'%.CONFIG_PIN_NUMBER, NRF_GPIO_PIN_NOPULL);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_SetAsInput(pin);
 #endif
   %'ModuleName'%.isOutput = false;
 }
@@ -516,6 +530,8 @@ void %'ModuleName'%.%SetOutput(void)
   PINS_DRV_SetPinsDirection(%'ModuleName'%.CONFIG_PORT_NAME, val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   nrf_gpio_cfg_output(%'ModuleName'%.CONFIG_PIN_NUMBER);
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_SetAsOutput(pin, false /* don't care */);
 #endif
   %'ModuleName'%.isOutput = true;
 }
@@ -555,6 +571,8 @@ void %'ModuleName'%.%PutVal(bool Val)
   PINS_DRV_WritePin(%'ModuleName'%.CONFIG_PORT_NAME, %'ModuleName'%.CONFIG_PIN_NUMBER, Val);
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   /* NYI */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_SetValue(pin, Val);
 #endif
 }
 
@@ -606,6 +624,13 @@ void %'ModuleName'%.%Init(void)
   */
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
   /* nothing needed */
+#elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  McuGPIO_Config_t config;
+
+  McuGPIO_GetDefaultConfig(&config);
+  config.hw.pin = SCL1_CONFIG_PIN_NUMBER;
+  config.isInput = true;
+  pin = McuGPIO_InitGPIO(&config);
 #endif
 #if %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION == %'ModuleName'%.CONFIG_INIT_PIN_DIRECTION_INPUT
   %'ModuleName'%.%SetInput();
@@ -622,7 +647,9 @@ void %'ModuleName'%.%Init(void)
 %include Common\SDK_BitIODeinit.Inc
 void %'ModuleName'%.%Deinit(void)
 {
-  /* nothing needed */
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED == %@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  pin = McuGPIO_DeinitGPIO(pin);
+#endif
 }
 
 %endif %- Deinit
