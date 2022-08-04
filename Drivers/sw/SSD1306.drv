@@ -874,7 +874,9 @@ void %'ModuleName'%.%UpdateFull(void)
 %include Common\SSD1306SetDisplayOrientation.Inc
 void %'ModuleName'%.%SetDisplayOrientation(%'ModuleName'_DisplayOrientation newOrientation)
 {
+#if %'ModuleName'_CONFIG_DYNAMIC_DISPLAY_ORIENTATION
   currentOrientation = newOrientation;
+#endif
   switch(newOrientation) {
     case %'ModuleName'%.ORIENTATION_LANDSCAPE:
       SSD1306_WriteCommand(SSD1306_MEMORY_MODE);                 %>70/* set memory mode */
