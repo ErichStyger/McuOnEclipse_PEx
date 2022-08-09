@@ -1427,9 +1427,8 @@ void %OnGiveLCD(void)
 %else
   #define %'ModuleName'_CONFIG_SSD1306_START_COLUMN_OFFSET  (0)
 %endif
-    /*!< Some SH1106 displays need a start colum of 2 instead of the default 0 */
+    /*!< Some SH1106 displays need a start column of 2 instead of the default 0 */
 #endif
-
 
 #ifndef %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US
   #define %'ModuleName'_CONFIG_SSD1306_I2C_DELAY_US    (%I2CTransactionDelay)
@@ -1477,7 +1476,6 @@ void %OnGiveLCD(void)
 %endif
   /*!< 1: Initialize LCD during PE_low_level_init(); 0: Do not initialize during PE_low_level_init() */
 #endif
-
 
 #ifndef %'ModuleName'_CONFIG_CLEAR_DISPLAY_IN_INIT
 %if defined(ClearDisplayInInit) & %ClearDisplayInInit='yes'
