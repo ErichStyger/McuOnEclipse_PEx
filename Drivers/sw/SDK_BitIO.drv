@@ -628,7 +628,7 @@ void %'ModuleName'%.%Init(void)
   McuGPIO_Config_t config;
 
   McuGPIO_GetDefaultConfig(&config);
-  config.hw.pin = SCL1_CONFIG_PIN_NUMBER;
+  config.hw.pin = %'ModuleName'%.CONFIG_PIN_NUMBER;
   config.isInput = true;
   pin = McuGPIO_InitGPIO(&config);
 #endif
