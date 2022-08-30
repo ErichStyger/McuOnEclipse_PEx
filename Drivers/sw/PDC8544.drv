@@ -407,7 +407,7 @@ void %'ModuleName'%.%Deinit(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PutPixel
 %ifdef PutPixel
-void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color);
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color);
 %define! Parx
 %define! Pary
 %define! Parcolor
@@ -415,6 +415,15 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color);
+%define! Parcolor
+%include Common\PDC8544ClearBuffer.Inc
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -444,6 +453,7 @@ void %OnBlockReceived(LDD_TUserData *UserDataPtr);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#include <string.h> /* for memset() */
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -1106,7 +1116,7 @@ void %'ModuleName'%.%Deinit(void)
 %define! Pary
 %define! Parcolor
 %include Common\PDC8544PutPixel.Inc
-void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color)
+void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)
 {
   %'ModuleName'_PixelDim nx, ny;
 
@@ -1145,6 +1155,18 @@ void %'ModuleName'%.%PutPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y
 
 %endif %- PutPixel
 %-BW_METHOD_END PutPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+%define! Parcolor
+%include Common\PDC8544ClearBuffer.Inc
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color)
+{
+  memset(%'ModuleName'%.DisplayBuf, color, sizeof(%'ModuleName'%.DisplayBuf));
+}
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

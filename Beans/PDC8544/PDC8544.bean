@@ -4,7 +4,7 @@
     <Name>PDC8544</Name>
     <Description>Display driver for the Philips PDC8544 display driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.010</Version>
+    <Version>01.012</Version>
     <Icon>PDC8544</Icon>
     <TypesFiles>PE,PDC8544\PDC8544</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -17,10 +17,10 @@
     <BW_AutoSaveDriver>yes</BW_AutoSaveDriver>
     <BW_DetailedHelp>yes</BW_DetailedHelp>
     <BW_NeedTps>yes</BW_NeedTps>
-    <BW_NeedUst>4</BW_NeedUst>
+    <BW_NeedUst>5</BW_NeedUst>
     <BW_NeedCns>0</BW_NeedCns>
     <BeanStatus>PROPOSAL</BeanStatus>
-    <Copyright> * Copyright (c) 2014-2019, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
+    <Copyright> * Copyright (c) 2014-2022, Erich Styger\n * Web:         https://mcuoneclipse.com\n * SourceForge: https://sourceforge.net/projects/mcuoneclipse\n * Git:         https://github.com/ErichStyger/McuOnEclipse_PEx\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without modification,\n * are permitted provided that the following conditions are met:\n *\n * - Redistributions of source code must retain the above copyright notice, this list\n *   of conditions and the following disclaimer.\n *\n * - Redistributions in binary form must reproduce the above copyright notice, this\n *   list of conditions and the following disclaimer in the documentation and/or\n *   other materials provided with the distribution.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND\n * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR\n * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON\n * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</Copyright>
     <Shortcut>PDC</Shortcut>
     <DemoDriver>no</DemoDriver>
     <BeanLevel>Low</BeanLevel>
@@ -840,6 +840,40 @@
     </Method>
     <Method>
       <TMthdItem>
+        <Name>ClearBuffer</Name>
+        <Symbol>ClearBuffer</Symbol>
+        <TypeSpec>typeMethod</TypeSpec>
+        <Hint>Writes a color to the full display buffer and clears it.</Hint>
+        <ItemLevel>BASIC</ItemLevel>
+        <EditLine>false</EditLine>
+        <TypeSpecNameChangeAble>false</TypeSpecNameChangeAble>
+        <DefaultIndex>0</DefaultIndex>
+        <TextValueIndex>false</TextValueIndex>
+        <RuntimeProperty>false</RuntimeProperty>
+        <CanDelete>false</CanDelete>
+        <IconPopup>false</IconPopup>
+        <DefaultValue>true</DefaultValue>
+        <Popup>false</Popup>
+        <PublicMethod>true</PublicMethod>
+        <IsAssembler>false</IsAssembler>
+        <InDefinition>true</InDefinition>
+        <ReturnType>void</ReturnType>
+        <RetHint>Error code</RetHint>
+        <ParamCount>1</ParamCount>
+        <Parameter>
+          <ParName>color</ParName>
+          <ParType>PixelColor</ParType>
+          <ParPassing>Value</ParPassing>
+          <ParHint>Pixel color value</ParHint>
+        </Parameter>
+        <Scope>PRIVATE</Scope>
+        <Declarations>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelColor color)</ANSIC>
+        </Declarations>
+      </TMthdItem>
+    </Method>
+    <Method>
+      <TMthdItem>
         <Name>PutPixel</Name>
         <Symbol>PutPixel</Symbol>
         <TypeSpec>typeMethod</TypeSpec>
@@ -874,13 +908,13 @@
         </Parameter>
         <Parameter>
           <ParName>color</ParName>
-          <ParType>uint8_t</ParType>
+          <ParType>PixelColor</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>Pixel color value</ParHint>
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, uint8_t color)</ANSIC>
+          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, %'ModuleName'_PixelColor color)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

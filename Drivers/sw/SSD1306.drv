@@ -436,6 +436,15 @@ uint8_t %'ModuleName'%.%SetDisplayClockDiv(uint8_t clockDiv);
 
 %endif %- SetDisplayClockDiv
 %-BW_METHOD_END SetDisplayClockDiv
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color);
+%define! Parcolor
+%include Common\SSD1306ClearBuffer.Inc
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -477,6 +486,7 @@ void %OnGiveLCD(void);
 %-   Example:
 %-     #include "header_name.h"
 #include "%@Wait@ModuleName.h" /* Waiting routines */
+#include <string.h> /* for memset() */
 #include %'ModuleName'_CONFIG_I2C_HEADER_FILE  /* I2C driver */
 %-
 %-BW_CUSTOM_INCLUDE_END_M
@@ -1292,6 +1302,18 @@ void %'ModuleName'%.%Deinit(void)
 
 %endif %- Deinit
 %-BW_METHOD_END Deinit
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+%define! Parcolor
+%include Common\SSD1306ClearBuffer.Inc
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color)
+{
+  memset(%'ModuleName'%.DisplayBuf, color, sizeof(%'ModuleName'%.DisplayBuf));
+}
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

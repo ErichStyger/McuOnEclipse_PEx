@@ -841,7 +841,11 @@ static const uint16_t c332to565[256] = { /* converts a 3-3-2 RBG value into a 5-
 %include Common\GDisplayClear.Inc
 void %'ModuleName'%.%Clear(void)
 {
+#if %'ModuleName'%.CONFIG_USE_DOUBLE_BUFFER
+  %'ModuleName'%.CONFIG_FCT_NAME_CLEAR_BUFFER(%'ModuleName'%.COLOR_PIXEL_CLR);
+#else
   %'ModuleName'%.%DrawFilledBox(0, 0, %'ModuleName'%.GetWidth(), %'ModuleName'%.GetHeight(), %'ModuleName'%.COLOR_PIXEL_CLR);
+#endif
 }
 
 %endif %- Clear
@@ -2005,6 +2009,16 @@ void %OnGiveDisplay(void)
     /*!< 1: Use display window capability; 0: No display window capability */
 #endif
 
+#ifndef %'ModuleName'%.CONFIG_USE_DOUBLE_BUFFER
+%if %UseMemBuffer='yes'
+  #define %'ModuleName'%.CONFIG_USE_DOUBLE_BUFFER  (1)
+%else
+  #define %'ModuleName'%.CONFIG_USE_DOUBLE_BUFFER  (0)
+%endif
+    /*!< 1: Use double-buffering for display memory in RAM; 0: No display double-buffering */
+#endif
+
+
 #if %'ModuleName'%.CONFIG_USE_WINDOW_CAPABILITY
 %if defined(Display)
   #define %'ModuleName'%.CONFIG_FCT_NAME_OPENWINDOW     %@Display@'ModuleName'%.OpenWindow
@@ -2021,6 +2035,9 @@ void %OnGiveDisplay(void)
 %else
   #define %'ModuleName'%.CONFIG_FCT_NAME_PUTPIXEL       PutPixel
 %endif
+#endif
+#if %'ModuleName'%.CONFIG_USE_DOUBLE_BUFFER
+  #define %'ModuleName'%.CONFIG_FCT_NAME_CLEAR_BUFFER   %@Display@'ModuleName'%.ClearBuffer
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_DISPLAY_MEMORY_WRITE
