@@ -247,13 +247,13 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DeInit
-%ifdef DeInit
-void %'ModuleName'%.%DeInit(void);
-%include Common\GenericTimeDateDeInit.Inc
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+void %'ModuleName'%.%Deinit(void);
+%include Common\GenericTimeDateDeinit.Inc
 
-%endif %- DeInit
-%-BW_METHOD_END DeInit
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN AddTicks
 %ifdef AddTicks
@@ -1217,16 +1217,16 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char *cmd, bool *handled, co
 %endif %- ParseCommand
 %-BW_METHOD_END ParseCommand
 %-************************************************************************************************************
-%-BW_METHOD_BEGIN DeInit
-%ifdef DeInit
-%include Common\GenericTimeDateDeInit.Inc
-void %'ModuleName'%.%DeInit(void)
+%-BW_METHOD_BEGIN Deinit
+%ifdef Deinit
+%include Common\GenericTimeDateDeinit.Inc
+void %'ModuleName'%.%Deinit(void)
 {
   /* Nothing to do */
 }
 
-%endif %- DeInit
-%-BW_METHOD_END DeInit
+%endif %- Deinit
+%-BW_METHOD_END Deinit
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN TicksToTime
 %ifdef TicksToTime
