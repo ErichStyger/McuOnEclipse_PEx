@@ -154,6 +154,7 @@
 #ifndef configTICK_RATE_HZ
   #define configTICK_RATE_HZ                                       %>50 (%TickRateHz) /* frequency of tick interrupt */
 #endif
+#define portTICK_RATE_MS                                           %>50 (1000/configTICK_RATE_HZ) /* needed for legacy drivers and modules like lwIP */
 %if defined(useARMLowPowerTimer) & useARMLowPowerTimer='yes'
 #ifndef configSYSTICK_USE_LOW_POWER_TIMER
   #define configSYSTICK_USE_LOW_POWER_TIMER                        %>50 1 /* If using Kinetis Low Power Timer (LPTMR) instead of SysTick timer */
