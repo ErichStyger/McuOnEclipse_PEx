@@ -1136,7 +1136,7 @@ bool %'ModuleName'%.%ReadLine(uint8_t *bufStart, uint8_t *buf, size_t bufSize, %
 %include Common\ShellPrintStatus.Inc
 uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 {
-  unsigned char buf[16];
+  unsigned char buf[32];
 
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"%'ModuleName'", (const unsigned char*)"Commandline shell status\r\n", io->stdOut);
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  Build", (const unsigned char*)__DATE__, io->stdOut);
@@ -1158,11 +1158,17 @@ uint8_t %'ModuleName'%.%PrintStatus(%'ModuleName'_ConstStdIOType *io)
 #if McuShell_CONFIG_MULTI_CMD_ENABLED
   %@Utility@'ModuleName'%.strcpy(buf, sizeof(buf), (unsigned char*)"yes: '");
   %@Utility@'ModuleName'%.chcat(buf, sizeof(buf), %'ModuleName'%.CONFIG_MULTI_CMD_CHAR);
-  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"'\r\n");
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"', size: ");
+  %@Utility@'ModuleName'%.strcatNum32u(buf, sizeof(buf), %'ModuleName'%.CONFIG_MULTI_CMD_SIZE);
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)"\r\n");
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", buf, io->stdOut);
 #else
   %'ModuleName'%.%SendStatusStr((const unsigned char*)"  multiCmd", (unsigned char*)"no\r\n", io->stdOut);
 #endif
+
+  %@Utility@'ModuleName'%.Num32uToStr(buf, sizeof(buf), %'ModuleName'%.CONFIG_DEFAULT_SHELL_BUFFER_SIZE);
+  %@Utility@'ModuleName'%.strcat(buf, sizeof(buf), (unsigned char*)" bytes default size\r\n");
+  %'ModuleName'%.%SendStatusStr((const unsigned char*)"  size", buf, io->stdOut);
 
   return ERR_OK;
 }
