@@ -4,7 +4,7 @@
     <Name>GDisplay</Name>
     <Description>Graphic Display Driver</Description>
     <Author>Erich Styger</Author>
-    <Version>01.209</Version>
+    <Version>01.210</Version>
     <Icon>GDisplay</Icon>
     <TypesFiles>PE,GDisplay\GDisplay</TypesFiles>
     <FileVersion>6</FileVersion>
@@ -949,13 +949,13 @@
         <ParamCount>5</ParamCount>
         <Parameter>
           <ParName>x</ParName>
-          <ParType>PixelDim</ParType>
+          <ParType>16bit signed</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>x position of left upper corner</ParHint>
         </Parameter>
         <Parameter>
           <ParName>y</ParName>
-          <ParType>PixelDim</ParType>
+          <ParType>16bit signed</ParType>
           <ParPassing>Value</ParPassing>
           <ParHint>y position of left upper corner</ParHint>
         </Parameter>
@@ -980,7 +980,7 @@
         </Parameter>
         <Scope>PRIVATE</Scope>
         <Declarations>
-          <ANSIC>void #M#_#C#(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor)</ANSIC>
+          <ANSIC>void #M#_#C#(int16_t x, int16_t y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor)</ANSIC>
         </Declarations>
       </TMthdItem>
     </Method>

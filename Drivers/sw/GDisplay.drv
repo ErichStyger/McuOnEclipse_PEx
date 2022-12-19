@@ -81,6 +81,7 @@ extern "C" {
 %-BW_METHOD_MACROS_END
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
 %- No constants defined in the BeanWizard for this bean
@@ -408,7 +409,7 @@ void %'ModuleName'%.%DrawBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y,
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN DrawMonoBitmap
 %ifdef DrawMonoBitmap
-void %'ModuleName'%.%DrawMonoBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor);
+void %'ModuleName'%.%DrawMonoBitmap(int16_t x, int16_t y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor);
 %define! Parx
 %define! Pary
 %define! Parimage
@@ -1152,9 +1153,9 @@ void %'ModuleName'%.%DrawBox(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y,
 %define! ParpixelColor
 %define! ParbackgroundColor
 %include Common\GDisplayDrawMonoBitmap.Inc
-void %'ModuleName'%.%DrawMonoBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDim y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor)
+void %'ModuleName'%.%DrawMonoBitmap(int16_t x, int16_t y, PIMAGE image, %'ModuleName'_PixelColor pixelColor, %'ModuleName'_PixelColor backgroundColor)
 {
-  %'ModuleName'%.PixelDim x0, y0, xe, ye;
+  int x0, y0, xe, ye;
   %'ModuleName'%.PixelColor pixel;
   uint8_t i;
   const uint8_t *data;
@@ -1170,14 +1171,16 @@ void %'ModuleName'%.%DrawMonoBitmap(%'ModuleName'_PixelDim x, %'ModuleName'_Pixe
 %endif
   data = image->pixmap;
   y0 = y;
-  ye = (%'ModuleName'%.PixelDim)(y+image->height-1);
-  xe = (%'ModuleName'%.PixelDim)(x+image->width-1);
+  ye = (y+image->height-1);
+  xe = (x+image->width-1);
   for(;;) {
     i=7;
     x0 = x;
     for(;;) {
       pixel = (%'ModuleName'%.PixelColor)(((*data)&(1<<i))>>i); /* extract pixel out of bitstream */
-      %'ModuleName'%.%PutPixel(x0, y0, (%'ModuleName'%.PixelColor)(pixel==1?pixelColor:backgroundColor));
+      if (x0>=0 && y0>=0) { /* do not write pixel if outside of display */
+        %'ModuleName'%.%PutPixel(x0, y0, (%'ModuleName'%.PixelColor)(pixel==1?pixelColor:backgroundColor));
+      }
       if (i==0 && x0!=xe) { /* next byte inside the row */
         data++;
         i = 7;
