@@ -316,6 +316,59 @@ void %'ModuleName'%.%Init(void);
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetUsedMainStackSpace
+%ifdef GetUsedMainStackSpace
+dword %'ModuleName'%.%GetUsedMainStackSpace(void);
+%define! RetVal
+%include Common\KinetisToolsGetUsedMainStackSpace.Inc
+
+%endif %- GetUsedMainStackSpace
+%-BW_METHOD_END GetUsedMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetUnusedMainStackSpace
+%ifdef GetUnusedMainStackSpace
+dword %'ModuleName'%.%GetUnusedMainStackSpace(void);
+%define! RetVal
+%include Common\KinetisToolsGetUnusedMainStackSpace.Inc
+
+%endif %- GetUnusedMainStackSpace
+%-BW_METHOD_END GetUnusedMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN FillMainStackSpace
+%ifdef FillMainStackSpace
+void %'ModuleName'%.%FillMainStackSpace(void);
+%include Common\KinetisToolsFillMainStackSpace.Inc
+
+%endif %- FillMainStackSpace
+%-BW_METHOD_END FillMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackSize
+%ifdef GetLinkerMainStackSize
+dword %'ModuleName'%.%GetLinkerMainStackSize(void);
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackSize.Inc
+
+%endif %- GetLinkerMainStackSize
+%-BW_METHOD_END GetLinkerMainStackSize
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackTop
+%ifdef GetLinkerMainStackTop
+void* %'ModuleName'%.%GetLinkerMainStackTop(void);
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackTop.Inc
+
+%endif %- GetLinkerMainStackTop
+%-BW_METHOD_END GetLinkerMainStackTop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackBase
+%ifdef GetLinkerMainStackBase
+void* %'ModuleName'%.%GetLinkerMainStackBase(void);
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackBase.Inc
+
+%endif %- GetLinkerMainStackBase
+%-BW_METHOD_END GetLinkerMainStackBase
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -380,6 +433,11 @@ void %'ModuleName'%.%Init(void);
 %-BW_INTERN_METHOD_DECL_START
 %- List of internal methods headers
 %-BW_INTERN_METHOD_DECL_END
+
+/* on ARM Cortex, the stack grows from 'top' (higher address) to the 'bottom' (lower address) */
+extern uint32_t %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE; /*!< base address of stack, this is a numerically lower address than the top */
+extern uint32_t %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;  /*!< top or end of stack, at the top. Highest address. Stack is growing from base to top */
+
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
 static const unsigned char *const KinetisM4FamilyStrings[] =
@@ -638,11 +696,11 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   uint8_t *p;
 
   /* init */
-  for(i=0;i<sizeof(McuArmTools_UID);i++) {
+  for(i=0;i<sizeof(%'ModuleName'_UID);i++) {
     uid->id[i] = 0;
   }
   p = (uint8_t*)&FLASH_NMPA->UUID_ARRAY[0];
-  for(i=0;i<sizeof(McuArmTools_UID) && i<sizeof(FLASH_NMPA->UUID_ARRAY);i++) {
+  for(i=0;i<sizeof(%'ModuleName'_UID) && i<sizeof(FLASH_NMPA->UUID_ARRAY);i++) {
     uid->id[i] = *p;
     p++;
   }
@@ -651,7 +709,7 @@ uint8_t %'ModuleName'%.%UIDGet(%'ModuleName'_UID *uid)
   int i;
 
   /* init */
-  for(i=0;i<sizeof(McuArmTools_UID);i++) {
+  for(i=0;i<sizeof(%'ModuleName'_UID);i++) {
     uid->id[i] = 0;
   }
 #if 0 /* should work for LPC55x59, but fails? */
@@ -865,9 +923,9 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   #endif
 #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
   #if %@sdk@'ModuleName'%.CONFIG_CPU_VARIANT==%@sdk@'ModuleName'%.CONFIG_CPU_VARIANT_RP2040
-    return (McuArmTools_ConstCharPtr)"Raspberry Pi Pico, RP2040";
+    return (%'ModuleName'_ConstCharPtr)"Raspberry Pi Pico, RP2040";
   #else
-    return (McuArmTools_ConstCharPtr)"Raspberry Pi Pico";
+    return (%'ModuleName'_ConstCharPtr)"Raspberry Pi Pico";
   #endif
 #else
   return (%'ModuleName'_ConstCharPtr)"UNKNOWN";
@@ -1038,6 +1096,114 @@ void %'ModuleName'%.%Init(void)
 
 %endif %- Init
 %-BW_METHOD_END Init
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetUsedMainStackSpace
+%ifdef GetUsedMainStackSpace
+%define! RetVal
+%include Common\KinetisToolsGetUsedMainStackSpace.Inc
+/*!
+ * \brief Returns the used main stack space, based on the overwritten checking pattern.
+ * \return Number of used main stack bytes
+ */
+dword %'ModuleName'%.%GetUsedMainStackSpace(void)
+{
+  return %'ModuleName'%.GetLinkerMainStackSize()-%'ModuleName'%.GetUnusedMainStackSpace();
+}
+
+%endif %- GetUsedMainStackSpace
+%-BW_METHOD_END GetUsedMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetUnusedMainStackSpace
+%ifdef GetUnusedMainStackSpace
+%define! RetVal
+%include Common\KinetisToolsGetUnusedMainStackSpace.Inc
+/*!
+ * \brief Calculates the unused stack space, based on the checking pattern.
+ * \return Number of unused main stack space.
+ */
+dword %'ModuleName'%.%GetUnusedMainStackSpace(void)
+{
+  uint32_t unused = 0; /* number of unused bytes */
+  uint32_t *p = (uint32_t*)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
+
+  /* check if the pattern stored on the stack has been changed */
+  while (*p==%'ModuleName'%.CONFIG_STACK_CHECK_PATTERN) {
+    unused += sizeof(uint32_t); /* count number of unused bytes */
+    p++;
+  }
+  return unused; /* return the number of unused bytes */
+}
+
+%endif %- GetUnusedMainStackSpace
+%-BW_METHOD_END GetUnusedMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN FillMainStackSpace
+%ifdef FillMainStackSpace
+%include Common\KinetisToolsFillMainStackSpace.Inc
+/*!
+ * \brief Fill the stack space with the checking pattern, up to the current MSP.
+ */
+void %'ModuleName'%.%FillMainStackSpace(void)
+{
+  uint32_t *base = (uint32_t*)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
+  uint32_t *msp = %'ModuleName'%.GetSP(); /* get current MSP stack pointer */
+  /* the current MSP is near the top */
+  while(base<msp) { /* fill from the base to the top */
+    *base = %'ModuleName'%.CONFIG_STACK_CHECK_PATTERN;
+    base++;
+  }
+}
+
+%endif %- FillMainStackSpace
+%-BW_METHOD_END FillMainStackSpace
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackSize
+%ifdef GetLinkerMainStackSize
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackSize.Inc
+/*!
+ * \brief Returns the size of the main (MSP) stack size, using linker symbols for top (higher address) and base (lower address).
+ * \return Number of bytes allocated by the linker for the stack
+ */
+dword %'ModuleName'%.%GetLinkerMainStackSize(void)
+{
+  return (uint32_t)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP - (uint32_t)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
+}
+
+%endif %- GetLinkerMainStackSize
+%-BW_METHOD_END GetLinkerMainStackSize
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackTop
+%ifdef GetLinkerMainStackTop
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackTop.Inc
+/*!
+ * \brief Return the stack top, as set in the linker file. The stack grows from the top (higher address) to the base (lower address).
+ * \return Return the address of the top (last) stack unit
+ */
+void* %'ModuleName'%.%GetLinkerMainStackTop(void)
+{
+  return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;
+}
+
+%endif %- GetLinkerMainStackTop
+%-BW_METHOD_END GetLinkerMainStackTop
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN GetLinkerMainStackBase
+%ifdef GetLinkerMainStackBase
+%define! RetVal
+%include Common\KinetisToolsGetLinkerMainStackBase.Inc
+/*!
+ * \brief Return the stack bottom, as configured in the linker file. The stack grows from the top (higher address) to the base (lower address).
+ * \return Return the address of the top (last) stack unit
+ */
+void* %'ModuleName'%.%GetLinkerMainStackBase(void)
+{
+  return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
+}
+
+%endif %- GetLinkerMainStackBase
+%-BW_METHOD_END GetLinkerMainStackBase
 %-BW_IMPLEMENT_END
 
 #endif /* %@sdk@'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M */
@@ -1109,6 +1275,20 @@ void %'ModuleName'%.%Init(void)
   #elif %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_NORDIC_NRF5
     #include "nrf.h"
   #endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_STACK_CHECK_PATTERN
+  #define %'ModuleName'%.CONFIG_STACK_CHECK_PATTERN  (0xdeadbeef)
+    /*!< Byte pattern on stack, to mark it is 'unused' */
+#endif
+
+/* The two symbols below shall be set by the linker script file to mark top and bottom of stack. Note that the two addresses need to be 32bit aligned! */
+#ifndef %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP
+  #define %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP  _vStackTop
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE
+  #define %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE _vStackBase
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
