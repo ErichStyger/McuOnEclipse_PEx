@@ -104,6 +104,8 @@
 
 /* MODULE %ModuleName. */
 #include "%@KinetisSDK@ModuleName.h" /* SDK and API used */
+#if %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS
+
 #if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_ESP32
   #include "freertos/FreeRTOSConfig.h"
 #else
@@ -1827,6 +1829,8 @@ uint32_t %'ModuleName'%.%AppGetRuntimeCounterValueFromISR(void);
 #ifdef __cplusplus
 }  /* extern "C" */
 #endif
+
+#endif /* %@KinetisSDK@'ModuleName'%.CONFIG_SDK_USE_FREERTOS */
 
 #endif
 /* ifndef __%'ModuleName'_H */
