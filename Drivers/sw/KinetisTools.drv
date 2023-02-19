@@ -91,6 +91,10 @@
 #define __BWUserType_%'ModuleName'_ConstCharPtr
   typedef const uint8_t *%'ModuleName'_ConstCharPtr;             %>40/* Pointer to constant string */
 #endif
+#ifndef __BWUserType_%'ModuleName'_uint32_t_Ptr
+#define __BWUserType_%'ModuleName'_uint32_t_Ptr
+  typedef uint32_t *%'ModuleName'_uint32_t_Ptr;                  %>40/* Pointer to uint32_t */
+#endif
 
 %-ENDUSRTYPES
 %-BW_BEAN_CONSTANTS_START  - Do not make changes between lines (included this lines) marked with %-BW_BEAN_CONSTANTS_START and %-BW_BEAN_CONSTANTS_END
@@ -354,7 +358,7 @@ dword %'ModuleName'%.%GetLinkerMainStackSize(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetLinkerMainStackTop
 %ifdef GetLinkerMainStackTop
-void* %'ModuleName'%.%GetLinkerMainStackTop(void);
+%'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackTop(void);
 %define! RetVal
 %include Common\KinetisToolsGetLinkerMainStackTop.Inc
 
@@ -363,7 +367,7 @@ void* %'ModuleName'%.%GetLinkerMainStackTop(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetLinkerMainStackBase
 %ifdef GetLinkerMainStackBase
-void* %'ModuleName'%.%GetLinkerMainStackBase(void);
+%'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackBase(void);
 %define! RetVal
 %include Common\KinetisToolsGetLinkerMainStackBase.Inc
 
@@ -1181,7 +1185,7 @@ dword %'ModuleName'%.%GetLinkerMainStackSize(void)
  * \brief Return the stack top, as set in the linker file. The stack grows from the top (higher address) to the base (lower address).
  * \return Return the address of the top (last) stack unit
  */
-void* %'ModuleName'%.%GetLinkerMainStackTop(void)
+%'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackTop(void)
 {
   return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;
 }
@@ -1197,7 +1201,7 @@ void* %'ModuleName'%.%GetLinkerMainStackTop(void)
  * \brief Return the stack bottom, as configured in the linker file. The stack grows from the top (higher address) to the base (lower address).
  * \return Return the address of the top (last) stack unit
  */
-void* %'ModuleName'%.%GetLinkerMainStackBase(void)
+%'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackBase(void)
 {
   return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
 }
