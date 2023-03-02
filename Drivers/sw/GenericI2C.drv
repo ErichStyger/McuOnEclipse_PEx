@@ -1606,6 +1606,8 @@ void %OnError(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
+#include "%@sdk@ModuleName.h" /* SDK and API used */
+
 #if !defined(%'ModuleName'%.CONFIG_USE_ON_REQUEST_BUS_EVENT)
   %if defined(OnRequestBus)
   #define %'ModuleName'%.CONFIG_USE_ON_REQUEST_BUS_EVENT    (1)
@@ -1650,7 +1652,7 @@ void %OnError(void)
 
 #if !defined(%'ModuleName'%.CONFIG_USE_MUTEX)
   %if defined(RTOS) & %UseSemaphore='yes'
-  #define %'ModuleName'%.CONFIG_USE_MUTEX             (1)
+  #define %'ModuleName'%.CONFIG_USE_MUTEX             (1 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
     /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
   %else
   #define %'ModuleName'%.CONFIG_USE_MUTEX             (0)
