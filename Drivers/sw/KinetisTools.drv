@@ -66,7 +66,9 @@
 /* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
-
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  #include "pico/unique_id.h" /* for UID */
+#endif
 #include <stddef.h> /* for size_t */
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
 %if defined(Shell)
@@ -121,7 +123,11 @@
 #endif
 
 typedef struct {
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  uint8_t id[sizeof(pico_unique_board_id_t)]; /* 8 bytes, 64 bits */
+#else
   uint8_t id[16]; /* 128 bit ID */
+#endif
 } %'ModuleName'%.UID;
 
 typedef enum {
@@ -323,7 +329,7 @@ void %'ModuleName'%.%Init(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetUsedMainStackSpace
 %ifdef GetUsedMainStackSpace
-dword %'ModuleName'%.%GetUsedMainStackSpace(void);
+uint32_t %'ModuleName'%.%GetUsedMainStackSpace(void);
 %define! RetVal
 %include Common\KinetisToolsGetUsedMainStackSpace.Inc
 
@@ -332,7 +338,7 @@ dword %'ModuleName'%.%GetUsedMainStackSpace(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetUnusedMainStackSpace
 %ifdef GetUnusedMainStackSpace
-dword %'ModuleName'%.%GetUnusedMainStackSpace(void);
+uint32_t %'ModuleName'%.%GetUnusedMainStackSpace(void);
 %define! RetVal
 %include Common\KinetisToolsGetUnusedMainStackSpace.Inc
 
@@ -349,7 +355,7 @@ void %'ModuleName'%.%FillMainStackSpace(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN GetLinkerMainStackSize
 %ifdef GetLinkerMainStackSize
-dword %'ModuleName'%.%GetLinkerMainStackSize(void);
+uint32_t %'ModuleName'%.%GetLinkerMainStackSize(void);
 %define! RetVal
 %include Common\KinetisToolsGetLinkerMainStackSize.Inc
 
@@ -1109,7 +1115,7 @@ void %'ModuleName'%.%Init(void)
  * \brief Returns the used main stack space, based on the overwritten checking pattern.
  * \return Number of used main stack bytes
  */
-dword %'ModuleName'%.%GetUsedMainStackSpace(void)
+uint32_t %'ModuleName'%.%GetUsedMainStackSpace(void)
 {
   return %'ModuleName'%.GetLinkerMainStackSize()-%'ModuleName'%.GetUnusedMainStackSpace();
 }
@@ -1125,7 +1131,7 @@ dword %'ModuleName'%.%GetUsedMainStackSpace(void)
  * \brief Calculates the unused stack space, based on the checking pattern.
  * \return Number of unused main stack space.
  */
-dword %'ModuleName'%.%GetUnusedMainStackSpace(void)
+uint32_t %'ModuleName'%.%GetUnusedMainStackSpace(void)
 {
   uint32_t unused = 0; /* number of unused bytes */
   uint32_t *p = (uint32_t*)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
@@ -1169,7 +1175,7 @@ void %'ModuleName'%.%FillMainStackSpace(void)
  * \brief Returns the size of the main (MSP) stack size, using linker symbols for top (higher address) and base (lower address).
  * \return Number of bytes allocated by the linker for the stack
  */
-dword %'ModuleName'%.%GetLinkerMainStackSize(void)
+uint32_t %'ModuleName'%.%GetLinkerMainStackSize(void)
 {
   return (uint32_t)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP - (uint32_t)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
 }
