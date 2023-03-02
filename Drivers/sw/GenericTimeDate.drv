@@ -17,7 +17,7 @@
 %-  %-BW_METHOD_END
 %-  %-BW_DEFINITION_START
 %-  %-BW_DEFINITION_END
-%-  %-BW_IMPLEMENT_START
+%-  %-BW_IMPLEMENT_START.
 %-  %-BW_IMPLEMENT_END
 %-  %-BW_EVENT_DEFINITION_START
 %-  %-BW_EVENT_DEFINITION_END
@@ -556,11 +556,7 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year);
 #include "%'ModuleName'.h"
 #include <stdlib.h> /* for NULL */
 #if %'ModuleName'%.CONFIG_USE_EXTERNAL_HW_RTC
-%if defined(ExternalRTC)
-  #include "%@ExternalRTC@'ModuleName'.h"
-%else
-  #include "McuExtRTC.h"
-%endif
+  #include %'ModuleName'%.CONFIG_EXT_RTC_HEADER_FILE_NAME /* header file for the external RTC */
 #endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
@@ -1556,11 +1552,7 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
   uint8_t res;
 
   if (time!=NULL) {
-%if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.SetTime(time->Hour, time->Min, time->Sec,
-%else
-    res = McuExtRTC_SetTime(time->Hour, time->Min, time->Sec,
-%endif
+    res = %'ModuleName'%.CONFIG_EXT_RTC_SET_TIME_FCT(time->Hour, time->Min, time->Sec,
 #if %'ModuleName'%.HAS_SEC100_IN_TIMEREC
         time->Sec100
 #else
@@ -1572,11 +1564,7 @@ uint8_t %'ModuleName'%.%SetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
     }
   }
   if (date!=NULL) {
-%if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.SetDate(date->Year, date->Month, date->Day);
-%else
-    res = McuExtRTC_SetDate(date->Year, date->Month, date->Day);
-%endif
+    res = %'ModuleName'%.CONFIG_EXT_RTC_SET_DATE_FCT(date->Year, date->Month, date->Day);
     if (res!=ERR_OK) {
       return res;
     }
@@ -1604,21 +1592,13 @@ uint8_t %'ModuleName'%.%GetExternalRTCTimeDate(TIMEREC *time, DATEREC *date)
   uint8_t res;
 
   if (time!=NULL) {
-%if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.GetTime(time);
-%else
-    res = McuExtRTC_GetTime(time);
-%endif
+    res = %'ModuleName'%.CONFIG_EXT_RTC_GET_TIME_FCT(time);
     if (res!=ERR_OK) {
       return res;
     }
   }
   if (date!=NULL) {
-%if defined(ExternalRTC)
-    res = %@ExternalRTC@'ModuleName'%.GetDate(date);
-%else
-    res = McuExtRTC_GetDate(date);
-%endif
+    res = %'ModuleName'%.CONFIG_EXT_RTC_GET_DATE_FCT(date);
     if (res!=ERR_OK) {
       return res;
     }
@@ -2171,6 +2151,51 @@ void %OnDateGet(uint8_t *day, uint8_t *month, uint16_t *year)
 #endif
 #ifndef %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY
   #define %'ModuleName'%.CONFIG_DEFAULT_INITIAL_DATE_DAY         %>40 %InitialDateDay
+#endif
+
+/* interface to external RTC */
+#ifndef %'ModuleName'%.CONFIG_EXT_RTC_HEADER_FILE_NAME
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_EXT_RTC_HEADER_FILE_NAME        "%@ExternalRTC@'ModuleName'.h"
+%else
+  #define %'ModuleName'%.CONFIG_EXT_RTC_HEADER_FILE_NAME        "McuExtRTC.h"
+%endif
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_EXT_RTC_GET_TIME_FCT
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_EXT_RTC_GET_TIME_FCT            %@ExternalRTC@'ModuleName'%.GetTime
+%else
+  #define %'ModuleName'%.CONFIG_EXT_RTC_GET_TIME_FCT            McuExtRTC_GetTime
+%endif
+    /*!< function to get the external RTC time */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_EXT_RTC_SET_TIME_FCT
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_EXT_RTC_SET_TIME_FCT            %@ExternalRTC@'ModuleName'%.SetTime
+%else
+  #define %'ModuleName'%.CONFIG_EXT_RTC_SET_TIME_FCT            McuExtRTC_SetTime
+%endif
+    /*!< function to set the external RTC time */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_EXT_RTC_GET_DATE_FCT
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_EXT_RTC_GET_DATE_FCT            %@ExternalRTC@'ModuleName'%.GetDate
+%else
+  #define %'ModuleName'%.CONFIG_EXT_RTC_GET_DATE_FCT            McuExtRTC_GetDate
+%endif
+    /*!< function to get the external RTC date */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_EXT_RTC_SET_DATE_FCT
+%if defined(ExternalRTC)
+  #define %'ModuleName'%.CONFIG_EXT_RTC_SET_DATE_FCT            %@ExternalRTC@'ModuleName'%.SetDate
+%else
+  #define %'ModuleName'%.CONFIG_EXT_RTC_SET_DATE_FCT            McuExtRTC_SetDate
+%endif
+    /*!< function to get the external RTC date */
 #endif
 
 #endif /* __%'ModuleName'_CONFIG_H */
