@@ -1671,10 +1671,10 @@ void %OnError(void)
 #endif
 
 #if !defined(%'ModuleName'%.CONFIG_TIMEOUT_US)
-%if defined(TimeoutUs) & defined(%TimeoutUs)
+%if defined(TimeoutUs)
   #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)%TimeoutUs)  /* number of microseconds as specified in properties used for timeout */
 %else
-  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)500)  /* number of microseconds as specified in properties used for timeout */
+  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)5000)  /* number of microseconds as specified in properties used for timeout */
 %endif
 #endif
 
