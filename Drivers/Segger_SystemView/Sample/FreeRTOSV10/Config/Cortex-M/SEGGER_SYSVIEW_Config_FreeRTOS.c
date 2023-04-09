@@ -4,7 +4,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -43,7 +43,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V3.12                                    *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -245,6 +245,7 @@ static void _cbSendSystemDesc(void) {
   SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
 }
 #endif
+
 /*********************************************************************
 *
 *       Global functions

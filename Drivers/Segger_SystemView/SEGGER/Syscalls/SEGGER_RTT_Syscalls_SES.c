@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V3.12                                    *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -51,7 +51,7 @@ Purpose : Reimplementation of printf, puts and __getchar using RTT
           in SEGGER Embedded Studio.
           To use RTT for printf output, include this file in your
           application.
-Revision: $Rev: 18539 $
+Revision: $Rev: 24316 $
 ----------------------------------------------------------------------
 */
 #if (defined __SES_ARM) || (defined __SES_RISCV) || (defined __CROSSWORKS_ARM)
