@@ -216,6 +216,15 @@
 #ifndef configMINIMAL_STACK_SIZE
   #define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
 #endif
+
+#ifndef configUSE_MINI_LIST_ITEM
+	#define configUSE_MINI_LIST_ITEM (1)
+	/*!< MiniListItem_t is used for start and end marker nodes in a FreeRTOS list and ListItem_t is used for all other nodes in a FreeRTOS list.
+	 * When configUSE_MINI_LIST_ITEM is set to 0, MiniListItem_t and ListItem_t are both the same. When configUSE_MINI_LIST_ITEM is set to 1,
+	 * MiniListItem_t contains 3 fewer fields than ListItem_t which saves some RAM at the cost of violating strict aliasing rules which some compilers
+	 * depend on for optimization. If left undefined, configUSE_MINI_LIST_ITEM defaults to 1 for backward compatibility.
+	 */
+#endif
 /*----------------------------------------------------------*/
 /* Heap Memory */
 #ifndef configUSE_HEAP_SCHEME

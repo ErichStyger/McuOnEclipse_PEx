@@ -2018,11 +2018,13 @@ LDD_TDeviceData *%'ModuleName'%.RunTimeCounterHandle; /* runtime counter handle,
    * ``-Wl,--undefined=uxTopUsedPriority'' when using gcc for final
    * linking) to your LDFLAGS; same with all the other symbols you need.
    */
+#if 0 /* FreeRTOS V10.5.1 has it re-added to the kernel */
   const int
   #ifdef __GNUC__
   __attribute__((used))
   #endif
   uxTopUsedPriority = configMAX_PRIORITIES-1;
+#endif
 #endif
 
 %if defined(Shell)
