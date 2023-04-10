@@ -278,8 +278,11 @@ void * pvPortMalloc( size_t xWantedSize )
         {
             mtCOVERAGE_TEST_MARKER();
         }
-
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+        SEGGER_SYSVIEW_HeapAlloc(ucHeap, pvReturn, xWantedSize);
+#else
         traceMALLOC( pvReturn, xWantedSize );
+#endif
     }
     ( void ) xTaskResumeAll();
 
@@ -340,7 +343,11 @@ void vPortFree( void * pv )
                 {
                     /* Add this block to the list of free blocks. */
                     xFreeBytesRemaining += pxLink->xBlockSize;
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+                    SEGGER_SYSVIEW_HeapFree(ucHeap, pv);
+#else
                     traceFREE( pv, pxLink->xBlockSize );
+#endif
                     prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
                     xNumberOfSuccessfulFrees++;
                 }
@@ -438,6 +445,9 @@ static void prvHeapInit( void ) /* PRIVILEGED_FUNCTION */
     /* Only one block exists - and it covers the entire usable heap space. */
     xMinimumEverFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
     xFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS
+  SEGGER_SYSVIEW_HeapDefine(ucHeap, ucHeap, sizeof(ucHeap), sizeof(BlockLink_t));
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -563,5 +573,48 @@ void vPortInitializeHeap(void) {
   xFreeBytesRemaining = 0;
   xMinimumEverFreeBytesRemaining = 0;
 }
+
+#include <string.h> /* for memcpy() */
+#if 0
+void *pvPortRealloc(void *ptr, size_t new_size) {
+  void *newBlock;
+  uint8_t *puc;
+  BlockLink_t *pxLink;
+  size_t old_size;
+
+  if (ptr==NULL) { /* if it is NULL, return a new block */
+    return pvPortMalloc(new_size);
+  }
+  if (new_size==0) { /* if new size is zero, free up memory and return NULL */
+    vPortFree(ptr);
+    return NULL;
+  }
+  /* The memory being freed will have an BlockLink_t structure immediately
+   * before it. */
+  puc = (uint8_t*)ptr;
+  puc -= xHeapStructSize;
+
+  /* This casting is to keep the compiler from issuing warnings. */
+  pxLink = (void *)puc;
+  configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
+
+  old_size = (pxLink->xBlockSize & ~xBlockAllocatedBit)-xHeapStructSize;
+  if (new_size==old_size) { /* same size: don't need to do anything */
+    return ptr;
+  }
+  newBlock = pvPortMalloc(new_size); /* allocate new block */
+  if (newBlock==NULL) {
+    return NULL; /* if there is not enough memory, the old block is not freed and NULL is returned */
+  }
+  if (old_size>new_size) { /* shrink memory block? */
+    old_size = new_size; /* make sure we only copy up to the new size */
+  }
+  memcpy(newBlock, ptr, old_size); /* copy old content to new block */
+  vPortFree(ptr); /* free old block */
+  return newBlock;
+}
 #endif
+
+#endif
+
 #endif /* configUSE_HEAP_SCHEME==4 */ /* << EST */
