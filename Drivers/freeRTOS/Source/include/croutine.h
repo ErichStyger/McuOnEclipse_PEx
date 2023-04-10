@@ -751,3 +751,4 @@ BaseType_t xCoRoutineRemoveFromEventList( const List_t * pxEventList );
 /* *INDENT-ON* */
 
 #endif /* CO_ROUTINE_H */
+

@@ -781,3 +781,4 @@ void vEventGroupClearBitsCallback( void * pvEventGroup,
 /* *INDENT-ON* */
 
 #endif /* EVENT_GROUPS_H */
+

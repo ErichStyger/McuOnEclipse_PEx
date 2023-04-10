@@ -1486,3 +1486,4 @@ typedef StaticStreamBuffer_t StaticMessageBuffer_t;
 /* *INDENT-ON* */
 
 #endif /* INC_FREERTOS_H */
+

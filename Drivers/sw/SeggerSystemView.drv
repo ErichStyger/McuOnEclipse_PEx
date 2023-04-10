@@ -644,6 +644,15 @@ void %'ModuleName'%.%Deinit(void)
     /*!< RTT channel to be used (default 1) */
 #endif
 
+#ifndef %'ModuleName'%.CONFIG_SYSVIEW_RAM_BASE
+%if defined(SysViewRamBase)
+  #define %'ModuleName'%.CONFIG_SYSVIEW_RAM_BASE    (0x%#l%SysViewRamBase)
+%else
+  #define %'ModuleName'%.CONFIG_SYSVIEW_RAM_BASE    (0x20000000)
+%endif
+    /*!< lowest RAM address used */
+#endif
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
