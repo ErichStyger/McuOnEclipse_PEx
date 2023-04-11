@@ -5056,6 +5056,11 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 %endif
 #endif
 
+#ifndef configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS
+  #define configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS             %>50 (1 && configUSE_SEGGER_SYSTEM_VIEWER_HOOKS)
+    /*!< 1: Generate heap events for Segger SystemView, 0: not generate heap events */
+#endif
+
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_PERCEPIO_TRACE_HOOKS
   #error "only one trace method can be active!"
 #endif
