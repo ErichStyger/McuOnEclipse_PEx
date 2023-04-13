@@ -60,6 +60,10 @@
   // If you're *really* sure you don't need FreeRTOS's newlib reentrancy support, remove this warning...
 #endif
 #include "task.h"
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
+  #include "SEGGER_SYSVIEW_Conf.h"
+  #include "SEGGER_SYSVIEW.h"
+#endif
 
 // ================================================================================================
 // External routines required by newlib's malloc (sbrk/_sbrk, __malloc_lock/unlock)
@@ -172,12 +176,32 @@ void *__wrap__malloc_r(void *reent, size_t nbytes) {
 // Implement FreeRTOS's memory API using newlib-provided malloc family.
 // ================================================================================================
 
-void *pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION {
+void *pvPortMallocExt( size_t xSize, unsigned int heapTag) PRIVILEGED_FUNCTION { /* << EST */
     void *p = malloc(xSize);
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
+	if (heapTag!=-1) {
+		SEGGER_SYSVIEW_HeapAllocEx(ucHeap, p, xSize, heapTag);
+	} else {
+		SEGGER_SYSVIEW_HeapAlloc(ucHeap, p, xSize);
+	}
+#else
+    traceMALLOC(p, xSize );
+#endif
     return p;
 }
+/*-----------------------------------------------------------*/
+
+void *pvPortMalloc(size_t xWantedSize) { /* << EST */
+  return pvPortMallocExt(xWantedSize, -1);
+}
+
 void vPortFree( void *pv ) PRIVILEGED_FUNCTION {
     free(pv);
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
+    SEGGER_SYSVIEW_HeapFree(ucHeap, pv);
+#else
+    traceFREE(pv, 0);
+#endif
 };
 
 size_t xPortGetFreeHeapSize( void ) PRIVILEGED_FUNCTION {
@@ -194,7 +218,10 @@ void vPortInitialiseBlocks( void ) PRIVILEGED_FUNCTION {};
 /*-----------------------------------------------------------*/
 #if 1 /* << EST */
 void vPortInitializeHeap(void) {
-  /* sorry, not able to free up the standard library heap */
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
+  SEGGER_SYSVIEW_HeapDefine(ucHeap, ucHeap, sizeof(ucHeap), sizeof(BlockLink_t));
+  SEGGER_SYSVIEW_NameResource((uint32_t)ucHeap, "heapNewLib");
+#endif
 }
 #endif
 
