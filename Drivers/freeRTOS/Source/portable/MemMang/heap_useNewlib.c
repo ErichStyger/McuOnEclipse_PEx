@@ -119,6 +119,13 @@ static int heapBytesRemaining = (int)&configLINKER_HEAP_SIZE_SYMBOL; // that's (
 char * sbrk(int incr) {
     static char *currentHeapEnd = &configLINKER_HEAP_BASE_SYMBOL;
     vTaskSuspendAll(); // Note: safe to use before FreeRTOS scheduler started
+#if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
+    if (currentHeapEnd == &configLINKER_HEAP_BASE_SYMBOL && incr!=0) {
+      /* first call */
+      SEGGER_SYSVIEW_HeapDefine(&configLINKER_HEAP_BASE_SYMBOL, &configLINKER_HEAP_BASE_SYMBOL, (int)&configLINKER_HEAP_SIZE_SYMBOL, 0);
+      SEGGER_SYSVIEW_NameResource(&configLINKER_HEAP_BASE_SYMBOL, "heapNewLib");
+    }
+#endif
     char *previousHeapEnd = currentHeapEnd;
     if (currentHeapEnd + incr > &configLINKER_HEAP_LIMIT_SYMBOL) {
         #if( configUSE_MALLOC_FAILED_HOOK == 1 )
@@ -180,9 +187,9 @@ void *pvPortMallocExt( size_t xSize, unsigned int heapTag) PRIVILEGED_FUNCTION {
     void *p = malloc(xSize);
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
 	if (heapTag!=-1) {
-		SEGGER_SYSVIEW_HeapAllocEx(ucHeap, p, xSize, heapTag);
+		SEGGER_SYSVIEW_HeapAllocEx(&configLINKER_HEAP_BASE_SYMBOL, p, xSize, heapTag);
 	} else {
-		SEGGER_SYSVIEW_HeapAlloc(ucHeap, p, xSize);
+		SEGGER_SYSVIEW_HeapAlloc(&configLINKER_HEAP_BASE_SYMBOL, p, xSize);
 	}
 #else
     traceMALLOC(p, xSize );
@@ -198,7 +205,7 @@ void *pvPortMalloc(size_t xWantedSize) { /* << EST */
 void vPortFree( void *pv ) PRIVILEGED_FUNCTION {
     free(pv);
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
-    SEGGER_SYSVIEW_HeapFree(ucHeap, pv);
+    SEGGER_SYSVIEW_HeapFree(&configLINKER_HEAP_BASE_SYMBOL, pv);
 #else
     traceFREE(pv, 0);
 #endif
@@ -219,8 +226,8 @@ void vPortInitialiseBlocks( void ) PRIVILEGED_FUNCTION {};
 #if 1 /* << EST */
 void vPortInitializeHeap(void) {
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
-  SEGGER_SYSVIEW_HeapDefine(ucHeap, ucHeap, sizeof(ucHeap), sizeof(BlockLink_t));
-  SEGGER_SYSVIEW_NameResource((uint32_t)ucHeap, "heapNewLib");
+  SEGGER_SYSVIEW_HeapDefine(&configLINKER_HEAP_BASE_SYMBOL, &configLINKER_HEAP_BASE_SYMBOL, sizeof(ucHeap), sizeof(BlockLink_t));
+  SEGGER_SYSVIEW_NameResource(&configLINKER_HEAP_BASE_SYMBOL, "heapNewLib");
 #endif
 }
 #endif
