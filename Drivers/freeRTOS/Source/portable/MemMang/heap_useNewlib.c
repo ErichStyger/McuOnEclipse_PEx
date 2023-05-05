@@ -186,7 +186,7 @@ void *__wrap__malloc_r(void *reent, size_t nbytes) {
 void *pvPortMallocExt( size_t xSize, unsigned int heapTag) PRIVILEGED_FUNCTION { /* << EST */
     void *p = malloc(xSize);
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
-	if (heapTag!=-1) {
+	if (heapTag!=(unsigned)-1) {
 		SEGGER_SYSVIEW_HeapAllocEx(&configLINKER_HEAP_BASE_SYMBOL, p, xSize, heapTag);
 	} else {
 		SEGGER_SYSVIEW_HeapAlloc(&configLINKER_HEAP_BASE_SYMBOL, p, xSize);

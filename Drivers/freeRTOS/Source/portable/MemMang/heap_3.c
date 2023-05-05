@@ -82,7 +82,7 @@ void * pvPortMallocExt( size_t xWantedSize, unsigned int heapTag) /* << EST */
 #endif
         pvReturn = malloc( xWantedSize );
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
-        if (heapTag!=-1) {
+        if (heapTag!=(unsigned)-1) {
             SEGGER_SYSVIEW_HeapAllocEx(ucHeap, pvReturn, xWantedSize, heapTag);
         } else {
             SEGGER_SYSVIEW_HeapAlloc(ucHeap, pvReturn, xWantedSize);

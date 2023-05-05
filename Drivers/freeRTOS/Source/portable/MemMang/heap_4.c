@@ -282,7 +282,7 @@ void *pvPortMallocExt(size_t xWantedSize, unsigned int heapTag) /* << EST */
             mtCOVERAGE_TEST_MARKER();
         }
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS && configUSE_SEGGER_SYSTEM_VIEWER_HEAP_EVENTS /* << EST */
-        if (heapTag!=-1) {
+        if (heapTag!=(unsigned)-1) {
             SEGGER_SYSVIEW_HeapAllocEx(&xStart, pvReturn, xWantedSize, heapTag);
         } else {
             SEGGER_SYSVIEW_HeapAlloc(&xStart, pvReturn, xWantedSize);
