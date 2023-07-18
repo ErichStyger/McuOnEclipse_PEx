@@ -66,6 +66,9 @@
 /* MODULE %ModuleName. */
 #include "%@sdk@ModuleName.h" /* SDK and API used */
 #include "%'ModuleName'config.h" /* configuration */
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #include "rom/ets_sys.h" /* delay routines in ROM */
+#endif
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -224,7 +227,10 @@ void %'ModuleName'%.%Waitms(uint32_t ms);
 %ifdef Waitus
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
-#define %'ModuleName'%.Waitus(us)  \
+#if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
+  #define McuWait_Waitus(us)  esp_rom_delay_us(us)
+#else
+  #define %'ModuleName'%.Waitus(us)  \
         /*lint -save -e(505,506,522) Constant value Boolean, Redundant left argument to comma. */\
        (  ((%'ModuleName'%.NofCyclesUs((us),%'ModuleName'%.INSTR_CLOCK_HZ)==0)||(us)==0) ? \
           (void)0 : \
@@ -233,6 +239,7 @@ void %'ModuleName'%.%Waitms(uint32_t ms);
             %'ModuleName'%.WAIT_C(%'ModuleName'%.NofCyclesUs(((us)%%1000), %'ModuleName'%.INSTR_CLOCK_HZ)) \
        /*lint -restore */\
        )
+#endif
 %else
 void %'ModuleName'%.%Waitus(uint32_t us);
 %endif
