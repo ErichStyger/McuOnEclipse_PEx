@@ -149,6 +149,10 @@ Additional information:
 
 #if configUSE_SEGGER_SYSTEM_VIEWER_HOOKS /* << EST: added check, otherwise compiler might complain about calling RTT init with out-of-bound RTT channel index */
 
+#if 1 /* << EST */
+  unsigned int SEGGER_SYSVIEW_InterruptId;
+#endif
+
 /*********************************************************************
 *
 *       Defines, fixed
