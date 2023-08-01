@@ -332,6 +332,9 @@ void %'ModuleName'%.%Deinit(void);
 #include "%var.h"
 %endfor
 #include "%'ModuleName'.h"
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
+  #include <unistd.h> /* for sleep() */
+#endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
 %-   Example:
@@ -688,6 +691,9 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 %endif
 void %'ModuleName'%.%Waitms(uint32_t ms)
 {
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
+  usleep(ms*1000);
+#else
   /*lint -save -e522 function lacks side effect. */
 %if (CPU_FAMILY = "Kinetis") | (CPU_FAMILY = "S32K") | (CPU_FAMILY = "HCS08") | (CPU_FAMILY = "HC08") | (CPU_FAMILY = "RS08")  | (CPU_FAMILY = "HCS12X") | (CPU_FAMILY = "HCS12")
   uint32_t msCycles; /* cycles for 1 ms */
@@ -742,6 +748,7 @@ void %'ModuleName'%.%Waitms(uint32_t ms)
   }
 %endif
   /*lint -restore */
+#endif
 }
 %ifdef COMPILER_HIX
 #pragma MESSAGE DEFAULT C5905 /* multiplication with one */
