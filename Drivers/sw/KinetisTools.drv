@@ -68,6 +68,7 @@
 #include "%'ModuleName'config.h" /* configuration */
 #if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
   #include "pico/unique_id.h" /* for UID */
+  #include "pico/bootrom.h"   /* for entering bootloader */
 #endif
 #include <stddef.h> /* for size_t */
 #if %'ModuleName'%.CONFIG_PARSE_COMMAND_ENABLED
@@ -535,8 +536,11 @@ static uint8_t PrintStatus(const %@Shell@'ModuleName'%.StdIOType *io)
 static uint8_t PrintHelp(const %@Shell@'ModuleName'%.StdIOType *io)
 {
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"%'ModuleName'", (unsigned char*)"Group of %'ModuleName' commands\r\n", io->stdOut);
-  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  reset", (unsigned char*)"Performs a software reset\r\n", io->stdOut);
   %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  help|status", (unsigned char*)"Print help or status information\r\n", io->stdOut);
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  reset", (unsigned char*)"Performs a software reset\r\n", io->stdOut);
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  %@Shell@'ModuleName'%.SendHelpStr((unsigned char*)"  bootloader", (unsigned char*)"Enter bootloader mode\r\n", io->stdOut);
+#endif
   return ERR_OK;
 }
 #endif
@@ -842,6 +846,11 @@ uint8_t %'ModuleName'%.%ParseCommand(const unsigned char* cmd, bool *handled, co
   } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' reset") == 0) {
     *handled = TRUE;
     %'ModuleName'%.%SoftwareReset(); /* will perform RESET and does NOT return here! */
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_RPI_PICO
+  } else if (%@Utility@'ModuleName'%.strcmp((char*)cmd, "%'ModuleName' bootloader") == 0) {
+    *handled = TRUE;
+    reset_usb_boot(0, 0); /* call MSD bootloader, does not return! */
+#endif
   }
   return res;
 }
