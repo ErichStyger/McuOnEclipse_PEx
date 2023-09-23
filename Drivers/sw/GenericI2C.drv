@@ -467,15 +467,6 @@ void %OnError(void);
 %-     static int counter1;
 %-     int %'ModuleName'%.counter2;
 %-
-%if defined(LDD_I2C)
-typedef struct {
-  volatile bool dataReceivedFlg; /* set to TRUE by the interrupt if we have received data */
-  volatile bool dataTransmittedFlg; /* set to TRUE by the interrupt if we have sent data */
-  LDD_TDeviceData *handle; /* pointer to the device handle */
-} %'ModuleName'%.TDataState;
-
-static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
-
 #if %'ModuleName'%.CONFIG_USE_TIMEOUT
 %if defined(Timeout)
   #define TIMEOUT_COUNTER_HANDLE                        %@Timeout@'ModuleName'%.CounterHandle
@@ -494,6 +485,15 @@ static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 %endif
   #define %'ModuleName'%.TIMEOUT_TICKS(factor)          (%'ModuleName'%.TIMEOUT_NOF_TICKS(factor)>0?%'ModuleName'%.TIMEOUT_NOF_TICKS(factor):1)  /* at least one tick */
 #endif
+
+%if defined(LDD_I2C)
+typedef struct {
+  volatile bool dataReceivedFlg; /* set to TRUE by the interrupt if we have received data */
+  volatile bool dataTransmittedFlg; /* set to TRUE by the interrupt if we have sent data */
+  LDD_TDeviceData *handle; /* pointer to the device handle */
+} %'ModuleName'%.TDataState;
+
+static %'ModuleName'%.TDataState %'ModuleName'%.deviceData;
 %endif
 
 #if %'ModuleName'%.CONFIG_USE_MUTEX
@@ -697,11 +697,6 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
   TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
 #endif
-%else
-  uint16_t nof;
-%endif
-
-%if defined(LDD_I2C)
   for(;;) { /* breaks */
     %'ModuleName'%.deviceData.dataReceivedFlg = FALSE;
     res = %@LDD_I2C@'ModuleName'%.MasterReceiveBlock(%'ModuleName'%.deviceData.handle, data, dataSize, flags==%'ModuleName'_SEND_STOP?LDD_I2C_SEND_STOP:LDD_I2C_NO_SEND_STOP);
@@ -745,6 +740,8 @@ uint8_t %'ModuleName'%.%ReadBlock(void* data, uint16_t dataSize, %'ModuleName'_E
     break; /* break for(;;) */
   } /* for(;;) */
 %else
+  uint16_t nof;
+
   for(;;) { /* breaks */
     res = %'ModuleName'%.CONFIG_RECV_BLOCK(data, dataSize, &nof);
     if (res!=ERR_OK) {
@@ -783,13 +780,13 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
 %if defined(I2C)
   uint16_t nof;
 %endif
+  uint8_t res = ERR_OK;
+%if defined(LDD_I2C)
 #if %'ModuleName'%.CONFIG_USE_TIMEOUT
   TIMEOUT_COUNTER_HANDLE timeout;
   bool isTimeout=FALSE;
 #endif
-  uint8_t res = ERR_OK;
 
-%if defined(LDD_I2C)
   for(;;) { /* breaks */
     %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
     res = %@LDD_I2C@'ModuleName'%.MasterSendBlock(%'ModuleName'%.deviceData.handle, data, dataSize, flags==%'ModuleName'_SEND_STOP?LDD_I2C_SEND_STOP:LDD_I2C_NO_SEND_STOP);
@@ -833,6 +830,7 @@ uint8_t %'ModuleName'%.%WriteBlock(void* data, uint16_t dataSize, %'ModuleName'_
     break; /* break for(;;) */
   } /* for(;;) */
 %else
+
   for(;;) { /* breaks */
 #if %'ModuleName'%.CONFIG_SUPPORT_STOP_NO_START
     if (%'ModuleName'_STOP_NOSTART==flags) {
@@ -1073,10 +1071,6 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
 %if defined(I2C)
   uint16_t nof;
 %endif
-#if %'ModuleName'%.CONFIG_USE_TIMEOUT
-  TIMEOUT_COUNTER_HANDLE timeout;
-  bool isTimeout=FALSE;
-#endif
   uint8_t res = ERR_OK;
 
   if (%'ModuleName'%.%SelectSlave(i2cAddr)!=ERR_OK) {
@@ -1102,6 +1096,11 @@ uint8_t %'ModuleName'%.%WriteAddress(uint8_t i2cAddr, uint8_t *memAddr, uint8_t 
     dataSize--;
   }
 %if defined(LDD_I2C)
+
+#if %'ModuleName'%.CONFIG_USE_TIMEOUT
+  TIMEOUT_COUNTER_HANDLE timeout;
+  bool isTimeout=FALSE;
+#endif
   for(;;) { /* breaks */
     /* send device address, memory address and data */
     %'ModuleName'%.deviceData.dataTransmittedFlg = FALSE;
