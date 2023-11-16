@@ -446,8 +446,8 @@ uint32_t %'ModuleName'%.%GetLinkerMainStackSize(void);
 %-BW_INTERN_METHOD_DECL_END
 
 /* on ARM Cortex, the stack grows from 'top' (higher address) to the 'bottom' (lower address) */
-extern uint32_t %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE; /*!< base address of stack, this is a numerically lower address than the top */
-extern uint32_t %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;  /*!< top or end of stack, at the top. Highest address. Stack is growing from base to top */
+extern void %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE(void); /*!< base address of stack, this is a numerically lower address than the top */
+extern void %'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP(void);  /*!< top or end of stack, at the top. Highest address. Stack is growing from base to top */
 
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_KINETIS
 #if %@sdk@'ModuleName'%.CONFIG_CORTEX_M==4
@@ -1202,7 +1202,7 @@ uint32_t %'ModuleName'%.%GetLinkerMainStackSize(void)
  */
 %'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackTop(void)
 {
-  return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;
+  return (%'ModuleName'_uint32_t_Ptr)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_TOP;
 }
 
 %endif %- GetLinkerMainStackTop
@@ -1218,7 +1218,7 @@ uint32_t %'ModuleName'%.%GetLinkerMainStackSize(void)
  */
 %'ModuleName'_uint32_t_Ptr %'ModuleName'%.%GetLinkerMainStackBase(void)
 {
-  return &%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
+  return (%'ModuleName'_uint32_t_Ptr)&%'ModuleName'%.CONFIG_LINKER_SYMBOL_STACK_BASE;
 }
 
 %endif %- GetLinkerMainStackBase
