@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.4.1
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.0.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -215,6 +217,10 @@
 %endif
 #ifndef configMINIMAL_STACK_SIZE
   #define configMINIMAL_STACK_SIZE                                 %>50 (%MinimalStackSize) /* stack size in addressable stack units */
+#endif
+
+#ifndef configNUMBER_OF_CORES
+  #define configNUMBER_OF_CORES                            %>50 (1) /* number of cores for the kernel */
 #endif
 
 #ifndef configUSE_MINI_LIST_ITEM

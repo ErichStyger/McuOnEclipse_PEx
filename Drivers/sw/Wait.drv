@@ -228,7 +228,7 @@ void %'ModuleName'%.%Waitms(uint32_t ms);
 %if defined(WaitUseMacroVersion)
 /* we are having a static clock configuration: implement as macro/inlined version */
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
-  #define McuWait_Waitus(us)  esp_rom_delay_us(us)
+  #define %'ModuleName'%.Waitus(us)  esp_rom_delay_us(us)
 #else
   #define %'ModuleName'%.Waitus(us)  \
         /*lint -save -e(505,506,522) Constant value Boolean, Redundant left argument to comma. */\
@@ -276,7 +276,7 @@ void %'ModuleName'%.%Waitns(uint32_t ns);
 %ifdef WaitOSms
 #if %'ModuleName'%.CONFIG_USE_RTOS_WAIT
   /* use FreeRTOS API, but only if scheduler is running */
-  #define %'ModuleName'%.%WaitOSms(ms) xTaskGetSchedulerState()==taskSCHEDULER_RUNNING ? vTaskDelay(pdMS_TO_TICKS(ms)) : McuWait_Waitms(ms)
+  #define %'ModuleName'%.%WaitOSms(ms) xTaskGetSchedulerState()==taskSCHEDULER_RUNNING ? vTaskDelay(pdMS_TO_TICKS(ms)) : %'ModuleName'%.Waitms(ms)
 #else
   #define %'ModuleName'%.%WaitOSms(ms)  %'ModuleName'%.%Waitms(ms) /* use normal wait */
 #endif

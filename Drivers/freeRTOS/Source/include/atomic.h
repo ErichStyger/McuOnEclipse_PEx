@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V11.0.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -417,4 +417,3 @@ static portFORCE_INLINE uint32_t Atomic_XOR_u32( uint32_t volatile * pulDestinat
 /* *INDENT-ON* */
 
 #endif /* ATOMIC_H */
-

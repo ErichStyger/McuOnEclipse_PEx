@@ -3,7 +3,7 @@
 #include "FreeRTOSConfig.h"
 #if !defined(configUSE_HEAP_SCHEME) || (configUSE_HEAP_SCHEME==1 && configSUPPORT_DYNAMIC_ALLOCATION==1)
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V11.0.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
