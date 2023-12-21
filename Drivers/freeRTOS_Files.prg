@@ -145,6 +145,12 @@
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'message_buffer.h
 %include freeRTOS\Source\include\message_buffer.h
 
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'newlib-freertos.h
+%include freeRTOS\Source\include\newlib-freertos.h
+
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'picolibc-freertos.h
+%include freeRTOS\Source\include\picolibc-freertos.h
+
 %FILE %'DirRel_Code'%'RTOSHeaderDirFolder'freertos_tasks_c_additions.h
 %include freeRTOS\Source\include\freertos_tasks_c_additions.h
 %- -----------------------------------------
@@ -158,6 +164,8 @@
 %FILE %'DirRel_Code'%'RTOSCommonDirFolder'mpu_wrappers.c
 %include freeRTOS\Source\portable\Common\mpu_wrappers.c
 
+%FILE %'DirRel_Code'%'RTOSHeaderDirFolder'mpu_syscall_numbers.h
+%include freeRTOS\Source\include\mpu_syscall_numbers.h
 %- -----------------------------------------
 %- GDB thread debug helpers
 %FILE %'DirRel_Code'%'RTOSPortDirFolder'readme_gdbBacktraceDebug.txt
