@@ -120,6 +120,7 @@ typedef dword _RevCathodeSensorValType;  /* fall back type in case we have more 
 #endif
 
 %-STARTUSERTYPES - Do not make changes between lines (included this lines) marked with %-STARTUSERTYPES and %-ENDUSRTYPES
+
 #ifndef __BWUserType_%'ModuleName'_SensorValType
 #define __BWUserType_%'ModuleName'_SensorValType
   typedef _RevCathodeSensorValType %'ModuleName'%.SensorValType; %>40/* The value type the sensor can return. */
@@ -361,6 +362,15 @@ void %'ModuleName'%.%GiveLCD(void);
 
 %endif %- GiveLCD
 %-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+byte %'ModuleName'%.%ClearBuffer(void);
+%define! RetVal
+%include Common\LEDmatrixClearBuffer.Inc
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -714,6 +724,18 @@ void %'ModuleName'%.%GiveLCD(void)
 
 %endif %- GiveLCD
 %-BW_METHOD_END GiveLCD
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+%define! RetVal
+%include Common\LEDmatrixClearBuffer.Inc
+byte %'ModuleName'%.%ClearBuffer(void)
+{
+  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+}
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
