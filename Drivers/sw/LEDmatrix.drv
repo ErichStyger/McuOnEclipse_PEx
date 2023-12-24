@@ -365,8 +365,8 @@ void %'ModuleName'%.%GiveLCD(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClearBuffer
 %ifdef ClearBuffer
-byte %'ModuleName'%.%ClearBuffer(void);
-%define! RetVal
+void %'ModuleName'%.%ClearBuffer(byte color);
+%define! Parcolor
 %include Common\LEDmatrixClearBuffer.Inc
 
 %endif %- ClearBuffer
@@ -727,11 +727,11 @@ void %'ModuleName'%.%GiveLCD(void)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN ClearBuffer
 %ifdef ClearBuffer
-%define! RetVal
+%define! Parcolor
 %include Common\LEDmatrixClearBuffer.Inc
-byte %'ModuleName'%.%ClearBuffer(void)
+void %'ModuleName'%.%ClearBuffer(byte color)
 {
-  /* If you see this comment in generated code, it means that method is not implemented yet ... */
+  (void)color;
 }
 
 %endif %- ClearBuffer

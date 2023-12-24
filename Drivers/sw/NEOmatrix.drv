@@ -388,6 +388,15 @@ uint8_t %'ModuleName'%.%NegPixel(%'ModuleName'_PixelDim x, %'ModuleName'_PixelDi
 
 %endif %- GetPixel
 %-BW_METHOD_END GetPixel
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color);
+%define! Parcolor
+%include Common\NEOmatrixClearBuffer.Inc
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -923,6 +932,17 @@ void %'ModuleName'%.%Init(void)
 %endif %- Init
 %-BW_METHOD_END Init
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+%define! Parcolor
+%include Common\NEOmatrixClearBuffer.Inc
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color)
+{
+  (void)color;
+}
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
