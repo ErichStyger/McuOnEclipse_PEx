@@ -1855,7 +1855,7 @@ __asm void vPortStartFirstTask(void) {
 /* Need the 'noinline', as latest gcc with -O3 tries to inline it, and gives error message: "Error: symbol `pxCurrentTCBConst2' is already defined" */
 __attribute__((noinline))
 void vPortStartFirstTask(void) {
-#if configUSE_TOP_USED_PRIORITY || configLTO_HELPER
+#if 0 && (configUSE_TOP_USED_PRIORITY || configLTO_HELPER) /* not available in FreeRTOS v11.0.0 */
   /* only needed for openOCD or Segger FreeRTOS thread awareness. It needs the symbol uxTopUsedPriority present after linking */
   {
     extern const int uxTopUsedPriority;
