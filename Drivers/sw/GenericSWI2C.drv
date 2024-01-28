@@ -300,6 +300,29 @@ void %OnRxChar(void);
 %-
 %-BW_CUSTOM_INCLUDE_END_M
 
+%-BW_INTERN_METHOD_DECL_START
+%- List of internal methods headers
+%-UNLOCKED
+/* Internal method prototypes */
+%-INTERNAL_LOC_METHOD_BEG Delay
+static void Delay(void);
+%-INTERNAL_LOC_METHOD_END Delay
+%-INTERNAL_LOC_METHOD_BEG Read
+static uint8_t Read(void);
+%-INTERNAL_LOC_METHOD_END Read
+%-INTERNAL_LOC_METHOD_BEG GetAck
+static bool GetAck(void);
+%-INTERNAL_LOC_METHOD_END GetAck
+%-INTERNAL_LOC_METHOD_BEG Write
+static void Write(uint8_t Data);
+%-INTERNAL_LOC_METHOD_END Write
+%-INTERNAL_LOC_METHOD_BEG InternalStop
+static void InternalStop(void);
+%-INTERNAL_LOC_METHOD_END InternalStop
+%-
+
+%-BW_INTERN_METHOD_DECL_END
+
 %-BW_CUSTOM_VARIABLE_START
 %- Write your static variables here
 %-   Example:
@@ -418,28 +441,6 @@ uint8_t %'ModuleName'%.GetDeviceID(uint8_t deviceAddr, uint32_t *pId)
 }
 
 %-BW_CUSTOM_VARIABLE_END
-%-BW_INTERN_METHOD_DECL_START
-%- List of internal methods headers
-%-UNLOCKED
-/* Internal method prototypes */
-%-INTERNAL_LOC_METHOD_BEG Delay
-static void Delay(void);
-%-INTERNAL_LOC_METHOD_END Delay
-%-INTERNAL_LOC_METHOD_BEG Read
-static uint8_t Read(void);
-%-INTERNAL_LOC_METHOD_END Read
-%-INTERNAL_LOC_METHOD_BEG GetAck
-static bool GetAck(void);
-%-INTERNAL_LOC_METHOD_END GetAck
-%-INTERNAL_LOC_METHOD_BEG Write
-static void Write(uint8_t Data);
-%-INTERNAL_LOC_METHOD_END Write
-%-INTERNAL_LOC_METHOD_BEG InternalStop
-static void InternalStop(void);
-%-INTERNAL_LOC_METHOD_END InternalStop
-%-
-
-%-BW_INTERN_METHOD_DECL_END
 %-BW_IMPLEMENT_START
 %-************************************************************************************************************
 %-INTERNAL_METHOD_BEG Delay
