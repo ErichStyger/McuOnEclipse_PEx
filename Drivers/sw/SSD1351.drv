@@ -503,6 +503,15 @@ void %'ModuleName'%.GiveBus(void);
 %include Common\GeneralInternal.inc (GiveBus)
 
 %-INTERNAL_METHOD_END GiveBus
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color);
+%define! Parcolor
+%include Common\SSD1351ClearBuffer.Inc
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1021,6 +1030,20 @@ void %'ModuleName'%.%Clear(void)
 
 %endif %- Clear
 %-BW_METHOD_END Clear
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ClearBuffer
+%ifdef ClearBuffer
+%define! Parcolor
+%include Common\SSD1351ClearBuffer.Inc
+void %'ModuleName'%.%ClearBuffer(%'ModuleName'_PixelColor color)
+{
+  %'ModuleName'%.OpenWindow(0, 0, (%'ModuleName'_PixelDim)(%'ModuleName'%.GetWidth()-1), (%'ModuleName'_PixelDim)(%'ModuleName'%.GetHeight()-1));%>40 /* window for whole display */
+  %'ModuleName'%.WriteDataWordRepeated(color, %'ModuleName'%.WIDTH*%'ModuleName'%.HEIGHT);
+  %'ModuleName'%.CloseWindow();
+}
+
+%endif %- ClearBuffer
+%-BW_METHOD_END ClearBuffer
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN UpdateFull
 %ifdef UpdateFull
@@ -1662,6 +1685,7 @@ void %'ModuleName'%.GiveBus(void)
 }
 
 %-INTERNAL_METHOD_END GiveBus
+%-************************************************************************************************************
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 
