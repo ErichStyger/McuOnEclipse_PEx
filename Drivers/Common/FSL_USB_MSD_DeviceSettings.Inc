@@ -7,7 +7,6 @@
 %;**%>14 Bus reported vendor %>60: %get(HidBusReportedVendorString,Text)
 %else %- USBCDCenabled
 %endif %- USBCDCenabled
-%;**%>12 Send Buffer %>60: %get(TxBuffer,Text)
-%;**%>12 Power Options %>60: %get(PowerOptionsGroup,Text)
+%;**                                                             %>12 Power Options %>60: %get(PowerOptionsGroup,Text)
 %;**%>14 Bus Powered %>60: %get(ConfigBusPowered,Text)
 %;**%>14 Self Powered %>60: %get(ConfigSelfPowered,Text)
