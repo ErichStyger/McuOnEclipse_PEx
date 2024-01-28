@@ -87,6 +87,7 @@
   %endfor
 %endif
 /* Include inherited beans */
+#include <stdbool.h>
 %ifdef InhrSymbolList
   %for var from InhrSymbolList
 #include "%@%var@ModuleName.h"
