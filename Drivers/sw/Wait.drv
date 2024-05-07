@@ -140,14 +140,14 @@ extern "C" {
   extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
   #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
 #endif
-#define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/1000))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
 %- ColdFire is too fast for a single instruction range: add plus 1 cycle to keep timing accurate enough
-#define %'ModuleName'%.NofCyclesUs(us, hz)  (1+(((us)*(((hz)/1000)/1000))))      %>%CTAB /* calculates the needed cycles based on bus clock frequency */
-#define %'ModuleName'%.NofCyclesNs(ns, hz)  (1+(((ns)*(((hz)/1000)/1000))/1000)) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesUs(us, hz)  (1+(((us)*(((hz)/1000)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))))      %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesNs(ns, hz)  (1+(((ns)*(((hz)/1000)/1000))/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP)))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %else
-#define %'ModuleName'%.NofCyclesUs(us, hz)  ((us)*(((hz)/1000)/1000))        %>%CTAB /* calculates the needed cycles based on bus clock frequency */
-#define %'ModuleName'%.NofCyclesNs(ns, hz)  (((ns)*(((hz)/1000)/1000))/1000) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesUs(us, hz)  ((us)*(((hz)/1000)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))        %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesNs(ns, hz)  (((ns)*(((hz)/1000)/1000))/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %endif
 
 #define %'ModuleName'%.WAIT_C(cycles) \
@@ -957,7 +957,7 @@ void %'ModuleName'%.%Deinit(void)
 /**
  * \file
  * \brief Configuration header file for Wait
- * Copyright (c) 2020, Erich Styger
+ * Copyright (c) 2020-2024, Erich Styger
  * SPDX-License-Identifier: BSD-3-Clause
  *
  * This header file is used to configure settings of the busy waiting module.
@@ -977,6 +977,11 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
 #endif
 
+#ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP
+  #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP   (1)
+        /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need 2 cycles */
+#endif
+
 #ifndef %'ModuleName'%.CONFIG_USE_RTOS_WAIT
 %if defined(RTOS)
   #define %'ModuleName'%.CONFIG_USE_RTOS_WAIT  (1 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
@@ -993,6 +998,8 @@ void %'ModuleName'%.%Deinit(void)
   #include "KIN1.h" /* include Cortex utility functions */
 %endif
 #endif
+
+
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
