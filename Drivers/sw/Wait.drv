@@ -140,14 +140,14 @@ extern "C" {
   extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
   #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
 #endif
-#define %'ModuleName'%.NofCyclesMs(ms, hz)  ((ms)*((hz)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesMs(ms, hz)  ((((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(ms)*(hz))/(1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV)))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
 %- ColdFire is too fast for a single instruction range: add plus 1 cycle to keep timing accurate enough
-#define %'ModuleName'%.NofCyclesUs(us, hz)  (1+(((us)*(((hz)/1000)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))))      %>%CTAB /* calculates the needed cycles based on bus clock frequency */
-#define %'ModuleName'%.NofCyclesNs(ns, hz)  (1+(((ns)*(((hz)/1000)/1000))/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP)))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesUs(us, hz)  (1+(((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(us)*(hz))/(1000U*1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV))))      %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesNs(ns, hz)  (1+((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(ns)*(hz))/(1000U*1000U*1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV)))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %else
-#define %'ModuleName'%.NofCyclesUs(us, hz)  ((us)*(((hz)/1000)/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))))        %>%CTAB /* calculates the needed cycles based on bus clock frequency */
-#define %'ModuleName'%.NofCyclesNs(ns, hz)  (((ns)*(((hz)/1000)/1000))/(1000*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesUs(us, hz)  (((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(us)*(hz))/(1000U*1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV)))        %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesNs(ns, hz)  (((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(ns)*(hz))/(1000U*1000U*1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV))) %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %endif
 
 #define %'ModuleName'%.WAIT_C(cycles) \
@@ -980,6 +980,16 @@ void %'ModuleName'%.%Deinit(void)
 #ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP
   #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP   (1)
         /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need 2 cycles */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL
+  #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL   (1)
+      /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need more. This factor gets it multiplied, see %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV. */
+#endif
+
+#ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV
+  #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV   (1)
+    /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need more. This factor gets it divided, see %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL. */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_USE_RTOS_WAIT
