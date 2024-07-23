@@ -69,6 +69,9 @@
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32
   #include "rom/ets_sys.h" /* delay routines in ROM */
 #endif
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED==%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
+  #include <unistd.h> /* for sleep */
+#endif
 
 %-BW_CUSTOM_INCLUDE_START_H
 %- Write your own includes here ...
@@ -140,7 +143,7 @@ extern "C" {
   extern uint32_t SystemCoreClock; /* clock frequency variable defined system_<device>.h of the SDK */
   #define %'ModuleName'%.INSTR_CLOCK_HZ       SystemCoreClock   %>%CTAB  /* core clock frequency in Hz */
 #endif
-#define %'ModuleName'%.NofCyclesMs(ms, hz)  ((((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(ms)*(hz))/(1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV)))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
+#define %'ModuleName'%.NofCyclesMs(ms, hz)  (((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(ms)*(hz))/(1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV)))               %>%CTAB /* calculates the needed cycles based on bus clock frequency */
 %if (CPU_FAMILY = "ColdFireV1")
 %- ColdFire is too fast for a single instruction range: add plus 1 cycle to keep timing accurate enough
 #define %'ModuleName'%.NofCyclesUs(us, hz)  (1+(((%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL)*(us)*(hz))/(1000U*1000U*(%'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV))))      %>%CTAB /* calculates the needed cycles based on bus clock frequency */
@@ -363,6 +366,7 @@ void %'ModuleName'%.%Deinit(void);
 %-BW_METHOD_BEGIN Wait10Cycles
 %ifdef Wait10Cycles
 %include Common\WaitWait10Cycles.Inc
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
 #ifdef __GNUC__
 #if %@sdk@'ModuleName'%.CONFIG_CPU_IS_RISC_V || %@sdk@'ModuleName'%.CONFIG_CPU_IS_ESP32 /* naked is ignored for RISC-V or ESP32 gcc */
   #ifdef __cplusplus  /* gcc 4.7.3 in C++ mode does not like no_instrument_function: error: can't set 'no_instrument_function' attribute after definition */
@@ -458,12 +462,14 @@ void %'ModuleName'%.%Wait10Cycles(void)
 %endif
   /*lint -restore */
 }
+#endif /* %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX */
 
 %endif %- Wait10Cycles
 %-BW_METHOD_END Wait10Cycles
 %-BW_METHOD_BEGIN Wait100Cycles
 %ifdef Wait100Cycles
 %include Common\WaitWait100Cycles.Inc
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
 #if %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR
   /* Implemented in assembly file, as IAR does not support labels in HLI */
 #else
@@ -612,6 +618,7 @@ loop
   /*lint -restore */
 }
 #endif  /* %@sdk@'ModuleName'%.CONFIG_COMPILER==%@sdk@'ModuleName'%.CONFIG_COMPILER_IAR */
+#endif /* %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX */
 
 %endif %- Wait100Cycles
 %-BW_METHOD_END Wait100Cycles
@@ -620,6 +627,7 @@ loop
 %ifdef WaitCycles
 %define! Parcycles
 %include Common\WaitWaitCycles.Inc
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
 void %'ModuleName'%.%WaitCycles(uint32_t cycles)
 {
   /*lint -save -e522 function lacks side effect. */
@@ -636,17 +644,19 @@ void %'ModuleName'%.%WaitCycles(uint32_t cycles)
     /* wait */
   }
 #else
-  while(cycles >= 100u) {
+  volatile uint32_t c = cycles; /* fix for wrong optimization in ARM gcc 13.2.1 */
+  while(c >= 100u) {
     %'ModuleName'%.%Wait100Cycles();
-    cycles -= 100u;
+    c -= 100u;
   }
-  while(cycles >= 10u) {
+  while(c >= 10u) {
     %'ModuleName'%.%Wait10Cycles();
-    cycles -= 10u;
+    c -= 10u;
   }
 #endif
   /*lint -restore */
 }
+#endif /* %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX */
 
 %endif %- WaitCycles
 %-BW_METHOD_END WaitCycles
@@ -655,6 +665,7 @@ void %'ModuleName'%.%WaitCycles(uint32_t cycles)
 %ifdef WaitLongCycles
 %define! Parcycles
 %include Common\WaitWaitLongCycles.Inc
+#if %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX
 void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
 {
 #if %'ModuleName'%.CONFIG_USE_CYCLE_COUNTER
@@ -679,6 +690,7 @@ void %'ModuleName'%.%WaitLongCycles(uint32_t cycles)
   /*lint -restore */
 #endif
 }
+#endif /* %@sdk@'ModuleName'%.CONFIG_SDK_VERSION_USED!=%@sdk@'ModuleName'%.CONFIG_SDK_LINUX */
 
 %endif %- WaitLongCycles
 %-BW_METHOD_END WaitLongCycles
@@ -977,14 +989,9 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 1: Use hardware cycle counter (if present, only on Cortex-M3 or higher), 0: not using hardware cycle counter */
 #endif
 
-#ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP
-  #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP   (1)
-        /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need 2 cycles */
-#endif
-
 #ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL
   #define %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_MUL   (1)
-      /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need more. This factor gets it multiplied, see %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV. */
+    /*!< by default, use a single cycle for a NOP instruction. Some devices like the LPC804 need more. This factor gets it multiplied, see %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV. */
 #endif
 
 #ifndef %'ModuleName'%.CONFIG_NOF_CYCLES_FOR_NOP_DIV
@@ -1008,8 +1015,6 @@ void %'ModuleName'%.%Deinit(void)
   #include "KIN1.h" /* include Cortex utility functions */
 %endif
 #endif
-
-
 
 #endif /* __%'ModuleName'_CONFIG_H */
 %-----------------------------------------------------------------------------------------
