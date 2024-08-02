@@ -1605,7 +1605,7 @@ void %OnError(void)
 #ifndef __%'ModuleName'_CONFIG_H
 #define __%'ModuleName'_CONFIG_H
 
-#include "%@sdk@ModuleName.h" /* SDK and API used */
+#include "%@sdk@'ModuleName'config.h"
 
 #if !defined(%'ModuleName'%.CONFIG_USE_ON_REQUEST_BUS_EVENT)
   %if defined(OnRequestBus)

@@ -299,9 +299,9 @@ void %'ModuleName'%.%Deinit(void)
 %endif
 %----------------------------
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'ModuleName'config.h
-/**
+/*!
  * \file
- * \brief Configuration header file for McuLibConfig
+ * \brief Configuration header file for McuLibConfig.
  * Copyright (c) 2020, Erich Styger
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -337,6 +337,22 @@ void %'ModuleName'%.%Deinit(void)
   #define %'ModuleName'%.CONFIG_CPU_IS_LP55Cxx                  (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M && %'ModuleName'%.CONFIG_CPU_IS_LPC)
    /*!< 1: NXP LPC55xx CPU family, 0: otherwise */
 #endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_MCXA
+  #define %'ModuleName'%.CONFIG_CPU_IS_MCXA                     (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+   /*!< 1: NXP MCXA CPU family (Cortex M33 without FPU and DSP instructions), 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_MCXC
+  #define %'ModuleName'%.CONFIG_CPU_IS_MCXC                     (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+   /*!< 1: NXP MCXC CPU family (Cortex M33), 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_MCXN
+  #define %'ModuleName'%.CONFIG_CPU_IS_MCXN                     (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
+   /*!< 1: NXP MCXN CPU family (Dual-Core Cortex M33 with FPU and DSP instructions), 0: otherwise */
+#endif
+#ifndef %'ModuleName'%.CONFIG_CPU_IS_MCX
+  #define %'ModuleName'%.CONFIG_CPU_IS_MCX                      (1 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M && (%'ModuleName'%.CONFIG_CPU_IS_MCXA || %'ModuleName'%.CONFIG_CPU_IS_MCXC || %'ModuleName'%.CONFIG_CPU_IS_MCXN))
+   /*!< 1: NXP MCX CPU family (Cortex M33 for A, N, W and L, Cortex M0+ on C), 0: otherwise */
+#endif
 #ifndef %'ModuleName'%.CONFIG_CPU_IS_STM32
   #define %'ModuleName'%.CONFIG_CPU_IS_STM32                    (0 && %'ModuleName'%.CONFIG_CPU_IS_ARM_CORTEX_M)
     /*!< 1: STM32 ARM Cortex CPU family, 0: otherwise */
@@ -362,7 +378,6 @@ void %'ModuleName'%.%Deinit(void)
     /*!< 1: VEGA Board: RISC-V RV32M1 RI5CY, 0: other core */
 #endif
 #if !defined(%'ModuleName'%.CONFIG_CPU_IS_ESP32) && !defined(%'ModuleName'%.CONFIG_CPU_IS_IMXRT) /* i.MX could check on __XTENSA__ in fsl_common.h */
-
   #ifndef __XTENSA__
     #define __XTENSA__ 0
   #endif
@@ -469,6 +484,7 @@ void %'ModuleName'%.%Deinit(void)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC55S69          (9)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_IMXRT1064         (10)
 #define %'ModuleName'%.CONFIG_CPU_VARIANT_RP2040                (11)
+#define %'ModuleName'%.CONFIG_CPU_VARIANT_NXP_K64FN             (12)
 
 #ifndef %'ModuleName'%.CONFIG_CPU_VARIANT
   #define %'ModuleName'%.CONFIG_CPU_VARIANT  %'ModuleName'%.CONFIG_CPU_VARIANT_DEFAULT
@@ -560,7 +576,7 @@ void %'ModuleName'%.%Deinit(void)
 %else %- default
 #ifndef %'ModuleName'%.CONFIG_CORTEX_M
   #define %'ModuleName'%.CONFIG_CORTEX_M      (-1)
-    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33 -1 otherwise */
+    /*!< 0: Cortex-M0, 3: M3, 4: M4, 7: M7, 33: M33; -1 otherwise */
 #endif
 %-
 #if (0 && !defined(%'ModuleName'%.CONFIG_FPU_PRESENT) && %'ModuleName'%.CONFIG_CORTEX_M!=0) || (defined(__FPU_PRESENT) && (__FPU_PRESENT==1)) /* __FPU_PRESENT can be defined in CMSIS-Core */

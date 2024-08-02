@@ -1916,7 +1916,11 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks);
 #include "%@RuntimeCntrLDD@ModuleName.h" /* Interface to LDD Counter Interrupt */
 %endif
 #if configSYSTICK_USE_LOW_POWER_TIMER && %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
-  #include "fsl_clock.h"
+  #if %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_KINETIS
+    #include "fsl_clock.h"
+  #elif %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_LPC && %@KinetisSDK@'ModuleName'%.CONFIG_CPU_VARIANT==%@KinetisSDK@'ModuleName'%.CONFIG_CPU_VARIANT_NXP_LPC804
+    #include "fsl_wkt.h"
+  #endif
 #endif
 %-BW_CUSTOM_INCLUDE_START_M
 %- Write your own includes here ...
@@ -3388,7 +3392,7 @@ void %'ModuleName'%.%Init(void)
 %else
   /* RTOS adapter is configured not to disable interrupts */
 %endif
-#if configSYSTICK_USE_LOW_POWER_TIMER
+#if configSYSTICK_USE_LOW_POWER_TIMER && %@KinetisSDK@'ModuleName'%.CONFIG_CPU_IS_KINETIS
   /* enable clocking for low power timer, otherwise vPortStopTickTimer() will crash.
     Additionally, Percepio trace needs access to the timer early on. */
   #if %@KinetisSDK@'ModuleName'%.CONFIG_NXP_SDK_USED
@@ -4787,7 +4791,7 @@ void %vOnPreSleepProcessing(TickType_t expectedIdleTicks)
 %FILE %'DirRel_Code'%'ConfigSrcDirFolder'%'RtosComponentConfigHeaderFileName'
 /**
  * \file
- * \brief Configuration header file for FreeRTOS component
+ * \brief Configuration header file for FreeRTOS component.
  * Copyright (c) 2020, Erich Styger
  * SPDX-License-Identifier: BSD-3-Clause
  *
