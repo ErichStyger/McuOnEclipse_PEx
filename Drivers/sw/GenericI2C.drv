@@ -1654,7 +1654,7 @@ void %OnError(void)
   #define %'ModuleName'%.CONFIG_USE_MUTEX             (1 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
     /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
   %else
-  #define %'ModuleName'%.CONFIG_USE_MUTEX             (0)
+  #define %'ModuleName'%.CONFIG_USE_MUTEX             (0 && %@sdk@'ModuleName'%.CONFIG_SDK_USE_FREERTOS)
     /*!< 1: Use a mutex to protect access to the bus; 0: no mutex used */
   %endif
 #endif
@@ -1673,7 +1673,7 @@ void %OnError(void)
 %if defined(TimeoutUs)
   #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)%TimeoutUs)  /* number of microseconds as specified in properties used for timeout */
 %else
-  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)5000)  /* number of microseconds as specified in properties used for timeout */
+  #define %'ModuleName'%.CONFIG_TIMEOUT_US  ((uint32_t)500)  /* number of microseconds as specified in properties used for timeout */
 %endif
 #endif
 
