@@ -6,9 +6,11 @@
 %include Common\GeneralMethod.inc (PollInterrupt)
 %;**     Description :
 %;**         If there is no interrupt line available, this method polls
-%;**         the device to check if there is an interrupt. If 
+%;**         the device to check if there is an interrupt. Returns true
+%;**         if interrupt was detected, false otherwise.
 %include Common\GeneralParametersNone.inc
-%include Common\GeneralReturnNothing.inc
+%;**     Returns     :
+%;**         ---%RetVal %>27 - none
 %include Common\GeneralDamage.inc
 %;** ===================================================================
 %ifndef CommentLine

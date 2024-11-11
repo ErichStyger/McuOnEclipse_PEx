@@ -681,7 +681,8 @@ uint8_t %'ModuleName'%.%GetStatusClrIRQ(void);
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PollInterrupt
 %ifdef PollInterrupt
-void %'ModuleName'%.%PollInterrupt(void);
+bool %'ModuleName'%.%PollInterrupt(void);
+%define! RetVal
 %include Common\nRF24L01PollInterrupt.Inc
 
 %endif %- PollInterrupt
@@ -1693,11 +1694,13 @@ uint8_t %'ModuleName'%.%GetDataRate(uint16_t *rate)
 %-************************************************************************************************************
 %-BW_METHOD_BEGIN PollInterrupt
 %ifdef PollInterrupt
+%define! RetVal
 %include Common\nRF24L01PollInterrupt.Inc
-void %'ModuleName'%.%PollInterrupt(void)
+bool %'ModuleName'%.%PollInterrupt(void)
 {
   /*lint -save -e522 function lacks side effect  */
   uint8_t status;
+  bool interrupt = false;
 %if defined(AppEventHandler) & AppEventHandler<>"" %- not empty
   extern void %AppEventHandler(void); /* prototype */
 %endif
@@ -1711,7 +1714,9 @@ void %'ModuleName'%.%PollInterrupt(void)
 %if defined(OnInterrupt)
     %OnInterrupt(); /* call user event (if enabled)... */
 %endif
+    interrupt = true;
   }
+  return interrupt;
   /*lint -restore */
 }
 
