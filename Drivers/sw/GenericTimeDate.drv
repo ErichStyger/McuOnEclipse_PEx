@@ -1519,7 +1519,7 @@ uint8_t %'ModuleName'%.%SyncWithInternalRTC(void)
   uint8_t res;
 
   /* get current internal RTC time/date */
-#if %'ModuleName'%.CONFIG_NXP_SDK_USED
+#if %@sdk@'ModuleName'%.CONFIG_NXP_SDK_USED
   rtc_datetime_t datetime;
   RTC_GetDatetime(%'ModuleName'%.CONFIG_RTC_PERIPHERAL, &datetime);
 
