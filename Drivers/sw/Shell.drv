@@ -614,6 +614,17 @@ uint8_t %'ModuleName'%.%ReadCommandLine(uint8_t *cmdBuf, size_t cmdBufSize, %'Mo
 
 %endif %- ReadCommandLine
 %-BW_METHOD_END ReadCommandLine
+%-************************************************************************************************************
+%-BW_METHOD_BEGIN ProcessConsoleInput
+%ifdef ProcessConsoleInput
+int %'ModuleName'%.%ProcessConsoleInput(char *buf, size_t bufSize);
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\ShellProcessConsoleInput.Inc
+
+%endif %- ProcessConsoleInput
+%-BW_METHOD_END ProcessConsoleInput
 %-BW_DEFINITION_END
 /* END %ModuleName. */
 
@@ -1924,6 +1935,48 @@ uint8_t %'ModuleName'%.%PrintMemory(void *hndl, uint32_t startAddr, uint32_t end
 %endif %- PrintMemory
 %-BW_METHOD_END PrintMemory
 %-************************************************************************************************************
+%-BW_METHOD_BEGIN ProcessConsoleInput
+%ifdef ProcessConsoleInput
+%define! Parbuf
+%define! ParbufSize
+%define! RetVal
+%include Common\ShellProcessConsoleInput.Inc
+int %'ModuleName'%.%ProcessConsoleInput(char *buf, size_t bufSize)
+{
+  /* - convert '\r' at the end to '\n'
+   * - handle '\b' backspace in input
+   */
+  char *src, *dst; /* dst is the current cursor in the string, changed as well by '\b' */
+  size_t len;
+
+  if (bufSize<2) {
+    return 0; /* buffer size needs room for at least two bytes: '\n' and '\0' */
+  }
+  src = (char*)buf;
+  dst = (char*)buf;
+  while(*src!='\0') {
+    if (*src=='\r' && *(src+1)=='\0') {
+      *src = '\n'; /* convert '\r' at the end to '\n' */
+    }
+    if (*src=='\b') { /* backspace */
+      if (dst!=buf) { /* go back only if not at start */
+        dst--; /* move cursor backward */
+      }
+      src++;
+      continue; /* jump to while condition */
+    }
+    *dst++ = *src++; /* copy char */
+  }
+  *dst = '\0'; /* terminate resulting string */
+  len = %@Utility@'ModuleName'%.strlen(buf);
+  if (buf[len-1]!='\n') { /* no line ending? */
+    %@Utility@'ModuleName'%.chcat((unsigned char*)buf, bufSize, '\n');
+  }
+  return %@Utility@'ModuleName'%.strlen(buf);
+}
+
+%endif %- ProcessConsoleInput
+%-BW_METHOD_END ProcessConsoleInput
 %-BW_IMPLEMENT_END
 /* END %ModuleName. */
 

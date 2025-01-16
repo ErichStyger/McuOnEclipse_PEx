@@ -397,6 +397,19 @@ LI.EXP {
 </li>
 </ul><br />
 </li>
+<li><a name="ProcessConsoleInput">
+<b>ProcessConsoleInput</b></a>
+ - Processes a string received from a console which can include backspace characters.
+<ul>
+<!---VER_SPEC #ANSIC#  DON'T CHANGE THIS LINE-->
+<br /><i>ANSIC prototype:</i> int ProcessConsoleInput(char *buf, size_t bufSize)<br />
+<!---VER_SPEC_END  DON'T CHANGE THIS LINE-->
+<li><i>buf: Pointer to char</i> - Pointer to character buffer</li>
+<li><i>bufSize:size_t</i> - Size of buffer</li>
+<li><i>Return value:int</i> - Number of characters in the buffer
+</li>
+</ul><br />
+</li>
 <li><a name="ReadLine">
 <b>ReadLine</b></a>
  - Reads a line from stdIn and returns TRUE if we have a line, FALSE otherwise.
